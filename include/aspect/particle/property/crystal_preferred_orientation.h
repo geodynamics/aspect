@@ -625,7 +625,7 @@ namespace aspect
            *
            * RRSS value for CPX does not exist in DRex formulation,
            * but Bascou etal., 2002 JSG using VPSC provides a reference, which is
-           * supported by experiment work from Zhang etal., 2006 EPSL
+           * supported by experimental work from Zhang et al., 2006 EPSL
            * that agree with the three main slip systems
           */
           std::vector<double> CPX_RRSS;

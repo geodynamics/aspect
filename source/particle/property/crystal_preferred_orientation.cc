@@ -1054,30 +1054,9 @@ namespace aspect
               ref_resolved_shear_stress[3] = 1;
               break;
 
-            // RRSS for CPX (preliminary results, require further investigations)
-            // Main slip systems from Bascou_etal., 2002 JSG and Zhang et al., 2006 EPSL and with numerical experiments
-            // case DeformationType::clinopyroxene :
-            //   ref_resolved_shear_stress[0] = 1;
-            //   ref_resolved_shear_stress[1] = 5;
-            //   ref_resolved_shear_stress[2] = 5;
-            //   ref_resolved_shear_stress[3] = 1.5;
-            //   break;
-
             case DeformationType::clinopyroxene:
-              // Use the member variable CPX_RRSS if it has been set (size == 4)
-              if (CPX_RRSS.size() == 4)
-                {
-                  for (unsigned int i=0; i<4; ++i)
-                    ref_resolved_shear_stress[i] = CPX_RRSS[i];
-                }
-              else
-                {
-                  // Default values if CPX_RRSS wasn't set
-                  ref_resolved_shear_stress[0] = 1;
-                  ref_resolved_shear_stress[1] = 5;
-                  ref_resolved_shear_stress[2] = 5;
-                  ref_resolved_shear_stress[3] = 1.5;
-                }
+              for (unsigned int i=0; i<4; ++i)
+                ref_resolved_shear_stress[i] = CPX_RRSS[i];
               break;
 
             default:
@@ -1163,11 +1142,10 @@ namespace aspect
             prm.declare_entry ("CPX RRSS", "1,5,5,1.5",
                                Patterns::List(Patterns::Anything()),
                                "The default RRSS values for CPX, used in fabric calculations."
-                               "(preliminary results, require further investigations)"
-                               "user can change this in input file under subsection Initial grains"
-                               "by adding a variable CPX RRSS = four entries separated by comma"
-                               "Main slip systems from Bascou_etal., 2002 JSG and "
-                               "Zhang et al., 2006 EPSL and with numerical experiments");
+                               "(preliminary results, pending further investigations)."
+                               "This list expects 4 entries separated by commas."
+                               "Main slip systems from Bascou et al., 2002 JSG and "
+                               "Zhang et al., 2006 EPSL and from numerical experiments");
 
             prm.declare_entry ("Volume fractions minerals", "0.7, 0.3",
                                Patterns::List(Patterns::Double(0)),
@@ -1335,7 +1313,7 @@ namespace aspect
 
             CPX_RRSS = Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("CPX RRSS")));
             AssertThrow(CPX_RRSS.size()==4,
-                        ExcMessage("the number of RRSS for CPX has to be equal to four"));
+                        ExcMessage("The number of Reference Resolved Shear Stress (RRSS) entries for CPX has to be equal to four."));
 
             volume_fractions_minerals = Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Volume fractions minerals")));
             double volume_fractions_minerals_sum = 0;
@@ -1343,6 +1321,7 @@ namespace aspect
               {
                 volume_fractions_minerals_sum += fraction;
               }
+
             AssertThrow(std::abs(volume_fractions_minerals_sum-1.0) < 2.0 * std::numeric_limits<double>::epsilon(),
                         ExcMessage("The sum of the CPO volume fractions should be one."));
           }
