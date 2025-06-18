@@ -91,6 +91,7 @@ namespace aspect
          * in a two-phase simulation to dilation and compaction.
          */
         std::vector<double> compaction_viscosities;
+        std::vector<double> inverse_compaction_viscosities;
 
         /**
          * Fluid (melt) viscosity values $\eta_f$ at the given positions.

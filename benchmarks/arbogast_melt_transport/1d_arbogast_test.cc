@@ -60,7 +60,8 @@ namespace aspect
               {
                 const double porosity = std::max(0.0, in.composition[i][porosity_idx]);
 
-                melt_out->compaction_viscosities[i] = porosity>1e-9 ? 1.0 / porosity : 1;
+                melt_out->compaction_viscosities[i] = porosity>1e-9 ? 1.0 / porosity : std::numeric_limits<double>::max();
+                melt_out->inverse_compaction_viscosities[i] = porosity;
                 melt_out->fluid_viscosities[i]= 1.0;
                 melt_out->permeabilities[i]= std::pow(porosity,2);
                 melt_out->fluid_densities[i]= 1.0;
