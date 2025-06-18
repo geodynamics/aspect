@@ -36,12 +36,12 @@ Number of mesh deformation degrees of freedom: 462
    Solving upper_crust system ... 9 iterations.
    Solving lower_crust system ... 9 iterations.
    Solving lithospheric_mantle system ... 9 iterations.
-   Initial Newton Stokes residual = 8.15787e+16, v = 8.15787e+16, p = 1.24975e+13
+   Initial Newton Stokes residual = 8.15787e+16, v = 8.15787e+16, p = 1.24042e+13
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+18 iterations.
-      Newton system information: Norm of the rhs: 2.11532e+13
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000259297
+      Newton system information: Norm of the rhs: 2.11455e+13
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000259204
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
