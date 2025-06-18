@@ -12,7 +12,7 @@
 # In this parameter file, when fluid is contained within the solid phase the viscosity is reduced
 # according to a calculated water fugacity term. This water fugacity term assumes a uniform olivine
 # composition of 90% forsterite and 10% fayalite throughout the entire model domain. While this is
-# an oversimplification, it is sufficient for demonstrating the functionaly within the scope of
+# an oversimplification, it is sufficient for demonstrating the functionaity within the scope of
 # this cookbook.
 
 # Load the plugin library and the world builder file, which are both required for this cookbook

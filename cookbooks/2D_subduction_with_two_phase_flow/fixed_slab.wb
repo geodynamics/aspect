@@ -14,6 +14,7 @@
   "potential mantle temperature":1573,
   "features":
   [
+    // Define a mantle layer, which has a uniform temperature of 1573 K. The mantle layer has a composition 2, which represents peridotite.
     {"model": "mantle layer", "name": "peridotite mantle", "coordinates": [[-500e3, 100e3], [-500e3, -100e3], [16000e3, -100e3], [16000e3, 100e3]],
      "min depth": 0, "max depth":10000e3, 
      "composition models": 
@@ -21,6 +22,7 @@
      "temperature models":
      [{"model": "uniform", "min depth":0.0, "max depth":10000e3, "temperature": 1573}]},
     
+     // Define an overriding plate, which is 80 km thick, 2500 km long, has a linear temperature profile, and is assigned the peridotite composition
      {"model": "oceanic plate", "name": "Overriding Plate",
      "coordinates": [[4000e3, -100e3], [4000e3, 100e3], [7500e3, 100e3], [7500e3, -100e3]],
      "min depth": 0,
@@ -29,6 +31,10 @@
      "temperature models": [{"model": "linear", "top temperature":273, "bottom temperature":1573, "min depth": 0, "max depth":80e3}]
    },
 
+    // Define the unsubducted portion of the subducting plate. The plate is 3000 km long, 120 km thick, has a plate cooling geotherm,
+    // and is assigned a layered composition. From top to bottom, the layers are a 10 km thick sediment, a 10 km thick mid-ocean ridge
+    // basalt, a 10 km thick gabbro, and a 90 km thick peridotite, with and initial bound water equal to 2 wt%, 1 wt%, 0.5 wt%, and 1 wt%,
+    // respectively.
     {"model": "oceanic plate", "name": "Subducting Plate",
       "coordinates": [[4000e3, -100e3], [4000e3, 100e3], [1000e3, 100e3], [1000e3, -100e3]],
       "min depth": 0,
@@ -49,6 +55,11 @@
       , "min depth": 0, "max depth": 300e3, "bottom temperature": 1573}]
     },
 
+    // Define the subducted portion of the subducting plate. The slab has the same compositional properties as the 
+    // unsubducted portion defined in the feature above. The slab is 1100 km long in total, first curving to a dip 
+    // of 45 degrees over 300 km, and then continuing down at a constant 45 degree dip for another 800 km. The 
+    // temperature is defined using a plate cooling model for the base of the plate, and an infinite half-space
+    // model for the top of the plate. 
     {"model":"subducting plate", "name":"Slab",   
 
       "coordinates":[[4000e3, -100e3],[4000e3, 100e3]], 

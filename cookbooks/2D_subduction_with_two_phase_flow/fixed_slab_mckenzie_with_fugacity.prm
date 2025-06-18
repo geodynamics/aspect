@@ -33,6 +33,6 @@ end
 # Remove the darcy velocity from the list of output variables.
 subsection Postprocess
   subsection Visualization
-    set List of output variables      = material properties, strain rate, named additional outputs
+    set List of output variables      = material properties, strain rate, named additional outputs, melt material properties
   end
 end
