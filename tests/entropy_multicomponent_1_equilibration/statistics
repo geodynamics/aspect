@@ -1,0 +1,41 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for composition solver 3
+# 13: Iterations for composition solver 4
+# 14: Iterations for Stokes solver
+# 15: Velocity iterations in Stokes preconditioner
+# 16: Schur complement iterations in Stokes preconditioner
+# 17: Visualization file name
+# 18: RMS velocity (m/year)
+# 19: Max. velocity (m/year)
+# 20: Minimal temperature (K)
+# 21: Average temperature (K)
+# 22: Maximal temperature (K)
+# 23: Outward mass flux through boundary with indicator 0 ("left") (kg/yr)
+# 24: Outward mass flux through boundary with indicator 1 ("right") (kg/yr)
+# 25: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
+# 26: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
+# 27: Minimal value for composition percent_enstatite
+# 28: Maximal value for composition percent_enstatite
+# 29: Global mass for composition percent_enstatite
+# 30: Minimal value for composition entropy_forsterite
+# 31: Maximal value for composition entropy_forsterite
+# 32: Global mass for composition entropy_forsterite
+# 33: Minimal value for composition entropy_enstatite
+# 34: Maximal value for composition entropy_enstatite
+# 35: Global mass for composition entropy_enstatite
+# 36: Minimal value for composition density_field
+# 37: Maximal value for composition density_field
+# 38: Global mass for composition density_field
+0 0.000000000000e+00 0.000000000000e+00 1 22 9 36  2 1 0 0 0 0   0   0   0 output-entropy_multicomponent_1_equilibration/solution/solution-00000 0.00000000e+00 0.00000000e+00 1.11743082e+03 1.11743082e+03 1.11743082e+03 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 3.00000000e-01 3.00000000e-01 5.07000000e+07 2.70000000e+03 2.70000000e+03 4.56300000e+11 7.00000000e+02 7.00000000e+02 1.18300000e+11 3.10469472e+03 3.10469472e+03 5.24693408e+11 
+1 5.000000000000e+04 5.000000000000e+04 1 22 9 36 10 0 0 0 0 0 118 128 128 output-entropy_multicomponent_1_equilibration/solution/solution-00001 5.28586499e-14 7.94085169e-14 1.11743082e+03 1.11743082e+03 1.11743082e+03 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 3.00000000e-01 3.00000000e-01 5.07000000e+07 2.10249637e+03 2.10249637e+03 3.55321886e+11 2.09417515e+03 2.09417515e+03 3.53915600e+11 3.13927553e+03 3.13927553e+03 5.30537564e+11 
+2 1.000000000000e+05 5.000000000000e+04 1 22 9 36 10 0 0 0 0 0 112 122 122 output-entropy_multicomponent_1_equilibration/solution/solution-00002 1.95925544e-15 5.35801495e-15 1.11743082e+03 1.11743082e+03 1.11743082e+03 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 3.00000000e-01 3.00000000e-01 5.07000000e+07 2.10249637e+03 2.10249637e+03 3.55321886e+11 2.09417515e+03 2.09417515e+03 3.53915600e+11 3.13927553e+03 3.13927553e+03 5.30537564e+11 

@@ -14,6 +14,12 @@ FOT = "FOT"
 LinearNDInterpolator = "LinearNDInterpolator"
 ND = "ND"
 
+# Don't correct abbreviations for some minerals
+Fo = "Fo"
+En = "En"
+Qtz = "Qtz"
+Wad = "Wad"
+
 # Don't check the following files
 [files]
 extend-exclude = [

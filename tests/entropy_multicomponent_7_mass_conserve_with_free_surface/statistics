@@ -1,0 +1,46 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for composition solver 3
+# 13: Iterations for composition solver 4
+# 14: Iterations for Stokes solver
+# 15: Velocity iterations in Stokes preconditioner
+# 16: Schur complement iterations in Stokes preconditioner
+# 17: Visualization file name
+# 18: RMS velocity (m/year)
+# 19: Max. velocity (m/year)
+# 20: Minimal temperature (K)
+# 21: Average temperature (K)
+# 22: Maximal temperature (K)
+# 23: Outward mass flux through boundary with indicator 0 ("left") (kg/yr)
+# 24: Outward mass flux through boundary with indicator 1 ("right") (kg/yr)
+# 25: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
+# 26: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
+# 27: Minimal value for composition percent_enstatite
+# 28: Maximal value for composition percent_enstatite
+# 29: Global mass for composition percent_enstatite
+# 30: Minimal value for composition entropy_forsterite
+# 31: Maximal value for composition entropy_forsterite
+# 32: Global mass for composition entropy_forsterite
+# 33: Minimal value for composition entropy_enstatite
+# 34: Maximal value for composition entropy_enstatite
+# 35: Global mass for composition entropy_enstatite
+# 36: Minimal value for composition density_field
+# 37: Maximal value for composition density_field
+# 38: Global mass for composition density_field
+# 39: Minimum topography (m)
+# 40: Maximum topography (m)
+0 0.000000000000e+00 0.000000000000e+00 4 59 25 100 2  6 0  0  0 0  0  0  0 output-entropy_multicomponent_7_mass_conserve_with_free_surface/solution/solution-00000 0.00000000e+00 0.00000000e+00 1.11743082e+03 1.11743082e+03 1.11743082e+03 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 3.00000000e-01 3.00000000e-01 5.07000000e+07 2.70000000e+03 2.70000000e+03 4.56300000e+11 7.00000000e+02 7.00000000e+02 1.18300000e+11 3.10469472e+03 3.10469472e+03 5.24693408e+11  0.00000000e+00  0.00000000e+00 
+1 1.000000000000e+05 1.000000000000e+05 4 59 25 100 5 24 0 24 24 0 21 26 26 output-entropy_multicomponent_7_mass_conserve_with_free_surface/solution/solution-00001 8.14898893e-04 1.41759965e-03 1.11743745e+03 1.12042441e+03 1.13327772e+03 0.00000000e+00 0.00000000e+00 0.00000000e+00 -5.78530522e+04 3.00000000e-01 3.00000000e-01 5.07000000e+07 2.10250388e+03 2.12024264e+03 3.55889737e+11 2.09418266e+03 2.11192143e+03 3.54483452e+11 3.13743051e+03 3.13927476e+03 5.30478714e+11  0.00000000e+00  0.00000000e+00 
+2 2.000000000000e+05 1.000000000000e+05 4 59 25 100 7 35 0 41 41 0 31 38 38 output-entropy_multicomponent_7_mass_conserve_with_free_surface/solution/solution-00002 4.21808092e-04 7.23345926e-04 1.11756886e+03 1.12352587e+03 1.15624826e+03 0.00000000e+00 0.00000000e+00 0.00000000e+00  2.95200165e+04 3.00000000e-01 3.00000000e-01 5.01471361e+07 2.10265284e+03 2.14560511e+03 3.52585061e+11 2.09433139e+03 2.13727134e+03 3.51193101e+11 3.13473804e+03 3.13925952e+03 5.24633460e+11 -1.41759965e+02 -1.41759964e+02 
+3 3.000000000000e+05 1.000000000000e+05 4 59 25 100 9 43 0 49 49 0 45 54 54 output-entropy_multicomponent_7_mass_conserve_with_free_surface/solution/solution-00003 1.33230394e-05 1.55310876e-05 1.11771864e+03 1.12656682e+03 1.17838716e+03 0.00000000e+00 0.00000000e+00 0.00000000e+00  5.95870779e+02 3.00000000e-01 3.00000000e-01 5.04292410e+07 2.10282314e+03 2.16965810e+03 3.55130688e+11 2.09449972e+03 2.16121332e+03 3.53729530e+11 3.13212293e+03 3.13924215e+03 5.27524781e+11 -6.94253783e+01 -6.94253717e+01 
+4 4.000000000000e+05 1.000000000000e+05 4 59 25 100 9 43 0 48 48 0 46 55 55 output-entropy_multicomponent_7_mass_conserve_with_free_surface/solution/solution-00004 1.32131582e-05 1.52504170e-05 1.11780056e+03 1.12962059e+03 1.19762879e+03 0.00000000e+00 0.00000000e+00 0.00000000e+00  6.06681806e+02 3.00000000e-01 3.00000000e-01 5.04349354e+07 2.10291660e+03 2.19023678e+03 3.55731974e+11 2.09459104e+03 2.18170283e+03 3.54329960e+11 3.12983393e+03 3.13923266e+03 5.27523896e+11 -6.79652738e+01 -6.79652672e+01 
+5 5.000000000000e+05 1.000000000000e+05 4 59 25 100 9 41 0 48 48 0 45 54 54 output-entropy_multicomponent_7_mass_conserve_with_free_surface/solution/solution-00005 1.30140110e-05 1.49378990e-05 1.11788197e+03 1.13268129e+03 1.21412139e+03 0.00000000e+00 0.00000000e+00 0.00000000e+00  6.09614177e+02 3.00000000e-01 3.00000000e-01 5.04407332e+07 2.10300921e+03 2.20762467e+03 3.56332694e+11 2.09468239e+03 2.19905110e+03 3.54930204e+11 3.12785825e+03 3.13922322e+03 5.27523748e+11 -6.64786738e+01 -6.64786672e+01 

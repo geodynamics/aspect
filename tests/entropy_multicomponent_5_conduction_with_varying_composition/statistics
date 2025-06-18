@@ -1,0 +1,43 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for composition solver 3
+# 13: Iterations for composition solver 4
+# 14: Iterations for Stokes solver
+# 15: Velocity iterations in Stokes preconditioner
+# 16: Schur complement iterations in Stokes preconditioner
+# 17: Visualization file name
+# 18: RMS velocity (m/year)
+# 19: Max. velocity (m/year)
+# 20: Minimal temperature (K)
+# 21: Average temperature (K)
+# 22: Maximal temperature (K)
+# 23: Average nondimensional temperature (K)
+# 24: Outward mass flux through boundary with indicator 0 ("left") (kg/yr)
+# 25: Outward mass flux through boundary with indicator 1 ("right") (kg/yr)
+# 26: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
+# 27: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
+# 28: Minimal value for composition percent_enstatite
+# 29: Maximal value for composition percent_enstatite
+# 30: Global mass for composition percent_enstatite
+# 31: Minimal value for composition entropy_forsterite
+# 32: Maximal value for composition entropy_forsterite
+# 33: Global mass for composition entropy_forsterite
+# 34: Minimal value for composition entropy_enstatite
+# 35: Maximal value for composition entropy_enstatite
+# 36: Global mass for composition entropy_enstatite
+# 37: Minimal value for composition density_field
+# 38: Maximal value for composition density_field
+# 39: Global mass for composition density_field
+0 0.000000000000e+00 0.000000000000e+00 40 568 243 972  2   0  0  0  0 0 156 158 158 output-entropy_multicomponent_5_conduction_with_varying_composition/solution/solution-00000 2.14877615e-13 1.79073787e-12 1.09611653e+03 1.12069513e+03 1.14341218e+03 6.51433753e-03 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.00000000e+00 1.00000000e+09 2.07000000e+03 2.07000000e+03 4.14000000e+12 2.07000000e+03 2.07000000e+03 4.14000000e+12 3.12577749e+03 3.30793788e+03 6.44980872e+12 
+1 1.000000000000e+08 1.000000000000e+08 40 568 243 972 10 468 48 72 72 0 799 809 809 output-entropy_multicomponent_5_conduction_with_varying_composition/solution/solution-00001 8.17375016e-08 1.13120459e-07 1.09611653e+03 1.11068791e+03 1.12738090e+03 3.86201387e-03 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 6.04955668e-11 1.00000000e+00 1.00009631e+09 2.05241533e+03 2.07901400e+03 4.12585002e+12 2.04794772e+03 2.07000000e+03 4.11132980e+12 3.12577749e+03 3.30938184e+03 6.45167889e+12 
+2 2.000000000000e+08 1.000000000000e+08 40 568 243 972 10 463 45 65 65 0 732 742 742 output-entropy_multicomponent_5_conduction_with_varying_composition/solution/solution-00002 5.41782241e-08 7.22210168e-08 1.09611653e+03 1.10383156e+03 1.11325543e+03 2.04479844e-03 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.33066282e-06 1.00000000e+00 1.00016208e+09 2.03679519e+03 2.07879725e+03 4.11040867e+12 2.03319966e+03 2.07000000e+03 4.09608966e+12 3.12577749e+03 3.31064991e+03 6.45296184e+12 
+3 3.000000000000e+08 1.000000000000e+08 40 568 243 972 10 461 45 64 64 0 759 769 769 output-entropy_multicomponent_5_conduction_with_varying_composition/solution/solution-00003 2.57114278e-08 3.43319749e-08 1.09611653e+03 1.09984304e+03 1.10437689e+03 9.87678223e-04 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 2.34748253e-06 1.00000000e+00 1.00020003e+09 2.02685228e+03 2.07867327e+03 4.10138830e+12 2.02345391e+03 2.07000000e+03 4.08725345e+12 3.12577749e+03 3.31144509e+03 6.45370670e+12 

@@ -1,0 +1,5 @@
+Added: The entropy model now supports multiple components.
+The method assumes there is a background field, whose percentage doesn't need to be specified.
+The adiabatic reference profile is calculated based on the background entropy.
+<br>
+(Ranpeng Li, Juliane Dannberg, Rene Gassmoeller, Bob Myhill, 2025/06/16)

@@ -118,6 +118,16 @@ namespace aspect
         double cohesion;
 
         /**
+         * Iteration parameters for multicomponent equilibration.
+         * Max iteration is the maximum allowed number of iterations for multicomponent equilibration to
+         * reach the tolerance value, which is the maximum temperature difference between the different components
+         * when they are considered in equilibrium.
+         * If the maximum iteration is reached but the temperature has not been equilibrated, the model will abort.
+         */
+        double multicomponent_max_iteration;
+        double multicomponent_tolerance;
+
+        /**
          * Minimum/Maximum viscosity and lateral viscosity variations.
          */
         double min_eta;
@@ -131,6 +141,17 @@ namespace aspect
          */
         std::unique_ptr<ThermalConductivity::Interface<dim>> thermal_conductivity;
 
+        /**
+         * A function that returns the equilibrated temperature for the given
+         * components at given pressure.
+         * The calculation is based on their entropies, mass fractions, and specific heat capacities.
+         */
+        double  equilibrate_temperature (const std::vector<double> &temperature,
+                                         const std::vector<double> &chemical_composition,
+                                         const std::vector<double> &entropy,
+                                         const std::vector<double> &specific_heat,
+                                         const double pressure,
+                                         std::vector<double> &composition_equilibrated_S) const;
         /**
          * Information about the location of data files.
          */
