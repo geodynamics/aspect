@@ -456,7 +456,6 @@ namespace aspect
 //time you visit a vertex, so perhaps a std::map is a better choice.
       std::vector<std::vector<double>> temporary_variables(3, std::vector<double>());
 
-// TODO: Based on the convention, one should then rename cell -> surface_cell
       for (const auto &surface_cell : surface_mesh_dof_handler.active_cell_iterators())
         {
           for (unsigned int vertex_index = 0; vertex_index < surface_cell->n_vertices(); ++vertex_index)
@@ -554,8 +553,6 @@ namespace aspect
 
 // TODO: This is a pretty arbitrary cell, with a pretty arbitrary cell diameter. Is that what you
 // want? If so, perhaps say so in a comment and explain what it is used for.
-//
-// Separately, let's call this variable surface_cell_area in concordance with our convention
           const double surface_cell_area = surface_mesh.begin_active()->measure();
 
           // 1. Create the FastScape grid adapter
@@ -1091,6 +1088,7 @@ namespace aspect
   {
     ASPECT_REGISTER_MESH_DEFORMATION_MODEL(FastScapecc,
                                            "fastscapecc",
+// TODO: This comment is no longer accurate :-)
                                            "A plugin, which prescribes the surface mesh to "
                                            "deform according to an analytically prescribed "
                                            "function. Note that the function prescribes a "
