@@ -1,0 +1,117 @@
+# This model tests the particle property velocity gradient in a simple shear deformation.
+# All particles in the domain experience the same velocity gradients that lead to a combined
+# rotation and deformation.
+
+set CFL number = 0.1
+set Timing output frequency = 5000
+set Dimension                              = 3
+
+set Use years in output instead of seconds = false
+set End time                               = 0.001
+set Nonlinear solver scheme = single Advection, no Stokes
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+    set Z extent = 1
+    set Box origin X coordinate = -0.5
+    set Box origin Y coordinate = -0.5
+    set Box origin Z coordinate = -0.5
+  end
+end
+
+subsection Boundary velocity model
+  subsection Function
+    set Variable names = x,y,z,t
+    set Function expression = z;0;0; ## Annotation: set velocity condition
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1 ## Annotation: Temperature function
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names = box
+  set Fixed temperature boundary indicators   = bottom, top, left, right, front, back
+
+  subsection Box
+    set Bottom temperature = 1
+    set Left temperature   = 1
+    set Right temperature  = 1
+    set Top temperature    = 1
+    set Front temperature  = 1
+    set Back temperature   = 1
+  end
+end
+
+subsection Prescribed Stokes solution
+  set Model name = function
+
+  subsection Velocity function
+    set Variable names = x,y,z,t
+    set Function expression = z;0;0; ## Annotation: set velocity condition
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0   
+  end
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 1
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 1e-10
+    set Viscosity                     = 1
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 3
+  set Initial adaptive refinement              = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = particles
+  
+  subsection Particles
+    set Time between data output = .001 
+    set Data output format       = ascii
+  end
+end
+
+
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-10
+end
+
+subsection Particles
+  set List of particle properties = velocity gradient
+  set Particle generator name = random uniform
+
+  subsection Generator
+    subsection Random uniform
+      set Number of particles = 5
+    end
+  end
+end
