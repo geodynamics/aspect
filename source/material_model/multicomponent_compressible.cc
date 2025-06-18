@@ -40,8 +40,8 @@ namespace aspect
 
       unsigned int density_field_index = numbers::invalid_unsigned_int;
 
-      if (this->introspection().composition_type_exists(Parameters<dim>::CompositionalFieldDescription::density))
-        density_field_index = this->introspection().find_composition_type(Parameters<dim>::CompositionalFieldDescription::density);
+      if (this->introspection().composition_type_exists(CompositionalFieldDescription::density))
+        density_field_index = this->introspection().find_composition_type(CompositionalFieldDescription::density);
 
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
@@ -179,7 +179,7 @@ namespace aspect
     void
     MulticomponentCompressible<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (this->introspection().composition_type_exists(Parameters<dim>::CompositionalFieldDescription::density))
+      if (this->introspection().composition_type_exists(CompositionalFieldDescription::density))
         {
           if (out.template has_additional_output_object<PrescribedFieldOutputs<dim>>() == false)
             {

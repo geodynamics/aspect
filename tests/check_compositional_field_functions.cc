@@ -35,8 +35,8 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
 
   // Fields 0 and 4 are chemical compositions
   // These are called Field 1 and Field 5
-  const std::vector<unsigned int> indices = simulator_access.introspection().get_indices_for_fields_of_type(aspect::Parameters<dim>::CompositionalFieldDescription::chemical_composition);
-  const std::vector<std::string> names = simulator_access.introspection().get_names_for_fields_of_type(aspect::Parameters<dim>::CompositionalFieldDescription::chemical_composition);
+  const std::vector<unsigned int> indices = simulator_access.introspection().get_indices_for_fields_of_type(aspect::CompositionalFieldDescription::chemical_composition);
+  const std::vector<std::string> names = simulator_access.introspection().get_names_for_fields_of_type(aspect::CompositionalFieldDescription::chemical_composition);
 
   const std::vector<double> field_values { 0.1, 0.3, 0.3, 0.3, 0.2, 0.3, 0.3};
   const std::vector<double> compositional_field_fractions = MaterialUtilities::compute_only_composition_fractions(field_values, indices);
