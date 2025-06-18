@@ -1,43 +1,25 @@
------------------------------------------------------------------------------
---                             This is ASPECT                              --
--- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
------------------------------------------------------------------------------
---     . version 3.1.0-pre (DP_steinberger, 6cdbdc295)
---     . using deal.II 9.5.1
---     .       with 32 bit indices
---     .       with vectorization level 0 (disabled, 1 doubles, 64 bits)
---     . using Trilinos 13.2.0
---     . using p4est 2.3.2
---     . using Geodynamic World Builder 1.0.0
---     . running in OPTIMIZED mode
---     . running with 1 MPI process
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&mf=1&pda=1&sha=6cdbdc295&src=code
------------------------------------------------------------------------------
 Number of active cells: 768 (on 4 levels)
 Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 16+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.62866e-16, 0, 0.00288348
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00288348
+   Solving Stokes system (GMG)... 17+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.71451e-16, 0, 0.00237314
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00237314
 
    Solving temperature system... 0 iterations.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.62866e-16, 0, 6.8618e-05
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 6.8618e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.71451e-16, 0, 6.86183e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 6.86183e-05
 
    Solving temperature system... 0 iterations.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 8+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.62866e-16, 0, 1.43195e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.43195e-06
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.71451e-16, 0, 1.43183e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.43183e-06
 
 
    Postprocessing:
@@ -53,15 +35,15 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
 
    Solving temperature system... 4 iterations.
    Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 9+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.41215e-08, 0, 1.17934e-05
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.17934e-05
+   Solving Stokes system (GMG)... 8+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.41215e-08, 0, 1.17931e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.17931e-05
 
    Solving temperature system... 2 iterations.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.35367e-10, 0, 6.41489e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 6.41489e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.35369e-10, 0, 6.41462e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 6.41462e-07
 
 
    Postprocessing:
@@ -70,27 +52,4 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
 Termination requested by criterion: end time
 
 
-+------------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start       |      1.49s |            |
-|                                                |            |            |
-| Section                            | no. calls |  wall time | % of total |
-+------------------------------------+-----------+------------+------------+
-| Assemble Stokes system rhs         |         6 |     0.303s |        20% |
-| Assemble temperature system        |         6 |     0.486s |        33% |
-| Build Stokes preconditioner        |         6 |    0.0182s |       1.2% |
-| Build temperature preconditioner   |         6 |    0.0125s |      0.84% |
-| Initialization                     |         1 |     0.142s |       9.6% |
-| Interpolate prescribed composition |         6 |    0.0685s |       4.6% |
-| Postprocessing                     |         2 |    0.0683s |       4.6% |
-| Setup dof systems                  |         1 |    0.0236s |       1.6% |
-| Setup initial conditions           |         1 |    0.0364s |       2.5% |
-| Setup matrices                     |         1 |    0.0048s |      0.32% |
-| Solve Stokes system                |         6 |      0.26s |        17% |
-| Solve temperature system           |         6 |   0.00297s |       0.2% |
-+------------------------------------+-----------+------------+------------+
 
--- Total wallclock time elapsed including restarts: 1s
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&mf=1&pda=1&sha=6cdbdc295&src=code
------------------------------------------------------------------------------

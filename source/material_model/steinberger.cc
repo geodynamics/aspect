@@ -530,8 +530,7 @@ namespace aspect
           enable_drucker_prager_rheology = prm.get_bool ("Use Drucker-Prager rheology");
           drucker_prager_plasticity.initialize_simulator (this->get_simulator());
 
-          std::vector<unsigned int> n_phases = {0};
-          drucker_prager_plasticity.parse_parameters(prm, std::make_unique<std::vector<unsigned int>> (n_phases));
+          drucker_prager_plasticity.parse_parameters(prm);
 
           prm.leave_subsection();
         }
