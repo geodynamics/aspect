@@ -1,0 +1,27 @@
+# A test to check whether the continental compression with imposed faults cookbook
+# at low resolutions for a single time step with one nonlinear iteration.
+
+include $ASPECT_SOURCE_DIR/cookbooks/continental_compression_with_imposed_faults/continental_compression_with_imposed_faults.prm
+
+####  Global parameters
+set World builder file                     = $ASPECT_SOURCE_DIR/cookbooks/continental_compression_with_imposed_faults/continental_compression_with_imposed_faults.wb
+set Start time                             = 0
+set End time                               = 0 
+set Max nonlinear iterations               = 1
+set Nonlinear solver tolerance             = 1e-3
+set Output directory                       = continental_compression_with_imposed_faults
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance             = 1e-3
+  end
+end 
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors =  composition statistics,  basic statistics,  velocity statistics,  particles
+end

@@ -1,4 +1,4 @@
-# Continental Compression with Imposed Faults Cookbooks
+# Continental Compression with Imposed Faults Cookbook
 # This cookbook builds on the continental extension cookbook
 # and a recent paper investigating rift inversion (Vasey et al., 2024,
 # https://doi.org/10.1130/G51489.1) to demonstrate how to design
@@ -8,8 +8,10 @@
 # Altai, which has experienced low magnitudes of compressional deformation
 # since the onset of the India-Asia collision and contains evidence for
 # reactivation of normal faults formed during prior phases of deformation.
+# (Howard et al., 2003, https://doi.org/10.1046/j.1365-2117.2003.00198.x).
 # The faults locations and properties are defined using the Geodynamic
 # World Builder.
+
 
 ####  Global parameters
 set World builder file                     = continental_compression_with_imposed_faults.wb
@@ -111,8 +113,8 @@ subsection Mesh deformation
 end
 
 # Velocity on boundaries characterized by functions
-# The outward velocity (x-direction) on the left and right walls is 0.25 cm/year
-# The vertical velocity at the base is 0.25 cm/year (balances outflow on sides)
+# The combined horizontal velocity (x-direction) magnitude on the left and right walls is 0.2 cm/year
+# The vertical velocity at the base is 0.2 cm/year (balances outflow on sides)
 # Velocity components parallel to the base (x-velocity) and side walls (y-velocity)
 # are unconstrained (i.e. 'free').
 subsection Boundary velocity model
@@ -266,8 +268,7 @@ end
 # Values for most rheological parameters are specified for a background material and
 # each compositional field.  Values for viscous deformation are based on dislocation
 # creep flow-laws, with distinct values for the upper crust (wet quartzite), lower
-# crust (wet anorthite) and mantle (dry olivine).  Table 1 of Naliboff and Buiter (2015),
-# Earth Planet. Sci. Lett., v.421, p. 58-67 contains values for each of these flow laws.
+# crust (wet anorthite) and mantle (dry olivine).
 subsection Material model
   set Model name = visco plastic
 
@@ -295,7 +296,8 @@ subsection Material model
     set Thermal conductivities        = 2.5
     set Heat capacities               = 750.
 
-
+    # The densities below are set to achieve the following densities at the reference temperature (273 K):
+    # upper_crust - 2700, lower_crust - 2900, background/mantle_lithosphere/asthenosphere - 3300.
     set Densities                     = background: 3216.374269005848, \
                                         crust_upper: 2729.044834307992, \
                                         crust_lower: 2826.510721247563, \
@@ -378,7 +380,9 @@ subsection Material model
     set Cohesions                   = 20.e6
 
     # The parameters below weaken the friction and cohesion by a
-    # a factor of 4 between plastic strain values of 0.5 and 1.5.
+    # a factor of 4 between plastic strain values of 0.5 and 1.5,
+    # and the pre-yield viscosity by a factor of 10 over the same
+    # strain interval.
     set Strain weakening mechanism                   =  plastic weakening with plastic strain and viscous weakening with viscous strain
     set Start plasticity strain weakening intervals  = 0.5
     set End plasticity strain weakening intervals    = 1.5
