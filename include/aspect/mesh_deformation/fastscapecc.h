@@ -313,6 +313,9 @@ namespace aspect
         unsigned int nx;
         unsigned int ny;
 
+        mutable bool elevation_initialized = false;
+        mutable xt::xarray<double> elevation;
+
         /**
          * The number of cells in each coordinate direction.
          */
