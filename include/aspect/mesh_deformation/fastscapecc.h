@@ -44,6 +44,9 @@
 
 #include <deal.II/lac/affine_constraints.h>
 
+#include <xtensor/xarray.hpp>
+#include <xtensor/xbuilder.hpp>
+
 namespace aspect
 {
   using namespace dealii;
@@ -76,6 +79,20 @@ namespace aspect
         return false;
       }
     };
+
+    template <int dim>
+    void output_fastscape_visualization(
+        const unsigned int timestep_index,
+        const dealii::DoFHandler<dim - 1, dim> &dof_handler,
+        const xt::xarray<double> &elevation,
+        const xt::xarray<double> &uplift_rate,
+        const xt::xarray<double> &erosion,
+        const xt::xarray<double> &drainage_area,
+        const xt::xarray<double> &sediment_flux,
+        const std::string &output_directory,
+        const MPI_Comm mpi_communicator,
+        const dealii::ConditionalOStream &pcout);
+
 
     /**
      * A plugin that utilizes the landscape evolution code Fastscapelib (C++)

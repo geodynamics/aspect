@@ -300,6 +300,120 @@ namespace aspect
     }
 
 
+    // Make visualisation its own function for later
+    // template <int dim>
+    // void output_fastscape_visualization(
+    //     const unsigned int timestep_index,
+    //     const dealii::DoFHandler<dim - 1, dim> &dof_handler,
+    //     const xt::xarray<double> &elevation,
+    //     const xt::xarray<double> &uplift_rate,
+    //     const xt::xarray<double> &erosion,
+    //     const xt::xarray<double> &drainage_area,
+    //     const xt::xarray<double> &sediment_flux,
+    //     const std::string &output_directory,
+    //     const MPI_Comm mpi_communicator,
+    //     const dealii::ConditionalOStream &pcout)
+    // {
+    //   if (!std::filesystem::exists(output_directory))
+    //     std::filesystem::create_directories(output_directory);
+
+    //   // Flatten in case they're 2D arrays
+    //   const auto elev_flat     = xt::flatten(elevation);
+    //   const auto uplift_flat   = xt::flatten(uplift_rate);
+    //   const auto erosion_flat  = xt::flatten(erosion);
+    //   const auto drainage_flat = xt::flatten(drainage_area);
+    //   const auto sediment_flat = xt::flatten(sediment_flux);
+
+    //   AssertThrow(elev_flat.size() == uplift_flat.size() &&
+    //               elev_flat.size() == erosion_flat.size() &&
+    //               elev_flat.size() == drainage_flat.size() &&
+    //               elev_flat.size() == sediment_flat.size(),
+    //               dealii::ExcMessage("All FastScape input arrays must have same number of elements."));
+
+    //   const unsigned int n_grid_nodes = elev_flat.size();
+
+    //   // === Prepare deal.II vectors ===
+    //   dealii::Vector<double> elevation_output(n_grid_nodes);
+    //   dealii::Vector<double> uplift_rate_output(n_grid_nodes);
+    //   dealii::Vector<double> erosion_output(n_grid_nodes);
+    //   dealii::Vector<double> drainage_area_output(n_grid_nodes);
+    //   dealii::Vector<double> sediment_flux_output(n_grid_nodes);
+
+    //   for (unsigned int j = 0; j < n_grid_nodes; ++j)
+    //   {
+    //     elevation_output[j]     = elev_flat(j);
+    //     uplift_rate_output[j]   = uplift_flat(j);
+    //     erosion_output[j]       = erosion_flat(j);
+    //     drainage_area_output[j] = drainage_flat(j);
+    //     sediment_flux_output[j] = sediment_flat(j);
+    //   }
+
+    //   // === Build VTU file ===
+    //   dealii::DataOut<dim - 1, dim> data_out;
+    //   data_out.attach_dof_handler(dof_handler);
+    //   data_out.add_data_vector(elevation_output, "Elevation");
+    //   data_out.add_data_vector(uplift_rate_output, "UpliftRate");
+    //   data_out.add_data_vector(erosion_output, "Erosion");
+    //   data_out.add_data_vector(drainage_area_output, "DrainageArea");
+    //   data_out.add_data_vector(sediment_flux_output, "SedimentFlux");
+    //   data_out.build_patches();
+
+    //   const unsigned int mpi_rank = dealii::Utilities::MPI::this_mpi_process(mpi_communicator);
+    //   const unsigned int mpi_size = dealii::Utilities::MPI::n_mpi_processes(mpi_communicator);
+
+    //   const std::string basename = "fastscape_timestep_" + dealii::Utilities::int_to_string(timestep_index, 4);
+    //   const std::string filename_base = output_directory + "/" + basename;
+    //   const std::string vtu_filename = filename_base + "." + dealii::Utilities::int_to_string(mpi_rank, 4) + ".vtu";
+
+    //   {
+    //     std::ofstream output(vtu_filename);
+    //     data_out.write_vtu(output);
+    //   }
+
+    //   if (mpi_rank == 0)
+    //   {
+    //     // Write .pvtu file
+    //     std::vector<std::string> vtu_filenames;
+    //     for (unsigned int r = 0; r < mpi_size; ++r)
+    //       vtu_filenames.push_back(basename + "." + dealii::Utilities::int_to_string(r, 4) + ".vtu");
+
+    //     const std::string pvtu_filename = filename_base + ".pvtu";
+    //     {
+    //       std::ofstream pvtu(pvtu_filename);
+    //       data_out.write_pvtu_record(pvtu, vtu_filenames);
+    //     }
+
+    //     // Append or create .pvd file
+    //     const std::string pvd_filename = output_directory + "/fastscape_timeseries.pvd";
+    //     std::vector<std::string> existing_entries;
+
+    //     if (std::filesystem::exists(pvd_filename))
+    //     {
+    //       std::ifstream in(pvd_filename);
+    //       std::string line;
+    //       while (std::getline(in, line))
+    //         if (line.find("<DataSet") != std::string::npos)
+    //           existing_entries.push_back(line);
+    //     }
+
+    //     std::ostringstream new_entry;
+    //     new_entry << "    <DataSet timestep=\"" << timestep_index << "\" group=\"\" part=\"0\""
+    //               << " file=\"" << basename << ".pvtu\"/>";
+    //     existing_entries.push_back(new_entry.str());
+
+    //     std::ofstream pvd_file(pvd_filename);
+    //     pvd_file << "<?xml version=\"1.0\"?>\n"
+    //             << "<VTKFile type=\"Collection\" version=\"0.1\" byte_order=\"LittleEndian\">\n"
+    //             << "  <Collection>\n";
+    //     for (const auto &entry : existing_entries)
+    //       pvd_file << entry << "\n";
+    //     pvd_file << "  </Collection>\n</VTKFile>\n";
+    //   }
+
+    //   pcout << "✅ Wrote FastScape output for timestep " << timestep_index << ".\n";
+    // }
+
+
 
     template <int dim>
     void FastScapecc<dim>::compute_velocity_constraints_on_boundary(
@@ -354,13 +468,13 @@ namespace aspect
               const unsigned int index = this->vertex_index(vertex);
 
               // Optional debug output
-              if (this->get_timestep_number() == 1)
-                this->get_pcout() << "Vertex at z=" << vertex[dim - 1]
-                                  << ", DoF index: " << dof_index
-                                  << ", vertex_index: " << index
-                                  << ", uplift rate: " << surface_uplift_rate << " m/s"
-                                  << ", topography: " << topography << " m"
-                                  << std::endl;
+              // if (this->get_timestep_number() == 1)
+              //   this->get_pcout() << "Vertex at z=" << vertex[dim - 1]
+              //                     << ", DoF index: " << dof_index
+              //                     << ", vertex_index: " << index
+              //                     << ", uplift rate: " << surface_uplift_rate << " m/s"
+              //                     << ", topography: " << topography << " m"
+              //                     << std::endl;
 
               temporary_variables[0].push_back(topography);
               temporary_variables[1].push_back(static_cast<double>(index));
@@ -535,253 +649,194 @@ namespace aspect
                     << ", Min = " << xt::amin(uplift_rate)() << std::endl;
 
     
-// TODO: Is the comment wrong? We're not at the initial state any more, right?
+      // TODO: Is the comment wrong? We're not at the initial state any more, right?
 
-// TODO: In the long run (perhaps not right away), we should adopt a system like many of
-// the other plugins where we don't output information in *every* time step, but only
-// when requested.
-
-
-// --- FASTSCAPE LOOP ---
-for (unsigned int i = 0; i < fastscape_iterations; ++i)
-{
-  std::cout << "\nFastScape iteration " << (i+1) << "/" << fastscape_iterations << std::endl;
-
-  // Uplift
-  uplifted_elevation = elevation + fastscape_timestep_in_years * uplift_rate;
-
-  std::cout << "[DEBUG] uplifted_elevation max = " << xt::amax(uplifted_elevation)()
-            << ", min = " << xt::amin(uplifted_elevation)() << std::endl;
-
-  // Flow routing
-  flow_graph.update_routes(uplifted_elevation);
-  flow_graph.accumulate(drainage_area, 1.0);
-
-  std::cout << "[DEBUG] drainage_area max = " << xt::amax(drainage_area)()
-            << ", min = " << xt::amin(drainage_area)() << std::endl;
-
-  // Stream Power Law erosion
-  auto spl_erosion = spl_eroder.erode(uplifted_elevation, drainage_area, fastscape_timestep_in_years);
-
-  std::cout << "[DEBUG] spl_erosion max = " << xt::amax(spl_erosion)()
-            << ", min = " << xt::amin(spl_erosion)() << std::endl;
-
-  // Apply erosion
-  sediment_flux = flow_graph.accumulate(spl_erosion);
-  elevation = uplifted_elevation - spl_erosion;
-
-  std::cout << "[DEBUG] updated elevation max = " << xt::amax(elevation)()
-            << ", min = " << xt::amin(elevation)() << std::endl;
-}
+      // TODO: In the long run (perhaps not right away), we should adopt a system like many of
+      // the other plugins where we don't output information in *every* time step, but only
+      // when requested.
 
 
-const unsigned int timestep_index = this->get_timestep_number();
-const std::string output_directory = this->get_output_directory() + "/fastscapeCC";
+      // Call the visualization function
+      // const unsigned int timestep_number = this->get_timestep_number();
 
-if (!std::filesystem::exists(output_directory))
-  std::filesystem::create_directories(output_directory);
+      // if (timestep_number == 1)
+      // {
+      //   std::cout << "[DEBUG] Reset elevation from ASPECT before first FastScape output.\n";
+      //   output_fastscape_visualization<dim>(
+      //     timestep_number,
+      //     surface_mesh_dof_handler,
+      //     elevation,
+      //     uplift_rate, 
+      //     spl_erosion,
+      //     drainage_area,
+      //     sediment_flux,
+      //     this->get_output_directory() + "/fastscapeCC",
+      //     this->get_mpi_communicator(),
+      //     this->get_pcout());
+      // }
 
-// === Prepare data ===
-dealii::Vector<double> elevation_output(n_grid_nodes);
-dealii::Vector<double> uplift_rate_output(n_grid_nodes);
-dealii::Vector<double> erosion_output(n_grid_nodes);
-dealii::Vector<double> drainage_area_output(n_grid_nodes);
+      // // --- FASTSCAPE LOOP ---
+      // for (unsigned int i = 0; i < fastscape_iterations; ++i)
+      // {
+      //   std::cout << "\nFastScape iteration " << (i+1) << "/" << fastscape_iterations << std::endl;
 
-for (unsigned int j = 0; j < n_grid_nodes; ++j)
-{
-  elevation_output[j]     = elevation[j];
-  uplift_rate_output[j]   = uplift_rate[j];
-  erosion_output[j]       = spl_erosion[j];
-  drainage_area_output[j] = drainage_area[j];
-}
+      //   // Uplift
+      //   uplifted_elevation = elevation + fastscape_timestep_in_years * uplift_rate;
 
-// === Write per-process VTU ===
-dealii::DataOut<dim-1, dim> data_out;
-data_out.attach_dof_handler(surface_mesh_dof_handler);
-data_out.add_data_vector(elevation_output, "Elevation");
-data_out.add_data_vector(uplift_rate_output, "UpliftRate");
-data_out.add_data_vector(erosion_output, "Erosion");
-data_out.add_data_vector(drainage_area_output, "DrainageArea");
-data_out.build_patches();
+      //   std::cout << "[DEBUG] uplifted_elevation max = " << xt::amax(uplifted_elevation)()
+      //             << ", min = " << xt::amin(uplifted_elevation)() << std::endl;
 
-const std::string basename = "fastscape_timestep_" + Utilities::int_to_string(timestep_index, 4);
-const std::string filename_base = output_directory + "/" + basename;
+      //   // Flow routing
+      //   flow_graph.update_routes(uplifted_elevation);
+      //   flow_graph.accumulate(drainage_area, 1.0);
 
-const auto mpi_rank = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
-const auto mpi_size = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
+      //   std::cout << "[DEBUG] drainage_area max = " << xt::amax(drainage_area)()
+      //             << ", min = " << xt::amin(drainage_area)() << std::endl;
 
-const std::string vtu_filename = filename_base + "." + Utilities::int_to_string(mpi_rank, 4) + ".vtu";
-{
-  std::ofstream output(vtu_filename);
-  data_out.write_vtu(output);
-}
+      //   // Stream Power Law erosion
+      //   auto spl_erosion = spl_eroder.erode(uplifted_elevation, drainage_area, fastscape_timestep_in_years);
 
-// === Rank 0: Write .pvtu and update .pvd ===
-if (mpi_rank == 0)
-{
-  // .pvtu
-  std::vector<std::string> vtu_filenames;
-  for (unsigned int r = 0; r < mpi_size; ++r)
-    vtu_filenames.push_back(basename + "." + Utilities::int_to_string(r, 4) + ".vtu");
+      //   std::cout << "[DEBUG] spl_erosion max = " << xt::amax(spl_erosion)()
+      //             << ", min = " << xt::amin(spl_erosion)() << std::endl;
 
-  const std::string pvtu_filename = filename_base + ".pvtu";
-  {
-    std::ofstream pvtu(pvtu_filename);
-    data_out.write_pvtu_record(pvtu, vtu_filenames);
-  }
+      //   // Apply erosion
+      //   sediment_flux = flow_graph.accumulate(spl_erosion);
+      //   elevation = uplifted_elevation - spl_erosion;
 
-  // .pvd
-  const std::string pvd_filename = output_directory + "/fastscape_timeseries.pvd";
-  std::vector<std::string> existing_entries;
-  if (std::filesystem::exists(pvd_filename))
-  {
-    std::ifstream in(pvd_filename);
-    std::string line;
-    while (std::getline(in, line))
-      if (line.find("<DataSet") != std::string::npos)
-        existing_entries.push_back(line);
-  }
+      //   std::cout << "[DEBUG] updated elevation max = " << xt::amax(elevation)()
+      //             << ", min = " << xt::amin(elevation)() << std::endl;
+      // }
 
-  std::ostringstream new_entry;
-  new_entry << "    <DataSet timestep=\"" << timestep_index << "\" group=\"\" part=\"0\""
-            << " file=\"" << basename << ".pvtu\"/>";
-  existing_entries.push_back(new_entry.str());
-
-  std::ofstream pvd_file(pvd_filename);
-  pvd_file << "<?xml version=\"1.0\"?>\n"
-           << "<VTKFile type=\"Collection\" version=\"0.1\" byte_order=\"LittleEndian\">\n"
-           << "  <Collection>\n";
-  for (const auto &entry : existing_entries)
-    pvd_file << entry << "\n";
-  pvd_file << "  </Collection>\n</VTKFile>\n";
-}
+      // Call the visualization function
+      // output_fastscape_visualization<dim>(
+      //   this->get_timestep_number(),
+      //   surface_mesh_dof_handler,
+      //   elevation,
+      //   uplift_rate,
+      //   spl_erosion,
+      //   drainage_area,
+      //   sediment_flux,
+      //   this->get_output_directory() + "/fastscapeCC",
+      //   this->get_mpi_communicator(),
+      //   this->get_pcout());
 
 
+        // While figuring out the visualization function we continue to use this below
+        // --- FASTSCAPE LOOP ---
+        for (unsigned int i = 0; i < fastscape_iterations; ++i)
+        {
+          std::cout << "\nFastScape iteration " << (i+1) << "/" << fastscape_iterations << std::endl;
+
+          // Uplift
+          uplifted_elevation = elevation + fastscape_timestep_in_years * uplift_rate;
+
+          std::cout << "[DEBUG] uplifted_elevation max = " << xt::amax(uplifted_elevation)()
+                    << ", min = " << xt::amin(uplifted_elevation)() << std::endl;
+
+          // Flow routing
+          flow_graph.update_routes(uplifted_elevation);
+          flow_graph.accumulate(drainage_area, 1.0);
+
+          std::cout << "[DEBUG] drainage_area max = " << xt::amax(drainage_area)()
+                    << ", min = " << xt::amin(drainage_area)() << std::endl;
+
+          // Stream Power Law erosion
+          auto spl_erosion = spl_eroder.erode(uplifted_elevation, drainage_area, fastscape_timestep_in_years);
+
+          std::cout << "[DEBUG] spl_erosion max = " << xt::amax(spl_erosion)()
+                    << ", min = " << xt::amin(spl_erosion)() << std::endl;
+
+          // Apply erosion
+          sediment_flux = flow_graph.accumulate(spl_erosion);
+          elevation = uplifted_elevation - spl_erosion;
+
+          std::cout << "[DEBUG] updated elevation max = " << xt::amax(elevation)()
+                    << ", min = " << xt::amin(elevation)() << std::endl;
+        }
 
 
+        const unsigned int timestep_index = this->get_timestep_number();
+        const std::string output_directory = this->get_output_directory() + "/fastscapeCC";
 
-          // // Create output directory
-          // const std::string output_directory = (this->get_output_directory() + "/fastscapeCC");
-          // if (!std::filesystem::exists(output_directory))
-          //   std::filesystem::create_directories(output_directory);
+        if (!std::filesystem::exists(output_directory))
+          std::filesystem::create_directories(output_directory);
 
-          // // Vector to track output files
-          // std::vector<std::string> vtu_filenames;
+        // === Prepare data ===
+        dealii::Vector<double> elevation_output(n_grid_nodes);
+        dealii::Vector<double> uplift_rate_output(n_grid_nodes);
+        dealii::Vector<double> erosion_output(n_grid_nodes);
+        dealii::Vector<double> drainage_area_output(n_grid_nodes);
 
+        for (unsigned int j = 0; j < n_grid_nodes; ++j)
+        {
+          elevation_output[j]     = elevation[j];
+          uplift_rate_output[j]   = uplift_rate[j];
+          erosion_output[j]       = spl_erosion[j];
+          drainage_area_output[j] = drainage_area[j];
+        }
 
-          // {
-          //   dealii::Vector<double> elevation_output(n_grid_nodes);
-          //   dealii::Vector<double> uplift_rate_output(n_grid_nodes);
-          //   dealii::Vector<double> erosion_output(n_grid_nodes);
-          //   dealii::Vector<double> drainage_area_output(n_grid_nodes);
+        // === Write per-process VTU ===
+        dealii::DataOut<dim-1, dim> data_out;
+        data_out.attach_dof_handler(surface_mesh_dof_handler);
+        data_out.add_data_vector(elevation_output, "Elevation");
+        data_out.add_data_vector(uplift_rate_output, "UpliftRate");
+        data_out.add_data_vector(erosion_output, "Erosion");
+        data_out.add_data_vector(drainage_area_output, "DrainageArea");
+        data_out.build_patches();
 
-          //   for (unsigned int j = 0; j < n_grid_nodes; ++j)
-          //   {
-          //     elevation_output[j]      = elevation[j];
-          //     uplift_rate_output[j]    = uplift_rate[j];
-          //     erosion_output[j]        = 0.0;
-          //     drainage_area_output[j]  = 0.0;
-          //   }
+        const std::string basename = "fastscape_timestep_" + Utilities::int_to_string(timestep_index, 4);
+        const std::string filename_base = output_directory + "/" + basename;
 
-          //   dealii::DataOut<dim-1, dim> data_out;
-          //   data_out.attach_dof_handler(surface_mesh_dof_handler);
-          //   data_out.add_data_vector(elevation_output, "Elevation");
-          //   data_out.add_data_vector(uplift_rate_output, "UpliftRate");
-          //   data_out.add_data_vector(erosion_output, "Erosion");
-          //   data_out.add_data_vector(drainage_area_output, "DrainageArea");
-          //   data_out.build_patches();
+        const auto mpi_rank = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
+        const auto mpi_size = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
 
-          //   std::string filename = output_directory + "/fastscape_surface_iteration_0000.vtu";
-          //   std::ofstream output(filename);
-          //   data_out.write_vtu(output);
-          //   this->get_pcout() << "➤ Wrote initial VTK file: " << filename << std::endl;
+        const std::string vtu_filename = filename_base + "." + Utilities::int_to_string(mpi_rank, 4) + ".vtu";
+        {
+          std::ofstream output(vtu_filename);
+          data_out.write_vtu(output);
+        }
 
-          //   vtu_filenames.push_back(filename);
-          // }
+        // === Rank 0: Write .pvtu and update .pvd ===
+        if (mpi_rank == 0)
+        {
+          // .pvtu
+          std::vector<std::string> vtu_filenames;
+          for (unsigned int r = 0; r < mpi_size; ++r)
+            vtu_filenames.push_back(basename + "." + Utilities::int_to_string(r, 4) + ".vtu");
 
-          // // === FASTSCAPE LOOP ===
-          // for (unsigned int i = 1; i <= fastscape_iterations; ++i)
-          // {
-          //   std::cout << "\nFastScape iteration " << i << "/" << fastscape_iterations << std::endl;
+          const std::string pvtu_filename = filename_base + ".pvtu";
+          {
+            std::ofstream pvtu(pvtu_filename);
+            data_out.write_pvtu_record(pvtu, vtu_filenames);
+          }
 
-          //   xt::xarray<double> uplifted_elevation = elevation + fastscape_timestep_in_years * uplift_rate;
+          // .pvd
+          const std::string pvd_filename = output_directory + "/fastscape_timeseries.pvd";
+          std::vector<std::string> existing_entries;
+          if (std::filesystem::exists(pvd_filename))
+          {
+            std::ifstream in(pvd_filename);
+            std::string line;
+            while (std::getline(in, line))
+              if (line.find("<DataSet") != std::string::npos)
+                existing_entries.push_back(line);
+          }
 
-          //   std::cout << "[DEBUG] uplifted_elevation max = " << xt::amax(uplifted_elevation)()
-          //             << ", min = " << xt::amin(uplifted_elevation)() << std::endl;
+          std::ostringstream new_entry;
+          new_entry << "    <DataSet timestep=\"" << timestep_index << "\" group=\"\" part=\"0\""
+                    << " file=\"" << basename << ".pvtu\"/>";
+          existing_entries.push_back(new_entry.str());
 
-          //   flow_graph.update_routes(uplifted_elevation);
-          //   flow_graph.accumulate(drainage_area, 1.0);
+          std::ofstream pvd_file(pvd_filename);
+          pvd_file << "<?xml version=\"1.0\"?>\n"
+                  << "<VTKFile type=\"Collection\" version=\"0.1\" byte_order=\"LittleEndian\">\n"
+                  << "  <Collection>\n";
+          for (const auto &entry : existing_entries)
+            pvd_file << entry << "\n";
+          pvd_file << "  </Collection>\n</VTKFile>\n";
+        }
+      
 
-          //   std::cout << "[DEBUG] drainage_area max = " << xt::amax(drainage_area)()
-          //             << ", min = " << xt::amin(drainage_area)() << std::endl;
-
-          //   auto spl_erosion = spl_eroder.erode(uplifted_elevation, drainage_area, fastscape_timestep_in_years);
-
-          //   std::cout << "[DEBUG] spl_erosion max = " << xt::amax(spl_erosion)()
-          //             << ", min = " << xt::amin(spl_erosion)() << std::endl;
-
-          //   //Working for raster grid only
-          //   // auto diff_erosion = diffusion_eroder.erode(uplifted_elevation - spl_erosion, fastscape_timestep_in_years);
-
-          //   sediment_flux = flow_graph.accumulate(spl_erosion);
-          //   elevation = uplifted_elevation - spl_erosion ; //- diff_erosion for raster grid
-
-          //   std::cout << "[DEBUG] updated elevation max = " << xt::amax(elevation)()
-          //             << ", min = " << xt::amin(elevation)() << std::endl;
-
-          //   // Prepare output vectors
-          //   dealii::Vector<double> elevation_output(n_grid_nodes);
-          //   dealii::Vector<double> uplift_rate_output(n_grid_nodes);
-          //   dealii::Vector<double> erosion_output(n_grid_nodes);
-          //   dealii::Vector<double> drainage_area_output(n_grid_nodes);
-
-          //   for (unsigned int j = 0; j < n_grid_nodes; ++j)
-          //   {
-          //     elevation_output[j]      = elevation[j];
-          //     uplift_rate_output[j]    = uplift_rate[j];
-          //     erosion_output[j]        = spl_erosion[j];
-          //     drainage_area_output[j]  = drainage_area[j];
-          //   }
-
-          //   dealii::DataOut<dim-1, dim> data_out;
-          //   data_out.attach_dof_handler(surface_mesh_dof_handler);
-          //   data_out.add_data_vector(elevation_output, "Elevation");
-          //   data_out.add_data_vector(uplift_rate_output, "UpliftRate");
-          //   data_out.add_data_vector(erosion_output, "Erosion");
-          //   data_out.add_data_vector(drainage_area_output, "DrainageArea");
-          //   data_out.build_patches();
-
-          //   std::string filename = output_directory + "/fastscape_surface_iteration_" +
-          //                         Utilities::int_to_string(i, 4) + ".vtu";
-          //   std::ofstream output(filename);
-          //   data_out.write_vtu(output);
-
-          //   this->get_pcout() << "➤ Wrote VTK file: " << filename << std::endl;
-          //   vtu_filenames.push_back(filename);
-          // }
-
-          // // === WRITE PVD FILE ===
-          // {
-          //   const std::string pvd_filename = output_directory + "/fastscape_iterations.pvd";
-          //   std::ofstream pvd_file(pvd_filename);
-
-          //   pvd_file << "<?xml version=\"1.0\"?>\n"
-          //           << "<VTKFile type=\"Collection\" version=\"0.1\" byte_order=\"LittleEndian\">\n"
-          //           << "  <Collection>\n";
-
-          //   for (unsigned int i = 0; i < vtu_filenames.size(); ++i)
-          //   {
-          //     pvd_file << "    <DataSet timestep=\"" << i << "\" group=\"\" part=\"0\"\n"
-          //             << "             file=\""
-          //             << "fastscape_surface_iteration_" << Utilities::int_to_string(i, 4) << ".vtu\"/>\n";
-          //   }
-
-          //   pvd_file << "  </Collection>\n"
-          //           << "</VTKFile>\n";
-
-          //   this->get_pcout() << "➤ Wrote PVD file: " << pvd_filename << std::endl;
-          // }
- 
           // Compute erosion velocities
 // TODO: We compute a vertical velocity in meters per year here. But internally, ASPECT
 // computes in meters/second. When you apply these constraints, you'll have to multiple
@@ -880,6 +935,7 @@ if (mpi_rank == 0)
 
       this->get_pcout() << "Applying erosion velocities to mesh boundary." << std::endl;
     }
+
 
     template <int dim>
     bool
