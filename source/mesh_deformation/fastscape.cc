@@ -1629,7 +1629,10 @@ namespace aspect
     {
       if (use_sea_level_function)
         {
-          sea_level_function.set_time(this->get_time() / year_in_seconds);
+          if (this->convert_output_to_years())
+            sea_level_function.set_time(this->get_time() / year_in_seconds);
+          else
+            sea_level_function.set_time(this->get_time());
         }
     }
 
