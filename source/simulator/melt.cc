@@ -77,6 +77,7 @@ namespace aspect
                                     const unsigned int /*n_comp*/)
       :
       compaction_viscosities(n_points, numbers::signaling_nan<double>()),
+      inverse_compaction_viscosities(n_points, numbers::signaling_nan<double>()),
       fluid_viscosities(n_points, numbers::signaling_nan<double>()),
       permeabilities(n_points, numbers::signaling_nan<double>()),
       fluid_densities(n_points, numbers::signaling_nan<double>()),
@@ -92,6 +93,8 @@ namespace aspect
     {
       average_property (operation, projection_matrix, expansion_matrix,
                         compaction_viscosities);
+      average_property (operation, projection_matrix, expansion_matrix,
+                        inverse_compaction_viscosities);
       average_property (operation, projection_matrix, expansion_matrix,
                         fluid_viscosities);
       average_property (operation, projection_matrix, expansion_matrix,
@@ -219,16 +222,16 @@ namespace aspect
             - R = 1/eta M_p + K_D L_p for p
             S = - (1/eta + 1/viscosity_c)  M_p  for p_c
           */
-          const double viscosity_c = melt_outputs->compaction_viscosities[q];
-          const double e = this->get_melt_handler().melt_parameters.regularization / viscosity_c;
-          const double viscosity_e_inverse = std::sqrt(1./(viscosity_c*viscosity_c) + e*e);
+          const double inverse_viscosity_c = melt_outputs->inverse_compaction_viscosities[q];
+          const double e = this->get_melt_handler().melt_parameters.regularization;
+          const double inverse_viscosity_e = std::sqrt(inverse_viscosity_c*inverse_viscosity_c + e*e);
           const double JxW = scratch.finite_element_values.JxW(q);
 
           for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
             for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
               {
                 if (scratch.dof_component_indices[i] == scratch.dof_component_indices[j])
-                  data.local_matrix(i,j) += ((viscosity_e_inverse *
+                  data.local_matrix(i,j) += ((inverse_viscosity_e *
                                               pressure_scaling *
                                               pressure_scaling)
                                              * scratch.phi_p[i] * scratch.phi_p[j]
@@ -239,7 +242,7 @@ namespace aspect
                                              scratch.grad_phi_p[i] *
                                              scratch.grad_phi_p[j]
                                              +
-                                             (1./eta + 1./viscosity_c) *
+                                             (1./eta + inverse_viscosity_c) *
                                              pressure_scaling *
                                              pressure_scaling *
                                              (scratch.phi_p_c[i] * scratch.phi_p_c[j])
@@ -249,12 +252,12 @@ namespace aspect
                 // add S between p_c and p_f
                 data.local_matrix(i,j) +=
                   (
-                    (-1./viscosity_c *
+                    (-inverse_viscosity_c *
                      pressure_scaling *
                      pressure_scaling)
                     * scratch.phi_p[i] * scratch.phi_p_c[j]
                     +
-                    (-1./viscosity_c *
+                    (-inverse_viscosity_c *
                      pressure_scaling *
                      pressure_scaling)
                     * scratch.phi_p_c[i] * scratch.phi_p[j]
@@ -432,10 +435,10 @@ namespace aspect
           const double porosity = std::max(scratch.material_model_inputs.composition[q][porosity_index],0.000);
 
           const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
-          const double viscosity_c = melt_outputs->compaction_viscosities[q];
+          const double inverse_viscosity_c = melt_outputs->inverse_compaction_viscosities[q];
 
-          const double e = this->get_melt_handler().melt_parameters.regularization / viscosity_c;
-          const double viscosity_e_inverse = std::sqrt(1./(viscosity_c*viscosity_c) + e*e);
+          const double e = this->get_melt_handler().melt_parameters.regularization;
+          const double inverse_viscosity_e = std::sqrt(inverse_viscosity_c*inverse_viscosity_c + e*e);
           const Tensor<1,dim> density_gradient_f = melt_outputs->fluid_density_gradients[q];
           const double density_f = melt_outputs->fluid_densities[q];
           const double p_f_RHS = compute_fluid_pressure_rhs(this,
@@ -487,9 +490,9 @@ namespace aspect
                                                 - eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
                                                 - (pressure_scaling * scratch.div_phi_u[i] * scratch.phi_p_c[j])
 
-                                                + pressure_scaling * pressure_scaling / viscosity_c
+                                                + pressure_scaling * pressure_scaling * inverse_viscosity_e
                                                 * scratch.phi_p[i] * scratch.phi_p_c[j]
-                                                - pressure_scaling * pressure_scaling * viscosity_e_inverse
+                                                - pressure_scaling * pressure_scaling * inverse_viscosity_e
                                                 * scratch.phi_p[i] * scratch.phi_p[j]
                                                 - K_D * pressure_scaling * pressure_scaling *
                                                 (scratch.grad_phi_p[i] * scratch.grad_phi_p[j])
@@ -501,9 +504,9 @@ namespace aspect
                                                    0.0)
 
                                                 - pressure_scaling * scratch.phi_p_c[i] * scratch.div_phi_u[j]
-                                                - pressure_scaling * pressure_scaling / viscosity_c
+                                                - pressure_scaling * pressure_scaling * inverse_viscosity_c
                                                 * scratch.phi_p_c[i] * scratch.phi_p_c[j]
-                                                + pressure_scaling * pressure_scaling / viscosity_c
+                                                + pressure_scaling * pressure_scaling * inverse_viscosity_c
                                                 * scratch.phi_p_c[i] * scratch.phi_p[j]
                                               )
                                               * JxW;

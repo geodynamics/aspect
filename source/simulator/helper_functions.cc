@@ -857,6 +857,14 @@ namespace aspect
             const unsigned int n_local_pressure_dofs = (parameters.include_melt_transport ?
                                                         finite_element.base_element(introspection.variable("fluid pressure").base_index).dofs_per_cell
                                                         : finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell);
+
+            const unsigned int total_pressure_component = (parameters.include_melt_transport ?
+                                                           introspection.variable("total pressure").first_component_index
+                                                           : numbers::invalid_unsigned_int);
+            const unsigned int n_local_p_t_dofs = (parameters.include_melt_transport ?
+                                                   finite_element.base_element(introspection.variable("total pressure").base_index).dofs_per_cell
+                                                   : numbers::invalid_unsigned_int);
+
             std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
             for (const auto &cell : dof_handler.active_cell_iterators())
               if (cell->is_locally_owned())
@@ -873,6 +881,17 @@ namespace aspect
                       // distributed_vector but copy from the unchanged vector.
                       distributed_vector(local_dof_indices[support_point_index]) = vector(local_dof_indices[support_point_index]) + pressure_adjustment;
                     }
+
+                  if (parameters.include_melt_transport)
+                    for (unsigned int j=0; j<n_local_p_t_dofs; ++j)
+                      {
+                        // Adjust the total pressure by the same amount as the fluid pressure
+                        unsigned int support_point_index
+                          = finite_element.component_to_system_index(total_pressure_component,
+                                                                     /*dof index within component=*/ j);
+                        // same as above
+                        distributed_vector(local_dof_indices[support_point_index]) = vector(local_dof_indices[support_point_index]) + pressure_adjustment;
+                      }
                 }
             distributed_vector.compress(VectorOperation::insert);
           }
@@ -950,6 +969,13 @@ namespace aspect
                                                         finite_element.base_element(introspection.variable("fluid pressure").base_index).dofs_per_cell
                                                         : finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell);
 
+            const unsigned int total_pressure_component = (parameters.include_melt_transport ?
+                                                           introspection.variable("total pressure").first_component_index
+                                                           : numbers::invalid_unsigned_int);
+            const unsigned int n_local_p_t_dofs = (parameters.include_melt_transport ?
+                                                   finite_element.base_element(introspection.variable("total pressure").base_index).dofs_per_cell
+                                                   : numbers::invalid_unsigned_int);
+
             // We may touch the same DoF multiple times, so we need to copy the
             // vector before modifying it to have access to the original value.
             LinearAlgebra::BlockVector vector_backup;
@@ -982,6 +1008,20 @@ namespace aspect
                         vector(local_dof_indices[local_dof_index])
                           = vector_backup(local_dof_indices[local_dof_index]) - pressure_adjustment;
                     }
+
+                  if (parameters.include_melt_transport)
+                    for (unsigned int j=0; j<n_local_p_t_dofs; ++j)
+                      {
+                        // Adjust the total pressure by the same amount as the fluid pressure
+                        const unsigned int local_dof_index
+                          = finite_element.component_to_system_index(total_pressure_component,
+                                                                     /*dof index within component=*/ j);
+                        // same as above
+                        if (vector.has_ghost_elements() ||
+                            dof_handler.locally_owned_dofs().is_element(local_dof_indices[local_dof_index]))
+                          vector(local_dof_indices[local_dof_index])
+                            = vector_backup(local_dof_indices[local_dof_index]) - pressure_adjustment;
+                      }
                 }
             vector.compress(VectorOperation::insert);
           }
