@@ -290,6 +290,17 @@ namespace aspect
               // of the number of newly generated particles of all
               // processes with a lower rank.
 
+
+#if DEAL_II_VERSION_GTE(9,6,0)
+              const std::pair<types::particle_index,types::particle_index>
+              partial_and_total_sum = Utilities::MPI::partial_and_total_sum (particles_to_add_locally, this->get_mpi_communicator());
+
+              const types::particle_index local_start_index = partial_and_total_sum.first;
+              local_next_particle_index += local_start_index;
+
+              const types::particle_index globally_generated_particles =
+                partial_and_total_sum.second;
+#else
               types::particle_index local_start_index = 0.0;
 
               const int ierr = MPI_Scan(&particles_to_add_locally, &local_start_index, 1, DEAL_II_PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
@@ -300,6 +311,7 @@ namespace aspect
 
               const types::particle_index globally_generated_particles =
                 dealii::Utilities::MPI::sum(particles_to_add_locally,this->get_mpi_communicator());
+#endif
 
               AssertThrow (particle_handler->get_next_free_particle_index()
                            <= std::numeric_limits<types::particle_index>::max() - globally_generated_particles,
