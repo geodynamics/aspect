@@ -1,9 +1,4 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 40 (on 2 levels)
 Number of degrees of freedom: 883 (410+63+205+205)
 
@@ -27,11 +22,11 @@ Number of degrees of freedom: 4,877 (2,282+313+1,141+1,141)
    Solving C_1 system ... 0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                           0.1 m/s, 0.1 m/s
-     Temperature min/avg/max:                     0 K, 0.9191 K, 1.125 K
-     Heat fluxes through boundary parts:          0.001421 W, 0.001421 W, 0.02279 W, -0.02368 W
-     Writing graphical output:                    output-particle_distribution_score/solution/solution-00000
-     Writing particle output:                     output-particle_distribution_score/particles/particles-00000
+     RMS, max velocity:                       0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                 0 K, 0.9191 K, 1.125 K
+     Heat fluxes through boundary parts:      0.001421 W, 0.001421 W, 0.02279 W, -0.02368 W
+     Writing graphical output:                output-particle_distribution_score/solution/solution-00000
+     Writing particle output:                 output-particle_distribution_score/particles/particles-00000
      Particle distribution score min/avg/max: 0/0/0
 
 *** Timestep 1:  t=0.03 seconds, dt=0.03 seconds
@@ -40,11 +35,11 @@ Number of degrees of freedom: 4,877 (2,282+313+1,141+1,141)
    Solving C_1 system ... 10 iterations.
 
    Postprocessing:
-     RMS, max velocity:                           0.1 m/s, 0.1 m/s
-     Temperature min/avg/max:                     0 K, 0.9187 K, 1.126 K
-     Heat fluxes through boundary parts:          0.004462 W, 0.004462 W, 0.02756 W, -0.006674 W
-     Writing graphical output:                    output-particle_distribution_score/solution/solution-00001
-     Writing particle output:                     output-particle_distribution_score/particles/particles-00001
+     RMS, max velocity:                       0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                 0 K, 0.9187 K, 1.126 K
+     Heat fluxes through boundary parts:      0.004462 W, 0.004462 W, 0.02756 W, -0.006674 W
+     Writing graphical output:                output-particle_distribution_score/solution/solution-00001
+     Writing particle output:                 output-particle_distribution_score/particles/particles-00001
      Particle distribution score min/avg/max: 0/0/0
 
 *** Timestep 2:  t=0.06 seconds, dt=0.03 seconds
@@ -53,11 +48,11 @@ Number of degrees of freedom: 4,877 (2,282+313+1,141+1,141)
    Solving C_1 system ... 10 iterations.
 
    Postprocessing:
-     RMS, max velocity:                           0.1 m/s, 0.1 m/s
-     Temperature min/avg/max:                     0 K, 0.9184 K, 1.127 K
-     Heat fluxes through boundary parts:          0.004388 W, 0.004388 W, 0.02864 W, -0.005477 W
-     Writing graphical output:                    output-particle_distribution_score/solution/solution-00002
-     Writing particle output:                     output-particle_distribution_score/particles/particles-00002
+     RMS, max velocity:                       0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                 0 K, 0.9184 K, 1.127 K
+     Heat fluxes through boundary parts:      0.004388 W, 0.004388 W, 0.02864 W, -0.005477 W
+     Writing graphical output:                output-particle_distribution_score/solution/solution-00002
+     Writing particle output:                 output-particle_distribution_score/particles/particles-00002
      Particle distribution score min/avg/max: 0/0/0
 
 *** Timestep 3:  t=0.09 seconds, dt=0.03 seconds
@@ -66,11 +61,11 @@ Number of degrees of freedom: 4,877 (2,282+313+1,141+1,141)
    Solving C_1 system ... 9 iterations.
 
    Postprocessing:
-     RMS, max velocity:                           0.1 m/s, 0.1 m/s
-     Temperature min/avg/max:                     0 K, 0.918 K, 1.128 K
-     Heat fluxes through boundary parts:          0.004316 W, 0.004316 W, 0.02969 W, -0.00443 W
-     Writing graphical output:                    output-particle_distribution_score/solution/solution-00003
-     Writing particle output:                     output-particle_distribution_score/particles/particles-00003
+     RMS, max velocity:                       0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                 0 K, 0.918 K, 1.128 K
+     Heat fluxes through boundary parts:      0.004316 W, 0.004316 W, 0.02969 W, -0.00443 W
+     Writing graphical output:                output-particle_distribution_score/solution/solution-00003
+     Writing particle output:                 output-particle_distribution_score/particles/particles-00003
      Particle distribution score min/avg/max: 0/0.00173611/0.037037
 
 *** Timestep 4:  t=0.12 seconds, dt=0.03 seconds
@@ -79,11 +74,11 @@ Number of degrees of freedom: 4,877 (2,282+313+1,141+1,141)
    Solving C_1 system ... 9 iterations.
 
    Postprocessing:
-     RMS, max velocity:                           0.1 m/s, 0.1 m/s
-     Temperature min/avg/max:                     0 K, 0.9175 K, 1.13 K
-     Heat fluxes through boundary parts:          0.004247 W, 0.004247 W, 0.03069 W, -0.003485 W
-     Writing graphical output:                    output-particle_distribution_score/solution/solution-00004
-     Writing particle output:                     output-particle_distribution_score/particles/particles-00004
+     RMS, max velocity:                       0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                 0 K, 0.9175 K, 1.13 K
+     Heat fluxes through boundary parts:      0.004247 W, 0.004247 W, 0.03069 W, -0.003485 W
+     Writing graphical output:                output-particle_distribution_score/solution/solution-00004
+     Writing particle output:                 output-particle_distribution_score/particles/particles-00004
      Particle distribution score min/avg/max: 0/0.00173611/0.037037
 
 *** Timestep 5:  t=0.15 seconds, dt=0.03 seconds
@@ -92,11 +87,11 @@ Number of degrees of freedom: 4,877 (2,282+313+1,141+1,141)
    Solving C_1 system ... 9 iterations.
 
    Postprocessing:
-     RMS, max velocity:                           0.1 m/s, 0.1 m/s
-     Temperature min/avg/max:                     0 K, 0.9171 K, 1.132 K
-     Heat fluxes through boundary parts:          0.004181 W, 0.004181 W, 0.03164 W, -0.002761 W
-     Writing graphical output:                    output-particle_distribution_score/solution/solution-00005
-     Writing particle output:                     output-particle_distribution_score/particles/particles-00005
+     RMS, max velocity:                       0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                 0 K, 0.9171 K, 1.132 K
+     Heat fluxes through boundary parts:      0.004181 W, 0.004181 W, 0.03164 W, -0.002761 W
+     Writing graphical output:                output-particle_distribution_score/solution/solution-00005
+     Writing particle output:                 output-particle_distribution_score/particles/particles-00005
      Particle distribution score min/avg/max: 0/0.00173611/0.037037
 
 *** Timestep 6:  t=0.18 seconds, dt=0.03 seconds
@@ -105,19 +100,14 @@ Number of degrees of freedom: 4,877 (2,282+313+1,141+1,141)
    Solving C_1 system ... 8 iterations.
 
    Postprocessing:
-     RMS, max velocity:                           0.1 m/s, 0.1 m/s
-     Temperature min/avg/max:                     0 K, 0.9166 K, 1.145 K
-     Heat fluxes through boundary parts:          0.004117 W, 0.004117 W, 0.03255 W, -0.002135 W
-     Writing graphical output:                    output-particle_distribution_score/solution/solution-00006
-     Writing particle output:                     output-particle_distribution_score/particles/particles-00006
+     RMS, max velocity:                       0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                 0 K, 0.9166 K, 1.145 K
+     Heat fluxes through boundary parts:      0.004117 W, 0.004117 W, 0.03255 W, -0.002135 W
+     Writing graphical output:                output-particle_distribution_score/solution/solution-00006
+     Writing particle output:                 output-particle_distribution_score/particles/particles-00006
      Particle distribution score min/avg/max: 0/0.00136574/0.037037
 
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

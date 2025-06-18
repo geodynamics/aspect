@@ -20,7 +20,7 @@ Number of degrees of freedom: 74 (18+7+18+4+9+9+9)
    Postprocessing:
      Compositions min/max/mass:   0/0/0 // 0.01/0.01/4e+04
      Melt fraction min/total/max: 0.01, 4e+04, 0.01
-     RMS, max velocity:           8.75e-19 m/year, 3.05e-18 m/year
+     RMS, max velocity:           8.75e-19 m/year, 2.44e-18 m/year
 
 *** Timestep 1:  t=10000 years, dt=10000 years
    Solving composition reactions... in 1 substep(s).
@@ -37,7 +37,7 @@ Number of degrees of freedom: 74 (18+7+18+4+9+9+9)
    Postprocessing:
      Compositions min/max/mass:   0.01002/0.01002/4.006e+04 // 4.54e-07/4.54e-07/1.816
      Melt fraction min/total/max: 0.01, 4e+04, 0.01
-     RMS, max velocity:           2.96e-07 m/year, 4.05e-07 m/year
+     RMS, max velocity:           2.96e-07 m/year, 3.24e-07 m/year
 
 Termination requested by criterion: end time
 

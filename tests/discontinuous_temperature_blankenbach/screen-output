@@ -32,7 +32,7 @@ Number of degrees of freedom: 1,235 (578+81+576)
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  836 m/s, 1.69e+03 m/s
+     RMS, max velocity:                  836 m/s, 1.68e+03 m/s
      Temperature min/avg/max:            -0.008684 K, 0.5 K, 1.009 K
      Heat fluxes through boundary parts: 0 W, 0 W, -20.05 W, 20.05 W
      Heating rate (average/total):       0 W/kg, 0 W

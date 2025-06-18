@@ -40,7 +40,7 @@ Number of degrees of freedom: 2,804 (2,210+297+297)
    Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
-     RMS, max velocity:                  1.8e-11 m/s, 2e-11 m/s
+     RMS, max velocity:                  1.8e-11 m/s, 2.49e-11 m/s
      Mass fluxes through boundary parts: -0.00054 kg/s, -0.00054 kg/s, 0 kg/s, 0.00108 kg/s
 
 Termination requested by criterion: end time

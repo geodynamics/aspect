@@ -23,7 +23,7 @@ Number of degrees of freedom: 28,553 (12,611+8,450+1,089+4,225+1,089+1,089)
 
    Postprocessing:
      Compositions min/max/mass: -0.01666/0.3185/3.739e+10 // 0/0/0
-     RMS, max velocity:         0.000529 m/year, 0.00146 m/year
+     RMS, max velocity:         0.000529 m/year, 0.00147 m/year
 
 *** Timestep 2:  t=1.01594e+07 years, dt=5.33306e+06 years
    Solving composition reactions... in 1 substep(s).

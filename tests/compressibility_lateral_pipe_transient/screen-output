@@ -38,7 +38,7 @@ Number of degrees of freedom: 1,062 (390+96+288+288)
 
    Postprocessing:
      Writing graphical output:                          output-compressibility_lateral_pipe_transient/solution/solution-00001
-     RMS, max velocity:                                 3.66e-11 m/s, 6.32e-11 m/s
+     RMS, max velocity:                                 3.66e-11 m/s, 6.34e-11 m/s
      Temperature min/avg/max:                           1610 K, 1610 K, 1610 K
      Mass fluxes through boundary parts:                0 kg/s, 0.02091 kg/s, 0 kg/s, 0 kg/s
      Average density / Average viscosity / Total mass:  3299 kg/m^3, 1e+21 Pa s, 3.299e+14 kg
@@ -61,7 +61,7 @@ Number of degrees of freedom: 1,062 (390+96+288+288)
 
    Postprocessing:
      Writing graphical output:                          output-compressibility_lateral_pipe_transient/solution/solution-00002
-     RMS, max velocity:                                 3.66e-11 m/s, 6.32e-11 m/s
+     RMS, max velocity:                                 3.66e-11 m/s, 6.34e-11 m/s
      Temperature min/avg/max:                           1620 K, 1620 K, 1620 K
      Mass fluxes through boundary parts:                0 kg/s, 0.02091 kg/s, 0 kg/s, 0 kg/s
      Average density / Average viscosity / Total mass:  3299 kg/m^3, 1e+21 Pa s, 3.299e+14 kg
@@ -84,7 +84,7 @@ Number of degrees of freedom: 1,062 (390+96+288+288)
 
    Postprocessing:
      Writing graphical output:                          output-compressibility_lateral_pipe_transient/solution/solution-00003
-     RMS, max velocity:                                 3.66e-11 m/s, 6.32e-11 m/s
+     RMS, max velocity:                                 3.66e-11 m/s, 6.34e-11 m/s
      Temperature min/avg/max:                           1630 K, 1630 K, 1630 K
      Mass fluxes through boundary parts:                0 kg/s, 0.0209 kg/s, 0 kg/s, 0 kg/s
      Average density / Average viscosity / Total mass:  3298 kg/m^3, 1e+21 Pa s, 3.298e+14 kg
@@ -107,7 +107,7 @@ Number of degrees of freedom: 1,062 (390+96+288+288)
 
    Postprocessing:
      Writing graphical output:                          output-compressibility_lateral_pipe_transient/solution/solution-00004
-     RMS, max velocity:                                 3.66e-11 m/s, 6.32e-11 m/s
+     RMS, max velocity:                                 3.66e-11 m/s, 6.34e-11 m/s
      Temperature min/avg/max:                           1632 K, 1632 K, 1632 K
      Mass fluxes through boundary parts:                0 kg/s, 0.0209 kg/s, 0 kg/s, 0 kg/s
      Average density / Average viscosity / Total mass:  3298 kg/m^3, 1e+21 Pa s, 3.298e+14 kg

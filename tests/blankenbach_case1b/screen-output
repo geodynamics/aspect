@@ -69,7 +69,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  267 m/s, 500 m/s
+     RMS, max velocity:                  267 m/s, 501 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -9.636 W, 9.636 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -159,7 +159,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  146 m/s, 309 m/s
+     RMS, max velocity:                  146 m/s, 308 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -10.08 W, 10.08 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -339,7 +339,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  220 m/s, 396 m/s
+     RMS, max velocity:                  220 m/s, 395 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -11.29 W, 11.29 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -369,7 +369,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (GMG)... 6+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  211 m/s, 387 m/s
+     RMS, max velocity:                  211 m/s, 388 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -11.49 W, 11.49 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -389,7 +389,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  202 m/s, 376 m/s
+     RMS, max velocity:                  202 m/s, 377 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -11.28 W, 11.28 W
      Heating rate (average/total):       0 W/kg, 0 W

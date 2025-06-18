@@ -15,7 +15,7 @@ Number of degrees of freedom: 20,381 (14,739+729+4,913)
 
 
    Postprocessing:
-     RMS, max velocity:       1.37e-06 m/year, 5.12e-06 m/year
+     RMS, max velocity:       1.37e-06 m/year, 5.08e-06 m/year
      Temperature min/avg/max: 273.1 K, 1582 K, 1883 K
 
 Termination requested by criterion: end time

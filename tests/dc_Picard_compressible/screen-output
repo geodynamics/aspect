@@ -25,7 +25,7 @@ Number of degrees of freedom: 53,952 (25,344+3,264+12,672+12,672)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.00238 m/year, 0.0173 m/year
+     RMS, max velocity:                  0.00238 m/year, 0.0167 m/year
      Temperature min/avg/max:            273 K, 2037 K, 3500 K
      Compositions min/max/mass:          0/0/0
      Writing depth average:              output-dc_Picard_compressible/depth_average

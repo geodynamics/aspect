@@ -8,7 +8,7 @@ Number of degrees of freedom: 35,685 (16,770+2,145+8,385+8,385)
    Solving Stokes system (GMG)... 60+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:        0.00439 m/year, 0.01 m/year
+     RMS, max velocity:        0.00439 m/year, 0.0112 m/year
      Pressure min/avg/max:     -8.173e+05 Pa, 9.863e+09 Pa, 1.976e+10 Pa
      Writing graphical output: output-lithosphere_boundary_indicator/solution/solution-00000
 

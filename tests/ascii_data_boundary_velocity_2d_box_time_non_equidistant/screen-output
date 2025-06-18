@@ -31,7 +31,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
    Solving Stokes system (GMG)... 16+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  1.04 m/year, 1.25 m/year
+     RMS, max velocity:                  1.04 m/year, 1.26 m/year
      Temperature min/avg/max:            0 K, 1489 K, 1995 K
      Heat fluxes through boundary parts: -1.3e+08 W, 1.249e+08 W, 4.23e+05 W, 4.569e+05 W
 
@@ -81,7 +81,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
    Solving Stokes system (GMG)... 19+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  1 m/year, 1.03 m/year
+     RMS, max velocity:                  1 m/year, 1.02 m/year
      Temperature min/avg/max:            -457.5 K, 1542 K, 9055 K
      Heat fluxes through boundary parts: -2.174e+08 W, 1.253e+08 W, 5.772e+05 W, 7.725e+05 W
 
@@ -90,7 +90,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
    Solving Stokes system (GMG)... 19+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  1 m/year, 1.04 m/year
+     RMS, max velocity:                  1 m/year, 1.03 m/year
      Temperature min/avg/max:            -377.5 K, 1582 K, 1.161e+04 K
      Heat fluxes through boundary parts: -2.553e+08 W, 1.24e+08 W, 6.02e+05 W, 6.159e+05 W
 
@@ -99,7 +99,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
    Solving Stokes system (GMG)... 18+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  1 m/year, 1.06 m/year
+     RMS, max velocity:                  1 m/year, 1.04 m/year
      Temperature min/avg/max:            -334 K, 1641 K, 1.428e+04 K
      Heat fluxes through boundary parts: -2.956e+08 W, 1.235e+08 W, 5.594e+05 W, 2.053e+06 W
 
@@ -108,7 +108,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
    Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  1 m/year, 1.06 m/year
+     RMS, max velocity:                  1 m/year, 1.05 m/year
      Temperature min/avg/max:            -386.7 K, 1651 K, 1.464e+04 K
      Heat fluxes through boundary parts: -3.01e+08 W, 1.235e+08 W, 5.885e+05 W, 1.954e+06 W
 

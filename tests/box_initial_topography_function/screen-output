@@ -17,7 +17,7 @@ Number of degrees of freedom: 189 (114+18+57)
 
    Postprocessing:
      Writing graphical output: output-box_initial_topography_function/solution/solution-00000
-     RMS, max velocity:        0.0381 m/year, 0.0567 m/year
+     RMS, max velocity:        0.0381 m/year, 0.0611 m/year
      Topography min/max:       0 m, 2e+04 m
 
 Termination requested by criterion: end time

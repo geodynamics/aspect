@@ -16,7 +16,7 @@ Number of degrees of freedom: 28,711 (17,646+2,242+8,823)
 
    Postprocessing:
      Writing graphical output:           output-global_refine_amr/solution/solution-00000
-     RMS, max velocity:                  7.41e-09 m/s, 2.39e-08 m/s
+     RMS, max velocity:                  7.41e-09 m/s, 2.4e-08 m/s
      Temperature min/avg/max:            0 K, 1.038 K, 1.1 K
      Heat fluxes through boundary parts: 1.666e-07 W, 0.0001246 W, 0 W, 0 W
 

@@ -42,7 +42,7 @@ Number of degrees of freedom: 77,231 (15,058+1,941+7,529+7,529+7,529+7,529+7,529
    Solving Stokes system (GMG)... 24+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                                           0.0194 m/year, 0.0501 m/year
+     RMS, max velocity:                                                           0.0194 m/year, 0.0502 m/year
      Heating rate (average/total):                                                0 W/kg, 0 W
      Compositions max depth [m]:                                                  2360 // 2360 // 3.141e+04 // 3.141e+04 // 7.328e+04 // 1.07e+05 // 8.139e+04
      RMS velocity for compositions and combined selected fields:                  0.01455 m/year // 0.03911 m/year // 0.01432 m/year // 0.0389 m/year // 0.01378 m/year // 0.0386 m/year // 0.02569 m/year // 0.0387 m/year

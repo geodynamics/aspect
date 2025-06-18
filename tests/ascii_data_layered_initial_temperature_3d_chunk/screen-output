@@ -7,7 +7,7 @@ Number of degrees of freedom: 19,472 (14,079+700+4,693)
    Solving Stokes system (GMG)... 1000+17 iterations.
 
    Postprocessing:
-     RMS, max velocity:       1.12e-09 m/s, 1.79e-08 m/s
+     RMS, max velocity:       1.12e-09 m/s, 1.78e-08 m/s
      Temperature min/avg/max: 500 K, 781.7 K, 1000 K
      Writing depth average:   output-ascii_data_layered_initial_temperature_3d_chunk/depth_average
 

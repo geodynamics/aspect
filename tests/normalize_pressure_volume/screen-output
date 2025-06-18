@@ -7,8 +7,8 @@ Number of degrees of freedom: 268 (162+25+81)
    Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:        0.366 m/s, 0.516 m/s
-     Pressure min/avg/max:     -4.01 Pa, 2.776e-17 Pa, 4.475 Pa
+     RMS, max velocity:        0.366 m/s, 0.515 m/s
+     Pressure min/avg/max:     -4.01 Pa, -7.052e-16 Pa, 4.475 Pa
      Writing graphical output: output-normalize_pressure_volume/solution/solution-00000
 
 Termination requested by criterion: end time

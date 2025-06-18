@@ -14,4 +14,4 @@
 # 14: Max. velocity (m/year)
 # 15: Minimum topography (m)
 # 16: Maximum topography (m)
-0 0.000000000000e+00 0.000000000000e+00 36 1497 471 0 1025 1062 1366 output-box_surface_base_variables/solution/solution-00000 output-box_surface_base_variables/solution_surface/solution_surface-00000 3.84400605e-02 9.01614785e-02 2.00000000e+04 5.50000000e+04 
+0 0.000000000000e+00 0.000000000000e+00 36 1497 471 0 1025 1062 1366 output-box_surface_base_variables/solution/solution-00000 output-box_surface_base_variables/solution_surface/solution_surface-00000 3.84400605e-02 9.02460860e-02 2.00000000e+04 5.50000000e+04 

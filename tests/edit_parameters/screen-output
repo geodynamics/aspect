@@ -36,7 +36,7 @@ Signal start_timestep triggered!
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.289 K, 10 K
-     RMS, max velocity:       2.83e-08 m/s, 1.09e-07 m/s
+     RMS, max velocity:       2.83e-08 m/s, 1.1e-07 m/s
 
 Signal edit_parameters triggered!
 Number of active cells: 49 (on 4 levels)
@@ -96,7 +96,7 @@ Signal start_timestep triggered!
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.404 K, 10 K
-     RMS, max velocity:       4.03e-08 m/s, 1.44e-07 m/s
+     RMS, max velocity:       4.03e-08 m/s, 1.43e-07 m/s
 
 Skipping mesh refinement, because the mesh did not change.
 

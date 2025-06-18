@@ -8,7 +8,7 @@ Number of degrees of freedom: 10,436 (6,402+833+3,201)
 
    Postprocessing:
      Writing graphical output:                       output-shell_surface_base_variables/solution/solution-00000
-     RMS, max velocity:                              1.2e-09 m/s, 3.64e-09 m/s
+     RMS, max velocity:                              1.2e-09 m/s, 3.65e-09 m/s
      Temperature min/avg/max:                        1613 K, 1682 K, 2413 K
      Radial RMS, tangential RMS, total RMS velocity: 8.06e-10 m/s, 8.91e-10 m/s, 1.2e-09 m/s
 

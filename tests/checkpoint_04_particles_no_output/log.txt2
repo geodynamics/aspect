@@ -10,9 +10,9 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
    Solving Stokes system (direct)... done.
 
    Postprocessing:
-     Temperature min/avg/max:     1.007 K, 1.041 K, 1.088 K
-     RMS, max velocity:           4.45e-09 m/s, 1.06e-08 m/s
-     Number of advected particles 1000
+     Temperature min/avg/max:      1.007 K, 1.041 K, 1.088 K
+     RMS, max velocity:            4.45e-09 m/s, 1.06e-08 m/s
+     Number of advected particles: 1000
 
 *** Timestep 9:  t=1e+07 seconds, dt=363889 seconds
    Solving temperature system... 9 iterations.
@@ -20,9 +20,9 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
    Solving Stokes system (direct)... done.
 
    Postprocessing:
-     Temperature min/avg/max:     1.007 K, 1.041 K, 1.087 K
-     RMS, max velocity:           4.41e-09 m/s, 1.05e-08 m/s
-     Number of advected particles 1000
+     Temperature min/avg/max:      1.007 K, 1.041 K, 1.087 K
+     RMS, max velocity:            4.41e-09 m/s, 1.05e-08 m/s
+     Number of advected particles: 1000
 
 Termination requested by criterion: end time
 
