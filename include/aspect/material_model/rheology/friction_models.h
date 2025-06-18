@@ -15,7 +15,7 @@
 
   You should have received a copy of the GNU General Public License
   along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
+  <http://www.gnu.org/licenses/>. 
 */
 
 #ifndef _aspect_material_model_rheology_friction_models_h
@@ -48,7 +48,8 @@ namespace aspect
       {
         static_friction,
         dynamic_friction,
-        function
+        function,
+        differential_dynamic_friction
       };
 
       template <int dim>
@@ -77,7 +78,8 @@ namespace aspect
           compute_friction_angle(const double current_edot_ii,
                                  const unsigned int volume_fraction_index,
                                  const double static_friction_angle,
-                                 const Point<dim> &position) const;
+                                 const Point<dim> &position
+                                 const SymmetricTensor<2, dim> &strain_rate) const;
 
           /**
            * A function that returns the selected type of friction dependence.
@@ -127,6 +129,19 @@ namespace aspect
            * Possible choices are depth, cartesian and spherical.
            */
           Utilities::Coordinates::CoordinateSystem coordinate_system_friction_function;
+
+          /**
+           * Dynamic angles used for converging and diverging regions separately,
+           * when using differential dynamic friction.
+           */
+          std::vector<double> dynamic_angles_convergence;
+          std::vector<double> dynamic_angles_divergence;
+
+          /**
+           * Thresholds on the strain rate trace to classify convergent, neutral, or divergent regimes.
+           */
+            double convergence_threshold;
+            double divergence_threshold;
       };
     }
   }
