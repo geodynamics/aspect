@@ -1455,16 +1455,15 @@ namespace aspect
               for (const auto &content : collected_content)
                 filestream << content;
 
-              bool success = filestream.good();
-              const int ierr = MPI_Bcast(&success, 1, Utilities::MPI::mpi_type_id_for_type<bool>, 0, comm);
-              AssertThrowMPI(ierr);
+              // We are only reading on process 0. Whether or not that succeeded is something
+              // we need to let the other processes know:
+              std::ignore = Utilities::MPI::broadcast (comm, static_cast<bool>(filestream.good()), 0);
             }
           catch (const std::ios::failure &)
             {
-              // broadcast failure state, then throw
-              bool success = false;
-              const int ierr = MPI_Bcast(&success, 1, Utilities::MPI::mpi_type_id_for_type<bool>, 0, comm);
-              AssertThrowMPI(ierr);
+              // If reading failed altogether, we may not even have gotten to the broadcast
+              // call above. In that case, broadcast the failure state, then throw.
+              std::ignore = Utilities::MPI::broadcast (comm, false, 0);
               AssertThrow (false,
                            ExcMessage (std::string("Could not write content to file <") + filename + ">."));
             }
@@ -1473,10 +1472,8 @@ namespace aspect
         }
       else
         {
-          // Check that the file was written successfully
-          bool success;
-          int ierr = MPI_Bcast(&success, 1, Utilities::MPI::mpi_type_id_for_type<bool>, 0, comm);
-          AssertThrowMPI(ierr);
+          // On the other processes, receive process 0's broadcast of its result state:
+          const bool success = Utilities::MPI::broadcast (comm, /* dummy= */ bool(), 0);
           if (success == false)
             throw QuietException();
         }
