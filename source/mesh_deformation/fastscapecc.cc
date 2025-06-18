@@ -485,6 +485,62 @@ namespace aspect
 
       std::vector<double> V(n_grid_nodes);
 
+      // Send local data to rank 0 if not rank 0
+      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) != 0)
+      {
+        for (unsigned int i = 0; i < temporary_variables.size(); ++i)
+          MPI_Ssend(&temporary_variables[i][0],
+                    temporary_variables[1].size(),
+                    MPI_DOUBLE,
+                    0,
+                    42,
+                    this->get_mpi_communicator());
+      }
+
+    // Rank 0 gathers and processes everything
+    if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+    {
+      std::vector<double> h(n_grid_nodes, std::numeric_limits<double>::max());
+      std::vector<double> vz(n_grid_nodes);
+
+      // Fill with local data
+      for (unsigned int i = 0; i < temporary_variables[1].size(); ++i)
+        {
+          int index = static_cast<int>(temporary_variables[1][i]);
+          h[index] = temporary_variables[0][i];
+          vz[index] = temporary_variables[2][i];
+        }
+
+      // Receive and insert data from other processes
+      for (unsigned int p = 1;
+          p < Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
+          ++p)
+        {
+          MPI_Status status;
+          MPI_Probe(p, 42, this->get_mpi_communicator(), &status);
+
+          int incoming_size = 0;
+          MPI_Get_count(&status, MPI_DOUBLE, &incoming_size);
+
+          for (unsigned int i = 0; i < temporary_variables.size(); ++i)
+            temporary_variables[i].resize(incoming_size);
+
+          for (unsigned int i = 0; i < temporary_variables.size(); ++i)
+            MPI_Recv(&temporary_variables[i][0],
+                    incoming_size,
+                    MPI_DOUBLE,
+                    p,
+                    42,
+                    this->get_mpi_communicator(),
+                    &status);
+
+          for (unsigned int i = 0; i < temporary_variables[1].size(); ++i)
+            {
+              int index = static_cast<int>(temporary_variables[1][i]);
+              h[index] = temporary_variables[0][i];
+              vz[index] = temporary_variables[2][i];
+            }
+        }
 // TODO: If you do the work in the following only of process 0, don't the other processes
 // have to send their data to process 0? I.e., don't we need a 'gather' operation here?
 //
@@ -494,51 +550,16 @@ namespace aspect
 //      send data to process zero
 // This makes it easier to see that in order for this to work, we first have to send the
 // data before we receive it in the ==0 block.
-      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-        {
-          // Initialize the variables that will be sent to FastScape.
-          std::vector<double> h(n_grid_nodes, std::numeric_limits<double>::max());
-          std::vector<double> vz(n_grid_nodes);
+  
 
 // TODO: This will then simply be a loop over all elements of the map/multimap above.
 // Note that right now you encounter the same vertex multiple times, and you simply
 // overwrite early content with later content (which is ok).
-          // First copy our own data into the h and vz arrays:
-          for (unsigned int i = 0; i < temporary_variables[1].size(); ++i)
-            {
-              int index = static_cast<int>(temporary_variables[1][i]);
-              h[index] = temporary_variables[0][i];
-              vz[index] = temporary_variables[2][i];
-            }
 
-          // Then also retrieve what the other processes sent to us and put
-          // them into the same arrays as well:
-          for (unsigned int p = 1; p < Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
-            {
+  
 // TODO: In order to send/receive the std::map or std::multimap mentioned above, you can use
 // Utilities::MPI::isend/irecv. These are easier to use than what you have here because
 // they work on *any* data structure.
-
-              MPI_Status status;
-              MPI_Probe(p, 42, this->get_mpi_communicator(), &status);
-              int incoming_size = 0;
-              MPI_Get_count(&status, MPI_DOUBLE, &incoming_size);
-
-              for (unsigned int i = 0; i < temporary_variables.size(); ++i)
-                {
-                  temporary_variables[i].resize(incoming_size);
-                }
-
-              for (unsigned int i = 0; i < temporary_variables.size(); ++i)
-                MPI_Recv(&temporary_variables[i][0], incoming_size, MPI_DOUBLE, p, 42, this->get_mpi_communicator(), &status);
-
-              for (unsigned int i = 0; i < temporary_variables[1].size(); ++i)
-                {
-                  int index = static_cast<int>(temporary_variables[1][i]);
-                  h[index] = temporary_variables[0][i];
-                  vz[index] = temporary_variables[2][i];
-                }
-            }
 
           // Save the current elevation so that we can later take the difference to
           // the one after calling FastScape:
@@ -615,6 +636,8 @@ namespace aspect
           auto uplift_rate = xt::adapt(uplift_rate_vec.data(), shape);
           //To test with a uplift_rate of zero
           // uplift_rate.fill(0.0);
+
+          std::cout<<"Vsize: " << vz.size()<< ", Gridsize: "<< grid.size()<<std::endl;
 
           // 6. Create data arrays using grid shape 
           //set the initial topogrphy at the beginning only 
