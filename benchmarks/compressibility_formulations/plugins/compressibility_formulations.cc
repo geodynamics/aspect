@@ -127,7 +127,7 @@ namespace aspect
     {
       base_model->evaluate(in,out);
 
-      const unsigned int density_field_index = this->introspection().find_composition_type(Parameters<dim>::CompositionalFieldDescription::density);
+      const unsigned int density_field_index = this->introspection().find_composition_type(CompositionalFieldDescription::density);
 
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {

@@ -41,7 +41,7 @@ namespace aspect
 
         // If we are using the projected density approximation then we need to use the adiabatic pressure
         double pressure_for_density;
-        if (this->introspection().composition_type_exists(Parameters<dim>::CompositionalFieldDescription::density) &&
+        if (this->introspection().composition_type_exists(CompositionalFieldDescription::density) &&
             this->get_parameters().formulation_mass_conservation==Parameters<dim>::Formulation::MassConservation::projected_density_field)
           pressure_for_density = this->get_adiabatic_conditions().pressure(in.position[q]);
         else
