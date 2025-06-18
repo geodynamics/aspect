@@ -433,7 +433,7 @@ namespace aspect
     Manager<dim>::local_initialize_particles(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                              const typename ParticleHandler<dim>::particle_iterator &end_particle)
     {
-      for (typename ParticleHandler<dim>::particle_iterator it = begin_particle; it!=end_particle; ++it)
+      for (auto it = begin_particle; it != end_particle; ++it)
         property_manager->initialize_one_particle(it);
     }
 
