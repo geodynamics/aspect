@@ -1541,8 +1541,7 @@ namespace aspect
               error = closedir(output_directory);
             }
           // Broadcast error code
-          const int ierr = MPI_Bcast (&error, 1, MPI_INT, 0, comm);
-          AssertThrowMPI(ierr);
+          std::ignore = Utilities::MPI::broadcast (comm, error, 0);
           AssertThrow (error == 0,
                        ExcMessage (std::string("Can't create the output directory at <") + pathname + ">"));
         }
@@ -1550,8 +1549,7 @@ namespace aspect
         {
           // Wait to receive error code, and throw QuietException if directory
           // creation has failed
-          const int ierr = MPI_Bcast (&error, 1, MPI_INT, 0, comm);
-          AssertThrowMPI(ierr);
+          error = Utilities::MPI::broadcast (comm, /* dummy= */ decltype(error)(), 0);
           if (error!=0)
             throw aspect::QuietException();
         }
