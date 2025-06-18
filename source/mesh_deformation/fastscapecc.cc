@@ -464,6 +464,11 @@ namespace aspect
           grid.set_nodes_status(node_status_array);
 
           // // 3. Create the flow graph
+          // auto flow_graph = FlowGraphType(
+          //   grid,
+          //   { fastscapelib::single_flow_router(), fastscapelib::MSTSinkResolver()}
+          // );
+
           auto flow_graph = FlowGraphType(
               grid,
               {
@@ -480,20 +485,25 @@ namespace aspect
           fastscapelib::spl_eroder<FlowGraphType> spl_eroder
           =
             // fastscapelib::make_spl_eroder(flow_graph, kff, n, m, 1e-5)
-            fastscapelib::make_spl_eroder(flow_graph, kff, area_exp, slope_exp, 1e-5);
+            fastscapelib::make_spl_eroder(flow_graph, 5e-4, 0.4, 1, 1e-5);
           std::cout << "KFF : " << kff<< std::endl;
 
           //Only for raster grid 
           //To propose if we add back the raster grid option later 
           // auto diffusion_eroder = fastscapelib::make_diffusion_adi_eroder(grid, kdd);
 
-         // uplift rate in meters per year for Fastscape
-          std::vector<double> uplift_rate_in_m_year(vz.size());
-          for (size_t i = 0; i < vz.size(); ++i) {
-              uplift_rate_in_m_year[i] = vz[i] / year_in_seconds;
-          }
+              // Create an xarray with correct shape_vec
+          xt::xarray<double> uplift_rate_vec = xt::zeros<double>({vz.size()});
+          for (std::size_t i = 0; i < vz.size(); ++i)
+              uplift_rate_vec[i] = vz[i] / year_in_seconds;
 
-          // 6. Create data arrays using grid shape
+          // Reshape uplift_rate to match grid shape (same as elevation)
+          auto uplift_rate = xt::adapt(uplift_rate_vec.data(), shape);
+          //To test with a uplift_rate of zero
+          // uplift_rate.fill(0.0);
+
+          // 6. Create data arrays using grid shape 
+          //set the initial topogrphy at the beginning only 
           if (!elevation_initialized)
           {
             elevation = xt::adapt(h, shape);
@@ -504,15 +514,14 @@ namespace aspect
           {
             std::cout << "[DEBUG INIT] Reusing elevation from previous timestep.\n";
           }
-          // auto elevation      = xt::adapt(h, shape);
-          auto elevation_old  = xt::adapt(h_old, shape);
-          auto uplift_rate    = xt::adapt(uplift_rate_in_m_year, shape);
 
-          //To fix the borders for box models
-          auto row_bounds = xt::view(uplift_rate, xt::keep(0, -1), xt::all());
-          row_bounds = 0.0;
-          auto col_bounds = xt::view(uplift_rate, xt::all(), xt::keep(0, -1));
-          col_bounds = 0.0;
+          auto elevation_old  = xt::adapt(h_old, shape);
+          
+          //fixe uplift rate at base level
+            for (auto& bi : flow_graph.base_levels())
+            {
+              uplift_rate[bi] = 0.0;
+            }
 
           xt::xarray<double> drainage_area  = xt::zeros<double>(shape);
           xt::xarray<double> sediment_flux  = xt::zeros<double>(shape);
@@ -545,8 +554,6 @@ for (unsigned int i = 0; i < fastscape_iterations; ++i)
             << ", min = " << xt::amin(uplifted_elevation)() << std::endl;
 
   // Flow routing
-    xt::noalias(drainage_area) = 0.0;
-
   flow_graph.update_routes(uplifted_elevation);
   flow_graph.accumulate(drainage_area, 1.0);
 
@@ -1012,8 +1019,8 @@ if (mpi_rank == 0)
 
           prm.enter_subsection("Erosional parameters");
           {
-            area_exp = prm.get_double("Drainage area exponent");
-            slope_exp = prm.get_double("Slope exponent");
+            m = prm.get_double("Drainage area exponent");
+            n = prm.get_double("Slope exponent");
             kfsed = prm.get_double("Sediment river incision rate");
             kff = prm.get_double("Bedrock river incision rate");
             kdsed = prm.get_double("Sediment diffusivity");

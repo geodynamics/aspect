@@ -263,12 +263,12 @@ namespace aspect
         /**
          * Drainage area exponent for the stream power law (m variable in FastScape surface equation).
          */
-        double area_exp;
+        double m;
 
         /**
          * Slope exponent for the steam power law (n variable in FastScape surface equation).
          */
-        double slope_exp;
+        double n;
 
         /**
          * Bedrock river incision rate for the stream power law
