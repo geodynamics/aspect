@@ -95,6 +95,12 @@ namespace aspect
          */
         void initialize () override;
 
+        struct ValuesAtSurfaceVertex
+        {
+          double topography;
+          double surface_uplift_rate;
+        };
+
         /**
           * A function that creates constraints for the velocity of certain mesh
           * vertices (namely, the surface vertices) for a specific boundary.
@@ -312,6 +318,10 @@ namespace aspect
          */
         std::array<unsigned int, dim> repetitions;
         std::array<std::pair<double, double>, dim - 1> grid_extent_surface;
+
+        // A way to ouput internal fastscape iteration for visualisation
+        bool output_internal_fastscape_steps;
+
 
     };
   }

@@ -64,9 +64,6 @@ namespace aspect
     void FastScapecc<dim>::initialize()
     {
       const auto &geom_model = this->get_geometry_model();
-
-      // this->get_pcout() << "Geometry model type: " << typeid(geom_model).name() << std::endl;
-
       init_surface_mesh(geom_model);
 
       //Fastscapelib operates on grid nodes, each of which conceptually represents a cell center
@@ -489,16 +486,23 @@ namespace aspect
           =
             // fastscapelib::make_spl_eroder(flow_graph, kff, n, m, 1e-5)
             fastscapelib::make_spl_eroder(flow_graph, kff, n, m, 1e-5);
-          // std::cout << "here it works 12" << std::endl;
+          std::cout << "KFF : " << kff<< std::endl;
+
 
           //Only for raster grid 
           //To propose if we add back the raster grid option later 
           // auto diffusion_eroder = fastscapelib::make_diffusion_adi_eroder(grid, kdd);
 
+         // uplift rate in meters per year for Fastscape
+          std::vector<double> uplift_rate_in_m_year(vz.size());
+          for (size_t i = 0; i < vz.size(); ++i) {
+              uplift_rate_in_m_year[i] = vz[i] / year_in_seconds;
+          }
+
           // 6. Create data arrays using grid shape
           auto elevation      = xt::adapt(h, shape);
           auto elevation_old  = xt::adapt(h_old, shape);
-          auto uplift_rate    = xt::adapt(vz, shape);
+          auto uplift_rate    = xt::adapt(uplift_rate_in_m_year, shape);
 
           //To fix the borders for box models
           auto row_bounds = xt::view(uplift_rate, xt::keep(0, -1), xt::all());
@@ -516,6 +520,123 @@ namespace aspect
                     << ", Min = " << xt::amin(uplift_rate)() << std::endl;
 
 
+          // === WRITE INITIAL STATE ===
+          //Output the 
+// TODO: Is the comment wrong? We're not at the initial state any more, right?
+
+// TODO: In the long run (perhaps not right away), we should adopt a system like many of
+// the other plugins where we don't output information in *every* time step, but only
+// when requested.
+
+    // Create output directory
+    // const std::string output_directory = (this->get_output_directory() + "/fastscapeCC");
+    // if (!std::filesystem::exists(output_directory))
+    //   std::filesystem::create_directories(output_directory);
+
+    // // Vector to track output files
+    // std::vector<std::string> vtu_filenames;
+
+    // const auto write_output = [&](const unsigned int step_index,
+    //                               const xt::xarray<double> &elevation,
+    //                               const xt::xarray<double> &uplift_rate,
+    //                               const xt::xarray<double> &erosion,
+    //                               const xt::xarray<double> &drainage_area)
+    // {
+    //   dealii::Vector<double> elevation_output(n_grid_nodes);
+    //   dealii::Vector<double> uplift_rate_output(n_grid_nodes);
+    //   dealii::Vector<double> erosion_output(n_grid_nodes);
+    //   dealii::Vector<double> drainage_area_output(n_grid_nodes);
+
+    //   for (unsigned int j = 0; j < n_grid_nodes; ++j)
+    //     {
+    //       elevation_output[j]      = elevation[j];
+    //       uplift_rate_output[j]    = uplift_rate[j];
+    //       erosion_output[j]        = erosion[j];
+    //       drainage_area_output[j]  = drainage_area[j];
+    //     }
+
+    //   dealii::DataOut<dim-1, dim> data_out;
+    //   data_out.attach_dof_handler(surface_mesh_dof_handler);
+    //   data_out.add_data_vector(elevation_output, "Elevation");
+    //   data_out.add_data_vector(uplift_rate_output, "UpliftRate");
+    //   data_out.add_data_vector(erosion_output, "Erosion");
+    //   data_out.add_data_vector(drainage_area_output, "DrainageArea");
+    //   data_out.build_patches();
+
+    //   const std::string filename = output_directory + "/fastscape_surface_iteration_" +
+    //                               Utilities::int_to_string(step_index, 4) + ".vtu";
+    //   std::ofstream output(filename);
+    //   data_out.write_vtu(output);
+    //   this->get_pcout() << "➤ Wrote VTK file: " << filename << std::endl;
+
+    //   vtu_filenames.push_back(filename);
+    // };
+
+    // // Output initial state
+    // if (output_internal_fastscape_steps)
+    //   write_output(0, elevation, uplift_rate, xt::zeros<double>({n_grid_nodes}), xt::zeros<double>({n_grid_nodes}));
+
+    // // === FASTSCAPE LOOP ===
+    // for (unsigned int i = 1; i <= fastscape_iterations; ++i)
+    //   {
+    //     std::cout << "\nFastScape iteration " << i << "/" << fastscape_iterations << std::endl;
+
+    //         xt::xarray<double> uplifted_elevation = elevation + fastscape_timestep_in_years * uplift_rate;
+
+    //         std::cout << "[DEBUG] uplifted_elevation max = " << xt::amax(uplifted_elevation)()
+    //                   << ", min = " << xt::amin(uplifted_elevation)() << std::endl;
+
+    //         flow_graph.update_routes(uplifted_elevation);
+    //         flow_graph.accumulate(drainage_area, 1.0);
+
+    //         std::cout << "[DEBUG] drainage_area max = " << xt::amax(drainage_area)()
+    //                   << ", min = " << xt::amin(drainage_area)() << std::endl;
+
+    //         auto spl_erosion = spl_eroder.erode(uplifted_elevation, drainage_area, fastscape_timestep_in_years);
+
+    //         std::cout << "[DEBUG] spl_erosion max = " << xt::amax(spl_erosion)()
+    //                   << ", min = " << xt::amin(spl_erosion)() << std::endl;
+
+    //         //Working for raster grid only
+    //         // auto diff_erosion = diffusion_eroder.erode(uplifted_elevation - spl_erosion, fastscape_timestep_in_years);
+
+    //         sediment_flux = flow_graph.accumulate(spl_erosion);
+    //         elevation = uplifted_elevation - spl_erosion ; //- diff_erosion for raster grid
+
+    //         std::cout << "[DEBUG] updated elevation max = " << xt::amax(elevation)()
+    //                   << ", min = " << xt::amin(elevation)() << std::endl;
+
+    //     if (output_internal_fastscape_steps)
+    //       write_output(i, elevation, uplift_rate, spl_erosion, drainage_area);
+    //   }
+
+    // // Final output (even if internal output was disabled)
+    // if (!output_internal_fastscape_steps)
+    //   write_output(fastscape_iterations, elevation, uplift_rate, xt::zeros<double>({n_grid_nodes}), drainage_area);
+
+    // // === WRITE PVD FILE ===
+    // {
+    //   const std::string pvd_filename = output_directory + "/fastscape_iterations.pvd";
+    //   std::ofstream pvd_file(pvd_filename);
+
+    //   pvd_file << "<?xml version=\"1.0\"?>\n"
+    //           << "<VTKFile type=\"Collection\" version=\"0.1\" byte_order=\"LittleEndian\">\n"
+    //           << "  <Collection>\n";
+
+    //   for (unsigned int i = 0; i < vtu_filenames.size(); ++i)
+    //     {
+    //       pvd_file << "    <DataSet timestep=\"" << i << "\" group=\"\" part=\"0\"\n"
+    //               << "             file=\""
+    //               << "fastscape_surface_iteration_" << Utilities::int_to_string(i, 4) << ".vtu\"/>\n";
+    //     }
+
+    //   pvd_file << "  </Collection>\n"
+    //           << "</VTKFile>\n";
+
+    //   this->get_pcout() << "➤ Wrote PVD file: " << pvd_filename << std::endl;
+    // }
+
+
           // Create output directory
           const std::string output_directory = (this->get_output_directory() + "/fastscapeCC");
           if (!std::filesystem::exists(output_directory))
@@ -524,13 +645,7 @@ namespace aspect
           // Vector to track output files
           std::vector<std::string> vtu_filenames;
 
-          // === WRITE INITIAL STATE ===
-          //Output the 
-// TODO: Is the comment wrong? We're not at the initial state any more, right?
 
-// TODO: In the long run (perhaps not right away), we should adopt a system like many of
-// the other plugins where we don't output information in *every* time step, but only
-// when requested.
           {
             dealii::Vector<double> elevation_output(n_grid_nodes);
             dealii::Vector<double> uplift_rate_output(n_grid_nodes);
@@ -680,8 +795,7 @@ namespace aspect
       auto erosion_function = [&](const Point<dim> &p) -> double
       {
         const unsigned int index = this->vertex_index(p);
-// TODO: Here, V is provided in meters/year. But you will want m/s.
-        return V[index];
+        return V[index]; //meters/year for ASPECT
       };
       std::cout << "here it works 14" << std::endl;
 
@@ -804,6 +918,11 @@ namespace aspect
                             Patterns::Double(),
                             "Maximum topography change from the initial noise. Units: $\\{m}$");
 
+          prm.declare_entry("Output internal fastscape steps", "false",
+                  Patterns::Bool(),
+                  "Whether to output visualization files for internal FastScape steps.");
+
+
           prm.enter_subsection ("Erosional parameters");
           {
             prm.declare_entry("Drainage area exponent", "0.4",
@@ -867,6 +986,8 @@ namespace aspect
           surface_refinement_level = prm.get_integer("Surface refinement level");
           surface_refinement_difference = prm.get_integer("Surface refinement difference");
           noise_h = prm.get_double("Initial noise magnitude");
+          output_internal_fastscape_steps = prm.get_bool("Output internal fastscape steps");
+
 
           if (!this->convert_output_to_years())
             {
