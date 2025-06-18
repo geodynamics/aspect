@@ -464,11 +464,6 @@ namespace aspect
           grid.set_nodes_status(node_status_array);
 
           // // 3. Create the flow graph
-          // auto flow_graph = FlowGraphType(
-          //   grid,
-          //   { fastscapelib::single_flow_router(), fastscapelib::MSTSinkResolver()}
-          // );
-
           auto flow_graph = FlowGraphType(
               grid,
               {
@@ -485,7 +480,7 @@ namespace aspect
           fastscapelib::spl_eroder<FlowGraphType> spl_eroder
           =
             // fastscapelib::make_spl_eroder(flow_graph, kff, n, m, 1e-5)
-            fastscapelib::make_spl_eroder(flow_graph, 5e-4, 0.4, 1, 1e-5);
+            fastscapelib::make_spl_eroder(flow_graph, kff, area_exp, slope_exp, 1e-5);
           std::cout << "KFF : " << kff<< std::endl;
 
           //Only for raster grid 
@@ -550,6 +545,8 @@ for (unsigned int i = 0; i < fastscape_iterations; ++i)
             << ", min = " << xt::amin(uplifted_elevation)() << std::endl;
 
   // Flow routing
+    xt::noalias(drainage_area) = 0.0;
+
   flow_graph.update_routes(uplifted_elevation);
   flow_graph.accumulate(drainage_area, 1.0);
 
@@ -1015,8 +1012,8 @@ if (mpi_rank == 0)
 
           prm.enter_subsection("Erosional parameters");
           {
-            m = prm.get_double("Drainage area exponent");
-            n = prm.get_double("Slope exponent");
+            area_exp = prm.get_double("Drainage area exponent");
+            slope_exp = prm.get_double("Slope exponent");
             kfsed = prm.get_double("Sediment river incision rate");
             kff = prm.get_double("Bedrock river incision rate");
             kdsed = prm.get_double("Sediment diffusivity");
