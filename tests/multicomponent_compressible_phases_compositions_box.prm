@@ -97,6 +97,8 @@ subsection Material model
 
   subsection Multicomponent compressible
 
+    set Enable phase transitions = true
+
     set Phase transition depths = upper_crust: 10e3, background: 70e3|90e3    
     
     set Phase transition widths = upper_crust: 1e3, background: 1e3|1e3

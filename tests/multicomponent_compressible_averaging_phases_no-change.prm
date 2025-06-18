@@ -22,6 +22,7 @@ subsection Material model
 
     # Add a single phase transition approximately the model mid-depth,
     # but do not change any of the material properties.
+    set Enable phase transitions = true
     set Phase transition depths = composition_1: 1500e3, background: 1500e3
     set Phase transition widths = composition_1: 1e3,background: 1e3
     set Phase transition temperatures = composition_1: 2000, background: 2000

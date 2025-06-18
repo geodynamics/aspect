@@ -201,10 +201,6 @@ namespace aspect
             options.store_values_per_key = true;
           }
 
-        // Check that phase transitions have explicitly been enabled if the number of phases
-        // for any compositional field is greater than 0
-        // ToDo: Loop over n_phases_per_compositions and ensure that no value is greater than 1
-
         // Parse multicomponent properties
         options.property_name = "Reference temperatures";
         reference_temperatures = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
@@ -229,6 +225,22 @@ namespace aspect
         isochoric_specific_heats = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
         enable_phase_transitions = prm.get_bool ("Enable phase transitions");
+
+        // Check that phase transitions have explicitly been enabled if the number of phases
+        // for any compositional field is greater than 0
+        if (!enable_phase_transitions)
+          {
+            for (unsigned int n=0; n < (*expected_n_phases_per_composition).size(); ++n)
+              {
+                AssertThrow((*expected_n_phases_per_composition)[n] == 1, ExcMessage(
+                              "The number of expected phases per composition for the compositional "
+                              "field named (" + compositional_field_names[n] + ") is equal to "
+                              "(" + Utilities::to_string((*expected_n_phases_per_composition)[n]) + "). "
+                              "Use of phase transitions with the multicomponent compressible equation of "
+                              "state model is currently implemented in a thermodynamically inconsistent manner "
+                              "and must be explicitly enabled with 'set Enable phase transitions = true'."));
+              }
+          }
       }
     }
   }
