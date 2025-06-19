@@ -12,10 +12,12 @@ exported, next is to clone the code using the following command:
 
       git clone https://github.com/Djneu/fastscapelib-fortran
 
-This branch includes modifications to the VTK writing for FastScape that is necessary for outputting within the ASPECT folders. You can download from the original repository as well `https://github.com/fastscape-lem/fastscapelib-fortran`, however FastScape visualizations will be disabled in this case. Next, create a fastscape build directory, and within the directory run cmake with the option to build a shared library:
+This branch includes modifications to the VTK writing for FastScape that are necessary for outputting within the ASPECT folders. You can download from the original repository as well, `https://github.com/fastscape-lem/fastscapelib-fortran`, however FastScape visualizations will be disabled in this case. 
+
+Next, create a fastscape build directory, and within the directory run cmake with the option to build a shared library:
 
       cmake -DBUILD_FASTSCAPELIB_SHARED=ON /path/to/fastscape_source
 
-After, compile the code using:
+After this, compile the code using:
 
       make

@@ -30,8 +30,7 @@ you must link the ASPECT to the FastScape install. This is done by typing:
 
 
     cmake -DASPECT_WITH_FASTSCAPE=ON \
-
-    -DFASTSCAPE_DIR=/path/to/fastscape/build ..
+                 -DFASTSCAPE_DIR=/path/to/fastscape/build ..
 
 During cmake, a few outputs may be seen that notify if the link with FastScape is successful. First,
 if the library is found the following will be seen:
