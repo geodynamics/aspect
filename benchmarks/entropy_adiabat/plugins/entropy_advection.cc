@@ -215,7 +215,6 @@ namespace aspect
                                         (scratch.material_model_inputs.temperature[q] - scratch.old_temperature_values[q]) / this->get_timestep()
                                         * scratch.material_model_outputs.densities[q] * scratch.material_model_outputs.specific_heat[q];
 
-
           residuals[q]
             = std::abs((density * scratch.material_model_inputs.temperature[q]) * (dField_dt + u_grad_field) - gamma - diffusion_term);
         }
@@ -257,6 +256,8 @@ namespace aspect
     }
   }
 
+
+
 // The function below replaces the normal temperature advection assembler with the entropy advection assembler of this file
   template <int dim>
   void set_assemblers_entropy_advection(const SimulatorAccess<dim> &simulator_access,
@@ -279,16 +280,22 @@ namespace aspect
 
     if (simulator_access.introspection().composition_type_exists(CompositionalFieldDescription::entropy))
       {
-        // Find the index of the entropy field and replace the assembler for it.
-        // The index of the entropy field is its index in the compositional fields plus one (for the temperature field).
-        const unsigned int entropy_index = simulator_access.introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::entropy)[0]
-                                           + 1;
-        assemblers.advection_system[entropy_index].clear();
-        assemblers.advection_system[entropy_index].emplace_back (std::make_unique<Assemblers::EntropyAdvectionSystem<dim>>());
-        assemblers.advection_system_assembler_properties[entropy_index].needed_update_flags = update_hessians;
+        // Find the indices of the entropy fields, loop over all of them and replace the assembler for them.
+        // The indices of the entropy fields are their indices in the compositional fields plus one (for the temperature field).
+        const std::vector<unsigned int> &entropy_indices = simulator_access.introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::entropy)
+                                                           ;
+
+        for (const auto entropy_index: entropy_indices)
+          {
+            assemblers.advection_system[entropy_index+1].clear();
+            assemblers.advection_system[entropy_index+1].emplace_back (std::make_unique<Assemblers::EntropyAdvectionSystem<dim>>());
+            assemblers.advection_system_assembler_properties[entropy_index+1].needed_update_flags = update_hessians;
+          }
       }
   }
-} // namespace aspect
+}
+
+
 
 template <int dim>
 void signal_connector (aspect::SimulatorSignals<dim> &signals)
@@ -298,6 +305,8 @@ void signal_connector (aspect::SimulatorSignals<dim> &signals)
 
 ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>,
                                   signal_connector<3>)
+
+
 
 // explicit instantiation of the functions we implement in this file
 namespace aspect

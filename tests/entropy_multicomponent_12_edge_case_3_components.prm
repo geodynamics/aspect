@@ -1,0 +1,120 @@
+# This test has the same setup as test 11, but with three components that all contain some quartz.
+# This is an even harder edge case to solve.
+# This also tests that multicomponent averaging method works well with three components.
+
+set Additional shared libraries            = $ASPECT_SOURCE_DIR/benchmarks/entropy_adiabat/plugins/libentropy_plugins.so
+
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set End time                               = 4e6
+set Maximum time step                      = 2e5
+set Output directory                       = output-entropy-multi-edgecase-change-adiabatic-p-3-comp
+set Nonlinear solver scheme                = iterated Advection and Stokes 
+set Use operator splitting                 = true
+
+subsection Solver parameters
+  subsection Operator splitting parameters
+      set Reaction solver type             = fixed step
+      set Reaction time step               = 1e100
+      set Reaction time steps per advection step = 1
+  end
+end
+
+set Surface pressure                       = 1.2e9
+set Pressure normalization                 = volume
+
+subsection Formulation
+  set Mass conservation = projected density field
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 13000
+    set Y extent = 13000
+    
+  end
+end
+
+subsection Adiabatic conditions model
+ subsection Compute profile
+ 
+  set Use surface condition function = true
+
+  	subsection Surface condition function
+    set Variable names = x,t 
+    set Function expression = 1.2e9+4e2*t;0
+    end
+
+ end
+end
+
+# We prescribe temperatures according to the data table.
+# This output is computed in the material model.
+subsection Temperature field
+  set Temperature method = prescribed field with diffusion
+end
+
+subsection Compositional fields
+  set Number of fields = 6
+  set Names of fields = percent_comp2, percent_comp3, entropy_comp1, entropy_comp2, entropy_comp3, density_field
+  set Types of fields = chemical composition, chemical composition, entropy, entropy, entropy, density
+  set Compositional field methods = field, field, field, field, field, prescribed field
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators =  left, right, top, bottom
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    set Function expression = 0.3; 0.35; 1600; 2006; 1620; 0.0
+    end
+end
+
+subsection Material model
+  set Model name = entropy model
+
+  subsection Entropy model
+    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/entropy-table/ol-en-table/
+    set Material file name               = qtz60.txt, qtz40.txt, qtz60.txt 
+    set Maximum viscosity                = 1e25
+    set Minimum viscosity                = 1e25
+    set Lateral viscosity file name      = constant_lateral_vis_prefactor.txt
+    set Thermal conductivity formulation = constant
+    set Thermal conductivity             = 0
+
+    set Maximum iteration for multicomponent equilibration = 20
+    set Multicomponent equilibration tolerance = 1e-8
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 0
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, mass flux statistics, composition statistics
+
+  subsection Visualization
+    set Time between graphical output = 0
+    set List of output variables      = material properties, adiabat, nonadiabatic pressure, nonadiabatic temperature, strain rate, entropy average
+
+    subsection Material properties
+      set List of material properties = density,thermal expansivity,specific heat,viscosity, compressibility
+    end
+  end
+end

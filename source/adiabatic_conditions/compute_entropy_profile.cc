@@ -63,8 +63,9 @@ namespace aspect
                              "PrescribedTemperatureOutputs, which is required "
                              "for this adiabatic conditions plugin."));
 
-      const std::vector<unsigned int> entropy_indices = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::entropy);
-      // TODO : need to make it work for more than one field
+      const std::vector<unsigned int> &entropy_indices = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::entropy);
+      const std::vector<unsigned int> &chemical_composition_indices = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::chemical_composition);
+
       AssertThrow(entropy_indices.size() >= 1,
                   ExcMessage("The 'compute entropy' adiabatic conditions plugin "
                              "requires at least one field of type 'entropy'."));
@@ -79,10 +80,14 @@ namespace aspect
       // The entropy along an adiabat is constant (equals the surface entropy)
       // When there is more than one entropy field, we use the background field to compute the adiabatic profile
       // TODO : provide more ways to specify compositional fields like in compute_profile.cc
-      for (unsigned int i=0; i < this->n_compositional_fields(); ++i)
-        in.composition[0][i] = 0;
 
-      in.composition[0][entropy_indices[0]] = surface_entropy;
+      // set all entropy fields to surface entropy
+      for (unsigned int i=0; i < entropy_indices.size(); ++i)
+        in.composition[0][entropy_indices[i]] = surface_entropy;
+
+      // set all chemical composition to 0, so only the background entropy field is used.
+      for (unsigned int i=0; i < chemical_composition_indices.size(); ++i)
+        in.composition[0][chemical_composition_indices[i]] = 0.;
 
       // Check whether gravity is pointing up / out or down / in. In the normal case it should
       // point down / in and therefore gravity should be positive, leading to increasing
@@ -148,7 +153,6 @@ namespace aspect
       Assert (*std::min_element (temperatures.begin(), temperatures.end()) >=
               -std::numeric_limits<double>::epsilon() * temperatures.size(),
               ExcMessage("Adiabatic ComputeProfile encountered a negative temperature."));
-
 
       initialized = true;
     }

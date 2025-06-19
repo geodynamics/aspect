@@ -871,7 +871,7 @@ namespace aspect
         {
           const std::vector<double> &x_coordinates = get_interpolation_point_coordinates(0);
 
-          AssertThrow (position[0] >= x_coordinates[0] && position[0] <= x_coordinates[x_coordinates.size()-1],
+          AssertThrow (position[0] >= (x_coordinates[0] * (1. - 10. * std::numeric_limits<double>::epsilon())) && position[0] <= (x_coordinates[x_coordinates.size()-1] * (1. + 10. * std::numeric_limits<double>::epsilon())),
                        ExcMessage("The requested position "
                                   + std::to_string(position[0])
                                   + " is outside the range of the data (minimum value = "
@@ -883,7 +883,7 @@ namespace aspect
 
           const std::vector<double> &y_coordinates = get_interpolation_point_coordinates(1);
 
-          AssertThrow (position[1] >= y_coordinates[0] && position[1] <= y_coordinates[y_coordinates.size()-1],
+          AssertThrow (position[1] >= (y_coordinates[0] * (1. - 10. * std::numeric_limits<double>::epsilon())) && position[1] <= (y_coordinates[y_coordinates.size()-1] * (1. + 10. * std::numeric_limits<double>::epsilon())),
                        ExcMessage("The requested position "
                                   + std::to_string(position[1])
                                   + " is outside the range of the data (minimum value = "

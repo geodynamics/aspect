@@ -1,0 +1,141 @@
+# This setup is the same as test 8, but with a sharp phase transition appearing. It tests 
+# whether the heat added to the model can be correctly converted to enthalpy.
+# At constant pressure, Delta q = Delta H = T * Delta S
+# The error converges to zero as the time step length reduces.
+
+set Additional shared libraries            = $ASPECT_SOURCE_DIR/benchmarks/entropy_adiabat/plugins/libentropy_plugins.so
+
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set End time                               = 8e6
+set Maximum time step                      = 1e5
+set Output directory                       = output-enthalpy-with-phase-change
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Use operator splitting                 = true
+
+set Nonlinear solver tolerance = 1e-6
+set Max nonlinear iterations = 15
+set Resume computation                     = false
+
+subsection Checkpointing
+  set Steps between checkpoint = 300
+end
+
+subsection Solver parameters
+  subsection Operator splitting parameters
+      set Reaction solver type             = fixed step
+      set Reaction time step               = 1e100
+      set Reaction time steps per advection step = 1
+  end
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: free surface
+
+  subsection Free surface
+    set Free surface stabilization theta = 0.5
+  end
+end
+
+set Surface pressure                       = 12.8e9
+set Pressure normalization                 = no
+
+subsection Formulation
+  set Mass conservation = projected density field
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 13000
+    set Y extent = 13000
+    set Y repetitions = 1
+  end
+end
+
+subsection Temperature field
+  set Temperature method = prescribed field with diffusion
+end
+
+subsection Compositional fields
+  set Number of fields = 4
+  set Names of fields = percent_forsterite_wadslayite, entropy_forsterite, entropy_forsterite_wadslayite, density_field
+  set Types of fields = chemical composition, entropy, entropy, density
+  set Compositional field methods = field, field, field, prescribed field
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, left, right
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    set Function expression = 0.7; 2179; 2059; 0.0
+  end
+end
+
+subsection Boundary heat flux model
+
+  set Fixed heat flux boundary indicators = bottom
+  set Model name = function
+  
+  subsection Function
+    set Coordinate system = cartesian 
+    set  Function expression  = -0.05
+  end
+end
+
+subsection Material model
+  set Model name = entropy model
+
+  subsection Entropy model
+    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/entropy-table/ol-en-table/
+    set Material file name               = forsterite_50GPa.txt, forsterite_to_wadsleyite.txt
+    set Maximum viscosity                = 1e25
+    set Minimum viscosity                = 1e25
+    set Lateral viscosity file name      = constant_lateral_vis_prefactor.txt
+    set Thermal conductivity formulation = constant
+    set Thermal conductivity             = 1000
+  
+    set Maximum iteration for multicomponent equilibration = 15
+    set Multicomponent equilibration tolerance = 1e-8
+
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 1
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, mass flux statistics, composition statistics, topography
+
+  subsection Visualization
+    set Time between graphical output = 3e5
+    set List of output variables      = material properties, adiabat, nonadiabatic pressure, nonadiabatic temperature, strain rate, entropy average
+
+    subsection Material properties
+      set List of material properties = density,thermal expansivity,specific heat,viscosity, compressibility
+    end
+  end
+end
+
+set End time                               = 1.5e6
+set Maximum time step                      = 3e5

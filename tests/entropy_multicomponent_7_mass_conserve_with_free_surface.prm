@@ -1,0 +1,129 @@
+# This test has a free top boundary with all others closed. 
+# Mass conservation is analyzed by comparing mass statistics over time.
+# Mass conservation is achieved after initial 3 timesteps. 
+# The oscillation in mass for the initial timesteps decreases with increasing global refinement.
+
+set Additional shared libraries            = $ASPECT_SOURCE_DIR/benchmarks/entropy_adiabat/plugins/libentropy_plugins.so
+
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set End time                               = 2e6
+set Maximum time step                      = 1e5
+set Output directory                       = output-entropy-multi-free-surface-with-heating
+set Nonlinear solver scheme                = iterated Advection and Stokes 
+set Use operator splitting                 = true
+
+subsection Solver parameters
+  subsection Operator splitting parameters
+      set Reaction solver type             = fixed step
+      set Reaction time step               = 1e100
+      set Reaction time steps per advection step = 1
+  end
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: free surface
+
+  subsection Free surface
+    set Free surface stabilization theta = 0.5
+  end
+end
+
+set Surface pressure                       = 0
+set Pressure normalization                 = no
+
+subsection Formulation
+  set Mass conservation = projected density field
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 13000
+    set Y extent = 13000
+    set Y repetitions = 1
+  end
+end
+
+subsection Temperature field
+  set Temperature method = prescribed field with diffusion
+end
+
+subsection Compositional fields
+  set Number of fields = 4
+  set Names of fields = percent_enstatite, entropy_forsterite, entropy_enstatite, density_field
+  set Types of fields = chemical composition, entropy, entropy, density
+  set Compositional field methods = field, field, field, prescribed field
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, left, right
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    set Function expression = 0.3; 2700; 700; 0.0 
+  end
+end
+
+subsection Boundary heat flux model
+
+  set Fixed heat flux boundary indicators = bottom
+  set Model name = function
+  
+  subsection Function
+    set Coordinate system = cartesian 
+    set  Function expression  = -0.05
+  end
+end
+
+subsection Material model
+  set Model name = entropy model
+
+  subsection Entropy model
+    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/entropy-table/ol-en-table/
+    set Material file name               = forsterite_50GPa.txt, enstatite_50GPa.txt
+    set Maximum viscosity                = 1e25
+    set Minimum viscosity                = 1e25
+    set Lateral viscosity file name      = constant_lateral_vis_prefactor.txt
+    set Thermal conductivity formulation = constant
+    set Thermal conductivity             = 1
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 1
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, mass flux statistics, composition statistics, topography
+
+  subsection Visualization
+    set Time between graphical output = 0
+    set List of output variables      = material properties, adiabat, nonadiabatic pressure, nonadiabatic temperature, strain rate, entropy average
+
+    subsection Material properties
+      set List of material properties = density,thermal expansivity,specific heat,viscosity, compressibility
+    end
+  end
+end
+
+set End time                               = 5e5
+set Maximum time step                      = 1e5
