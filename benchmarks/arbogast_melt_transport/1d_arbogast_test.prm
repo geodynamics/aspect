@@ -15,6 +15,9 @@
 # k = k0 phi^2.
 # We set k0 = 1.
 
+# NOTE: The analytical solution only is an approximate
+# solution so we can not test convergence beyond ~160 cells.
+
 # Compaction length: L_c = sqrt(k0 mu_s / mu_f)
 # rho_r = rho_f - rho_s
 
@@ -45,7 +48,6 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0
 set Use years in output instead of seconds = false
-#set Use direct solver for Stokes system    = true
 set Adiabatic surface temperature          = 1600
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 50
@@ -94,6 +96,7 @@ end
 subsection Melt settings
   set Include melt transport                  = true
   set Use discontinuous compaction pressure   = false
+  set Compaction viscosity regularization factor = 1e-10
 end
 
 ############### Compositional fields
@@ -194,7 +197,6 @@ subsection Postprocess
 
     set Output format                 = vtu
     set Time between graphical output = 0
-    #set Write higher order output     = true
     set Interpolate output            = false
 
   end
