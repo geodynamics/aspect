@@ -61,13 +61,11 @@ namespace aspect
       std::vector<Vector<float>> all_error_indicators (this->plugin_objects.size(),
                                                         Vector<float>(error_indicators.size()));
       unsigned int index = 0;
-      for (typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator
-           p = this->plugin_objects.begin();
-           p != this->plugin_objects.end(); ++p, ++index)
+      for (auto &p : this->plugin_objects)
         {
           try
             {
-              (*p)->execute (all_error_indicators[index]);
+              p->execute (all_error_indicators[index]);
 
               for (unsigned int i=0; i<error_indicators.size(); ++i)
                 Assert (all_error_indicators[index](i) >= 0,
@@ -99,7 +97,7 @@ namespace aspect
               std::cerr << "Exception on MPI process <"
                         << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
                         << "> while running mesh refinement plugin <"
-                        << typeid(**p).name()
+                        << typeid(*p).name()
                         << ">: " << std::endl
                         << exc.what() << std::endl
                         << "Aborting!" << std::endl
@@ -117,7 +115,7 @@ namespace aspect
               std::cerr << "Exception on MPI process <"
                         << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
                         << "> while running mesh refinement plugin <"
-                        << typeid(**p).name()
+                        << typeid(*p).name()
                         << ">: " << std::endl;
               std::cerr << "Unknown exception!" << std::endl
                         << "Aborting!" << std::endl
@@ -127,6 +125,8 @@ namespace aspect
               // terminate the program!
               MPI_Abort (MPI_COMM_WORLD, 1);
             }
+
+          ++index;
         }
 
       // now merge the results
