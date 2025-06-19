@@ -308,7 +308,7 @@ namespace aspect
         /**
          * Number of points in the data grid as specified in the data file.
          */
-        TableIndices<dim> table_points;
+        TableIndices<dim> points_per_direction;
 
         /**
          * Scales the data boundary condition by a scalar factor. Can be used
