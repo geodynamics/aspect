@@ -363,7 +363,7 @@ namespace aspect
                                                   "Note that this plugin does not take into account elastic stresses "
                                                   "and therefore cannot be used when elasticity is switched on. "
                                                   "\n\n"
-                                                  "Physical units: \\si{\\pascal}.")
+                                                  "Physical units: $\\text{Pa}$.")
     }
   }
 }

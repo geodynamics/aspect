@@ -103,7 +103,7 @@ namespace aspect
                                                   "Note that both in 2d and in 3d the output tensor will have 9 "
                                                   "elements, but that in 2d, only 4 are filled. "
                                                   "\n\n"
-                                                  "Physical units: \\si{\\per\\second}.")
+                                                  "Physical units: $\\frac{1}{\\text{s}}$.")
     }
   }
 }

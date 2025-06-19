@@ -142,7 +142,7 @@ namespace aspect
                                                   "A visualization output object that outputs "
                                                   "the second moment invariant of the deviatoric stress tensor."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\pascal}.")
+                                                  "Physical units: $\\text{Pa}$.")
     }
   }
 }

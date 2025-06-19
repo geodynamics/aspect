@@ -87,7 +87,7 @@ namespace aspect
                                                   "be used to visualize positive elevations, whereas the the one "
                                                   "called ``surface elevation'' can."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\meter}.")
+                                                  "Physical units: $\\text{m}$.")
     }
   }
 }

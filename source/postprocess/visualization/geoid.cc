@@ -106,7 +106,7 @@ namespace aspect
                                                   "Visualization for the geoid solution. The geoid is given "
                                                   "by the equivalent water column height due to a gravity perturbation. "
                                                   "\n\n"
-                                                  "Physical units: \\si{\\meter}.")
+                                                  "Physical units: $\\text{m}$.")
     }
   }
 }

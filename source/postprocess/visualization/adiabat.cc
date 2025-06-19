@@ -112,8 +112,8 @@ namespace aspect
                                                   "density, and density derivative (with regard to depth)"
                                                   "as produced by the \\texttt{AdiabaticConditions} class."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\kelvin}, \\si{\\pascal}, "
-                                                  "\\si{\\kilo\\gram\\per\\meter\\cubed\\per\\meter}, "
+                                                  "Physical units: $\\text{K}$, $\\text{Pa}$, "
+                                                  "$\\frac{\\text{kg}}{\\text{m}^3\\text{m}}$}, "
                                                   "respectively, for the four components.")
     }
   }

@@ -184,7 +184,9 @@ namespace aspect
                                                   "The average temperature is calculated using the lateral averaging function from the ``depth average'' "
                                                   "postprocessor and interpolated linearly between the layers specified through ``Number of depth slices''."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\kelvin}.")
+                                                  "The 'nonadiabatic temperature' is another option to output temperature anomaly, but compared with the reference "
+                                                  "adiabatic temperature profile instead."
+                                                  "Physical units: $\\text{K}$.")
     }
   }
 }

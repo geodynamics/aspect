@@ -129,7 +129,7 @@ namespace aspect
                                                   "information on the surface of the domain, rather than padding the "
                                                   "information with zeros in the interior of the domain."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\meter}.")
+                                                  "Physical units: $\\text{m}$.")
     }
   }
 }

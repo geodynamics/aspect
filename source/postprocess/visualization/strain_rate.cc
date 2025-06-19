@@ -104,7 +104,7 @@ namespace aspect
                                                   "all components of the tensor because that is what the file format "
                                                   "requires."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\per\\second}.")
+                                                  "Physical units: $\\frac{1}{\\text{s}}$.")
     }
   }
 }

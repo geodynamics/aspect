@@ -110,7 +110,7 @@ namespace aspect
                                                   "along with the grain lag angle $\\Theta$, "
                                                   "to calculate the grain orientation lag parameter."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\second}.")
+                                                  "Physical units: $\\text{s}$.")
     }
   }
 }

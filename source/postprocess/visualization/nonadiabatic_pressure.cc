@@ -85,7 +85,7 @@ namespace aspect
                                                   "pressure}. There are, however, other ways as well, "
                                                   "depending on the choice of the ``background pressure''."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\pascal}.")
+                                                  "Physical units: $\\text{Pa}$.")
     }
   }
 }

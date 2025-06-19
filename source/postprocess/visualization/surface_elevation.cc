@@ -104,7 +104,7 @@ namespace aspect
                                                   "information is comparable to what the current object creates, "
                                                   "but it is not as easily used to visualize information."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\meter}.")
+                                                  "Physical units: $\\text{m}$.")
     }
   }
 }

@@ -89,7 +89,7 @@ namespace aspect
                                                   "convection models, but can be non-zero in compressible models and "
                                                   "models with melt transport."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\per\\second}.")
+                                                  "Physical units: $\\frac{1}{\\text{s}}$.")
     }
   }
 }

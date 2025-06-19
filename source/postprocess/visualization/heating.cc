@@ -182,7 +182,7 @@ namespace aspect
                                                   "A visualization output object that generates output "
                                                   "for all the heating terms used in the energy equation."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\watt\\per\\cubic\\meter}.")
+                                                  "Physical units: $\\frac{\\text{W}}{\\text{m}^3}$\\si{\\watt\\per\\cubic\\meter}.")
     }
   }
 }
