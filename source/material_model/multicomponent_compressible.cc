@@ -38,7 +38,7 @@ namespace aspect
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      EquationOfStateOutputs<dim> eos_outputs (this->n_compositional_fields()+1);
+      EquationOfStateOutputs<dim> eos_outputs (this->introspection().get_number_of_fields_of_type(CompositionalFieldDescription::chemical_composition)+1);
       EquationOfStateOutputs<dim> eos_outputs_all_phases (n_phases);
 
       // Store the phase function value for each phase and composition

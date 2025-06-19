@@ -183,7 +183,7 @@ namespace aspect
         std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
         chemical_field_names.insert(chemical_field_names.begin(),"background");
 
-        Utilities::MapParsing::Options options(compositional_field_names, "");
+        Utilities::MapParsing::Options options(chemical_field_names, "");
         options.list_of_allowed_keys = compositional_field_names;
         options.allow_multiple_values_per_key = true;
         if (expected_n_phases_per_composition)
