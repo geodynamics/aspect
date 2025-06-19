@@ -34,5 +34,8 @@ end
 subsection Postprocess
   subsection Visualization
     set List of output variables      = material properties, strain rate, named additional outputs, melt material properties
+    subsection Melt material properties
+      set List of properties = compaction length, permeability, compaction viscosity
+    end
   end
 end

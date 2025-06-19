@@ -230,37 +230,20 @@ subsection Material model
                                               sediment: 1.001e19|2.5e23|2.5e23
 
     # Diffusion creep parameters from Hirth & Kohlstaedt 2004
-    set Prefactors for diffusion creep                    = background:  1.577e-21, \
-                                                            porosity:    1.577e-21, \
-                                                            bound_fluid: 1.577e-21, \
-                                                            peridotite:  1.577e-21, \
-                                                            gabbro:      1.577e-21, \
-                                                            MORB:        1.577e-21, \
-                                                            sediment:    1.577e-21
+    set Prefactors for diffusion creep                    = 1.577e-21
 
     set Water fugacity exponents for diffusion creep      = 0.7
 
     set Stress exponents for diffusion creep              = 1.0
 
-    set Activation volumes for diffusion creep            = background:  10e-6, \
-                                                            porosity:    10e-6, \
-                                                            bound_fluid: 10e-6, \
-                                                            peridotite:  10e-6|10e-6, \
-                                                            gabbro:      10e-6, \
-                                                            MORB:        10e-6, \
-                                                            sediment:    10e-6
+    set Activation volumes for diffusion creep            = 10e-6
 
     set Grain size                                        = 1e-3
 
-    set Activation energies for diffusion creep           = background:  375e3, \
-                                                            porosity:    375e3, \
-                                                            bound_fluid: 375e3, \
-                                                            peridotite:  375e3, \
-                                                            gabbro:      375e3, \
-                                                            MORB:        375e3, \
-                                                            sediment:    375e3
+    set Activation energies for diffusion creep           = 375e3
 
-    # Dislocation creep parameters from Hirth & Kohlstaedt 2004.
+    # Dislocation creep parameters from Hirth & Kohlstaedt 2004, disable dislocation creep
+    # within the lower mantle (beneath 660 km depth).
     set Prefactors for dislocation creep                  = background:  1.01e-25|1e-50, \
                                                             porosity:    1.01e-25|1e-50, \
                                                             bound_fluid: 1.01e-25|1e-50, \
@@ -269,36 +252,18 @@ subsection Material model
                                                             MORB:        1.01e-25|1e-50, \
                                                             sediment:    1.01e-25|1.01e-25|1e-50
 
-    set Water fugacity exponents for dislocation creep    = 0.34285714285714286
-
     set Stress exponents for dislocation creep            = 3.5
 
-    set Activation volumes for dislocation creep          = background:  22e-6, \
-                                                            porosity:    22e-6, \
-                                                            bound_fluid: 22e-6, \
-                                                            peridotite:  22e-6, \
-                                                            gabbro:      22e-6, \
-                                                            MORB:        22e-6, \
-                                                            sediment:    22e-6
+    set Water fugacity exponents for dislocation creep    = 0.34285714285714286
 
-    set Activation energies for dislocation creep         = background:  520e3, \
-                                                            porosity:    520e3, \
-                                                            bound_fluid: 520e3, \
-                                                            peridotite:  520e3, \
-                                                            gabbro:      520e3, \
-                                                            MORB:        520e3, \
-                                                            sediment:    520e3
+    set Activation volumes for dislocation creep          = 22e-6
+
+    set Activation energies for dislocation creep         = 520e3
 
     # Drucker-Prager plasticity parameters
     set Angles of internal friction                       = 30
 
-    set Cohesions                                         = background:  60e6, \
-                                                            porosity:    60e6, \
-                                                            bound_fluid: 60e6, \
-                                                            peridotite:  60e6, \
-                                                            gabbro:      60e6, \
-                                                            MORB:        60e6, \
-                                                            sediment:    60e6
+    set Cohesions                                         = 60e6
 
     set Maximum yield stress                              = 500e6
 
