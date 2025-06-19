@@ -447,7 +447,7 @@ namespace aspect
                                      * JxW;
 
               if (elastic_outputs != nullptr && this->get_parameters().enable_elasticity)
-                data.local_rhs(i) += (scalar_product(elastic_outputs->elastic_force[q],Tensor<2,dim>(scratch.grads_phi_u[i])))
+                data.local_rhs(i) += (elastic_outputs->elastic_force[q] * scratch.grads_phi_u[i])
                                      * JxW;
 
               if (prescribed_dilation != nullptr)

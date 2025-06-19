@@ -107,7 +107,7 @@ Number of mesh deformation degrees of freedom: 252
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 13+0 iterations.
       Newton system information: Norm of the rhs: 4264.83, Derivative scaling factor: 1
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.30014e-16, 0, 0, 0, 0, 0, 0, 0, 0, 3.87349e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.31747e-16, 0, 0, 0, 0, 0, 0, 0, 0, 3.87349e-09
       Relative nonlinear residual (total system) after nonlinear iteration 2: 3.87349e-09
 
 
@@ -127,7 +127,7 @@ Number of mesh deformation degrees of freedom: 252
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 9+0 iterations.
       Newton system information: Norm of the rhs: 1.82953e+09
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.35576e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0.00165895
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.37239e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0.00165895
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00165895
 
    Solving temperature system... 0 iterations.
@@ -145,7 +145,7 @@ Number of mesh deformation degrees of freedom: 252
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 13+0 iterations.
       Newton system information: Norm of the rhs: 14022.6, Derivative scaling factor: 1
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.40507e-16, 0, 0, 0, 0, 0, 0, 0, 0, 1.27153e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.38883e-16, 0, 0, 0, 0, 0, 0, 0, 0, 1.27153e-08
       Relative nonlinear residual (total system) after nonlinear iteration 3: 1.27153e-08
 
 
@@ -165,7 +165,7 @@ Number of mesh deformation degrees of freedom: 252
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 10+0 iterations.
       Newton system information: Norm of the rhs: 2.81121e+10
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.32623e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0.0256528
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.34323e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0.0256528
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0256528
 
    Solving temperature system... 0 iterations.
@@ -173,7 +173,7 @@ Number of mesh deformation degrees of freedom: 252
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 12+0 iterations.
       Newton system information: Norm of the rhs: 3.6048e+09, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.28715e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0.00328946
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.30466e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0.00328946
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00328946
 
    Solving temperature system... 0 iterations.
@@ -191,9 +191,9 @@ Number of mesh deformation degrees of freedom: 252
    The linear solver tolerance is set to 1e-07. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 14+0 iterations.
-      Newton system information: Norm of the rhs: 5.81617e+07, Derivative scaling factor: 1
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.46835e-16, 0, 0, 0, 0, 0, 0, 0, 0, 5.30737e-05
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 5.30737e-05
+      Newton system information: Norm of the rhs: 5.81618e+07, Derivative scaling factor: 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.32623e-16, 0, 0, 0, 0, 0, 0, 0, 0, 5.30738e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 5.30738e-05
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
