@@ -117,12 +117,6 @@ namespace aspect
          */
         void load (const std::map<std::string, std::string> &status_strings) override;
 
-        /**
-         * Update time-dependent input parameters for the FastScape plugin.
-         */
-        void update() override;
-
-
       private:
         /**
          * Function used to set the FastScape ghost nodes. FastScape boundaries are
