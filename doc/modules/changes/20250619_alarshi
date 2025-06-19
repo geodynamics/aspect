@@ -1,0 +1,5 @@
+Changed: The tomography_based_plate_motions cookbook now has
+added functionality to import slabs from the Slab2 model and
+an initial imposed topography.
+<br>
+(Arushi Saxena, Juliane Dannberg, Rene Gassmoeller, 2025/06/19)

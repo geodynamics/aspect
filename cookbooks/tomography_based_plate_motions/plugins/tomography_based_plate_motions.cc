@@ -376,9 +376,6 @@ namespace aspect
       const std::shared_ptr<UnscaledViscosityAdditionalOutputs<dim>> unscaled_viscosity_out
         = out.template get_additional_output_object<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>();
 
-      const InitialTemperature::AdiabaticBoundary<dim> &adiabatic_boundary =
-        initial_temperature_manager->template get_matching_active_plugin<InitialTemperature::AdiabaticBoundary<dim>>();
-
       for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
         {
           const double depth = this->get_geometry_model().depth(in.position[i]);
@@ -987,9 +984,6 @@ namespace aspect
         const_cast<std::shared_ptr<const aspect::InitialTemperature::Manager<dim>>&>(initial_temperature_manager)
           = this->get_initial_temperature_manager_pointer();
 
-      const InitialTemperature::AdiabaticBoundary<dim> &adiabatic_boundary =
-        initial_temperature_manager->template get_matching_active_plugin<InitialTemperature::AdiabaticBoundary<dim>>();
-
       if (initial_composition_manager == nullptr)
         const_cast<std::shared_ptr<const aspect::InitialComposition::Manager<dim>>&>(initial_composition_manager)
           = this->get_initial_composition_manager_pointer();
@@ -1024,6 +1018,8 @@ namespace aspect
 
           // For the adiabatic conditions, assume a characteristic crustal and lithosphere thickness.
           double crustal_thickness = 40000.;
+
+          const double lithosphere_thickness = get_lithosphere_thickness(in.position[i]);
 
           if (this->get_adiabatic_conditions().is_initialized())
             {
@@ -1122,8 +1118,6 @@ namespace aspect
               double deltaT  = new_temperature - 293.;
 
               unsigned int material_type = 0;
-
-              const double lithosphere_thickness = get_lithosphere_thickness(in.position[i]);
 
               // Density computation
               const double reference_density = this->get_adiabatic_conditions().is_initialized()

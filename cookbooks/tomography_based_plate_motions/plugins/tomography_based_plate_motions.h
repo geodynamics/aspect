@@ -566,13 +566,6 @@ namespace aspect
         double slab_viscosity;
 
         /**
-         * Approximate lithosphere thickness used to separate the regions of
-         * temperature derived from seismic tomography and linear temperature
-         * gradient.
-         */
-        double lithosphere_thickness;
-
-        /**
          * Parameter used to describe the uppermost mantle based on Tutu (2018).
          */
         double depth_to_base_of_uppermost_mantle;
