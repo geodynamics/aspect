@@ -86,11 +86,12 @@ namespace aspect
                      const unsigned int n_comp);
 
         /**
-         * Compaction viscosity values $\xi$ at the given positions.
-         * This parameter describes the resistance of the solid matrix
+         * Inverse of the compaction viscosity values $\xi$ at the given positions.
+         * The compaction viscosity parameter describes the resistance of the solid matrix
          * in a two-phase simulation to dilation and compaction.
+         * We have to use the inverse because the compaction viscosity goes to infinity
+         * for zero porosity in many (realistic) material descriptions.
          */
-        std::vector<double> compaction_viscosities;
         std::vector<double> inverse_compaction_viscosities;
 
         /**

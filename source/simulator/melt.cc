@@ -80,7 +80,6 @@ namespace aspect
     MeltOutputs<dim>::MeltOutputs  (const unsigned int n_points,
                                     const unsigned int /*n_comp*/)
       :
-      compaction_viscosities(n_points, numbers::signaling_nan<double>()),
       inverse_compaction_viscosities(n_points, numbers::signaling_nan<double>()),
       fluid_viscosities(n_points, numbers::signaling_nan<double>()),
       permeabilities(n_points, numbers::signaling_nan<double>()),
@@ -95,8 +94,6 @@ namespace aspect
                                     const FullMatrix<double>  &projection_matrix,
                                     const FullMatrix<double>  &expansion_matrix)
     {
-      average_property (operation, projection_matrix, expansion_matrix,
-                        compaction_viscosities);
       average_property (operation, projection_matrix, expansion_matrix,
                         inverse_compaction_viscosities);
       average_property (operation, projection_matrix, expansion_matrix,
