@@ -498,6 +498,49 @@ namespace aspect
                                              &sand_transport_coefficient,
                                              &silt_transport_coefficient);
 
+          // generate a combined array for kf kd both onshore and offshore
+          std::vector<double> combined_kd(fastscape_array_size);
+          std::vector<double> combined_kf(fastscape_array_size);
+          for (unsigned int i = 0; i < fastscape_array_size; ++i)
+            {
+              // for cells below sea level, grep the marine sediment data
+              if (elevation[i] >= current_sea_level)
+                {
+                  combined_kf[i] = bedrock_river_incision_rate_array[i];
+                  combined_kd[i] = bedrock_transport_coefficient_array[i];
+                }
+              // for cells below sea level, grep the marine sediment data
+              else
+                {
+                  combined_kf[i] = sediment_river_incision_rate;
+                  combined_kd[i] = sediment_transport_coefficient;
+                };
+            }
+
+          // select additional output for Fastscape vtu
+          // the default output is kf.
+          std::vector<double> additional_output_field;
+          switch (additional_output_variables)
+            {
+              case kf:
+              {
+                additional_output_field = combined_kf;
+                break;
+              }
+              case kd:
+              {
+                additional_output_field = combined_kd;
+                break;
+              }
+              case uplift_rate:
+              {
+                additional_output_field = velocity_z;
+                break;
+              }
+              default:
+                AssertThrow(false, ExcMessage("Invalid Fastscape variable."));
+            }
+
           // Find timestep size, run FastScape, and make visualizations.
           execute_fastscape(elevation,
                             bedrock_river_incision_rate_array,  // corresponds to FastScape's 'HHHHH' argument
@@ -1668,6 +1711,11 @@ namespace aspect
           prm.declare_entry("Initial noise magnitude", "5",
                             Patterns::Double(),
                             "Maximum topography change from the initial noise. Units: $\\{m}$");
+          prm.declare_entry("Additional output variables", "river incision rate",
+                            Patterns::Selection("river incision rate|deposition coefficient|uplift rate"),
+                            "Select one type of Fastscape variable as output in Fastcape vtk."
+                            "Output are in units of per year. "
+                           );
 
           prm.enter_subsection ("Boundary conditions");
           {
@@ -1923,6 +1971,18 @@ namespace aspect
             leftright_ghost_nodes_periodic = prm.get_bool("Left right ghost nodes periodic");
           }
           prm.leave_subsection();
+
+          // Set up Fastscape vtu output parameters
+          const std::string output_choice = prm.get("Additional output variables");
+
+          if (output_choice == "river incision rate")
+            additional_output_variables = kf;
+          else if (output_choice == "deposition coefficient")
+            additional_output_variables = kd;
+          else if (output_choice == "uplift rate")
+            additional_output_variables = uplift_rate;
+          else
+            AssertThrow(false, ExcMessage("Not a valid Fastscape field."));
 
           prm.enter_subsection("Erosional parameters");
           {

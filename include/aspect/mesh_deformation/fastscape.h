@@ -88,6 +88,19 @@ namespace aspect
         void parse_parameters (ParameterHandler &prm) override;
 
         /**
+         * Enumeration for selecting which type of additional output to use in Fastscape vtk.
+         * Select between Fastscape variables.
+         */
+        enum Fastscape_output_scheme
+        {
+          //
+          kf,
+          kd,
+          uplift_rate
+        };
+        Fastscape_output_scheme additional_output_variables;
+
+        /**
          * Serialize the contents of this class as far as they are not read
          * from input parameter files.
          */
