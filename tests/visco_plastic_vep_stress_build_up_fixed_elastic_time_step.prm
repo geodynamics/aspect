@@ -1,20 +1,18 @@
 # This test checks viscoelastic stress buildup with a
 # constant strain rate and an elastic time step equal
-# to the numerical time step. The fixed elastic time
-# step used during the first time step is equal to the
-# numerical time step. Viscoelastic stresses (sigma_xx,
-# sigma_yy, sigma_xy) are tracked with compositional
-# fields. The parameter file is derived from the 2D
-# viscoelastic_stress_build_up benchmark with modifications
-# to the resolution, end time, material properties and
-# postprocessors.
+# to a user-specified constant elastic time step. This
+# fixed elastic time step is double the numerical time step.
+# Viscoelastic stresses (sigma_xx, sigma_yy, sigma_xy)
+# are tracked with compositional fields. The parameter
+# file is derived from the 2D viscoelastic_stress_build_up
+# benchmark with modifications to the resolution, end time,
+# material properties and postprocessors.
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build_up/viscoelastic_stress_build_up.prm
 
 
 #  Global parameters
 set End time                               = 1e3
-set Output directory                       = viscoelastic_numerical_elastic_time_step
 
 # Model geometry (100x100 km, 5 km spacing)
 subsection Geometry model
@@ -30,15 +28,19 @@ end
 
 # Material model
 subsection Material model
-  set Model name = viscoelastic
+  set Model name = visco plastic
 
-  subsection Viscoelastic
-    set Densities                   = 2800
-    set Viscosities                 = 1.e21
+  subsection Visco Plastic
+    set Viscous flow law                          = dislocation
+    set Prefactors for dislocation creep          = 5e-22
+    set Stress exponents for dislocation creep    = 1.0
+    set Activation energies for dislocation creep = 0.
+    set Activation volumes for dislocation creep  = 0.
     set Elastic shear moduli        = 1.e10
-    set Use fixed elastic time step = false
-    set Fixed elastic time step     = 1e3
+    set Use fixed elastic time step = true
+    set Fixed elastic time step     = 2e3
     set Viscosity averaging scheme  = harmonic
+    set Densities                   = 2800.
   end
 end
 

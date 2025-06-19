@@ -2,9 +2,9 @@
 # to use particles, rather than compositional fields, to track viscoleastic
 # stresses.
 
-include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build-up/viscoelastic_stress_build-up.prm
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build_up/viscoelastic_stress_build_up.prm
 
-set Output directory = output_viscoelastic_stress_build-up_particles
+set Output directory = output_viscoelastic_stress_build_up_particles
 
 # For particles, the operator splitting is done by the particle property elastic stress.
 set Use operator splitting                 = false

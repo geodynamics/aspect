@@ -1,0 +1,44 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for composition solver 3
+# 13: Iterations for composition solver 4
+# 14: Iterations for composition solver 5
+# 15: Iterations for composition solver 6
+# 16: Iterations for Stokes solver
+# 17: Velocity iterations in Stokes preconditioner
+# 18: Schur complement iterations in Stokes preconditioner
+# 19: Minimal value for composition ve_stress_xx
+# 20: Maximal value for composition ve_stress_xx
+# 21: Global mass for composition ve_stress_xx
+# 22: Minimal value for composition ve_stress_yy
+# 23: Maximal value for composition ve_stress_yy
+# 24: Global mass for composition ve_stress_yy
+# 25: Minimal value for composition ve_stress_xy
+# 26: Maximal value for composition ve_stress_xy
+# 27: Global mass for composition ve_stress_xy
+# 28: Minimal value for composition ve_stress_xx_old
+# 29: Maximal value for composition ve_stress_xx_old
+# 30: Global mass for composition ve_stress_xx_old
+# 31: Minimal value for composition ve_stress_yy_old
+# 32: Maximal value for composition ve_stress_yy_old
+# 33: Global mass for composition ve_stress_yy_old
+# 34: Minimal value for composition ve_stress_xy_old
+# 35: Maximal value for composition ve_stress_xy_old
+# 36: Global mass for composition ve_stress_xy_old
+# 37: Minimal temperature (K)
+# 38: Average temperature (K)
+# 39: Maximal temperature (K)
+# 40: RMS velocity (m/year)
+# 41: Max. velocity (m/year)
+# 42: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 2500 23003 2601 135000 2 0 0 0 0 0 0 0 217 220 220 1.99925061e+08 1.99925061e+08 1.99925061e+18 -1.99925061e+08 -1.99925061e+08 -1.99925061e+18  0.00000000e+00 0.00000000e+00  0.00000000e+00 1.99925061e+08 1.99925061e+08 1.99925061e+18 -1.99925061e+08 -1.99925061e+08 -1.99925061e+18  0.00000000e+00 0.00000000e+00  0.00000000e+00 2.93000000e+02 2.93000000e+02 2.93000000e+02 2.57666671e-02 4.46291859e-02 output-viscoelastic_stress_build_up/solution/solution-00000 
+1 1.000000000000e+03 1.000000000000e+03 2500 23003 2601 135000 1 0 1 1 1 1 1 1   9  10  10 1.99927457e+08 1.99927505e+08 1.99927479e+18 -1.99927505e+08 -1.99927457e+08 -1.99927479e+18 -1.49597214e+01 1.40907878e+01 -1.98828994e+07 1.99927457e+08 1.99927505e+08 1.99927479e+18 -1.99927505e+08 -1.99927457e+08 -1.99927479e+18 -1.46702680e+01 1.38157756e+01 -1.98847843e+07 2.93000000e+02 2.93000000e+02 2.93000000e+02 2.57666753e-02 4.46291859e-02 output-viscoelastic_stress_build_up/solution/solution-00001 

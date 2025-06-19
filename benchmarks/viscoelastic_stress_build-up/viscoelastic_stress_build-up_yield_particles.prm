@@ -1,22 +1,22 @@
-# This parameter file modifies the benchmark viscoelastic_stress_build-up.prm
+# This parameter file modifies the benchmark viscoelastic_stress_build_up.prm
 # to use the Visco Plastic material model and include a constant
 # yield stress of 100 MPa. Without the imposed yield stress, the viscoelastic
 # stress will build up to ~ 200 MPa. However, the imposed yield stress will
 # truncate the viscoelastic stresses at the yield stress magnitude.
 # For additional information on the model setup and analytical solution,
-# see viscoelastic_stress_build-up.prm, which is located in this folder.
+# see viscoelastic_stress_build_up.prm, which is located in this folder.
 #
 # The results can be observed by viewing the compositional field values
 # representing the horizontal (ve_stress_xx) or vertical (ve_stress_yy) components
 # of the viscoelastic stress tensor or the equivalent values on particles,
 # which are used to store and track the viscoelastic stresses. This parameter
-# file differs from viscoelastic_stress_build-up_yield.prm only in the use
+# file differs from viscoelastic_stress_build_up_yield.prm only in the use
 # of active particles to track the elastic stresses.
 
-include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build-up/viscoelastic_stress_build-up.prm
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build_up/viscoelastic_stress_build_up.prm
 
 set End time                               = 100e3
-set Output directory                       = output_viscoelastic_stress_build-up_yield_particles
+set Output directory                       = output_viscoelastic_stress_build_up_yield_particles
 
 # For particles, the operator splitting is done by the particle property elastic stress.
 set Use operator splitting                 = false

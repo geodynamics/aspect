@@ -18,4 +18,4 @@ Esther Heckenbach,
 Maaike Weerdesteijn.
 
 Files for this benchmark are located in
-[this directory](https://github.com/geodynamics/aspect/tree/main/benchmarks/viscoelastic_stress_build-up).
+[this directory](https://github.com/geodynamics/aspect/tree/main/benchmarks/viscoelastic_stress_build_up).
