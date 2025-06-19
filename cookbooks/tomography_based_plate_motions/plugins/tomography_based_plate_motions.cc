@@ -277,6 +277,25 @@ namespace aspect
 
     template <int dim>
     double
+    TomographyBasedPlateMotions<dim>::get_lithosphere_thickness (const Point<dim> &position) const
+    {
+      if (this->get_adiabatic_conditions().is_initialized() && !use_constant_lithosphere_thickness)
+        {
+          // We use the Litho 1.0 model that is used to define the lower adiabatic boundary in our initial temperatures.
+          const InitialTemperature::AdiabaticBoundary<dim> &adiabatic_boundary =
+            initial_temperature_manager->template get_matching_active_plugin<InitialTemperature::AdiabaticBoundary<dim>>();
+          const unsigned int surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("outer");
+          return adiabatic_boundary.get_data_component(surface_boundary_id, position, 0);
+        }
+      else
+        // Default value set to the value used by Tutu et al., (2018).
+        return 100e3;
+    }
+
+
+
+    template <int dim>
+    double
     TomographyBasedPlateMotions<dim>::compute_viscosity_scaling (const double depth) const
     {
       Assert(average_viscosity_profile.size() != 0,
@@ -304,11 +323,6 @@ namespace aspect
 
       const std::shared_ptr<UnscaledViscosityAdditionalOutputs<dim>> unscaled_viscosity_out
         = out.template get_additional_output_object<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>();
-
-      const InitialTemperature::AdiabaticBoundary<dim> &adiabatic_boundary =
-        initial_temperature_manager->template get_matching_active_plugin<InitialTemperature::AdiabaticBoundary<dim>>();
-
-      const unsigned int surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("outer");
 
       const unsigned int grain_size_index = this->introspection().compositional_index_for_name("grain_size");
 
@@ -348,11 +362,7 @@ namespace aspect
                  ExcMessage("Pressure has to be non-negative for the viscosity computation. Instead it is: "
                             + std::to_string(pressure)));
 
-          double lithosphere_thickness = 100.e3;
-          // Get variable lithosphere using an adiabatic boundary ascii file
-          // Only use ascii data boundary file if not using a constant thickness for lithosphere
-          if (this->get_adiabatic_conditions().is_initialized() && !use_constant_lithosphere_thickness)
-            lithosphere_thickness = adiabatic_boundary.get_data_component(surface_boundary_id, in.position[i], 0);
+          const double lithosphere_thickness = get_lithosphere_thickness(in.position[i]);
 
           const unsigned int phase_index = get_phase_index(in.position[i], in.temperature[i], pressure);
 
@@ -437,11 +447,6 @@ namespace aspect
               if (average_viscosity_profile.size() != 0 && depth > viscosity_scaling_below_this_depth)
                 out.viscosities[i] *= compute_viscosity_scaling(this->get_geometry_model().depth(in.position[i]));
             }
-
-          // We assume a constant lithospheric viscosity if using constant thickness lithosphere
-          // based on Tutu et al., (2018).
-          if (use_constant_lithosphere_thickness && depth <= lithosphere_thickness)
-            out.viscosities[i] = 1e24;
 
           // Ensure we respect viscosity bounds
           out.viscosities[i] = std::min(std::max(min_eta, out.viscosities[i]),max_eta);
@@ -896,9 +901,6 @@ namespace aspect
         const_cast<std::shared_ptr<const aspect::InitialTemperature::Manager<dim>>&>(initial_temperature_manager)
           = this->get_initial_temperature_manager_pointer();
 
-      const InitialTemperature::AdiabaticBoundary<dim> &adiabatic_boundary =
-        initial_temperature_manager->template get_matching_active_plugin<InitialTemperature::AdiabaticBoundary<dim>>();
-
       // This function will fill the outputs for grain size, viscosity, and dislocation viscosity
       if (in.requests_property(MaterialProperties::viscosity)
           || in.requests_property(MaterialProperties::additional_outputs))
@@ -929,16 +931,11 @@ namespace aspect
 
           // For the adiabatic conditions, assume a characteristic crustal and lithosphere thickness.
           double crustal_thickness = 40000.;
-          double lithosphere_thickness = 100000.;
 
           if (this->get_adiabatic_conditions().is_initialized())
             {
-              // Get variable lithosphere and crustal depths using an adiabatic boundary ascii file
-              lithosphere_thickness = adiabatic_boundary.get_data_component(surface_boundary_id, in.position[i], 0);
+              // Get variable crustal depths using an adiabatic boundary ascii file
               crustal_thickness = crustal_boundary_depth.get_data_component(surface_boundary_id, in.position[i], 0);
-
-              if (use_constant_lithosphere_thickness)
-                lithosphere_thickness = 100e3;
 
               // This variable stores the seismic tomography based temperatures
               double mantle_temperature;
@@ -992,6 +989,8 @@ namespace aspect
               double deltaT  = new_temperature - 293.;
 
               unsigned int material_type = 0;
+
+              const double lithosphere_thickness = get_lithosphere_thickness(in.position[i]);
 
               // Density computation
               if (depth <= crustal_thickness)
