@@ -145,14 +145,71 @@ you would like to contribute some code.
 
 ### Installing astyle
 
-If you installed deal.II through candi, the correct astyle may already on your system and in your path.
-If the indenting script complains that it could not find (the correct version of) astyle,
-you can find it [here](https://sourceforge.net/projects/astyle/files/astyle/astyle%202.04/).
+If you installed deal.II through candi with `./candi.sh --packages="<other packages> astyle"`,
+the correct astyle may already on your system. First, add astyle to your path by sourcing the
+deal.II environment script with:
 
-An easy way to install it is through using the following command in Linux (do not do this in the aspect directory):
-`mkdir astyle && cd astyle && wget 'https://sourceforge.net/projects/astyle/files/astyle/astyle 2.04/astyle_2.04_linux.tar.gz' && tar -zxvf astyle_2.04_linux.tar.gz && cd astyle/build/gcc && make && sudo make install`.
-This will create a new directory called astyle, download, unpack, compile and install it.
-When you add the bin directory to your path, the indent command should find astyle.
+```{code-block} bash
+source $HOME/dealii-candi/configuration/enable.sh
+```
+
+This will make astyle available to ASPECT's indentation script. Then confirm that astyle is available
+and correctly versioned with:
+
+```{code-block} bash
+which astyle
+astyle --version
+```
+
+If `which astyle` returns `astyle not found` or if `astyle --version` does not show
+`Artistic Style Version 2.04` you will need to use one of the methods below to install
+the correct version manually.
+
+#### With candi (Linux/macOS/Windows and HPC clusters)
+
+If you installed deal.II with candi but didn't include astyle in the list of packages, you
+can still install it with:
+
+```{code-block} bash
+git clone https://github.com/dealii/candi.git
+cd candi
+./candi.sh --packages="astyle"
+source $HOME/dealii-candi/configuration/enable.sh
+```
+
+:::{important}
+Installing astyle via candi is the preferred method for HPC Linux clusters. The astyle
+installation methods below require sudo privileges, which will not work for typical HPC
+cluster users!
+:::
+
+#### From source (Linux/macOS)
+
+Linux users can install astyle from source with:
+
+```{code-block} bash
+# Do this outside of the ASPECT directory
+mkdir astyle && cd astyle
+wget 'https://sourceforge.net/projects/astyle/files/astyle/astyle%202.04/astyle_2.04_linux.tar.gz'
+tar -xvzf astyle_2.04_linux.tar.gz
+cd astyle/build/gcc
+make
+sudo make prefix=/usr/local install
+```
+
+macOS users can install astyle from source with:
+
+```{code-block} bash
+# Do this outside of the ASPECT directory
+mkdir astyle && cd astyle
+curl -LO 'https://sourceforge.net/projects/astyle/files/astyle/astyle%202.04/astyle_2.04_linux.tar.gz'
+tar -xvzf astyle_2.04_linux.tar.gz
+cd astyle/build/gcc
+make
+sudo make INSTALL=install prefix=/usr/local install
+```
+
+This installs astyle to `/usr/local/bin`, which will make astyle available to ASPECT's indentation script.
 
 #### Example astyle usage
 
