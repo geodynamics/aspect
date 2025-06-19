@@ -90,7 +90,7 @@ namespace aspect
         typename std::vector<Tensor<1,dim>>::const_iterator velocity = velocities.begin();
 
         std::array<Tensor<1,dim>,4> k;
-        for (auto &p : boost::iterator_range<typename ParticleHandler<dim>::particle_iterator> (begin_particle, end_particle))
+        for (auto &p : typename ParticleHandler<dim>::particle_iterator_range (begin_particle, end_particle))
           {
             ArrayView<double> properties = p.get_properties();
 
