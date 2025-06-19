@@ -13,6 +13,10 @@ $p$
 ```
 
 equipped with boundary conditions.
+We only discuss the incompressible
+Stokes equations in this page,
+but ASPECT does indeed feature compressible
+solvers.
 
 
 Here, $x$ lies in our
@@ -24,9 +28,7 @@ In this document, we discuss the case
 of Dirichlet boundary conditions
 $u=g_D$ on $\Gamma_D$ and Neumann
 $n \cdot (pI-2\varepsilon(u))=g_N$ on
-$\Gamma_N$. However,
-ASPECT also supports
-other boundary conditions.
+$\Gamma_N$.
 
 
 To enable the
@@ -85,8 +87,8 @@ to guarantee existence and uniqueness
 of the discrete velocity and
 pressure solution, we
 search for $u_h \in Q_{k+1}^d$
-and $p_h \in Q_k$, with $k \geq 1$. The use
-$Q_{k+1}$ for velocity and  $Q_k$ for pressure for $k \geq 1$ satisfies
+and $p_h \in Q_k$, with $k \geq 1$. The use of
+$Q_{k+1}$ for velocity and $Q_k$ for pressure for $k \geq 1$ satisfies
 the inf-sup condition
 and is typically known as the Taylor-Hood pair.
 Other options are available in ASPECT,
@@ -121,7 +123,7 @@ on the velocity space.
 
 
 We solve this linear system iteratively with
-preconditioner
+preconditioner of the form
 
 ```{math}
 :label: eq:preconditioning-1
