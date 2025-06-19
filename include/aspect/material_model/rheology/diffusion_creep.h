@@ -173,27 +173,27 @@ namespace aspect
           /**
            * List of diffusion creep prefactors A.
            */
-          std::vector<double> prefactors_diffusion;
+          std::vector<double> prefactors;
 
           /**
            * List of diffusion creep stress exponents n (usually = 1).
            */
-          std::vector<double> stress_exponents_diffusion;
+          std::vector<double> stress_exponents;
 
           /**
            * List of diffusion creep grain size exponents m.
            */
-          std::vector<double> grain_size_exponents_diffusion;
+          std::vector<double> grain_size_exponents;
 
           /**
            * List of diffusion creep activation energies E.
            */
-          std::vector<double> activation_energies_diffusion;
+          std::vector<double> activation_energies;
 
           /**
            * List of diffusion creep activation volumes V.
            */
-          std::vector<double> activation_volumes_diffusion;
+          std::vector<double> activation_volumes;
 
           /**
            * Diffusion creep grain size d.  This is read from the
