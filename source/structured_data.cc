@@ -149,7 +149,7 @@ namespace aspect
     unsigned
     StructuredDataLookup<dim>::get_number_of_coordinates(const unsigned int dimension) const
     {
-      return table_points[dimension];
+      return points_per_direction[dimension];
     }
 
 
@@ -216,7 +216,7 @@ namespace aspect
               this->coordinate_values[d] = std::move(coordinate_values_[d]);
               AssertThrow(this->coordinate_values[d].size()>1,
                           ExcMessage("Error: At least 2 entries per coordinate direction are required."));
-              table_points[d] = this->coordinate_values[d].size();
+              points_per_direction[d] = this->coordinate_values[d].size();
             }
 
           n_components = column_names.size();
@@ -224,7 +224,7 @@ namespace aspect
           Assert(data_table.size() == n_components,
                  ExcMessage("Error: Incorrect number of columns specified."));
           for (unsigned int c=0; c<n_components; ++c)
-            Assert(data_table[c].size() == table_points,
+            Assert(data_table[c].size() == points_per_direction,
                    ExcMessage("Error: One of the data tables has an incorrect size."));
 
           // compute maximum_component_value for each component:
@@ -234,7 +234,7 @@ namespace aspect
               const std::size_t n_elements = data_table[c].n_elements();
               for (std::size_t idx=0; idx<n_elements; ++idx)
                 maximum_component_value[c] = std::max(maximum_component_value[c], data_table[c](
-                                                        compute_table_indices(table_points, idx)));
+                                                        compute_table_indices(points_per_direction, idx)));
             }
 
           // In case the data is specified on a grid that is equidistant
@@ -267,8 +267,8 @@ namespace aspect
           coordinate_values_are_equidistant = Utilities::MPI::broadcast (mpi_communicator,
                                                                          coordinate_values_are_equidistant,
                                                                          root_process);
-          table_points                      = Utilities::MPI::broadcast (mpi_communicator,
-                                                                         table_points,
+          points_per_direction              = Utilities::MPI::broadcast (mpi_communicator,
+                                                                         points_per_direction,
                                                                          root_process);
 
           // We can then also prepare the data tables for sharing between
@@ -281,7 +281,7 @@ namespace aspect
       Assert(data_table.size() == n_components,
              ExcMessage("Error: Incorrect number of columns specified."));
       for (unsigned int c=0; c<n_components; ++c)
-        Assert(data_table[c].size() == table_points,
+        Assert(data_table[c].size() == points_per_direction,
                ExcMessage("Error: One of the data tables has an incorrect size."));
 
 
@@ -294,14 +294,14 @@ namespace aspect
             {
               std::array<unsigned int,dim> table_intervals;
               for (unsigned int d=0; d<dim; ++d)
-                table_intervals[d] = table_points[d]-1;
+                table_intervals[d] = points_per_direction[d]-1;
 
               // The min and max of the coordinates in the data file.
               std::array<std::pair<double,double>,dim> grid_extent;
               for (unsigned int d=0; d<dim; ++d)
                 {
                   grid_extent[d].first = coordinate_values[d][0];
-                  grid_extent[d].second = coordinate_values[d][table_points[d]-1];
+                  grid_extent[d].second = coordinate_values[d][points_per_direction[d]-1];
 
                   Assert(table_intervals[d] >= 1,
                          ExcMessage("There needs to be at least one subinterval in each "
@@ -356,7 +356,7 @@ namespace aspect
         {
           // Grab the values already stored in this class (if they exist), this way we can
           // check if somebody changes the size of the table over time and error out (see below)
-          TableIndices<dim> new_table_points = this->table_points;
+          TableIndices<dim> new_points_per_direction = this->points_per_direction;
 
           // We do not need to distribute the contents as we are using shared data
           // to place it later. Therefore, just pass MPI_COMM_SELF (i.e.,
@@ -379,10 +379,10 @@ namespace aspect
                       unsigned int temp_index;
                       linestream >> temp_index;
 
-                      if (new_table_points[i] == 0)
-                        new_table_points[i] = temp_index;
+                      if (new_points_per_direction[i] == 0)
+                        new_points_per_direction[i] = temp_index;
                       else
-                        AssertThrow (new_table_points[i] == temp_index,
+                        AssertThrow (new_points_per_direction[i] == temp_index,
                                      ExcMessage("The file grid must not change over model runtime. "
                                                 "Either you prescribed a conflicting number of points in "
                                                 "the input file, or the POINTS comment in your data files "
@@ -392,7 +392,7 @@ namespace aspect
 
           for (unsigned int i = 0; i < dim; ++i)
             {
-              AssertThrow(new_table_points[i] != 0,
+              AssertThrow(new_points_per_direction[i] != 0,
                           ExcMessage("Could not successfully read in the file header of the "
                                      "ascii data file <" + filename + ">. One header line has to "
                                      "be of the format: '#POINTS: N1 [N2] [N3]', where N1 and "
@@ -462,7 +462,7 @@ namespace aspect
           // there is no constructor for Table, which takes TableIndices as
           // argument.
           Table<dim,double> data_table;
-          data_table.TableBase<dim,double>::reinit(new_table_points);
+          data_table.TableBase<dim,double>::reinit(new_points_per_direction);
           AssertThrow (n_components != numbers::invalid_unsigned_int,
                        ExcMessage("ERROR: number of n_components in " + filename + " could not be "
                                   "determined automatically. Either add a header with column "
@@ -471,7 +471,7 @@ namespace aspect
           data_tables.resize(n_components, data_table);
 
           for (unsigned int d=0; d<dim; ++d)
-            coordinate_values[d].resize(new_table_points[d]);
+            coordinate_values[d].resize(new_points_per_direction[d]);
 
           if (column_names.size()==0)
             {
@@ -510,7 +510,7 @@ namespace aspect
               // what row and column of the file are we in?
               const std::size_t column_num = read_data_entries%(n_components+dim);
               const std::size_t row_num = read_data_entries/(n_components+dim);
-              const TableIndices<dim> idx = compute_table_indices(new_table_points, row_num);
+              const TableIndices<dim> idx = compute_table_indices(new_points_per_direction, row_num);
 
               if (column_num < dim)
                 {
@@ -606,7 +606,7 @@ namespace aspect
       (void)data_column_names_;
       AssertThrow(false, ExcMessage("Loading NetCDF files is only supported if ASPECT is configured with the NetCDF library!"));
 #else
-      TableIndices<dim> new_table_points;
+      TableIndices<dim> new_points_per_direction;
       std::vector<std::string> coordinate_column_names(dim);
       std::vector<Table<dim,double>> data_tables;
       std::vector<std::string> data_column_names = data_column_names_;
@@ -685,7 +685,7 @@ namespace aspect
                           status = nc_inq_dim(ncid, var_dimids[i], nullptr, &length);
                           dimids_to_use[i] = var_dimids[i];
                           // dimensions are specified in reverse order in the nc file:
-                          new_table_points[dim-1-i] = length;
+                          new_points_per_direction[dim-1-i] = length;
                         }
                     }
 
@@ -747,7 +747,7 @@ namespace aspect
                               status = nc_inq_dim(ncid, var_dimids[i], nullptr, &length);
                               dimids_to_use[i] = var_dimids[i];
                               // dimensions are specified in reverse order in the nc file:
-                              new_table_points[dim-1-i] = length;
+                              new_points_per_direction[dim-1-i] = length;
                             }
                         }
 
@@ -802,7 +802,7 @@ namespace aspect
 
             AssertThrow(xtype == NC_DOUBLE || xtype == NC_FLOAT, ExcMessage("We only support float or double data."));
 
-            coordinate_values[d].resize(new_table_points[d]);
+            coordinate_values[d].resize(new_points_per_direction[d]);
             status = nc_get_var_double(ncid, varid, coordinate_values[d].data());
             AssertThrowNetCDF(status);
           }
@@ -816,7 +816,7 @@ namespace aspect
         for (unsigned int var = 0; var<varids_to_use.size(); ++var)
           {
             // Allocate space
-            data_tables[var].TableBase<dim,double>::reinit(new_table_points);
+            data_tables[var].TableBase<dim,double>::reinit(new_points_per_direction);
             const std::size_t n_elements = data_tables[var].n_elements();
             raw_data.resize(n_elements);
 
@@ -827,7 +827,7 @@ namespace aspect
             // .. and copy it over:
             for (std::size_t n = 0; n < n_elements; ++n)
               {
-                TableIndices<dim> ind = compute_table_indices(new_table_points, n);
+                TableIndices<dim> ind = compute_table_indices(new_points_per_direction, n);
                 TableIndices<dim> ind_to_use;
                 for (int i=0; i<dim; ++i)
                   ind_to_use[i] = ind[dimids_to_use[i]];
