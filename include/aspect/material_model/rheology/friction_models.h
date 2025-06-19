@@ -78,7 +78,7 @@ namespace aspect
           compute_friction_angle(const double current_edot_ii,
                                  const unsigned int volume_fraction_index,
                                  const double static_friction_angle,
-                                 const Point<dim> &position
+                                 const Point<dim> &position,
                                  const SymmetricTensor<2, dim> &strain_rate) const;
 
           /**
