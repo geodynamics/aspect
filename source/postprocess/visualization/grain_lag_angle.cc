@@ -174,7 +174,7 @@ namespace aspect
                                                   "$\\Theta$ can be used to calculate the grain "
                                                   "orientation lag parameter."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\radian}.")
+                                                  "Physical units: $\\text{radian}$.")
     }
   }
 }

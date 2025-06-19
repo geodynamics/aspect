@@ -78,7 +78,7 @@ namespace aspect
                                                   "showing the value of the artificial viscosity on each "
                                                   "cell."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\watt\\per\\meter\\per\\kelvin}.")
+                                                  "Physical units: $\\frac{\\text{W}}{\\text{m}\\text{K}}$.")
     }
   }
 }

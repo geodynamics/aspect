@@ -129,7 +129,7 @@ namespace aspect
                                                   "showing the value of the artificial viscosity for a "
                                                   "compositional field on each cell."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\meter\\squared\\per\\second}.")
+                                                  "Physical units: $\\frac{\\text{m}^2}{\\text{s}}$.")
     }
   }
 }

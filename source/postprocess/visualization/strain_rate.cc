@@ -92,7 +92,7 @@ namespace aspect
                                                   "in the compressible case. It is also called effective deviatoric strain rate "
                                                   "in Glerum et al. (2018)."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\per\\second}.")
+                                                  "Physical units: $\\frac{1}{\\text{s}}$.")
     }
   }
 }

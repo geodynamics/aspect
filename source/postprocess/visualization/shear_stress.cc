@@ -138,7 +138,7 @@ namespace aspect
                                                   "by the absence of the pressure. Note that the convention "
                                                   "of positive compressive stress is followed."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\pascal}.")
+                                                  "Physical units: $\\text{Pa}$.")
     }
   }
 }

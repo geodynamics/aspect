@@ -235,7 +235,7 @@ namespace aspect
                                                   "stress tensor or only on the deviatoric stress tensor, "
                                                   "depending on what run-time parameters are set."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\pascal}.")
+                                                  "Physical units: $\\text{Pa}$.")
     }
   }
 }

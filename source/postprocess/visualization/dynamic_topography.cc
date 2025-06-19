@@ -136,7 +136,7 @@ namespace aspect
                                                   "to only output the dynamic topography at the boundary of "
                                                   "the domain."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\meter}.")
+                                                  "Physical units: $\\text{m}$.")
     }
   }
 }

@@ -74,7 +74,7 @@ namespace aspect
                                                   "gravity",
                                                   "A visualization output object that outputs the gravity vector."
                                                   "\n\n"
-                                                  "Physical units: \\si {\\meter\\per\\second\\squared} .")
+                                                  "Physical units: $\\frac{\\text{m}}{\\text{s}^2}$.")
     }
   }
 }

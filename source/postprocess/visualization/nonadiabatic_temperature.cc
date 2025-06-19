@@ -75,7 +75,7 @@ namespace aspect
                                                   "A visualization output object that generates output "
                                                   "for the non-adiabatic component of the temperature."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\kelvin}.")
+                                                  "Physical units: $\\text{K}$.")
     }
   }
 }

@@ -100,7 +100,7 @@ namespace aspect
                                                   "the sum of the advective and the conductive heat flux, "
                                                   "with the sign convention of positive flux upwards."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\watt\\per\\square\\meter}.")
+                                                  "Physical units: $\\frac{\\text{W}}{\\text{m}^2}$.")
     }
   }
 }
