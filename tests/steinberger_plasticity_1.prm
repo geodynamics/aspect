@@ -1,0 +1,103 @@
+# This is a test for using Drucker-Prager plasticity with the Steinberger material model.
+# The model is set up in a more realistic Earth-like condition. The strain rate, the stress
+# second invariant, and the viscosity we output in the visualization postprocessor should 
+# always hold this relation: stress_second_invariant = 2 * viscosity * strain_rate.
+
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set End time                               = 1e4
+set Adiabatic surface temperature          = 1600.0
+set Output directory                       = output-steinberger_plasticity_1
+set Nonlinear solver scheme                = iterated Advection and Stokes
+
+subsection Formulation
+  set Mass conservation = projected density field
+  set Temperature equation = real density
+end
+
+# Composition setup
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields  = density_field
+  set Types of fields  = density
+  set Compositional field methods = prescribed field
+end
+
+subsection Material model
+  set Model name = Steinberger 
+
+  subsection Steinberger model
+    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/steinberger/test-steinberger-compressible/
+    set Material file names              = testdata.txt
+
+    # No temperature dependency of viscosity
+    set Lateral viscosity file name      = test-viscosity-prefactor.txt
+
+    # eta_ref = 1e24 Pa s at all depth
+    set Radial viscosity file name       = test-radial-visc-higher.txt
+
+    set Bilinear interpolation           = true
+    set Latent heat                      = false
+    set Thermal conductivity             = 1.5
+    set Maximum viscosity                = 1e24
+
+    # Drucker-Prager plasticity
+    set Use Drucker-Prager rheology       = true
+    set Cohesions                         = 1e7
+    set Angles of internal friction       = 0.01 # = 0.01 radians
+  end
+end
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius = 3481000
+    set Outer radius = 6371000
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top, bottom
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names = initial temperature
+
+  subsection Initial temperature
+    set Minimal temperature = 273
+  end
+end
+
+subsection Initial temperature model
+  set List of model names   = adiabatic
+
+  subsection Adiabatic
+    set Age top boundary layer = 1e4
+  end
+
+end
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 3
+  set Initial adaptive refinement        = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics
+
+  subsection Visualization
+    set List of output variables = material properties, named additional outputs, stress second invariant, strain rate
+    set Output format                 = gnuplot
+    set Point-wise stress and strain  = true
+  end
+end

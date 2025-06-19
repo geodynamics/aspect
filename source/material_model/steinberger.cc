@@ -20,6 +20,7 @@
 
 
 #include <aspect/material_model/steinberger.h>
+#include <aspect/material_model/rheology/visco_plastic.h>
 #include <aspect/material_model/equation_of_state/interface.h>
 #include <aspect/material_model/thermal_conductivity/constant.h>
 #include <aspect/material_model/thermal_conductivity/tosi_stackhouse.h>
@@ -173,8 +174,11 @@ namespace aspect
     viscosity (const double temperature,
                const double /*pressure*/,
                const std::vector<double> &volume_fractions,
-               const SymmetricTensor<2,dim> &,
-               const Point<dim> &position) const
+               const SymmetricTensor<2,dim> &strain_rate,
+               const Point<dim> &position,
+               bool output_plasticity,
+               MaterialModel::MaterialModelOutputs<dim> &out,
+               const unsigned int i) const
     {
       const double depth = this->get_geometry_model().depth(position);
       const double adiabatic_temperature = this->get_adiabatic_conditions().temperature(position);
@@ -202,8 +206,53 @@ namespace aspect
       // Visc_rT = exp[(H/nR)/T_adiabatic], Eq. 7 of the paper
       const double eta_ref = radial_viscosity_lookup->radial_viscosity(depth);
 
-      // Radial viscosity profile is multiplied by thermal and compositional prefactors
-      return std::max(std::min(thermal_prefactor * compositional_prefactor * eta_ref, max_eta), min_eta);
+      // Effective viscosity without Drucker-Prager yielding
+      // It is computed as radial viscosity profile * thermal prefactors * compositional prefactor
+      double effective_viscosity = thermal_prefactor * compositional_prefactor * eta_ref;
+      const double pressure = this->get_adiabatic_conditions().pressure(position);
+
+      // Druger-Pager rheology
+      if (enable_drucker_prager_rheology)
+        {
+          // This should be the same as the "strain_rate" output in the visualization postpocessor,
+          // which also known as second strain rate invariant or effective deviatoric strain rate.
+          const double strain_rate_effective = std::sqrt(std::fabs(second_invariant(deviator(strain_rate))));
+          // Calculate non-yielding (viscous) stress magnitude. It should be identical to the
+          // "stress second invariant" in the visualization postprocessor.
+          const double non_yielding_stress = 2. * effective_viscosity * strain_rate_effective;
+
+          // In the steinberger material model, viscosity does not depend on composition or phases,
+          // so we set the compositional index for the Drucker-Prager parameters to 0 and not using
+          // phase averaging.
+          const Rheology::DruckerPragerParameters drucker_prager_parameters = drucker_prager_plasticity.compute_drucker_prager_parameters(0);
+
+          const double yield_stress = drucker_prager_plasticity.compute_yield_stress(pressure,drucker_prager_parameters);
+
+          // Apply plastic yielding:
+          // If the non-yielding stress is greater than the yield stress,
+          // rescale the viscosity back to yield surface
+          if (non_yielding_stress >= yield_stress)
+            {
+              effective_viscosity = drucker_prager_plasticity.compute_viscosity(pressure,
+                                                                                strain_rate_effective,
+                                                                                drucker_prager_parameters,
+                                                                                effective_viscosity);
+            }
+
+          const std::shared_ptr<PlasticAdditionalOutputs<dim>> plastic_out
+            = out.template get_additional_output_object<PlasticAdditionalOutputs<dim>>();
+
+          if (plastic_out != nullptr && output_plasticity)
+            {
+              plastic_out->cohesions[i] = drucker_prager_parameters.cohesion;
+              plastic_out->friction_angles[i] = drucker_prager_parameters.angle_internal_friction;
+              plastic_out->yield_stresses[i] = yield_stress;
+              plastic_out->yielding[i] = non_yielding_stress >= yield_stress ? 1 : 0;
+            }
+
+        }
+
+      return effective_viscosity;
     }
 
 
@@ -263,10 +312,14 @@ namespace aspect
           volume_fractions[i] = MaterialUtilities::compute_volumes_from_masses(mass_fractions,
                                                                                eos_outputs[i].densities,
                                                                                true);
-
-          if (in.requests_property(MaterialProperties::viscosity))
-            out.viscosities[i] = viscosity(in.temperature[i], in.pressure[i], volume_fractions[i], in.strain_rate[i], in.position[i]);
-
+          if (in.requests_property(MaterialProperties::viscosity) || in.requests_property(MaterialProperties::additional_outputs))
+            {
+              out.viscosities[i] = std::max(
+                                     std::min(viscosity(in.temperature[i], in.pressure[i], volume_fractions[i], in.strain_rate[i],
+                                                        in.position[i],in.requests_property(MaterialProperties::additional_outputs),out,i),max_eta),
+                                     min_eta
+                                   );
+            }
           MaterialUtilities::fill_averaged_equation_of_state_outputs(eos_outputs[i], mass_fractions, volume_fractions[i], i, out);
           fill_prescribed_outputs(i, volume_fractions[i], in, out);
         }
@@ -379,6 +432,14 @@ namespace aspect
           // Table lookup parameters
           EquationOfState::ThermodynamicTableLookup<dim>::declare_parameters(prm);
 
+          // Drucker Prager plasticity parameters
+          prm.declare_entry ("Use Drucker-Prager rheology", "false",
+                             Patterns::Bool(),
+                             "This parameter determines whether to apply plastic yielding "
+                             "according to a Drucker-Prager rheology after computing the "
+                             "default steinberger viscosity (if true) or not (if false). ");
+          Rheology::DruckerPrager<dim>::declare_parameters(prm);
+
           prm.leave_subsection();
         }
         prm.leave_subsection();
@@ -465,6 +526,12 @@ namespace aspect
           options.list_of_allowed_keys = compositional_field_names;
           viscosity_prefactors = Utilities::MapParsing::parse_map_to_double_array(prm.get("Composition viscosity prefactors"), options);
 
+          // Drucker-Prager Plasticity parameters
+          enable_drucker_prager_rheology = prm.get_bool ("Use Drucker-Prager rheology");
+          drucker_prager_plasticity.initialize_simulator (this->get_simulator());
+
+          drucker_prager_plasticity.parse_parameters(prm);
+
           prm.leave_subsection();
         }
         prm.leave_subsection();
@@ -493,6 +560,12 @@ namespace aspect
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::PrescribedFieldOutputs<dim>> (n_points, this->n_compositional_fields()));
         }
+      if (enable_drucker_prager_rheology && out.template has_additional_output_object<PlasticAdditionalOutputs<dim>>() == false)
+        {
+          const unsigned int n_points = out.n_evaluation_points();
+          out.additional_outputs.push_back(
+            std::make_unique<PlasticAdditionalOutputs<dim>> (n_points));
+        }
     }
 
   }
@@ -516,6 +589,10 @@ namespace aspect
                                    "see <http://www.perplex.ethz.ch/>. "
                                    "The default example data builds upon the thermodynamic "
                                    "database by Stixrude 2011 and assumes a pyrolitic composition by "
-                                   "Ringwood 1988 but is easily replaceable by other data files. ")
+                                   "Ringwood 1988 but is easily replaceable by other data files. "
+                                   "If 'Use Drucker-Prager rheology' is set to true, this model will "
+                                   "apply Drucker-Prager plasticity after computing the default steinberger "
+                                   "viscosity. The minimum viscosity with and without the Drucker-Prager "
+                                   "plasticity is always equal to the 'Minimum viscosity' in the prm file. ")
   }
 }

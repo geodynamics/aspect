@@ -1,0 +1,4 @@
+Added: The Steinberger material model now includes Drucker-Prager plasticity,
+using the same yield strength for all chemical compositions.
+<br>
+(Qianyi Lu, 2025/06/17)

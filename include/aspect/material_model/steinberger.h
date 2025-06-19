@@ -24,6 +24,8 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/equation_of_state/thermodynamic_table_lookup.h>
 #include <aspect/material_model/thermal_conductivity/interface.h>
+#include <aspect/material_model/rheology/drucker_prager.h>
+#include <aspect/material_model/utilities.h>
 
 #include <aspect/simulator_access.h>
 #include <deal.II/fe/component_mask.h>
@@ -148,7 +150,10 @@ namespace aspect
                                   const double                  pressure,
                                   const std::vector<double>    &compositional_fields,
                                   const SymmetricTensor<2,dim> &strain_rate,
-                                  const Point<dim>             &position) const;
+                                  const Point<dim>             &position,
+                                  bool output_plasticity,
+                                  MaterialModel::MaterialModelOutputs<dim> &out,
+                                  const unsigned int i) const;
         /**
          * @}
          */
@@ -294,6 +299,14 @@ namespace aspect
                                       const std::vector<double> &volume_fractions,
                                       const MaterialModel::MaterialModelInputs<dim> &in,
                                       MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+        /**
+         * Drucker-Prager rheology related
+         * Objects for computing plastic stresses, viscosities, and additional outputs
+         */
+        Rheology::DruckerPrager<dim> drucker_prager_plasticity;
+        bool enable_drucker_prager_rheology;
+        Rheology::DruckerPragerParameters drucker_prager_parameters;
 
     };
   }
