@@ -240,13 +240,15 @@ namespace aspect
               // Specifically, change the porosity (representing the amount of free fluid)
               // based on the water solubility and the fluid content.
               double reaction_time_step_size = 1.0;
-
+              double reaction_fraction       = 0.0;
               if (this->simulator_is_past_initialization())
                 {
                   const unsigned int number_of_reaction_steps = std::max(static_cast<unsigned int>(this->get_timestep() / this->get_parameters().reaction_time_step),
                                                                          std::max(this->get_parameters().reaction_steps_per_advection_step,1U));
                   reaction_time_step_size = this->get_timestep() / static_cast<double>(number_of_reaction_steps);
+                  reaction_fraction       = reaction_time_step_size / fluid_reaction_time_scale;
                 }
+
               std::vector<double> eq_free_fluid_fractions(out.n_evaluation_points());
               melt_fractions(in, eq_free_fluid_fractions, &out);
 
@@ -278,7 +280,7 @@ namespace aspect
 
                   // Determine the change in the mass fraction of porosity from the equilibrium fluid fraction
                   // and update the mass fraction of porosity.
-                  const double mass_fraction_porosity_change = (eq_free_fluid_fractions[q] - mass_fraction_porosity);
+                  const double mass_fraction_porosity_change = (eq_free_fluid_fractions[q] - mass_fraction_porosity) * reaction_fraction;
                   const double new_mass_fraction_porosity = mass_fraction_porosity + mass_fraction_porosity_change;
 
                   // Since porosity is a volume fraction, convert the mass fraction change to a volume fraction change
