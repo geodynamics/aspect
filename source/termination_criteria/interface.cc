@@ -69,13 +69,11 @@ namespace aspect
       // call the execute() functions of all plugins we have
       // here in turns.
       std::vector<std::string>::const_iterator  itn = this->plugin_names.begin();
-      for (typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator
-           p = this->plugin_objects.begin();
-           p != this->plugin_objects.end(); ++p,++itn)
+      for (const auto &p : this->plugin_objects)
         {
           try
             {
-              const bool terminate = (*p)->execute ();
+              const bool terminate = p->execute ();
 
               // do the reduction: does any one of the processors
               // think that we should terminate? (do the reduction in
@@ -106,7 +104,7 @@ namespace aspect
               std::cerr << "Exception on MPI process <"
                         << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
                         << "> while running termination criterion plugin <"
-                        << typeid(**p).name()
+                        << typeid(*p).name()
                         << ">: " << std::endl
                         << exc.what() << std::endl
                         << "Aborting!" << std::endl
@@ -124,7 +122,7 @@ namespace aspect
               std::cerr << "Exception on MPI process <"
                         << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
                         << "> while running termination criterion plugin <"
-                        << typeid(**p).name()
+                        << typeid(*p).name()
                         << ">: " << std::endl;
               std::cerr << "Unknown exception!" << std::endl
                         << "Aborting!" << std::endl
@@ -134,6 +132,8 @@ namespace aspect
               // terminate the program!
               MPI_Abort (MPI_COMM_WORLD, 1);
             }
+
+          ++itn;
         }
 
       return terminate_simulation;
