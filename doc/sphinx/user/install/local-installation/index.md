@@ -25,6 +25,7 @@ questions on the forum (<https://community.geodynamics.org/c/aspect>).
 :::{toctree}
 system-prereqs.md
 using-candi.md
+fastscape.md
 obtaining.md
 compiling.md
 documentation.md
