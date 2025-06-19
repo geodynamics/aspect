@@ -213,4 +213,220 @@ namespace aspect
 
 #endif
 
+
+// deal.II version 9.7 introduces a new class VectorFunctionFromTensorFunctionObject
+// that we would like to use also for earlier versions
+#if !DEAL_II_VERSION_GTE(9,7,0)
+
+namespace aspect
+{
+  using namespace dealii;
+
+  /**
+   * This class is built as a means of translating the <code>Tensor<1,dim,
+   * RangeNumberType> </code> values produced by function objects that
+   * for a given point return a tensor,
+   * and returning them as a multiple component version of the same thing as a
+   * Vector for use in, for example, the VectorTools::interpolate or the many
+   * other functions taking Function objects. It allows the user to place the
+   * desired components into an <tt>n_components</tt> long vector starting at
+   * the <tt>selected_component</tt> location in that vector and have all other
+   * components be 0.
+   *
+   * For example: Say you created a function object that returns the gravity
+   * (here, a radially inward pointing vector of magnitude 9.81):
+   * @code
+   *   const auto gravity
+   *     = [](const Point<dim> &p) -> Tensor<1,dim> { return -9.81 * (p /
+   * p.norm()); }
+   * @endcode
+   * and you want to interpolate this onto your mesh using the
+   * VectorTools::interpolate function, with a finite element for the
+   * DoFHandler object has 3 copies of a finite element with <tt>dim</tt>
+   * components, for a total of 3*dim components. To interpolate onto that
+   * DoFHandler, you need an object of type Function that has 3*dim vector
+   * components. Creating such an object from the existing <code>gravity</code>
+   * object is done using this piece of code:
+   * @code
+   * VectorFunctionFromTensorFunctionObject<dim, RangeNumberType>
+   *   gravity_vector_function(gravity, 0, 3*dim);
+   * @endcode
+   * where the <code>dim</code> components of the `gravity` function are placed
+   * into the first <code>dim</code> components of the function object.
+   *
+   * @ingroup functions
+   */
+  template <int dim, typename RangeNumberType = double>
+  class VectorFunctionFromTensorFunctionObject
+    : public Function<dim, RangeNumberType>
+  {
+    public:
+      /**
+       * Given a function object that takes a <tt>Point</tt> and returns a
+       * <tt>Tensor<1,dim, RangeNumberType></tt> value, convert this into an object
+       * that matches the Function@<dim@> interface.
+       *
+       * By default, create a Vector object of the same size as
+       * <tt>tensor_function</tt> returns, i.e., with <tt>dim</tt> components.
+       *
+       * @param tensor_function_object The TensorFunction that will form `dim` components of
+       * the resulting Vector Function object.
+       * @param n_components The total number of vector components of the
+       * resulting TensorFunction object. This clearly has to be at least `dim`.
+       * @param selected_component The first component that should be filled by
+       * the first argument.  This should be such that the entire tensor_function
+       * fits inside the <tt>n_component</tt> length return vector.
+       */
+      explicit VectorFunctionFromTensorFunctionObject(
+        const std::function<Tensor<1, dim, RangeNumberType>(const Point<dim> &)>
+        &tensor_function_object,
+        const unsigned int selected_component = 0,
+        const unsigned int n_components       = dim);
+
+      /**
+       * This destructor is defined as virtual so as to coincide with all other
+       * aspects of class.
+       */
+      virtual ~VectorFunctionFromTensorFunctionObject() override = default;
+
+      /**
+       * Return a single component of a vector-valued function at a given point.
+       */
+      virtual RangeNumberType
+      value(const Point<dim> &p, const unsigned int component = 0) const override;
+
+      /**
+       * Return all components of a vector-valued function at a given point.
+       *
+       * <tt>values</tt> shall have the right size beforehand, i.e. #n_components.
+       */
+      virtual void
+      vector_value(const Point<dim>        &p,
+                   Vector<RangeNumberType> &values) const override;
+
+      /**
+       * Return all components of a vector-valued function at a list of points.
+       *
+       * <tt>value_list</tt> shall be the same size as <tt>points</tt> and each
+       * element of the vector will be passed to vector_value() to evaluate the
+       * function
+       */
+      virtual void
+      vector_value_list(
+        const std::vector<Point<dim>>        &points,
+        std::vector<Vector<RangeNumberType>> &value_list) const override;
+
+    private:
+      /**
+       * The TensorFunction object which we call when this class's vector_value()
+       * or vector_value_list() functions are called.
+       */
+      const std::function<Tensor<1, dim, RangeNumberType>(const Point<dim> &)>
+      tensor_function_object;
+
+      /**
+       * The first vector component whose value is to be filled by the given
+       * TensorFunction.  The values will be placed in components
+       * selected_component to selected_component+dim-1 for a
+       * <tt>TensorFunction<1,dim, RangeNumberType></tt> object.
+       */
+      const unsigned int selected_component;
+  };
+
+
+  template <int dim, typename RangeNumberType>
+  VectorFunctionFromTensorFunctionObject<dim, RangeNumberType>::
+  VectorFunctionFromTensorFunctionObject(
+    const std::function<Tensor<1, dim, RangeNumberType>(const Point<dim> &)>
+    &tensor_function_object,
+    const unsigned int selected_component,
+    const unsigned int n_components)
+    : Function<dim, RangeNumberType>(n_components)
+    , tensor_function_object(tensor_function_object)
+    , selected_component(selected_component)
+  {
+    // Verify that the Tensor<1,dim,RangeNumberType> will fit in the given length
+    // selected_components and not hang over the end of the vector.
+    AssertIndexRange(selected_component + dim - 1, this->n_components);
+  }
+
+
+
+  template <int dim, typename RangeNumberType>
+  inline RangeNumberType
+  VectorFunctionFromTensorFunctionObject<dim, RangeNumberType>::value(
+    const Point<dim>  &p,
+    const unsigned int component) const
+  {
+    AssertIndexRange(component, this->n_components);
+
+    // if the requested component is out of the range selected, then we can
+    // return early
+    if ((component < selected_component) ||
+        (component >= selected_component + dim))
+      return 0;
+
+    // otherwise retrieve the values from the <tt>tensor_function</tt> to be
+    // placed at the <tt>selected_component</tt> to
+    // <tt>selected_component + dim - 1</tt> elements of the <tt>Vector</tt>
+    // values and pick the correct one
+    const Tensor<1, dim, RangeNumberType> tensor_value =
+      tensor_function_object(p);
+
+    return tensor_value[component - selected_component];
+  }
+
+
+  template <int dim, typename RangeNumberType>
+  inline void
+  VectorFunctionFromTensorFunctionObject<dim, RangeNumberType>::vector_value(
+    const Point<dim>        &p,
+    Vector<RangeNumberType> &values) const
+  {
+    Assert(values.size() == this->n_components,
+           ExcDimensionMismatch(values.size(), this->n_components));
+
+    // Retrieve the values from the <tt>tensor_function</tt> to be placed at
+    // the <tt>selected_component</tt> to
+    // <tt>selected_component + dim - 1</tt> elements of the <tt>Vector</tt>
+    // values.
+    const Tensor<1, dim, RangeNumberType> tensor_value =
+      tensor_function_object(p);
+
+    // First we make all elements of values = 0
+    values = 0;
+
+    // Second we adjust the desired components to take on the values in
+    // <tt>tensor_value</tt>.
+    for (unsigned int i = 0; i < dim; ++i)
+      values(i + selected_component) = tensor_value[i];
+  }
+
+
+  /**
+   * Member function <tt>vector_value_list </tt> is the interface for giving a
+   * list of points (<code>vector<Point<dim>></code>) of which to evaluate
+   * using the <tt>vector_value</tt> member function.  Again, this function is
+   * written so as to not replicate the function definition but passes each
+   * point on to <tt>vector_value</tt> to be evaluated.
+   */
+  template <int dim, typename RangeNumberType>
+  void
+  VectorFunctionFromTensorFunctionObject<dim, RangeNumberType>::vector_value_list(
+    const std::vector<Point<dim>>        &points,
+    std::vector<Vector<RangeNumberType>> &value_list) const
+  {
+    Assert(value_list.size() == points.size(),
+           ExcDimensionMismatch(value_list.size(), points.size()));
+
+    const unsigned int n_points = points.size();
+
+    for (unsigned int p = 0; p < n_points; ++p)
+      VectorFunctionFromTensorFunctionObject<dim, RangeNumberType>::vector_value(
+        points[p], value_list[p]);
+  }
+}
+
+#endif
+
 #endif
