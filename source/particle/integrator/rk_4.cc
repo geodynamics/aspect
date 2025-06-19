@@ -90,18 +90,17 @@ namespace aspect
         typename std::vector<Tensor<1,dim>>::const_iterator velocity = velocities.begin();
 
         std::array<Tensor<1,dim>,4> k;
-        for (typename ParticleHandler<dim>::particle_iterator it = begin_particle;
-             it != end_particle; ++it, ++velocity, ++old_velocity)
+        for (auto &p : boost::iterator_range<typename ParticleHandler<dim>::particle_iterator> (begin_particle, end_particle))
           {
-            ArrayView<double> properties = it->get_properties();
+            ArrayView<double> properties = p.get_properties();
 
             if (integrator_substep == 0)
               {
 #if DEAL_II_VERSION_GTE(9, 6, 0)
                 // Get a reference to the particle location, so that we can update it in-place
-                Point<dim> &location = it->get_location();
+                Point<dim> &location = p.get_location();
 #else
-                Point<dim> location = it->get_location();
+                Point<dim> location = p.get_location();
 #endif
                 k[0] = dt * (*old_velocity);
 
@@ -123,7 +122,7 @@ namespace aspect
                   }
 
 #if !DEAL_II_VERSION_GTE(9, 6, 0)
-                it->set_location(new_location);
+                p.set_location(new_location);
 #endif
               }
             else if (integrator_substep == 1)
@@ -156,7 +155,7 @@ namespace aspect
                 for (unsigned int i=0; i<dim; ++i)
                   properties[property_indices[2] + i] = k[1][i];
 
-                it->set_location(new_location);
+                p.set_location(new_location);
               }
             else if (integrator_substep == 2)
               {
@@ -191,7 +190,7 @@ namespace aspect
                 for (unsigned int i=0; i<dim; ++i)
                   properties[property_indices[3] + i] = k[2][i];
 
-                it->set_location(new_location);
+                p.set_location(new_location);
               }
             else if (integrator_substep == 3)
               {
@@ -214,13 +213,16 @@ namespace aspect
                 if (at_periodic_boundary)
                   this->get_geometry_model().adjust_positions_for_periodicity(new_location);
 
-                it->set_location(new_location);
+                p.set_location(new_location);
               }
             else
               {
                 Assert(false,
                        ExcMessage("The RK4 integrator should never continue after four integration stages."));
               }
+
+            ++old_velocity;
+            ++velocity;
           }
       }
 
