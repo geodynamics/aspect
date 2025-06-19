@@ -1,0 +1,6 @@
+Added: Implemented Olivine D-type fabric with
+the major slip system {0kl}[001] using an updated
+generalized CPO (Crystallographic Preferred Orientation) algorithm.
+This enhancement now reproduced lab results.
+<br>
+(Xiaochuan Tian, 2025/06/18)
