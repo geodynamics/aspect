@@ -60,13 +60,30 @@ namespace aspect
          * @}
          */
 
+        /**
+         * Compute the bulk density of the material based on the volume of free water in the
+         * solid.
+         *
+         * @param porosity The volume fraction of the free fluid in the solid.
+         * @param solid_density The density of the solid material.
+         * @param fluid_density The density of the fluid material.
+         **/
         double compute_bulk_density (const double porosity,
                                      const double solid_density,
                                      const double fluid_density) const;
 
-        double compute_mass_fraction (const double porosity,
-                                      const double solid_density,
-                                      const double fluid_density) const;
+        /**
+         * Compute the mass fraction on the volume fraction of a given material in relation to
+         * the bulk density.
+         *
+         * @param volume_fraction The volume fraction of the material.
+         * @param material_density The density of the material (corresponding to the volume fraction).
+         * @param bulk_density The density of the bulk composition.
+         **/
+        double compute_mass_fraction (const double volume_fraction,
+                                      const double material_density,
+                                      const double bulk_density) const;
+
         /**
          * Compute the free fluid fraction that can be present in the material based on the
          * fluid content of the material and the fluid solubility for the given input conditions.

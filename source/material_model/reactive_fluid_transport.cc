@@ -53,6 +53,8 @@ namespace aspect
         }
     }
 
+
+
     template <int dim>
     double
     ReactiveFluidTransport<dim>::
@@ -63,6 +65,8 @@ namespace aspect
       return (1 - porosity) * solid_density + porosity * fluid_density;
     }
 
+
+
     template <int dim>
     double
     ReactiveFluidTransport<dim>::
@@ -72,6 +76,8 @@ namespace aspect
     {
       return volume_frac * material_density / bulk_density;
     }
+
+
 
     template <int dim>
     void
