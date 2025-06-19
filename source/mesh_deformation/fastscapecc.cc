@@ -25,6 +25,7 @@
 #include <iostream>
 
 #include <aspect/global.h>
+#include <aspect/compat.h>
 #include <aspect/mesh_deformation/fastscapecc.h>
 #include <aspect/mesh_deformation/fastscapecc_adapter.h>
 #include <aspect/geometry_model/box.h>
@@ -36,6 +37,7 @@
 #include <aspect/simulator/assemblers/interface.h>
 #include <aspect/simulator_signals.h>
 
+#include <deal.II/base/function.h>
 #include <deal.II/grid/tria.h>
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/lac/vector.h>
@@ -844,12 +846,19 @@ namespace aspect
 
       // Maybe this is enough
       // Step 1: Get V ordered
-      auto erosion_function = [&](const Point<dim> &p) -> double
+      auto erosion_rate_and_direction = [&](const Point<dim> &p) -> Tensor<1,dim>
       {
         const unsigned int index = this->vertex_index(p);
-// TODO: The comment in the following line is wrong: V is computed as m/s
-// just a few lines above, not m/year. We need to multiply by year_in_seconds here.
-        return V[index]; //meters/year for ASPECT
+
+        const double vertical_velocity = V[index]; // in m/s
+
+        // We need to know which *direction* erosion acts in to prescribe
+        // boundary conditions for surface nodes. We use the (positive) gravity
+        // direction for this:
+        const Tensor<1,dim> gravity_vector = this->get_gravity_model().gravity_vector(p);
+        const Tensor<1,dim> gravity_direction = gravity_vector / gravity_vector.norm();
+
+        return vertical_velocity * gravity_direction;
       };
       std::cout << "here it works 14" << std::endl;
 
@@ -891,13 +900,7 @@ namespace aspect
       // };
 
 
-// TODO: The way this is defined, it is really a *vertical* velocity field since
-// we put things into the z-component. This will not work for the spherical shell.
-      VectorFunctionFromScalarFunctionObject<dim> radial_velocity_field(
-        erosion_function,
-        dim - 1, // project onto radial component
-        dim      // number of velocity components
-      );
+      const VectorFunctionFromTensorFunctionObject<dim> radial_velocity_field(erosion_rate_and_direction);
       std::cout << "Rank " << Utilities::MPI::this_mpi_process(this->get_mpi_communicator())
                 << ": here it works 15" << std::endl;
 
