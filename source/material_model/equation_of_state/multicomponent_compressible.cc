@@ -97,7 +97,7 @@ namespace aspect
                            "Units: \\si{\\kelvin}.");
         prm.declare_entry ("Reference densities", "3300.",
                            Patterns::Anything(),
-                           "List of reference densities $T_0$ for background and compositional fields (N), "
+                           "List of reference densities for background and compositional fields (N), "
                            "for a total of N+1 values for models with no phase transitions (or models where the "
                            "value does not change across any of the phase transitions). For models with phase "
                            "transitions, the list needs to contain each field name, including the background, for "
@@ -165,7 +165,8 @@ namespace aspect
                            "Whether to enable the use of phase transitions, which break the thermodynamic "
                            "consistency of the equation of state for properties (heat capacity, thermal "
                            "expansivity and compressibility) that are affected by the P-T-X dependence "
-                           "of the phase transition.");
+                           "of the phase transition. Specifically, this means that latent heat "
+                           "and excess expansivity/compressibility of reactions are neglected.");
       }
 
 
@@ -232,13 +233,13 @@ namespace aspect
           {
             for (unsigned int n=0; n < (*expected_n_phases_per_composition).size(); ++n)
               {
-                AssertThrow((*expected_n_phases_per_composition)[n] == 1, ExcMessage(
-                              "The number of expected phases per composition for the compositional "
-                              "field named (" + compositional_field_names[n] + ") is equal to "
-                              "(" + Utilities::to_string((*expected_n_phases_per_composition)[n]) + "). "
-                              "Use of phase transitions with the multicomponent compressible equation of "
-                              "state model is currently implemented in a thermodynamically inconsistent manner "
-                              "and must be explicitly enabled with 'set Enable phase transitions = true'."));
+                AssertThrow((*expected_n_phases_per_composition)[n] == 1,
+                            ExcMessage("The number of expected phases per composition for the compositional "
+                                       "field named (" + compositional_field_names[n] + ") is equal to "
+                                       "(" + Utilities::to_string((*expected_n_phases_per_composition)[n]) + "). "
+                                       "Use of phase transitions with the multicomponent compressible equation of "
+                                       "state model is currently implemented in a thermodynamically inconsistent manner "
+                                       "and must be explicitly enabled with 'set Enable phase transitions = true'."));
               }
           }
       }

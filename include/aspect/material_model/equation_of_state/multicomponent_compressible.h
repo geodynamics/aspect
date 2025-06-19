@@ -41,9 +41,7 @@ namespace aspect
        * with phase transitions, the list needs to contain each field name, including the background,
        * for a total of N+1 names, and for each of these names, specify the value for each phase
        * Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of
-       * phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1,
-       * field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given,
-       * then all fields/phases use the same value. Other lengths of lists are not allowed.
+       * phase transitions, summed over all phases.
        *
        * If no phase transitions are included, the material parameters for each compositional field
        * are calculated self-consistently, assuming a constant pressure derivative of the isothermal
@@ -63,7 +61,9 @@ namespace aspect
        *
        * Significantly, if phase transitions are included the formulation no longer self-consistently calculates
        * the second derivative properties (heat capacity, thermal expansivity, and compressibility), as they are
-       * they are affected by the P-T-X dependence of the phase function.
+       * they are affected by the P-T-X dependence of the phase function. In terms of physics, this means that
+       * latent heat and excess expansivity/compressibility of reactions are neglected. Fixing that would require
+       * implementing equations 20, 21, 23 in Stixrude and Lithgow-Bertelloni, 2022 (https://doi.org/10.1093/gji/ggab394).
        */
       template <int dim>
       class MulticomponentCompressible :  public ::aspect::SimulatorAccess<dim>
