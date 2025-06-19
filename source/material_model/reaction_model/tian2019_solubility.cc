@@ -194,14 +194,13 @@ namespace aspect
 {
   namespace MaterialModel
   {
+    namespace ReactionModel
+    {
 #define INSTANTIATE(dim) \
-  namespace ReactionModel \
-  { \
-    template class Tian2019Solubility<dim>; \
-  }
+  template class Tian2019Solubility<dim>;
 
-    ASPECT_INSTANTIATE(INSTANTIATE)
-
+      ASPECT_INSTANTIATE(INSTANTIATE)
 #undef INSTANTIATE
+    }
   }
 }

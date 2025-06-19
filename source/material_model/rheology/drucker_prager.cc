@@ -400,14 +400,14 @@ namespace aspect
 {
   namespace MaterialModel
   {
+    namespace Rheology
+    {
 #define INSTANTIATE(dim) \
-  namespace Rheology \
-  { \
-    template class DruckerPrager<dim>; \
-  }
+  template class DruckerPrager<dim>;
 
-    ASPECT_INSTANTIATE(INSTANTIATE)
+      ASPECT_INSTANTIATE(INSTANTIATE)
 
 #undef INSTANTIATE
+    }
   }
 }

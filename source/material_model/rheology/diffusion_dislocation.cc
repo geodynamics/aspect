@@ -373,14 +373,14 @@ namespace aspect
 {
   namespace MaterialModel
   {
+    namespace Rheology
+    {
 #define INSTANTIATE(dim) \
-  namespace Rheology \
-  { \
-    template class DiffusionDislocation<dim>; \
-  }
+  template class DiffusionDislocation<dim>;
 
-    ASPECT_INSTANTIATE(INSTANTIATE)
+      ASPECT_INSTANTIATE(INSTANTIATE)
 
 #undef INSTANTIATE
+    }
   }
 }

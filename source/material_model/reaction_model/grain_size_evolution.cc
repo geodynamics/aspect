@@ -650,14 +650,13 @@ namespace aspect
 {
   namespace MaterialModel
   {
+    namespace ReactionModel
+    {
 #define INSTANTIATE(dim) \
-  namespace ReactionModel \
-  { \
-    template class GrainSizeEvolution<dim>; \
-  }
+  template class GrainSizeEvolution<dim>;
 
-    ASPECT_INSTANTIATE(INSTANTIATE)
-
+      ASPECT_INSTANTIATE(INSTANTIATE)
 #undef INSTANTIATE
+    }
   }
 }

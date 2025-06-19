@@ -626,14 +626,13 @@ namespace aspect
 {
   namespace MaterialModel
   {
+    namespace ReactionModel
+    {
 #define INSTANTIATE(dim) \
-  namespace ReactionModel \
-  { \
-    template class Katz2003MantleMelting<dim>; \
-  }
+  template class Katz2003MantleMelting<dim>;
 
-    ASPECT_INSTANTIATE(INSTANTIATE)
-
+      ASPECT_INSTANTIATE(INSTANTIATE)
 #undef INSTANTIATE
+    }
   }
 }
