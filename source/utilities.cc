@@ -2777,46 +2777,8 @@ namespace aspect
     (const unsigned int n_components,
      const std::function<Tensor<1,dim> (const Point<dim> &)> &function_object)
       :
-      Function<dim>(n_components),
-      function_object (function_object)
+      VectorFunctionFromTensorFunctionObject<dim>(function_object, 0, n_components)
     {
-    }
-
-
-
-    template <int dim>
-    double
-    VectorFunctionFromVelocityFunctionObject<dim>::value (const Point<dim> &p,
-                                                          const unsigned int component) const
-    {
-      Assert (component < this->n_components,
-              ExcIndexRange (component, 0, this->n_components));
-
-      if (component < dim)
-        {
-          const Tensor<1,dim> v = function_object(p);
-          return v[component];
-        }
-      else
-        return 0;
-    }
-
-
-
-    template <int dim>
-    void
-    VectorFunctionFromVelocityFunctionObject<dim>::
-    vector_value (const Point<dim>   &p,
-                  Vector<double>     &values) const
-    {
-      AssertDimension(values.size(), this->n_components);
-
-      // set everything to zero, and then the right components to their correct values
-      values = 0;
-
-      const Tensor<1,dim> v = function_object(p);
-      for (unsigned int d=0; d<dim; ++d)
-        values(d) = v[d];
     }
 
 
