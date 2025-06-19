@@ -1,0 +1,129 @@
+# This test verifies the input functionality of the bedrock incision coefficient (Kf) in the Fastscape plugin.
+# Kf can be defined either as a constant or as a time-dependent 2D function.
+# In this test, Kf starts at 1e-6 across the domain, and the right side of the domain increases to 1e-4
+# between 250 kyr and 500 kyr.
+# The results can be visualized in the Fastscape topography VTK output file.
+# Enable if: ASPECT_WITH_FASTSCAPE
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 500e3
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = no Advection, single Stokes 
+set Nonlinear solver tolerance             = 1e-3 
+set Maximum time step                      = 20e3
+set Output directory                       = fastscape_kf_function
+set Pressure normalization                 = no
+
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block AMG
+    set Linear solver tolerance             = 1e-5
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent      = 50e3
+    set Y extent      = 10e3
+  end
+  subsection Initial topography model
+    set Model name = function
+
+    subsection Function
+      set Function constants = L=50e3, slope = 0.1 
+      set Function expression = if(x<0.5*L, slope*x, -slope*x+L*slope)
+    end
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 2
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators        = top: fastscape
+  set Additional tangential mesh velocity boundary indicators = left, right 
+
+  subsection Fastscape
+    set Additional fastscape refinement = 1
+    set Average out of plane surface topography in 2d = true
+    set Fastscape seed = 1000
+    set Maximum surface refinement level = 2
+    set Surface refinement difference = 0
+    set Y extent in 2d = 20e3
+    set Uplift and advect with fastscape = true
+    set Use ghost nodes = true
+
+
+   subsection Boundary conditions    
+      set Front = 1 
+      set Right  = 0 
+      set Back = 1
+      set Left   = 0
+   end
+   
+   subsection Erosional parameters
+    set Use kf distribution function = true
+    subsection kf distribution function
+      set Variable names = x,y,t
+      set Function expression = if(t<=250e3, 1e-6, if(x>25e3,1e-4, 1e-6))
+    end
+     set Sediment river incision rate = 1e-5
+     set Bedrock diffusivity = -1    
+     set Sediment diffusivity = -1
+   end
+  end
+end  
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, right, left
+end 
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top, left, right
+  set List of model names = initial temperature
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 293
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 1
+    set Viscosity                     = 1e24
+  end
+end
+
+
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Time between graphical output = 500e3
+    set Interpolate output = false
+    set Output format =  gnuplot
+  end
+end
