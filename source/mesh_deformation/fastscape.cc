@@ -1175,7 +1175,7 @@ namespace aspect
           // adjust the term so that the elevation at the end will match taht of
           // the ASPECT boundary node.
           // TODO: allow users to choose an individual boundary to set as a fixed
-          // value, as this works as the background sea level for the stream 
+          // value, as this works as the background sea level for the stream
           // power law but not all boundaries need to be fixed.
           if (!use_fixed_erosional_base)
             {
@@ -1207,8 +1207,10 @@ namespace aspect
           // Because the corner nodes always show a slope of zero, this will update them according to
           // the closest non-ghost node. E.g. if we're at a corner node, look instead up a row and inward.
           // If this is no flux, we set the node to the one next to it.
-          // This can only be done on open boundaries because directly setting an elevation on a fixed boundary
-          // node causes reproducibility issues.
+          // NOTE: Because this directly sets elevation on a potentially fixed fastscape boundary, it may
+          // cause reproducibility issues. However, on an open boundary it may not produce enough mass
+          // flux into the model as the boundary will erode and the slope will reduce. Also, from testing
+          // this only works well in marine settings with high diffusivity.
           if (!init && left_flux > 0)
             {
               slope = 0;
@@ -1275,7 +1277,7 @@ namespace aspect
               velocity_z[index_left] = velocity_z[index_right-2] + (elevation[index_right-2] - elevation[index_left])/fastscape_timestep_in_years;
 
               // If nodes on both sides are going the same direction, then set the respective
-              // aspect boundary node to equal the other side (e.g., setting 1 to 7 in the previous 
+              // aspect boundary node to equal the other side (e.g., setting 1 to 7 in the previous
               // example). By doing his, the ghost nodes at the opposite
               // side of flow will work as a mirror mimicking what is happening on the other side.
               // TODO: With changes since initial implementation of the ghost nodes, I am not sure
@@ -1301,8 +1303,8 @@ namespace aspect
               // the elevation on a non-boundary node doesn't cause
               // reporducibility issues, or update this to work
               // through velocity_z.
-              // Also TODO: I'm not sure how necessary this is 
-              // with how we set the ghost nodes. E.g., from the 
+              // Also TODO: I'm not sure how necessary this is
+              // with how we set the ghost nodes. E.g., from the
               // above example if 1 and 7 are both surrounded by
               // identical nodes (6 and 2) do they need to be set?
               elevation[op_side-jj] = elevation[side+jj];
