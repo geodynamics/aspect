@@ -1,0 +1,7 @@
+Added: ParticleDistributionStatistics postprocessor which calculates
+some statistics about the clustering and distribution of particles within
+cells. Statistics are computed from a point-density function of the particles
+and include standard deviation and maximum and minimum of the point-density
+function.
+<br>
+(Jarett Baker-Dunn, 2025/06/19)

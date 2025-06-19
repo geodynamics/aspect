@@ -1,0 +1,32 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: RMS velocity (m/s)
+# 11: Max. velocity (m/s)
+# 12: Minimal temperature (K)
+# 13: Average temperature (K)
+# 14: Maximal temperature (K)
+# 15: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 16: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 17: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 18: Outward heat flux through boundary with indicator 3 ("top") (W)
+# 19: Visualization file name
+# 20: Number of advected particles
+# 21: Particle file name
+# 22: Minimum PDF standard deviation 
+# 23: Mean of PDF standard deviation: 
+# 24: Maximum PDF standard deviation: 
+# 25: Mean of PDF minimum values: 
+# 26: Mean PDF maximum values: 
+# 27: Minimum of PDF minimum values: 
+# 28: Maximum of PDF maximum values: 
+# 29: Minimal particles per cell: 
+# 30: Average particles per cell: 
+# 31: Maximal particles per cell: 
+0 0.000000000000e+00 0.000000000000e+00 1 22 9 9 0 0 0.00000000e+00 0.00000000e+00 0.00000000e+00 4.44444444e-01 1.00000000e+00 1.42222222e-05 1.42222222e-05 1.42222222e-05 1.42222222e-05 output-particle_distribution_statistics_singlecell/solution/solution-00000 2 output-particle_distribution_statistics_singlecell/particles/particles-00000 0.2500 0.2500 0.2500 0.0000 0.5000 0.0000 0.5000 2 2 2 
