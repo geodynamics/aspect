@@ -91,14 +91,14 @@ namespace aspect
          * Enumeration for selecting which type of additional output to use in Fastscape vtk.
          * Select between Fastscape variables.
          */
-        enum Fastscape_output_scheme
+        enum class FastscapeOutputVariable
         {
           //
           kf,
           kd,
           uplift_rate
         };
-        Fastscape_output_scheme additional_output_variables;
+        FastscapeOutputVariable additional_output_variable;
 
         /**
          * Serialize the contents of this class as far as they are not read
