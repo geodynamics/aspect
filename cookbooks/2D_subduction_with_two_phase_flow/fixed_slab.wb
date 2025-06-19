@@ -14,7 +14,9 @@
   "potential mantle temperature":1573,
   "features":
   [
-    // Define a mantle layer, which has a uniform temperature of 1573 K. The mantle layer has a composition 2, which represents peridotite.
+    // Define a mantle layer, which has a uniform temperature of 1573 K. Following the order of compositional fields
+    // listed in the cookbook PRM file, the mantle layer is defined as the third compositional field (index 2), 
+    // which represents peridotite.
     {"model": "mantle layer", "name": "peridotite mantle", "coordinates": [[-500e3, 100e3], [-500e3, -100e3], [16000e3, -100e3], [16000e3, 100e3]],
      "min depth": 0, "max depth":10000e3, 
      "composition models": 
