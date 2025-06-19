@@ -164,10 +164,8 @@ namespace aspect
                     {
                       const double phi_0 = 0.05;
 
-                      // Limit the porosity to be no smaller than 1e-8 when
-                      // calculating fluid effects on viscosities.
-                      porosity = std::max(porosity,1e-8);
-                      fluid_out->compaction_viscosities[q] = std::max(std::min(out.viscosities[q] * shear_to_bulk_viscosity_ratio * phi_0/porosity, max_compaction_visc), min_compaction_visc);
+                      const double inverse_compaction_viscosity = porosity / (phi_0 * out.viscosities[q] * shear_to_bulk_viscosity_ratio);
+                      fluid_out->inverse_compaction_viscosities[q] = std::min(std::max(inverse_compaction_viscosity, 1./max_compaction_visc), 1./min_compaction_visc);
                     }
                 }
             }

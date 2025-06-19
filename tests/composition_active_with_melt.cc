@@ -88,7 +88,7 @@ namespace aspect
 
             for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
               {
-                melt_out->compaction_viscosities[i] = 1.0;
+                melt_out->inverse_compaction_viscosities[i] = 1.0;
                 melt_out->fluid_viscosities[i] = 1.0;
                 melt_out->permeabilities[i] = 0.0; //1e-30*porosity * porosity;
                 melt_out->fluid_density_gradients[i] = Tensor<1,dim>();

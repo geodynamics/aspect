@@ -136,7 +136,9 @@ namespace aspect
             for (unsigned int i=0; i<property_names.size(); ++i, ++output_index)
               {
                 if (property_names[i] == "compaction viscosity")
-                  computed_quantities[q][output_index] = melt_outputs->compaction_viscosities[q];
+                  computed_quantities[q][output_index] = 1./melt_outputs->inverse_compaction_viscosities[q];
+                else if (property_names[i] == "inverse compaction viscosity")
+                  computed_quantities[q][output_index] = melt_outputs->inverse_compaction_viscosities[q];
                 else if (property_names[i] == "fluid viscosity")
                   computed_quantities[q][output_index] = melt_outputs->fluid_viscosities[q];
                 else if (property_names[i] == "permeability")
@@ -168,9 +170,15 @@ namespace aspect
                   }
                 else if (property_names[i] == "compaction length")
                   {
-                    const double compaction_length = std::sqrt((out.viscosities[q] + 4./3. * melt_outputs->compaction_viscosities[q])
-                                                               * melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q]);
-                    computed_quantities[q][output_index] = compaction_length;
+                    if (melt_outputs->inverse_compaction_viscosities[q] > 0.)
+                      {
+                        const double compaction_length = std::sqrt((out.viscosities[q] + (4./3.) / melt_outputs->inverse_compaction_viscosities[q])
+                                                                   * melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q]);
+                        computed_quantities[q][output_index] = compaction_length;
+                      }
+                    else
+                      // compaction viscosity generally scales with 1/phi, while permeability scales with phi^2...phi^3.
+                      computed_quantities[q][output_index] = 0.0;
                   }
                 else
                   AssertThrow(false, ExcNotImplemented());
@@ -191,7 +199,7 @@ namespace aspect
             prm.enter_subsection("Melt material properties");
             {
               const std::string pattern_of_names
-                = "compaction viscosity|fluid viscosity|permeability|"
+                = "compaction viscosity|inverse compaction viscosity|fluid viscosity|permeability|"
                   "fluid density|fluid density gradient|"
                   "darcy coefficient|darcy coefficient no cutoff|"
                   "compaction length";

@@ -894,15 +894,13 @@ namespace aspect
 
               // limit porosity to disaggregation threshold
               porosity = std::min(0.3, porosity);
-
-              const double porosity_threshold = 0.01 * std::pow(this->get_melt_handler().melt_parameters.melt_scaling_factor_threshold, 1./3.);
-              melt_out->compaction_viscosities[q] = (1.0 - porosity) * xi_0 / std::max(porosity, porosity_threshold);
+              melt_out->inverse_compaction_viscosities[q] = porosity / ((1.0 - porosity) * xi_0);
 
               const double delta_temp = in.temperature[q]-this->get_adiabatic_conditions().temperature(in.position[q]);
               const double compaction_viscosity_bound = 1.e4;
               const double visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[q])),compaction_viscosity_bound),1./compaction_viscosity_bound);
 
-              melt_out->compaction_viscosities[q] *= visc_temperature_dependence;
+              melt_out->inverse_compaction_viscosities[q] /= visc_temperature_dependence;
             }
         }
     }

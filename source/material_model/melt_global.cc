@@ -277,7 +277,7 @@ namespace aspect
               melt_out->fluid_densities[i] = reference_rho_f * temperature_dependence
                                              * std::exp(melt_compressibility * (in.pressure[i] - this->get_surface_pressure()));
 
-              melt_out->compaction_viscosities[i] = xi_0 * std::exp(- alpha_phi * porosity);
+              melt_out->inverse_compaction_viscosities[i] = std::exp(alpha_phi * porosity) / xi_0;
 
               double visc_temperature_dependence = 1.0;
               if (this->include_adiabatic_heating ())
@@ -290,7 +290,7 @@ namespace aspect
                   const double delta_temp = in.temperature[i]-reference_T;
                   visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/reference_T),1e4),1e-4);
                 }
-              melt_out->compaction_viscosities[i] *= visc_temperature_dependence;
+              melt_out->inverse_compaction_viscosities[i] /= visc_temperature_dependence;
             }
         }
     }

@@ -177,8 +177,7 @@ namespace aspect
               if (in.requests_property(MaterialProperties::viscosity))
                 {
                   const double phi_0 = 0.05;
-                  porosity = std::max(porosity,1e-8);
-                  fluid_out->compaction_viscosities[q] = out.viscosities[q] * shear_to_bulk_viscosity_ratio * phi_0/porosity;
+                  fluid_out->inverse_compaction_viscosities[q] = porosity / (out.viscosities[q] * shear_to_bulk_viscosity_ratio * phi_0);
                 }
             }
         }

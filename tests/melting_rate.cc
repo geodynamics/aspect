@@ -97,7 +97,7 @@ namespace aspect
               {
                 const double porosity = in.composition[i][porosity_idx];
 
-                melt_out->compaction_viscosities[i] = 5e20;
+                melt_out->inverse_compaction_viscosities[i] = 1./5.e20;
                 melt_out->fluid_viscosities[i]= 10.0;
                 melt_out->permeabilities[i]= 1e-8 * Utilities::fixed_power<3>(porosity) * Utilities::fixed_power<2>(1.0-porosity);
                 melt_out->fluid_densities[i]= 2500.0;

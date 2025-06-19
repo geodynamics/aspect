@@ -448,7 +448,7 @@ namespace aspect
               {
                 double porosity = in.composition[i][porosity_idx];
 
-                melt_out->compaction_viscosities[i] = xi_0 * (1.0 - porosity);
+                melt_out->inverse_compaction_viscosities[i] = (1.0 - porosity) / xi_0;
                 melt_out->fluid_viscosities[i]= eta_f;
                 melt_out->permeabilities[i]= reference_permeability * Utilities::fixed_power<3>(porosity);
                 melt_out->fluid_densities[i]= reference_rho_f;

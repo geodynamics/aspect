@@ -74,8 +74,12 @@ namespace aspect
             // for each composition dof, check if the compaction length exceeds the cell size
             for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
               {
-                const double compaction_length = std::sqrt((out.viscosities[i] + 4./3. * melt_out->compaction_viscosities[i])
-                                                           * melt_out->permeabilities[i] / melt_out->fluid_viscosities[i]);
+                double compaction_length = 0.0;
+                if (melt_out->inverse_compaction_viscosities[i] > 0.)
+                  compaction_length = std::sqrt((out.viscosities[i] + (4./3.) / melt_out->inverse_compaction_viscosities[i])
+                                                * melt_out->permeabilities[i] / melt_out->fluid_viscosities[i]);
+                // Compaction viscosity generally scales with 1/phi, while permeability scales with phi^2...phi^3.
+                // So if the compaction viscosity is infinity, zero is probably already the correct value.
 
                 // If the compaction length exceeds the cell diameter anywhere in the cell, cell is marked for refinement.
                 // Do not apply any refinement if the porosity is so small that melt can not migrate.

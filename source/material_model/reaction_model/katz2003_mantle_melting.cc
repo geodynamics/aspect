@@ -328,8 +328,8 @@ namespace aspect
                                                        * this->get_gravity_model().gravity_vector(in.position[i]);
 
                 const double phi_0 = 0.05;
-                porosity = std::max(std::min(porosity,0.995),1e-4);
-                melt_out->compaction_viscosities[i] = xi_0 * phi_0 / porosity;
+                porosity = std::max(std::min(porosity,0.995),0.0);
+                melt_out->inverse_compaction_viscosities[i] = porosity / (xi_0 * phi_0);
 
                 double visc_temperature_dependence = 1.0;
                 if (this->include_adiabatic_heating ())
@@ -347,7 +347,7 @@ namespace aspect
                                                  thermal_bulk_viscosity_exponent*delta_temp/reference_T);
                     visc_temperature_dependence = std::max(std::min(std::exp(-T_dependence),1e4),1e-4);
                   }
-                melt_out->compaction_viscosities[i] *= visc_temperature_dependence;
+                melt_out->inverse_compaction_viscosities[i] /= visc_temperature_dependence;
               }
           }
 

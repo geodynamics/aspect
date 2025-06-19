@@ -55,8 +55,12 @@ namespace aspect
         {
           const double porosity = material_model_inputs.composition[q][this->introspection().compositional_index_for_name("porosity")];
 
-          heating_model_outputs.heating_source_terms[q] = melt_outputs->compaction_viscosities[q]
-                                                          * std::pow(trace(material_model_inputs.strain_rate[q]),2)
+          heating_model_outputs.heating_source_terms[q] = (melt_outputs->inverse_compaction_viscosities[q] > 0
+                                                           ?
+                                                           std::pow(trace(material_model_inputs.strain_rate[q]),2)
+                                                           / melt_outputs->inverse_compaction_viscosities[q]
+                                                           :
+                                                           0.0)
                                                           +
                                                           (melt_outputs->permeabilities[q] > 0
                                                            ?

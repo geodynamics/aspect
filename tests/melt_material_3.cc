@@ -73,7 +73,7 @@ namespace aspect
           {
             for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
               {
-                melt_out->compaction_viscosities[i] = 1.0;
+                melt_out->inverse_compaction_viscosities[i] = 1.0;
                 melt_out->fluid_viscosities[i]= 2.0;
                 melt_out->permeabilities[i]= 1.0 + Utilities::fixed_power<2>(in.position[i][1]);
                 melt_out->fluid_densities[i]= 2.0;

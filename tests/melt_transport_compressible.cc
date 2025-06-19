@@ -77,7 +77,7 @@ namespace aspect
           {
             for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
               {
-                melt_out->compaction_viscosities[i] = xi_1 * std::exp(-in.position[i][1]) + 2.0/3.0 * std::exp(2.0 * in.position[i][0]) + xi_0;
+                melt_out->inverse_compaction_viscosities[i] = 1. / (xi_1 * std::exp(-in.position[i][1]) + 2.0/3.0 * std::exp(2.0 * in.position[i][0]) + xi_0);
                 melt_out->fluid_viscosities[i] = 1.0;
                 melt_out->permeabilities[i] = K_D_0 + 2.0 * B / E - rho_s_0 * B * D / E * (1.0/rho_s_0 - 1.0/rho_f_0) * std::exp(in.position[i][1]);
                 const double fluid_compressibility = 1.0 / (rho_f_0 * C);

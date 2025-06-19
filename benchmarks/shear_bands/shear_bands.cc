@@ -145,9 +145,7 @@ namespace aspect
           if (melt_out != nullptr)
             for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
               {
-                double porosity = std::max(in.composition[i][porosity_idx],1e-4);
-
-                melt_out->compaction_viscosities[i] = xi_0 * std::pow(porosity/background_porosity,-compaction_viscosity_exponent);
+                melt_out->inverse_compaction_viscosities[i] = std::pow(porosity/background_porosity, compaction_viscosity_exponent) / xi_0;
                 melt_out->fluid_viscosities[i]= eta_f;
                 melt_out->permeabilities[i]= reference_permeability * std::pow(porosity,permeability_exponent);
                 melt_out->fluid_densities[i]= reference_rho_f;

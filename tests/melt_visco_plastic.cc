@@ -602,12 +602,12 @@ namespace aspect
               const double phi_0 = 0.05;
               porosity = std::max(std::min(porosity,0.995),1.e-8);
               // compaction viscosities (Keller et al. eq (51)
-              melt_out->compaction_viscosities[i] = intrinsic_viscosities[i] * phi_0 / porosity;
+              melt_out->inverse_compaction_viscosities[i] = porosity / (intrinsic_viscosities[i] * phi_0);
 
               // visco(elastic) compaction viscosity
               // Keller et al. eq (36)
               // TODO include elastic part
-              melt_out->compaction_viscosities[i] *= (1. - porosity);
+              melt_out->inverse_compaction_viscosities[i] /= (1. - porosity);
 
               // TODO compaction stress evolution parameter
               // Keller et al. eq. (41) and (44)
@@ -621,11 +621,11 @@ namespace aspect
                     volumetric_strain_rates[i] = std::max(volumetric_strain_rates[i], min_strain_rate);
                   else
                     volumetric_strain_rates[i] = std::min(volumetric_strain_rates[i], -min_strain_rate);
-                  melt_out->compaction_viscosities[i] = - volumetric_yield_strength[i] / volumetric_strain_rates[i];
+                  melt_out->inverse_compaction_viscosities[i] = - volumetric_strain_rates[i] / volumetric_yield_strength[i];
                 }
 
               // Limit the viscosity with specified minimum and maximum bounds
-              melt_out->compaction_viscosities[i] = std::min(std::max(melt_out->compaction_viscosities[i], min_viscosity), max_viscosity);
+              melt_out->inverse_compaction_viscosities[i] = std::max(std::min(melt_out->inverse_compaction_viscosities[i], 1./min_viscosity), 1./max_viscosity);
             }
         }
 
