@@ -1582,6 +1582,14 @@ namespace aspect
           const double scaled_time = this->convert_output_to_years() ? time / year_in_seconds : time;
           kf_distribution_function.set_time(scaled_time);
         }
+
+      if (use_sea_level_function)
+        {
+          if (this->convert_output_to_years())
+            sea_level_function.set_time(this->get_time() / year_in_seconds);
+          else
+            sea_level_function.set_time(this->get_time());
+        }
     }
 
 
@@ -1593,18 +1601,6 @@ namespace aspect
       return true;
     }
 
-    template <int dim>
-    void
-    FastScape<dim>::update()
-    {
-      if (use_sea_level_function)
-        {
-          if (this->convert_output_to_years())
-            sea_level_function.set_time(this->get_time() / year_in_seconds);
-          else
-            sea_level_function.set_time(this->get_time());
-        }
-    }
 
 
     template <int dim>

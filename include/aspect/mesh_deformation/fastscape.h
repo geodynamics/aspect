@@ -3,7 +3,7 @@
 
   This file is part of ASPECT.
 
-  ASPECT is free software; you can redistribute it and/or modify
+ allow_others ASPECT is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2, or (at your option)
   any later version.
@@ -103,12 +103,6 @@ namespace aspect
          * Restore the state of the object.
          */
         void load (const std::map<std::string, std::string> &status_strings) override;
-
-        /**
-         * Update time-dependent input parameters for the FastScape plugin.
-         */
-        void update() override;
-
 
       private:
         /**
