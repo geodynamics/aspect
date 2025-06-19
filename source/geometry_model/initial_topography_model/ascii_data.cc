@@ -26,6 +26,7 @@
 #include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/chunk.h>
+#include <aspect/geometry_model/two_merged_chunks.h>
 
 #include <deal.II/base/parameter_handler.h>
 #include <array>
@@ -78,7 +79,8 @@ namespace aspect
         }
       else if (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>> (this->get_geometry_model()) ||
                Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model()) ||
-               Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()))
+               Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()) ||
+               Plugins::plugin_type_matches<const GeometryModel::TwoMergedChunks<dim>> (this->get_geometry_model()))
         {
           // AsciiDataBoundary always expects to get the input
           // parameters for its functions in Cartesian
