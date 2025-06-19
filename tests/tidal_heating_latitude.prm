@@ -1,0 +1,112 @@
+# This parameter file tests the tidal heating plugin for a case where the
+# viscosity is constant and the tidal heating is dependent on latitude.
+# 
+# The equation implemented in this heating model is from Tobie et al. (2003) (https://doi.org/10.1029/2003JE002099),
+# which is defined as:
+# H= 2*(viscosity)*(time-averaged tidal strain rate)^2/(1+((viscosity)*(tidal frequency)/(shear modulus))^2)), where
+# viscosity is the viscosity derived from the material model at every point (constant in this test - 1e14 Pa s)
+# The latitudinal variation of (time-averaged tidal strain rate) is simplified with cosine function between maximum tidal strain rate and minimum tidal strain rate.
+# The variation can be found in Fig.3 of Nimmo et al. (2007) (https://doi.org/10.1016/j.icarus.2007.04.021).
+#
+# The governing equation in the model is simplified as (density)*(specific heat capacity)*dT/dt=H, as unit of H is W/m^3.
+# As expected, temperature increases with time as the convective and conductive processes are not active.
+#
+# Analytical values are 2.85946709e+02 K and 1.65676318e+02 K at the pole and equator, respectively. 
+# These values align with ASPECT's results within numerical accuracy. ASPECT's results are 2.86027243e+02 K and 1.65661824e+02 K at poles and equators, respectively.
+
+set Dimension                              = 3
+set Use years in output instead of seconds = true
+set End time                               = 1e6
+
+set Output directory                       = tidal_heating_latitude
+
+set Maximum first time step                    = 1e5
+set CFL number                                 = 0.8
+set Maximum time step                          = 1e5
+
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+
+subsection Geometry model
+  set Model name = spherical shell
+  subsection Spherical shell
+    set Outer radius = 1560800
+    set Inner radius = 1460800
+    set Opening angle = 360
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Coordinate system = spherical
+    set Variable names = r, phi,theta
+    set Function expression = 100
+  end
+end
+
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators = top, bottom
+end
+
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 0 #1.3
+  end
+end
+
+
+subsection Material model
+  set Model name = simpler
+  subsection Simpler model
+    set Reference density = 917
+    set Reference specific heat = 2110
+    set Reference temperature = 100
+    set Thermal conductivity = 0 #1.93
+    set Thermal expansion coefficient = 0 #1.6e-4
+    set Viscosity = 1e14
+  end
+end
+
+
+subsection Heating model
+  set List of model names = tidal heating
+  subsection Tidal heating
+    set Tidal frequency = 2.048e-5
+    set Elastic shear modulus = 3.3e9
+    set Custom distribution of tidal strain rate = latitudinal variation
+    set Maximum tidal strain rate = 2.81e-10
+    set Minimum tidal strain rate = 1.67e-10
+  end
+end
+
+
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 1
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, visualization, basic statistics, \
+			       pressure statistics, material statistics, heating statistics
+
+  subsection Visualization
+    set Time between graphical output = 1e5
+    set Output format                 = vtu
+    set List of output variables      = material properties, strain rate, shear stress, stress, nonadiabatic pressure, heating
+  end
+end

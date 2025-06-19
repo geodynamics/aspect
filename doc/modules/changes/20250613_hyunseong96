@@ -1,4 +1,5 @@
 Added: ASPECT now has a new heating model plugin called 'tidal heating' for diurnal tides.
 This plugin is useful for modeling long-term interior evolution in moons orbiting a large planet.
+Distribution of tidal strain rate can be selected between 'constant' and 'latitudinal variation'.
 <br>
 (Hyunseong Kim, 2025/06/13)
