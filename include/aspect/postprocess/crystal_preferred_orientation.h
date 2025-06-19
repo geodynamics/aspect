@@ -108,13 +108,6 @@ namespace aspect
         parse_parameters (ParameterHandler &prm) override;
 
       private:
-
-        /**
-         * Stores the simulation end time, so that it always produces output
-         * at the last timestep.
-         */
-        double end_time;
-
         /**
          * Enums specifying what information to write:
          *

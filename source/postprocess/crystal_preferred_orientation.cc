@@ -206,7 +206,7 @@ namespace aspect
 
       // If it's not time to generate an output file or we do not write output
       // return early.
-      if (this->get_time() < last_output_time + output_interval && this->get_time() != end_time)
+      if (this->get_time() < last_output_time + output_interval && this->get_time() != this->get_end_time())
         return std::make_pair("","");
 
       if (output_file_number == numbers::invalid_unsigned_int)
@@ -742,10 +742,6 @@ namespace aspect
     void
     CrystalPreferredOrientation<dim>::parse_parameters (ParameterHandler &prm)
     {
-      end_time = prm.get_double ("End time");
-      if (this->convert_output_to_years())
-        end_time *= year_in_seconds;
-
       unsigned int n_minerals;
 
       prm.enter_subsection("Particles");
