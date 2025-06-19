@@ -101,9 +101,9 @@ namespace aspect
               double target_angle;
 
               if (convergence_indicator > convergence_threshold)
-                target_angle = dynamic_angles_convergence[volume_fraction_index];
+                target_angle = dynamic_angles_of_internal_friction_for_convergence[volume_fraction_index];
               else if (convergence_indicator < -divergence_threshold)
-                target_angle = dynamic_angles_divergence[volume_fraction_index];
+                target_angle = dynamic_angles_of_internal_friction_for_divergence[volume_fraction_index];
               else
                 target_angle = dynamic_angles_of_internal_friction[volume_fraction_index];
 
@@ -112,6 +112,9 @@ namespace aspect
                                   / (1. + std::pow((current_edot_ii / dynamic_characteristic_strain_rate),
                                                   dynamic_friction_smoothness_exponent));
               const double dynamic_friction_angle = std::atan(mu);
+              Assert((mu < 1) && (0 < dynamic_friction_angle) && (dynamic_friction_angle <= 1.6), ExcMessage(
+                          "The friction coefficient should be larger than zero and smaller than 1. "
+                          "The friction angle should be smaller than 1.6 rad."));
               return dynamic_friction_angle;
             } 
             case function:
@@ -211,7 +214,7 @@ namespace aspect
                            "Units: \\si{\\degree}.");                  
 
         prm.declare_entry ("Dynamic friction smoothness exponent", "1",
-                           Patterns::Double (0),
+                           Patterns::List(Patterns::Double(0)),
                            "An exponential factor in the equation for the calculation of the friction angle when a "
                            "static and a dynamic angle of internal friction are specified. A factor of 1 returns the equation "
                            "to Equation (13) in \\cite{van_dinther_seismic_2013}. A factor between 0 and 1 makes the "
@@ -220,18 +223,18 @@ namespace aspect
                            "Units: none.");
 
         prm.declare_entry ("Convergence threshold", "1e-15",
-                          Patterns::Double(0),
+                          Patterns::Double(),
                           "Minimum convergence rate (negative strain rate trace) to trigger convergent friction angle.");
 
         prm.declare_entry ("Divergence threshold", "1e-15",
-                          Patterns::Double(0),
+                          Patterns::Double(),
                           "Minimum divergence rate to trigger divergent friction angle.");
 
-        prm.declare_entry ("Dynamic angles of internal friction (convergence)", "",
+        prm.declare_entry ("Dynamic angles of internal friction for convergent flow", "2",
           Patterns::List(Patterns::Double(0)),
           "Optional dynamic friction angles for convergent flow.");
 
-        prm.declare_entry ("Dynamic angles of internal friction (divergence)", "",
+        prm.declare_entry ("Dynamic angles of internal friction for divergent flow", "4",
           Patterns::List(Patterns::Double(0)),
           "Optional dynamic friction angles for divergent flow.");             
 
@@ -271,6 +274,8 @@ namespace aspect
           friction_mechanism = static_friction;
         else if (prm.get ("Friction mechanism") == "dynamic friction")
           friction_mechanism = dynamic_friction;
+        else if (prm.get ("Friction mechanism") == "differential dynamic friction")
+          friction_mechanism = differential_dynamic_friction;
         else if (prm.get ("Friction mechanism") == "function")
           friction_mechanism = function;
         else
@@ -295,55 +300,41 @@ namespace aspect
         compositional_field_names.insert(compositional_field_names.begin(), "background");
         chemical_field_names.insert(chemical_field_names.begin(), "background");
 
-        Utilities::MapParsing::Options options(chemical_field_names, "Dynamic angles of internal friction");
-        options.list_of_allowed_keys = compositional_field_names;
+        Utilities::MapParsing::Options options_default(chemical_field_names, "Dynamic angles of internal friction");
+        options_default.list_of_allowed_keys = compositional_field_names;
 
         dynamic_angles_of_internal_friction = Utilities::MapParsing::parse_map_to_double_array (prm.get("Dynamic angles of internal friction"),
-                                              options);
+                                              options_default);
+     
+        // --- Convergent dynamic angles ---
+        Utilities::MapParsing::Options options_convergence(chemical_field_names, "Dynamic angles of internal friction for convergent flow");
+        options_convergence.list_of_allowed_keys = compositional_field_names;
+
+        dynamic_angles_of_internal_friction_for_convergence = Utilities::MapParsing::parse_map_to_double_array (prm.get("Dynamic angles of internal friction for convergent flow"),
+                                              options_convergence);
+
+        // --- Divergent dynamic angles ---
+        Utilities::MapParsing::Options options_divergence(chemical_field_names, "Dynamic angles of internal friction for divergent flow");
+        options_divergence.list_of_allowed_keys = compositional_field_names;
+
+        dynamic_angles_of_internal_friction_for_divergence = Utilities::MapParsing::parse_map_to_double_array (prm.get("Dynamic angles of internal friction for divergent flow"),
+                                              options_divergence);
+
 
         // Convert angles from degrees to radians
-        for (double &angle : dynamic_angles_of_internal_friction)
-          {
-            AssertThrow(angle <= 90,
-                        ExcMessage("Dynamic angles of friction must be <= 90 degrees"));
-            angle *= constants::degree_to_radians;
-          }
+        auto convert_angles_to_radians = [](std::vector<double> &angles, const std::string &description)
+        {
+          for (double &angle : angles)
+            {
+              AssertThrow(angle <= 90,
+                          ExcMessage(description + " must be <= 90 degrees"));
+              angle *= constants::degree_to_radians;
+            }
+        };
 
-          // --- Convergent dynamic angles ---
-          std::string convergence_entry = prm.get("Dynamic angles of internal friction (convergence)");
-          if (convergence_entry.empty())
-            {
-              dynamic_angles_convergence = dynamic_angles_of_internal_friction;
-            }
-          else
-            {
-              dynamic_angles_convergence =
-                Utilities::MapParsing::parse_map_to_double_array(convergence_entry, options);
-              for (double &angle : dynamic_angles_convergence)
-                {
-                  AssertThrow(angle <= 90,
-                              ExcMessage("Convergent dynamic angles must be <= 90 degrees"));
-                  angle *= constants::degree_to_radians;
-                }
-            }
-
-          // --- Divergent dynamic angles ---
-          std::string divergence_entry = prm.get("Dynamic angles of internal friction (divergence)");
-          if (divergence_entry.empty())
-            {
-              dynamic_angles_divergence = dynamic_angles_of_internal_friction;
-            }
-          else
-            {
-              dynamic_angles_divergence =
-                Utilities::MapParsing::parse_map_to_double_array(divergence_entry, options);
-              for (double &angle : dynamic_angles_divergence)
-                {
-                  AssertThrow(angle <= 90,
-                              ExcMessage("Divergent dynamic angles must be <= 90 degrees"));
-                  angle *= constants::degree_to_radians;
-                }
-            }
+        convert_angles_to_radians(dynamic_angles_of_internal_friction, "Dynamic angles of internal friction");
+        convert_angles_to_radians(dynamic_angles_of_internal_friction_for_convergence, "Dynamic angles of internal friction for convergent flow");
+        convert_angles_to_radians(dynamic_angles_of_internal_friction_for_divergence, "Dynamic angles of internal friction for divergent flow");
 
 
         dynamic_friction_smoothness_exponent = prm.get_double("Dynamic friction smoothness exponent");

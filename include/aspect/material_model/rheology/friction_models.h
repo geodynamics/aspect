@@ -43,13 +43,16 @@ namespace aspect
        *
        * For the type 'dynamic friction', the friction angle is rate dependent following
        * Equation 13 from \\cite{van_dinther_seismic_2013}.
+       * 
+       * For the type 'differential dynamic friction', the dynamic angle depends on whether
+       * local flow is convergent or divergent.
        */
       enum FrictionMechanism
       {
         static_friction,
         dynamic_friction,
-        function,
-        differential_dynamic_friction
+        differential_dynamic_friction,
+        function
       };
 
       template <int dim>
@@ -90,7 +93,7 @@ namespace aspect
         private:
           /**
            * Select the mechanism to be used for the friction dependence.
-           * Possible options: static friction | dynamic friction | function
+           * Possible options: static friction | dynamic friction | differential_dynamic_friction | function |
            */
           FrictionMechanism friction_mechanism;
 
@@ -131,17 +134,24 @@ namespace aspect
           Utilities::Coordinates::CoordinateSystem coordinate_system_friction_function;
 
           /**
-           * Dynamic angles used for converging and diverging regions separately,
+           * Dynamic angles of internal friction that are used at high strain rates in  converging regions,
            * when using differential dynamic friction.
            */
-          std::vector<double> dynamic_angles_convergence;
-          std::vector<double> dynamic_angles_divergence;
+          std::vector<double> dynamic_angles_of_internal_friction_for_convergence;
+          /**
+           * Dynamic angles of internal friction that are used at high strain rates in  diverging regions,
+           * when using differential dynamic friction.
+           */
+          std::vector<double> dynamic_angles_of_internal_friction_for_divergence;
 
           /**
-           * Thresholds on the strain rate trace to classify convergent, neutral, or divergent regimes.
+           * Thresholds on the strain rate trace to classify convergent regimes.
            */
-            double convergence_threshold;
-            double divergence_threshold;
+          double convergence_threshold;
+          /**
+           * Thresholds on the strain rate trace to classify divergent regimes.
+           */
+          double divergence_threshold;
       };
     }
   }
