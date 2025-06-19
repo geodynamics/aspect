@@ -77,11 +77,11 @@ namespace aspect
                               "",
                               Patterns::Anything(),
                               "Set the topography height and the polygon which should be set to that height. "
-                              "The format is : \"The topography height \textgreater The point list describing "
-                              "a polygon \\& The next topography height \textgreater the next point list "
+                              "The format is : \"The topography height $\\textgreater$ The point list describing "
+                              "a polygon \\& The next topography height $\\textgreater$ the next point list "
                               "describing a polygon.\" The format for the point list describing the polygon is "
                               "\"x1,y1;x2,y2\". For example for two triangular areas of 100 and -100 meters high "
-                              "set: '100 \textgreater 0,0;5,5;0,10 \\& -100 \textgreater 10,10;10,15;20,15'. "
+                              "set: '100 $\\textgreater$ 0,0;5,5;0,10 \\& -100 $\\textgreater$ 10,10;10,15;20,15'. "
                               "Units of the height are always in meters. The units of the coordinates are "
                               "dependent on the geometry model. In the box model they are in meters, in the "
                               "chunks they are in degrees, etc. Please refer to the manual of the individual "

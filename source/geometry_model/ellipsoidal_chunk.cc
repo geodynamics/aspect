@@ -21,6 +21,9 @@
 
 #include <aspect/geometry_model/ellipsoidal_chunk.h>
 #include <aspect/utilities.h>
+#include <aspect/geometry_model/initial_topography_model/prm_polygon.h>
+#include <aspect/geometry_model/initial_topography_model/zero_topography.h>
+
 #include <deal.II/grid/tria_iterator.h>
 #include <deal.II/grid/tria_accessor.h>
 #include <deal.II/grid/grid_generator.h>
@@ -212,6 +215,10 @@ namespace aspect
     void
     EllipsoidalChunk<dim>::initialize()
     {
+      AssertThrow(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()) ||
+                  Plugins::plugin_type_matches<const InitialTopographyModel::PrmPolygon<dim>>(this->get_initial_topography_model()),
+                  ExcMessage("At the moment, only the Zero or Prm polygon initial topography model can be used with the Ellipsoidal Chunk geometry model."));
+
       manifold = std::make_unique<internal::EllipsoidalChunkGeometry<dim>>(this->get_initial_topography_model(),
                                                                             semi_major_axis_a,
                                                                             eccentricity,
@@ -614,12 +621,18 @@ namespace aspect
 
     template <int dim>
     double
-    EllipsoidalChunk<dim>::height_above_reference_surface(const Point<dim> &/*position*/) const
+    EllipsoidalChunk<dim>::height_above_reference_surface(const Point<dim> &position) const
     {
-      AssertThrow(false, ExcMessage("Function height_above_reference_surface is not yet implemented "
-                                    "for the ellipsoidal chunk geometry model. "
-                                    "Consider using a box, spherical shell, or chunk.") );
-      return numbers::signaling_nan<double>();
+      Point<dim> ellipsoidal_point = manifold->pull_back(position);
+
+      AssertThrow (dim == 3, ExcMessage("The topography in ellipsoidal chunk can currently only be used in 3d."));
+
+      // Extract the surface point to compute topography. The last coordinate of manifold
+      // returns the negative depth from the deformed surface.
+      const Point<dim-1> phi_theta(ellipsoidal_point[0] * constants::radians_to_degree,
+                                   ellipsoidal_point[1] * constants::radians_to_degree);
+
+      return  manifold->topography->value(phi_theta) + ellipsoidal_point[dim-1];
     }
 
 
@@ -627,7 +640,7 @@ namespace aspect
     double
     EllipsoidalChunk<dim>::maximal_depth() const
     {
-      return bottom_depth;
+      return bottom_depth + this->get_initial_topography_model().max_topography();
     }
 
     template <int dim>
@@ -726,7 +739,10 @@ namespace aspect
       // the chunk manifold works internally with a vector with longitude, latitude, depth.
       // We need to output radius, longitude, latitude to be consistent.
       // Ignore the topography by calling pull_back_ellipsoid to avoid a loop when calling the
-      // AsciiDataBoundary for topography which uses this function....
+      // AsciiDataBoundary for topography which uses this function.
+      //
+      // Start by building a vector with 3 components, even if the input point is 2d, if
+      // necessary leaving the remaining components zero.
       Point<3> cartesian_point;
       for (unsigned int d=0; d<dim; ++d)
         cartesian_point[d] = position_point[d];
