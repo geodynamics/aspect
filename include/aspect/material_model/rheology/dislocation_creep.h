@@ -129,22 +129,22 @@ namespace aspect
           /**
            * List of dislocation creep prefactors A.
            */
-          std::vector<double> prefactors_dislocation;
+          std::vector<double> prefactors;
 
           /**
            * List of dislocation creep stress exponents n.
            */
-          std::vector<double> stress_exponents_dislocation;
+          std::vector<double> stress_exponents;
 
           /**
            * List of dislocation creep activation energies E.
            */
-          std::vector<double> activation_energies_dislocation;
+          std::vector<double> activation_energies;
 
           /**
            * List of dislocation creep activation volumes V.
            */
-          std::vector<double> activation_volumes_dislocation;
+          std::vector<double> activation_volumes;
 
       };
     }

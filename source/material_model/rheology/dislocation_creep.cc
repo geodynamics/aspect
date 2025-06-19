@@ -57,23 +57,23 @@ namespace aspect
         if (phase_function_values == std::vector<double>())
           {
             // no phases
-            creep_parameters.prefactor = prefactors_dislocation[composition];
-            creep_parameters.activation_energy = activation_energies_dislocation[composition];
-            creep_parameters.activation_volume = activation_volumes_dislocation[composition];
-            creep_parameters.stress_exponent = stress_exponents_dislocation[composition];
+            creep_parameters.prefactor = prefactors[composition];
+            creep_parameters.activation_energy = activation_energies[composition];
+            creep_parameters.activation_volume = activation_volumes[composition];
+            creep_parameters.stress_exponent = stress_exponents[composition];
           }
         else
           {
             // Average among phases
             creep_parameters.prefactor = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                         prefactors_dislocation, composition,
+                                         prefactors, composition,
                                          MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic);
             creep_parameters.activation_energy = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                                 activation_energies_dislocation, composition);
+                                                 activation_energies, composition);
             creep_parameters.activation_volume = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                                 activation_volumes_dislocation , composition);
+                                                 activation_volumes , composition);
             creep_parameters.stress_exponent = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                               stress_exponents_dislocation, composition);
+                                               stress_exponents, composition);
           }
 
         return creep_parameters;
@@ -99,12 +99,12 @@ namespace aspect
         // A: prefactor, edot_ii: square root of second invariant of deviatoric strain rate tensor,
         // E: activation energy, P: pressure,
         // V; activation volume, n: stress exponent, R: gas constant, T: temperature.
-        double viscosity_dislocation = 0.5 * std::pow(p.prefactor,-1/p.stress_exponent) *
-                                       std::exp((p.activation_energy + pressure*p.activation_volume)/
-                                                (constants::gas_constant*temperature*p.stress_exponent)) *
-                                       std::pow(strain_rate,((1. - p.stress_exponent)/p.stress_exponent));
+        double viscosity = 0.5 * std::pow(p.prefactor,-1/p.stress_exponent) *
+                           std::exp((p.activation_energy + pressure*p.activation_volume)/
+                                    (constants::gas_constant*temperature*p.stress_exponent)) *
+                           std::pow(strain_rate,((1. - p.stress_exponent)/p.stress_exponent));
 
-        Assert (viscosity_dislocation > 0.0,
+        Assert (viscosity > 0.0,
                 ExcMessage ("Negative dislocation viscosity detected. This is unphysical and should not happen. "
                             "Check for negative parameters. Temperature and pressure are "
                             + Utilities::to_string(temperature) + " K, " + Utilities::to_string(pressure) + " Pa. "));
@@ -115,9 +115,9 @@ namespace aspect
         // so these high viscosities are never achieved. It is therefore both reasonable
         // and desirable to require the single-mechanism viscosity to be smaller than
         // std::sqrt(max_double).
-        viscosity_dislocation = std::min(viscosity_dislocation, std::sqrt(std::numeric_limits<double>::max()));
+        viscosity = std::min(viscosity, std::sqrt(std::numeric_limits<double>::max()));
 
-        return viscosity_dislocation;
+        return viscosity;
       }
 
 
@@ -135,18 +135,18 @@ namespace aspect
         // A: prefactor, edot_ii_partial: square root of second invariant of deviatoric strain rate tensor attributable to the creep mechanism,
         // stress: deviatoric stress, E: activation energy, P: pressure,
         // V; activation volume, n: stress exponent, R: gas constant, T: temperature.
-        const double strain_rate_dislocation = creep_parameters.prefactor *
-                                               std::pow(stress,creep_parameters.stress_exponent) *
-                                               std::exp(-(creep_parameters.activation_energy + pressure*creep_parameters.activation_volume)/
-                                                        (constants::gas_constant*temperature));
+        const double strain_rate = creep_parameters.prefactor *
+                                   std::pow(stress,creep_parameters.stress_exponent) *
+                                   std::exp(-(creep_parameters.activation_energy + pressure*creep_parameters.activation_volume)/
+                                            (constants::gas_constant*temperature));
 
-        const double dstrain_rate_dstress_dislocation = creep_parameters.prefactor *
-                                                        creep_parameters.stress_exponent *
-                                                        std::pow(stress,creep_parameters.stress_exponent-1.) *
-                                                        std::exp(-(creep_parameters.activation_energy + pressure*creep_parameters.activation_volume)/
-                                                                 (constants::gas_constant*temperature));
+        const double dstrain_rate_dstress = creep_parameters.prefactor *
+                                            creep_parameters.stress_exponent *
+                                            std::pow(stress,creep_parameters.stress_exponent-1.) *
+                                            std::exp(-(creep_parameters.activation_energy + pressure*creep_parameters.activation_volume)/
+                                                     (constants::gas_constant*temperature));
 
-        return std::make_pair(strain_rate_dislocation, dstrain_rate_dstress_dislocation);
+        return std::make_pair(strain_rate, dstrain_rate_dstress);
       }
 
 
@@ -163,14 +163,14 @@ namespace aspect
         // A: prefactor, edot_ii_partial: square root of second invariant of deviatoric strain rate tensor attributable to the creep mechanism,
         // stress: deviatoric stress, E: activation energy, P: pressure,
         // V; activation volume, n: stress exponent, R: gas constant, T: temperature.
-        const double log_strain_rate_dislocation = std::log(creep_parameters.prefactor) +
-                                                   creep_parameters.stress_exponent * log_stress -
-                                                   (creep_parameters.activation_energy + pressure*creep_parameters.activation_volume)/
-                                                   (constants::gas_constant*temperature);
+        const double log_strain_rate = std::log(creep_parameters.prefactor) +
+                                       creep_parameters.stress_exponent * log_stress -
+                                       (creep_parameters.activation_energy + pressure*creep_parameters.activation_volume)/
+                                       (constants::gas_constant*temperature);
 
-        const double dlog_strain_rate_dlog_stress_dislocation = creep_parameters.stress_exponent;
+        const double dlog_strain_rate_dlog_stress = creep_parameters.stress_exponent;
 
-        return std::make_pair(log_strain_rate_dislocation, dlog_strain_rate_dlog_stress_dislocation);
+        return std::make_pair(log_strain_rate, dlog_strain_rate_dlog_stress);
       }
 
 
@@ -240,27 +240,27 @@ namespace aspect
           }
 
         // Read parameters, each of size of number of composition + number of phases + 1
-        prefactors_dislocation = Utilities::MapParsing::parse_map_to_double_array(prm.get("Prefactors for dislocation creep"),
-                                                                                  options);
+        prefactors = Utilities::MapParsing::parse_map_to_double_array(prm.get("Prefactors for dislocation creep"),
+                                                                      options);
 
         options.property_name = "Stress exponents for dislocation creep";
-        stress_exponents_dislocation = Utilities::MapParsing::parse_map_to_double_array(prm.get("Stress exponents for dislocation creep"),
-                                                                                        options);
+        stress_exponents = Utilities::MapParsing::parse_map_to_double_array(prm.get("Stress exponents for dislocation creep"),
+                                                                            options);
 
         options.property_name = "Activation energies for dislocation creep";
-        activation_energies_dislocation = Utilities::MapParsing::parse_map_to_double_array(prm.get("Activation energies for dislocation creep"),
-                                          options);
+        activation_energies = Utilities::MapParsing::parse_map_to_double_array(prm.get("Activation energies for dislocation creep"),
+                                                                               options);
 
         options.property_name = "Activation volumes for dislocation creep";
-        activation_volumes_dislocation = Utilities::MapParsing::parse_map_to_double_array(prm.get("Activation volumes for dislocation creep"),
-                                         options);
+        activation_volumes = Utilities::MapParsing::parse_map_to_double_array(prm.get("Activation volumes for dislocation creep"),
+                                                                              options);
 
         // Check that there are no prefactor entries set to zero,
         // for example because the entry is for a field
         // that is masked anyway, like strain. Despite
         // these compositions being masked, their viscosities
         // are computed anyway and this will lead to division by zero.
-        for (const double prefactor : prefactors_dislocation)
+        for (const double prefactor : prefactors)
           AssertThrow(prefactor > 0., ExcMessage("The dislocation prefactor should be larger than zero."));
       }
     }
