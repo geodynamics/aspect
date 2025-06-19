@@ -5,4 +5,3 @@ set End time                               = 0
 subsection Mesh refinement
   set Initial adaptive refinement   = 1
 end
-
