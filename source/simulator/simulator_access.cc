@@ -212,6 +212,14 @@ namespace aspect
 
   template <int dim>
   double
+  SimulatorAccess<dim>::get_start_time () const
+  {
+    return simulator->parameters.start_time;
+  }
+
+
+  template <int dim>
+  double
   SimulatorAccess<dim>::get_end_time () const
   {
     return simulator->parameters.end_time;

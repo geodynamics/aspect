@@ -396,6 +396,14 @@ namespace aspect
       n_compositional_fields () const;
 
       /**
+       * Return the simulation start time in seconds. For most simulations,
+       * this will be zero -- but it may be set to something different in
+       * input files.
+       */
+      double
+      get_start_time () const;
+
+      /**
        * Return the simulation end time in seconds.
        */
       double
