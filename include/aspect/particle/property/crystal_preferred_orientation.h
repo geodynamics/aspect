@@ -45,7 +45,7 @@ namespace aspect
        */
       enum class DeformationType
       {
-        passive, olivine_a_fabric, olivine_b_fabric, olivine_c_fabric, olivine_d_fabric, olivine_e_fabric, enstatite, clinopyroxene
+        passive, olivine_a_fabric, olivine_b_fabric, olivine_c_fabric, olivine_d_fabric, olivine_e_fabric, enstatite, clinopyroxene, olivine_d_0kl
       };
 
 
@@ -64,7 +64,7 @@ namespace aspect
        */
       enum class DeformationTypeSelector
       {
-        passive, olivine_a_fabric, olivine_b_fabric, olivine_c_fabric, olivine_d_fabric, olivine_e_fabric, enstatite, olivine_karato_2008, clinopyroxene
+        passive, olivine_a_fabric, olivine_b_fabric, olivine_c_fabric, olivine_d_fabric, olivine_e_fabric, enstatite, olivine_karato_2008, clinopyroxene, olivine_d_0kl
       };
 
       /**
@@ -622,6 +622,7 @@ namespace aspect
            * Clinopyroxene Reference Resolved Shear Stress (RRSS);
            * The RRSS notation is defined in
            * Kaminski etal., 2004 and see Fraters and Billen 2021 for details;
+           * Activated when 'Clinopyroxene' is set as a Mineral type in the input file.
            *
            * RRSS value for CPX does not exist in DRex formulation,
            * but Bascou etal., 2002 JSG using VPSC provides a reference, which is
@@ -629,6 +630,17 @@ namespace aspect
            * that agree with the three main slip systems
           */
           std::vector<double> CPX_RRSS;
+
+          /**
+           * Alternative Reference Resolved Shear Stress (RRSS) for;
+           * Olivine D type fabric slip systems with {0kl} slip plane;
+           * Activated when 'Olivine: D-fabric_0kl' is set as a Mineral type in the input file
+           *
+           * The RRSS notation is defined in Kaminski etal., 2004 and
+           * see Fraters and Billen 2021 for details;
+           * Main slip systems from Karato 2008 and Bystricky et al., 2001
+          */
+          std::vector<double> OlivineD_RRSS;
 
           /** @} */
 

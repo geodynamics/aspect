@@ -698,6 +698,25 @@ namespace aspect
             slip_normal_reference = {{Tensor<1,3>({0,1,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,1,0}),Tensor<1,3>({1,0,0})}};
             slip_direction_reference = {{Tensor<1,3>({1,0,0}),Tensor<1,3>({1,0,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,0,1})}};
           }
+        // Alternative Olivine D type fabric with {0kl} slip plane
+        else if (deformation_type == DeformationType::olivine_d_0kl)
+          {
+            // Olivine axes length in angstrom (Å) https://www.mindat.org/min-29264.html
+            const Tensor<1,3> olivine_a_axis ({4.816,0.,0.});
+            const Tensor<1,3> olivine_b_axis ({0.,10.469,0.});
+            const Tensor<1,3> olivine_c_axis ({0.,0.,6.099});
+
+            // Crystal axis b minus axis c
+            const Tensor<1,3> vec_13b_minus_c = 0.333*olivine_b_axis - olivine_c_axis;
+            // Cross product between a*(b-c) to get normal vector for nsp{031}
+            // Karato 2008 AnnRevEPS: D-type fabric slip system of {0kl}[100]
+            // Bystricky_etal 2001 science {031}[100]
+            Tensor<1,3> plane031_normal = cross_product_3d(olivine_a_axis,vec_13b_minus_c);
+            plane031_normal /= plane031_normal.norm();
+            // slip_normal_reference (vector n) & slip_direction_reference (vector l) for olivine D types
+            slip_normal_reference = {{Tensor<1,3>({0,1,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,1,0}),plane031_normal}};
+            slip_direction_reference = {{Tensor<1,3>({1,0,0}),Tensor<1,3>({1,0,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({1,0,0})}};
+          }
         // CPX has different crystal structure (monoclinic) and slip systems than olivine or enstatite fabrics
         else if (deformation_type == DeformationType::clinopyroxene)
           {
@@ -924,6 +943,8 @@ namespace aspect
               return DeformationType::enstatite;
             case DeformationTypeSelector::clinopyroxene:
               return DeformationType::clinopyroxene;
+            case DeformationTypeSelector::olivine_d_0kl:
+              return DeformationType::olivine_d_0kl;
             case DeformationTypeSelector::olivine_karato_2008:
               // construct the material model inputs and outputs
               // Since this function is only evaluating one particle,
@@ -1059,6 +1080,11 @@ namespace aspect
                 ref_resolved_shear_stress[i] = CPX_RRSS[i];
               break;
 
+            case DeformationType::olivine_d_0kl:
+              for (unsigned int i=0; i<4; ++i)
+                ref_resolved_shear_stress[i] = OlivineD_RRSS[i];
+              break;
+
             default:
               AssertThrow(false,
                           ExcMessage("Deformation type enum with number " + std::to_string(static_cast<unsigned int>(deformation_type))
@@ -1146,6 +1172,15 @@ namespace aspect
                                "This list expects 4 entries separated by commas."
                                "Main slip systems from Bascou et al., 2002 JSG and "
                                "Zhang et al., 2006 EPSL and from numerical experiments");
+
+            prm.declare_entry ("OlivineD RRSS", "3.,5.,1.e60,1.",
+                               Patterns::List(Patterns::Anything()),
+                               "Alternative RRSS values for Olivine D-type fabric when "
+                               "incorporating slip plane {0kl}, used in fabric calculations."
+                               "(preliminary results, pending further investigations)."
+                               "This list expects 4 entries separated by commas."
+                               "Main slip systems from Karato 2008 and "
+                               "Bystricky et al., 2001 and from numerical experiments");
 
             prm.declare_entry ("Volume fractions minerals", "0.7, 0.3",
                                Patterns::List(Patterns::Double(0)),
@@ -1302,18 +1337,26 @@ namespace aspect
                   {
                     deformation_type_selector[mineral_i] = DeformationTypeSelector::clinopyroxene;
                   }
+                else if (temp_deformation_type_selector[mineral_i] ==  "Olivine: D-fabric_0kl")
+                  {
+                    deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_d_0kl;
+                  }
                 else
                   {
                     AssertThrow(false,
                                 ExcMessage("The fabric needs to be assigned one of the following comma-delimited values: Olivine: Karato 2008, "
                                            "Olivine: A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric,"
-                                           "Olivine: E-fabric, Enstatite, Passive, Clinopyroxene."));
+                                           "Olivine: E-fabric, Enstatite, Passive, Clinopyroxene, Olivine: D-fabric_0kl."));
                   }
               }
 
             CPX_RRSS = Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("CPX RRSS")));
             AssertThrow(CPX_RRSS.size()==4,
                         ExcMessage("The number of Reference Resolved Shear Stress (RRSS) entries for CPX has to be equal to four."));
+
+            OlivineD_RRSS = Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("OlivineD RRSS")));
+            AssertThrow(OlivineD_RRSS.size()==4,
+                        ExcMessage("The number of Reference Resolved Shear Stress (RRSS) entries for alternative Olivine D has to be equal to four."));
 
             volume_fractions_minerals = Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Volume fractions minerals")));
             double volume_fractions_minerals_sum = 0;

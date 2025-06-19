@@ -1,0 +1,169 @@
+set Timing output frequency  = 1000
+set Dimension                = 3
+set Pressure normalization   = surface
+set Surface pressure         = 0
+set Nonlinear solver scheme  = single Advection, no Stokes
+set End time                 = 1e5
+set Use years in output instead of seconds = false
+set Output directory = out_drex_olivineD-girdle
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = water
+  set Compositional field methods = static
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y,z
+    set Function expression = 0
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+    set Z extent = 1
+    set Box origin X coordinate = -0.5
+    set Box origin Y coordinate = -0.5
+    set Box origin Z coordinate = -0.5
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1 
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names = box
+  set Fixed temperature boundary indicators   = bottom, top, left, right, front, back
+
+  subsection Box
+    set Bottom temperature = 1
+    set Left temperature   = 1
+    set Right temperature  = 1
+    set Top temperature    = 1
+    set Front temperature  = 1
+    set Back temperature   = 1
+  end
+end
+
+subsection Boundary velocity model
+  subsection Function
+    set Variable names = x,y,z,t
+    set Function expression = z/1e5;0;0 
+  end
+end
+
+subsection Prescribed Stokes solution
+  set Model name = function
+
+  subsection Velocity function
+    set Variable names = x,y,z,t
+    set Function expression = z/1e5;0;0
+  end
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 1
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 1e-10
+    set Viscosity                     = 1
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 1
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 10000
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, particles, crystal preferred orientation
+
+  subsection Visualization
+    set Time between graphical output = 1e5
+    set List of output variables = stress, material properties, strain rate
+
+    subsection Material properties
+      set List of material properties = viscosity, density
+    end
+  end
+
+  subsection Crystal Preferred Orientation
+    set Time between data output = 1e5
+    set Write in background thread = true
+    set Compress cpo data files = false
+    set Write out raw cpo data = mineral 0: volume fraction, mineral 0: Euler angles , mineral 1: volume fraction, mineral 1: Euler angles
+    set Write out draw volume weighted cpo data = mineral 0: volume fraction, mineral 0: Euler angles, mineral 1: volume fraction, mineral 1: Euler angles
+  end
+
+  subsection Particles
+    set Time between data output = 1e5
+    set Data output format       = gnuplot
+    set Exclude output properties = a_cosine_matrix, volume fraction
+  end
+end
+
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-10
+end
+
+subsection Particles
+  set List of particle properties = integrated strain, crystal preferred orientation, cpo elastic tensor, cpo bingham average, integrated strain invariant, velocity, pT path
+  set Particle generator name = ascii file
+
+  subsection Generator
+    subsection Ascii file
+      set Data directory = $ASPECT_SOURCE_DIR/data/particle/property/
+      set Data file name = particle_one.dat
+    end
+  end
+
+  subsection Crystal Preferred Orientation
+    set Random number seed = 301
+    set Number of grains per particle = 10
+    set Property advection method = Backward Euler 
+    set Property advection tolerance = 1e-15
+    set CPO derivatives algorithm = D-Rex 2004
+
+    subsection Initial grains
+      set Minerals = Olivine: D-fabric_0kl, Olivine: D-fabric
+      set Volume fractions minerals = 0.7,0.3
+    end
+
+    subsection D-Rex 2004
+      set Mobility = 125 
+      set Stress exponents = 3.5
+      set Exponents p = 1.5
+      set Nucleation efficiency = 5 
+      set Threshold GBS = 0.3 
+    end
+  end
+
+  subsection CPO Bingham Average
+    set Random number seed = 200
+  end
+end
