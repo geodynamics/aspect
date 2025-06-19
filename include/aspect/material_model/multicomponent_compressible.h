@@ -132,6 +132,21 @@ namespace aspect
         std::vector<double> thermal_conductivities;
 
         EquationOfState::MulticomponentCompressible<dim> equation_of_state;
+
+        /**
+         * Number of phase transitions for each chemical composition (including the background field).
+         */
+        std::vector<unsigned int> n_phase_transitions_for_each_chemical_composition;
+
+        /**
+         * Total number of phases.
+         */
+        unsigned int n_phases;
+
+        /**
+         * Object that handles phase transitions.
+         */
+        MaterialUtilities::PhaseFunction<dim> phase_function;
     };
 
   }

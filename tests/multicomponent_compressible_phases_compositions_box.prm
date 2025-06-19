@@ -1,0 +1,147 @@
+# This model tests the implementation of phase transitions in the 
+# multicomponent compressible material model, where there are two 
+# compositional fields and a background field that each experience 
+# a different number of phase transitions. 
+# 
+# The viscosity and density change across specified phase boundaries,
+# while other material properties stay constant. The correct changes 
+# in density and viscosity across the phase boundaries are readily
+# apparent in the test solution file.
+#
+# The test is a modified copy of visco_plastic_phases_compositions.prm, 
+# which uses the incompressible multicomponent equation of state model.
+
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = no Advection, no Stokes
+set Max nonlinear iterations               = 1
+set Output directory                       = multicomponent_compressible_phases_compositions_box
+set Timing output frequency                = 1
+
+# Model geometry (100x100 km, 10 km spacing)
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 1
+    set Y repetitions = 10
+    set X extent      = 10e3
+    set Y extent      = 100e3
+  end
+end
+
+# Mesh refinement specifications
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+# Velocity on boundaries characterized by functions
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom y: function, top y: function, left x: function, right x: function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = m=0.0005, year=1
+    set Function expression = if (x<50e3 , -1*m/year, 1*m/year); if (y<50e3 , 1*m/year, -1*m/year);
+  end
+end
+
+# Temperature boundary and initial conditions
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top, left, right
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 273
+    set Left temperature   = 273
+    set Right temperature  = 273
+    set Top temperature    = 273
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 273
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+
+  # background is assumed to be lithosphere
+  set Names of fields  = upper_crust, lower_crust
+end
+
+# The field upper_crust is present in the upper 20 km,
+# while the lower crust is present between depths of 20 and 50 km.
+# The material properties are thus derived from the "background"
+# field from 50 km depth to the model base.
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = (y > 80000) ? 1.0 : 0.0; \
+                              (y > 50000) ? ((y <= 80000) ? 1.0 : 0.0) : 0.0
+  end
+end
+
+subsection Material model
+  set Model name = multicomponent compressible
+
+  subsection Multicomponent compressible
+
+    set Enable phase transitions = true
+
+    set Phase transition depths = upper_crust: 10e3, background: 70e3|90e3    
+    
+    set Phase transition widths = upper_crust: 1e3, background: 1e3|1e3
+
+    set Phase transition temperatures = upper_crust: 273, background: 273|273
+
+    set Phase transition Clapeyron slopes = upper_crust: 0, background: 0|0
+
+    set Reference temperatures = 273
+
+    set Reference isothermal compressibilities = 1e-12
+
+    set Isothermal bulk modulus pressure derivatives = 4
+
+    set Reference thermal expansivities = 2e-5
+ 
+    set Isochoric specific heats = 1000 
+
+    set Thermal conductivities = 3
+
+    set Reference densities = upper_crust: 2700|2750, lower_crust: 2850, background:3300|3400|3500
+
+    set Viscosities = upper_crust: 1e20|2e20, lower_crust: 2e20, background:1e20|2e20|4e20
+
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = composition statistics, mass flux statistics, material statistics, \
+                               velocity statistics, visualization 
+
+  subsection Visualization
+    set List of output variables = material properties
+    set Output format =  gnuplot
+  end
+end
