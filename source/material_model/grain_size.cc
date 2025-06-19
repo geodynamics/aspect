@@ -753,30 +753,30 @@ namespace aspect
           prm.declare_entry ("Reference density", "3300",
                              Patterns::Double (0.),
                              "The reference density $\\rho_0$. "
-                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
+                             "Units: $\\frac{\\text{kg}}{\\text{m}^3}$.");
           prm.declare_entry ("Reference temperature", "293.",
                              Patterns::Double (0.),
-                             "The reference temperature $T_0$. Units: \\si{\\kelvin}.");
+                             "The reference temperature $T_0$. Units: $\\text{K}$.");
           prm.declare_entry ("Viscosity", "5e24",
                              Patterns::Double (0.),
                              "The value of the constant viscosity. "
-                             "Units: \\si{\\pascal\\second}.");
+                             "Units: $\\text{Pa}\\text{s}$.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
-                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
+                             "Units: $\\frac{\\text{W}}{\\text{m}\\text{K}}$$\\frac{\\text{W}{\\text{m}\\text{K}}$.");
           prm.declare_entry ("Reference specific heat", "1250.",
                              Patterns::Double (0.),
                              "The value of the specific heat $cp$. "
-                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
+                             "Units: $\\frac{\\text{J}}{\\text{K}\\text{kg}}$.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0.),
                              "The value of the thermal expansion coefficient $\\alpha$. "
-                             "Units: \\si{\\per\\kelvin}.");
+                             "Units: $\\frac{1}{\\text{K}}$.");
           prm.declare_entry ("Reference compressibility", "4e-12",
                              Patterns::Double (0.),
                              "The value of the reference compressibility. "
-                             "Units: \\si{\\per\\pascal}.");
+                             "Units: $\\frac{1}{\\text{Pa}}$.");
 
           MaterialUtilities::PhaseFunction<dim>::declare_parameters(prm);
 
@@ -804,17 +804,17 @@ namespace aspect
                              Patterns::List (Patterns::Double (0.)),
                              "The activation energy for dislocation creep $E_{dis}$. "
                              "List must have one more entry than the Phase transition depths. "
-                             "Units: \\si{\\joule\\per\\mole}.");
+                             "Units: $\\frac{\\text{J}}{\\text{mol}}$.");
           prm.declare_entry ("Dislocation activation volume", "1.1e-5",
                              Patterns::List (Patterns::Double (0.)),
                              "The activation volume for dislocation creep $V_{dis}$. "
                              "List must have one more entry than the Phase transition depths. "
-                             "Units: \\si{\\meter\\cubed\\per\\mole}.");
+                             "Units: $\\frac{\\text{m}^3}{\\text{mol}}$.");
           prm.declare_entry ("Dislocation creep prefactor", "4.5e-15",
                              Patterns::List (Patterns::Double (0.)),
                              "The prefactor for the dislocation creep law $A_{dis}$. "
                              "List must have one more entry than the Phase transition depths. "
-                             "Units: \\si{\\pascal}$^{-n_{dis}}$\\si{\\per\\second}.");
+                             "Units: $\\frac{\\text{Pa}^\\text{-n_{dis}}}{\\text{s}}$.");
           prm.declare_entry ("Diffusion creep exponent", "1.",
                              Patterns::List (Patterns::Double (0.)),
                              "The power-law exponent $n_{diff}$ for diffusion creep. "
@@ -824,17 +824,17 @@ namespace aspect
                              Patterns::List (Patterns::Double (0.)),
                              "The activation energy for diffusion creep $E_{diff}$. "
                              "List must have one more entry than the Phase transition depths. "
-                             "Units: \\si{\\joule\\per\\mole}.");
+                             "Units: $\\frac{\\text{J}}{//text{mol}}$.");
           prm.declare_entry ("Diffusion activation volume", "4e-6",
                              Patterns::List (Patterns::Double (0.)),
                              "The activation volume for diffusion creep $V_{diff}$. "
                              "List must have one more entry than the Phase transition depths. "
-                             "Units: \\si{\\meter\\cubed\\per\\mole}.");
+                             "Units: $\\frac{\\text{m}^3}{\\text{mol}}$.");
           prm.declare_entry ("Diffusion creep prefactor", "7.4e-15",
                              Patterns::List (Patterns::Double (0.)),
                              "The prefactor for the diffusion creep law $A_{diff}$. "
                              "List must have one more entry than the Phase transition depths. "
-                             "Units: \\si{\\meter}$^{p_{diff}}$\\si{\\pascal}$^{-n_{diff}}$\\si{\\per\\second}.");
+                             "Units: $\\frac{ \\text{m}^\\text{p_{diff}}\\text{Pa}^\\text{-n_{diff}} }{\\text{s}}$.");
           prm.declare_entry ("Diffusion creep grain size exponent", "3.",
                              Patterns::List (Patterns::Double (0.)),
                              "The diffusion creep grain size exponent $p_{diff}$ that determines the "
@@ -882,7 +882,7 @@ namespace aspect
                              "The minimum grain size that is used for the material model. This parameter "
                              "is introduced to limit local viscosity contrasts, but still allows for a widely "
                              "varying viscosity over the whole mantle range. "
-                             "Units: \\si{\\meter}.");
+                             "Units: $\\text{m}$.");
           prm.declare_entry ("Lower mantle grain size scaling", "1.0",
                              Patterns::Double (0.),
                              "This option does not exist any more.");

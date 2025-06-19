@@ -157,7 +157,7 @@ namespace aspect
                              "The maximum magnitude of the Gaussian perturbation. For each "
                              "perturbation, a random magnitude between plus and minus the "
                              "maximum magnitude will be chosen. "
-                             "Units: \\si{\\kelvin}.");
+                             "Units: $\\text{K}$.");
           prm.declare_entry ("Width", "1000.0",
                              Patterns::Double (0.),
                              "The Gaussian RMS width of the perturbations. "

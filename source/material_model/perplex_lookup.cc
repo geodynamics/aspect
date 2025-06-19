@@ -146,19 +146,19 @@ namespace aspect
           prm.declare_entry ("Viscosity", "5e24",
                              Patterns::Double (0.),
                              "The value of the viscosity $\\eta$. "
-                             "Units: \\si{\\pascal\\second}.");
+                             "Units: $\\text{Pa}\\text{s}$.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
-                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
+                             "Units: $\\frac{\\text{W}{\\text{m}\\text{K}}$.");
           prm.declare_entry ("Minimum material temperature", "0.",
                              Patterns::Double (0.),
                              "The value of the minimum temperature used to query PerpleX. "
-                             "Units: \\si{\\kelvin}.");
+                             "Units: $\\text{K}$.");
           prm.declare_entry ("Maximum material temperature", "6000.",
                              Patterns::Double (0.),
                              "The value of the maximum temperature used to query PerpleX. "
-                             "Units: \\si{\\kelvin}.");
+                             "Units: $\\text{K}$.");
           prm.declare_entry ("Minimum material pressure", "1.e5",
                              Patterns::Double (0.),
                              "The value of the minimum pressure used to query PerpleX. "

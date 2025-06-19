@@ -81,23 +81,23 @@ namespace aspect
           prm.declare_entry ("Reference density", "3300.",
                              Patterns::Double (0.),
                              "Reference density $\\rho_0$. "
-                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
+                             "Units: $\\frac{\\text{kg}}{\\text{m}^3}$.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
-                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
+                             "Units: $\\frac{\\text{W}{\\text{m}\\text{K}}$.");
           prm.declare_entry ("Reference specific heat", "1250.",
                              Patterns::Double (0.),
                              "The value of the specific heat $C_p$. "
-                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
+                             "Units: $\\frac{\\text{J}}{\\text{K}\\text{kg}}$.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0.),
                              "The value of the thermal expansion coefficient $\\alpha$. "
-                             "Units: \\si{\\per\\kelvin}.");
+                             "Units: $\\frac{1}{\\text{K}}$.");
           prm.declare_entry ("Reference compressibility", "4e-12",
                              Patterns::Double (0.),
                              "The value of the reference compressibility. "
-                             "Units: \\si{\\per\\pascal}.");
+                             "Units: $\\frac{1}{\\text{Pa}}$.");
 
           Rheology::ConstantViscosity::declare_parameters(prm);
         }

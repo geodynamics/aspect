@@ -834,15 +834,15 @@ namespace aspect
         {
           prm.declare_entry ("Outer temperature", "0.",
                              Patterns::Double (),
-                             "Temperature at the outer boundary (lithosphere water/air). Units: \\si{\\kelvin}.");
+                             "Temperature at the outer boundary (lithosphere water/air). Units: $\\text{K}$.");
           prm.declare_entry ("Inner temperature", "6000.",
                              Patterns::Double (),
                              "Temperature at the inner boundary (core mantle boundary) at the "
-                             "beginning. Units: \\si{\\kelvin}.");
+                             "beginning. Units: $\\text{K}$.");
           prm.declare_entry ("dT over dt", "0.",
                              Patterns::Double (),
                              "Initial CMB temperature changing rate. "
-                             "Units: \\si{\\kelvin}/year.");
+                             "Units: $\\text{K}$/year.");
           prm.declare_entry ("dR over dt", "0.",
                              Patterns::Double (),
                              "Initial inner core radius changing rate. "
@@ -854,7 +854,7 @@ namespace aspect
           prm.declare_entry ("Core density", "12.5e3",
                              Patterns::Double (),
                              "Density of the core. "
-                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
+                             "Units: $\\frac{\\text{kg}}{\\text{m}^3}$.");
           prm.declare_entry ("Gravity acceleration", "9.8",
                              Patterns::Double (),
                              "Gravitation acceleration at CMB. "
@@ -872,7 +872,7 @@ namespace aspect
           prm.declare_entry ("Core heat capacity", "840.",
                              Patterns::Double (0.),
                              "Heat capacity of the core. "
-                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
+                             "Units: $\\frac{\\text{J}}{\\text{K}\\text{kg}}$.");
           prm.declare_entry ("K0", "4.111e11",
                              Patterns::Double (0.),
                              "Core compressibility at zero pressure. "
@@ -880,11 +880,11 @@ namespace aspect
           prm.declare_entry ("Rho0", "7.019e3",
                              Patterns::Double (0.),
                              "Core density at zero pressure. "
-                             "Units: \\si{\\kilogram\\per\\meter\\cubed}. "
+                             "Units: $\\frac{\\text{kg}}{\\text{m}^3}$. "
                              "See \\cite{NPB+04} for more details.");
           prm.declare_entry ("Alpha", "1.35e-5",
                              Patterns::Double (0.),
-                             "Core thermal expansivity. Units: \\si{\\per\\kelvin}.");
+                             "Core thermal expansivity. Units: $\\frac{1}{\\text{K}}$.");
           prm.declare_entry ("Lh", "750e3",
                              Patterns::Double (0.),
                              "The latent heat of core freeze. "
@@ -902,12 +902,12 @@ namespace aspect
                              "Partition coefficient of the light element.");
           prm.declare_entry ("Core conductivity", "60.",
                              Patterns::Double (0.),
-                             "Core heat conductivity $k_c$. Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
+                             "Core heat conductivity $k_c$. Units: $\\frac{\\text{W}{\\text{m}\\text{K}}$.");
           prm.enter_subsection("Geotherm parameters");
           {
             prm.declare_entry ("Tm0","1695.",
                                Patterns::Double (0.),
-                               "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm0. Units: \\si{\\kelvin}.");
+                               "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm0. Units: $\\text{K}$.");
             prm.declare_entry ("Tm1","10.9",
                                Patterns::Double (),
                                "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm1. "

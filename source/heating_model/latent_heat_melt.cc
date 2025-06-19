@@ -142,7 +142,7 @@ namespace aspect
                              Patterns::Double (),
                              "The entropy change for the phase transition "
                              "from solid to melt. "
-                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
+                             "Units: $\\frac{\\text{J}}{\\text{K}\\text{kg}}$.");
           prm.declare_entry ("Retrieve entropy change from material model", "false",
                              Patterns::Bool (),
                              "Instead of using the entropy change given in the "

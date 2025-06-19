@@ -101,7 +101,7 @@ namespace aspect
                              Patterns::Double (0.),
                              "A threshold that the nonadiabatic temperature "
                              "will be evaluated against. "
-                             "Units: \\si{\\kelvin}");
+                             "Units: $\\text{K}$");
           prm.declare_entry ("Temperature anomaly type",
                              "absolute value",
                              Patterns::Selection ("negative only|positive only|absolute value"),

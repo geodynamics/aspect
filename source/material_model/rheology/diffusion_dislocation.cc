@@ -209,13 +209,13 @@ namespace aspect
       {
         // Reference and minimum/maximum values
         prm.declare_entry ("Reference temperature", "293.", Patterns::Double(0.),
-                           "For calculating density by thermal expansivity. Units: \\si{\\kelvin}.");
+                           "For calculating density by thermal expansivity. Units: $\\text{K}$.");
         prm.declare_entry ("Minimum strain rate", "1.4e-20", Patterns::Double(0.),
                            "Stabilizes strain dependent viscosity. Units: \\si{\\per\\second}.");
         prm.declare_entry ("Minimum viscosity", "1e17", Patterns::Double(0.),
-                           "Lower cutoff for effective viscosity. Units: \\si{\\pascal\\second}.");
+                           "Lower cutoff for effective viscosity. Units: $\\text{Pa}\\text{s}$.");
         prm.declare_entry ("Maximum viscosity", "1e28", Patterns::Double(0.),
-                           "Upper cutoff for effective viscosity. Units: \\si{\\pascal\\second}.");
+                           "Upper cutoff for effective viscosity. Units: $\\text{Pa}\\text{s}$.");
         prm.declare_entry ("Effective viscosity coefficient", "1.0", Patterns::Double(0.),
                            "Scaling coefficient for effective viscosity.");
 
@@ -237,20 +237,20 @@ namespace aspect
         prm.declare_entry ("Heat capacity", "1.25e3",
                            Patterns::Double(0.),
                            "The value of the specific heat $C_p$. "
-                           "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
+                           "Units: $\\frac{\\text{J}}{\\text{K}\\text{kg}}$.");
         prm.declare_entry ("Densities", "3300.",
                            Patterns::List(Patterns::Double(0.)),
                            "List of densities, $\\rho$, for background mantle and compositional fields, "
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
                            "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
-                           "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
+                           "Units: $\\frac{\\text{kg}}{\\text{m}^3}$.");
         prm.declare_entry ("Thermal expansivities", "3.5e-5",
                            Patterns::List(Patterns::Double(0.)),
                            "List of thermal expansivities for background mantle and compositional fields, "
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
                            "those corresponding to chemical compositions. "
-                           "If only one value is given, then all use the same value.  Units: \\si{\\per\\kelvin}.");
+                           "If only one value is given, then all use the same value.  Units: $\\frac{1}{\\text{K}}$.");
 
         // Rheological parameters
         prm.declare_entry ("Viscosity averaging scheme", "harmonic",
@@ -266,7 +266,7 @@ namespace aspect
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
                            "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
-                           "Units: \\si{\\per\\pascal} \\si{\\meter}$^{m_{\\text{diffusion}}}$ \\si{\\per\\second}.");
+                           "Units: $\\frac{1}{\\text{Pa}}$ \\si{\\meter}$^{m_{\\text{diffusion}}}$ \\si{\\per\\second}.");
         prm.declare_entry ("Stress exponents for diffusion creep", "1.",
                            Patterns::List(Patterns::Double(0.)),
                            "List of stress exponents, $n_{\\text{diffusion}}$, for background mantle and compositional fields, "

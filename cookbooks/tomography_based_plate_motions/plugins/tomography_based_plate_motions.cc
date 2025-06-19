@@ -1245,26 +1245,26 @@ namespace aspect
         {
           prm.declare_entry ("Reference density", "3300",
                              Patterns::Double (0),
-                             "The reference density $\\rho_0$. Units: \\si{\\kilogram\\per\\meter\\cubed}.");
+                             "The reference density $\\rho_0$. Units: $\\frac{\\text{kg}}{\\text{m}^3}$.");
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
-                             "The reference temperature $T_0$. Units: \\si{\\kelvin}.");
+                             "The reference temperature $T_0$. Units: $\\text{K}$.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0),
                              "The value of the thermal conductivity $k$. "
-                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
+                             "Units: $\\frac{\\text{W}{\\text{m}\\text{K}}$.");
           prm.declare_entry ("Reference specific heat", "1250",
                              Patterns::Double (0),
                              "The value of the specific heat $cp$. "
-                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
+                             "Units: $\\frac{\\text{J}}{\\text{K}\\text{kg}}$.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0),
                              "The value of the thermal expansion coefficient $\\alpha$. "
-                             "Units: \\si{\\per\\kelvin}.");
+                             "Units: $\\frac{1}{\\text{K}}$.");
           prm.declare_entry ("Reference compressibility", "4e-12",
                              Patterns::Double (0),
                              "The value of the reference compressibility. "
-                             "Units: \\si{\\per\\pascal}.");
+                             "Units: $\\frac{1}{\\text{Pa}}$.");
           prm.declare_entry ("Phase transition depths", "",
                              Patterns::List (Patterns::Double(0)),
                              "A list of depths where phase transitions occur. Values must "
@@ -1277,7 +1277,7 @@ namespace aspect
                              "depths than given in Phase transition depths, depending on the "
                              "Clapeyron slope given in Phase transition Clapeyron slopes. "
                              "List must have the same number of entries as Phase transition depths. "
-                             "Units: \\si{\\kelvin}.");
+                             "Units: $\\text{K}$.");
           prm.declare_entry ("Phase transition widths", "",
                              Patterns::List (Patterns::Double(0)),
                              "A list of widths for each phase transition. This is only use to specify "
@@ -1410,7 +1410,7 @@ namespace aspect
           prm.declare_entry ("Minimum viscosity", "1e18",
                              Patterns::Double (0),
                              "The minimum viscosity that is allowed in the whole model domain. "
-                             "Units: \\si{\\pascal\\second}.");
+                             "Units: $\\text{Pa}\\text{s}$.");
           prm.declare_entry ("Maximum viscosity", "1e26",
                              Patterns::Double (0),
                              "The maximum viscosity that is allowed in the whole model domain. "
@@ -1473,7 +1473,7 @@ namespace aspect
                              "This parameter value determines the viscosity of faults or plate boundaries. "
                              "We would want to have weak faults/plate boundaries relative to the surrounding "
                              "lithosphere. "
-                             "Units: \\si{\\pascal\\second}");
+                             "Units: $\\text{Pa}\\text{s}$");
           prm.declare_entry ("Asthenosphere viscosity", "2.4e20",
                              Patterns::Double(0),
                              "This parameter value determines the asthenosphere layer in the reference file. "
@@ -1570,11 +1570,11 @@ namespace aspect
             prm.declare_entry ("Ridge viscosity", "1e22",
                                Patterns::Double(0),
                                "This parameter value determines the viscosity of faults at the ridges. "
-                               "Units: \\si{\\pascal\\second}");
+                               "Units: $\\text{Pa}\\text{s}$");
             prm.declare_entry ("Trench viscosity", "1e20",
                                Patterns::Double(0),
                                "This parameter value determines the viscosity of faults at the trenches. "
-                               "Units: \\si{\\pascal\\second}");
+                               "Units: $\\text{Pa}\\text{s}$");
           }
           prm.leave_subsection();
           prm.declare_entry ("Use asthenosphere viscosity scaling in cold regions", "true",

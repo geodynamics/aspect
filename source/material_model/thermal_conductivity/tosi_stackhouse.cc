@@ -79,7 +79,7 @@ namespace aspect
                            "on top of this base value, according to the parameters 'Pressure "
                            "dependencies of thermal conductivity' and 'Reference temperatures "
                            "for thermal conductivity'. "
-                           "Units: \\si{\\watt\\per\\meter\\per\\kelvin}");
+                           "Units: $\\frac{\\text{W}{\\text{m}\\text{K}}$");
         prm.declare_entry ("Pressure dependencies of thermal conductivity", "3.3e-10, 3.4e-10, 3.6e-10, 1.05e-10",
                            Patterns::List(Patterns::Double ()),
                            "A list of values that determine the linear scaling of the "
@@ -89,7 +89,7 @@ namespace aspect
                            Patterns::List(Patterns::Double (0.)),
                            "A list of values of reference temperatures used to determine "
                            "the temperature-dependence of the thermal conductivity. "
-                           "Units: \\si{\\kelvin}.");
+                           "Units: $\\text{K}$.");
         prm.declare_entry ("Thermal conductivity exponents", "0.48, 0.56, 0.61, 1.0",
                            Patterns::List(Patterns::Double (0.)),
                            "A list of exponents in the temperature-dependent term of the "

@@ -54,7 +54,7 @@ density distribution to test the gravity postprocessor.
 
 The gravity postprocessor computes the gravitational potential, acceleration
 vector and gradient at a given radius (here chosen to be
-$6371+250=6621~\text{ km}$) on a regular $2^\circ$-latitude-longitude grid
+$6371+250=6621~\text{ km}$) on a regular $2^\\circ$-latitude-longitude grid
 (see also the cookbook of
 {ref}`sec:benchmarks:thin-shell-gravity`) and returns the
 results in the `gravity-00000` file to be found in the `output-gravity` folder

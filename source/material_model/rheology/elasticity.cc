@@ -131,7 +131,7 @@ namespace aspect
         prm.declare_entry ("Elastic damper viscosity", "0.0",
                            Patterns::Double (0.),
                            "Viscosity of a viscous damper that acts in parallel with the elastic "
-                           "element to stabilize behavior. Units: \\si{\\pascal\\second}");
+                           "element to stabilize behavior. Units: $\\text{Pa}\\text{s}$");
       }
 
 

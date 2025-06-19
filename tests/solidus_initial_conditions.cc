@@ -335,7 +335,7 @@ namespace aspect
                              "The difference from solidus, use this number to generate initial conditions "
                              "that close to solidus instead of exactly at solidus. Use small negative number"
                              " in this parameter to prevent large melting generation at the beginning. "
-                             "  Units: \\si{\\kelvin} ");
+                             "  Units: $\\text{K}$ ");
           prm.declare_entry ("Lithosphere thickness","0",
                              Patterns::Double (0),
                              "The thickness of lithosphere thickness. Units: \\si{\\meter}");

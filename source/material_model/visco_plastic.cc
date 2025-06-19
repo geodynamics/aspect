@@ -383,7 +383,7 @@ namespace aspect
                              "for a total of N+1 values, where N is the number of all compositional fields or only "
                              "those corresponding to chemical compositions. "
                              "If only one value is given, then all use the same value. "
-                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
+                             "Units: $\\frac{\\text{W}{\\text{m}\\text{K}}$.");
         }
         prm.leave_subsection();
       }

@@ -374,14 +374,14 @@ namespace aspect
                              "from the base model. Units: dimensionless.");
           prm.declare_entry ("Minimum compaction viscosity", "0",
                              Patterns::Double (0),
-                             "Lower cutoff for the compaction viscosity. Units: \\si{\\pascal\\second}.");
+                             "Lower cutoff for the compaction viscosity. Units: $\\text{Pa}\\text{s}$.");
           prm.declare_entry ("Maximum compaction viscosity",
                              boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
                              Patterns::Double (0),
-                             "Upper cutoff for the compaction viscosity. Units: \\si{\\pascal\\second}.");
+                             "Upper cutoff for the compaction viscosity. Units: $\\text{Pa}\\text{s}$.");
           prm.declare_entry ("Reference fluid viscosity", "10",
                              Patterns::Double (0),
-                             "The value of the constant melt/fluid viscosity $\\eta_f$. Units: \\si{\\pascal\\second}.");
+                             "The value of the constant melt/fluid viscosity $\\eta_f$. Units: $\\text{Pa}\\text{s}$.");
           prm.declare_entry ("Exponential fluid weakening factor", "27",
                              Patterns::Double (0),
                              "The porosity dependence of the viscosity. Units: dimensionless.");
@@ -392,7 +392,7 @@ namespace aspect
           prm.declare_entry ("Fluid compressibility", "0.0",
                              Patterns::Double (0),
                              "The value of the compressibility of the fluid. "
-                             "Units: \\si{\\per\\pascal}.");
+                             "Units: $\\frac{1}{\\text{Pa}}$.");
           prm.declare_entry ("Fluid reaction time scale for operator splitting", "1e3",
                              Patterns::Double (0),
                              "In case the operator splitting scheme is used, the porosity field can not "

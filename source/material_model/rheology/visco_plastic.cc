@@ -646,12 +646,12 @@ namespace aspect
         prm.declare_entry ("Reference strain rate","1.0e-15",Patterns::Double (0.),
                            "Reference strain rate for first time step. Units: \\si{\\per\\second}.");
         prm.declare_entry ("Minimum viscosity", "1e17", Patterns::Anything(),
-                           "Lower cutoff for effective viscosity. Units: \\si{\\pascal\\second}. "
+                           "Lower cutoff for effective viscosity. Units: $\\text{Pa}\\text{s}$. "
                            "List with as many components as active "
                            "compositional fields (material data is assumed to "
                            "be in order with the ordering of the fields). ");
         prm.declare_entry ("Maximum viscosity", "1e28", Patterns::Anything(),
-                           "Upper cutoff for effective viscosity. Units: \\si{\\pascal\\second}. "
+                           "Upper cutoff for effective viscosity. Units: $\\text{Pa}\\text{s}$. "
                            "List with as many components as active "
                            "compositional fields (material data is assumed to "
                            "be in order with the ordering of the fields). ");

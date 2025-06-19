@@ -312,28 +312,28 @@ namespace aspect
           prm.declare_entry ("Reference solid density", "3000.",
                              Patterns::Double (0.),
                              "Reference density of the solid $\\rho_{s,0}$. "
-                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
+                             "Units: $\\frac{\\text{kg}}{\\text{m}^3}$.");
           prm.declare_entry ("Reference melt density", "2500.",
                              Patterns::Double (0.),
                              "Reference density of the melt/fluid$\\rho_{f,0}$. "
-                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
+                             "Units: $\\frac{\\text{kg}}{\\text{m}^3}$.");
           prm.declare_entry ("Reference temperature", "293.",
                              Patterns::Double (0.),
                              "The reference temperature $T_0$. The reference temperature is used "
-                             "in both the density and viscosity formulas. Units: \\si{\\kelvin}.");
+                             "in both the density and viscosity formulas. Units: $\\text{K}$.");
           prm.declare_entry ("Reference shear viscosity", "5e20",
                              Patterns::Double (0.),
                              "The value of the constant viscosity $\\eta_0$ of the solid matrix. "
                              "This viscosity may be modified by both temperature and porosity "
-                             "dependencies. Units: \\si{\\pascal\\second}.");
+                             "dependencies. Units: $\\text{Pa}\\text{s}$.");
           prm.declare_entry ("Reference bulk viscosity", "1e22",
                              Patterns::Double (0.),
                              "The value of the constant bulk viscosity $\\xi_0$ of the solid matrix. "
                              "This viscosity may be modified by both temperature and porosity "
-                             "dependencies. Units: \\si{\\pascal\\second}.");
+                             "dependencies. Units: $\\text{Pa}\\text{s}$.");
           prm.declare_entry ("Reference melt viscosity", "10.",
                              Patterns::Double (0.),
-                             "The value of the constant melt viscosity $\\eta_f$. Units: \\si{\\pascal\\second}.");
+                             "The value of the constant melt viscosity $\\eta_f$. Units: $\\text{Pa}\\text{s}$.");
           prm.declare_entry ("Exponential melt weakening factor", "27.",
                              Patterns::Double (0.),
                              "The porosity dependence of the viscosity. Units: dimensionless.");
@@ -352,15 +352,15 @@ namespace aspect
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
-                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
+                             "Units: $\\frac{\\text{W}{\\text{m}\\text{K}}$.");
           prm.declare_entry ("Reference specific heat", "1250.",
                              Patterns::Double (0.),
                              "The value of the specific heat $C_p$. "
-                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
+                             "Units: $\\frac{\\text{J}}{\\text{K}\\text{kg}}$.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0.),
                              "The value of the thermal expansion coefficient $\\beta$. "
-                             "Units: \\si{\\per\\kelvin}.");
+                             "Units: $\\frac{1}{\\text{K}}$.");
           prm.declare_entry ("Reference permeability", "1e-8",
                              Patterns::Double(),
                              "Reference permeability of the solid host rock."
@@ -372,11 +372,11 @@ namespace aspect
                              "depleted material. Depletion is indicated by the compositional "
                              "field with the name peridotite. Not used if this field does not "
                              "exist in the model. "
-                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
+                             "Units: $\\frac{\\text{kg}}{\\text{m}^3}$.");
           prm.declare_entry ("Surface solidus", "1300.",
                              Patterns::Double (0.),
                              "Solidus for a pressure of zero. "
-                             "Units: \\si{\\kelvin}.");
+                             "Units: $\\text{K}$.");
           prm.declare_entry ("Depletion solidus change", "200.0",
                              Patterns::Double (),
                              "The solidus temperature change for a depletion of 100\\%. For positive "
@@ -384,20 +384,20 @@ namespace aspect
                              "(depletion) and lowered for a negative peridotite field (enrichment). "
                              "Scaling with depletion is linear. Only active when fractional melting "
                              "is used. "
-                             "Units: \\si{\\kelvin}.");
+                             "Units: $\\text{K}$.");
           prm.declare_entry ("Pressure solidus change", "6e-8",
                              Patterns::Double (),
                              "The linear solidus temperature change with pressure. For positive "
                              "values, the solidus gets increased for positive pressures. "
-                             "Units: \\si{\\per\\pascal}.");
+                             "Units: $\\frac{1}{\\text{Pa}}$.");
           prm.declare_entry ("Solid compressibility", "0.0",
                              Patterns::Double (0.),
                              "The value of the compressibility of the solid matrix. "
-                             "Units: \\si{\\per\\pascal}.");
+                             "Units: $\\frac{1}{\\text{Pa}}$.");
           prm.declare_entry ("Melt compressibility", "0.0",
                              Patterns::Double (0.),
                              "The value of the compressibility of the melt. "
-                             "Units: \\si{\\per\\pascal}.");
+                             "Units: $\\frac{1}{\\text{Pa}}$.");
           prm.declare_entry ("Melt bulk modulus derivative", "0.0",
                              Patterns::Double (0.),
                              "The value of the pressure derivative of the melt bulk "
