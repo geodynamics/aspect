@@ -1,0 +1,265 @@
+-----------------------------------------------------------------------------
+--                             This is ASPECT                              --
+-- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
+-----------------------------------------------------------------------------
+--     . version 3.1.0-pre (newoutput, c040f2c38)
+--     . using deal.II 9.6.2
+--     .       with 32 bit indices
+--     .       with vectorization level 1 (SSE2, 2 doubles, 128 bits)
+--     . using Trilinos 13.4.1
+--     . using p4est 2.8.0
+--     . using Geodynamic World Builder 1.0.0
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&fastscape=1&sha=c040f2c38&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 268 (162+25+81)
+
+Number of mesh deformation degrees of freedom: 50
+   Solving mesh displacement system... 0 iterations.
+   Added initial topography to grid
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 5+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: fastscape_output_test/solution/solution-00000
+
+*** Timestep 1:  t=20000 years, dt=20000 years
+   Initializing FastScape... 4 levels, cell size: 6250 m.
+   Executing FastScape... 5 timesteps of 4000 years.
+      Writing initial VTK...
+   Solving mesh displacement system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 5+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 2:  t=40000 years, dt=20000 years
+   Executing FastScape... 5 timesteps of 4000 years.
+   Solving mesh displacement system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 4+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 3:  t=60000 years, dt=20000 years
+   Executing FastScape... 5 timesteps of 4000 years.
+   Solving mesh displacement system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 4:  t=80000 years, dt=20000 years
+   Executing FastScape... 5 timesteps of 4000 years.
+   Solving mesh displacement system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 5:  t=100000 years, dt=20000 years
+   Executing FastScape... 5 timesteps of 4000 years.
+   Solving mesh displacement system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 6:  t=120000 years, dt=20000 years
+   Executing FastScape... 5 timesteps of 4000 years.
+   Solving mesh displacement system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 7:  t=140000 years, dt=20000 years
+   Executing FastScape... 5 timesteps of 4000 years.
+   Solving mesh displacement system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 8:  t=160000 years, dt=20000 years
+   Executing FastScape... 5 timesteps of 4000 years.
+   Solving mesh displacement system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 9:  t=180000 years, dt=20000 years
+   Executing FastScape... 5 timesteps of 4000 years.
+   Solving mesh displacement system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 10:  t=200000 years, dt=20000 years
+   Executing FastScape... 5 timesteps of 4000 years.
+   Solving mesh displacement system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 11:  t=220000 years, dt=20000 years
+   Executing FastScape... 5 timesteps of 4000 years.
+   Solving mesh displacement system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 12:  t=240000 years, dt=20000 years
+   Executing FastScape... 5 timesteps of 4000 years.
+   Solving mesh displacement system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 13:  t=260000 years, dt=20000 years
+   Executing FastScape... 5 timesteps of 4000 years.
+   Solving mesh displacement system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 14:  t=280000 years, dt=20000 years
+   Executing FastScape... 5 timesteps of 4000 years.
+   Solving mesh displacement system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 15:  t=300000 years, dt=20000 years
+   Executing FastScape... 5 timesteps of 4000 years.
+   Solving mesh displacement system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 16:  t=320000 years, dt=20000 years
+   Executing FastScape... 5 timesteps of 4000 years.
+   Solving mesh displacement system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 17:  t=340000 years, dt=20000 years
+   Executing FastScape... 5 timesteps of 4000 years.
+   Solving mesh displacement system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 18:  t=360000 years, dt=20000 years
+   Executing FastScape... 5 timesteps of 4000 years.
+   Solving mesh displacement system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 19:  t=380000 years, dt=20000 years
+   Executing FastScape... 5 timesteps of 4000 years.
+   Solving mesh displacement system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 20:  t=400000 years, dt=20000 years
+   Executing FastScape... 5 timesteps of 4000 years.
+   Solving mesh displacement system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 21:  t=420000 years, dt=20000 years
+   Executing FastScape... 5 timesteps of 4000 years.
+   Solving mesh displacement system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 22:  t=440000 years, dt=20000 years
+   Executing FastScape... 5 timesteps of 4000 years.
+   Solving mesh displacement system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 23:  t=460000 years, dt=20000 years
+   Executing FastScape... 5 timesteps of 4000 years.
+   Solving mesh displacement system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 24:  t=480000 years, dt=20000 years
+   Executing FastScape... 5 timesteps of 4000 years.
+   Solving mesh displacement system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 25:  t=500000 years, dt=20000 years
+   Executing FastScape... 5 timesteps of 4000 years.
+      Writing FastScape VTK...
+   Solving mesh displacement system... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: fastscape_output_test/solution/solution-00001
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |     0.149s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |        26 |     0.013s |       8.7% |
+| Build Stokes preconditioner     |        26 |    0.0226s |        15% |
+| Execute FastScape               |        25 |    0.0062s |       4.2% |
+| FastScape plugin                |        25 |   0.00851s |       5.7% |
+| Initialization                  |         1 |    0.0531s |        36% |
+| Mesh deformation                |        26 |    0.0292s |        20% |
+| Mesh deformation initialize     |         1 |   0.00525s |       3.5% |
+| Postprocessing                  |        26 |   0.00271s |       1.8% |
+| Setup dof systems               |         1 |   0.00881s |       5.9% |
+| Setup initial conditions        |         1 |    0.0012s |      0.81% |
+| Setup matrices                  |         1 |  0.000499s |      0.34% |
+| Solve Stokes system             |        26 |   0.00422s |       2.8% |
++---------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 0s
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&fastscape=1&sha=c040f2c38&src=code
+-----------------------------------------------------------------------------
