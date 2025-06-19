@@ -50,8 +50,6 @@
 #include <deal.II/base/mpi.h>  // For Utilities::MPI::this_mpi_process
 #include <aspect/utilities.h>  // For Utilities::create_directory
 #include <filesystem>          // C++17 or later
-// #include <boost/serialization/serialization.hpp>
-// #include <boost/serialization/access.hpp>
 
 
 #include <aspect/simulator.h>

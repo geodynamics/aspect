@@ -114,12 +114,6 @@ namespace aspect
          */
         void initialize () override;
 
-        struct ValuesAtSurfaceVertex
-        {
-          double topography;
-          double surface_uplift_rate;
-        };
-
         /**
           * A function that creates constraints for the velocity of certain mesh
           * vertices (namely, the surface vertices) for a specific boundary.
