@@ -21,7 +21,7 @@ Number of degrees of freedom: 13,574 (8,322+1,091+4,161)
    Solving Stokes system (GMG)... 9+0 iterations.
 
    Postprocessing:
-     Writing graphical output: output-muparser_temperature-example/solution/solution-00000
+     Writing graphical output: output-muparser_temperature_example/solution/solution-00000
      RMS, max velocity:        0.00265 m/year, 0.0142 m/year
      Temperature min/avg/max:  273 K, 1621 K, 1683 K
 

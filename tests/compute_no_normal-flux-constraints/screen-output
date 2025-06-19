@@ -16,10 +16,10 @@ Number of degrees of freedom: 1,836 (1,122+153+561)
 
 
    Postprocessing:
-     Writing graphical output: output-compute_no-normal-flux-constraints/solution/solution-00000
+     Writing graphical output: output-compute_no_normal-flux-constraints/solution/solution-00000
      RMS, max velocity:        0.00208 m/year, 0.00779 m/year
      Temperature min/avg/max:  273 K, 293.6 K, 1673 K
-     Writing depth average:    output-compute_no-normal-flux-constraints/depth_average
+     Writing depth average:    output-compute_no_normal-flux-constraints/depth_average
 
 
 
@@ -36,13 +36,13 @@ Number of degrees of freedom: 1,836 (1,122+153+561)
    Postprocessing:
      RMS, max velocity:       0.00208 m/year, 0.00779 m/year
      Temperature min/avg/max: 273 K, 293.6 K, 1673 K
-     Writing depth average:   output-compute_no-normal-flux-constraints/depth_average
+     Writing depth average:   output-compute_no_normal-flux-constraints/depth_average
 
 
 
 
 Termination requested by criterion: end time
-*** Snapshot output-compute_no-normal-flux-constraints/restart/01/ created!
+*** Snapshot output-compute_no_normal-flux-constraints/restart/01/ created!
 
 
 

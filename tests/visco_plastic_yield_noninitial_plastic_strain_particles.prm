@@ -10,7 +10,7 @@ include $ASPECT_SOURCE_DIR/tests/visco_plastic_yield_plastic_viscous_strain_weak
 
 set End time           = 3000
 set Maximum time step  = 1000
-set Output directory   = visco_plastic_yield_noninitial_plastic-strain_particles
+set Output directory   = visco_plastic_yield_noninitial_plastic_strain_particles
 
 # Particles mapped to the Compositional fields used to track plastic, noninitial plastic, and viscous strain.
 subsection Compositional fields

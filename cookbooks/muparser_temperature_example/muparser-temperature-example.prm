@@ -9,7 +9,7 @@ set Dimension                              = 2
 set Use years in output instead of seconds = true
 set Start time                             = 0
 set End time                               = 0
-set Output directory                       = output-muparser_temperature-example
+set Output directory                       = output-muparser_temperature_example
 
 # Parameters Related to the Solver and Pressure Normalization
 
