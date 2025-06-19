@@ -1713,7 +1713,7 @@ namespace aspect
                             "Maximum topography change from the initial noise. Units: $\\{m}$");
           prm.declare_entry("Additional output variables", "river incision rate",
                             Patterns::Selection("river incision rate|deposition coefficient|uplift rate"),
-                            "Select one type of Fastscape varible as output in Fastcape vtk."
+                            "Select one type of Fastscape variable as output in Fastcape vtk."
                             "Output are in units of per year. "
                            );
 
