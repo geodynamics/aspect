@@ -40,6 +40,13 @@ namespace aspect
       public:
 
         /**
+         * Initialization function. This function is called once at the
+         * beginning of the program after parse_parameters is run and after
+         * the SimulatorAccess (if applicable) is initialized.
+         */
+        void initialize () override;
+
+        /**
          * Generate a coarse mesh for the geometry described by this class.
          */
         void create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const override;
@@ -193,7 +200,25 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm) override;
 
+        /**
+         * Return the topography at a given point
+         */
+        double
+        get_topography_at_point (const Point<dim> &position ) const;
+
       private:
+        /**
+         * Add initial topography to the mesh.
+         */
+        void add_topography_to_mesh (typename parallel::distributed::Triangulation<dim> &grid) const;
+
+        /**
+         * Relocate the vertical coordinate of the given point based on
+         * the topography at the surface specified by the initial topography
+         * model.
+         */
+        Point<dim> add_topography_to_point (const Point<dim> &x_y_z) const;
+
         /**
          * Whether to make the grid by gluing together two boxes, or just
          * use one chunk to make the grid. Using two grids glued together
