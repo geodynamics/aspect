@@ -207,7 +207,7 @@ To remedy this, we recall our Stokes system of the form
 \begin{aligned}
         -\nabla \cdot (2 \eta(x)
         \varepsilon(u))+\nabla p & = f\\
-        \nabla \cdot u&=0.
+        -\nabla \cdot u&=0.
 \end{aligned}
 ```
 We introduce the pressure scaling $\lambda:=\frac{\eta}{L}$ and scale $\nabla \cdot u$ as follows:
@@ -215,7 +215,7 @@ We introduce the pressure scaling $\lambda:=\frac{\eta}{L}$ and scale $\nabla \c
 ```{math}
 :label: eq: pressure-scaling-2
 \begin{aligned}
- \lambda \nabla \cdot u &=0
+ -\lambda \nabla \cdot u &=0
  \end{aligned},
 ```
 
