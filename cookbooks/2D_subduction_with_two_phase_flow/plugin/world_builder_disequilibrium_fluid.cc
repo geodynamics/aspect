@@ -157,7 +157,7 @@ namespace aspect
                              "for all compositions that are not selected in the list. "
                              "By default the list is empty and the world builder is "
                              "evaluated for all compositional fields.");
-          prm.declare_entry ("Disequilibrium percentage", "10",
+          prm.declare_entry ("Disequilibrium percentage", "5",
                              Patterns::Double(0),
                              "A percentage value that defines the increase in the "
                              "bound_fluid compositional field from its equilibrium value. "
@@ -216,12 +216,10 @@ namespace aspect
     ASPECT_REGISTER_INITIAL_COMPOSITION_MODEL(WorldBuilderDisequilibrium,
                                               "world builder disequilibrium",
                                               "Specify the initial composition through the World Builder. "
-                                              "More information on the World Builder can be found at "
-                                              "\\url{https://geodynamicworldbuilder.github.io}. "
-                                              "Make sure to specify the location of the World Builder file "
-                                              "in the parameter 'World builder file'. It is possible to use "
-                                              "the World Builder only for selected compositional fields by "
-                                              "specifying the parameter 'List of relevant compositions'.")
+                                              "If the composition is not named bound_fluid, the composition "
+                                              "is set to the value returned by the World Builder. If the "
+                                              "composition is named bound_fluid, the value returned by the "
+                                              "World Builder is increased by a user defined percentage. ")
   }
 }
 #endif

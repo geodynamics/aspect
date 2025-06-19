@@ -51,7 +51,7 @@ subsection Solver parameters
     set GMRES solver restart length                     = 1000
     set Number of cheap Stokes solver steps             = 20000
     set Use full A block as preconditioner              = true
-    set Linear solver tolerance                         = 1e-4
+    set Linear solver tolerance                         = 1e-5
     set Maximum number of expensive Stokes solver steps = 0
   end
   subsection Operator splitting parameters
@@ -99,7 +99,7 @@ subsection Initial composition model
   set List of model names = world builder disequilibrium
   subsection World builder
     set List of relevant compositions = porosity, bound_fluid, peridotite, gabbro, MORB, sediment
-    set Disequilibrium percentage     = 10
+    set Disequilibrium percentage     = 5
   end
 end
 

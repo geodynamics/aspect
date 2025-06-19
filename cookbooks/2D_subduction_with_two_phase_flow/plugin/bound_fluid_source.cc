@@ -45,13 +45,17 @@ namespace aspect
     {
       ReactiveFluidTransport<dim>::evaluate(in, out);
       const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
+      const std::shared_ptr<ReactionRateOutputs<dim>> reaction_rate_out
+        = out.template get_additional_output_object<ReactionRateOutputs<dim>>();
 
-      // Do not allow the bound fluid content to decrease.
-      for (unsigned int q=0; q < in.n_evaluation_points(); ++q)
-        if (out.reaction_terms[q][bound_fluid_idx] <= 0.0)
-          out.reaction_terms[q][bound_fluid_idx] = 0.0;
+      if (this->get_parameters().use_operator_splitting && reaction_rate_out != nullptr
+          && in.requests_property(MaterialProperties::reaction_rates))
+        {
+          for (unsigned int q=0; q < in.n_evaluation_points(); ++q)
+            if (reaction_rate_out->reaction_rates[q][bound_fluid_idx] <= 0.0)
+              reaction_rate_out->reaction_rates[q][bound_fluid_idx] = 0.0;
+        }
     }
-
   }
 }
 
@@ -62,8 +66,8 @@ namespace aspect
   {
     ASPECT_REGISTER_MATERIAL_MODEL(BoundFluidSource,
                                    "reactive fluid transport bound fluid source",
-                                   "A simple material model that is like the "
-                                   "'reactive fluid transport' model, but prevents "
-                                   "the bound fluid content from decreasing.")
+                                   "A material model that is like the 'reactive "
+                                   "fluid transport' model, but modifies the reactions "
+                                   "to prevent the bound fluid content from decreasing.")
   }
 }
