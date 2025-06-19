@@ -153,6 +153,8 @@ namespace aspect
 
       private:
 
+        // friend class boost::serialization::access;
+
         /**
          * For a given location, typically the location of a vertex of ASPECT's
          * volume mesh, return the DoF index that corresponds to this vertex

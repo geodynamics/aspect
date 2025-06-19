@@ -50,6 +50,26 @@
 #include <deal.II/base/mpi.h>  // For Utilities::MPI::this_mpi_process
 #include <aspect/utilities.h>  // For Utilities::create_directory
 #include <filesystem>          // C++17 or later
+// #include <boost/serialization/serialization.hpp>
+// #include <boost/serialization/access.hpp>
+
+
+#include <aspect/simulator.h>
+#include <aspect/global.h>
+#include <aspect/mesh_deformation/free_surface.h>
+#include <aspect/utilities.h>
+#include <aspect/structured_data.h>
+#include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/postprocess/sea_level.h>
+#include <aspect/postprocess/geoid.h>
+
+#include <deal.II/base/quadrature_lib.h>
+#include <deal.II/fe/fe_values.h>
+
+#include <cmath>
+#include <limits>
+
+
 
 
 namespace aspect
@@ -63,6 +83,19 @@ namespace aspect
       surface_fe(1)  // Use a Q1 element for the surface mesh
       // , surface_mesh_dof_handler(surface_mesh) // Link DoFHandler to surface_mesh
     {}
+
+    struct ValuesAtSurfaceVertex
+    {
+      double topography;
+      double surface_uplift_rate;
+
+      template <class Archive>
+      void serialize(Archive &ar, const unsigned int /*version*/)
+      {
+        ar & topography;
+        ar & surface_uplift_rate;
+      }
+    };
 
     template <int dim>
     void FastScapecc<dim>::initialize()
@@ -456,35 +489,25 @@ namespace aspect
 // the adjacent cells, at least in the current code you enter the same vertex into
 //the temp vectors multiple times. I *think* that you should get the same values every
 //time you visit a vertex, so perhaps a std::map is a better choice.
-      std::vector<std::vector<double>> temporary_variables(3, std::vector<double>());
+        std::multimap<types::global_dof_index, ValuesAtSurfaceVertex> surface_vertex_to_surface_values;
 
-      for (const auto &surface_cell : surface_mesh_dof_handler.active_cell_iterators())
+        for (const auto &surface_cell : surface_mesh_dof_handler.active_cell_iterators())
         {
           for (unsigned int vertex_index = 0; vertex_index < surface_cell->n_vertices(); ++vertex_index)
-            {
-              const Point<dim> vertex = surface_cell->vertex(vertex_index);
-              const unsigned int dof_index = surface_cell->vertex_dof_index(vertex_index, 0);
+          {
+            const Point<dim> vertex = surface_cell->vertex(vertex_index);
+            const types::global_dof_index dof_index = surface_cell->vertex_dof_index(vertex_index, 0);
 
-              const double surface_uplift_rate = surface_vertical_velocity[dof_index];
-              const double topography = surface_elevation[dof_index];
+            const double surface_uplift_rate = surface_vertical_velocity[dof_index];
+            const double topography = surface_elevation[dof_index];
 
-              const unsigned int index = this->vertex_index(vertex);
-
-              // Optional debug output
-              // if (this->get_timestep_number() == 1)
-              //   this->get_pcout() << "Vertex at z=" << vertex[dim - 1]
-              //                     << ", DoF index: " << dof_index
-              //                     << ", vertex_index: " << index
-              //                     << ", uplift rate: " << surface_uplift_rate << " m/s"
-              //                     << ", topography: " << topography << " m"
-              //                     << std::endl;
-
-              temporary_variables[0].push_back(topography);
-              temporary_variables[1].push_back(static_cast<double>(index));
-              temporary_variables[2].push_back(surface_uplift_rate * year_in_seconds);  // convert to m/year
-            }
+            // Store values in the map
+            surface_vertex_to_surface_values.emplace(dof_index, ValuesAtSurfaceVertex{
+              .topography = topography,
+              .surface_uplift_rate = surface_uplift_rate * year_in_seconds
+            });
+          }
         }
-
 
       std::vector<double> V(n_grid_nodes);
 
@@ -493,41 +516,59 @@ namespace aspect
       // may as well wait for the results to be send -- this happens
       // implicitly by ignoring the returned Utilities::MPI::Future object.
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) != 0)
-       Utilities::MPI::isend(temporary_variables, this->get_mpi_communicator(),
-           /* target = */ 0,
-           /* mpi_tag = */ 42);
+      {
+        Utilities::MPI::isend(surface_vertex_to_surface_values,
+                              this->get_mpi_communicator(),
+                              /* target = */ 0,
+                              /* mpi_tag = */ 42);
+      }
 
     // Rank 0 gathers and processes everything
     if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
     {
-      std::vector<double> h(n_grid_nodes, std::numeric_limits<double>::max());
-      std::vector<double> vz(n_grid_nodes);
+       std::multimap<types::global_dof_index, ValuesAtSurfaceVertex> all_surface_data = surface_vertex_to_surface_values;
 
-      // Fill with local data
-      for (unsigned int i = 0; i < temporary_variables[1].size(); ++i)
-        {
-          int index = static_cast<int>(temporary_variables[1][i]);
-          h[index] = temporary_variables[0][i];
-          vz[index] = temporary_variables[2][i];
-        }
-
-      // Receive and insert data from other processes
       for (unsigned int p = 1;
           p < Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
           ++p)
-        {
-          temporary_variables
-          = Utilities::MPI::irecv<decltype(temporary_variables)> (this->get_mpi_communicator(),
-              /* sender = */ p,
-              /* mpi_tag = */ 42).get();
+      {
+        std::multimap<types::global_dof_index, ValuesAtSurfaceVertex> received_map =
+            Utilities::MPI::irecv<std::multimap<types::global_dof_index, ValuesAtSurfaceVertex>>(
+                this->get_mpi_communicator(), p, 42).get();
 
-          for (unsigned int i = 0; i < temporary_variables[1].size(); ++i)
-            {
-              const int index = static_cast<int>(temporary_variables[1][i]);
-              h[index] = temporary_variables[0][i];
-              vz[index] = temporary_variables[2][i];
-            }
+        all_surface_data.insert(received_map.begin(), received_map.end());
+      }
+
+
+        std::vector<double> h(n_grid_nodes, 0.0);
+        std::vector<double> vz(n_grid_nodes, 0.0);
+        std::vector<unsigned int> count(n_grid_nodes, 0);
+
+        for (const auto &[index, values] : all_surface_data)
+        {
+          if (index < n_grid_nodes) // protect against out-of-range indexing
+          {
+            h[index] += values.topography;
+            vz[index] += values.surface_uplift_rate;
+            count[index] += 1;
+          }
         }
+
+        for (unsigned int i = 0; i < n_grid_nodes; ++i)
+        {
+          if (count[i] > 0)
+          {
+            h[i] /= count[i];
+            vz[i] /= count[i];
+          }
+          else
+          {
+            h[i] = std::numeric_limits<double>::quiet_NaN();
+            vz[i] = 0.0;
+          }
+        }
+
+
 // TODO: This will then simply be a loop over all elements of the map/multimap above.
 // Note that right now you encounter the same vertex multiple times, and you simply
 // overwrite early content with later content (which is ok).
@@ -588,7 +629,7 @@ namespace aspect
           // 5. Build the erosion model
           fastscapelib::spl_eroder<FlowGraphType> spl_eroder
           =
-            // fastscapelib::make_spl_eroder(flow_graph, kff, n, m, 1e-5)
+            // fastscapelib::make_spl_eroder(flow_graph, kff, m, n, 1e-5)
             fastscapelib::make_spl_eroder(flow_graph, 5e-4, 0.4, 1, 1e-5);
           std::cout << "KFF : " << kff<< std::endl;
 
@@ -787,7 +828,7 @@ namespace aspect
           std::ofstream output(vtu_filename);
           data_out.write_vtu(output);
         }
-
+        
         // === Rank 0: Write .pvtu and update .pvd ===
         if (mpi_rank == 0)
         {
