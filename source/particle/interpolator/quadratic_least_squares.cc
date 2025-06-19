@@ -479,9 +479,9 @@ namespace aspect
               }
           }
         unsigned int index_positions = 0;
-        for (typename std::vector<Point<dim>>::const_iterator itr = positions.begin(); itr != positions.end(); ++itr, ++index_positions)
+        for (const auto &pos : positions)
           {
-            Point<dim> relative_support_point_location = this->get_mapping().transform_real_to_unit_cell(cell, *itr);
+            Point<dim> relative_support_point_location = this->get_mapping().transform_real_to_unit_cell(cell, pos);
             for (unsigned int d = 0; d < dim; ++d)
               relative_support_point_location[d] -= unit_offset;
             for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
@@ -514,7 +514,12 @@ namespace aspect
                   }
 
               }
+
+
+            ++index_positions;
           }
+
+
         return cell_properties;
       }
 
