@@ -336,6 +336,13 @@ namespace aspect
                                                                                      j,
                                                                                      output_parameters.drucker_prager_parameters[j].angle_internal_friction,
                                                                                      in.position[i]);
+            current_friction = friction_models.compute_friction_angle(effective_edot_ii,
+                                                                      j,
+                                                                      current_friction,
+                                                                      in.position[i],
+                                                                      in.strain_rate[i]);
+            output_parameters.current_friction_angles[j] = current_friction;
+            output_parameters.current_cohesions[j] = current_cohesion;
 
             // Step 5: plastic yielding
 
