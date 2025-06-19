@@ -1346,7 +1346,7 @@ namespace aspect
                     AssertThrow(false,
                                 ExcMessage("The fabric needs to be assigned one of the following comma-delimited values: Olivine: Karato 2008, "
                                            "Olivine: A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric,"
-                                           "Olivine: E-fabric, Enstatite, Passive, Clinopyroxene."));
+                                           "Olivine: E-fabric, Enstatite, Passive, Clinopyroxene, Olivine: D-fabric_0kl."));
                   }
               }
 
