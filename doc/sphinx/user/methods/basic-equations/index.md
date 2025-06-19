@@ -71,6 +71,7 @@ We will discuss this equation in more detail in {ref}`sec:methods:compositional-
 adiabatic-heating.md
 bc.md
 2d-models.md
+comments.md
 :::
 
 [^footnote1]: There is no consensus in the sciences on the notation used for strain and strain rate.
