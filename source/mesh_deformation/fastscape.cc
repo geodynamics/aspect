@@ -1335,7 +1335,7 @@ namespace aspect
           velocity_x[index_bot] = velocity_x[index_bot+fastscape_nx];
 
           // If we are not fixing the base level, set the uplift velocities and
-          // adjust the term so that the elevation at the end will match taht of
+          // adjust the term so that the elevation at the end will match that of
           // the ASPECT boundary node.
           if (!use_fixed_erosional_base)
             {
