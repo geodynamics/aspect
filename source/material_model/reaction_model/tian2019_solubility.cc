@@ -61,7 +61,6 @@ namespace aspect
 
         // average the water content (mass fraction) between the four different rock types
         double average_eq_bound_water_content = MaterialUtilities::average_value (tracked_rock_mass_fractions, tian_eq_bound_water_content, MaterialUtilities::arithmetic);
-
         // The fluid volume fraction in equilibrium with the solid (stored in the melt_fractions vector)
         // is equal to the sum of the porosity (as a mass fraction) and the change in bound fluid content
         // (current bound fluid - updated average bound fluid).

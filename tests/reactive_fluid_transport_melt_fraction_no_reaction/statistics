@@ -1,0 +1,25 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
+# 15: Minimal melt fraction
+# 16: Total melt volume
+# 17: Maximal melt fraction
+# 18: Minimal value for composition porosity
+# 19: Maximal value for composition porosity
+# 20: Global mass for composition porosity
+# 21: Minimal value for composition bound_fluid
+# 22: Maximal value for composition bound_fluid
+# 23: Global mass for composition bound_fluid
+0 0.000000000000e+00 0.000000000000e+00 1 22 9 18 1 0 0 0 0 0 0 6.68896321e-03 2.67558528e+04 6.68896321e-03 1.00000000e-02 1.00000000e-02 4.00000000e+04 1.00000000e-02 1.00000000e-02 4.00000000e+04 
+1 1.000000000000e+03 1.000000000000e+03 1 22 9 18 1 0 0 0 0 0 0 6.68896321e-03 2.67558528e+04 6.68896321e-03 1.00000000e-02 1.00000000e-02 4.00000000e+04 1.00000000e-02 1.00000000e-02 4.00000000e+04 
