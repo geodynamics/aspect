@@ -15,7 +15,7 @@ muparser_if_temperature_example.py      python script that creates the same
 temperature_muparser_if.pdf             figure output from python script
 
 Figures showing the output of the cookbook are included in the cookbook section
-of the manual /doc/manual/cookbooks/muparser-temperature-example.
+of the manual /doc/manual/cookbooks/muparser_temperature_example.
 
 - Magali Billen, UC Davis, mibillen@ucdavis.edu
 - July, 2018.

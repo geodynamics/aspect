@@ -1,0 +1,58 @@
+
+Number of active cells: 2,500 (on 1 levels)
+Number of degrees of freedom: 160,604 (20,402+2,601+2,601+22,500+22,500+22,500+22,500+22,500+22,500)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving ve_stress_xx system ... 0 iterations.
+   Solving ve_stress_yy system ... 0 iterations.
+   Skipping ve_stress_xy composition solve because RHS is zero.
+   Solving ve_stress_xx_old system ... 0 iterations.
+   Solving ve_stress_yy_old system ... 0 iterations.
+   Skipping ve_stress_xy_old composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 217+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.74903e-16, 2.52116e-16, 2.52116e-16, 0, 0, 0, 0, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Solving temperature system... 0 iterations.
+   Solving ve_stress_xx system ... 0 iterations.
+   Solving ve_stress_yy system ... 0 iterations.
+   Skipping ve_stress_xy composition solve because RHS is zero.
+   Solving ve_stress_xx_old system ... 0 iterations.
+   Solving ve_stress_yy_old system ... 0 iterations.
+   Skipping ve_stress_xy_old composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.74903e-16, 2.52116e-16, 2.52116e-16, 0, 0, 0, 0, 9.31846e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 9.31846e-08
+
+
+   Postprocessing:
+     Compositions min/max/mass: 1.999e+08/1.999e+08/1.999e+18 // -1.999e+08/-1.999e+08/-1.999e+18 // 0/0/0 // 1.999e+08/1.999e+08/1.999e+18 // -1.999e+08/-1.999e+08/-1.999e+18 // 0/0/0
+     Temperature min/avg/max:   293 K, 293 K, 293 K
+     RMS, max velocity:         0.0258 m/year, 0.0446 m/year
+     Writing graphical output:  output-viscoelastic_stress_build_up/solution/solution-00000
+
+*** Timestep 1:  t=1000 years, dt=1000 years
+   Solving composition reactions... in 1 substep(s).
+   Solving temperature system... 0 iterations.
+   Solving ve_stress_xx system ... 1 iterations.
+   Solving ve_stress_yy system ... 1 iterations.
+   Solving ve_stress_xy system ... 1 iterations.
+   Solving ve_stress_xx_old system ... 1 iterations.
+   Solving ve_stress_yy_old system ... 1 iterations.
+   Solving ve_stress_xy_old system ... 1 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.01626e-16, 5.36984e-10, 5.36984e-10, 1.0196e-09, 0, 0, 0, 1.32959e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.32959e-07
+
+
+   Postprocessing:
+     Compositions min/max/mass: 1.999e+08/1.999e+08/1.999e+18 // -1.999e+08/-1.999e+08/-1.999e+18 // -14.96/14.09/-1.988e+07 // 1.999e+08/1.999e+08/1.999e+18 // -1.999e+08/-1.999e+08/-1.999e+18 // -14.67/13.82/-1.988e+07
+     Temperature min/avg/max:   293 K, 293 K, 293 K
+     RMS, max velocity:         0.0258 m/year, 0.0446 m/year
+     Writing graphical output:  output-viscoelastic_stress_build_up/solution/solution-00001
+
+Termination requested by criterion: end time
+
+
+

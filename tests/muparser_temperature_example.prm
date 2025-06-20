@@ -60,17 +60,12 @@ end
 
 # Refine the upper 150 km of the mesh so lithosphere structure is resolved.
 # Function expression asks if the depth is less than the lithosphere depth and
-# then refinement level = 7, else refinement level = 0.
-# Note, the minimum refinement level for the lower 850 km of the mesh would be
-# coarser than the initial one level of global refinement. This would then lead
-# to coarsening in the future.
-# To avoid this, you may want to set this 'else' value to the same as the number
-# of initial global refinement steps.
+# then refinement level = 5, else  refinement level = 0
 
 subsection Mesh refinement
   set Initial global refinement          = 3
-  set Minimum refinement level           = 3
-  set Initial adaptive refinement        = 4
+  set Minimum refinement level           = 1
+  set Initial adaptive refinement        = 2
   set Time steps between mesh refinement = 1
   set Strategy                           = minimum refinement function
 
@@ -78,20 +73,15 @@ subsection Mesh refinement
     set Coordinate system   = cartesian
     set Variable names      = x,y
     set Function constants  = ymax=1e6,lith=1.5e5
-    set Function expression = ((ymax-y<=lith) ? 7 : 0)
+    set Function expression = ((ymax-y<=lith) ? 5 : 0)
   end
 end
 
-# Half-space cooling model increasing with age from x>0 to xtrm
-# For x>xtrm, half-space cooling model with a fixed age.
+# Half-space cooling model increasing with age from x>0 to xtr
+# For x>xtr, half-space cooling model with a fixed age.
 # Note, we use 1-erfc instead of erf because the muparser in dealii
 # only knows about erfc. Also, we need to use ymax-y since y=0 at the
-# bottom of the box.
-# vsub is the velocity of the subducting plate in m/s
-# (x/vsub is the age of the subducting plate)
-# ageop is the age of the overriding plate in seconds.
-# Tm is the mantle temperature, Ts is the surface temperature in kelvin
-# kappa is the thermal diffusivity (m^2/s)
+# bottom of the box
 
 subsection Initial temperature model
   set Model name = function

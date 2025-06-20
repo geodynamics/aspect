@@ -1,0 +1,33 @@
+
+Number of active cells: 320 (on 4 levels)
+Number of degrees of freedom: 4,500 (2,754+369+1,377)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 6+0 iterations.
+
+Number of active cells: 260 (on 5 levels)
+Number of degrees of freedom: 4,166 (2,546+347+1,273)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
+
+Number of active cells: 920 (on 6 levels)
+Number of degrees of freedom: 13,574 (8,322+1,091+4,161)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-muparser_temperature_example/solution/solution-00000
+     RMS, max velocity:        0.00265 m/year, 0.0142 m/year
+     Temperature min/avg/max:  273 K, 1621 K, 1683 K
+
+Skipping mesh refinement, because the mesh did not change.
+
+Termination requested by criterion: end time
+
+
+

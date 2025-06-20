@@ -1,5 +1,5 @@
-# This is a copy of the test viscoelastic_stress_build_up,
-# which additionally tests the output of the viscoelastic stress postprocessors.
+# This test is a prestressed and smaller version of the
+# viscoelastic_stress_build_up benchmark.
 # The benchmark has a 2D analytical solution for the build-up
 # of stress in an initially unstressed viscoelastic medium subject to a
 # constant strain-rate. This benchmark is described in "Robust
@@ -46,7 +46,7 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 1000
 set Use years in output instead of seconds = true
-set Output directory                       = viscoelastic_stress_postprocessor
+set Output directory                       = output
 
 # Velocity boundary conditions
 subsection Boundary velocity model
@@ -61,7 +61,7 @@ subsection Boundary velocity model
 end
 
 # Spatial domain of different compositional fields:
-# ve_stress_xx, ve_stress_yy, ve_stress_xy
+# ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old
 subsection Initial composition model
   set Model name = function
 
@@ -70,17 +70,17 @@ subsection Initial composition model
     set Function constants  = eta = 1e22, mu = 1e10, eps = 1e-14, t = 250000, yinsec = 31557600
     set Function expression = 2.*eta*eps*(1.-exp(-mu*t*yinsec/eta)); \
                               -2.*eta*eps*(1.-exp(-mu*t*yinsec/eta)); \
-                              0; \
+                              0 ;\
                               2.*eta*eps*(1.-exp(-mu*t*yinsec/eta)); \
                               -2.*eta*eps*(1.-exp(-mu*t*yinsec/eta)); \
-                              0;
+                              0
   end
 end
 
 subsection Postprocess
   subsection Visualization
     set Time between graphical output = 1e3
-    set List of output variables = stress, shear stress, stress second invariant, surface stress
+    set List of output variables = stress, shear stress, stress second invariant
     set Output format = gnuplot
   end
 end
