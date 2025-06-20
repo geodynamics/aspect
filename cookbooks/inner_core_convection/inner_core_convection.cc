@@ -261,7 +261,7 @@ namespace aspect
                              "temperatures lead to phase transition occurring in shallower or greater "
                              "depths, depending on the Clapeyron slope given in 'Phase transition "
                              "Clapeyron slope'. "
-                             "Units: \\si{\\kelvin}.");
+                             "Units: $\\text{K}$.");
           prm.declare_entry ("Phase transition Clapeyron slope", "0.0",
                              Patterns::Double (),
                              "The Clapeyron slope of the phase transition. A positive "
@@ -275,7 +275,7 @@ namespace aspect
                              Patterns::Double (),
                              "The density change that occurs across the phase transition. "
                              "A positive value means that the density increases with depth. "
-                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
+                             "Units: $\\frac{\\text{kg}}{\\text{m}^3}$.");
           prm.declare_entry ("Compute quadratic pressure profile from gravity", "true",
                              Patterns::Bool (),
                              "Whether to automatically compute the hydrostatic pressure profile "

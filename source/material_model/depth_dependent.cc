@@ -165,7 +165,7 @@ namespace aspect
                              Patterns::Double (0.),
                              "The value of the constant reference viscosity $\\eta_r$ that is used to scale "
                              "the non-dimensional depth-dependent viscosity prefactor. "
-                             "Units: \\si{\\pascal\\second}.");
+                             "Units: $\\text{Pa}\\text{s}$.");
 
           prm.declare_alias ("Data file name","Viscosity depth file");
 

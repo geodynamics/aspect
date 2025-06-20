@@ -121,7 +121,7 @@ namespace aspect
                            "fields, then the density only depends on the first one in such a way that "
                            "the density has an additional term of the kind $+\\Delta \\rho \\; c_1(\\mathbf x)$. "
                            "This parameter describes the value of $\\Delta \\rho$. "
-                           "Units: \\si{\\kilogram\\per\\meter\\cubed}/unit change in composition.");
+                           "Units: $\\frac{\\text{kg}}{\\text{m}^3}$/unit change in composition.");
       }
       prm.leave_subsection();
     }

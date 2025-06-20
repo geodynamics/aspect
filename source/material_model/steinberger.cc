@@ -395,7 +395,7 @@ namespace aspect
                              "List of N prefactors that are used to modify the reference viscosity, "
                              "where N is either equal to one or the number of chemical components "
                              "in the simulation. If only one value is given, then all components "
-                             "use the same value. Units: \\si{\\pascal\\second}.");
+                             "use the same value. Units: $\\text{Pa}\\text{s}$.");
           prm.declare_entry ("Viscosity averaging scheme", "harmonic",
                              Patterns::Selection("arithmetic|harmonic|geometric|maximum composition"),
                              "Method to average viscosities over multiple compositional fields. "

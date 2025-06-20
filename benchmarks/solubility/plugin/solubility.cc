@@ -239,7 +239,7 @@ namespace aspect
                             "that for more information.");
           prm.declare_entry ("Reference fluid density", "2500",
                              Patterns::Double (0),
-                             "Reference density of the melt/fluid$\\rho_{f,0}$. Units: \\si{\\kilogram\\per\\meter\\cubed}.");
+                             "Reference density of the melt/fluid$\\rho_{f,0}$. Units: $\\frac{\\text{kg}}{\\text{m}^3}$.");
           prm.declare_entry ("Shear to bulk viscosity ratio", "0.1",
                              Patterns::Double (0),
                              "Ratio between shear and bulk viscosity at the reference "
@@ -248,7 +248,7 @@ namespace aspect
                              "from the base model. Units: dimensionless.");
           prm.declare_entry ("Reference fluid viscosity", "10",
                              Patterns::Double (0),
-                             "The value of the constant melt/fluid viscosity $\\eta_f$. Units: \\si{\\pascal\\second}.");
+                             "The value of the constant melt/fluid viscosity $\\eta_f$. Units: $\\text{Pa}\\text{s}$.");
           prm.declare_entry ("Exponential fluid weakening factor", "27",
                              Patterns::Double (0),
                              "The porosity dependence of the viscosity. Units: dimensionless.");
@@ -259,7 +259,7 @@ namespace aspect
           prm.declare_entry ("Fluid compressibility", "0.0",
                              Patterns::Double (0),
                              "The value of the compressibility of the fluid. "
-                             "Units: \\si{\\per\\pascal}.");
+                             "Units: $\\frac{1}{\\text{Pa}}$.");
           prm.declare_entry ("Fluid reaction time scale for operator splitting", "1e3",
                              Patterns::Double (0),
                              "In case the operator splitting scheme is used, the porosity field can not "

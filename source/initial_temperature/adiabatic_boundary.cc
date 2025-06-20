@@ -75,10 +75,10 @@ namespace aspect
         {
           prm.declare_entry ("Isotherm temperature", "1673.15",
                              Patterns::Double (0.),
-                             "The value of the isothermal boundary temperature. Units: \\si{\\kelvin}.");
+                             "The value of the isothermal boundary temperature. Units: $\\text{K}$.");
           prm.declare_entry ("Surface temperature", "273.15",
                              Patterns::Double (0.),
-                             "The value of the surface temperature. Units: \\si{\\kelvin}.");
+                             "The value of the surface temperature. Units: $\\text{K}$.");
           prm.declare_entry ("Adiabatic temperature gradient", "0.0005",
                              Patterns::Double (0.),
                              "The value of the adiabatic temperature gradient. "

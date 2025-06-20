@@ -78,19 +78,19 @@ namespace aspect
         prm.declare_entry ("Reference density", "3300.",
                            Patterns::Double (0.),
                            "Reference density $\\rho_0$. "
-                           "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
+                           "Units: $\\frac{\\text{kg}}{\\text{m}^3}$.");
         prm.declare_entry ("Reference temperature", "293.",
                            Patterns::Double (0.),
                            "The reference temperature $T_0$. The reference temperature is used "
-                           "in both the density and viscosity formulas. Units: \\si{\\kelvin}.");
+                           "in both the density and viscosity formulas. Units: $\\text{K}$.");
         prm.declare_entry ("Reference specific heat", "1250.",
                            Patterns::Double (0.),
                            "The value of the specific heat $C_p$. "
-                           "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
+                           "Units: $\\frac{\\text{J}}{\\text{K}\\text{kg}}$.");
         prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                            Patterns::Double (0.),
                            "The value of the thermal expansion coefficient $\\alpha$. "
-                           "Units: \\si{\\per\\kelvin}.");
+                           "Units: $\\frac{1}{\\text{K}}$.");
         if (n_compositions > 0)
           prm.declare_entry ("Density differential for compositional field 1", "0.",
                              Patterns::Double(),
@@ -102,7 +102,7 @@ namespace aspect
                              "fields, then the material model determines how many of them influence the density. "
                              "The composition-dependence adds a term of the kind $+\\Delta \\rho \\; c_1(\\mathbf x)$. "
                              "This parameter describes the value of $\\Delta \\rho$. "
-                             "Units: \\si{\\kilogram\\per\\meter\\cubed}/unit change in composition.");
+                             "Units: $\\frac{\\text{kg}}{\\text{m}^3}$/unit change in composition.");
         if (n_compositions > 1)
           prm.declare_entry ("Density differential for compositional field 2", "0.",
                              Patterns::Double(),
@@ -114,7 +114,7 @@ namespace aspect
                              "fields, then the material model determines how many of them influence the density. "
                              "The composition-dependence adds a term of the kind $+\\Delta \\rho \\; c_2(\\mathbf x)$. "
                              "This parameter describes the value of $\\Delta \\rho$. "
-                             "Units: \\si{\\kilogram\\per\\meter\\cubed}/unit change in composition.");
+                             "Units: $\\frac{\\text{kg}}{\\text{m}^3}$/unit change in composition.");
       }
 
 

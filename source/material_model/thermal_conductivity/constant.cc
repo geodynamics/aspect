@@ -44,7 +44,7 @@ namespace aspect
         prm.declare_entry ("Thermal conductivity", "4.7",
                            Patterns::Double (0.),
                            "The value of the thermal conductivity $k$. "
-                           "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
+                           "Units: $\\frac{\\text{W}{\\text{m}\\text{K}}$.");
       }
 
 
