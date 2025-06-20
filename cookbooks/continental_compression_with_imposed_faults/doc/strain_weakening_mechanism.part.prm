@@ -1,8 +1,12 @@
-set Strain weakening mechanism                   =  plastic weakening with plastic strain and viscous weakening with viscous strain
-set Start plasticity strain weakening intervals  = 0.5
-set End plasticity strain weakening intervals    = 1.5
-set Cohesion strain weakening factors            = 0.25
-set Friction strain weakening factors            = 0.25
-set Start prefactor strain weakening intervals   = 0.5
-set End prefactor strain weakening intervals     = 1.5
-set Prefactor strain weakening factors           = 0.1
+subsection Material model
+    subsection Visco Plastic
+        set Strain weakening mechanism                   =  plastic weakening with plastic strain and viscous weakening with viscous strain
+        set Start plasticity strain weakening intervals  = 0.5
+        set End plasticity strain weakening intervals    = 1.5
+        set Cohesion strain weakening factors            = 0.25
+        set Friction strain weakening factors            = 0.25
+        set Start prefactor strain weakening intervals   = 0.5
+        set End prefactor strain weakening intervals     = 1.5
+        set Prefactor strain weakening factors           = 0.1
+    end
+end

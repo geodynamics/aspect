@@ -44,6 +44,10 @@ subsection Formulation
   set Temperature equation = reference density profile
 end
 
+# constraining adiabatic temperature profile in compositional fields. 
+# each component referring to compositional fields. First three
+# components are referring to strain and then chemical composition fields. 
+# see subsection Compositional fields
 subsection Adiabatic conditions model
   subsection Compute profile
     set Composition reference profile = function
@@ -63,6 +67,10 @@ subsection Discretization
   set Composition polynomial degree           = 2
   set Stokes velocity polynomial degree       = 2
   set Temperature polynomial degree           = 2
+  # The gradient at quadrature points will not be a precise approximation of the true gradient 
+  # since it excludes the contribution of jumps in the compositional field between cells.
+  # Even though the finite element solution varies from cell to cell, the gradient of the 
+  # solution at quadrature locations inside each cell will always be precisely zero.
   set Use discontinuous composition discretization = true
 end
 
@@ -113,8 +121,8 @@ subsection Mesh deformation
 end
 
 # Velocity on boundaries characterized by functions
-# The combined horizontal velocity (x-direction) magnitude on the left and right walls is 0.2 cm/year
-# The vertical velocity at the base is 0.2 cm/year (balances outflow on sides)
+# A horizontal velocity (x-direction) of 0.1 cm/year is applied to the left and right walls 
+# resulting in inflow, which is balanced by the 0.2 cm/yr vertical (y-direction) outflow on the bottom boundary.
 # Velocity components parallel to the base (x-velocity) and side walls (y-velocity)
 # are unconstrained (i.e. 'free').
 subsection Boundary velocity model
@@ -166,8 +174,8 @@ end
 
 # Initial values of different compositional fields
 # The upper crust (20 km thick), lower crust (20 km thick)
-# and mantle (60 km thick) are continuous horizontal layers
-# of constant thickness. The non initial plastic strain is
+# and mantle lithosphere(40 km thick) and asthenosphere (320 km thick )are continuous 
+# horizontal layers of constant thickness. The non initial plastic strain is
 # set to 0, while the initial plastic and viscous strain is
 # randomized between 0.5 and 1.5.
 subsection Initial composition model
@@ -187,7 +195,7 @@ subsection Initial composition model
   end
 end
 
-# Composition: fixed on bottom (inflow boundary), free on sides and top
+# Composition: fixed on the bottom (outflow boundary) and side boundary, and free on top
 subsection Boundary composition model
   set Fixed composition boundary indicators = bottom, left, right
   set List of model names = initial composition
@@ -199,6 +207,7 @@ end
 # Note that while temperatures are specified for the model sides, these values are
 # not used as the sides are not specified "Fixed temperature boundaries".  Rather,
 # these boundaries are insulating (zero net heat flux).
+# Initial temperature model can be computed using plugin from continental_extension cookbook
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = bottom, top
   set List of model names = box
