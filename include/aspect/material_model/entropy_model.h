@@ -111,6 +111,14 @@ namespace aspect
         void
         create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
+        /**
+         * A signal that is triggered when a multicomponent equilibrium is done
+         * solving the equilibrated temperature for multiple entropy fields.
+         * An iteration count describing how many iterations were required
+         * to solve the equilibrium.
+         */
+        mutable boost::signals2::signal<void (const SimulatorAccess<dim> &,
+                                              const unsigned int iteration_count)> post_multicomponent_equilibrium;
 
       private:
 

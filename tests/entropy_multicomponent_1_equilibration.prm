@@ -97,7 +97,7 @@ subsection Mesh refinement
 end
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, temperature statistics, mass flux statistics, composition statistics
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, mass flux statistics, composition statistics, entropy statistics
 
   subsection Visualization
     set Time between graphical output = 0

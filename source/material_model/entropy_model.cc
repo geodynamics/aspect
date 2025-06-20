@@ -208,6 +208,11 @@ namespace aspect
         }
 
       component_equilibrated_S = component_entropies;
+
+      // Connect to the entropy postprocesser to calculate the average iteration that is
+      // needed for solving the temperature equilibration for every timestep.
+      post_multicomponent_equilibrium(*this, iteration);
+
       return std::exp(ln_equilibrated_T);
     }
 
