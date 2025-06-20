@@ -1172,7 +1172,7 @@ namespace aspect
           velocity_y[index_right] = velocity_y[index_right-1];
 
           // If we are not fixing the base level, set the uplift velocities and
-          // adjust the term so that the elevation at the end will match taht of
+          // adjust the term so that the elevation at the end will match that of
           // the ASPECT boundary node.
           // TODO: allow users to choose an individual boundary to set as a fixed
           // value, as this works as the background sea level for the stream
@@ -1206,7 +1206,7 @@ namespace aspect
           // If we have flux through a boundary, we need to update the height to keep the correct slope.
           // Because the corner nodes always show a slope of zero, this will update them according to
           // the closest non-ghost node. E.g. if we're at a corner node, look instead up a row and inward.
-          // If this is no flux, we set the node to the one next to it.
+          // If this is a no flux boundary, we set the node to the one next to it.
           // NOTE: Because this directly sets elevation on a potentially fixed fastscape boundary, it may
           // cause reproducibility issues. However, on an open boundary it may not produce enough mass
           // flux into the model as the boundary will erode and the slope will reduce. Also, from testing
