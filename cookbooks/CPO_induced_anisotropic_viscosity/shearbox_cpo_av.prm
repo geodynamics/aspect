@@ -6,10 +6,10 @@ set Dimension                = 3
 set Pressure normalization   = surface
 set Surface pressure         = 0
 set Nonlinear solver scheme  = single Advection, single Stokes
-set End time                 = 30
+set End time                 = 0.1
 # set Resume computation       = true
 set Use years in output instead of seconds = false
-set Output directory  = output_Shearbox_CPO_AV 
+set Output directory  = output_Shearbox_CPO_AV_1ts
 
 subsection Initial composition model
   set List of model names = function
