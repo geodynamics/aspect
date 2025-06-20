@@ -281,11 +281,11 @@ end
 # the mesh is refined based on the temperature, viscosity, and the location
 # of free water. We ensure that mesh cannot go below 4 levels of refinement
 # using a minimum refinement function. The highest refinement level is 8
-# which results in a grid size of ~5.5 x 5.5 km.
+# which results in a grid size of ~2.75 x 2.75 km.
 subsection Mesh refinement
   set Coarsening fraction                      = 0.3
   set Refinement fraction                      = 0.5
-  set Initial adaptive refinement              = 3
+  set Initial adaptive refinement              = 4
   set Initial global refinement                = 5
   set Strategy                                 = temperature, viscosity, composition threshold, minimum refinement function
   set Time steps between mesh refinement       = 5
