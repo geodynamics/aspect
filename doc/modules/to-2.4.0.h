@@ -292,7 +292,7 @@
  * <br>
  * (Juliane Dannberg, 2021/07/07)
  *
- * <li> Fixed: Change assert throw for radiogenic heating such that it should only be evaluated if crust is defined by compostion.
+ * <li> Fixed: Change assert throw for radiogenic heating such that it should only be evaluated if crust is defined by composition.
  * <br>
  * (Elodie Kendall, 2022/01/03)
  *

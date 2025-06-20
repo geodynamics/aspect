@@ -48,7 +48,7 @@ namespace aspect
         double _sigma, /* density */
         double _km, int _n, /* wavelength in z, wavenumber in x */
         double _B, /* viscosity parameter */
-        double vel[], double *presssure,
+        double vel[], double *pressure,
         double total_stress[], double strain_rate[])
       {
         double Z;
@@ -591,9 +591,9 @@ namespace aspect
             vel[0] = sum2;
             vel[1] = sum1;
           }
-        if (presssure != nullptr)
+        if (pressure != nullptr)
           {
-            (*presssure) = sum5;
+            (*pressure) = sum5;
           }
         if (total_stress != nullptr)
           {
