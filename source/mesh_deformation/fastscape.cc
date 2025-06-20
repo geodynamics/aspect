@@ -1775,7 +1775,7 @@ namespace aspect
                               "If false, a constant kf value will be used.");
             prm.declare_entry("Bedrock river incision rate", "1e-5",
                               Patterns::Double(),
-                              "River incision rate for bedrock in the Stream Power Law. Units: ${m^(1-2drainage_area_exponent)/yr}$ if ``Use years instead of seconds in output'' is true; otherwise, the units are $\{m^(1-2drainage_area_exponent)/s}$");
+                              "River incision rate for bedrock in the Stream Power Law. Units: ${m^(1-2drainage_area_exponent)/yr}$ if ``Use years instead of seconds in output'' is true; otherwise, the units are ${m^(1-2drainage_area_exponent)/s}$");
             prm.enter_subsection ("kf distribution function");
             {
               Functions::ParsedFunction<2>::declare_parameters(prm, 2);
