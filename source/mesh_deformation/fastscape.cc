@@ -520,19 +520,19 @@ namespace aspect
           // select additional output for Fastscape vtu
           // the default output is kf.
           std::vector<double> additional_output_field;
-          switch (additional_output_variables)
+          switch (additional_output_variable)
             {
-              case kf:
+              case FastscapeOutputVariable::kf:
               {
                 additional_output_field = combined_kf;
                 break;
               }
-              case kd:
+              case FastscapeOutputVariable::kd:
               {
                 additional_output_field = combined_kd;
                 break;
               }
-              case uplift_rate:
+              case FastscapeOutputVariable::uplift_rate:
               {
                 additional_output_field = velocity_z;
                 break;
@@ -1972,11 +1972,11 @@ namespace aspect
           const std::string output_choice = prm.get("Additional output variables");
 
           if (output_choice == "river incision rate")
-            additional_output_variables = kf;
+            additional_output_variable = FastscapeOutputVariable::kf;
           else if (output_choice == "deposition coefficient")
-            additional_output_variables = kd;
+            additional_output_variable = FastscapeOutputVariable::kd;
           else if (output_choice == "uplift rate")
-            additional_output_variables = uplift_rate;
+            additional_output_variable = FastscapeOutputVariable::uplift_rate;
           else
             AssertThrow(false, ExcMessage("Not a valid Fastscape field."));
 
