@@ -287,14 +287,18 @@ namespace aspect
           if (const std::shared_ptr<PrescribedPlasticDilation<dim>> plastic_dilation =
                 out.template get_additional_output_object<PrescribedPlasticDilation<dim>>())
             {
-              plastic_dilation->dilation_lhs_term[i]
-                = MaterialUtilities::average_value(volume_fractions,
-                                                   isostrain_viscosities.dilation_lhs_terms,
-                                                   MaterialUtilities::arithmetic);
-              plastic_dilation->dilation_rhs_term[i]
-                = MaterialUtilities::average_value(volume_fractions,
-                                                   isostrain_viscosities.dilation_rhs_terms,
-                                                   MaterialUtilities::arithmetic);
+              const double dilation_lhs_term = MaterialUtilities::average_value(volume_fractions,
+                                                                                isostrain_viscosities.dilation_lhs_terms,
+                                                                                MaterialUtilities::arithmetic);
+              const double dilation_rhs_term = MaterialUtilities::average_value(volume_fractions,
+                                                                                isostrain_viscosities.dilation_rhs_terms,
+                                                                                MaterialUtilities::arithmetic);
+
+              plastic_dilation->dilation_lhs_term[i] = dilation_lhs_term;
+              if (dilation_rhs_term - dilation_lhs_term * in.pressure[i] > 0)
+                plastic_dilation->dilation_rhs_term[i] = dilation_rhs_term;
+              else
+                plastic_dilation->dilation_rhs_term[i] = dilation_lhs_term * in.pressure[i];
             }
         }
 
