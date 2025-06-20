@@ -4,6 +4,7 @@
 # the ghost nodes within the FastScape model, we would expect 
 # that these would be slightly different. Here, we test when 
 # the bottom and top boundaries are fixed.
+# Enable if: ASPECT_WITH_FASTSCAPE
 
 ####  Global parameters
 set Dimension                              = 2
