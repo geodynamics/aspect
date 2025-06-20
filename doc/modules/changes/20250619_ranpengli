@@ -1,0 +1,4 @@
+Added: An entropy statistics postprocessor to the multicomponent entropy averaging material model.
+This postprocessor calculates for every time step the average number of iterations to equilibrate the temperature between the multiple components
+<br>
+(Ranpeng Li 2025/06/19)
