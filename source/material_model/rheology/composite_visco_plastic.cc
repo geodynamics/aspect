@@ -844,14 +844,14 @@ namespace aspect
 {
   namespace MaterialModel
   {
+    namespace Rheology
+    {
 #define INSTANTIATE(dim) \
-  namespace Rheology \
-  { \
-    template class CompositeViscoPlastic<dim>; \
-  }
+  template class CompositeViscoPlastic<dim>;
 
-    ASPECT_INSTANTIATE(INSTANTIATE)
+      ASPECT_INSTANTIATE(INSTANTIATE)
 
 #undef INSTANTIATE
+    }
   }
 }

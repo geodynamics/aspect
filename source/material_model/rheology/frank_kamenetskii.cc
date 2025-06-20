@@ -176,14 +176,14 @@ namespace aspect
 {
   namespace MaterialModel
   {
+    namespace Rheology
+    {
 #define INSTANTIATE(dim) \
-  namespace Rheology \
-  { \
-    template class FrankKamenetskii<dim>; \
-  }
+  template class FrankKamenetskii<dim>;
 
-    ASPECT_INSTANTIATE(INSTANTIATE)
+      ASPECT_INSTANTIATE(INSTANTIATE)
 
 #undef INSTANTIATE
+    }
   }
 }
