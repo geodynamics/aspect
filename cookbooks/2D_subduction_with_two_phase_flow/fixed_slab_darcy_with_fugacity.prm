@@ -1,0 +1,342 @@
+# This parameter file is for a cookbook which simulates fluid migration within a 2D subduction
+# system. The initial conditions (for both temperature and composition) are defined using the
+# Geodynamic WorldBuilder. The initial composition for the world builder is modified to manually
+# increase the bound water content within the subducting plate by 10%, leaving the bound fluid in
+# disequilibrium. However, this cookbook prevents the bound fluid from decreasing within the
+# subducting plate, creating a fixed fluid source that is meant to mimic the steady input of water
+# into the subduction factory by continuous subduction. The free fluid released by the fixed source
+# is advected through the system according to the Darcy velocity, and is allowed to be reabsorbed by
+# the solid phase if the reactions determined by the Tian 2019 reaction model predict that this is
+# stable.
+#
+# In this parameter file, when fluid is contained within the solid phase the viscosity is reduced
+# according to a calculated water fugacity term. This water fugacity term assumes a uniform olivine
+# composition of 90% forsterite and 10% fayalite throughout the entire model domain. While this is
+# an oversimplification, it is sufficient for demonstrating the functionaity within the scope of
+# this cookbook.
+
+# Load the plugin library and the world builder file, which are both required for this cookbook
+set Additional shared libraries                = plugin/lib2D_subduction_with_two_phase_flow.so
+set World builder file                         = fixed_slab.wb
+set Nonlinear solver scheme                    = iterated Advection and Stokes
+set Nonlinear solver failure strategy          = continue with next timestep
+set Output directory                           = output-fixed_slab_darcy_fluid_advection
+# Use a loose nonlinear tolerance of 1e-3 so that this cookbook can run with a relatively low
+# computational expense.
+set Max nonlinear iterations                   = 100
+set Nonlinear solver tolerance                 = 1e-3
+set Dimension                                  = 2
+set End time                                   = 1e6
+set CFL number                                 = 0.5 # 0.5 for stability
+set Pressure normalization                     = surface
+set Adiabatic surface temperature              = 1573
+set Surface pressure                           = 0
+
+# Limit the first time step to prevent numerical instabilities
+set Maximum first time step                    = 100
+
+# The Tian 2019 reaction model requires the use of Operator splitting.
+set Use operator splitting                     = true
+# Automatically resume computation, if a restart file is present.
+set Resume computation                         = auto
+
+# We use the block AMG solver instead of block GMG to more directly compare the
+# behaviour of this model with the model that advects the fluid according to the
+# fully coupled McKenzie equations, which does not support the use of block GMG.
+# Additionally, the Tian 2019 reaction model requires operator splitting with a
+# fixed reaction solver type.
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type                              = block AMG
+    set GMRES solver restart length                     = 1000
+    set Number of cheap Stokes solver steps             = 20000
+    set Use full A block as preconditioner              = true
+    set Linear solver tolerance                         = 1e-5
+    set Maximum number of expensive Stokes solver steps = 0
+  end
+  subsection Operator splitting parameters
+    set Reaction solver type                   = fixed step
+    set Reaction time step                     = 50
+  end
+end
+
+# Increase the smoothing parameters beta and cR for numerical stability and
+# computational efficiency.
+subsection Discretization
+  subsection Stabilization parameters
+    set beta  = 0.52
+    set cR    = 1.1
+  end
+end
+
+# Checkpoint the model every 50 time steps
+subsection Checkpointing
+  set Steps between checkpoint = 50
+end
+
+# The Tian 2019 reaction model requires 6 compositional fields:
+# porosity, bound_fluid, peridotite, gabbro, MORB, and sediment.
+# We want to keep all of the solid compositions static, and only
+# advect the porosity composition, therefore we set the solid field
+# advection methods to static and the porosity to darcy field.
+subsection Compositional fields
+  set Number of fields            = 6
+  set Names of fields             = porosity,    bound_fluid, peridotite,           gabbro,               MORB,                 sediment
+  set Compositional field methods = darcy field, static,      static,               static,               static,               static
+  set Types of fields             = porosity,    generic,     chemical composition, chemical composition, chemical composition, chemical composition
+end
+
+# We also want to keep the temperature distribution fixed.
+subsection Temperature field
+  set Temperature method = static
+end
+
+# The initial composition is defined using a modified version of the world builder
+# initial composition model compiled for this plugin. The `world builder disequilibrium`
+# initial composition model works exactly like the regular world builder initial composition
+# model, except that it increases the value of the bound_fluid composition by 10%.
+subsection Initial composition model
+  set List of model names = world builder disequilibrium
+  subsection World builder
+    set List of relevant compositions = porosity, bound_fluid, peridotite, gabbro, MORB, sediment
+    set Disequilibrium percentage     = 5
+  end
+end
+
+# The initial temperature is also defined using the world builder.
+subsection Initial temperature model
+  set Model name = world builder
+end
+
+# The geometry is a very large 2D box, and the cells have an aspect ratio of 1:1.
+# The geometry is large to ensure that the model boundaries are not significantly
+# impacting the velocities within the vicinty of the slab and in the mantle wedge.
+# Prior to additional refinements, the base grid size is 1450 x 1450 km.
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent      = 8700e3
+    set Y extent      = 2900e3
+
+    set X repetitions = 6
+    set Y repetitions = 2
+
+    set Box origin X coordinate = 0
+    set Box origin Y coordinate = 0
+  end
+end
+
+# Downward gravity
+subsection Gravity model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 0; -9.81
+  end
+end
+
+# The model is incompressible.
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+# Fix the temperature on the top and the bottom of the model.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names = box
+  subsection Box
+    set Bottom temperature = 1573
+    set Top temperature    = 273
+  end
+end
+
+# Reactions are computed using the Tian 2019 reaction model, and are composited
+# with a visco plastic solid rheology. The Tian 2019 reaction model is modified
+# within this cookbook to prevent the bound_fluid composition from ever decreasing.
+subsection Material model
+
+  set Model name                                         = reactive fluid transport bound fluid source
+  # We use a geometric averaging scheme for the viscosity instead of harmonic to
+  # avoid oversmoothing of the viscosity.
+  set Material averaging                                 = geometric average only viscosity
+
+  subsection Reactive Fluid Transport Model
+    set Base model                                       = visco plastic
+    set Reference fluid density                          = 1000 # kg/m^3
+    set Shear to bulk viscosity ratio                    = 0.1
+    set Reference fluid viscosity                        = 1 # Pa s
+    set Reference permeability                           = 5e-8
+    # This parameter controls how much the viscosity is reduced in the presence
+    # of free water.
+    set Exponential fluid weakening factor               = 30
+    set Fluid compressibility                            = 0 # incompressible fluid
+    # This parameter controls how quickly the water is released or absorbed by the
+    # solid phase. A time scale of 10,000 years ensures that these reactions are
+    # happening rapdily relative to the timescale of solid advection.
+    set Fluid reaction time scale for operator splitting = 1e4
+    # We use the Tian 2019 reaction model, which parameterizes the solubility using
+    # polynomials for the four solid compositions used in this cookbook.
+    set Fluid-solid reaction scheme                      = tian approximation
+    subsection Tian 2019 model
+      # The polynomials for each lithology blow up to extremely large values at low
+      # temperatures, we cap the bound water at these values to prevent this.
+      set Maximum weight percent water in peridotite     = 4
+      set Maximum weight percent water in gabbro         = 2
+      set Maximum weight percent water in MORB           = 3
+      set Maximum weight percent water in sediment       = 4
+    end
+  end
+
+  # This subsection defines how the solid deforms using a composite visco-plastic
+  # rheology. The rheology uses dislocation creep, diffusion creep, drucker-prager
+  # plasticity, and introduces a viscous weakening term that is dependent on the
+  # modeled bound water content.
+  subsection Visco Plastic
+    # Use a geometric averaging scheme for the viscosity
+    set Viscosity averaging scheme                        = geometric
+    set Viscous flow law                                  = composite
+    # The HK04 olivine hydration prefactor scales the solid viscosity based on the
+    # modeled water-fugacity, assuming an olivine composition that is 90% forsterite
+    # and 10% fayalite. This implementation is based off of Hirth & Kohlstaedt 2004.
+    set Viscosity prefactor scheme                        = HK04 olivine hydration
+    set Minimum strain rate                               = 1e-20
+    set Reference strain rate                             = 1e-20
+
+    # We introduce phase transitions as a method for changing the rheology of the model
+    # within the lower mantle, and to limit the viscosity of the sediment rheology. Within
+    # the lower mantle (beneath 660 km depth), the solid only deforms via diffusion creep.
+    # Shallower than 660 km, all deformation mechanisms are active. For the sediment
+    # composition only, the viscosity is prescribed to be 1e19 Pa s, at depths shallower
+    # than 125 km.
+    set Phase transition depths           =   background: 660e3,  porosity: 660e3, bound_fluid: 660e3, peridotite: 660e3, gabbro: 660e3, MORB: 660e3, sediment: 125e3|660e3
+    set Phase transition widths           =   background: 1e3,    porosity: 1e3,   bound_fluid: 1e3,   peridotite: 1e3,   gabbro: 1e3,   MORB: 1e3,   sediment: 10e3|1e3
+    set Phase transition temperatures     =   background: 1573,   porosity: 1573,  bound_fluid: 1573,  peridotite: 1573,  gabbro: 1573,  MORB: 1573,  sediment: 1573|1573
+    set Phase transition Clapeyron slopes =   background: 0,      porosity: 0,     bound_fluid: 0,     peridotite: 0,     gabbro: 0,     MORB: 0,     sediment: 0|0
+    set Densities                         =   background: 3300,   porosity: 3300,  bound_fluid: 3300,  peridotite: 3300,  gabbro: 3300,  MORB: 3300,  sediment: 3300
+    set Minimum viscosity                 =   background: 2.5e18|2.5e18, \
+                                              porosity: 2.5e18|2.5e18, \
+                                              bound_fluid: 2.5e18|2.5e18, \
+                                              peridotite: 2.5e18|2.5e18, \
+                                              gabbro: 2.5e18|2.5e18, \
+                                              MORB: 2.5e18|2.5e18, \
+                                              sediment: 9.999e18|2.5e18|2.5e18
+
+    set Maximum viscosity                 =   background: 2.5e23|2.5e23, \
+                                              porosity: 2.5e23|2.5e23, \
+                                              bound_fluid: 2.5e23|2.5e23, \
+                                              peridotite: 2.5e23|2.5e23, \
+                                              gabbro: 2.5e23|2.5e23, \
+                                              MORB: 2.5e23|2.5e23, \
+                                              sediment: 1.001e19|2.5e23|2.5e23
+
+    # Diffusion creep parameters from Hirth & Kohlstaedt 2004
+    set Prefactors for diffusion creep                    = 1.577e-21
+
+    set Water fugacity exponents for diffusion creep      = 0.7
+
+    set Stress exponents for diffusion creep              = 1.0
+
+    set Activation volumes for diffusion creep            = 10e-6
+
+    set Grain size                                        = 1e-3
+
+    set Activation energies for diffusion creep           = 375e3
+
+    # Dislocation creep parameters from Hirth & Kohlstaedt 2004, disable dislocation creep
+    # within the lower mantle (beneath 660 km depth).
+    set Prefactors for dislocation creep                  = background:  1.01e-25|1e-50, \
+                                                            porosity:    1.01e-25|1e-50, \
+                                                            bound_fluid: 1.01e-25|1e-50, \
+                                                            peridotite:  1.01e-25|1e-50, \
+                                                            gabbro:      1.01e-25|1e-50, \
+                                                            MORB:        1.01e-25|1e-50, \
+                                                            sediment:    1.01e-25|1.01e-25|1e-50
+
+    set Stress exponents for dislocation creep            = 3.5
+
+    set Water fugacity exponents for dislocation creep    = 0.34285714285714286
+
+    set Activation volumes for dislocation creep          = 22e-6
+
+    set Activation energies for dislocation creep         = 520e3
+
+    # Drucker-Prager plasticity parameters
+    set Angles of internal friction                       = 30
+
+    set Cohesions                                         = 60e6
+
+    set Maximum yield stress                              = 500e6
+
+    # For stability and efficiency, do not use the full pressure.
+    set Use adiabatic pressure in plasticity              = true
+
+    # Thermal parameters.
+    set Thermal expansivities                             = 3.0e-5
+    set Thermal diffusivities                             = 1e-6
+    set Heat capacities                                   = 750
+  end
+end
+
+# Adapt the mesh using a combination of strategies. Every 5 time steps,
+# the mesh is refined based on the temperature, viscosity, and the location
+# of free water. We ensure that mesh cannot go below 4 levels of refinement
+# using a minimum refinement function. The highest refinement level is 8
+# which results in a grid size of ~2.75 x 2.75 km.
+subsection Mesh refinement
+  set Coarsening fraction                      = 0.3
+  set Refinement fraction                      = 0.5
+  set Initial adaptive refinement              = 4
+  set Initial global refinement                = 5
+  set Strategy                                 = temperature, viscosity, composition threshold, minimum refinement function
+  set Time steps between mesh refinement       = 5
+  set Refinement criteria scaling factors      = 2, 1.5, 1.5, 1
+  set Refinement criteria merge operation      = max
+  set Run postprocessors on initial refinement = false
+  set Skip solvers on initial refinement       = true
+
+  # minimum of 6 levels of refinement within the lithosphere, 5 levels
+  # of refinement at the phase transition, and 4 levels of refinement
+  # everywhere else.
+  subsection Minimum refinement function
+    set Function constants  = litho_thickness=120e3, ymax=2900e3
+    set Coordinate system   = cartesian
+    set Variable names      = x, y
+    set Function expression = if(y>(ymax-litho_thickness),6, \
+                              if(y>=(ymax - 662e3) && y<=(ymax - 658e3), 5, 4))
+  end
+
+  # refine where the porosity is bigger than 1e-6, the bound fluid is larger
+  # than 0.001, and where the sediment composition is greater than 0.5. Set
+  # the peridotite, gabbro, and MORB compositions to 10, which means that we
+  # will never refine based on these compositions since they cannot be larger
+  # than 1.0.
+  subsection Composition threshold
+    set Compositional field thresholds = 1e-6, 0.001, 10.0, 10.0, 10.0, 0.5
+  end
+end
+
+# Free slip boundaries on all sides.
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom, top
+end
+
+# For this model, we advect the fluid according to the Darcy velocity, so we
+# disable melt transport.
+subsection Melt settings
+  set Include melt transport = false
+end
+
+# Postprocessing, output every 10,000 years.
+subsection Postprocess
+  set List of postprocessors          = visualization, composition statistics, velocity statistics, fluid velocity statistics
+  subsection Visualization
+    set List of output variables      = material properties, strain rate, named additional outputs, darcy velocity
+    set Output format                 = vtu
+    set Time between graphical output = 10e3
+    set Interpolate output            = true
+    set Number of grouped files       = 0
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
+  end
+end
