@@ -47,7 +47,7 @@ namespace aspect
         double pos[],
         double _eta_A, double _eta_B,   /* Input parameters: density, viscosity A, viscosity B */
         double _x_c, int _n,      /* Input parameters: viscosity jump location, wavenumber in x */
-        double vel[], double *presssure,
+        double vel[], double *pressure,
         double total_stress[], double strain_rate[])
       {
         const double PI = numbers::PI;
@@ -2855,9 +2855,9 @@ namespace aspect
             vel[0] = sum1;
             vel[1] = sum2;
           }
-        if (presssure != nullptr)
+        if (pressure != nullptr)
           {
-            (*presssure) = sum5;
+            (*pressure) = sum5;
           }
         if (total_stress != nullptr)
           {

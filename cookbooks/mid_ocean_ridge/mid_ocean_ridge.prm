@@ -85,7 +85,7 @@ end
 
 ##################### Velocity ########################
 
-# To model the divergent velocitiy field of a mid-ocean ridge, we prescribe
+# To model the divergent velocity field of a mid-ocean ridge, we prescribe
 # the plate velocity (pointing away from the ridge) at the top boundary.
 # We use a closed boundary with free slip conditions as the left boundary, which
 # marks the ridge axis and also acts as a center line for our model, so that
