@@ -1,3 +1,4 @@
+(sec:cookbooks:inclusions)=
 # Viscous inclusions under simple and pure shear
 
 *This section was contributed by Cedric Thieulot.*

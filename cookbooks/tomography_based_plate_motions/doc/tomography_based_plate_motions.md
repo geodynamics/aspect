@@ -1,4 +1,5 @@
-﻿# Mantle convection using tomography data
+﻿(sec:cookbooks:tomography-plate-motions)=
+# Mantle convection using tomography data
 
 *This section was contributed by Arushi Saxena, Juliane Dannberg and Ren&eacute; Gassm&ouml;ller.*
 

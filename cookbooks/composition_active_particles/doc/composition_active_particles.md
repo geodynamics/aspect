@@ -1,3 +1,4 @@
+(sec:cookbooks:composition-active-particles)=
 # Using active particles.
 
 In the examples above, particle properties passively track distinct model

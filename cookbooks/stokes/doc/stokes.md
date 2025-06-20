@@ -1,3 +1,4 @@
+(sec:cookbooks:stokes-benchmark)=
 # The "Stokes' law" benchmark
 
 *This section was contributed by Juliane Dannberg.*

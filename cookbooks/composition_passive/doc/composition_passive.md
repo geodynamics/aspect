@@ -1,3 +1,4 @@
+(sec:cookbooks:composition-passive)=
 # The passive case.
 
 We will consider the exact same situation as in the previous section but we

@@ -1,3 +1,4 @@
+(sec:cookbooks:crystal-preferred-orientation-olivine)=
 # Olivine Fabric Developments Under Simple Shear
 
 *This section was contributed by Xiaochuan Tian, with help from Yijun Wang and Menno Fraters. It is

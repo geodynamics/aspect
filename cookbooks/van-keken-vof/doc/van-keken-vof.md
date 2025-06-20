@@ -1,3 +1,4 @@
+(sec:cookbooks:vankeken-vof)=
 # Computation of the van Keken Problem with the Volume-of-Fluid Interface Tracking Method
 
 *This section is a co-production of Jonathan Robey and E. G. Puckett.*
