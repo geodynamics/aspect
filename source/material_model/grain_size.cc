@@ -934,7 +934,7 @@ namespace aspect
                              Patterns::Bool(),
                              "This parameter determines whether to apply plastic yielding "
                              "according to a Drucker-Prager rheology after computing the viscosity "
-                             "from the (grain-size dependent) visous creep flow laws (if true) "
+                             "from the (grain-size dependent) viscous creep flow laws (if true) "
                              "or not (if false).");
           prm.declare_entry ("Use adiabatic pressure for yield stress", "false",
                              Patterns::Bool (),
