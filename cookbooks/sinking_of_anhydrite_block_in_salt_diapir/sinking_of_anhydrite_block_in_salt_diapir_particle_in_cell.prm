@@ -1,0 +1,67 @@
+# Parameter file for replicating Burchardt et al. [2012]
+
+include $ASPECT_SOURCE_DIR/cookbooks/sinking_of_anhydrite_block_in_salt_diapir/sinking_of_anhydrite_block_in_salt_diapir.prm.base
+
+set Output directory = output-sinking-anhydrite-bloc-pic
+
+subsection Material model
+  set Model name = multicomponent
+  set Material averaging = harmonic average
+
+  subsection Multicomponent
+    set Densities = 0, 2200, 2200, 2900
+    set Viscosities = 1e30, 1e16, 1e17, 1e20
+    set Viscosity averaging scheme = harmonic
+    set Thermal expansivities = 0
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 3
+  set Names of fields = salt_left, salt_right, anhydrite_block
+  set Compositional field methods = particles, particles, particles
+  set Mapped particle properties = salt_left:initial salt_left, salt_right:initial salt_right, anhydrite_block: initial anhydrite_block
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = bx=100,by=100,Lx2=1250,h=100,Ly=5000
+    set Function expression = if((x<=Lx2 && (y>=Ly-h || y<=Ly-h-by) || (x<=Lx2-bx/2 && y<=Ly-h && y>= Ly-h-by)),1,0) ;\
+                              if((x>Lx2 && (y>=Ly-h || y<=Ly-h-by) || (x>Lx2+bx/2 && y<=Ly-h && y>= Ly-h-by)),1,0) ;\
+                              if((abs(x-Lx2)<bx/2 && abs(y-Ly+h+by/2)<by/2),1,0)
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, composition statistics, material statistics, global statistics, particles
+
+  subsection Visualization
+    set List of output variables = material properties, strain rate
+    set Time between graphical output = 0
+    set Interpolate output = false
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
+  end
+
+  subsection Particles
+    set Time between data output = 0
+    set Data output format       = vtu
+  end
+end
+
+subsection Particles
+  set List of particle properties = initial composition, velocity
+  set Particle generator name = random uniform
+  set Interpolation scheme = cell average
+
+  subsection Generator
+    subsection Random uniform
+      set Number of particles      = 2000000
+    end
+  end
+end

@@ -1,0 +1,7 @@
+include $ASPECT_SOURCE_DIR/cookbooks/sinking_of_anhydrite_block_in_salt_diapir/sinking_of_anhydrite_block_in_salt_diapir_particle_in_cell.prm
+
+set End time                               = 0
+
+subsection Mesh refinement
+  set Initial adaptive refinement   = 0
+end

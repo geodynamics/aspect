@@ -1,0 +1,20 @@
+
+Number of active cells: 2,048 (on 6 levels)
+Number of degrees of freedom: 52,455 (16,770+2,145+8,385+8,385+8,385+8,385)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 17+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:                          output-cookbook_sinking_anhydrite_block/solution/solution-00000
+     RMS, max velocity:                                 0.000754 m/year, 0.00795 m/year
+     Compositions min/max/mass:                         0/1/6.18e+06 // 0/1/6.31e+06 // 0/0.447/9975
+     Average density / Average viscosity / Total mass:  2201 kg/m^3, 5.521e+16 Pa s, 2.751e+10 kg
+     Writing particle output:                           output-cookbook_sinking_anhydrite_block/particles/particles-00000
+
+Termination requested by criterion: end time
+
+
+
