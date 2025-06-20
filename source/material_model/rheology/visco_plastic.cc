@@ -429,20 +429,12 @@ namespace aspect
             // Compute the dilation terms if necessary.
             if (this->get_parameters().enable_prescribed_dilation == true)
               {
-                if (output_parameters.composition_yielding[j] == true)
-                  {
-                    output_parameters.drucker_prager_parameters[j].angle_dilation *= weakening_factors[1];
-                    const std::pair<double,double> dilation_terms = drucker_prager_plasticity.compute_dilation_terms_for_stokes_system (output_parameters.drucker_prager_parameters[j],
-                                                                    non_yielding_viscosity,
-                                                                    effective_edot_ii);
-                    output_parameters.dilation_lhs_terms[j] = dilation_terms.first;
-                    output_parameters.dilation_rhs_terms[j] = dilation_terms.second;
-                  }
-                else
-                  {
-                    output_parameters.dilation_lhs_terms[j] = 0;
-                    output_parameters.dilation_rhs_terms[j] = 0;
-                  }
+                output_parameters.drucker_prager_parameters[j].angle_dilation *= weakening_factors[1];
+                const std::pair<double,double> dilation_terms = drucker_prager_plasticity.compute_dilation_terms_for_stokes_system (output_parameters.drucker_prager_parameters[j],
+                                                                non_yielding_viscosity,
+                                                                effective_edot_ii);
+                output_parameters.dilation_lhs_terms[j] = dilation_terms.first;
+                output_parameters.dilation_rhs_terms[j] = dilation_terms.second;
               }
           }
 
