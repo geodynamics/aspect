@@ -600,15 +600,6 @@ list(PREPEND ASPECT_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/include ${CMAKE_CURRENT_SOU
 list(APPEND  ASPECT_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/contrib/catch)
 
 
-# Special treatment of some files for unity builds. We need to exclude them
-# because otherwise template class instantiations split across several
-# .cc files (for example Simulator<dim> in core.cc, helper_functions.cc,
-# solver_schemes.cc, etc. might end up in the same unity file. This would
-# lead to errors with duplicate instantiations. The only reliable option
-# is to exclude the files that instantiate the whole class.
-set(UNITY_SEPARATE_FILES
-  "source/simulator/core.cc")
-
 foreach(_source_file ${UNITY_SEPARATE_FILES})
   set(_full_name "${CMAKE_SOURCE_DIR}/${_source_file}")
   set_property(SOURCE ${_full_name} PROPERTY SKIP_UNITY_BUILD_INCLUSION TRUE)

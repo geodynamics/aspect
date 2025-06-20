@@ -2232,7 +2232,16 @@ namespace aspect
 
 
 
-// explicit instantiation of the functions we implement in this file
+// Explicit instantiation of the functions we implement in this file. We do
+// this by explicitly instantiating the whole class, which prompts the compiler
+// to also instantiate all member functions it knows about. This is fine if
+// we compile file-by-file because then it will simply not see the functions
+// that are implemented in the other files in this directory (and are
+// explicitly instantiated there), but it runs into trouble with unity builds
+// for those functions that are explicitly instantiated elsewhere because
+// the compiler now sees *two* explicit instantiations for them. We address
+// this by declaring the existence of these (external) explicit instantiations
+// at the bottom of simulator.h.
 namespace aspect
 {
 #define INSTANTIATE(dim) \

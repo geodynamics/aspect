@@ -2047,7 +2047,185 @@ namespace aspect
       template <int dimension, int velocity_degree> friend class StokesMatrixFreeHandlerLocalSmoothingImplementation;
       friend struct Parameters<dim>;
   };
-}
 
+
+
+// We provide an explicit instantiation of the whole Simulator class in core.cc.
+// This also prompts the compiler to instantiate all member functions it knows about.
+// This is fine if we compile file-by-file because then it will simply not see the
+// functions that are implemented in the other files in this directory (and are
+// explicitly instantiated there), but it runs into trouble with unity builds
+// for those functions that are explicitly instantiated elsewhere because
+// the compiler now sees *two* explicit instantiations for them. We address
+// this by declaring the existence of these (external) explicit instantiations
+// here:
+
+// In assembly.cc:
+#define INSTANTIATE(dim) \
+  extern template void Simulator<dim>::set_assemblers (); \
+  extern template void Simulator<dim>::local_assemble_stokes_preconditioner ( \
+                                                                              const DoFHandler<dim>::active_cell_iterator &cell, \
+                                                                              internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch, \
+                                                                              internal::Assembly::CopyData::StokesPreconditioner<dim> &data); \
+  extern template void Simulator<dim>::copy_local_to_global_stokes_preconditioner ( \
+      const internal::Assembly::CopyData::StokesPreconditioner<dim> &data); \
+  extern template void Simulator<dim>::assemble_stokes_preconditioner (); \
+  extern template void Simulator<dim>::build_stokes_preconditioner (); \
+  extern template void Simulator<dim>::local_assemble_stokes_system ( \
+                                                                      const DoFHandler<dim>::active_cell_iterator &cell, \
+                                                                      internal::Assembly::Scratch::StokesSystem<dim>  &scratch, \
+                                                                      internal::Assembly::CopyData::StokesSystem<dim> &data); \
+  extern template void Simulator<dim>::copy_local_to_global_stokes_system ( \
+                                                                            const internal::Assembly::CopyData::StokesSystem<dim> &data); \
+  extern template void Simulator<dim>::assemble_stokes_system (); \
+  extern template void Simulator<dim>::build_advection_preconditioner (const AdvectionField &, \
+                                                                       aspect::LinearAlgebra::PreconditionILU &preconditioner, \
+                                                                       const double diagonal_strengthening); \
+  extern template void Simulator<dim>::local_assemble_advection_system ( \
+                                                                         const AdvectionField          &advection_field, \
+                                                                         const Vector<double>           &viscosity_per_cell, \
+                                                                         const DoFHandler<dim>::active_cell_iterator &cell, \
+                                                                         internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch, \
+                                                                         internal::Assembly::CopyData::AdvectionSystem<dim> &data); \
+  extern template void Simulator<dim>::copy_local_to_global_advection_system ( \
+                                                                               const AdvectionField          &advection_field, \
+                                                                               const internal::Assembly::CopyData::AdvectionSystem<dim> &data); \
+  extern template void Simulator<dim>::assemble_advection_system (const AdvectionField     &advection_field);
+
+
+  ASPECT_INSTANTIATE(INSTANTIATE)
+#undef INSTANTIATE
+
+// In checkpoint_restart.cc:
+#define INSTANTIATE(dim) \
+  extern template unsigned int Simulator<dim>::determine_last_good_snapshot() const; \
+  extern template void Simulator<dim>::create_snapshot(); \
+  extern template void Simulator<dim>::resume_from_snapshot();
+
+  ASPECT_INSTANTIATE(INSTANTIATE)
+#undef INSTANTIATE
+
+// In entropy_viscosity.cc:
+#define INSTANTIATE(dim) \
+  extern template void Simulator<dim>::get_artificial_viscosity (Vector<double> &viscosity_per_cell,  \
+                                                                 const AdvectionField &advection_field, \
+                                                                 const bool skip_interior_cells) const; \
+  extern template void Simulator<dim>::get_artificial_viscosity (Vector<float> &viscosity_per_cell,  \
+                                                                 const AdvectionField &advection_field, \
+                                                                 const bool skip_interior_cells) const;
+
+
+  ASPECT_INSTANTIATE(INSTANTIATE)
+#undef INSTANTIATE
+
+// In helper_functions.cc:
+#define INSTANTIATE(dim) \
+  extern template double Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector) const; \
+  extern template void Simulator<dim>::denormalize_pressure(const double pressure_adjustment, \
+                                                            LinearAlgebra::BlockVector &vector) const; \
+  extern template double Simulator<dim>::compute_pressure_scaling_factor () const; \
+  extern template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \
+  extern template std::pair<double,double> Simulator<dim>::get_extrapolated_advection_field_range (const AdvectionField &advection_field) const; \
+  extern template void Simulator<dim>::maybe_write_timing_output () const; \
+  extern template bool Simulator<dim>::maybe_write_checkpoint (const time_t, const bool); \
+  extern template bool Simulator<dim>::maybe_do_initial_refinement (const unsigned int max_refinement_level); \
+  extern template void Simulator<dim>::exchange_refinement_flags (); \
+  extern template void Simulator<dim>::maybe_refine_mesh (const double new_time_step, unsigned int &max_refinement_level); \
+  extern template void Simulator<dim>::advance_time (const double step_size); \
+  extern template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
+  extern template void Simulator<dim>::output_statistics(); \
+  extern template void Simulator<dim>::write_plugin_graph(std::ostream &) const; \
+  extern template double Simulator<dim>::compute_initial_stokes_residual(); \
+  extern template bool Simulator<dim>::stokes_matrix_depends_on_solution() const; \
+  extern template bool Simulator<dim>::stokes_A_block_is_symmetric() const; \
+  extern template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec) const;\
+  extern template void Simulator<dim>::apply_limiter_to_dg_solutions(const AdvectionField &advection_field); \
+  extern template void Simulator<dim>::compute_unique_advection_support_points(const std::vector<AdvectionField> &advection_fields, \
+                                                                               std::vector<Point<dim>> &support_points, \
+                                                                               std::vector<std::vector<unsigned int>> &support_point_index_by_field) const; \
+  extern template void Simulator<dim>::compute_reactions(); \
+  extern template void Simulator<dim>::initialize_current_linearization_point (); \
+  extern template void Simulator<dim>::interpolate_material_output_into_advection_field(const std::vector<AdvectionField> &adv_field); \
+  extern template void Simulator<dim>::check_consistency_of_formulation(); \
+  extern template void Simulator<dim>::replace_outflow_boundary_ids(const unsigned int boundary_id_offset, \
+                                                                    const bool is_composition, \
+                                                                    const unsigned int composition_index); \
+  extern template void Simulator<dim>::restore_outflow_boundary_ids(const unsigned int boundary_id_offset); \
+  extern template void Simulator<dim>::check_consistency_of_boundary_conditions() const; \
+  extern template double Simulator<dim>::compute_initial_newton_residual(); \
+  extern template double Simulator<dim>::compute_Eisenstat_Walker_linear_tolerance(const bool EisenstatWalkerChoiceOne, \
+      const double maximum_linear_stokes_solver_tolerance, \
+      const double linear_stokes_solver_tolerance, \
+      const double stokes_residual, \
+      const double newton_residual, \
+      const double newton_residual_old); \
+  extern template void Simulator<dim>::select_default_solver_and_averaging();
+
+  ASPECT_INSTANTIATE(INSTANTIATE)
+#undef INSTANTIATE
+
+// In initial_conditions.cc:
+#define INSTANTIATE(dim) \
+  extern template void Simulator<dim>::set_initial_temperature_and_compositional_fields(); \
+  extern template void Simulator<dim>::compute_initial_pressure_field(); \
+  extern template void Simulator<dim>::interpolate_particle_properties(const std::vector<AdvectionField> &advection_fields);
+
+  ASPECT_INSTANTIATE(INSTANTIATE)
+#undef INSTANTIATE
+
+// In nullspace.cc:
+#define INSTANTIATE(dim) \
+  extern template struct RotationProperties<dim>; \
+  extern template void Simulator<dim>::remove_nullspace (LinearAlgebra::BlockVector &,LinearAlgebra::BlockVector &vector) const; \
+  extern template void Simulator<dim>::setup_nullspace_constraints (AffineConstraints<double> &);
+
+  ASPECT_INSTANTIATE(INSTANTIATE)
+#undef INSTANTIATE
+
+// In parameters.cc:
+#define INSTANTIATE(dim) \
+  extern template Parameters<dim>::Parameters (ParameterHandler &prm, \
+                                               const MPI_Comm mpi_communicator); \
+  extern template void Parameters<dim>::declare_parameters (ParameterHandler &prm); \
+  extern template void Parameters<dim>::parse_parameters(ParameterHandler &prm, \
+                                                         const MPI_Comm mpi_communicator); \
+  extern template void Parameters<dim>::parse_geometry_dependent_parameters(ParameterHandler &prm, \
+                                                                            const GeometryModel::Interface<dim> &geometry_model); \
+  extern template void Simulator<dim>::declare_parameters (ParameterHandler &prm);
+
+  ASPECT_INSTANTIATE(INSTANTIATE)
+#undef INSTANTIATE
+
+// In solver.cc:
+#define INSTANTIATE(dim) \
+  extern template double Simulator<dim>::solve_advection (const AdvectionField &); \
+  extern template std::pair<double,double> Simulator<dim>::solve_stokes (LinearAlgebra::BlockVector &solution_vector);
+
+  ASPECT_INSTANTIATE(INSTANTIATE)
+#undef INSTANTIATE
+
+// In solver_schemes.cc:
+#define INSTANTIATE(dim) \
+  extern template double Simulator<dim>::assemble_and_solve_temperature(const double &, double*); \
+  extern template std::vector<double> Simulator<dim>::assemble_and_solve_composition(const std::vector<double> &, std::vector<double> *); \
+  extern template double Simulator<dim>::assemble_and_solve_stokes(const double &, double*); \
+  extern template void Simulator<dim>::solve_single_advection_single_stokes(); \
+  extern template void Simulator<dim>::solve_no_advection_iterated_stokes(); \
+  extern template void Simulator<dim>::solve_no_advection_single_stokes(); \
+  extern template void Simulator<dim>::solve_iterated_advection_and_stokes(); \
+  extern template void Simulator<dim>::solve_single_advection_iterated_stokes(); \
+  extern template void Simulator<dim>::solve_no_advection_iterated_defect_correction_stokes(); \
+  extern template void Simulator<dim>::solve_single_advection_iterated_defect_correction_stokes(); \
+  extern template void Simulator<dim>::solve_iterated_advection_and_defect_correction_stokes(); \
+  extern template void Simulator<dim>::solve_iterated_advection_and_newton_stokes(bool); \
+  extern template void Simulator<dim>::solve_single_advection_and_iterated_newton_stokes(bool); \
+  extern template void Simulator<dim>::solve_single_advection_no_stokes(); \
+  extern template void Simulator<dim>::solve_first_timestep_only_single_stokes(); \
+  extern template void Simulator<dim>::solve_no_advection_no_stokes();
+
+  ASPECT_INSTANTIATE(INSTANTIATE)
+#undef INSTANTIATE
+
+}
 
 #endif
