@@ -203,7 +203,10 @@ namespace aspect
               const double viscosity_dislocation
                 = (viscous_flow_law != diffusion
                    ?
-                   dislocation_creep.compute_viscosity(edot_ii, pressure_for_creep, temperature_for_viscosity, j,
+                   dislocation_creep.compute_viscosity(edot_ii,
+                                                       pressure_for_creep,
+                                                       temperature_for_viscosity,
+                                                       j,
                                                        phase_function_values,
                                                        n_phase_transitions_per_composition)
                    :
@@ -249,7 +252,6 @@ namespace aspect
                                                               CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::diffusion);
                     const double scaled_viscosity_dislocation = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_dislocation, j, i, \
                                                                 CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::dislocation);
-
                     non_yielding_viscosity = std::min(scaled_viscosity_diffusion, scaled_viscosity_dislocation);
                     break;
                   }
@@ -268,6 +270,19 @@ namespace aspect
                                                                                     n_phase_transitions_per_composition);
                   non_yielding_viscosity = (non_yielding_viscosity * viscosity_peierls) / (non_yielding_viscosity + viscosity_peierls);
                 }
+
+              // Step 1e: compute the viscosity from the grain boundary sliding and harmonically average with current viscosities
+              if (use_grain_boundary_sliding)
+                {
+                  const double viscosity_grain_boundary_sliding = grain_boundary_sliding_rheology->compute_viscosity(
+                                                                    edot_ii,
+                                                                    pressure_for_creep,
+                                                                    temperature_for_viscosity,
+                                                                    j,
+                                                                    phase_function_values,
+                                                                    n_phase_transitions_per_composition);
+                  non_yielding_viscosity = (non_yielding_viscosity * viscosity_grain_boundary_sliding) / (non_yielding_viscosity + viscosity_grain_boundary_sliding);
+                }
             }
 
 
@@ -283,7 +298,6 @@ namespace aspect
 
             // Apply strain weakening to the viscous viscosity.
             non_yielding_viscosity *= weakening_factors[2];
-
 
             // Step 3: calculate the viscous stress magnitude
             // and strain rate. If requested compute visco-elastic contributions.
@@ -711,6 +725,13 @@ namespace aspect
         // Frank-Kamenetskii viscosity parameters
         Rheology::FrankKamenetskii<dim>::declare_parameters(prm);
 
+        // Grain boundary sliding parameters
+        Rheology::GrainBoundarySliding<dim>::declare_parameters(prm);
+        prm.declare_entry ("Include Grain Boundary Sliding", "false",
+                           Patterns::Bool (),
+                           "Whether to include grain boundary sliding in the rheological formulation. "
+                           "If set to true, the grain boundary sliding parameters must be specified.");
+
         // Peierls creep parameters
         Rheology::PeierlsCreep<dim>::declare_parameters(prm);
 
@@ -853,6 +874,16 @@ namespace aspect
         // Dislocation creep parameters
         dislocation_creep.initialize_simulator (this->get_simulator());
         dislocation_creep.parse_parameters(prm, expected_n_phases_per_composition);
+
+        // Grain boundary sliding parameters
+        use_grain_boundary_sliding = prm.get_bool ("Include Grain Boundary Sliding");
+        if (use_grain_boundary_sliding)
+          {
+            grain_boundary_sliding_rheology = std::make_unique<Rheology::GrainBoundarySliding<dim>>();
+            grain_boundary_sliding_rheology->initialize_simulator(this->get_simulator());
+            grain_boundary_sliding_rheology->parse_parameters(prm, expected_n_phases_per_composition);
+
+          }
 
         // Frank Kamenetskii viscosity parameters
         if (viscous_flow_law == frank_kamenetskii)

@@ -1,0 +1,16 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Visualization file name
+# 12: Average density (kg/m^3)
+# 13: Average viscosity (Pa s)
+# 14: Total mass (kg)
+0 0.000000000000e+00 0.000000000000e+00 4 59 25 0 2 3 3 output-grain_boundary_sliding/solution/solution-00000 3.30346500e+03 3.80479660e+15 3.30346500e+03 
+1 2.500000000000e-02 2.500000000000e-02 4 59 25 0 1 2 2                                                    "" 3.30346500e+03 3.80479660e+15 3.30346500e+03 
