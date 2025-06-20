@@ -1,0 +1,53 @@
+
+Loading shared library <./libtomography_based_plate_motions_cookbook-2.debug.so>
+
+
+   Loading Ascii data boundary file ASPECT_DIR/cookbooks/tomography_based_plate_motions/input_data/input_topography_smooth_gauss.txt.
+
+
+   Loading Ascii data boundary file ASPECT_DIR/cookbooks/tomography_based_plate_motions/input_data/crustal_structure_2D.txt.
+
+
+   Loading Ascii data initial file ASPECT_DIR/cookbooks/tomography_based_plate_motions/input_data/upper_mantle_TM1_2D.txt.
+
+
+   Loading Ascii data boundary file ASPECT_DIR/cookbooks/tomography_based_plate_motions/input_data/LAB_CAM2016_2D.txt.
+
+
+   Loading Ascii data initial file ASPECT_DIR/cookbooks/tomography_based_plate_motions/input_data/LLNL_model_cropped_cratons_faults.txt.gz.
+
+
+   Loading Ascii data boundary file ASPECT_DIR/cookbooks/tomography_based_plate_motions/input_data/slab2_depth_thickness_2D.txt.gz.
+
+Number of active cells: 48 (on 2 levels)
+Number of degrees of freedom: 2,232 (480+72+240+240+240+240+240+240+240)
+
+Number of active cells: 192 (on 3 levels)
+Number of degrees of freedom: 8,016 (1,728+240+864+864+864+864+864+864+864)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field slabs... done.
+   Skipping slabs composition solve because RHS is zero.
+   Copying properties into prescribed compositional field grain_size... done.
+   Solving Stokes system (GMG)... 87+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0, 0, 0, 0, 0, 0, 0.0136765
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0136765
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
+   Postprocessing:
+     Max, min, and RMS residual velocity along boundary parts: 0.7949 m/year, 0.0006278 m/year, 0.2807 m/year
+     Writing graphical output:                                 output-tomography_based_plate_motions_cookbook-2/solution/solution-00000
+     Heat fluxes through boundary parts:                       -3.207e+06 W, 5.905e+07 W
+     Writing depth average:                                    output-tomography_based_plate_motions_cookbook-2/depth_average
+
+Termination requested by criterion: end time
+
+
+
+
+WARNING: During this computation 1 nonlinear solver failures occurred!
