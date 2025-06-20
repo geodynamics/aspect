@@ -33,7 +33,7 @@ def get_times_pvd(filename):
 
         times[i] = float(temp_str)
 
-    return times 
+    return times
 
 
 #%% Get file paths (absolute, not relative paths!)
@@ -54,73 +54,73 @@ DirPath = os.path.dirname(os.path.realpath(__file__))
 
 # trace generated using paraview version 5.8.0
 #
-# To ensure correct image size when batch processing, please search 
+# To ensure correct image size when batch processing, please search
 # for and uncomment the line `# renderView*.ViewSize = [*,*]`
 
 for File in FileNames:
 
     #### disable automatic camera reset on 'Show'
     paraview.simple._DisableFirstRenderCameraReset()
-    
+
     # create a new 'Legacy VTK Reader'
     topography0000 = LegacyVTKReader(FileNames=File)
-    
+
     # get animation scene
     animationScene1 = GetAnimationScene()
-    
+
     # get the time-keeper
     timeKeeper1 = GetTimeKeeper()
-    
+
     # update animation scene based on data timesteps
     animationScene1.UpdateAnimationUsingDataTimeSteps()
-    
+
     # get active view
     renderView1 = GetActiveViewOrCreate('RenderView')
     # uncomment following to set a specific view size
     # renderView1.ViewSize = [882, 554]
-    
+
     # get layout
     layout1 = GetLayout()
-    
+
     # show data in view
     topography0000Display = Show(topography0000, renderView1, 'StructuredGridRepresentation')
-    
+
     # trace defaults for the display properties.
     topography0000Display.Representation = 'Surface'
-    
+
     # reset view to fit data
     renderView1.ResetCamera()
-    
+
     # get the material library
     materialLibrary1 = GetMaterialLibrary()
-    
+
     # show color bar/color legend
     topography0000Display.SetScalarBarVisibility(renderView1, True)
-    
+
     # update the view to ensure updated data information
     renderView1.Update()
-    
+
     # get color transfer function/color map for 'H'
     hLUT = GetColorTransferFunction('H')
-    
+
     # get opacity transfer function/opacity map for 'H'
     hPWF = GetOpacityTransferFunction('H')
-    
+
     # save data
     SaveData(File[:-4] + '.vts', proxy=topography0000, ChooseArraysToWrite=1,
         PointDataArrays=['HHHHH','basement','catchment','drainage_area','erosion_rate','topography','total_erosion'])
-    
+
     #### saving camera placements for all active views
-    
+
     # current camera placement for renderView1
     renderView1.CameraPosition = [225625.0, 25625.0, 878497.0779980461]
     renderView1.CameraFocalPoint = [225625.0, 25625.0, 1135.7277145385742]
     renderView1.CameraParallelScale = 227077.82689023562
-    
+
     #### uncomment the following to render all views
     # RenderAllViews()
     # alternatively, if you want to write images, you can use SaveScreenshot(...).
-    
+
     Delete(topography0000)
     del topography0000
 
@@ -140,17 +140,9 @@ doc.text="\n"
 
 for n, File in enumerate(FileNames):
     dataset_attributes = {"timestep": str(times[n]), "group": "", "group": "", "file": os.path.basename(File)[:-4]+'.vts'}
-    
+
     ET.SubElement(doc, "DataSet", attrib=dataset_attributes).text="\n"
 
 
 tree = ET.ElementTree(root)
-tree.write('./VTK/topography.pvd', xml_declaration=True, encoding='utf-8', method="xml")   
-    
-    
-    
-
-
-
-
-
+tree.write('./VTK/topography.pvd', xml_declaration=True, encoding='utf-8', method="xml")
