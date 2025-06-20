@@ -171,32 +171,28 @@ namespace aspect
     template <int dim>
     double
     Steinberger<dim>::
-    viscosity (const double temperature,
-               const double /*pressure*/,
+    viscosity (const unsigned int q,
                const std::vector<double> &volume_fractions,
-               const SymmetricTensor<2,dim> &strain_rate,
-               const Point<dim> &position,
-               bool output_plasticity,
-               MaterialModel::MaterialModelOutputs<dim> &out,
-               const unsigned int i) const
+               const MaterialModel::MaterialModelInputs<dim> &in,
+               MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      const double depth = this->get_geometry_model().depth(position);
-      const double adiabatic_temperature = this->get_adiabatic_conditions().temperature(position);
+      const double depth = this->get_geometry_model().depth(in.position[q]);
+      const double adiabatic_temperature = this->get_adiabatic_conditions().temperature(in.position[q]);
 
       double delta_temperature;
       if (use_lateral_average_temperature)
         {
           const unsigned int idx = static_cast<unsigned int>((average_temperature.size()-1) * depth / this->get_geometry_model().maximal_depth());
-          delta_temperature = temperature-average_temperature[idx];
+          delta_temperature = in.temperature[q]-average_temperature[idx];
         }
       else
-        delta_temperature = temperature-adiabatic_temperature;
+        delta_temperature = in.temperature[q]-adiabatic_temperature;
 
       // For an explanation on this formula see the Steinberger & Calderwood 2006 paper
       // We here compute the lateral variation of viscosity due to temperature (thermal_prefactor) as
       // V_lT = exp [-(H/nR)*dT/(T_adiabatic*(T_adiabatic + dT))] as in Eq. 6 of the paper.
       // We get H/nR from the lateral_viscosity_lookup->lateral_viscosity function.
-      const double log_thermal_prefactor = -1.0 * lateral_viscosity_lookup->lateral_viscosity(depth) * delta_temperature / (temperature * adiabatic_temperature);
+      const double log_thermal_prefactor = -1.0 * lateral_viscosity_lookup->lateral_viscosity(depth) * delta_temperature / (in.temperature[q] * adiabatic_temperature);
 
       // Limit the lateral viscosity variation to a reasonable interval
       const double thermal_prefactor = std::max(std::min(std::exp(log_thermal_prefactor), max_lateral_eta_variation), 1/max_lateral_eta_variation);
@@ -209,14 +205,14 @@ namespace aspect
       // Effective viscosity without Drucker-Prager yielding
       // It is computed as radial viscosity profile * thermal prefactors * compositional prefactor
       double effective_viscosity = thermal_prefactor * compositional_prefactor * eta_ref;
-      const double pressure = this->get_adiabatic_conditions().pressure(position);
+      const double pressure = this->get_adiabatic_conditions().pressure(in.position[q]);
 
       // Druger-Pager rheology
       if (enable_drucker_prager_rheology)
         {
           // This should be the same as the "strain_rate" output in the visualization postpocessor,
           // which also known as second strain rate invariant or effective deviatoric strain rate.
-          const double strain_rate_effective = std::sqrt(std::fabs(second_invariant(deviator(strain_rate))));
+          const double strain_rate_effective = std::sqrt(std::fabs(second_invariant(deviator(in.strain_rate[q]))));
           // Calculate non-yielding (viscous) stress magnitude. It should be identical to the
           // "stress second invariant" in the visualization postprocessor.
           const double non_yielding_stress = 2. * effective_viscosity * strain_rate_effective;
@@ -242,14 +238,13 @@ namespace aspect
           const std::shared_ptr<PlasticAdditionalOutputs<dim>> plastic_out
             = out.template get_additional_output_object<PlasticAdditionalOutputs<dim>>();
 
-          if (plastic_out != nullptr && output_plasticity)
+          if (plastic_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))
             {
-              plastic_out->cohesions[i] = drucker_prager_parameters.cohesion;
-              plastic_out->friction_angles[i] = drucker_prager_parameters.angle_internal_friction;
-              plastic_out->yield_stresses[i] = yield_stress;
-              plastic_out->yielding[i] = non_yielding_stress >= yield_stress ? 1 : 0;
+              plastic_out->cohesions[q] = drucker_prager_parameters.cohesion;
+              plastic_out->friction_angles[q] = drucker_prager_parameters.angle_internal_friction;
+              plastic_out->yield_stresses[q] = yield_stress;
+              plastic_out->yielding[q] = non_yielding_stress >= yield_stress ? 1 : 0;
             }
-
         }
 
       return effective_viscosity;
@@ -314,12 +309,10 @@ namespace aspect
                                                                                true);
           if (in.requests_property(MaterialProperties::viscosity) || in.requests_property(MaterialProperties::additional_outputs))
             {
-              out.viscosities[i] = std::max(
-                                     std::min(viscosity(in.temperature[i], in.pressure[i], volume_fractions[i], in.strain_rate[i],
-                                                        in.position[i],in.requests_property(MaterialProperties::additional_outputs),out,i),max_eta),
-                                     min_eta
-                                   );
+              out.viscosities[i] = viscosity(i, volume_fractions[i], in, out);
+              out.viscosities[i] = std::max(std::min(out.viscosities[i], max_eta), min_eta);
             }
+
           MaterialUtilities::fill_averaged_equation_of_state_outputs(eos_outputs[i], mass_fractions, volume_fractions[i], i, out);
           fill_prescribed_outputs(i, volume_fractions[i], in, out);
         }
