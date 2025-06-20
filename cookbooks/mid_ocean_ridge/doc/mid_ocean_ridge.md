@@ -1,3 +1,4 @@
+(sec:cookbooks:mid-ocean-ridge)=
 # Melt migration in a 2D mid-ocean ridge model
 
 *This section was contributed by Juliane Dannberg.*

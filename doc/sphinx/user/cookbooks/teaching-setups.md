@@ -1,4 +1,4 @@
-
+(sec:cookbooks:teaching-setups)=
 # Setups for teaching
 
 Because <span class="smallcaps">ASPECT</span> is freely available, has an

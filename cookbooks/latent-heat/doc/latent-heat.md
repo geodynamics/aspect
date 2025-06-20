@@ -1,3 +1,4 @@
+(sec:cookbooks:latent-heat)=
 # Latent heat benchmark
 
 *This section was contributed by Juliane Dannberg.*

@@ -1,3 +1,4 @@
+(sec:cookbooks:plume-2d-chunk)=
 # Plume in a 2D chunk
 
 *This section was contributed by Cedric Thieulot and Paul Bremner.*

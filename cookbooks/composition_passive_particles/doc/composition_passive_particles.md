@@ -1,3 +1,4 @@
+(sec:cookbooks:composition-passive-particles)=
 # The passive case with particles
 
 In order to advect particles along with the flow field, one just needs to add

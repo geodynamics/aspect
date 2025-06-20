@@ -1,3 +1,4 @@
+(sec:cookbooks:composition-reaction)=
 # The active case with reactions.
 
 *This section was contributed by Juliane Dannberg and Ren&eacute;

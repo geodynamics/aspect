@@ -1,3 +1,4 @@
+(sec:cookbooks:kinematic-2d-oceanic-subduction)=
 # Kinematically-driven 2d oceanic subduction
 
 *This section was contributed by Anne Glerum and Yingying Li.*
