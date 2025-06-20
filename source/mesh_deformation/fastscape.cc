@@ -1165,20 +1165,22 @@ namespace aspect
           // Here we set the ghost nodes to the value of the nodes next to them, where for the left we
           // add one to go to the node to the right, and for the right side
           // we subtract one to go to the inner node to the left.
-          // For velocities, this is done whether it is the call before
-          // initialization or not.
-          if (left == 0 || !use_fixed_erosional_base)
-            {
-              velocity_z[index_left] = velocity_z[index_left+1];
-              velocity_y[index_left] = velocity_y[index_left+1];
-              velocity_x[index_left] = velocity_x[index_left+1];
-            }
+          // For xy velocities, this is always set.
+          velocity_x[index_left] = velocity_x[index_left+1];
+          velocity_y[index_left] = velocity_y[index_left+1];
+          velocity_x[index_right] = velocity_x[index_right-1];
+          velocity_y[index_right] = velocity_y[index_right-1];
 
-          if (right == 0 || !use_fixed_erosional_base)
+          // If we are not fixing the base level, set the uplift velocities and
+          // adjust the term so that the elevation at the end will match that of
+          // the ASPECT boundary node.
+          // TODO: allow users to choose an individual boundary to set as a fixed
+          // value, as this works as the background sea level for the stream
+          // power law but not all boundaries need to be fixed.
+          if (!use_fixed_erosional_base)
             {
-              velocity_z[index_right] = velocity_z[index_right-1];
-              velocity_y[index_right] = velocity_y[index_right-1];
-              velocity_x[index_right] = velocity_x[index_right-1];
+              velocity_z[index_left] = velocity_z[index_left+1] + (elevation[index_left+1] - elevation[index_left])/fastscape_timestep_in_years;
+              velocity_z[index_right] = velocity_z[index_right-1] + (elevation[index_right-1] - elevation[index_right])/fastscape_timestep_in_years;
             }
 
           if (init)
@@ -1201,49 +1203,38 @@ namespace aspect
                 elevation[index_right] = elevation[index_right-1] + slope*2*fastscape_dx;
             }
 
-          if (left == 0 && !init)
+          // If we have flux through a boundary, we need to update the height to keep the correct slope.
+          // Because the corner nodes always show a slope of zero, this will update them according to
+          // the closest non-ghost node. E.g. if we're at a corner node, look instead up a row and inward.
+          // If this is a no flux boundary, we set the node to the one next to it.
+          // NOTE: Because this directly sets elevation on a potentially fixed fastscape boundary, it may
+          // cause reproducibility issues. However, on an open boundary it may not produce enough mass
+          // flux into the model as the boundary will erode and the slope will reduce. Also, from testing
+          // this only works well in marine settings with high diffusivity.
+          if (!init && left_flux > 0)
             {
-              // If it is not the initialization step, we set the h value for open boundaries depending on
-              // whether or not there is prescribed influx.
-              // If we have flux through a boundary, we need to update the height to keep the correct slope.
-              // Because the corner nodes always show a slope of zero, this will update them according to
-              // the closest non-ghost node. E.g. if we're at a corner node, look instead up a row and inward.
-              // If this is no flux, we set the node to the one next to it.
-              if (left_flux > 0)
-                {
-                  slope = 0;
-                  if (j == 0)
-                    slope = left_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_left + fastscape_nx + 1] * numbers::PI / 180.);
-                  else if (j == (fastscape_ny - 1))
-                    slope = left_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_left - fastscape_nx + 1] * numbers::PI / 180.);
-                  else
-                    slope = left_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_left + 1] * numbers::PI / 180.);
-
-                  elevation[index_left] = elevation[index_left] + slope * 2 * fastscape_dx;
-                }
+              slope = 0;
+              if (j == 0)
+                slope = left_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_left + fastscape_nx + 1] * numbers::PI / 180.);
+              else if (j == (fastscape_ny - 1))
+                slope = left_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_left - fastscape_nx + 1] * numbers::PI / 180.);
               else
-                elevation[index_left] = elevation[index_left + 1];
+                slope = left_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_left + 1] * numbers::PI / 180.);
+
+              elevation[index_left] = elevation[index_left] + slope * 2 * fastscape_dx;
             }
 
-          if (right == 0 && !init)
+          if (!init && right_flux > 0)
             {
-
-              if (right_flux > 0)
-                {
-                  slope = 0;
-                  if (j == 0)
-                    slope = right_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_right + fastscape_nx - 1] * numbers::PI / 180.);
-                  else if (j == (fastscape_ny - 1))
-                    slope = right_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_right - fastscape_nx - 1] * numbers::PI / 180.);
-                  else
-                    slope = right_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_right - 1] * numbers::PI / 180.);
-
-                  elevation[index_right] = elevation[index_right] + slope * 2 * fastscape_dx;
-                }
+              slope = 0;
+              if (j == 0)
+                slope = right_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_right + fastscape_nx - 1] * numbers::PI / 180.);
+              else if (j == (fastscape_ny - 1))
+                slope = right_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_right - fastscape_nx - 1] * numbers::PI / 180.);
               else
-                elevation[index_right] = elevation[index_right - 1];
+                slope = right_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_right - 1] * numbers::PI / 180.);
 
-
+              elevation[index_right] = elevation[index_right] + slope * 2 * fastscape_dx;
             }
 
           // If the boundaries are periodic, then we look at the velocities on both sides of the
@@ -1258,24 +1249,6 @@ namespace aspect
 
               // Indexing depending on which side the ghost node is being set to.
               int jj = 1;
-
-              // If nodes on both sides are going the same direction, then set the respective
-              // ghost nodes to equal these sides. By doing this, the ghost nodes at the opposite
-              // side of flow will work as a mirror mimicking what is happening on the other side.
-              if (velocity_x[index_right-1] > 0 && velocity_x[index_left+1] >= 0)
-                {
-                  side = index_right;
-                  op_side = index_left;
-                  jj = -1;
-                }
-              else if (velocity_x[index_right-1] <= 0 && velocity_x[index_left+1] < 0)
-                {
-                  side = index_left;
-                  op_side = index_right;
-                  jj = 1;
-                }
-              else
-                continue;
 
               // Now set the nodes for periodic boundaries. As an example, assume we have 9 FastScape nodes in x:
               //
@@ -1292,20 +1265,52 @@ namespace aspect
               // This makes it so that effectively both periodic ASPECT boundaries see the same
               // topography on either side of them to try and make sure they experience the same
               // amount of diffusion and SPL.
+
+              // From the previous example this sets 8 to 2
               velocity_x[index_right] = velocity_x[index_left+2];
               velocity_y[index_right] = velocity_y[index_left+2];
               velocity_z[index_right] = velocity_z[index_left+2] + (elevation[index_left+2] - elevation[index_right])/fastscape_timestep_in_years;
 
+              // This sets 0 to 6.
               velocity_x[index_left] = velocity_x[index_right-2];
               velocity_y[index_left] = velocity_y[index_right-2];
               velocity_z[index_left] = velocity_z[index_right-2] + (elevation[index_right-2] - elevation[index_left])/fastscape_timestep_in_years;
 
+              // If nodes on both sides are going the same direction, then set the respective
+              // aspect boundary node to equal the other side (e.g., setting 1 to 7 in the previous
+              // example). By doing his, the ghost nodes at the opposite
+              // side of flow will work as a mirror mimicking what is happening on the other side.
+              // TODO: With changes since initial implementation of the ghost nodes, I am not sure
+              // if anything below this point is necessary. Maybe setting the two nodes is sufficient
+              // but this would need further testing.
+              if (velocity_x[index_right-1] > 0 && velocity_x[index_left+1] >= 0)
+                {
+                  side = index_right;
+                  op_side = index_left;
+                  jj = -1;
+                }
+              else if (velocity_x[index_right-1] <= 0 && velocity_x[index_left+1] < 0)
+                {
+                  side = index_left;
+                  op_side = index_right;
+                  jj = 1;
+                }
+              else
+                continue;
+
               // Set opposing ASPECT boundary so it's periodic.
+              // TODO: I should double check that directly setting
+              // the elevation on a non-boundary node doesn't cause
+              // reporducibility issues, or update this to work
+              // through velocity_z.
+              // Also TODO: I'm not sure how necessary this is
+              // with how we set the ghost nodes. E.g., from the
+              // above example if 1 and 7 are both surrounded by
+              // identical nodes (6 and 2) do they need to be set?
               elevation[op_side-jj] = elevation[side+jj];
               velocity_x[op_side-jj] = velocity_x[side+jj];
               velocity_y[op_side-jj] = velocity_y[side+jj];
               velocity_z[op_side-jj] = velocity_z[side+jj];
-
             }
         }
 
@@ -1320,18 +1325,22 @@ namespace aspect
           const unsigned int index_top = fastscape_nx*(fastscape_ny-1)+j;
           double slope = 0;
 
-          if (top == 0 || !use_fixed_erosional_base)
-            {
-              velocity_z[index_top] = velocity_z[index_top-fastscape_nx];
-              velocity_y[index_top] = velocity_y[index_top-fastscape_nx];
-              velocity_x[index_top] = velocity_x[index_top-fastscape_nx];
-            }
+          // Here we set the ghost nodes to the value of the nodes below or above
+          // them, where for the bottom we go up one row (fastscape_nx) and for the
+          // top we go down one row (-fastscape_new). For xy velocities this is
+          // always called.
+          velocity_y[index_top] = velocity_y[index_top-fastscape_nx];
+          velocity_x[index_top] = velocity_x[index_top-fastscape_nx];
+          velocity_y[index_bot] = velocity_y[index_bot+fastscape_nx];
+          velocity_x[index_bot] = velocity_x[index_bot+fastscape_nx];
 
-          if (bottom ==0 || !use_fixed_erosional_base)
+          // If we are not fixing the base level, set the uplift velocities and
+          // adjust the term so that the elevation at the end will match that of
+          // the ASPECT boundary node.
+          if (!use_fixed_erosional_base)
             {
-              velocity_z[index_bot] = velocity_z[index_bot+fastscape_nx];
-              velocity_y[index_bot] = velocity_y[index_bot+fastscape_nx];
-              velocity_x[index_bot] = velocity_x[index_bot+fastscape_nx];
+              velocity_z[index_top] = velocity_z[index_top-fastscape_nx] + (elevation[index_top - fastscape_nx] - elevation[index_top])/fastscape_timestep_in_years;
+              velocity_z[index_bot] = velocity_z[index_bot+fastscape_nx] + (elevation[index_bot + fastscape_nx] - elevation[index_bot])/fastscape_timestep_in_years;
             }
 
           if (init)
@@ -1349,40 +1358,30 @@ namespace aspect
                 elevation[index_bot] = elevation[index_bot + fastscape_nx] + slope*2*fastscape_dx;
             }
 
-          if (top == 0 && !init)
+          if (!init && top_flux > 0)
             {
-              if (top_flux > 0)
-                {
-                  slope = 0;
-                  if (j == 0)
-                    slope = top_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_top - fastscape_nx + 1] * numbers::PI / 180.);
-                  else if (j == (fastscape_nx - 1))
-                    slope = top_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_top - fastscape_nx - 1] * numbers::PI / 180.);
-                  else
-                    slope = top_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_top - fastscape_nx] * numbers::PI / 180.);
-
-                  elevation[index_top] = elevation[index_top] + slope * 2 * fastscape_dx;
-                }
+              slope = 0;
+              if (j == 0)
+                slope = top_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_top - fastscape_nx + 1] * numbers::PI / 180.);
+              else if (j == (fastscape_nx - 1))
+                slope = top_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_top - fastscape_nx - 1] * numbers::PI / 180.);
               else
-                elevation[index_top] = elevation[index_top - fastscape_nx];
+                slope = top_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_top - fastscape_nx] * numbers::PI / 180.);
+
+              elevation[index_top] = elevation[index_top] + slope * 2 * fastscape_dx;
             }
 
-          if (bottom == 0 && !init)
+          if (!init && bottom_flux > 0)
             {
-              if (left_flux > 0)
-                {
-                  slope = 0;
-                  if (j == 0)
-                    slope = bottom_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_bot + fastscape_nx + 1] * numbers::PI / 180.);
-                  else if (j == (fastscape_nx - 1))
-                    slope = bottom_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_bot + fastscape_nx - 1] * numbers::PI / 180.);
-                  else
-                    slope = bottom_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_bot + fastscape_nx] * numbers::PI / 180.);
-
-                  elevation[index_bot] = elevation[index_bot] + slope * 2 * fastscape_dx;
-                }
+              slope = 0;
+              if (j == 0)
+                slope = bottom_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_bot + fastscape_nx + 1] * numbers::PI / 180.);
+              else if (j == (fastscape_nx - 1))
+                slope = bottom_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_bot + fastscape_nx - 1] * numbers::PI / 180.);
               else
-                elevation[index_bot] = elevation[index_bot + fastscape_nx];
+                slope = bottom_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_bot + fastscape_nx] * numbers::PI / 180.);
+
+              elevation[index_bot] = elevation[index_bot] + slope * 2 * fastscape_dx;
             }
 
           if ((bottom == 0 && top == 0) || topbottom_ghost_nodes_periodic == true)
@@ -1391,6 +1390,7 @@ namespace aspect
               unsigned int op_side = index_top;
               int jj = fastscape_nx;
 
+              // See documentation within left and right ghost nodes for how these are done.
               // Set top ghost node
               velocity_x[index_top] = velocity_x[index_bot + 2*fastscape_nx];
               velocity_y[index_top] = velocity_y[index_bot + 2*fastscape_nx];

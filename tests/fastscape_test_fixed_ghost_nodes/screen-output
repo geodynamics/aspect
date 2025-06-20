@@ -1,0 +1,260 @@
+-----------------------------------------------------------------------------
+--                             This is ASPECT                              --
+-- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
+-----------------------------------------------------------------------------
+--     . version 3.1.0-pre (fastscape-update-ghostnodes-backup, 38e614096)
+--     . using deal.II 9.6.1
+--     .       with 32 bit indices
+--     .       with vectorization level 1 (SSE2, 2 doubles, 128 bits)
+--     . using Trilinos 14.4.0
+--     . using p4est 2.3.6
+--     . using Geodynamic World Builder 1.0.0
+--     . running in OPTIMIZED mode
+--     . running with 2 MPI processes
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&NewtonSolver=1&fastscape=1&sha=38e614096&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 200 (on 2 levels)
+Number of degrees of freedom: 7,119 (1,722+231+861+861+861+861+861+861)
+
+Number of mesh deformation degrees of freedom: 462
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Skipping noninitial_plastic_strain composition solve because RHS is zero.
+   Solving plastic_strain system ... 0 iterations.
+   Solving crust_upper system ... 0 iterations.
+   Solving crust_lower system ... 0 iterations.
+   Solving mantle_lithosphere system ... 0 iterations.
+   Initial Newton Stokes residual = 3.24244e+15, v = 3.17715e+15, p = 6.47385e+14
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+23 iterations.
+      Newton system information: Norm of the rhs: 3.24244e+15
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+19 iterations.
+      Newton system information: Norm of the rhs: 1.77633e+13, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.00547836
+
+   The linear solver tolerance is set to 0.01. 
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+7 iterations.
+      Newton system information: Norm of the rhs: 5.29128e+12, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.00163188
+
+   The linear solver tolerance is set to 0.01. 
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+9 iterations.
+      Newton system information: Norm of the rhs: 2.71414e+12, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.000837066
+
+   The linear solver tolerance is set to 0.01. 
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+10 iterations.
+      Newton system information: Norm of the rhs: 1.94213e+12, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.000598972
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
+Number of active cells: 200 (on 2 levels)
+Number of degrees of freedom: 7,119 (1,722+231+861+861+861+861+861+861)
+
+Number of mesh deformation degrees of freedom: 462
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Skipping noninitial_plastic_strain composition solve because RHS is zero.
+   Solving plastic_strain system ... 0 iterations.
+   Solving crust_upper system ... 0 iterations.
+   Solving crust_lower system ... 0 iterations.
+   Solving mantle_lithosphere system ... 0 iterations.
+   Initial Newton Stokes residual = 3.24287e+15, v = 3.17715e+15, p = 6.49533e+14
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+23 iterations.
+      Newton system information: Norm of the rhs: 3.24287e+15
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+19 iterations.
+      Newton system information: Norm of the rhs: 1.80089e+13, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.00555339
+
+   The linear solver tolerance is set to 0.01. 
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+6 iterations.
+      Newton system information: Norm of the rhs: 5.41458e+12, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.00166969
+
+   The linear solver tolerance is set to 0.01. 
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+7 iterations.
+      Newton system information: Norm of the rhs: 2.81668e+12, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.000868578
+
+   The linear solver tolerance is set to 0.01. 
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+7 iterations.
+      Newton system information: Norm of the rhs: 1.97314e+12, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.000608457
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
+   Postprocessing:
+     Topography min/max: 0 m, 0 m
+
+*** Timestep 1:  t=20000 years, dt=20000 years
+   Initializing FastScape... 3 levels, cell size: 5000 m.
+   Executing FastScape... 4 timesteps of 5000 years.
+      Writing initial VTK...
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 10 iterations.
+   Solving noninitial_plastic_strain system ... 16 iterations.
+   Solving plastic_strain system ... 13 iterations.
+   Solving crust_upper system ... 12 iterations.
+   Solving crust_lower system ... 13 iterations.
+   Solving mantle_lithosphere system ... 12 iterations.
+   Initial Newton Stokes residual = 4.09605e+17, v = 4.09605e+17, p = 4.56479e+13
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+18 iterations.
+      Newton system information: Norm of the rhs: 2.05621e+12
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.01998e-06
+
+
+   Postprocessing:
+     Topography min/max: -40.79 m, 22.23 m
+
+*** Timestep 2:  t=40000 years, dt=20000 years
+   Executing FastScape... 4 timesteps of 5000 years.
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 9 iterations.
+   Solving noninitial_plastic_strain system ... 14 iterations.
+   Solving plastic_strain system ... 12 iterations.
+   Solving crust_upper system ... 11 iterations.
+   Solving crust_lower system ... 11 iterations.
+   Solving mantle_lithosphere system ... 11 iterations.
+   Initial Newton Stokes residual = 4.0619e+17, v = 4.0619e+17, p = 4.59664e+13
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+15 iterations.
+      Newton system information: Norm of the rhs: 2.23817e+12
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.51016e-06
+
+
+   Postprocessing:
+     Topography min/max: -86.56 m, 46.71 m
+
+*** Timestep 3:  t=60000 years, dt=20000 years
+   Executing FastScape... 4 timesteps of 5000 years.
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 9 iterations.
+   Solving noninitial_plastic_strain system ... 14 iterations.
+   Solving plastic_strain system ... 12 iterations.
+   Solving crust_upper system ... 11 iterations.
+   Solving crust_lower system ... 12 iterations.
+   Solving mantle_lithosphere system ... 11 iterations.
+   Initial Newton Stokes residual = 4.03014e+17, v = 4.03014e+17, p = 4.90818e+13
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+17 iterations.
+      Newton system information: Norm of the rhs: 5.09008e+12
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.263e-05
+
+
+   Postprocessing:
+     Topography min/max: -139.9 m, 74.73 m
+
+*** Timestep 4:  t=80000 years, dt=20000 years
+   Executing FastScape... 4 timesteps of 5000 years.
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 9 iterations.
+   Solving noninitial_plastic_strain system ... 14 iterations.
+   Solving plastic_strain system ... 12 iterations.
+   Solving crust_upper system ... 11 iterations.
+   Solving crust_lower system ... 12 iterations.
+   Solving mantle_lithosphere system ... 11 iterations.
+   Initial Newton Stokes residual = 4.00216e+17, v = 4.00216e+17, p = 5.06697e+13
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+16 iterations.
+      Newton system information: Norm of the rhs: 8.09364e+12
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.02232e-05
+
+
+   Postprocessing:
+     Topography min/max: -201.1 m, 106.4 m
+
+*** Timestep 5:  t=100000 years, dt=20000 years
+   Executing FastScape... 4 timesteps of 5000 years.
+      Writing FastScape VTK...
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 9 iterations.
+   Solving noninitial_plastic_strain system ... 14 iterations.
+   Solving plastic_strain system ... 12 iterations.
+   Solving crust_upper system ... 11 iterations.
+   Solving crust_lower system ... 12 iterations.
+   Solving mantle_lithosphere system ... 11 iterations.
+   Initial Newton Stokes residual = 3.97803e+17, v = 3.97803e+17, p = 5.25988e+13
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+17 iterations.
+      Newton system information: Norm of the rhs: 1.16813e+13
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.93645e-05
+
+
+   Postprocessing:
+     Topography min/max: -271.3 m, 140.7 m
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |     0.877s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         7 |    0.0253s |       2.9% |
+| Assemble Stokes system Picard    |        15 |    0.0552s |       6.3% |
+| Assemble Stokes system rhs       |         8 |    0.0246s |       2.8% |
+| Assemble composition system      |        35 |     0.291s |        33% |
+| Assemble temperature system      |         7 |    0.0417s |       4.8% |
+| Build Stokes preconditioner      |        15 |     0.123s |        14% |
+| Build composition preconditioner |        33 |    0.0123s |       1.4% |
+| Build temperature preconditioner |         7 |   0.00268s |      0.31% |
+| Execute FastScape                |         5 |    0.0259s |       2.9% |
+| FastScape plugin                 |         5 |    0.0281s |       3.2% |
+| Initialization                   |         1 |    0.0635s |       7.2% |
+| Mesh deformation                 |         7 |    0.0427s |       4.9% |
+| Mesh deformation initialize      |         2 |   0.00392s |      0.45% |
+| Postprocessing                   |         6 |   0.00105s |      0.12% |
+| Refine mesh structure, part 1    |         1 |   0.00117s |      0.13% |
+| Refine mesh structure, part 2    |         1 |  0.000898s |       0.1% |
+| Setup dof systems                |         2 |   0.00706s |      0.81% |
+| Setup initial conditions         |         2 |    0.0138s |       1.6% |
+| Setup matrices                   |         2 |    0.0156s |       1.8% |
+| Solve Stokes system              |        15 |    0.0859s |       9.8% |
+| Solve composition system         |        33 |    0.0118s |       1.3% |
+| Solve temperature system         |         7 |   0.00209s |      0.24% |
++----------------------------------+-----------+------------+------------+
+
+
+WARNING: During this computation 2 nonlinear solver failures occurred!
+-- Total wallclock time elapsed including restarts: 1s
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&NewtonSolver=1&fastscape=1&sha=38e614096&src=code
+-----------------------------------------------------------------------------
