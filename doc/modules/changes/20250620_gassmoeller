@@ -1,0 +1,6 @@
+Fixed: A thin 3D spherical shell with an opening angle of 90 degrees
+(octant of a sphere) would crash, because of a bug of how boundary
+indicators were assigned. This bug is fixed in deal.II 9.7 and the
+fix was backported into ASPECT.
+<br>
+(Rene Gassmoeller, 2025/06/20)

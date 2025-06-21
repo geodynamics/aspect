@@ -1,0 +1,16 @@
+
+Number of active cells: 3 (on 1 levels)
+Number of degrees of freedom: 242 (171+14+57)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 9 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       0 m/year, 0 m/year
+     Temperature min/avg/max: -9.895e-17 K, 0.1672 K, 1 K
+
+Termination requested by criterion: end time
+
+
+
