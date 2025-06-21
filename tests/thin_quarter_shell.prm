@@ -1,0 +1,85 @@
+# This parameter file tests that we can create a very thin spherical shell
+# with correctly assigned boundary conditions.
+
+set Dimension                              = 3
+set Use years in output instead of seconds = true
+set End time                               = 0
+set Maximum first time step                    = 1e5
+set CFL number                                 = 0.8
+set Maximum time step                          = 1e5
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+
+subsection Geometry model
+  set Model name = spherical shell
+  subsection Spherical shell
+    set Outer radius = 1560800
+    # without the fix even 1460800 as inner radius fails
+    set Inner radius = 1555800
+    set Opening angle = 90
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Coordinate system = spherical
+    set Variable names = r, phi,theta
+    set Function expression = 0
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names =  function
+
+  subsection Function
+    set Coordinate system = spherical
+    set Function expression = x > 1557800 ? 1 : 0
+  end
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators = top, bottom
+end
+
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 0 #1.3
+  end
+end
+
+
+subsection Material model
+  set Model name = simpler
+  subsection Simpler model
+    set Reference density = 917
+    set Reference specific heat = 2110
+    set Reference temperature = 100
+    set Thermal conductivity = 0 #1.93
+    set Thermal expansion coefficient = 0 #1.6e-4
+    set Viscosity = 1e14
+  end
+end
+
+
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 0
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics
+end

@@ -447,6 +447,14 @@ namespace aspect
                                               0,
                                               true);
 
+#if !DEAL_II_VERSION_GTE(9,7,0)
+          if constexpr (dim == 3)
+            colorize_quarter_hyper_shell(coarse_grid,
+                                         Point<dim>(),
+                                         R0,
+                                         R1);
+#endif
+
           if (periodic)
             {
               // Tell p4est about the periodicity of the mesh.
