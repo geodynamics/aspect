@@ -600,12 +600,6 @@ list(PREPEND ASPECT_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/include ${CMAKE_CURRENT_SOU
 list(APPEND  ASPECT_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/contrib/catch)
 
 
-foreach(_source_file ${UNITY_SEPARATE_FILES})
-  set(_full_name "${CMAKE_SOURCE_DIR}/${_source_file}")
-  set_property(SOURCE ${_full_name} PROPERTY SKIP_UNITY_BUILD_INCLUSION TRUE)
-endforeach()
-
-
 # Set the name of the main targets in the form of
 # TARGET_EXE/LIB_DEBUG/RELEASE. Set TARGET_EXE as the debug build,
 # unless we have only release mode enabled.
