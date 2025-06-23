@@ -1350,7 +1350,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::compute_initial_velocity_boundary_constraints (AffineConstraints<double> &constraints)
+  void
+  Simulator<dim>::compute_initial_velocity_boundary_constraints (AffineConstraints<double> &constraints)
   {
 
     // This needs to happen after the periodic constraints are added:
@@ -1386,7 +1387,8 @@ namespace aspect
   }
 
   template <int dim>
-  void Simulator<dim>::compute_current_velocity_boundary_constraints (AffineConstraints<double> &constraints)
+  void
+  Simulator<dim>::compute_current_velocity_boundary_constraints (AffineConstraints<double> &constraints)
   {
     // set the current time and do the interpolation
     // for the prescribed velocity fields
@@ -1418,7 +1420,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::setup_dofs ()
+  void
+  Simulator<dim>::setup_dofs ()
   {
     signals.edit_parameters_pre_setup_dofs(*this, parameters);
 
@@ -1538,7 +1541,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::setup_introspection ()
+  void
+  Simulator<dim>::setup_introspection ()
   {
     // compute the various partitionings between processors and blocks
     // of vectors and matrices
@@ -1599,7 +1603,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::postprocess ()
+  void
+  Simulator<dim>::postprocess ()
   {
     TimerOutput::Scope timer (computing_timer, "Postprocessing");
     pcout << "   Postprocessing:" << std::endl;
@@ -1639,7 +1644,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::refine_mesh (const unsigned int max_grid_level)
+  void
+  Simulator<dim>::refine_mesh (const unsigned int max_grid_level)
   {
     parallel::distributed::SolutionTransfer<dim,LinearAlgebra::BlockVector>
     system_trans(dof_handler);
@@ -1850,8 +1856,7 @@ namespace aspect
 
   template <int dim>
   void
-  Simulator<dim>::
-  solve_timestep ()
+  Simulator<dim>::solve_timestep ()
   {
     // start any scheme with an extrapolated value from the previous
     // two time steps if those are available
@@ -2017,7 +2022,8 @@ namespace aspect
    * logic which function is called when.
    */
   template <int dim>
-  void Simulator<dim>::run ()
+  void
+  Simulator<dim>::run ()
   {
     CitationInfo::print_info_block(pcout);
 
@@ -2236,7 +2242,65 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template class Simulator<dim>;
+  \
+  template \
+  Simulator<dim>::Simulator (const MPI_Comm mpi_communicator_, \
+                             ParameterHandler &prm); \
+  \
+  template \
+  Simulator<dim>::~Simulator (); \
+  \
+  template \
+  void \
+  Simulator<dim>::start_timestep (); \
+  \
+  template \
+  void \
+  Simulator<dim>::compute_current_constraints (); \
+  \
+  template \
+  Table<2,DoFTools::Coupling> \
+  Simulator<dim>::setup_system_matrix_coupling () const; \
+  \
+  template \
+  void \
+  Simulator<dim>::setup_system_matrix (const std::vector<IndexSet> &system_partitioning); \
+  \
+  template \
+  void \
+  Simulator<dim>::setup_system_preconditioner (const std::vector<IndexSet> &system_partitioning); \
+  \
+  template \
+  void \
+  Simulator<dim>::compute_initial_velocity_boundary_constraints (AffineConstraints<double> &constraints); \
+  \
+  template \
+  void \
+  Simulator<dim>::compute_current_velocity_boundary_constraints (AffineConstraints<double> &constraints); \
+  \
+  template \
+  void \
+  Simulator<dim>::setup_dofs (); \
+  \
+  template \
+  void \
+  Simulator<dim>::setup_introspection (); \
+  \
+  template \
+  void \
+  Simulator<dim>::postprocess (); \
+  \
+  template \
+  void \
+  Simulator<dim>::refine_mesh (const unsigned int max_grid_level); \
+  \
+  template \
+  void \
+  Simulator<dim>::solve_timestep (); \
+  \
+  template \
+  void \
+  Simulator<dim>::run ();
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 
