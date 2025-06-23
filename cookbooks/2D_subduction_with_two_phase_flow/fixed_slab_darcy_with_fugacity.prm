@@ -17,7 +17,7 @@
 
 # Load the plugin library and the world builder file, which are both required for this cookbook
 set Additional shared libraries                = plugin/lib2D_subduction_with_two_phase_flow.so
-set World builder file                         = fixed_slab.wb
+set World builder file                         = $ASPECT_SOURCE_DIR/cookbooks/2D_subduction_with_two_phase_flow/fixed_slab.wb
 set Nonlinear solver scheme                    = iterated Advection and Stokes
 set Nonlinear solver failure strategy          = continue with next timestep
 set Output directory                           = output-fixed_slab_darcy_fluid_advection
