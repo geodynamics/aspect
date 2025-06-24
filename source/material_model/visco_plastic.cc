@@ -294,6 +294,9 @@ namespace aspect
                                                                                 isostrain_viscosities.dilation_rhs_terms,
                                                                                 MaterialUtilities::arithmetic);
 
+              // When plastic yielding occurs (RHS - LHS * p > 0$), the LHS and RHS terms are set to
+              // the values calculated by the Drucker Prager model; otherwise, the LHS and RHS terms
+              // should cancel out (RHS = LHS * p) so as to satisfy the loading-unloading conditions.
               plastic_dilation->dilation_lhs_term[i] = dilation_lhs_term;
               if (dilation_rhs_term - dilation_lhs_term * in.pressure[i] > 0)
                 plastic_dilation->dilation_rhs_term[i] = dilation_rhs_term;
