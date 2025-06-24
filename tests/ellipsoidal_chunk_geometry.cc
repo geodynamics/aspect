@@ -66,7 +66,7 @@ int f()
   test_points.push_back(Point<3> (25000.0,25000.0,50000.0));
 
 
-  InitialTopographyModel::ZeroTopography<dim> topography;
+  std::shared_ptr<InitialTopographyModel::ZeroTopography<dim>> topography = std::make_shared<InitialTopographyModel::ZeroTopography<dim>>();
   {
     std::cout << "Simple sphere test" << std::endl;
     GeometryModel::internal::EllipsoidalChunkGeometry<dim> ellipsoidal_manifold(topography,

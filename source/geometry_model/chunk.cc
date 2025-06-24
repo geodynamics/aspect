@@ -38,12 +38,12 @@ namespace aspect
     namespace internal
     {
       template <int dim>
-      ChunkGeometry<dim>::ChunkGeometry(const InitialTopographyModel::Interface<dim> &topo,
+      ChunkGeometry<dim>::ChunkGeometry(const std::shared_ptr<const InitialTopographyModel::Interface<dim>> &topo,
                                         const double min_longitude,
                                         const double min_radius,
                                         const double max_depth)
         :
-        topo (&topo),
+        topo (topo),
         point1_lon(min_longitude),
         inner_radius(min_radius),
         max_depth(max_depth)
@@ -70,9 +70,9 @@ namespace aspect
         // other initial topography models. Hence only AsciiData
         // and ZeroTopography are allowed for now in Chunk<dim>::initialize().
         Tensor<1,dim-1> topo_derivatives;
-        if (const InitialTopographyModel::AsciiData<dim> *itm = dynamic_cast<const InitialTopographyModel::AsciiData<dim> *> (topo))
+        if (const InitialTopographyModel::AsciiData<dim> *itm = dynamic_cast<const InitialTopographyModel::AsciiData<dim> *> (topo.get()))
           topo_derivatives = itm->vector_gradient(push_forward_sphere(chart_point));
-        else if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim> *> (topo))
+        else if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim> *> (topo.get()))
           {
             // Gradient is zero (which it is already initialized to from before)
           }
@@ -184,7 +184,7 @@ namespace aspect
       push_forward(const Point<dim> &r_phi_theta) const
       {
         // Only take into account topography when we're not using the ZeroTopography plugin
-        if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(topo) != nullptr)
+        if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(topo.get()) != nullptr)
           return push_forward_sphere(r_phi_theta);
         else
           return push_forward_sphere(push_forward_topo(r_phi_theta));
@@ -199,7 +199,7 @@ namespace aspect
       pull_back(const Point<dim> &x_y_z) const
       {
         // Only take into account topography when we're not using the ZeroTopography plugin
-        if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(topo) != nullptr)
+        if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(topo.get()) != nullptr)
           return pull_back_sphere(x_y_z);
         else
           return pull_back_topo(pull_back_sphere(x_y_z));
@@ -441,7 +441,7 @@ namespace aspect
       ChunkGeometry<dim>::
       topography_for_point(const Point<dim> &x_y_z) const
       {
-        if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(topo) != nullptr)
+        if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(topo.get()) != nullptr)
           return 0;
         else
           {
@@ -473,7 +473,7 @@ namespace aspect
                   Plugins::plugin_type_matches<const InitialTopographyModel::AsciiData<dim>>(this->get_initial_topography_model()),
                   ExcMessage("At the moment, only the Zero or AsciiData initial topography model can be used with the Chunk geometry model."));
 
-      manifold = std::make_unique<internal::ChunkGeometry<dim>>(this->get_initial_topography_model(),
+      manifold = std::make_unique<internal::ChunkGeometry<dim>>(this->get_initial_topography_model_pointer(),
                                                                  point1[1],
                                                                  point1[0],
                                                                  point2[0]-point1[0]);

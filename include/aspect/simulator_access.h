@@ -543,33 +543,41 @@ namespace aspect
       /** @{ */
 
       /**
-       * Return a pointer to the material model to access functions like
+       * Return a reference to the material model to access functions like
        * density().
        */
       const MaterialModel::Interface<dim> &
       get_material_model () const;
 
       /**
-       * Return a pointer to the gravity model description.
+       * Return a reference to the gravity model description.
        */
       const GravityModel::Interface<dim> &
       get_gravity_model () const;
 
       /**
-       * Return a pointer to the initial topography model.
+       * Return a reference to the initial topography model.
        */
       const InitialTopographyModel::Interface<dim> &
       get_initial_topography_model () const;
 
       /**
-       * Return a pointer to the geometry model.
+       * Return a shared pointer to the initial topography model.
+       * This function is useful if the calling function needs to
+       * store a pointer to the initial topography model.
+       */
+      const std::shared_ptr<const InitialTopographyModel::Interface<dim>>
+      get_initial_topography_model_pointer () const;
+
+      /**
+       * Return a reference to the geometry model.
        */
       const GeometryModel::Interface<dim> &
       get_geometry_model () const;
 
 
       /**
-       * Return a pointer to the object that describes the adiabatic
+       * Return a reference to the object that describes the adiabatic
        * conditions.
        */
       const AdiabaticConditions::Interface<dim> &

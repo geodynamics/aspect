@@ -1805,7 +1805,7 @@ namespace aspect
        * @name Variables that describe the physical setup of the problem
        * @{
        */
-      const std::unique_ptr<InitialTopographyModel::Interface<dim>>          initial_topography_model;
+      const std::shared_ptr<InitialTopographyModel::Interface<dim>>          initial_topography_model;
       const std::unique_ptr<GeometryModel::Interface<dim>>                   geometry_model;
       const IntermediaryConstructorAction                                    post_geometry_model_creation_action;
       const std::unique_ptr<MaterialModel::Interface<dim>>                   material_model;

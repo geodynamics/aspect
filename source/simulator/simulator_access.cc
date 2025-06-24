@@ -544,6 +544,7 @@ namespace aspect
   }
 
 
+
   template <int dim>
   const InitialTopographyModel::Interface<dim> &
   SimulatorAccess<dim>::get_initial_topography_model () const
@@ -552,6 +553,18 @@ namespace aspect
             ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->initial_topography_model.get();
   }
+
+
+
+  template <int dim>
+  const std::shared_ptr<const InitialTopographyModel::Interface<dim>>
+  SimulatorAccess<dim>::get_initial_topography_model_pointer () const
+  {
+    Assert (simulator->initial_topography_model.get() != nullptr,
+            ExcMessage("You can not call this function if no such model is actually available."));
+    return simulator->initial_topography_model;
+  }
+
 
 
   template <int dim>

@@ -69,14 +69,14 @@ namespace aspect
 
       // Constructor
       template <int dim>
-      EllipsoidalChunkGeometry<dim>::EllipsoidalChunkGeometry(const InitialTopographyModel::Interface<dim> &topo,
+      EllipsoidalChunkGeometry<dim>::EllipsoidalChunkGeometry(const std::shared_ptr<const InitialTopographyModel::Interface<dim>> &topo,
                                                               const double para_semi_major_axis_a,
                                                               const double para_eccentricity,
                                                               const double para_semi_minor_axis_b,
                                                               const double para_bottom_depth,
                                                               const std::vector<Point<2>> &para_corners)
         :
-        topography (&topo),
+        topography (topo),
         semi_major_axis_a (para_semi_major_axis_a),
         eccentricity (para_eccentricity),
         semi_minor_axis_b (para_semi_minor_axis_b),
@@ -219,7 +219,7 @@ namespace aspect
                   Plugins::plugin_type_matches<const InitialTopographyModel::PrmPolygon<dim>>(this->get_initial_topography_model()),
                   ExcMessage("At the moment, only the Zero or Prm polygon initial topography model can be used with the Ellipsoidal Chunk geometry model."));
 
-      manifold = std::make_unique<internal::EllipsoidalChunkGeometry<dim>>(this->get_initial_topography_model(),
+      manifold = std::make_unique<internal::EllipsoidalChunkGeometry<dim>>(this->get_initial_topography_model_pointer(),
                                                                             semi_major_axis_a,
                                                                             eccentricity,
                                                                             semi_minor_axis_b,

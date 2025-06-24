@@ -55,7 +55,7 @@ namespace aspect
           /**
            * Constructor
            */
-          ChunkGeometry(const InitialTopographyModel::Interface<dim> &topography,
+          ChunkGeometry(const std::shared_ptr<const InitialTopographyModel::Interface<dim>> &topography,
                         const double min_longitude,
                         const double min_radius,
                         const double max_depth);
@@ -128,7 +128,7 @@ namespace aspect
           /**
            * A pointer to the topography model.
            */
-          const InitialTopographyModel::Interface<dim> *topo;
+          const std::shared_ptr<const InitialTopographyModel::Interface<dim>> topo;
 
           /**
            * The minimum longitude of the domain.
