@@ -39,14 +39,11 @@ namespace aspect
     void
     Box<dim>::initialize ()
     {
-      // Get pointer to initial topography model
-      topo_model = const_cast<InitialTopographyModel::Interface<dim>*>(&this->get_initial_topography_model());
-
       // Check that initial topography is required.
       // If so, connect the initial topography function
       // to the right signals: It should be applied after
       // the final initial adaptive refinement and after a restart.
-      if (Plugins::plugin_type_matches<InitialTopographyModel::ZeroTopography<dim>>(*topo_model) == false)
+      if (Plugins::plugin_type_matches<InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()) == false)
         {
           this->get_signals().pre_set_initial_state.connect(
             [&](typename parallel::distributed::Triangulation<dim> &tria)
@@ -118,7 +115,7 @@ namespace aspect
         surface_point[d] = x_y_z[d];
 
       // Get the surface topography at this point
-      const double topo = topo_model->value(surface_point);
+      const double topo = this->get_initial_topography_model().value(surface_point);
 
       // Compute the displacement of the z coordinate
       const double ztopo = (x_y_z[dim-1] - box_origin[dim-1]) / extents[dim-1] * topo;
@@ -262,7 +259,7 @@ namespace aspect
         surface_point[d] = position[d];
 
       // Get the surface topography at this point
-      const double topo = topo_model->value(surface_point);
+      const double topo = this->get_initial_topography_model().value(surface_point);
 
       const double d = extents[dim-1] + topo - (position(dim-1)-box_origin[dim-1]);
       return std::min (std::max (d, 0.), maximal_depth());
@@ -294,7 +291,7 @@ namespace aspect
       for (unsigned int d=0; d<dim-1; ++d)
         surface_point[d] = p[d];
 
-      const double topo = topo_model->value(surface_point);
+      const double topo = this->get_initial_topography_model().value(surface_point);
       p[dim-1] = extents[dim-1]+box_origin[dim-1]-depth+topo;
 
       return p;
@@ -305,7 +302,7 @@ namespace aspect
     double
     Box<dim>::maximal_depth() const
     {
-      return extents[dim-1] + topo_model->max_topography();
+      return extents[dim-1] + this->get_initial_topography_model().max_topography();
     }
 
     template <int dim>
@@ -354,7 +351,7 @@ namespace aspect
                 surface_point[d] = point[d];
 
               // Get the surface topography at this point
-              const double topo = topo_model->value(surface_point);
+              const double topo = this->get_initial_topography_model().value(surface_point);
               max_point[dim-1] += topo;
             }
 

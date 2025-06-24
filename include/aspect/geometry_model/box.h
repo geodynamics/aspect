@@ -222,11 +222,6 @@ namespace aspect
 
       private:
         /**
-         * A pointer to the initial topography model.
-         */
-        InitialTopographyModel::Interface<dim> *topo_model;
-
-        /**
          * Extent of the box in x-, y-, and z-direction (in 3d).
          */
         Point<dim> extents;
