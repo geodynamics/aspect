@@ -1,5 +1,5 @@
 
-Loading shared library <./libsol_cx_4_gmg.debug.so>
+Loading shared library <./libsol_cx_4_gmg_no_avg.debug.so>
 
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
