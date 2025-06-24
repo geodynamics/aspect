@@ -51,23 +51,23 @@ namespace aspect
           this->get_signals().pre_set_initial_state.connect(
             [&](typename parallel::distributed::Triangulation<dim> &tria)
           {
-            this->topography(tria);
+            this->add_topography_to_mesh(tria);
           }
           );
           this->get_signals().post_resume_load_user_data.connect(
             [&](typename parallel::distributed::Triangulation<dim> &tria)
           {
-            this->topography(tria);
+            this->add_topography_to_mesh(tria);
           }
           );
         }
     }
 
 
+
     template <int dim>
     void
-    Box<dim>::
-    create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
+    Box<dim>::create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
     {
       const std::vector<unsigned int> rep_vec(repetitions.begin(), repetitions.end());
       GridGenerator::subdivided_hyper_rectangle (coarse_grid,
@@ -89,17 +89,18 @@ namespace aspect
         coarse_grid.add_periodicity (periodicity_vector);
     }
 
+
+
     template <int dim>
     void
-    Box<dim>::
-    topography (typename parallel::distributed::Triangulation<dim> &grid) const
+    Box<dim>::add_topography_to_mesh (typename parallel::distributed::Triangulation<dim> &grid) const
     {
       // Here we provide GridTools with the function to displace vertices
       // in the vertical direction by an amount specified by the initial topography model
       GridTools::transform(
         [&](const Point<dim> &p) -> Point<dim>
       {
-        return this->add_topography(p);
+        return this->add_topography_to_point(p);
       },
       grid);
 
@@ -107,10 +108,10 @@ namespace aspect
     }
 
 
+
     template <int dim>
     Point<dim>
-    Box<dim>::
-    add_topography (const Point<dim> &x_y_z) const
+    Box<dim>::add_topography_to_point (const Point<dim> &x_y_z) const
     {
       // Get the surface x (,y) point
       Point<dim-1> surface_point;
@@ -131,10 +132,10 @@ namespace aspect
     }
 
 
+
     template <int dim>
     std::set<types::boundary_id>
-    Box<dim>::
-    get_used_boundary_indicators () const
+    Box<dim>::get_used_boundary_indicators () const
     {
       // boundary indicators are zero through 2*dim-1
       std::set<types::boundary_id> s;
@@ -144,10 +145,10 @@ namespace aspect
     }
 
 
+
     template <int dim>
     std::map<std::string,types::boundary_id>
-    Box<dim>::
-    get_symbolic_boundary_names_map () const
+    Box<dim>::get_symbolic_boundary_names_map () const
     {
       switch (dim)
         {
@@ -182,10 +183,10 @@ namespace aspect
     }
 
 
+
     template <int dim>
     std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>
-    Box<dim>::
-    get_periodic_boundary_pairs () const
+    Box<dim>::get_periodic_boundary_pairs () const
     {
       std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>> periodic_boundaries;
       for ( unsigned int i=0; i<dim; ++i)
@@ -229,12 +230,16 @@ namespace aspect
       return extents;
     }
 
+
+
     template <int dim>
     const std::array<unsigned int, dim> &
     Box<dim>::get_repetitions () const
     {
       return repetitions;
     }
+
+
 
     template <int dim>
     Point<dim>
@@ -243,13 +248,15 @@ namespace aspect
       return box_origin;
     }
 
+
+
     template <int dim>
     double
-    Box<dim>::
-    length_scale () const
+    Box<dim>::length_scale () const
     {
       return 0.01*extents[0];
     }
+
 
 
     template <int dim>
@@ -269,12 +276,14 @@ namespace aspect
     }
 
 
+
     template <int dim>
     double
     Box<dim>::height_above_reference_surface(const Point<dim> &position) const
     {
       return (position(dim-1)-box_origin[dim-1]) - extents[dim-1];
     }
+
 
 
     template <int dim>
@@ -301,6 +310,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     double
     Box<dim>::maximal_depth() const
@@ -308,12 +318,16 @@ namespace aspect
       return extents[dim-1] + topo_model->max_topography();
     }
 
+
+
     template <int dim>
     bool
     Box<dim>::has_curved_elements() const
     {
       return false;
     }
+
+
 
     template <int dim>
     bool
@@ -368,6 +382,8 @@ namespace aspect
         }
     }
 
+
+
     template <int dim>
     std::array<double,dim>
     Box<dim>::cartesian_to_natural_coordinates(const Point<dim> &position_point) const
@@ -380,12 +396,14 @@ namespace aspect
     }
 
 
+
     template <int dim>
     aspect::Utilities::Coordinates::CoordinateSystem
     Box<dim>::natural_coordinate_system() const
     {
       return aspect::Utilities::Coordinates::CoordinateSystem::cartesian;
     }
+
 
 
     template <int dim>
@@ -400,10 +418,10 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void
-    Box<dim>::
-    declare_parameters (ParameterHandler &prm)
+    Box<dim>::declare_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Geometry model");
       {
@@ -450,7 +468,6 @@ namespace aspect
           prm.declare_entry ("Z periodic", "false",
                              Patterns::Bool (),
                              "Whether the box should be periodic in Z direction");
-
         }
         prm.leave_subsection();
       }

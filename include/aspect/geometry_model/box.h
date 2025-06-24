@@ -46,18 +46,6 @@ namespace aspect
         void initialize () override;
 
         /**
-         * Add initial topography to the mesh.
-         */
-        void topography (typename parallel::distributed::Triangulation<dim> &grid) const;
-
-        /**
-         * Relocate the vertical coordinate of the given point based on
-         * the topography at the surface specified by the initial topography
-         * model.
-         */
-        Point<dim> add_topography (const Point<dim> &x_y_z) const;
-
-        /**
          * Generate a coarse mesh for the geometry described by this class.
          */
         void create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const override;
@@ -90,7 +78,6 @@ namespace aspect
          * We return 1/100th of the diameter of the box.
          */
         double length_scale () const override;
-
 
         /**
          * Return the depth that corresponds to the given
@@ -221,6 +208,19 @@ namespace aspect
         parse_parameters (ParameterHandler &prm) override;
 
       private:
+
+        /**
+         * Add initial topography to the mesh.
+         */
+        void add_topography_to_mesh (typename parallel::distributed::Triangulation<dim> &grid) const;
+
+        /**
+         * Relocate the vertical coordinate of the given point based on
+         * the topography at the surface specified by the initial topography
+         * model.
+         */
+        Point<dim> add_topography_to_point (const Point<dim> &x_y_z) const;
+
         /**
          * A pointer to the initial topography model.
          */
