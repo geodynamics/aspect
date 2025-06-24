@@ -278,6 +278,28 @@ if(ASPECT_WITH_FASTSCAPE)
 endif()
 
 
+# Fastscapelib (C++)
+set(ASPECT_WITH_FASTSCAPELIB OFF CACHE BOOL "Whether the user wants to compile ASPECT with the landscape evolution C++ code Fastscape(lib), or not.")
+if(ASPECT_WITH_FASTSCAPELIB)
+  find_package(fastscapelib CONFIG)
+  if(${fastscapelib_FOUND})
+    set(FS_WITH_HEALPIX OFF CACHE BOOL "Turn off Fastscapelib support of Healpix grid" FORCE)
+    message(STATUS "Using ASPECT_WITH_FASTSCAPELIB = '${ASPECT_WITH_FASTSCAPELIB}'")
+    message(STATUS "  fastscapelib_INCLUDE_DIR: ${fastscapelib_INCLUDE_DIRS}")
+    message(STATUS "  fastscapelib_VERSION: ${fastscapelib_VERSION}")
+    # fastscapelib dependencies
+    find_package(xtensor REQUIRED)
+    message(STATUS "  xtensor_INCLUDE_DIR: ${xtensor_INCLUDE_DIRS}")
+    message(STATUS "  xtensor_VERSION: ${xtensor_VERSION}")
+  else()
+    message(STATUS "Fastscapelib not found. Disabling ASPECT_WITH_FASTSCAPELIB. You can specify a hint to your installation directory with fastscapelib_DIR.")
+    set(ASPECT_WITH_FASTSCAPELIB OFF CACHE BOOL "" FORCE)
+  endif()
+else()
+  message(STATUS "Using ASPECT_WITH_FASTSCAPELIB = 'OFF'")
+endif()
+
+
 # NetCDF (c including parallel)
 set(ASPECT_WITH_NETCDF ON CACHE BOOL "Check if the user wants to compile ASPECT with the NetCDF libraries.")
 
@@ -408,6 +430,7 @@ if(ASPECT_WITH_WORLD_BUILDER)
 endif()
 message(STATUS "")
 
+#include "datatypes.h"
 
 #
 # Other stuff about external tools and how we interact with the system:
@@ -772,6 +795,16 @@ if (FASTSCAPE_LIB_NAME)
       target_link_libraries(${_T} gfortran)
     endforeach()
   endif()
+endif()
+
+# Fastscapelib
+if (${fastscapelib_FOUND})
+  message(STATUS "Linking ASPECT against Fastscapelib (header-only)")
+  foreach(_T ${TARGET_EXECUTABLES})
+    target_include_directories(${_T} PRIVATE ${fastscapelib_INCLUDE_DIRS})
+    target_include_directories(${_T} PRIVATE ${xtensor_INCLUDE_DIRS})
+    target_include_directories(${_T} PRIVATE ${xtl_INCLUDE_DIRS})
+  endforeach()
 endif()
 
 # NetCDF
