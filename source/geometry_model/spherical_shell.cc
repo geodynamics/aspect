@@ -54,12 +54,12 @@ namespace aspect
     {
       template <int dim>
       SphericalManifoldWithTopography<dim>::
-      SphericalManifoldWithTopography(const InitialTopographyModel::Interface<dim> &topography,
+      SphericalManifoldWithTopography(const std::shared_ptr<const InitialTopographyModel::Interface<dim>> topography,
                                       const double inner_radius,
                                       const double outer_radius)
         :
         SphericalManifold<dim>(Point<dim>()),
-        topo (&topography),
+        topo (topography),
         R0 (inner_radius),
         R1 (outer_radius)
       {}
@@ -79,7 +79,7 @@ namespace aspect
       SphericalManifoldWithTopography<dim>::
       topography_for_point(const Point<dim> &x_y_z) const
       {
-        if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(topo) != nullptr)
+        if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(topo.get()) != nullptr)
           return 0;
         else
           {
@@ -284,7 +284,7 @@ namespace aspect
     void
     SphericalShell<dim>::initialize ()
     {
-      manifold = std::make_unique<internal::SphericalManifoldWithTopography<dim>>(this->get_initial_topography_model(),
+      manifold = std::make_unique<internal::SphericalManifoldWithTopography<dim>>(this->get_initial_topography_model_pointer(),
                                                                                    R0, R1);
     }
 

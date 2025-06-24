@@ -176,8 +176,7 @@ namespace aspect
                 surface_point[d] = spherical_representative_point[d];
 
             }
-          const InitialTopographyModel::Interface<dim> *topo_model = const_cast<InitialTopographyModel::Interface<dim>*>(&this->get_initial_topography_model());
-          topo = topo_model->value(surface_point);
+          topo = this->get_initial_topography_model().value(surface_point);
         }
 
       // The spacing of the depth profile at the location of the representative point.

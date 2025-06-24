@@ -42,7 +42,7 @@ namespace aspect
           /**
            * Constructor.
            */
-          SphericalManifoldWithTopography(const InitialTopographyModel::Interface<dim> &topography,
+          SphericalManifoldWithTopography(const std::shared_ptr<const InitialTopographyModel::Interface<dim>> topography,
                                           const double inner_radius,
                                           const double outer_radius);
 
@@ -157,7 +157,7 @@ namespace aspect
           /**
            * A pointer to the topography model.
            */
-          const InitialTopographyModel::Interface<dim> *topo;
+          const std::shared_ptr<const InitialTopographyModel::Interface<dim>> topo;
 
           /**
            * Inner and outer radii of the spherical shell.

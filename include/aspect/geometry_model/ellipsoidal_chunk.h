@@ -44,7 +44,7 @@ namespace aspect
           /**
            * Constructor
            */
-          EllipsoidalChunkGeometry(const InitialTopographyModel::Interface<dim> &topography,
+          EllipsoidalChunkGeometry(const std::shared_ptr<const InitialTopographyModel::Interface<dim>> &topography,
                                    const double para_semi_major_axis_a,
                                    const double para_eccentricity,
                                    const double para_semi_minor_axis_b,
@@ -103,7 +103,7 @@ namespace aspect
           /**
            * A pointer to the topography model.
            */
-          const InitialTopographyModel::Interface<dim> *topography;
+          const std::shared_ptr<const InitialTopographyModel::Interface<dim>> topography;
 
         private:
           /**

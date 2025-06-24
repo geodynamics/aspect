@@ -43,7 +43,7 @@ namespace aspect
                   Plugins::plugin_type_matches<const InitialTopographyModel::AsciiData<dim>>(this->get_initial_topography_model()),
                   ExcMessage("At the moment, only the Zero or AsciiData initial topography model can be used with the TwoMergedChunks geometry model."));
 
-      manifold = std::make_unique<internal::ChunkGeometry<dim>>(this->get_initial_topography_model(),
+      manifold = std::make_unique<internal::ChunkGeometry<dim>>(this->get_initial_topography_model_pointer(),
                                                                  point1[1],
                                                                  point1[0],
                                                                  point2[0]-point1[0]);
