@@ -429,4 +429,21 @@ namespace aspect
 
 #endif
 
+// deal.II versions up to 9.6 had a bug for very thin shell geometries.
+// This function contains a fixed version.
+#if !DEAL_II_VERSION_GTE(9,7,0)
+
+#include <deal.II/grid/grid_generator.h>
+
+namespace aspect
+{
+  template <int dim>
+  void
+  colorize_quarter_hyper_shell(Triangulation<dim>  &tria,
+                               const Point<dim>   &center,
+                               const double      inner_radius,
+                               const double      outer_radius);
+}
+#endif
+
 #endif

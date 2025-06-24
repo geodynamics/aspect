@@ -447,6 +447,17 @@ namespace aspect
                                               0,
                                               true);
 
+          // there was a bug with boundary colorization of thin shells
+          // before deal.II 9.7. Use a fixed version of that function,
+          // for deal.II versions that need it.
+#if !DEAL_II_VERSION_GTE(9,7,0)
+          if (dim == 3)
+            colorize_quarter_hyper_shell(coarse_grid,
+                                         Point<dim>(),
+                                         R0,
+                                         R1);
+#endif
+
           if (periodic)
             {
               // Tell p4est about the periodicity of the mesh.
