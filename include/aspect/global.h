@@ -328,14 +328,4 @@ namespace aspect
 template <class Stream>
 void print_aspect_header(Stream &stream);
 
-/**
- * A macro that is used in instantiating the ASPECT classes and functions for
- * both 2d and 3d. Call this macro with the name of another macro that when
- * called with a single integer argument instantiates the respective classes
- * in the given space dimension.
- */
-#define ASPECT_INSTANTIATE(INSTANTIATIONS) \
-  INSTANTIATIONS(2) \
-  INSTANTIATIONS(3)
-
 #endif
