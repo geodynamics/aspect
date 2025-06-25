@@ -32,6 +32,10 @@
 
 #include <cstring>
 
+#ifdef DEAL_II_WITH_MPI
+#  include <mpi.h>
+#endif
+
 
 
 template <class Stream>

@@ -31,6 +31,10 @@
 
 #include <boost/core/demangle.hpp>
 
+#ifdef DEAL_II_WITH_MPI
+#  include <mpi.h>
+#endif
+
 #include <tuple>
 #include <string>
 #include <list>
