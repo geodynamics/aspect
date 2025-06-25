@@ -26,6 +26,7 @@
 #include <aspect/simulator/solver/matrix_free_operators.h>
 
 #include <deal.II/matrix_free/matrix_free.h>
+#include <deal.II/matrix_free/stokes_matrix_free.h>
 #include <deal.II/matrix_free/operators.h>
 #include <deal.II/matrix_free/fe_evaluation.h>
 
