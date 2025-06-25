@@ -24,39 +24,45 @@
 #include <string>
 #include <iostream>
 
-/**
- * A namespace to provide information to the user about stuff to cite.
- */
-namespace CitationInfo
+
+namespace aspect
 {
   /**
-   * Get the URL in the format "citing.html?(parameters)" that describes how to
-   * cite ASPECT based on the current model you are running.
+   * A namespace to provide information to the user about stuff to cite.
    */
-  const std::string get_url_part ();
-
-  /**
-   * Add the paper identified by the given id to the currently used list of
-   * papers. See citing.html for the list of ids. For specific features inside
-   * ASPECT that have associated publications, call this function if the
-   * feature is used in the current computation. For example, if the
-   * computation requires melt migration, call <tt>add("melt")</tt>.
-   */
-  void add (const std::string &id);
-
-  /**
-   * Print the info text containing the citation info into the given
-   * stream.
-   */
-  template <class Stream>
-  void print_info_block (Stream &stream)
+  namespace CitationInfo
   {
-    stream << "-----------------------------------------------------------------------------\n"
-           << "-- For information on how to cite ASPECT, see:\n"
-           << "--   https://aspect.geodynamics.org/" << get_url_part() << "\n"
-           << "-----------------------------------------------------------------------------"
-           << std::endl;
+    /**
+     * Get the URL in the format "citing.html?(parameters)" that describes how to
+     * cite ASPECT based on the current model you are running.
+     */
+    const std::string get_url_part ();
+
+    /**
+     * Add the paper identified by the given id to the currently used list of
+     * papers. See citing.html for the list of ids. For specific features inside
+     * ASPECT that have associated publications, call this function if the
+     * feature is used in the current computation. For example, if the
+     * computation requires melt migration, call <tt>add("melt")</tt>.
+     */
+    void add (const std::string &id);
+
+    /**
+     * Print the info text containing the citation info into the given
+     * stream.
+     */
+    template <class Stream>
+    void print_info_block (Stream &stream)
+    {
+      stream << "-----------------------------------------------------------------------------\n"
+             << "-- For information on how to cite ASPECT, see:\n"
+             << "--   https://aspect.geodynamics.org/" << get_url_part() << "\n"
+             << "-----------------------------------------------------------------------------"
+             << std::endl;
+    }
   }
+
 }
+
 
 #endif

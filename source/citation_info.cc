@@ -24,32 +24,35 @@
 #include <iostream>
 #include <set>
 
-namespace CitationInfo
+namespace aspect
 {
-  std::set<std::string> citation_ids;
-
-  const std::string get_url_part ()
+  namespace CitationInfo
   {
-    // version:
-    std::string url = "citing.html?ver=";
-    url += ASPECT_PACKAGE_VERSION;
+    std::set<std::string> citation_ids;
 
-    // all ids:
-    for (const auto &id : citation_ids)
-      url += "&" + id + "=1";
+    const std::string get_url_part ()
+    {
+      // version:
+      std::string url = "citing.html?ver=";
+      url += ASPECT_PACKAGE_VERSION;
 
-    // sha1:
-    url += "&sha=";
-    url += ASPECT_GIT_SHORTREV;
+      // all ids:
+      for (const auto &id : citation_ids)
+        url += "&" + id + "=1";
 
-    // src:
-    url += "&src=code";
+      // sha1:
+      url += "&sha=";
+      url += ASPECT_GIT_SHORTREV;
 
-    return url;
-  }
+      // src:
+      url += "&src=code";
 
-  void add (const std::string &id)
-  {
-    citation_ids.insert(id);
+      return url;
+    }
+
+    void add (const std::string &id)
+    {
+      citation_ids.insert(id);
+    }
   }
 }
