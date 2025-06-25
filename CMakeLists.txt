@@ -612,6 +612,8 @@ file(GLOB_RECURSE ASPECT_SOURCE_FILES_CC CONFIGURE_DEPENDS "source/*.cc")
 list(REMOVE_ITEM  ASPECT_SOURCE_FILES_CC ${CMAKE_CURRENT_SOURCE_DIR}/source/main.cc)
 file(GLOB_RECURSE ASPECT_SOURCE_FILES_H CONFIGURE_DEPENDS  "include/*.h")
 file(GLOB_RECURSE ASPECT_UNIT_TEST_FILES CONFIGURE_DEPENDS "unit_tests/*.cc" "contrib/catch/catch.hpp")
+list(REMOVE_ITEM  ASPECT_SOURCE_FILES_CC ${CMAKE_CURRENT_SOURCE_DIR}/source/mesh_deformation/fastscape.cc)
+list(REMOVE_ITEM  ASPECT_SOURCE_FILES_H  ${CMAKE_CURRENT_SOURCE_DIR}/include/aspect/mesh_deformation/fastscape.h)
 set(ASPECT_MAIN_FILE "source/main.cc")
 
 # Create the combined set of source files that make up the project
@@ -746,6 +748,196 @@ if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
   target_compile_definitions(${TARGET_EXE_DEBUG} PUBLIC "_GLIBCXX_ASSERTIONS")
 endif()
 
+
+
+# ##############################################################################
+# Set up a module-based build
+# ##############################################################################
+
+  message(STATUS "Setting up a C++20 module")
+
+  # The scripts used below are all written in Python. Ensure that we
+  # have it available.
+  find_package (Python3 COMPONENTS Interpreter)
+  if (NOT Python3_FOUND)
+    message(FATAL_ERROR
+            "To build a C++20 module, you need to have the Python3 "
+            "interpreter available")
+  endif()
+
+  #
+  # Next, we need to set up interface module partitions for each of deal.II's
+  # header files.
+  #
+  set(_interface_module_partition_units)
+  foreach (_header_file ${ASPECT_SOURCE_FILES_H})
+    # We loop over all files that already exist in the include/
+    # directory, which excludes config.h (only created in the build
+    # directory) but includes exception_macros.h. The latter file only
+    # #defines preprocessor stuff, and so we do not want to build a
+    # module out of it. So exclude it.
+    if (${_header_file} STREQUAL "${CMAKE_SOURCE_DIR}/include/aspect/config.h")
+      continue()
+    endif()
+
+    # From the name of the header, construct the name of an interface
+    # module partition file. These files, by convention, have suffix
+    # .ccm -- in fact, some compilers seem to require that the suffix is
+    # .ccm or .cppm or something else that ends in 'm':
+    string(REGEX REPLACE
+             ".*/aspect/(.*)\.h$"
+             "${CMAKE_CURRENT_BINARY_DIR}/module/interface_module_partitions/\\1.ccm"
+           _module_file ${_header_file})
+
+    # Create an interface module partition file from the header file:
+    add_custom_command(
+      OUTPUT ${_module_file}
+      DEPENDS
+        "${_header_file}"
+        "${CMAKE_CURRENT_SOURCE_DIR}/module/utilities/convert_header_file_to_interface_module_unit.py"
+        "${CMAKE_CURRENT_SOURCE_DIR}/module/utilities/convert_to_module_units_common.py"
+
+      COMMAND ${Python3_EXECUTABLE}
+      ARGS "${CMAKE_CURRENT_SOURCE_DIR}/module/utilities/convert_header_file_to_interface_module_unit.py"
+           "${_header_file}"
+           "${_module_file}"
+      )
+
+    # Then add the created file to the list of interface units:
+    list(APPEND _interface_module_partition_units "${_module_file}")
+  endforeach()
+
+  #
+  # Modules cannot export macros. So we need to still provide a way to
+  # export the macros that are part of deal.II, which includes
+  # specifically the configuration stuff in config.h and the exception
+  # stuff in exception_macros.h, along with macros we have cloned from
+  # external libraries.
+  #
+  # To make things easier for users, we combine all of these into a
+  # file deal.II/macros.h that we can rely on in all of the module
+  # files. Define how to build this file first, so that we can let
+  # other things depend on it later on.
+  #
+  # (We will later also mark this file as a PUBLIC header file of the
+  # module libraries, so that it will be installed.)
+  #
+  set(_aspect_macros_header "${CMAKE_CURRENT_BINARY_DIR}/module/include/aspect/macros.h")
+  file(GLOB_RECURSE ASPECT_INTERFACE_DECLARATION_FILES  "include/aspect/*/interface.h")
+  list(APPEND ASPECT_INTERFACE_DECLARATION_FILES "${CMAKE_SOURCE_DIR}/include/aspect/postprocess/visualization.h")
+  list(APPEND ASPECT_INTERFACE_DECLARATION_FILES "${CMAKE_SOURCE_DIR}/include/aspect/simulator_signals.h")
+  add_custom_command(
+    OUTPUT ${_aspect_macros_header}
+    DEPENDS
+      ${ASPECT_INTERFACE_DECLARATION_FILES}
+      "${CMAKE_CURRENT_SOURCE_DIR}/module/utilities/extract_plugin_registration_macros.py"
+    COMMAND  ${Python3_EXECUTABLE}
+    ARGS     "${CMAKE_CURRENT_SOURCE_DIR}/module/utilities/extract_plugin_registration_macros.py"
+             ${ASPECT_INTERFACE_DECLARATION_FILES}
+             ">"
+             "${_aspect_macros_header}"
+    )
+  add_custom_target(build_macros_header DEPENDS ${_aspect_macros_header})
+
+  # For every module, there must be exactly one module interface unit
+  # that does not itself specify a module partition; instead, this unit
+  # (the "primary module interface unit") imports all of the partitions
+  # and then re-exports them.
+  #
+  # Build this file via a script from the list of all of the other
+  # module input files:
+  set(_primary_module_interface_unit
+    "${CMAKE_CURRENT_BINARY_DIR}/module/aspect.ccm")
+  add_custom_command(
+    OUTPUT ${_primary_module_interface_unit}
+    DEPENDS
+      "${_interface_module_partition_units}"
+      "${CMAKE_CURRENT_SOURCE_DIR}/module/utilities/build_primary_interface_unit.py"
+
+    COMMAND ${Python3_EXECUTABLE}
+    ARGS "${CMAKE_CURRENT_SOURCE_DIR}/module/utilities/build_primary_interface_unit.py"
+         ${_interface_module_partition_units}
+         ">"
+         "${_primary_module_interface_unit}"
+    )
+
+  #
+  # Next, we also need to set up implementation module partitions for
+  # each of deal.II's source files.
+  #
+  set(_implementation_module_partition_units)
+  foreach (_source_file ${ASPECT_SOURCE_FILES_CC})
+    # From the name of the source, construct the name of an implementation module
+    # partition file:
+    string(REGEX REPLACE
+             ".*/source/(.*)\.cc$"
+             "${CMAKE_CURRENT_BINARY_DIR}/module/implementation_module_partitions/\\1.cc"
+           _module_file ${_source_file})
+
+    # Create an interface module partition file from the source file:
+    add_custom_command(
+      OUTPUT ${_module_file}
+      DEPENDS
+        "${_source_file}"
+        "${CMAKE_CURRENT_SOURCE_DIR}/module/utilities/convert_source_file_to_implementation_module_unit.py"
+        "${CMAKE_CURRENT_SOURCE_DIR}/module/utilities/convert_to_module_units_common.py"
+
+      COMMAND ${Python3_EXECUTABLE}
+      ARGS "${CMAKE_CURRENT_SOURCE_DIR}/module/utilities/convert_source_file_to_implementation_module_unit.py"
+           "${_source_file}"
+           "${_module_file}"
+      )
+
+    # Append this file to the list of implementation units:
+    list(APPEND _implementation_module_partition_units "${_module_file}")
+  endforeach()
+
+## for each build type
+    file(GLOB_RECURSE _dealii_interface_files "/home/bangerth/p/deal.II/2/b2-install/lib/cmake/dealii_module_debug/miu/*.ccm")
+
+    add_executable(aspect_module_debug)
+    set_property(TARGET aspect_module_debug PROPERTY CXX_STANDARD 20)
+    target_sources(aspect_module_debug
+                   PUBLIC
+                     FILE_SET aspect_module_debug_sources
+                       TYPE CXX_MODULES
+                       FILES
+                         ${_interface_module_partition_units}
+                         ${_primary_module_interface_unit}
+                         ${_dealii_interface_files}
+                       BASE_DIRS
+                         ${CMAKE_CURRENT_SOURCE_DIR}
+                         ${CMAKE_CURRENT_BINARY_DIR}
+                         "/home/bangerth/p/deal.II/2/b2-install/lib/cmake/dealii_module_debug/miu/"
+    )
+    target_sources(aspect_module_debug
+                   PRIVATE
+                     FILE_SET aspect_module_debug_sources_private
+                       TYPE CXX_MODULES
+                       FILES
+                         ${_implementation_module_partition_units}
+                       BASE_DIRS
+                         ${CMAKE_CURRENT_SOURCE_DIR}
+                         ${CMAKE_CURRENT_BINARY_DIR}
+    )
+
+    # In order to compile the .cc files (or the transformed module
+    # input files), need access to the file that encapsulates all of
+    # aspect's macro #defines. So add a dependency to that.
+    add_dependencies(aspect_module_debug
+                     build_macros_header)
+
+    target_include_directories(aspect_module_debug PRIVATE "${CMAKE_BINARY_DIR}/world_builder/include/")
+
+  target_include_directories(aspect_module_debug PRIVATE ${ASPECT_INCLUDE_DIRS})
+  target_include_directories(aspect_module_debug PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/module/include/")
+  target_compile_flags(aspect_module_debug PRIVATE "$<COMPILE_LANGUAGE:CXX>"
+    "${DEAL_II_WARNING_FLAGS} ${DEAL_II_CXX_FLAGS} ${DEAL_II_CXX_FLAGS_DEBUG}"
+    )
+  target_link_flags(aspect_module_debug PRIVATE
+    "${DEAL_II_LINKER_FLAGS} ${DEAL_II_LINKER_FLAGS_DEBUG}"
+    )
+  target_link_libraries(aspect_module_debug dealii::dealii_debug)
 
 
 # ##############################################################################
