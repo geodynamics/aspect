@@ -38,8 +38,6 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 #include <boost/container/small_vector.hpp>
 
-#include <aspect/compat.h>
-
 namespace aspect
 {
   /**
