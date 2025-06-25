@@ -582,8 +582,9 @@ configure_file(
 # ##############################################################################
 # Collect source files
 
-file(GLOB_RECURSE ASPECT_SOURCE_FILES    "source/*.cc" "include/*.h")
-list(REMOVE_ITEM  ASPECT_SOURCE_FILES    ${CMAKE_CURRENT_SOURCE_DIR}/source/main.cc)
+file(GLOB_RECURSE ASPECT_SOURCE_FILES_CC "source/*.cc")
+list(REMOVE_ITEM  ASPECT_SOURCE_FILES_CC ${CMAKE_CURRENT_SOURCE_DIR}/source/main.cc)
+file(GLOB_RECURSE ASPECT_SOURCE_FILES_H  "include/*.h")
 file(GLOB_RECURSE ASPECT_UNIT_TEST_FILES "unit_tests/*.cc" "contrib/catch/catch.hpp")
 set(ASPECT_MAIN_FILE "source/main.cc")
 
@@ -591,7 +592,8 @@ set(ASPECT_MAIN_FILE "source/main.cc")
 set(ASPECT_ALL_SOURCE_FILES
     ${ASPECT_MAIN_FILE}
     ${ASPECT_UNIT_TEST_FILES}
-    ${ASPECT_SOURCE_FILES})
+    ${ASPECT_SOURCE_FILES_CC}
+    ${ASPECT_SOURCE_FILES_H})
 
 # Add the ASPECT include directories to what we already have from
 # above. Put the ASPECT header files to the front of the list, whereas
