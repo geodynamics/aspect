@@ -19,7 +19,7 @@
 */
 
 #include <aspect/citation_info.h>
-#include <aspect/revision.h>
+#include <aspect/revision.h> // Do not convert for module purposes
 
 #include <iostream>
 #include <set>

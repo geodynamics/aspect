@@ -20,7 +20,7 @@
 
 
 #include <aspect/global.h>
-#include <aspect/revision.h>
+#include <aspect/revision.h> // Do not convert for module purposes
 
 #include <deal.II/macros.h>
 #include <deal.II/base/multithread_info.h>

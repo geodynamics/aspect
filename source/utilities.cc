@@ -40,6 +40,7 @@
 #include <deal.II/base/patterns.h>
 #include <deal.II/grid/grid_tools.h>
 
+#include <cassert> // Do not convert for module purposes
 #include <cerrno>
 #include <dirent.h>
 #include <fstream>
