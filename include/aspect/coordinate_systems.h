@@ -21,6 +21,9 @@
 #ifndef _aspect_coordinate_systems_h
 #define _aspect_coordinate_systems_h
 
+#include <deal.II/base/utilities.h>
+
+
 namespace aspect
 {
   namespace Utilities
