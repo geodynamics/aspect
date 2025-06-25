@@ -32,13 +32,13 @@
 
 #include <deal.II/lac/solver_bicgstab.h>
 
-/**
- * Typedef for the number type for the multigrid operators. Can be either float or double.
- */
-using GMGNumberType = double;
-
 namespace aspect
 {
+  /**
+   * Typedef for the number type for the multigrid operators. Can be either float or double.
+   */
+  using GMGNumberType = double;
+
   /**
    * Base class for the matrix free GMG solver for the Stokes system. The
    * actual implementation is found inside StokesMatrixFreeHandlerLocalSmoothingImplementation.
