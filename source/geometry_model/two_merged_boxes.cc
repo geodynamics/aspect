@@ -26,6 +26,7 @@
 #include <deal.II/grid/tria_iterator.h>
 #include <deal.II/grid/tria_accessor.h>
 #include <deal.II/grid/grid_tools.h>
+#include <aspect/simulator_signals.h>
 
 #include <functional>
 
@@ -33,6 +34,33 @@ namespace aspect
 {
   namespace GeometryModel
   {
+    template <int dim>
+    void
+    TwoMergedBoxes<dim>::initialize ()
+    {
+      // Check that initial topography is required.
+      // If so, connect the initial topography function
+      // to the right signals: It should be applied after
+      // the final initial adaptive refinement and after a restart.
+      if (Plugins::plugin_type_matches<InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()) == false)
+        {
+          this->get_signals().pre_set_initial_state.connect(
+            [&](typename parallel::distributed::Triangulation<dim> &tria)
+          {
+            this->add_topography_to_mesh(tria);
+          }
+          );
+          this->get_signals().post_resume_load_user_data.connect(
+            [&](typename parallel::distributed::Triangulation<dim> &tria)
+          {
+            this->add_topography_to_mesh(tria);
+          }
+          );
+        }
+    }
+
+
+
     template <int dim>
     void
     TwoMergedBoxes<dim>::
@@ -71,6 +99,8 @@ namespace aspect
             }
         }
     }
+
+
 
     template <int dim>
     void
@@ -139,6 +169,47 @@ namespace aspect
         this->set_boundary_indicators(total_coarse_grid);
       });
     }
+
+
+
+    template <int dim>
+    void
+    TwoMergedBoxes<dim>::
+    add_topography_to_mesh (typename parallel::distributed::Triangulation<dim> &grid) const
+    {
+      // Here we provide GridTools with the function to displace vertices
+      // in the vertical direction by an amount specified by the initial topography model
+      GridTools::transform(
+        [&](const Point<dim> &p) -> Point<dim>
+      {
+        return this->add_topography_to_point(p);
+      },
+      grid);
+
+      this->get_pcout() << "   Added initial topography to grid" << std::endl << std::endl;
+    }
+
+
+
+    template <int dim>
+    Point<dim>
+    TwoMergedBoxes<dim>::
+    add_topography_to_point (const Point<dim> &x_y_z) const
+    {
+
+      // Get the surface topography at this point
+      const double topo = get_topography_at_point(x_y_z);
+
+      // Compute the displacement of the z coordinate
+      const double ztopo = (x_y_z[dim-1] - lower_box_origin[dim-1]) / extents[dim-1] * topo;
+
+      // Compute the new point
+      Point<dim> x_y_ztopo = x_y_z;
+      x_y_ztopo[dim-1] += ztopo;
+
+      return x_y_ztopo;
+    }
+
 
 
     template <int dim>
@@ -243,6 +314,20 @@ namespace aspect
 
 
     template <int dim>
+    double
+    TwoMergedBoxes<dim>::get_topography_at_point (const Point<dim> &position ) const
+    {
+      // Get the surface x (,y) point
+      Point<dim-1> surface_point;
+      for (unsigned int d=0; d<dim-1; ++d)
+        surface_point[d] = position[d];
+
+      return this->get_initial_topography_model().value(surface_point);
+    }
+
+
+
+    template <int dim>
     Point<dim>
     TwoMergedBoxes<dim>::get_extents () const
     {
@@ -269,7 +354,9 @@ namespace aspect
     double
     TwoMergedBoxes<dim>::depth(const Point<dim> &position) const
     {
-      const double d = maximal_depth()-(position(dim-1)-lower_box_origin[dim-1]);
+
+      const double topo = get_topography_at_point(position);
+      const double d = extents[dim-1] + topo - (position(dim-1)-lower_box_origin[dim-1]);
       return std::min (std::max (d, 0.), maximal_depth());
     }
 
@@ -294,7 +381,10 @@ namespace aspect
 
       // choose a point on the center axis of the domain
       Point<dim> p = extents/2+lower_box_origin;
-      p[dim-1] = extents[dim-1]+lower_box_origin[dim-1]-depth;
+
+      const double topo = get_topography_at_point(p);
+
+      p[dim-1] = extents[dim-1]+lower_box_origin[dim-1]-depth+topo;
 
       return p;
     }
@@ -304,7 +394,7 @@ namespace aspect
     double
     TwoMergedBoxes<dim>::maximal_depth() const
     {
-      return extents[dim-1];
+      return extents[dim-1] + this->get_initial_topography_model().max_topography();
     }
 
     template <int dim>
@@ -324,11 +414,12 @@ namespace aspect
                   this->simulator_is_past_initialization() == false,
                   ExcMessage("After displacement of the mesh, this function can no longer be used to determine whether a point lies in the domain or not."));
 
-      AssertThrow(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()),
-                  ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
+      double topo = 0.;
+      if (!Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()))
+        topo = get_topography_at_point(point);
 
       for (unsigned int d = 0; d < dim; ++d)
-        if (point[d] > extents[d]+lower_box_origin[d]+std::numeric_limits<double>::epsilon()*extents[d] ||
+        if (point[d] > topo+extents[d]+lower_box_origin[d]+std::numeric_limits<double>::epsilon()*extents[d] ||
             point[d] < lower_box_origin[d]-std::numeric_limits<double>::epsilon()*extents[d])
           return false;
 

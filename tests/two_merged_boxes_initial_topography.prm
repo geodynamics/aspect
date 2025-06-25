@@ -1,0 +1,88 @@
+# This input file tests initial topography
+# specified using ascii data in two merged
+# boxes.
+# This test has a similar setup as the
+# 'box_initial_topography_ascii_data',
+# with some changes in the boundary conditions
+# to account for the additional boundaries.
+set Dimension = 3
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 1613
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false
+set Nonlinear solver scheme                = single Advection, single Stokes
+set Pressure normalization                 = no
+
+subsection Boundary temperature model
+  set List of model names = initial temperature
+  set Fixed temperature boundary indicators   = 0, 1
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+subsection Geometry model
+  set Model name = box with lithosphere boundary indicators
+
+  subsection Box with lithosphere boundary indicators
+    set Lithospheric thickness = 150000
+    set X extent = 660000
+    set Y extent = 660000
+    set Z extent = 660000
+    set X repetitions = 1
+    set Y repetitions = 1
+    set Z repetitions = 1
+  end
+
+# We specify the name and directory of the ascii data file.
+  subsection Initial topography model
+    set Model name = ascii data
+
+    subsection Ascii data model
+      set Data directory = $ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/test/
+      set Data file name = box_3d_top.0.txt
+    end
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1613
+  end
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density = 3340
+    set Reference specific heat = 1200
+    set Thermal expansion coefficient = 3e-5
+    set Viscosity = 1e21
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 1
+  set Initial global refinement          = 2
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = 0,1,2,3,4,5,6,7,8,9
+end
+
+# The maximum topography value in the ascii data file is
+# 55 km and the minimum is 20 km. The output statistics
+# file should reflect these values.
+subsection Postprocess
+  set List of postprocessors = visualization, topography
+
+  subsection Visualization
+    set List of output variables = depth, surface elevation
+    set Output format = gnuplot
+  end
+end

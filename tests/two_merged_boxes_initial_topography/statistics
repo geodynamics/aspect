@@ -1,0 +1,15 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Visualization file name
+# 12: Surface visualization file name
+# 13: Minimum topography (m)
+# 14: Maximum topography (m)
+0 0.000000000000e+00 0.000000000000e+00 16 720 225 0 26 27 27 output-two_merged_boxes_initial_topography/solution/solution-00000 output-two_merged_boxes_initial_topography/solution_surface/solution_surface-00000 2.00000000e+04 5.50000000e+04 
