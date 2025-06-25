@@ -23,7 +23,6 @@
 
 #include <aspect/global.h>
 #include <aspect/simulator/solver/interface.h>
-#include <aspect/simulator/solver/stokes_matrix_free.h>
 #include <aspect/simulator.h>
 
 #include <deal.II/matrix_free/matrix_free.h>
