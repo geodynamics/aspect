@@ -775,7 +775,7 @@ int main (int argc, char *argv[])
         {
           // Output header, except for a clean output for xml or plugin graph
           if (!output_xml && !output_json && !output_plugin_graph && !validate_only)
-            print_aspect_header(std::cout);
+            aspect::print_aspect_header(std::cout);
 
           if (output_help)
             print_help();
