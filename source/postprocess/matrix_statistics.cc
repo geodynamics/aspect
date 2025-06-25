@@ -24,63 +24,70 @@
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
 
+#include <string>
 
-namespace
-{
-  const std::string
-  get_stats(const aspect::LinearAlgebra::BlockSparseMatrix &matrix,
-            const std::string &matrix_name,
-            const MPI_Comm comm)
-  {
-    std::ostringstream output;
+#ifdef DEAL_II_WITH_MPI
+#  include <mpi.h>
+#endif
 
-    // convert from bytes into Mb
-    const double mb = 1024*1024;
-    // sum up local matrix memory usage
-    double global_matrix_memory_consumption = dealii::Utilities::MPI::sum(matrix.memory_consumption(),
-                                                                          comm);
-    output << "\nTotal " << matrix_name << " memory consumption: "
-           << std::fixed << std::setprecision(2) << global_matrix_memory_consumption/mb
-           << " MB." << std::endl;
-
-    // output number of nonzero elements in matrix. Do so with 1000s separator
-    // since they are frequently large; this was previously done by using the empty
-    // string locale, but creating std::locale with an empty string caused problems
-    // on some platforms, so the functionality to catch the exception and ignore
-    // is kept here, even though explicitly setting a facet should always work.
-    try
-      {
-        // Imbue the stream with a locale that does the right thing. The
-        // locale is responsible for later deleting the object pointed
-        // to by the last argument (the "facet"), see
-        // https://en.cppreference.com/w/cpp/locale/locale/locale
-        output.imbue(std::locale(std::locale(),
-                                 new aspect::Utilities::ThousandSep));
-      }
-    catch (const std::runtime_error &e)
-      {
-        // If the locale doesn't work, just give up
-      }
-
-
-    output << "Total " << matrix_name << " nnz: "
-           << matrix.n_nonzero_elements() << std::endl;
-
-    // output number of nonzero elements in each matrix block
-    output << matrix_name << " nnz by block: " << std::endl;
-    for (unsigned int i=0; i<matrix.n_block_rows(); ++i)
-      {
-        for (unsigned int j=0; j<matrix.n_block_rows(); ++j)
-          output << std::setw(12) << matrix.block(i,j).n_nonzero_elements();
-        output << std::endl;
-      }
-
-    return output.str();
-  }
-}
 
 namespace aspect
 {
+  namespace
+  {
+    const std::string
+    get_stats(const aspect::LinearAlgebra::BlockSparseMatrix &matrix,
+              const std::string &matrix_name,
+              const MPI_Comm comm)
+    {
+      std::ostringstream output;
+
+      // convert from bytes into Mb
+      const double mb = 1024*1024;
+      // sum up local matrix memory usage
+      double global_matrix_memory_consumption = dealii::Utilities::MPI::sum(matrix.memory_consumption(),
+                                                                            comm);
+      output << "\nTotal " << matrix_name << " memory consumption: "
+             << std::fixed << std::setprecision(2) << global_matrix_memory_consumption/mb
+             << " MB." << std::endl;
+
+      // output number of nonzero elements in matrix. Do so with 1000s separator
+      // since they are frequently large; this was previously done by using the empty
+      // string locale, but creating std::locale with an empty string caused problems
+      // on some platforms, so the functionality to catch the exception and ignore
+      // is kept here, even though explicitly setting a facet should always work.
+      try
+        {
+          // Imbue the stream with a locale that does the right thing. The
+          // locale is responsible for later deleting the object pointed
+          // to by the last argument (the "facet"), see
+          // https://en.cppreference.com/w/cpp/locale/locale/locale
+          output.imbue(std::locale(std::locale(),
+                                   new aspect::Utilities::ThousandSep));
+        }
+      catch (const std::runtime_error &e)
+        {
+          // If the locale doesn't work, just give up
+        }
+
+
+      output << "Total " << matrix_name << " nnz: "
+             << matrix.n_nonzero_elements() << std::endl;
+
+      // output number of nonzero elements in each matrix block
+      output << matrix_name << " nnz by block: " << std::endl;
+      for (unsigned int i=0; i<matrix.n_block_rows(); ++i)
+        {
+          for (unsigned int j=0; j<matrix.n_block_rows(); ++j)
+            output << std::setw(12) << matrix.block(i,j).n_nonzero_elements();
+          output << std::endl;
+        }
+
+      return output.str();
+    }
+  }
+
+
   namespace Postprocess
   {
 
