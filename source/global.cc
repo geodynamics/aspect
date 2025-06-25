@@ -22,6 +22,7 @@
 #include <aspect/global.h>
 #include <aspect/revision.h>
 
+#include <deal.II/macros.h>
 #include <deal.II/base/multithread_info.h>
 #include <deal.II/base/revision.h>
 #include <deal.II/base/vectorization.h>
