@@ -17,10 +17,15 @@
   along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
+
 #include <aspect/global.h>
 #include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
 #include <aspect/geometry_model/interface.h>
+
+// For big_mpi:
+#include <aspect/compat.h>
+
 
 #ifdef ASPECT_WITH_LIBDAP
 #include <D4Connect.h>
