@@ -27,6 +27,23 @@
 #include <functional>
 #include <memory>
 
+#if !DEAL_II_VERSION_GTE(9,6,0)
+#  include <deal.II/multigrid/mg_transfer_matrix_free.h>
+#  include <deal.II/grid/manifold.h>
+#  include <deal.II/grid/manifold_lib.h>
+#else
+// We have a 'using' declaration for new enough deal.II versions. When
+// we remove the backward compatibility, we should also remove the
+// 'using' declaration and then can also remove the following
+// #include:
+#  include <deal.II/grid/manifold_lib.h>
+#endif
+
+#if !DEAL_II_VERSION_GTE(9,7,0)
+#  include <deal.II/grid/grid_generator.h>
+#endif
+
+
 namespace aspect
 {
   namespace big_mpi
@@ -35,19 +52,14 @@ namespace aspect
     using dealii::Utilities::MPI::broadcast;
 
   }
-}
 
 
 // deal.II 9.6 introduces the new MGTransferMF class as a replacement
 // for MGTransferMatrixFree. Instead of putting an ifdef in every place,
 // do this in one central location:
 #if !DEAL_II_VERSION_GTE(9,6,0)
-#include <deal.II/multigrid/mg_transfer_matrix_free.h>
-namespace dealii
-{
   template <int dim, class NumberType>
-  using MGTransferMF = MGTransferMatrixFree<dim,NumberType>;
-}
+  using MGTransferMF = dealii::MGTransferMatrixFree<dim,NumberType>;
 #endif
 
 
@@ -56,12 +68,6 @@ namespace dealii
 // SphericalManifold class that made it impossible for us to use.
 // This file thus contains a copy of it.
 #if !DEAL_II_VERSION_GTE(9,6,0)
-
-#include <deal.II/grid/manifold.h>
-#include <deal.II/grid/manifold_lib.h>
-
-namespace aspect
-{
   using namespace dealii;
 
   /**
@@ -209,11 +215,7 @@ namespace aspect
 // reference 'aspect::SphericalManifold' simply use 'SphericalManifold' instead
 // (which then refers to the deal.II class).
 
-#include <deal.II/grid/manifold_lib.h>
-namespace aspect
-{
   using dealii::SphericalManifold;
-}
 
 #endif
 
@@ -429,7 +431,6 @@ namespace aspect
       VectorFunctionFromTensorFunctionObject<dim, RangeNumberType>::vector_value(
         points[p], value_list[p]);
   }
-}
 
 #endif
 
@@ -437,17 +438,14 @@ namespace aspect
 // This function contains a fixed version.
 #if !DEAL_II_VERSION_GTE(9,7,0)
 
-#include <deal.II/grid/grid_generator.h>
-
-namespace aspect
-{
   template <int dim>
   void
   colorize_quarter_hyper_shell(Triangulation<dim>  &tria,
                                const Point<dim>   &center,
                                const double      inner_radius,
                                const double      outer_radius);
-}
 #endif
+
+}
 
 #endif
