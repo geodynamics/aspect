@@ -999,7 +999,7 @@ namespace aspect
 
     namespace
     {
-      std::vector<std::string> make_prescribed_dilation_outputs_names()
+      std::vector<std::string> make_prescribed_dilation_outputs_names(int dim)
       {
         std::vector<std::string> names;
         names.emplace_back("dilation_lhs_term");
@@ -1015,9 +1015,9 @@ namespace aspect
 
     template <int dim>
     PrescribedPlasticDilation<dim>::PrescribedPlasticDilation (const unsigned int n_points)
-      : NamedAdditionalMaterialOutputs<dim>(make_prescribed_dilation_outputs_names()),
+      : NamedAdditionalMaterialOutputs<dim>(make_prescribed_dilation_outputs_names(dim)),
         dilation_lhs_term(n_points, numbers::signaling_nan<double>()),
-        dilation(dim, std::vector<double>(n_points, numbers::signaling_nan<double>()))
+        dilation_rhs_term(dim, std::vector<double>(n_points, numbers::signaling_nan<double>()))
     {}
 
 

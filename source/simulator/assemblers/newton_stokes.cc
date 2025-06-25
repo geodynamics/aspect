@@ -436,6 +436,7 @@ namespace aspect
 
           const double JxW = scratch.finite_element_values.JxW(q);
           const double pressure_scaling = this->get_pressure_scaling();
+          bool material_model_is_compressible = (this->get_material_model().is_compressible());
 
           // first assemble the rhs
           for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
@@ -470,7 +471,7 @@ namespace aspect
                                            - pressure_scaling
                                            * (prescribed_dilation->dilation_rhs_term[index_direction][q] -
                                               prescribed_dilation->dilation_lhs_term[q] *
-                                              scrasch.material_model_inputs.pressure[q])
+                                              scratch.material_model_inputs.pressure[q])
                                            * scratch.phi_p[i]
                                          ) * JxW;
                 }
