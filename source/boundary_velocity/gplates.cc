@@ -393,7 +393,7 @@ namespace aspect
             sinTheta = x2/d1;
           }
 
-        double theta = atan2(sinTheta, cosTheta);
+        double theta = std::atan2(sinTheta, cosTheta);
         orientation[1] = - theta * constants::radians_to_degree;
 
         // now rotate about x axis
@@ -416,7 +416,7 @@ namespace aspect
             cosPhi = (x2*x2 + z2*z2)/(d1*d);
           }
 
-        double phi = atan2(sinPhi, cosPhi);
+        double phi = std::atan2(sinPhi, cosPhi);
         orientation[0] = phi * constants::radians_to_degree;
 
         // finally, rotate about z
@@ -436,7 +436,7 @@ namespace aspect
             sinAlpha = x3p/d2;
           }
 
-        double alpha = atan2(sinAlpha, cosAlpha);
+        double alpha = std::atan2(sinAlpha, cosAlpha);
         orientation[2] = alpha * constants::radians_to_degree;
         return orientation;
       }
@@ -585,7 +585,7 @@ namespace aspect
       std::string templ = data_directory+velocity_file_name;
       const int size = templ.length();
       std::vector<char> buffer(size+10);
-      snprintf (buffer.data(), size + 10, templ.c_str(), timestep);
+      std::snprintf (buffer.data(), size + 10, templ.c_str(), timestep);
       std::string str_filename (buffer.data());
       return str_filename;
     }

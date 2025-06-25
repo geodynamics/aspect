@@ -519,8 +519,8 @@ namespace aspect
 
 
   template <int dim>
-  bool Simulator<dim>::maybe_write_checkpoint (const time_t last_checkpoint_time,
-                                               const bool force_writing_checkpoint)
+  bool Simulator<dim>::maybe_write_checkpoint (const std::time_t last_checkpoint_time,
+                                               const bool        force_writing_checkpoint)
   {
     // Do a checkpoint if this is the end of simulation,
     // and the termination criteria say to checkpoint at the end.
@@ -2740,7 +2740,7 @@ namespace aspect
   template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \
   template std::pair<double,double> Simulator<dim>::get_extrapolated_advection_field_range (const AdvectionField &advection_field) const; \
   template void Simulator<dim>::maybe_write_timing_output () const; \
-  template bool Simulator<dim>::maybe_write_checkpoint (const time_t, const bool); \
+  template bool Simulator<dim>::maybe_write_checkpoint (const std::time_t, const bool); \
   template bool Simulator<dim>::maybe_do_initial_refinement (const unsigned int max_refinement_level); \
   template void Simulator<dim>::exchange_refinement_flags (); \
   template void Simulator<dim>::maybe_refine_mesh (const double new_time_step, unsigned int &max_refinement_level); \

@@ -49,13 +49,13 @@ namespace aspect
            << "-- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --\n"
            << "-----------------------------------------------------------------------------\n"
            << "--     . version " << ASPECT_PACKAGE_VERSION;
-    if (strcmp(ASPECT_GIT_BRANCH,"") != 0)
+    if (std::strcmp(ASPECT_GIT_BRANCH,"") != 0)
       stream << " (" << ASPECT_GIT_BRANCH << ", " << ASPECT_GIT_SHORTREV << ")\n";
     else
       stream << "\n";
 
     stream << "--     . using deal.II " << DEAL_II_PACKAGE_VERSION;
-    if (strcmp(DEAL_II_GIT_BRANCH,"") != 0)
+    if (std::strcmp(DEAL_II_GIT_BRANCH,"") != 0)
       stream << " (" << DEAL_II_GIT_BRANCH << ", " << DEAL_II_GIT_SHORTREV << ')';
     stream << "\n";
     stream << "--     .       with "

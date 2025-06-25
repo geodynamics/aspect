@@ -444,7 +444,8 @@ namespace aspect
                     {
                       // Transform name to lower case to prevent confusion with capital letters
                       // Note: only ASCII characters allowed
-                      std::transform(column_name_or_data.begin(), column_name_or_data.end(), column_name_or_data.begin(), ::tolower);
+                      std::transform(column_name_or_data.begin(), column_name_or_data.end(), column_name_or_data.begin(),
+                                     static_cast<int (*)(int)>(std::tolower));
 
                       AssertThrow(std::find(column_names.begin(),column_names.end(),column_name_or_data)
                                   == column_names.end(),
@@ -1098,17 +1099,17 @@ namespace aspect
                                        const int filenumber)
       {
         const int maxsize = filename_and_path.length() + 256;
-        char *filename = static_cast<char *>(malloc (maxsize * sizeof(char)));
-        int ret = snprintf (filename,
-                            maxsize,
-                            filename_and_path.c_str(),
-                            boundary_name.c_str(),
-                            filenumber);
+        char *filename = static_cast<char *>(std::malloc (maxsize * sizeof(char)));
+        int ret = std::snprintf (filename,
+                                 maxsize,
+                                 filename_and_path.c_str(),
+                                 boundary_name.c_str(),
+                                 filenumber);
 
         AssertThrow(ret >= 0, ExcMessage("Invalid string placeholder in filename detected."));
         AssertThrow(ret< maxsize, ExcInternalError("snprintf string overflow detected."));
         const std::string str_result (filename);
-        free (filename);
+        std::free (filename);
         return str_result;
       }
 
