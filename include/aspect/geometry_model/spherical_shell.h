@@ -25,6 +25,9 @@
 #include <aspect/geometry_model/interface.h>
 #include <aspect/simulator_access.h>
 
+// For SphericalManifold:
+#include <aspect/compat.h>
+
 namespace aspect
 {
   namespace GeometryModel
