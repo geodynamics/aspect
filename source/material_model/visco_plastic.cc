@@ -291,10 +291,11 @@ namespace aspect
                 = MaterialUtilities::average_value(volume_fractions,
                                                    isostrain_viscosities.dilation_lhs_terms,
                                                    MaterialUtilities::arithmetic);
-              plastic_dilation->dilation_rhs_term[i]
-                = MaterialUtilities::average_value(volume_fractions,
-                                                   isostrain_viscosities.dilation_rhs_terms,
-                                                   MaterialUtilities::arithmetic);
+              for (unsigned int dim_i = 0; dim_i < dim; ++dim_i)
+                plastic_dilation->dilation_rhs_term[dim_i][i]
+                  = MaterialUtilities::average_value(volume_fractions,
+                                                     isostrain_viscosities.dilation_rhs_terms,
+                                                     MaterialUtilities::arithmetic);
             }
         }
 
