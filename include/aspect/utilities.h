@@ -1187,13 +1187,10 @@ namespace aspect
                                                     const double phi2);
 
   }
-}
 
 
 // inline implementations:
 #ifndef DOXYGEN
-namespace aspect
-{
   namespace Utilities
   {
 
@@ -1384,7 +1381,7 @@ namespace aspect
     }
 
   }
-}
 #endif
+}
 
 #endif
