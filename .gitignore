@@ -68,3 +68,6 @@ cmake-build-debug/
 build.ninja
 rules.ninja
 .ninja_*
+
+# Python compiled modules
+/module/utilities/__pycache__
