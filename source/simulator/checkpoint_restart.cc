@@ -732,8 +732,8 @@ namespace aspect
 }
 
 //why do we need this?!
-BOOST_CLASS_TRACKING (aspect::Simulator<2>, boost::serialization::track_never)
-BOOST_CLASS_TRACKING (aspect::Simulator<3>, boost::serialization::track_never)
+// BOOST_CLASS_TRACKING (aspect::Simulator<2>, boost::serialization::tracking_type::track_never)
+// BOOST_CLASS_TRACKING (aspect::Simulator<3>, boost::serialization::tracking_type::track_never)
 
 
 namespace aspect
