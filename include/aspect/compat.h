@@ -27,12 +27,16 @@
 #include <functional>
 #include <memory>
 
-namespace big_mpi
+namespace aspect
 {
+  namespace big_mpi
+  {
 
-  using dealii::Utilities::MPI::broadcast;
+    using dealii::Utilities::MPI::broadcast;
 
+  }
 }
+
 
 // deal.II 9.6 introduces the new MGTransferMF class as a replacement
 // for MGTransferMatrixFree. Instead of putting an ifdef in every place,
