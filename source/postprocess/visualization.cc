@@ -1099,7 +1099,7 @@ namespace aspect
       if (tmp_filename != filename)
         {
           std::string command = std::string("mv ") + tmp_filename + " " + filename;
-          int error = system(command.c_str());
+          int error = std::system(command.c_str());
 
           AssertThrow(error == 0,
                       ExcMessage("Could not move " + tmp_filename + " to "
@@ -1372,7 +1372,7 @@ namespace aspect
               // null pointer. System is guaranteed to return non-zero if it finds
               // a terminal and zero if there is none (like on the compute nodes of
               // some cluster architectures, e.g. IBM BlueGene/Q)
-              AssertThrow(system((char *)nullptr) != 0,
+              AssertThrow(std::system((char *)nullptr) != 0,
                           ExcMessage("Usage of a temporary storage location is only supported if "
                                      "there is a terminal available to move the files to their final location "
                                      "after writing. The system() command did not succeed in finding such a terminal."));

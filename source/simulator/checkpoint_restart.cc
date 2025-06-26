@@ -327,11 +327,11 @@ namespace aspect
           Assert (err == Z_OK, ExcInternalError());
 
           // build compression header
-          const uint32_t compression_header[4]
+          const std::uint32_t compression_header[4]
             = { 1,                                   /* number of blocks */
-                static_cast<uint32_t>(oss.str().length()), /* size of block */
-                static_cast<uint32_t>(oss.str().length()), /* size of last block */
-                static_cast<uint32_t>(compressed_data_length)
+                static_cast<std::uint32_t>(oss.str().length()), /* size of block */
+                static_cast<std::uint32_t>(oss.str().length()), /* size of last block */
+                static_cast<std::uint32_t>(compressed_data_length)
               }; /* list of compressed sizes of blocks */
 
           std::ofstream f (checkpoint_path + "/resume.z");
@@ -451,7 +451,7 @@ namespace aspect
 
         std::istringstream ifs (restart_data);
 
-        uint32_t compression_header[4];
+        std::uint32_t compression_header[4];
         ifs.read(reinterpret_cast<char *>(compression_header), 4 * sizeof(compression_header[0]));
         Assert(compression_header[0]==1, ExcInternalError());
 

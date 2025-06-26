@@ -1496,8 +1496,8 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      bool maybe_write_checkpoint (const time_t last_checkpoint_time,
-                                   const bool force_writing_checkpoint);
+      bool maybe_write_checkpoint (const std::time_t last_checkpoint_time,
+                                   const bool        force_writing_checkpoint);
 
       /**
        * Check if we should do an initial refinement cycle in this timestep.

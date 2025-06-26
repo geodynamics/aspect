@@ -34,7 +34,7 @@ namespace aspect
       UniformRadial<dim>::generate_particles(Particles::ParticleHandler<dim> &particle_handler)
       {
         // Create the array of shell to deal with
-        const double radial_spacing = (P_max[0] - P_min[0]) / fmax(radial_layers-1,1);
+        const double radial_spacing = (P_max[0] - P_min[0]) / std::max(radial_layers-1,1U);
 
         // Calculate number of particles per shell.
         // The number of particles depend on the fraction of the area
@@ -74,7 +74,7 @@ namespace aspect
             spherical_coordinates[0] = P_min[0] + (radial_spacing * i);
             if (dim == 2)
               {
-                const double phi_spacing = (P_max[1] - P_min[1]) / fmax(particles_per_layer[i]-1,1);
+                const double phi_spacing = (P_max[1] - P_min[1]) / std::max(particles_per_layer[i]-1,1U);
 
                 for (unsigned int j = 0; j < particles_per_layer[i]; ++j)
                   {
@@ -93,15 +93,15 @@ namespace aspect
                                                        static_cast<double>(particles_per_layer[i])
                                                        /
                                                        static_cast<double>(theta_particles)));
-                const double theta_spacing = (P_max[2] - P_min[2]) / fmax(theta_particles-1,1);
+                const double theta_spacing = (P_max[2] - P_min[2]) / std::max(theta_particles-1,1U);
 
                 for (unsigned int j = 0; j < theta_particles; ++j)
                   {
                     spherical_coordinates[2] = P_min[2] + j * theta_spacing;
 
                     // Average value of std::sin(n) from 0 to 180 degrees is (2/pi)
-                    const unsigned int adjusted_phi_particles = std::max(static_cast<unsigned int> (phi_particles * std::sin(spherical_coordinates[2])), 1u);
-                    const double phi_spacing = (P_max[1] - P_min[1]) / fmax(adjusted_phi_particles-1,1);
+                    const unsigned int adjusted_phi_particles = std::max(static_cast<unsigned int> (phi_particles * std::sin(spherical_coordinates[2])), 1U);
+                    const double phi_spacing = (P_max[1] - P_min[1]) / std::max(adjusted_phi_particles-1,1U);
                     for (unsigned int k = 0; k < adjusted_phi_particles; ++k)
                       {
                         spherical_coordinates[1] = P_min[1] + k * phi_spacing;

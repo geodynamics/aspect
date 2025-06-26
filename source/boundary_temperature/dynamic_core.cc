@@ -284,7 +284,7 @@ namespace aspect
           while (!in.eof())
             {
               std::getline(in, line);
-              if (sscanf(line.data(), "%le\t%le\n", &data_read.t, &data_read.w)==2)
+              if (std::sscanf(line.data(), "%le\t%le\n", &data_read.t, &data_read.w)==2)
                 data_OES.push_back(data_read);
             }
         }

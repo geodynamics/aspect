@@ -2086,7 +2086,7 @@ namespace aspect
       }
 
     // start the timer for periodic checkpoints after the setup above
-    time_t last_checkpoint_time = std::time(nullptr);
+    std::time_t last_checkpoint_time = std::time(nullptr);
 
   start_time_iteration:
 

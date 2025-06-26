@@ -1626,7 +1626,7 @@ namespace aspect
               const std::string command = "lst setstripe -c " + std::to_string(lfs_stripe_count)
                                           + ' ' + output_directory;
 
-              const int error_code = system (command.c_str());
+              const int error_code = std::system (command.c_str());
               std::ignore = Utilities::MPI::broadcast(mpi_communicator, error_code, /* root= */ 0);
 
               AssertThrow (error_code == 0,
@@ -2259,7 +2259,8 @@ namespace aspect
 
           // finally, put it into the list
           mapped_particle_properties.insert(std::make_pair(compositional_field_index,
-                                                           std::make_pair(particle_property,atoi(component.c_str()))));
+                                                           std::make_pair(particle_property,
+                                                                          std::atoi(component.c_str()))));
         }
 
       // Check that the names inside compositional_fields_with_disabled_boundary_entropy_viscosity
