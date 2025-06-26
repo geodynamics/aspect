@@ -48,6 +48,7 @@
 #include <sys/stat.h>
 #include <iostream>
 #include <regex>
+#include <random>
 
 #include <boost/math/special_functions/spherical_harmonic.hpp>
 #include <boost/lexical_cast.hpp>
