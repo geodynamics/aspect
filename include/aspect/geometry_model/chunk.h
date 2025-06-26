@@ -24,7 +24,6 @@
 
 #include <aspect/geometry_model/interface.h>
 #include <aspect/simulator_access.h>
-#include <aspect/compat.h>
 
 #include <deal.II/grid/manifold.h>
 #include <deal.II/base/function_lib.h>
