@@ -23,6 +23,7 @@
 #define _aspect_utilities_h
 
 #include <aspect/global.h>
+#include <aspect/compat.h>
 
 #include <array>
 #include <random>
