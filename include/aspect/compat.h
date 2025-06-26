@@ -21,7 +21,9 @@
 #ifndef _aspect_compat_h
 #define _aspect_compat_h
 
-#include <aspect/global.h>
+#include <deal.II/base/config.h>
+#include <deal.II/base/mpi.h>
+
 // C++11 related includes.
 #include <array>
 #include <functional>
