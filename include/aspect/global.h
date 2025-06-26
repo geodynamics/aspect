@@ -317,16 +317,17 @@ namespace aspect
      */
     using DynamicSparsityPattern = dealii::TrilinosWrappers::SparsityPattern;
   }
+
+  /**
+   * Print a header into the given stream that will be written both to screen
+   * and to the log file and that provides basic information about what is
+   * running, with how many processes, and using which linear algebra library.
+   */
+  template <class Stream>
+  void print_aspect_header(Stream &stream);
 }
 
 
-/**
- * Print a header into the given stream that will be written both to screen
- * and to the log file and that provides basic information about what is
- * running, with how many processes, and using which linear algebra library.
- */
-template <class Stream>
-void print_aspect_header(Stream &stream);
 
 /**
  * A macro that is used in instantiating the ASPECT classes and functions for
