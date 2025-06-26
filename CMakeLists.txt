@@ -893,7 +893,7 @@ endif()
   endforeach()
 
 ## for each build type
-    file(GLOB_RECURSE _dealii_interface_files "/home/bangerth/p/deal.II/2/b2-install/lib/cmake/dealii_module_debug/miu/*.ccm")
+    file(GLOB_RECURSE _dealii_interface_files_debug "/home/bangerth/p/deal.II/2/b2-install/lib/cmake/dealii_module_debug/miu/*.ccm")
 
     add_executable(aspect_module_debug)
     set_property(TARGET aspect_module_debug PROPERTY CXX_STANDARD 20)
@@ -904,7 +904,7 @@ endif()
                        FILES
                          ${_interface_module_partition_units}
                          ${_primary_module_interface_unit}
-                         ${_dealii_interface_files}
+                         ${_dealii_interface_files_debug}
                        BASE_DIRS
                          ${CMAKE_CURRENT_SOURCE_DIR}
                          ${CMAKE_CURRENT_BINARY_DIR}
@@ -938,6 +938,55 @@ endif()
     "${DEAL_II_LINKER_FLAGS} ${DEAL_II_LINKER_FLAGS_DEBUG}"
     )
   target_link_libraries(aspect_module_debug dealii::dealii_debug)
+
+
+
+##
+    file(GLOB_RECURSE _dealii_interface_files_release "/home/bangerth/p/deal.II/2/b2-install/lib/cmake/dealii_module_release/miu/*.ccm")
+
+    add_executable(aspect_module_release)
+    set_property(TARGET aspect_module_release PROPERTY CXX_STANDARD 20)
+    target_sources(aspect_module_release
+                   PUBLIC
+                     FILE_SET aspect_module_release_sources
+                       TYPE CXX_MODULES
+                       FILES
+                         ${_interface_module_partition_units}
+                         ${_primary_module_interface_unit}
+                         ${_dealii_interface_files_release}
+                       BASE_DIRS
+                         ${CMAKE_CURRENT_SOURCE_DIR}
+                         ${CMAKE_CURRENT_BINARY_DIR}
+                         "/home/bangerth/p/deal.II/2/b2-install/lib/cmake/dealii_module_release/miu/"
+    )
+    target_sources(aspect_module_release
+                   PRIVATE
+                     FILE_SET aspect_module_release_sources_private
+                       TYPE CXX_MODULES
+                       FILES
+                         ${_implementation_module_partition_units}
+                       BASE_DIRS
+                         ${CMAKE_CURRENT_SOURCE_DIR}
+                         ${CMAKE_CURRENT_BINARY_DIR}
+    )
+
+    # In order to compile the .cc files (or the transformed module
+    # input files), need access to the file that encapsulates all of
+    # aspect's macro #defines. So add a dependency to that.
+    add_dependencies(aspect_module_release
+                     build_macros_header)
+
+    target_include_directories(aspect_module_release PRIVATE "${CMAKE_BINARY_DIR}/world_builder_release/include/")
+
+  target_include_directories(aspect_module_release PRIVATE ${ASPECT_INCLUDE_DIRS})
+  target_include_directories(aspect_module_release PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/module/include/")
+  target_compile_flags(aspect_module_release PRIVATE "$<COMPILE_LANGUAGE:CXX>"
+    "${DEAL_II_WARNING_FLAGS} ${DEAL_II_CXX_FLAGS} ${DEAL_II_CXX_FLAGS_RELEASE}"
+    )
+  target_link_flags(aspect_module_release PRIVATE
+    "${DEAL_II_LINKER_FLAGS} ${DEAL_II_LINKER_FLAGS_RELEASE}"
+    )
+  target_link_libraries(aspect_module_release dealii::dealii_release)
 
 
 # ##############################################################################
