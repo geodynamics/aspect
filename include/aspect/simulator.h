@@ -74,6 +74,11 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 #include <memory>
 #include <thread>
 
+namespace WorldBuilder
+{
+  class World;
+}
+
 
 namespace aspect
 {

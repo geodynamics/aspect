@@ -25,6 +25,12 @@
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/particle/manager.h>
 
+namespace WorldBuilder
+{
+  class World;
+}
+
+
 namespace aspect
 {
   template <int dim>
