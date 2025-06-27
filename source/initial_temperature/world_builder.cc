@@ -21,16 +21,18 @@
 #include <aspect/global.h>
 
 #ifdef ASPECT_WITH_WORLD_BUILDER
-#include <world_builder/config.h>
-#include <aspect/initial_temperature/world_builder.h>
-#include <aspect/geometry_model/interface.h>
-#include <aspect/gravity_model/interface.h>
+#  include <world_builder/config.h>
+#  include <world_builder/world.h>
 
-#include <world_builder/world.h>
+#  include <aspect/initial_temperature/world_builder.h>
+#  include <aspect/geometry_model/interface.h>
+#  include <aspect/gravity_model/interface.h>
+#endif
 
 
 namespace aspect
 {
+#ifdef ASPECT_WITH_WORLD_BUILDER
   namespace InitialTemperature
   {
     template <int dim>
@@ -79,5 +81,5 @@ namespace aspect
                                               "Make sure to specify the location of the World Builder file "
                                               "in the parameter 'World builder file'.")
   }
-}
 #endif
+}
