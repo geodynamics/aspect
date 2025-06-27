@@ -28,9 +28,7 @@
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/parameter_handler.h>
 
-#ifdef DEAL_II_WITH_MPI
-#  include <mpi.h>
-#endif
+#include <mpi.h>
 
 
 namespace aspect

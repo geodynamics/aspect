@@ -36,9 +36,7 @@
 #include <aspect/coordinate_systems.h>
 #include <aspect/structured_data.h>
 
-#ifdef DEAL_II_WITH_MPI
-#  include <mpi.h>
-#endif
+#include <mpi.h>
 
 
 namespace aspect
