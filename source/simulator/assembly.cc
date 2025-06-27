@@ -21,7 +21,6 @@
 
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
-#include <aspect/compat.h>
 #include <aspect/simulator_access.h>
 
 #include <aspect/simulator/assemblers/interface.h>

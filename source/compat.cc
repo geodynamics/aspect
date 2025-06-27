@@ -20,6 +20,7 @@
 
 
 #include <aspect/compat.h>
+#include <aspect/global.h>
 
 namespace aspect
 {
