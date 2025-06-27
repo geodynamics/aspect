@@ -1,0 +1,54 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for composition solver 3
+# 13: Iterations for composition solver 4
+# 14: Iterations for composition solver 5
+# 15: Iterations for composition solver 6
+# 16: Iterations for composition solver 7
+# 17: Iterations for composition solver 8
+# 18: Iterations for composition solver 9
+# 19: Iterations for composition solver 10
+# 20: Iterations for Stokes solver
+# 21: Velocity iterations in Stokes preconditioner
+# 22: Schur complement iterations in Stokes preconditioner
+# 23: Minimal value for composition porosity
+# 24: Maximal value for composition porosity
+# 25: Global mass for composition porosity
+# 26: Minimal value for composition bound_fluid
+# 27: Maximal value for composition bound_fluid
+# 28: Global mass for composition bound_fluid
+# 29: Minimal value for composition peridotite
+# 30: Maximal value for composition peridotite
+# 31: Global mass for composition peridotite
+# 32: Minimal value for composition gabbro
+# 33: Maximal value for composition gabbro
+# 34: Global mass for composition gabbro
+# 35: Minimal value for composition MORB
+# 36: Maximal value for composition MORB
+# 37: Global mass for composition MORB
+# 38: Minimal value for composition sediment
+# 39: Maximal value for composition sediment
+# 40: Global mass for composition sediment
+# 41: Minimal value for composition peridotite_porosity
+# 42: Maximal value for composition peridotite_porosity
+# 43: Global mass for composition peridotite_porosity
+# 44: Minimal value for composition gabbro_porosity
+# 45: Maximal value for composition gabbro_porosity
+# 46: Global mass for composition gabbro_porosity
+# 47: Minimal value for composition MORB_porosity
+# 48: Maximal value for composition MORB_porosity
+# 49: Global mass for composition MORB_porosity
+# 50: Minimal value for composition sediment_porosity
+# 51: Maximal value for composition sediment_porosity
+# 52: Global mass for composition sediment_porosity
+0 0.000000000000e+00 0.000000000000e+00 16 187 81 810 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.10000000e-01 1.10000000e-01 4.40000000e+09 4.00000000e-01 4.00000000e-01 1.60000000e+10 3.00000000e-01 3.00000000e-01 1.20000000e+10 2.00000000e-01 2.00000000e-01 8.00000000e+09 1.00000000e-01 1.00000000e-01 4.00000000e+09 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+1 1.000000000000e+03 1.000000000000e+03 16 187 81 810 1 6 0 0 0 0 0 0 0 0 0 0 0 0 0 2.51518787e-02 1.55352795e-01 5.07898344e+09 3.01021900e-03 9.49916812e-02 9.70052691e+08 4.00000000e-01 4.00000000e-01 1.60000000e+10 3.00000000e-01 3.00000000e-01 1.20000000e+10 2.00000000e-01 2.00000000e-01 8.00000000e+09 1.00000000e-01 1.00000000e-01 4.00000000e+09 1.00607515e-02 6.21411181e-02 2.03159337e+09 7.54556360e-03 4.66058386e-02 1.52369503e+09 5.03037573e-03 3.10705590e-02 1.01579669e+09 2.51518787e-03 1.55352795e-02 5.07898344e+08 

@@ -1,0 +1,93 @@
+-----------------------------------------------------------------------------
+--                             This is ASPECT                              --
+-- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
+-----------------------------------------------------------------------------
+--     . version 3.1.0-pre (track_fluid_source, 986c9a918)
+--     . using deal.II 9.6.2
+--     .       with 32 bit indices
+--     .       with vectorization level 1 (SSE2, 2 doubles, 128 bits)
+--     . using Trilinos 14.4.0
+--     . using p4est 2.3.6
+--     . using Geodynamic World Builder 1.0.0
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&mf=1&sha=986c9a918&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 1,078 (162+25+81+81+81+81+81+81+81+81+81+81+81)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Solving bound_fluid system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+   Solving gabbro system ... 0 iterations.
+   Solving MORB system ... 0 iterations.
+   Solving sediment system ... 0 iterations.
+   Skipping peridotite_porosity composition solve because RHS is zero.
+   Skipping gabbro_porosity composition solve because RHS is zero.
+   Skipping MORB_porosity composition solve because RHS is zero.
+   Skipping sediment_porosity composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.41953e-16, 0, 1.14893e-16, 1.43204e-16, 8.69635e-17, 1.43204e-16, 1.43204e-16, 0, 0, 0, 0, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.43204e-16
+
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0 // 0.11/0.11/4.4e+09 // 0.4/0.4/1.6e+10 // 0.3/0.3/1.2e+10 // 0.2/0.2/8e+09 // 0.1/0.1/4e+09 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0
+
+*** Timestep 1:  t=1000 years, dt=1000 years
+   Solving composition reactions... in 100 substep(s).
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving bound_fluid system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+   Solving gabbro system ... 0 iterations.
+   Solving MORB system ... 0 iterations.
+   Solving sediment system ... 0 iterations.
+   Solving peridotite_porosity system ... 0 iterations.
+   Solving gabbro_porosity system ... 0 iterations.
+   Solving MORB_porosity system ... 0 iterations.
+   Solving sediment_porosity system ... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.15166e-06, 8.87349e-17, 1.26557e-16, 1.43204e-16, 8.69635e-17, 1.43204e-16, 1.43204e-16, 1.39448e-16, 1.39812e-16, 1.39448e-16, 1.39448e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.15166e-06
+
+
+   Postprocessing:
+     Compositions min/max/mass: 0.02515/0.1554/5.079e+09 // 0.00301/0.09499/9.701e+08 // 0.4/0.4/1.6e+10 // 0.3/0.3/1.2e+10 // 0.2/0.2/8e+09 // 0.1/0.1/4e+09 // 0.01006/0.06214/2.032e+09 // 0.007546/0.04661/1.524e+09 // 0.00503/0.03107/1.016e+09 // 0.002515/0.01554/5.079e+08
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |     0.298s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system rhs       |         2 |   0.00562s |       1.9% |
+| Assemble composition system      |        20 |     0.071s |        24% |
+| Assemble temperature system      |         2 |   0.00398s |       1.3% |
+| Build Stokes preconditioner      |         2 |  0.000314s |      0.11% |
+| Build composition preconditioner |        15 |   0.00126s |      0.42% |
+| Build temperature preconditioner |         2 |  0.000281s |         0% |
+| Initialization                   |         1 |     0.122s |        41% |
+| Postprocessing                   |         2 |   0.00138s |      0.46% |
+| Setup dof systems                |         1 |   0.00306s |         1% |
+| Setup initial conditions         |         1 |   0.00475s |       1.6% |
+| Setup matrices                   |         1 |    0.0031s |         1% |
+| Solve Stokes system              |         2 |   0.00204s |      0.69% |
+| Solve composition reactions      |         1 |    0.0676s |        23% |
+| Solve composition system         |        15 |   0.00337s |       1.1% |
+| Solve temperature system         |         2 |  0.000535s |      0.18% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 0s
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&mf=1&sha=986c9a918&src=code
+-----------------------------------------------------------------------------

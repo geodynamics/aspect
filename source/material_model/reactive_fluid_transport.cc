@@ -188,7 +188,7 @@ namespace aspect
 
       if (fluid_solid_reaction_scheme != katz2003)
         {
-          const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+          const unsigned int porosity_idx      = this->introspection().compositional_index_for_name("porosity");
 
           // Modify the viscosity from the base model based on the presence of fluid.
           if (in.requests_property(MaterialProperties::viscosity))
@@ -252,6 +252,32 @@ namespace aspect
               std::vector<double> eq_free_fluid_fractions(out.n_evaluation_points());
               melt_fractions(in, eq_free_fluid_fractions, &out);
 
+              // Initialize the indices of compositional fields as invalid ints. These will
+              // only be used if the Tian 2019 reaction model with tracking unique water components
+              // is defined in the parameter file.
+              unsigned int sediment_porosity_idx   = numbers::invalid_unsigned_int;
+              unsigned int MORB_porosity_idx       = numbers::invalid_unsigned_int;
+              unsigned int gabbro_porosity_idx     = numbers::invalid_unsigned_int;
+              unsigned int peridotite_porosity_idx = numbers::invalid_unsigned_int;
+
+              unsigned int sediment_idx   = numbers::invalid_unsigned_int;
+              unsigned int MORB_idx       = numbers::invalid_unsigned_int;
+              unsigned int gabbro_idx     = numbers::invalid_unsigned_int;
+              unsigned int peridotite_idx = numbers::invalid_unsigned_int;
+
+              if (tian2019_model.track_unique_water_components)
+                {
+                  sediment_porosity_idx   = this->introspection().compositional_index_for_name("sediment_porosity");
+                  MORB_porosity_idx       = this->introspection().compositional_index_for_name("MORB_porosity");
+                  gabbro_porosity_idx     = this->introspection().compositional_index_for_name("gabbro_porosity");
+                  peridotite_porosity_idx = this->introspection().compositional_index_for_name("peridotite_porosity");
+
+                  sediment_idx   = this->introspection().compositional_index_for_name("sediment");
+                  MORB_idx       = this->introspection().compositional_index_for_name("MORB");
+                  gabbro_idx     = this->introspection().compositional_index_for_name("gabbro");
+                  peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
+                }
+
               for (unsigned int q=0; q<out.n_evaluation_points(); ++q)
                 {
                   const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
@@ -274,7 +300,7 @@ namespace aspect
                   // mass fraction of water in the solid, Fl_wt is the wt% of water in the fluid, and Fl_mass is
                   // the mass fraction of water in the fluid. Fl_wt is always 100%, because the fluid is assumed to
                   // be composed of only water. The bound_fluid composition gives Sm_wt, and we compute Sm_mass as
-                  // was done when defining mass_frac_porosity.
+                  // was done when defining mass_fraction_porosity.
                   const double total_mass_fraction_water = in.composition[q][bound_fluid_idx] * (1 - volume_fraction_porosity) * solid_density / bulk_density +
                                                            mass_fraction_porosity;
 
@@ -286,7 +312,7 @@ namespace aspect
                   // Since porosity is a volume fraction, convert the mass fraction change to a volume fraction change
                   // to update the porosity value. We cannot use the bulk density to do this, because we do not yet know
                   // the new bulk density of the rock after the reactions have been applied. We do this by substituting
-                  // the  new bulk density as a function of the new volume fraction porosity into this equation:
+                  // the new bulk density as a function of the new volume fraction porosity into this equation:
                   // new_Fl_mass * new_bulk_density = new_volume_frac * fluid_density
                   // and solving for the new volume fraction. This gives us the following equation:
                   const double new_volume_fraction_porosity = solid_density * new_mass_fraction_porosity /
@@ -324,6 +350,29 @@ namespace aspect
                         reaction_rate_out->reaction_rates[q][c] = porosity_change / reaction_time_step_size;
                       else
                         reaction_rate_out->reaction_rates[q][c] = 0.0;
+
+                      if (tian2019_model.track_unique_water_components)
+                        {
+                          // Determine what the fraction of each lithology is at the current quadrature point.
+                          const double sediment_percent   = std::min(std::max(in.composition[q][sediment_idx], 0.0), 1.0);
+                          const double MORB_percent       = std::min(std::max(in.composition[q][MORB_idx], 0.0), 1.0);
+                          const double gabbro_percent     = std::min(std::max(in.composition[q][gabbro_idx], 0.0), 1.0);
+                          const double peridotite_percent = std::min(std::max(in.composition[q][peridotite_idx], 0.0), 1.0);
+
+                          // The total porosity change is determined based on the average lithology at each point.
+                          // Therefore to track the porosity change for each lithology, we need to multiply the
+                          // total by the contribution of each lithology.
+                          const double porosity_change_for_tracking = porosity_change < 0 ? 0 : porosity_change / reaction_time_step_size;
+
+                          if (c == sediment_porosity_idx)
+                            reaction_rate_out->reaction_rates[q][sediment_porosity_idx] = porosity_change_for_tracking * sediment_percent;
+                          else if (c == MORB_porosity_idx)
+                            reaction_rate_out->reaction_rates[q][MORB_porosity_idx] = porosity_change_for_tracking * MORB_percent;
+                          else if (c == gabbro_porosity_idx)
+                            reaction_rate_out->reaction_rates[q][gabbro_porosity_idx] = porosity_change_for_tracking * gabbro_percent;
+                          else if (c == peridotite_porosity_idx)
+                            reaction_rate_out->reaction_rates[q][peridotite_porosity_idx] = porosity_change_for_tracking * peridotite_percent;
+                        }
                     }
                 }
             }
