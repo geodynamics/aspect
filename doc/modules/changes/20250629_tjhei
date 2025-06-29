@@ -1,0 +1,8 @@
+New: The geometric multigrid (GMG) solver now also supports running
+without viscosity averaging. This has the same memory requirement and
+computational cost per iteration as Q1 averaging. Note that we still
+need to average the viscosity for the GMG hierarchy, which likely
+results in higher iteration counts compared to computations with
+viscosity averaging enabled.
+<br>
+(Timo Heister, 2025/06/29)
