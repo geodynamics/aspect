@@ -472,8 +472,14 @@ namespace aspect
           if (mesh_velocity_constraints.can_store_line(index))
             if (mesh_velocity_constraints.is_constrained(index)==false)
               {
+#if DEAL_II_VERSION_GTE(9,6,0)
+                mesh_velocity_constraints.add_constraint(index,
+                                                         {},
+                                                         boundary_velocity[index]);
+#else
                 mesh_velocity_constraints.add_line(index);
                 mesh_velocity_constraints.set_inhomogeneity(index, boundary_velocity[index]);
+#endif
               }
         }
     }
