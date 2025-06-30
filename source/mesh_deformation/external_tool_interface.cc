@@ -20,6 +20,8 @@
 
 
 #include <aspect/mesh_deformation/external_tool_interface.h>
+#include <aspect/simulator_signals.h>
+
 
 namespace aspect
 {
