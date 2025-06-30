@@ -145,7 +145,7 @@ namespace aspect
 
       // Timo: Implement via MPIRemoteEvaluation
       (void)velocities;
-      
+
 
       return vector_with_surface_velocities;
     }
