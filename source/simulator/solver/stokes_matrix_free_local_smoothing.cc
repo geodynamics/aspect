@@ -104,6 +104,11 @@ namespace aspect
                                 parameters.material_averaging
                                 ==
                                 MaterialModel::MaterialAveraging::AveragingOperation::project_to_Q1_only_viscosity
+                            /* // this would do Q1 averaging for GMG with no averaging for the active cells. If commented out we use Q0 for GMG.
+                            ||
+                            parameters.material_averaging
+                            ==
+                            MaterialModel::MaterialAveraging::AveragingOperation::none*/
                                 ? 1 : 0), 1)
   {}
 
@@ -124,17 +129,6 @@ namespace aspect
     // sanity check:
     Assert(this->introspection().variable("velocity").block_index==0, ExcNotImplemented());
     Assert(this->introspection().variable("pressure").block_index==1, ExcNotImplemented());
-
-    // We currently only support averaging of the viscosity to a constant or Q1:
-    using avg = MaterialModel::MaterialAveraging::AveragingOperation;
-    AssertThrow((this->get_parameters().material_averaging &
-                 (avg::arithmetic_average | avg::harmonic_average | avg::geometric_average
-                  | avg::pick_largest | avg::project_to_Q1 | avg::log_average
-                  | avg::harmonic_average_only_viscosity | avg::geometric_average_only_viscosity
-                  | avg::project_to_Q1_only_viscosity)) != 0,
-                ExcMessage("The matrix-free Stokes solver currently only works if material model averaging "
-                           "is enabled. If no averaging is desired, consider using ``project to Q1 only "
-                           "viscosity''."));
 
     // Currently cannot solve compressible flow with implicit reference density
     if (this->get_material_model().is_compressible() == true)
@@ -185,6 +179,29 @@ namespace aspect
     double minimum_viscosity_local = std::numeric_limits<double>::max();
     double maximum_viscosity_local = std::numeric_limits<double>::lowest();
 
+    const bool active_no_averaging = (this->get_parameters().material_averaging
+                                      ==
+                                      MaterialModel::MaterialAveraging::AveragingOperation::none);
+
+    {
+      // allocate space for viscosities
+
+      const unsigned int n_cells = stokes_matrix.get_matrix_free()->n_cell_batches();
+      const unsigned int n_q_points = quadrature_formula.size();
+
+      // One value per cell is required for DGQ0 projection and n_q_points
+      // values per cell for DGQ1.
+      if (active_no_averaging || dof_handler_projection.get_fe().degree == 1)
+        {
+          active_cell_data.viscosity.reinit(TableIndices<2>(n_cells, n_q_points));
+        }
+      else if (dof_handler_projection.get_fe().degree == 0)
+        active_cell_data.viscosity.reinit(TableIndices<2>(n_cells, 1));
+      else
+        Assert(false, ExcInternalError());
+
+    }
+
     // Fill the DGQ0 or DGQ1 vector of viscosity values on the active mesh
     {
       FEValues<dim> fe_values (this->get_mapping(),
@@ -234,6 +251,19 @@ namespace aspect
           in.requested_properties,
           out);
 
+        if (active_no_averaging)
+          {
+            // also copy the viscosity to the CellData
+
+            const unsigned int index = stokes_matrix.get_matrix_free()->get_matrix_free_cell_index(cell);
+            const unsigned int lane_size = VectorizedArray<GMGNumberType>::size();
+            const unsigned int cell_index = index / lane_size;
+            const unsigned int lane = index % lane_size;
+
+            for (unsigned int q=0; q<values.size(); ++q)
+              active_cell_data.viscosity(cell_index, q)[lane] = out.viscosities[q];
+          }
+
         for (unsigned int i=0; i<values.size(); ++i)
           {
             // Find the local max/min of the evaluated viscosities.
@@ -259,24 +289,9 @@ namespace aspect
 
     // Create active mesh viscosity table.
     {
-
       const unsigned int n_cells = stokes_matrix.get_matrix_free()->n_cell_batches();
-
       const unsigned int n_q_points = quadrature_formula.size();
-
-      std::vector<double> values_on_quad;
-
-      // One value per cell is required for DGQ0 projection and n_q_points
-      // values per cell for DGQ1.
-      if (dof_handler_projection.get_fe().degree == 0)
-        active_cell_data.viscosity.reinit(TableIndices<2>(n_cells, 1));
-      else if (dof_handler_projection.get_fe().degree == 1)
-        {
-          values_on_quad.resize(n_q_points);
-          active_cell_data.viscosity.reinit(TableIndices<2>(n_cells, n_q_points));
-        }
-      else
-        Assert(false, ExcInternalError());
+      std::vector<double> values_on_quad (n_q_points);
 
       std::vector<types::global_dof_index> local_dof_indices(fe_projection.dofs_per_cell);
       for (unsigned int cell=0; cell<n_cells; ++cell)
@@ -311,7 +326,11 @@ namespace aspect
               // For DGQ0, we simply use the viscosity at the single
               // support point of the element. For DGQ1, we must project
               // back to quadrature point values.
-              if (dof_handler_projection.get_fe().degree == 0)
+              if (active_no_averaging)
+                {
+                  // do nothing, filled above already!
+                }
+              else if (dof_handler_projection.get_fe().degree == 0)
                 active_cell_data.viscosity(cell, 0)[i] = active_viscosity_vector(local_dof_indices[0]);
               else
                 {
