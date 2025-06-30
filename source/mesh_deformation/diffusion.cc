@@ -443,7 +443,7 @@ namespace aspect
     void
     Diffusion<dim>::compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                                              AffineConstraints<double> &mesh_velocity_constraints,
-                                                             const std::set<types::boundary_id> &boundary_id) const
+                                                             const std::set<types::boundary_id> &boundary_ids) const
     {
       if (!apply_diffusion)
         return;
@@ -458,13 +458,13 @@ namespace aspect
       // Determine the mesh velocity at the surface based on diffusion of
       // the topography
       diffuse_boundary(mesh_deformation_dof_handler, mesh_locally_owned,
-                       mesh_locally_relevant, boundary_velocity, boundary_id);
+                       mesh_locally_relevant, boundary_velocity, boundary_ids);
 
       // now insert the relevant part of the solution into the mesh constraints
       const IndexSet constrained_dofs =
         DoFTools::extract_boundary_dofs(mesh_deformation_dof_handler,
                                         ComponentMask(dim, true),
-                                        boundary_id);
+                                        boundary_ids);
 
       for (unsigned int i = 0; i < constrained_dofs.n_elements();  ++i)
         {
