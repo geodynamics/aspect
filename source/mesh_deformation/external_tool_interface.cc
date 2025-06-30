@@ -20,6 +20,8 @@
 
 
 #include <aspect/mesh_deformation/external_tool_interface.h>
+#include <aspect/simulator_signals.h>
+
 
 namespace aspect
 {
@@ -144,6 +146,8 @@ namespace aspect
 
 
       // Timo: Implement via MPIRemoteEvaluation
+      (void)velocities;
+
 
       return vector_with_surface_velocities;
     }
