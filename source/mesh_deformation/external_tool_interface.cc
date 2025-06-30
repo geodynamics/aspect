@@ -53,9 +53,8 @@ namespace aspect
                                         ComponentMask(dim, true),
                                         boundary_ids);
 
-      for (unsigned int i = 0; i < constrained_dofs.n_elements();  ++i)
+      for (const types::global_dof_index index : constrained_dofs)
         {
-          types::global_dof_index index = constrained_dofs.nth_index_in_set(i);
           if (mesh_velocity_constraints.can_store_line(index))
             if (mesh_velocity_constraints.is_constrained(index)==false)
               {
