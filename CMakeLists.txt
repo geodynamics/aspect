@@ -582,10 +582,10 @@ configure_file(
 # ##############################################################################
 # Collect source files
 
-file(GLOB_RECURSE ASPECT_SOURCE_FILES_CC "source/*.cc")
+file(GLOB_RECURSE ASPECT_SOURCE_FILES_CC CONFIGURE_DEPENDS "source/*.cc")
 list(REMOVE_ITEM  ASPECT_SOURCE_FILES_CC ${CMAKE_CURRENT_SOURCE_DIR}/source/main.cc)
-file(GLOB_RECURSE ASPECT_SOURCE_FILES_H  "include/*.h")
-file(GLOB_RECURSE ASPECT_UNIT_TEST_FILES "unit_tests/*.cc" "contrib/catch/catch.hpp")
+file(GLOB_RECURSE ASPECT_SOURCE_FILES_H CONFIGURE_DEPENDS  "include/*.h")
+file(GLOB_RECURSE ASPECT_UNIT_TEST_FILES CONFIGURE_DEPENDS "unit_tests/*.cc" "contrib/catch/catch.hpp")
 set(ASPECT_MAIN_FILE "source/main.cc")
 
 # Create the combined set of source files that make up the project
