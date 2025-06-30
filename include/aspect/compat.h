@@ -206,7 +206,6 @@ namespace aspect
        */
       const PolarManifold<spacedim> polar_manifold;
   };
-}
 
 #else
 
@@ -226,8 +225,6 @@ namespace aspect
 // that we would like to use also for earlier versions
 #if !DEAL_II_VERSION_GTE(9,7,0)
 
-namespace aspect
-{
   using namespace dealii;
 
   /**
