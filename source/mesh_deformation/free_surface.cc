@@ -219,7 +219,7 @@ namespace aspect
     void
     FreeSurface<dim>::compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                                                AffineConstraints<double> &mesh_velocity_constraints,
-                                                               const std::set<types::boundary_id> &boundary_id) const
+                                                               const std::set<types::boundary_id> &boundary_ids) const
     {
       // For the free surface indicators we constrain the displacement to be v.n
       LinearAlgebra::Vector boundary_velocity;
@@ -235,7 +235,7 @@ namespace aspect
       const IndexSet constrained_dofs =
         DoFTools::extract_boundary_dofs(mesh_deformation_dof_handler,
                                         ComponentMask(dim, true),
-                                        boundary_id);
+                                        boundary_ids);
 
       for (unsigned int i = 0; i < constrained_dofs.n_elements();  ++i)
         {
