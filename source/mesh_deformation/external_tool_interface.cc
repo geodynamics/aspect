@@ -47,23 +47,28 @@ namespace aspect
       // constraint. We later make that consistent across processors to
       // ensure we also know about the locally relevant DoFs'
       // constraints:
-      std::vector<types::global_dof_index> face_dof_indices (mesh_deformation_dof_handler.get_fe().dofs_per_face);
-      for (const auto &cell : mesh_deformation_dof_handler.active_cell_iterators())
-        if (cell->is_locally_owned())
-          for (const auto &face : cell->face_iterators())
-            if (face->at_boundary() &&
-                (boundary_ids.find(face->boundary_id()) != boundary_ids.end()))
+      // now insert the relevant part of the solution into the mesh constraints
+      const IndexSet constrained_dofs =
+        DoFTools::extract_boundary_dofs(mesh_deformation_dof_handler,
+                                        ComponentMask(dim, true),
+                                        boundary_ids);
+
+      for (unsigned int i = 0; i < constrained_dofs.n_elements();  ++i)
+        {
+          types::global_dof_index index = constrained_dofs.nth_index_in_set(i);
+          if (mesh_velocity_constraints.can_store_line(index))
+            if (mesh_velocity_constraints.is_constrained(index)==false)
               {
-                face->get_dof_indices(face_dof_indices);
-
-                for (types::global_dof_index i : face_dof_indices)
-                  if (v_interpolated.locally_owned_elements().is_element(i))
-                    mesh_velocity_constraints.add_constraint (i, {}, v_interpolated(i));
+#if DEAL_II_VERSION_GTE(9,6,0)
+                mesh_velocity_constraints.add_constraint(index,
+                                                         {},
+                                                         v_interpolated(index));
+#else
+                mesh_velocity_constraints.add_line(index);
+                mesh_velocity_constraints.set_inhomogeneity(index, v_interpolated(index));
+#endif
               }
-      mesh_velocity_constraints.make_consistent_in_parallel(mesh_deformation_dof_handler.locally_owned_dofs(),
-                                                            DoFTools::extract_locally_relevant_dofs(mesh_deformation_dof_handler),
-                                                            this->get_mpi_communicator());
-
+        }
     }
 
 
