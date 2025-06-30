@@ -636,8 +636,7 @@ namespace aspect
 
       for (const auto &boundary_id : mesh_deformation_objects)
         {
-          std::set<types::boundary_id> boundary_id_set;
-          boundary_id_set.insert(boundary_id.first);
+          const std::set<types::boundary_id> boundary_id_set = { boundary_id.first };
 
           for (const auto &model : boundary_id.second)
             {
@@ -678,14 +677,15 @@ namespace aspect
                         {
                           // Add the inhomogeneity of the current plugin to the existing constraints
                           const double inhomogeneity = plugin_constraints.get_inhomogeneity(local_line);
-                          plugin_constraints.set_inhomogeneity(local_line, current_plugin_constraints.get_inhomogeneity(local_line) + inhomogeneity);
+                          plugin_constraints.set_inhomogeneity(local_line,
+                                                               current_plugin_constraints.get_inhomogeneity(local_line) + inhomogeneity);
                         }
                     }
                 }
             }
         }
 
-      mesh_velocity_constraints.merge(plugin_constraints,AffineConstraints<double>::left_object_wins);
+      mesh_velocity_constraints.merge(plugin_constraints, AffineConstraints<double>::left_object_wins);
       mesh_velocity_constraints.close();
     }
 
