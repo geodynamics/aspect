@@ -9,7 +9,7 @@
 ### __Parameter name:__ List of model names
 **Default value:**
 
-**Pattern:** [MultipleSelection adiabatic heating|adiabatic heating of melt|compositional heating|constant heating|function|latent heat|latent heat melt|radioactive decay|shear heating|shear heating with melt ]
+**Pattern:** [MultipleSelection adiabatic heating|adiabatic heating of melt|compositional heating|constant heating|function|latent heat|latent heat melt|radioactive decay|shear heating|shear heating with melt|tidal heating ]
 
 **Documentation:** A comma separated list of heating models that will be used to calculate the heating terms in the energy equation. The results of each of these criteria, i.e., the heating source terms and the latent heat terms for the left hand side will be added.
 
@@ -44,6 +44,8 @@ The formula is interpreted as having units W/kg.
 &lsquo;shear heating&rsquo;: Implementation of a standard model for shear heating. Adds the term: $  2 \eta \left( \varepsilon - \frac{1}{3} \text{tr} \varepsilon \mathbf 1 \right) : \left( \varepsilon - \frac{1}{3} \text{tr} \varepsilon \mathbf 1 \right)$ to the right-hand side of the temperature equation.
 
 &lsquo;shear heating with melt&rsquo;: Implementation of a standard model for shear heating of migrating melt, including bulk (compression) heating $\xi \left( \nabla \cdot \mathbf u_s \right)^2 $ and heating due to melt segregation $\frac{\eta_f \phi^2}{k} \left( \mathbf u_f - \mathbf u_s \right)^2 $. For full shear heating, this has to be used in combination with the heating model shear heating to also include shear heating for the solid part.
+
+&lsquo;tidal heating&rsquo;: A tidal heating implementation related to diurnal tides. The default equation ignores regional (radial/lateral) changes. This equation is the Eq.12 from Tobie et al. (2003) (https://doi.org/10.1029/2003JE002099). Selecting &rsquo;latitudinal variation&rsquo; from &rsquo;Custom distribution of tidal strain rate&rsquo; allows simplified latitudinal variation with cosine function, &rsquo;Maximum tidal strain rate&rsquo; and &rsquo;Minimum tidal strain rate. Latitudinal variation of tidal strain rate is shown in Fig.3 from Nimmo et al. (2007) (https://doi.org/10.1016/j.icarus.2007.04.021). Unit: W/m^3.
 
 (parameters:Heating_20model/Adiabatic_20heating)=
 ## **Subsection:** Heating model / Adiabatic heating
@@ -139,7 +141,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The entropy change for the phase transition from solid to melt. Units: \si{\joule\per\kelvin\per\kilogram}.
+**Documentation:** The entropy change for the phase transition from solid to melt. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
 
 (parameters:Heating_20model/Latent_20heat_20melt/Retrieve_20entropy_20change_20from_20material_20model)=
 ### __Parameter name:__ Retrieve entropy change from material model
@@ -240,3 +242,53 @@ If the function you are describing represents a vector-valued function with mult
 **Pattern:** [Bool]
 
 **Documentation:** In models with prescribed boundary velocities, stresses can become unrealistically large. Using these large stresses when calculating the amount of shear heating would then lead to an unreasonable increase in temperature. This parameter indicates if the stress being used to compute the amount of shear heating should be limited based on a Drucker-Prager yield criterion with the cohesion given by the &rsquo;Cohesion for maximum shear stress&rsquo; parameter and the friction angle given by the &rsquo;Friction angle for maximum shear stress&rsquo; parameter.
+
+(parameters:Heating_20model/Tidal_20heating)=
+## **Subsection:** Heating model / Tidal heating
+(parameters:Heating_20model/Tidal_20heating/Constant_20tidal_20strain_20rate)=
+### __Parameter name:__ Constant tidal strain rate
+**Default value:** 2e-10
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Time-averaged strain rate by a lunar diurnal tide that is simplified to be constant regardless of location. Default value is for the diurnal tide of Europa from Tobie et al. (2003). Units: 1/s.
+
+(parameters:Heating_20model/Tidal_20heating/Custom_20distribution_20of_20tidal_20strain_20rate)=
+### __Parameter name:__ Custom distribution of tidal strain rate
+**Default value:** constant
+
+**Pattern:** [Selection constant|latitudinal variation ]
+
+**Documentation:** Choose how the time-averaged tidal strain rate is distributed. If &rsquo;constant&rsquo;, the tidal strain rate is fixed to &rsquo;Constant tidal strain rate&rsquo;. If &rsquo;latitudinal variation&rsquo;, &rsquo;Maximum tidal strain rate&rsquo; and &rsquo;Minimum tidal strain rate&rsquo; are used.
+
+(parameters:Heating_20model/Tidal_20heating/Elastic_20shear_20modulus)=
+### __Parameter name:__ Elastic shear modulus
+**Default value:** 3.3e9
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Elastic shear modulus of the material. For simplicity, this parameter will be used even if elasticity is set in the material model. Default value is for Europa&rsquo;s icy shell. Units: Pa.
+
+(parameters:Heating_20model/Tidal_20heating/Maximum_20tidal_20strain_20rate)=
+### __Parameter name:__ Maximum tidal strain rate
+**Default value:** 2.81e-10
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Maximum time-averaged tidal strain rate by lunar diurnal tide at the poles. This parameter will be used when &rsquo;Custom distribution of tidal strain rate&rsquo; is &rsquo;latitudinal variation&rsquo;. Default value is for Europa at pole from Nimmo et al. (2007). Units: 1/s.
+
+(parameters:Heating_20model/Tidal_20heating/Minimum_20tidal_20strain_20rate)=
+### __Parameter name:__ Minimum tidal strain rate
+**Default value:** 1.67e-10
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Minimum time-averaged tidal strain rate by lunar diurnal tide at the equator. This parameter will be used when &rsquo;Custom distribution of tidal strain rate&rsquo; is &rsquo;latitudinal variation&rsquo;. Default value is for Europa at Equator from Nimmo et al. (2007). Units: 1/s.
+
+(parameters:Heating_20model/Tidal_20heating/Tidal_20frequency)=
+### __Parameter name:__ Tidal frequency
+**Default value:** 2.048e-5
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The orbital/tidal frequency that produces the heating. Default value is the diurnal tidal frequency of Europa, ~3.551 days. Units: 1/s.

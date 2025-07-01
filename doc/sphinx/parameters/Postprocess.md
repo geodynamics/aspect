@@ -9,13 +9,17 @@
 ### __Parameter name:__ List of postprocessors
 **Default value:**
 
-**Pattern:** [MultipleSelection ODE statistics|Stokes residual|basic statistics|boundary densities|boundary pressures|boundary strain rate residual statistics|boundary velocity residual statistics|command|composition statistics|composition velocity statistics|core statistics|crystal preferred orientation|depth average|domain volume statistics|dynamic topography|entropy viscosity statistics|geoid|global statistics|gravity calculation|heat flux densities|heat flux map|heat flux statistics|heating statistics|load balance statistics|mass flux statistics|material statistics|matrix statistics|maximum depth of field|melt statistics|memory statistics|mobility statistics|particle count statistics|particles|point values|pressure statistics|rotation statistics|sea level|spherical velocity statistics|temperature statistics|topography|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization|volume of fluid statistics ]
+**Pattern:** [MultipleSelection ODE statistics|Particle Distribution Score|Particle Distribution Statistics|Stokes residual|basic statistics|boundary densities|boundary pressures|boundary strain rate residual statistics|boundary velocity residual statistics|command|composition statistics|composition velocity statistics|core statistics|crystal preferred orientation|current surface|depth average|domain volume statistics|dynamic topography|entropy statistics|entropy viscosity statistics|fluid velocity statistics|geoid|global statistics|gravity calculation|heat flux densities|heat flux map|heat flux statistics|heating statistics|load balance statistics|mass flux statistics|material statistics|matrix statistics|maximum depth of field|melt statistics|memory statistics|mobility statistics|particle count statistics|particles|point values|pressure statistics|rotation statistics|sea level|spherical velocity statistics|temperature statistics|topography|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization|volume of fluid statistics ]
 
 **Documentation:** A comma separated list of postprocessor objects that should be run at the end of each time step. Some of these postprocessors will declare their own parameters which may, for example, include that they will actually do something only every so many time steps or years. Alternatively, the text &lsquo;all&rsquo; indicates that all available postprocessors should be run after each time step.
 
 The following postprocessors are available:
 
 &lsquo;ODE statistics&rsquo;: A postprocessor that computes some statistics about ODEs solved during the model evolution, specifically, how many iterations are needed to solve these ODEs on average.
+
+&lsquo;Particle Distribution Score&rsquo;: This postprocessor is intended to help evaluate how much the density of particles varies within cells, with the goal of supporting the development of algorithms to select particles for deletion and addition during load balancing. Because particle deletion can happen in various ways when load balancing, there are times when unintended gradients of particle density can form, especially when particles are moving from more refined cells into coarser cells. The postprocessor calculates a value from 0 to 1 for every cell, with values closer to zero representing cells with a density which is more uniform across the cell&rsquo;s area and values closer to 1 representing a cell in which the particles are highly concentrated in one part of the cell. Essentially, the postprocessor is trying to describe numerically how much particle density varies within cells. It does this by sorting every particle in each cell into a bucket based on the particle&rsquo;s location, and comparing the resulting data structure to ideal and worst case versions.
+
+&lsquo;Particle Distribution Statistics&rsquo;: A postprocessor that computes some statistics about the particle distribution within grid cells. In particular it calculates a point-density function for every cell and derives the maximum, minimum, and standard deviation values for every cell. The postprocessor reports the average of these values from every cell. It also reports the absolute maximum and minimum values across all cells. These sorts of statistics are useful to determine whether schemes that move, add, remove, or otherwise change the number of particles associated with each cell result in a roughly uniform distribution of particles in each cell, or whether particles tend to cluster in some parts of cells leaving other parts mostly empty. For example, comparing the maximum standard deviations of different load balancing schemes applied to a given test case illuminates which load balancing method creates more clustered particles. The maximum and minimum values of these point-density functions are also useful in the same way. These statistical values are computed from the point-density function and make up a quantitative description of particle clustering which is intended to supplement qualitative descriptions of particle clustering. The goal behind describing particle clustering numerically is to assist in developing new methods to add and delete particles which maintain roughly uniform particle density within cells.
 
 &lsquo;Stokes residual&rsquo;: A postprocessor that outputs the Stokes residuals during the iterative solver algorithm into a file stokes_residuals.txt in the output directory.
 
@@ -37,7 +41,9 @@ The following postprocessors are available:
 
 &lsquo;core statistics&rsquo;: A postprocessor that computes some statistics about the core evolution. (Working only with dynamic core boundary temperature plugin)
 
-&lsquo;crystal preferred orientation&rsquo;: A Postprocessor that writes out CPO specific particle data.It can write out the CPO data as it is stored (raw) and/or as arandom draw volume weighted representation. The latter oneis recommended for plotting against real data. For both representationsthe specific output fields and their order can be set.The work of this postprocessor should better be done by the main particles postprocessor, however we need to be able to process the data before outputting it, which does not work with that postprocessor. If this is added to the other postprocessor in the future this one becomes obsolete.
+&lsquo;crystal preferred orientation&rsquo;: A Postprocessor that writes out CPO specific particle data. It can write out the CPO data as it is stored (raw) and/or as a random draw volume weighted representation. The latter one is recommended for plotting against real data. For both representations the specific output fields and their order can be set. The work of this postprocessor should better be done by the main particles postprocessor, however we need to be able to process the data before outputting it, which does not work with that postprocessor. If this is added to the other postprocessor in the future this one becomes obsolete.
+
+&lsquo;current surface&rsquo;: A postprocessor that computes a function of the surface that includes the mesh deformation. This postprocessor has a function that can be called from other plugins to get the depth.
 
 &lsquo;depth average&rsquo;: A postprocessor that computes depth averaged quantities and writes them into a file <depth_average.ext> in the output directory, where the extension of the file is determined by the output format you select. In addition to the output format, a number of other parameters also influence this postprocessor, and they can be set in the section `Postprocess/Depth average` in the input file.
 
@@ -50,7 +56,11 @@ In the output files, the $x$-value of each data point corresponds to the depth, 
 The exact approach works as follows: At each selected boundary, we compute the traction that acts normal to the boundary faces using the consistent boundary flux method as described in &ldquo;Gresho, Lee, Sani, Maslanik, Eaton (1987). The consistent Galerkin FEM for computing derived boundary quantities in thermal and or fluids problems. International Journal for Numerical Methods in Fluids, 7(4), 371-394.&rdquo; From this traction, the dynamic topography is computed using the formula $h=\frac{\sigma_{n}}{g \rho}$ where $g$ is the norm of the gravity and $\rho$ is the density. For the bottom surface we chose the convention that positive values are up and negative values are down, analogous to the deformation of the upper surface. Note that this implementation takes the direction of gravity into account, which means that reversing the flow in backward advection calculations will not reverse the instantaneous topography because the reverse flow will be divided by the reverse surface gravity.
 The file format then consists of lines with Euclidean coordinates followed by the corresponding topography value.
 
+&lsquo;entropy statistics&rsquo;: A postprocessor that computes the number of iterations used for equilibrating temperature when using the entropy material model with multiple components. It returns an average of iterations performed for every time step during the model evolution.
+
 &lsquo;entropy viscosity statistics&rsquo;: A postprocessor that computes the maximum and volume averagedentropy viscosity stabilization for the temperature field.
+
+&lsquo;fluid velocity statistics&rsquo;: A postprocessor that computes the maximum fluid velocity in the computational domain. The fluid velocity is either the melt velocity or the Darcy velocity depending on the advection method chosen for the porosity compositional field.
 
 &lsquo;geoid&rsquo;: A postprocessor that computes a representation of the geoid based on the density structure in the mantle, as well as the topography at the surface and core mantle boundary (CMB) if desired. The topography is based on the dynamic topography postprocessor in case of no free surface, and based on the real surface from the geometry model in case of a free surface. The geoid is computed from a spherical harmonic expansion, so the geometry of the domain must be a 3d spherical shell.
 
@@ -376,7 +386,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. This value depends on the density of material that is moved up or down, i.e. crustal rock, and the density of the material that is displaced (generally water or air). While the density of crustal rock is part of the material model, this parameter &lsquo;Density above&rsquo; allows the user to specify the density value of material that is displaced above the solid surface. By default this material is assumed to be air, with a density of 0. Units: \si{\kilogram\per\meter\cubed}.
+**Documentation:** Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. This value depends on the density of material that is moved up or down, i.e. crustal rock, and the density of the material that is displaced (generally water or air). While the density of crustal rock is part of the material model, this parameter &lsquo;Density above&rsquo; allows the user to specify the density value of material that is displaced above the solid surface. By default this material is assumed to be air, with a density of 0. Units: $\frac{\text{kg}}{\text{m}^3}$.
 
 (parameters:Postprocess/Dynamic_20topography/Density_20below)=
 ### __Parameter name:__ Density below
@@ -384,7 +394,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. This value depends on the density of material that is moved up or down, i.e. mantle above CMB, and the density of the material that is displaced (generally outer core material). While the density of mantle rock is part of the material model, this parameter &lsquo;Density below&rsquo; allows the user to specify the density value of material that is displaced below the solid surface. By default this material is assumed to be outer core material with a density of 9900. Units: \si{\kilogram\per\meter\cubed}.
+**Documentation:** Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. This value depends on the density of material that is moved up or down, i.e. mantle above CMB, and the density of the material that is displaced (generally outer core material). While the density of mantle rock is part of the material model, this parameter &lsquo;Density below&rsquo; allows the user to specify the density value of material that is displaced below the solid surface. By default this material is assumed to be outer core material with a density of 9900. Units: $\frac{\text{kg}}{\text{m}^3}$.
 
 (parameters:Postprocess/Dynamic_20topography/Output_20bottom)=
 ### __Parameter name:__ Output bottom
@@ -704,6 +714,50 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 **Documentation:** If set to &rsquo;true&rsquo;, also output the peak virtual memory usage (computed as the maximum over all processors).
 
+(parameters:Postprocess/Particle_20distribution_20score)=
+## **Subsection:** Postprocess / Particle distribution score
+(parameters:Postprocess/Particle_20distribution_20score/Granularity)=
+### __Parameter name:__ Granularity
+**Default value:** 2
+
+**Pattern:** [Integer range 2...2147483647 (inclusive)]
+
+**Documentation:** This parameter determines how many bins this postprocessor sorts particles into. The ideal value for granularity depends on the maximum number of particles in the cell. Generally higher values lead to more accuracy.
+
+(parameters:Postprocess/Particle_20distribution_20statistics)=
+## **Subsection:** Postprocess / Particle distribution statistics
+(parameters:Postprocess/Particle_20distribution_20statistics/KDE_20granularity)=
+### __Parameter name:__ KDE granularity
+**Default value:** 2
+
+**Pattern:** [Integer range 1...2147483647 (inclusive)]
+
+**Documentation:** The granularity parameter determines how many discrete inputs exist for the probability density function generated by the kernel density estimator. The domain of the function is multidimensional so the granularity value determines the range of inputs in each dimension. For example, a granularity value of 2 results in a PDF which is defined for the inputs 0-1 in each of its dimensions.
+
+(parameters:Postprocess/Particle_20distribution_20statistics/Kernel_20bandwidth)=
+### __Parameter name:__ Kernel bandwidth
+**Default value:** 0.3
+
+**Pattern:** [Double 0.001...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The bandwidth parameter sets the bandwidth used for the kernel function. The size of the bandwidth determines the output of the kernel function each, time it is called. Larger bandwidth result in a point-density function which has more smoothing because there is more overlap between the domains of the individual kernel functions. The opposite is true for smaller bandwidth values.
+
+(parameters:Postprocess/Particle_20distribution_20statistics/Kernel_20function)=
+### __Parameter name:__ Kernel function
+**Default value:** Uniform
+
+**Pattern:** [Selection Uniform|Gaussian|Triangular|CutOffFunctionW1 ]
+
+**Documentation:** The kernel smoothing function to use for kernel density estimation.
+
+(parameters:Postprocess/Particle_20distribution_20statistics/Use_20KDE_20per_20particle)=
+### __Parameter name:__ Use KDE per particle
+**Default value:** false
+
+**Pattern:** [Bool]
+
+**Documentation:** If &lsquo;KDE_per_particle&lsquo; is true, the point-density function is defined at the position of every particle in the cell. If it is false, the point-density-function is defined on a regular grid throughout the cell.
+
 (parameters:Postprocess/Particles)=
 ## **Subsection:** Postprocess / Particles
 (parameters:Postprocess/Particles/Data_20output_20format)=
@@ -915,7 +969,7 @@ Of course, activating this option also greatly increases the amount of data ASPE
 ### __Parameter name:__ List of output variables
 **Default value:**
 
-**Pattern:** [MultipleSelection ISA rotation timescale|Vp anomaly|Vs anomaly|adiabat|artificial viscosity|artificial viscosity composition|boundary indicators|boundary strain rate residual|boundary velocity residual|compositional vector|darcy velocity|depth|dynamic topography|error indicator|geoid|grain lag angle|gravity|heat flux map|heating|material properties|maximum horizontal compressive stress|melt fraction|melt material properties|named additional outputs|nonadiabatic pressure|nonadiabatic temperature|particle count|partition|principal stress|shear stress|spd factor|spherical velocity components|strain rate|strain rate tensor|stress|stress second invariant|surface dynamic topography|surface elevation|surface strain rate tensor|surface stress|temperature anomaly|vertical heat flux|volume of fluid values|volumetric strain rate|density|specific heat|thermal conductivity|thermal diffusivity|thermal expansivity|viscosity ]
+**Pattern:** [MultipleSelection ISA rotation timescale|Vp anomaly|Vs anomaly|adiabat|artificial viscosity|artificial viscosity composition|boundary indicators|boundary strain rate residual|boundary velocity residual|compositional vector|darcy velocity|density anomaly|depth|depth including mesh deformation|dynamic topography|entropy average|error indicator|geoid|grain lag angle|gravity|heat flux map|heating|material properties|maximum horizontal compressive stress|melt fraction|melt material properties|named additional outputs|nonadiabatic pressure|nonadiabatic temperature|particle count|partition|principal stress|shear stress|spd factor|spherical velocity components|strain rate|strain rate tensor|stress|stress residual|stress second invariant|surface dynamic topography|surface elevation|surface strain rate tensor|surface stress|temperature anomaly|vertical heat flux|volume of fluid values|volumetric strain rate ]
 
 **Documentation:** A comma separated list of visualization objects that should be run whenever writing graphical output. By default, the graphical output files will always contain the primary variables velocity, pressure, and temperature. However, one frequently wants to also visualize derived quantities, such as the thermodynamic phase that corresponds to a given temperature-pressure value, or the corresponding seismic wave speeds. The visualization objects do exactly this: they compute such derived quantities and place them into the output file. The current parameter is the place where you decide which of these additional output variables you want to have in your output file.
 
@@ -923,7 +977,7 @@ The following postprocessors are available:
 
 &lsquo;ISA rotation timescale&rsquo;: A visualization output object that generates output showing the timescale for the rotation of grains toward the infinite strain axis. Kaminski and Ribe (see {cite}`Kaminski2002`) call this quantity $\tau_\text{ISA}$ and define it as $\tau_\text{ISA} \approx \frac{1}{\dot{\epsilon}}$ where $\dot{\epsilon}$ is the largest eigenvalue of the strain rate tensor. It can be used, along with the grain lag angle $\Theta$, to calculate the grain orientation lag parameter.
 
-Physical units: \si{\second}.
+Physical units: $\text{s}$.
 
 &lsquo;Vp anomaly&rsquo;: A visualization output object that generates output showing the percentage anomaly in the seismic compressional wave speed $V_p$ as a spatially variable function with one value per cell. This anomaly is either shown as a percentage anomaly relative to the reference profile given by adiabatic conditions (with the compositions given by the current composition, such that the reference could potentially change through time), or as a percentage change relative to the laterally averaged velocity at the depth of the cell. This velocity is calculated by linear interpolation between average values calculated within equally thick depth slices. The number of depth slices in the domain is user-defined. Typically, the best results will be obtained if the number of depth slices is balanced between being large enough to capture step changes in velocities, but small enough to maintain a reasonable number of evaluation points per slice. Bear in mind that lateral averaging subsamples the finite element mesh. Note that this plugin requires a material model that provides seismic velocities.
 
@@ -935,15 +989,15 @@ Physical units: None, the quantity being output is a fractional change provided 
 
 &lsquo;adiabat&rsquo;: A visualization output object that generates adiabatic temperature, pressure, density, and density derivative (with regard to depth)as produced by the `AdiabaticConditions` class.
 
-Physical units: \si{\kelvin}, \si{\pascal}, \si{\kilo\gram\per\meter\cubed\per\meter}, respectively, for the four components.
+Physical units: $\text{K}$, $\text{Pa}$, $\frac{\text{kg}}{\text{m}^3\text{m}}$}, respectively, for the four components.
 
 &lsquo;artificial viscosity&rsquo;: A visualization output object that generates output showing the value of the artificial viscosity on each cell.
 
-Physical units: \si{\watt\per\meter\per\kelvin}.
+Physical units: $\frac{\text{W}}{\text{m}\text{K}}$.
 
 &lsquo;artificial viscosity composition&rsquo;: A visualization output object that generates output showing the value of the artificial viscosity for a compositional field on each cell.
 
-Physical units: \si{\meter\squared\per\second}.
+Physical units: $\frac{\text{m}^2}{\text{s}}$.
 
 &lsquo;boundary indicators&rsquo;: A visualization output object that generates output about the used boundary indicators. In a loop over the active cells, if a cell lies at a domain boundary, the boundary indicator of the face along the boundary is requested. In case the cell does not lie along any domain boundary, the cell is assigned the value of the largest used boundary indicator plus one. When a cell is situated in one of the corners of the domain, multiple faces will have a boundary indicator. This postprocessor returns the value of the first face along a boundary that is encountered in a loop over all the faces.
 
@@ -965,9 +1019,17 @@ Physical units: None.
 
 Physical units: $\frac{\text{m}}{\text{s}}$ or $\frac{\text{m}}{\text{year}}$, depending on settings in the input file.
 
+&lsquo;density anomaly&rsquo;: A visualization output postprocessor that outputs the density minus the depth-average of the density.In the &ldquo;lateral average&rdquo; scheme, the average density is calculated using the lateral averaging functionfrom the &ldquo;depth average&rdquo; postprocessor and interpolated linearly between the layers specified through &ldquo;Number of depth slices&rdquo;. In the &ldquo;reference profile&rdquo; scheme, the adiabatic density is used as theaverage density.
+
+Physical units: \si{\kg/m^3}.
+
 &lsquo;depth&rsquo;: A visualization output postprocessor that outputs the depth for all points inside the domain, as determined by the geometry model.
 
 It is worth comparing this visualization postprocessor with the one called &ldquo;surface elevation&rdquo;. The current one is used to visualize a volume variable, whereas the latter only outputs information on the surface. Moreover &ldquo;depth&rdquo; is based on a member function of the geometry models that is documented as never returning a number less than zero -- in other words, it returns the depth of an evaluation point with regard to a reference surface that defines a zero depth, but for points that lie above this reference surface, it returns zero. As a consequence, it cannot be used to visualize positive elevations, whereas the the one called &ldquo;surface elevation&rdquo; can.
+
+Physical units: $\text{m}$.
+
+&lsquo;depth including mesh deformation&rsquo;: A visualization output postprocessor that outputs the depth for all points inside the domain, as determined by the current model surface. This plugin will include changes to the surface from mesh deformation.
 
 Physical units: \si{\meter}.
 
@@ -977,7 +1039,11 @@ Strictly speaking, the dynamic topography is of course a quantity that is only o
 
 Alternatively, consider using the "surface dynamic topography" visualization postprocessor to only output the dynamic topography at the boundary of the domain.
 
-Physical units: \si{\meter}.
+Physical units: $\text{m}$.
+
+&lsquo;entropy average&rsquo;: A visualization output object that generates output for the averaged entropy of multiple components.
+
+Physical units: \si{\J/kg/K}.
 
 &lsquo;error indicator&rsquo;: A visualization output object that generates output showing the estimated error or other mesh refinement indicator as a spatially variable function with one value per cell.
 
@@ -985,23 +1051,23 @@ Physical units: None. (Strictly speaking, errors have physical units of course, 
 
 &lsquo;geoid&rsquo;: Visualization for the geoid solution. The geoid is given by the equivalent water column height due to a gravity perturbation.
 
-Physical units: \si{\meter}.
+Physical units: $\text{m}$.
 
 &lsquo;grain lag angle&rsquo;: A visualization output object that generates output showing the angle between the ~infinite strain axis and the flow velocity. Kaminski and Ribe (see {cite}`Kaminski2002`) call this quantity $\Theta$ and define it as $\Theta = \cos^{-1}(\hat{u}\cdot\hat{e})$  where $\hat{u}=\vec{u}/|{u}|$, $\vec{u}$ is the local flow velocity, and $\hat{e}$ is the local infinite strain axis, which we calculate as the first eigenvector of the &rsquo;left stretch&rsquo; tensor. $\Theta$ can be used to calculate the grain orientation lag parameter.
 
-Physical units: \si{\radian}.
+Physical units: $\text{radian}$.
 
 &lsquo;gravity&rsquo;: A visualization output object that outputs the gravity vector.
 
-Physical units: \si {\meter\per\second\squared} .
+Physical units: $\frac{\text{m}}{\text{s}^2}$.
 
 &lsquo;heat flux map&rsquo;: A visualization output object that generates output for the heat flux density across the top and bottom boundary in outward direction. The heat flux is computed as sum of advective heat flux and conductive heat flux through Neumann boundaries, both computed as integral over the boundary area, and conductive heat flux through Dirichlet boundaries, which is computed using the consistent boundary flux method as described in &ldquo;Gresho, Lee, Sani, Maslanik, Eaton (1987). The consistent Galerkin FEM for computing derived boundary quantities in thermal and or fluids problems. International Journal for Numerical Methods in Fluids, 7(4), 371-394.&rdquo; If only conductive heat flux through Dirichlet boundaries is of interest, the postprocessor can produce output of higher resolution by evaluating the CBF solution vector point-wise instead of computing cell-wise averaged values.
 
-Physical units: \si{\watt\per\meter\squared}.
+Physical units: $\frac{\text{W}}{\text{m}^2}$.
 
 &lsquo;heating&rsquo;: A visualization output object that generates output for all the heating terms used in the energy equation.
 
-Physical units: \si{\watt\per\cubic\meter}.
+Physical units: $\frac{\text{W}}{\text{m}^3}$\si{\watt\per\cubic\meter}.
 
 &lsquo;material properties&rsquo;: A visualization output object that generates output for the material properties given by the material model. The current postprocessor allows to output a (potentially large) subset of all of the information provided by material models at once, with just a single material model evaluation per output point. Although individual properties can still be listed in the &ldquo;List of output variables&rdquo;, this visualization plugin is called internally to avoid duplicated evaluations of the material model.
 
@@ -1015,9 +1081,9 @@ Following {cite}`LundTownend07`, we define the maximum horizontal stress directi
 
 In two space dimensions, $\mathbf n$ is simply a vector that is horizontal (we choose one of the two possible choices). This direction is then scaled by the size of the horizontal stress in this direction, i.e., the plugin outputs the vector $\mathbf w = (\mathbf n^T \sigma_c \mathbf n) \; \mathbf n$.
 
-In three space dimensions, given two horizontal, perpendicular, unit length, but otherwise arbitrarily chosen vectors $\mathbf u,\mathbf v$, we can express $\mathbf n = (\cos \alpha)\mathbf u + (\sin\alpha)\mathbf v$ where $\alpha$ maximizes the expression \begin{align*}  f(\alpha) = \mathbf n^T \sigma_c \mathbf n  = (\mathbf u^T \sigma_c \mathbf u)(\cos\alpha)^2    +2(\mathbf u^T \sigma_c \mathbf v)(\cos\alpha)(\sin\alpha)    +(\mathbf v^T \sigma_c \mathbf v)(\sin\alpha)^2.\end{align*}
+In three space dimensions, given two horizontal, perpendicular, unit length, but otherwise arbitrarily chosen vectors $\mathbf u,\mathbf v$, we can express $\mathbf n = (\cos \alpha)\mathbf u + (\sin\alpha)\mathbf v$ where $\alpha$ maximizes the expression $\begin{align*}  f(\alpha) = \mathbf n^T \sigma_c \mathbf n  = (\mathbf u^T \sigma_c \mathbf u)(\cos\alpha)^2    +2(\mathbf u^T \sigma_c \mathbf v)(\cos\alpha)(\sin\alpha)    +(\mathbf v^T \sigma_c \mathbf v)(\sin\alpha)^2.\end{align*}$
 
-The maximum of $f(\alpha)$ is attained where $f^\prime(\alpha)=0$. Evaluating the derivative and using trigonometric identities, one finds that $\alpha$ has to satisfy the equation \begin{align*}  \tan(2\alpha) = \frac{2.0\mathbf u^T \sigma_c \mathbf v}                          {\mathbf u^T \sigma_c \mathbf u                            - \mathbf v^T \sigma_c \mathbf v}.\end{align*}Since the transform $\alpha\mapsto\alpha+\pi$ flips the direction of $\mathbf n$, we only need to seek a solution to this equation in the interval $\alpha\in[0,\pi)$. These are given by $\alpha_1=\frac 12 \arctan \frac{\mathbf u^T \sigma_c \mathbf v}{\mathbf u^T \sigma_c \mathbf u - \mathbf v^T \sigma_c \mathbf v}$ and $\alpha_2=\alpha_1+\frac{\pi}{2}$, one of which will correspond to a minimum and the other to a maximum of $f(\alpha)$. One checks the sign of $f^{\prime\prime}(\alpha)=-2(\mathbf u^T \sigma_c \mathbf u - \mathbf v^T \sigma_c \mathbf v)\cos(2\alpha) - 2 (\mathbf u^T \sigma_c \mathbf v) \sin(2\alpha)$ for each of these to determine the $\alpha$ that maximizes $f(\alpha)$, and from this immediately arrives at the correct form for the maximum horizontal stress $\mathbf n$.
+The maximum of $f(\alpha)$ is attained where $f^\prime(\alpha)=0$. Evaluating the derivative and using trigonometric identities, one finds that $\alpha$ has to satisfy the equation $\begin{align*}  \tan(2\alpha) = \frac{2.0\mathbf u^T \sigma_c \mathbf v}                          {\mathbf u^T \sigma_c \mathbf u                            - \mathbf v^T \sigma_c \mathbf v}.\end{align*}$Since the transform $\alpha\mapsto\alpha+\pi$ flips the direction of $\mathbf n$, we only need to seek a solution to this equation in the interval $\alpha\in[0,\pi)$. These are given by $\alpha_1=\frac 12 \arctan \frac{\mathbf u^T \sigma_c \mathbf v}{\mathbf u^T \sigma_c \mathbf u - \mathbf v^T \sigma_c \mathbf v}$ and $\alpha_2=\alpha_1+\frac{\pi}{2}$, one of which will correspond to a minimum and the other to a maximum of $f(\alpha)$. One checks the sign of $f^{\prime\prime}(\alpha)=-2(\mathbf u^T \sigma_c \mathbf u - \mathbf v^T \sigma_c \mathbf v)\cos(2\alpha) - 2 (\mathbf u^T \sigma_c \mathbf v) \sin(2\alpha)$ for each of these to determine the $\alpha$ that maximizes $f(\alpha)$, and from this immediately arrives at the correct form for the maximum horizontal stress $\mathbf n$.
 
 The description above computes a 3d *direction* vector $\mathbf n$. If one were to scale this vector the same way as done in 2d, i.e., with the magnitude of the stress in this direction, one will typically get vectors whose length is principally determined by the hydrostatic pressure at a given location simply because the hydrostatic pressure is the largest component of the overall stress. On the other hand, the hydrostatic pressure does not determine any principal direction because it is an isotropic, anti-compressive force. As a consequence, there are often points in simulations (e.g., at the center of convection rolls) where the stress has no dominant horizontal direction, and the algorithm above will then in essence choose a random direction because the stress is approximately equal in all horizontal directions. If one scaled the output by the magnitude of the stress in this direction (i.e., approximately equal to the hydrostatic pressure at this point), one would get randomly oriented vectors at these locations with significant lengths.
 
@@ -1027,7 +1093,9 @@ Fig.~\ref{fig:max-horizontal-compressive-stress} shows a simple example for this
 
 \begin{figure}  \includegraphics[width=0.3\textwidth]    {viz/plugins/maximum_horizontal_compressive_stress/temperature.png}  \hfill  \includegraphics[width=0.3\textwidth]    {viz/plugins/maximum_horizontal_compressive_stress/velocity.png}  \hfill  \includegraphics[width=0.3\textwidth]    {viz/plugins/maximum_horizontal_compressive_stress/horizontal-stress.png}  \caption{\it Illustration of the &lsquo;maximum horizontal     compressive stress&rsquo; visualization plugin. The left     figure shows a ridge-like temperature anomaly. Together     with no-slip boundary along all six boundaries, this     results in two convection rolls (center). The maximal     horizontal compressive strength at the bottom center     of the domain is perpendicular to the ridge because     the flow comes together there from the left and right,     yielding a compressive force in left-right direction.     At the top of the model, the flow separates outward,     leading to a *negative* compressive stress     in left-right direction; because there is no flow     in front-back direction, the compressive strength     in front-back direction is zero, making the along-ridge     direction the dominant one. At the center of the     convection rolls, both horizontal directions yield     the same stress; the plugin therefore chooses an     essentially arbitrary horizontal vector, but then     uses a zero magnitude given that the difference     between the maximal and minimal horizontal stress     is zero at these points.}  \label{fig:max-horizontal-compressive-stress}\end{figure}
 
-Physical units: \si{\pascal}.
+Note that this plugin does not take into account elastic stresses and therefore cannot be used when elasticity is switched on.
+
+Physical units: $\text{Pa}$.
 
 &lsquo;melt fraction&rsquo;: A visualization output object that generates output for the melt fraction at the temperature and pressure of the current point. If the material model computes a melt fraction, this is the quantity that will be visualized. Otherwise, a specific parametrization for batch melting (as described in the following) will be used. It does not take into account latent heat. If there are no compositional fields, or no fields called &rsquo;pyroxenite&rsquo;,  this postprocessor will visualize the melt fraction of peridotite (calculated using the anhydrous model of Katz, 2003). If there is a compositional field called &rsquo;pyroxenite&rsquo;, the postprocessor assumes that this compositional field is the content of pyroxenite, and will visualize the melt fraction for a mixture of peridotite and pyroxenite (using the melting model of Sobolev, 2011 for pyroxenite). All the parameters that were used in these calculations can be changed in the input file, the most relevant maybe being the mass fraction of Cpx in peridotite in the Katz melting model (Mass fraction cpx), which right now has a default of 15\%. The corresponding $p$-$T$-diagrams can be generated by running the tests melt\_postprocessor\_peridotite and melt\_postprocessor\_pyroxenite.
 
@@ -1047,11 +1115,11 @@ Physical units: Various, depending on what is being output.
 
 The variable that is outputted this way is computed by taking the pressure at each point and subtracting from it the adiabatic pressure computed at the beginning of the simulation. Because the adiabatic pressure is one way of defining a static pressure background field, what this visualization postprocessor therefore produces is *one* way to compute a *dynamic pressure*. There are, however, other ways as well, depending on the choice of the &ldquo;background pressure&rdquo;.
 
-Physical units: \si{\pascal}.
+Physical units: $\text{Pa}$.
 
 &lsquo;nonadiabatic temperature&rsquo;: A visualization output object that generates output for the non-adiabatic component of the temperature.
 
-Physical units: \si{\kelvin}.
+Physical units: $\text{K}$.
 
 &lsquo;particle count&rsquo;: A visualization output object that generates output about the number of particles per cell.
 
@@ -1063,11 +1131,11 @@ Physical units: None.
 
 &lsquo;principal stress&rsquo;: A visualization output object that outputs the principal stresses and directions, i.e., the eigenvalues and eigenvectors of the stress tensor. Wikipedia defines principal stresses as follows: At every point in a stressed body there are at least three planes, called principal planes, with normal vectors, called principal directions, where the corresponding stress vector is perpendicular to the plane, and where there are no normal shear stresses. The three stresses normal to these principal planes are called principal stresses. This postprocessor can either operate on the full stress tensor or only on the deviatoric stress tensor, depending on what run-time parameters are set.
 
-Physical units: \si{\pascal}.
+Physical units: $\text{Pa}$.
 
 &lsquo;shear stress&rsquo;: A visualization output object that generates output for the 3 (in 2d) or 6 (in 3d) components of the shear stress tensor, i.e., for the components of the tensor $-2\eta\varepsilon(\mathbf u)$ in the incompressible case and $-2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]$ in the compressible case. If elasticity is used, the elastic contribution is being accounted for. The shear stress differs from the full stress tensor by the absence of the pressure. Note that the convention of positive compressive stress is followed.
 
-Physical units: \si{\pascal}.
+Physical units: $\text{Pa}$.
 
 &lsquo;spd factor&rsquo;: A visualization output object that generates output for the spd factor. The spd factor is a factor which scales a part of the Jacobian used for the Newton solver to make sure that the Jacobian remains positive definite.
 
@@ -1077,11 +1145,9 @@ Physical units: None.
 
 Physical units: $\frac{\text{m}}{\text{s}}$ or $\frac{\text{m}}{\text{year}}$, depending on settings in the input file.
 
-&lsquo;strain rate&rsquo;: A visualization output object that generates output for the norm of the strain rate, i.e., for the quantity $\sqrt{\varepsilon(\mathbf u):\varepsilon(\mathbf u)}$ in the incompressible case and $\sqrt{[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]:[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]}$ in the compressible case.
+&lsquo;strain rate&rsquo;: A visualization output object that generates output for the norm of the strain rate, i.e., for the quantity $\sqrt{\varepsilon(\mathbf u):\varepsilon(\mathbf u)}$ in the incompressible case and $\sqrt{[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]:[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]}$ in the compressible case. It is also called effective deviatoric strain rate in Glerum et al. (2018).
 
-This postprocessor outputs the quantity computed herein as a tensor, i.e., programs such as VisIt or Pararview can visualize it as tensors represented by ellipses, not just as individual fields. That said, you can also visualize individual tensor components, by noting that the components that are written to the output file correspond to the tensor components $t_{xx}, t_{xy}, t_{yx}, t_{yy}$ (in 2d) or  $t_{xx}, t_{xy}, t_{xz}, t_{yx}, t_{yy}, t_{yz}, t_{zx}, t_{zy}, t_{zz}$ (in 3d) of a tensor $t$ in a Cartesian coordinate system. Even though the tensor we output is symmetric, the output contains all components of the tensor because that is what the file format requires.
-
-Physical units: \si{\per\second}.
+Physical units: $\frac{1}{\text{s}}$.
 
 &lsquo;strain rate tensor&rsquo;: A visualization output object that generates output for the 4 (in 2d) or 9 (in 3d) components of the strain rate tensor, i.e., for the components of the tensor $\varepsilon(\mathbf u)$ in the incompressible case and $\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I$ in the compressible case.
 
@@ -1093,17 +1159,19 @@ Physical units: \si{\per\second}.
 
 This postprocessor outputs the quantity computed herein as a tensor, i.e., programs such as VisIt or Pararview can visualize it as tensors represented by ellipses, not just as individual fields. That said, you can also visualize individual tensor components, by noting that the components that are written to the output file correspond to the tensor components $t_{xx}, t_{xy}, t_{yx}, t_{yy}$ (in 2d) or  $t_{xx}, t_{xy}, t_{xz}, t_{yx}, t_{yy}, t_{yz}, t_{zx}, t_{zy}, t_{zz}$ (in 3d) of a tensor $t$ in a Cartesian coordinate system. Even though the tensor we output is symmetric, the output contains all components of the tensor because that is what the file format requires.
 
-Physical units: \si{\pascal}.
+Physical units: $\text{Pa}$.
+
+&lsquo;stress residual&rsquo;: A visualization output object that generates output for the difference between the second moment invariant of the deviatoric stress tensor and the yield stress. Note that this plugin currently only works when the &rsquo;visco plastic&rsquo; material model is used.
 
 &lsquo;stress second invariant&rsquo;: A visualization output object that outputs the second moment invariant of the deviatoric stress tensor.
 
-Physical units: \si{\pascal}.
+Physical units: $\text{Pa}$.
 
 &lsquo;surface dynamic topography&rsquo;: A visualization output object that generates output for the dynamic topography at the top and bottom of the model space. The actual computation of this topography is handled inside the &rsquo;dynamic topography&rsquo; postprocessor, please check its documentation for details about the numerical methods.
 
 In contrast to the &lsquo;dynamic topography&rsquo; visualization postprocessor, this plugin really only evaluates the dynamic topography at faces of cells that are adjacent to &lsquo;bottom&rsquo; and &lsquo;top&rsquo; boundaries, and only outputs information on the surface of the domain, rather than padding the information with zeros in the interior of the domain.
 
-Physical units: \si{\meter}.
+Physical units: $\text{m}$.
 
 &lsquo;surface elevation&rsquo;: This postprocessor is used to visualize the elevation of points on the surface of the geometry relative to a &ldquo;reference elevation&rdquo; defined by an undeformed geometry. It can be used, for example, to visualize an initial topography field, as well as the result of dynamic surface deformation due to a free surface.
 
@@ -1113,25 +1181,25 @@ It is worth comparing this visualization postprocessor with the one called &ldqu
 
 Finally, it is worth pointing out the &ldquo;topography&rdquo; postprocessor (not a visualization postprocessor) that returns the surface elevation as a point cloud into a text file. The information is comparable to what the current object creates, but it is not as easily used to visualize information.
 
-Physical units: \si{\meter}.
+Physical units: $\text{m}$.
 
 &lsquo;surface strain rate tensor&rsquo;: A visualization output object that generates output on the surface of the domain for the 4 (in 2d) or 9 (in 3d) components of the strain rate tensor, i.e., for the components of the tensor $\varepsilon(\mathbf u)$ in the incompressible case and $\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I$ in the compressible case.Note that both in 2d and in 3d the output tensor will have 9 elements, but that in 2d, only 4 are filled.
 
-Physical units: \si{\per\second}.
+Physical units: $\frac{1}{\text{s}}$.
 
 &lsquo;surface stress&rsquo;: A visualization output object that generates output on the surface of the domain for the 3 (in 2d) or 6 (in 3d) components of the stress tensor, i.e., for the components of the tensor $-2\eta\varepsilon(\mathbf u)+pI$ in the incompressible case and $-2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]+pI$ in the compressible case. If elasticity is included, its contribution is accounted for. Note that the convention of positive compressive stress is followed.The stress outputted on the surface of the domain will equal the stress on the surface of the volume output if the parameter &rsquo;Point-wise stress and strain&rsquo; in the Visualization subsection is set to true.
 
 This postprocessor outputs the quantity computed herein as a tensor, i.e., programs such as VisIt or Pararview can visualize it as tensors represented by ellipses, not just as individual fields. That said, you can also visualize individual tensor components, by noting that the components that are written to the output file correspond to the tensor components $t_{xx}, t_{xy}, t_{yx}, t_{yy}$ (in 2d) or  $t_{xx}, t_{xy}, t_{xz}, t_{yx}, t_{yy}, t_{yz}, t_{zx}, t_{zy}, t_{zz}$ (in 3d) of a tensor $t$ in a Cartesian coordinate system. Even though the tensor we output is symmetric, the output contains all components of the tensor because that is what the file format requires.
 
-Physical units: \si{\pascal}.
+Physical units: $\text{Pa}$.
 
 &lsquo;temperature anomaly&rsquo;: A visualization output postprocessor that outputs the temperature minus the depth-average of the temperature.The average temperature is calculated using the lateral averaging function from the &ldquo;depth average&rdquo; postprocessor and interpolated linearly between the layers specified through &ldquo;Number of depth slices&rdquo;.
 
-Physical units: \si{\kelvin}.
+The &rsquo;nonadiabatic temperature&rsquo; is another option to output temperature anomaly, but compared with the reference adiabatic temperature profile instead.Physical units: $\text{K}$.
 
 &lsquo;vertical heat flux&rsquo;: A visualization output object that generates output for the heat flux in the vertical direction, which is the sum of the advective and the conductive heat flux, with the sign convention of positive flux upwards.
 
-Physical units: \si{\watt\per\square\meter}.
+Physical units: $\frac{\text{W}}{\text{m}^2}$.
 
 &lsquo;volume of fluid values&rsquo;: A visualization output object that outputs the volume fraction and optionally a level set field and the interface normal vectors of volume of fluid fields.
 
@@ -1139,7 +1207,7 @@ Physical units: None.
 
 &lsquo;volumetric strain rate&rsquo;: A visualization output object that generates output for the volumetric strain rate, i.e., for the quantity $\nabla\cdot\mathbf u = \textrm{div}\; \mathbf u = \textrm{trace}\; \varepsilon(\mathbf u)$. This should be zero (in some average sense) in incompressible convection models, but can be non-zero in compressible models and models with melt transport.
 
-Physical units: \si{\per\second}.
+Physical units: $\frac{1}{\text{s}}$.
 
 (parameters:Postprocess/Visualization/Number_20of_20grouped_20files)=
 ### __Parameter name:__ Number of grouped files
@@ -1268,6 +1336,24 @@ The effect of using this option can be seen in the following picture:
 
 **Documentation:** Names of vectors as they will appear in the output.
 
+(parameters:Postprocess/Visualization/Density_20anomaly)=
+## **Subsection:** Postprocess / Visualization / Density anomaly
+(parameters:Postprocess/Visualization/Density_20anomaly/Average_20density_20scheme)=
+### __Parameter name:__ Average density scheme
+**Default value:** reference profile
+
+**Pattern:** [Selection reference profile|lateral average ]
+
+**Documentation:** Scheme to compute the average density-depth profile. The reference profile option evaluates the conditions along the reference adiabat according to the material model. The lateral average option instead calculates a lateral average from subdivision of the mesh. The lateral average option may produce spurious results where there are sharp density changes.
+
+(parameters:Postprocess/Visualization/Density_20anomaly/Number_20of_20depth_20slices)=
+### __Parameter name:__ Number of depth slices
+**Default value:** 20
+
+**Pattern:** [Integer range 1...2147483647 (inclusive)]
+
+**Documentation:** Number of depth slices used to define average density.
+
 (parameters:Postprocess/Visualization/Heat_20flux_20map)=
 ## **Subsection:** Postprocess / Visualization / Heat flux map
 (parameters:Postprocess/Visualization/Heat_20flux_20map/Output_20point_20wise_20heat_20flux)=
@@ -1298,7 +1384,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Constant parameter in the quadratic function that approximates the solidus of peridotite. Units: \si{\degreeCelsius}.
+**Documentation:** Constant parameter in the quadratic function that approximates the solidus of peridotite. Units: $^\circ\text{C}$.
 
 (parameters:Postprocess/Visualization/Melt_20fraction/A2)=
 ### __Parameter name:__ A2
@@ -1306,7 +1392,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Prefactor of the linear pressure term in the quadratic function that approximates the solidus of peridotite. \si{\degreeCelsius\per\pascal}.
+**Documentation:** Prefactor of the linear pressure term in the quadratic function that approximates the solidus of peridotite. $\frac{^\circ\text{C}}{\text{Pa}}$.
 
 (parameters:Postprocess/Visualization/Melt_20fraction/A3)=
 ### __Parameter name:__ A3
@@ -1314,7 +1400,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Prefactor of the quadratic pressure term in the quadratic function that approximates the solidus of peridotite. \si{\degreeCelsius\per\pascal\squared}.
+**Documentation:** Prefactor of the quadratic pressure term in the quadratic function that approximates the solidus of peridotite. $\frac{^\circ\text{C}}{\text{Pa}^2}$.
 
 (parameters:Postprocess/Visualization/Melt_20fraction/B1)=
 ### __Parameter name:__ B1
@@ -1322,7 +1408,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Constant parameter in the quadratic function that approximates the lherzolite liquidus used for calculating the fraction of peridotite-derived melt. Units: \si{\degreeCelsius}.
+**Documentation:** Constant parameter in the quadratic function that approximates the lherzolite liquidus used for calculating the fraction of peridotite-derived melt. Units: $^\circ\text{C}$.
 
 (parameters:Postprocess/Visualization/Melt_20fraction/B2)=
 ### __Parameter name:__ B2
@@ -1330,7 +1416,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Prefactor of the linear pressure term in the quadratic function that approximates the  lherzolite liquidus used for calculating the fraction of peridotite-derived melt. \si{\degreeCelsius\per\pascal}.
+**Documentation:** Prefactor of the linear pressure term in the quadratic function that approximates the  lherzolite liquidus used for calculating the fraction of peridotite-derived melt. $\frac{^\circ\text{C}}{\text{Pa}}$.
 
 (parameters:Postprocess/Visualization/Melt_20fraction/B3)=
 ### __Parameter name:__ B3
@@ -1338,7 +1424,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Prefactor of the quadratic pressure term in the quadratic function that approximates the  lherzolite liquidus used for calculating the fraction of peridotite-derived melt. \si{\degreeCelsius\per\pascal\squared}.
+**Documentation:** Prefactor of the quadratic pressure term in the quadratic function that approximates the  lherzolite liquidus used for calculating the fraction of peridotite-derived melt. $\frac{^\circ\text{C}}{\text{Pa}^2}$.
 
 (parameters:Postprocess/Visualization/Melt_20fraction/C1)=
 ### __Parameter name:__ C1
@@ -1346,7 +1432,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Constant parameter in the quadratic function that approximates the liquidus of peridotite. Units: \si{\degreeCelsius}.
+**Documentation:** Constant parameter in the quadratic function that approximates the liquidus of peridotite. Units: $^\circ\text{C}$.
 
 (parameters:Postprocess/Visualization/Melt_20fraction/C2)=
 ### __Parameter name:__ C2
@@ -1354,7 +1440,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Prefactor of the linear pressure term in the quadratic function that approximates the liquidus of peridotite. \si{\degreeCelsius\per\pascal}.
+**Documentation:** Prefactor of the linear pressure term in the quadratic function that approximates the liquidus of peridotite. $\frac{^\circ\text{C}}{\text{Pa}}$.
 
 (parameters:Postprocess/Visualization/Melt_20fraction/C3)=
 ### __Parameter name:__ C3
@@ -1362,7 +1448,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Prefactor of the quadratic pressure term in the quadratic function that approximates the liquidus of peridotite. \si{\degreeCelsius\per\pascal\squared}.
+**Documentation:** Prefactor of the quadratic pressure term in the quadratic function that approximates the liquidus of peridotite. $\frac{^\circ\text{C}}{\text{Pa}^2}$.
 
 (parameters:Postprocess/Visualization/Melt_20fraction/D1)=
 ### __Parameter name:__ D1
@@ -1370,7 +1456,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Constant parameter in the quadratic function that approximates the solidus of pyroxenite. Units: \si{\degreeCelsius}.
+**Documentation:** Constant parameter in the quadratic function that approximates the solidus of pyroxenite. Units: $^\circ\text{C}$.
 
 (parameters:Postprocess/Visualization/Melt_20fraction/D2)=
 ### __Parameter name:__ D2
@@ -1378,7 +1464,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Prefactor of the linear pressure term in the quadratic function that approximates the solidus of pyroxenite. Note that this factor is different from the value given in Sobolev, 2011, because they use the potential temperature whereas we use the absolute temperature. \si{\degreeCelsius\per\pascal}.
+**Documentation:** Prefactor of the linear pressure term in the quadratic function that approximates the solidus of pyroxenite. Note that this factor is different from the value given in Sobolev, 2011, because they use the potential temperature whereas we use the absolute temperature. $\frac{^\circ\text{C}}{\text{Pa}}$.
 
 (parameters:Postprocess/Visualization/Melt_20fraction/D3)=
 ### __Parameter name:__ D3
@@ -1386,7 +1472,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Prefactor of the quadratic pressure term in the quadratic function that approximates the solidus of pyroxenite. \si{\degreeCelsius\per\pascal\squared}.
+**Documentation:** Prefactor of the quadratic pressure term in the quadratic function that approximates the solidus of pyroxenite. $\frac{^\circ\text{C}}{\text{Pa}^2}$.
 
 (parameters:Postprocess/Visualization/Melt_20fraction/E1)=
 ### __Parameter name:__ E1
@@ -1394,7 +1480,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Prefactor of the linear depletion term in the quadratic function that approximates the melt fraction of pyroxenite. \si{\degreeCelsius\per\pascal}.
+**Documentation:** Prefactor of the linear depletion term in the quadratic function that approximates the melt fraction of pyroxenite. $\frac{^\circ\text{C}}{\text{Pa}}$.
 
 (parameters:Postprocess/Visualization/Melt_20fraction/E2)=
 ### __Parameter name:__ E2
@@ -1402,7 +1488,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Prefactor of the quadratic depletion term in the quadratic function that approximates the melt fraction of pyroxenite. \si{\degreeCelsius\per\pascal\squared}.
+**Documentation:** Prefactor of the quadratic depletion term in the quadratic function that approximates the melt fraction of pyroxenite. $\frac{^\circ\text{C}}{\text{Pa}^2}$.
 
 (parameters:Postprocess/Visualization/Melt_20fraction/Mass_20fraction_20cpx)=
 ### __Parameter name:__ Mass fraction cpx
@@ -1434,7 +1520,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Prefactor of the linear pressure term in the linear function that approximates the clinopyroxene reaction coefficient. Units: \si{\per\pascal}.
+**Documentation:** Prefactor of the linear pressure term in the linear function that approximates the clinopyroxene reaction coefficient. Units: $\frac{1}{\text{Pa}}$.
 
 (parameters:Postprocess/Visualization/Melt_20material_20properties)=
 ## **Subsection:** Postprocess / Visualization / Melt material properties

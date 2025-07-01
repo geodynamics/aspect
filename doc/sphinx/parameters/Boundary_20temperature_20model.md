@@ -33,7 +33,7 @@ This parameter only describes which boundaries have a fixed temperature, but not
 
 **Pattern:** [MultipleSelection ascii data|box|box with lithosphere boundary indicators|constant|dynamic core|function|initial temperature|spherical constant ]
 
-**Documentation:** A comma-separated list of boundary temperature models that will be used to initialize the temperature. These plugins are loaded in the order given, and modify the existing temperature field via the operators listed in &rsquo;List of model operators&rsquo;.
+**Documentation:** A comma-separated list of boundary temperature models that will be used as temperature boundary conditions. These plugins are loaded in the order given, and modify the existing temperature field via the operators listed in &rsquo;List of model operators&rsquo;.
 
 The following boundary temperature models are available:
 
@@ -169,7 +169,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Temperature at the bottom boundary (at minimal $z$-value). Units: \si{\kelvin}.
+**Documentation:** Temperature at the bottom boundary (at minimal $z$-value). Units: $\text{K}$.
 
 (parameters:Boundary_20temperature_20model/Box/Left_20temperature)=
 ### __Parameter name:__ Left temperature
@@ -177,7 +177,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Temperature at the left boundary (at minimal $x$-value). Units: \si{\kelvin}.
+**Documentation:** Temperature at the left boundary (at minimal $x$-value). Units: $\text{K}$.
 
 (parameters:Boundary_20temperature_20model/Box/Right_20temperature)=
 ### __Parameter name:__ Right temperature
@@ -185,7 +185,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Temperature at the right boundary (at maximal $x$-value). Units: \si{\kelvin}.
+**Documentation:** Temperature at the right boundary (at maximal $x$-value). Units: $\text{K}$.
 
 (parameters:Boundary_20temperature_20model/Box/Top_20temperature)=
 ### __Parameter name:__ Top temperature
@@ -193,7 +193,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Temperature at the top boundary (at maximal $x$-value). Units: \si{\kelvin}.
+**Documentation:** Temperature at the top boundary (at maximal $x$-value). Units: $\text{K}$.
 
 (parameters:Boundary_20temperature_20model/Box_20with_20lithosphere_20boundary_20indicators)=
 ## **Subsection:** Boundary temperature model / Box with lithosphere boundary indicators
@@ -203,7 +203,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Temperature at the bottom boundary (at minimal $z$-value). Units: \si{\kelvin}.
+**Documentation:** Temperature at the bottom boundary (at minimal $z$-value). Units: $\text{K}$.
 
 (parameters:Boundary_20temperature_20model/Box_20with_20lithosphere_20boundary_20indicators/Left_20temperature)=
 ### __Parameter name:__ Left temperature
@@ -211,7 +211,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Temperature at the left boundary (at minimal $x$-value). Units: \si{\kelvin}.
+**Documentation:** Temperature at the left boundary (at minimal $x$-value). Units: $\text{K}$.
 
 (parameters:Boundary_20temperature_20model/Box_20with_20lithosphere_20boundary_20indicators/Left_20temperature_20lithosphere)=
 ### __Parameter name:__ Left temperature lithosphere
@@ -219,7 +219,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Temperature at the additional left lithosphere boundary (specified by user in Geometry Model). Units: \si{\kelvin}.
+**Documentation:** Temperature at the additional left lithosphere boundary (specified by user in Geometry Model). Units: $\text{K}$.
 
 (parameters:Boundary_20temperature_20model/Box_20with_20lithosphere_20boundary_20indicators/Right_20temperature)=
 ### __Parameter name:__ Right temperature
@@ -227,7 +227,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Temperature at the right boundary (at maximal $x$-value). Units: \si{\kelvin}.
+**Documentation:** Temperature at the right boundary (at maximal $x$-value). Units: $\text{K}$.
 
 (parameters:Boundary_20temperature_20model/Box_20with_20lithosphere_20boundary_20indicators/Right_20temperature_20lithosphere)=
 ### __Parameter name:__ Right temperature lithosphere
@@ -235,7 +235,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Temperature at the additional right lithosphere boundary (specified by user in Geometry Model). Units: \si{\kelvin}.
+**Documentation:** Temperature at the additional right lithosphere boundary (specified by user in Geometry Model). Units: $\text{K}$.
 
 (parameters:Boundary_20temperature_20model/Box_20with_20lithosphere_20boundary_20indicators/Top_20temperature)=
 ### __Parameter name:__ Top temperature
@@ -243,7 +243,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Temperature at the top boundary (at maximal $x$-value). Units: \si{\kelvin}.
+**Documentation:** Temperature at the top boundary (at maximal $x$-value). Units: $\text{K}$.
 
 (parameters:Boundary_20temperature_20model/Constant)=
 ## **Subsection:** Boundary temperature model / Constant
@@ -263,7 +263,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Core thermal expansivity. Units: \si{\per\kelvin}.
+**Documentation:** Core thermal expansivity. Units: $\frac{1}{\text{K}}$.
 
 (parameters:Boundary_20temperature_20model/Dynamic_20core/Beta_20composition)=
 ### __Parameter name:__ Beta composition
@@ -287,7 +287,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Core heat conductivity $k_c$. Units: \si{\watt\per\meter\per\kelvin}.
+**Documentation:** Core heat conductivity $k_c$. Units: $\frac{\text{W}{\text{m}\text{K}}$.
 
 (parameters:Boundary_20temperature_20model/Dynamic_20core/Core_20density)=
 ### __Parameter name:__ Core density
@@ -295,7 +295,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Density of the core. Units: \si{\kilogram\per\meter\cubed}.
+**Documentation:** Density of the core. Units: $\frac{\text{kg}}{\text{m}^3}$.
 
 (parameters:Boundary_20temperature_20model/Dynamic_20core/Core_20heat_20capacity)=
 ### __Parameter name:__ Core heat capacity
@@ -303,7 +303,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Heat capacity of the core. Units: \si{\joule\per\kelvin\per\kilogram}.
+**Documentation:** Heat capacity of the core. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
 
 (parameters:Boundary_20temperature_20model/Dynamic_20core/Delta)=
 ### __Parameter name:__ Delta
@@ -335,7 +335,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Temperature at the inner boundary (core mantle boundary) at the beginning. Units: \si{\kelvin}.
+**Documentation:** Temperature at the inner boundary (core mantle boundary) at the beginning. Units: $\text{K}$.
 
 (parameters:Boundary_20temperature_20model/Dynamic_20core/K0)=
 ### __Parameter name:__ K0
@@ -367,7 +367,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Temperature at the outer boundary (lithosphere water/air). Units: \si{\kelvin}.
+**Documentation:** Temperature at the outer boundary (lithosphere water/air). Units: $\text{K}$.
 
 (parameters:Boundary_20temperature_20model/Dynamic_20core/Rh)=
 ### __Parameter name:__ Rh
@@ -383,7 +383,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Core density at zero pressure. Units: \si{\kilogram\per\meter\cubed}. See {cite}`NPB+04` for more details.
+**Documentation:** Core density at zero pressure. Units: $\frac{\text{kg}}{\text{m}^3}$. See {cite}`NPB+04` for more details.
 
 (parameters:Boundary_20temperature_20model/Dynamic_20core/dR_20over_20dt)=
 ### __Parameter name:__ dR over dt
@@ -399,7 +399,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Initial CMB temperature changing rate. Units: \si{\kelvin}/year.
+**Documentation:** Initial CMB temperature changing rate. Units: $\text{K}$/year.
 
 (parameters:Boundary_20temperature_20model/Dynamic_20core/dX_20over_20dt)=
 ### __Parameter name:__ dX over dt
@@ -433,7 +433,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Melting curve ({cite}`NPB+04` eq. (40)) parameter Tm0. Units: \si{\kelvin}.
+**Documentation:** Melting curve ({cite}`NPB+04` eq. (40)) parameter Tm0. Units: $\text{K}$.
 
 (parameters:Boundary_20temperature_20model/Dynamic_20core/Geotherm_20parameters/Tm1)=
 ### __Parameter name:__ Tm1
@@ -539,7 +539,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Maximal temperature. Units: \si{\kelvin}.
+**Documentation:** Maximal temperature. Units: $\text{K}$.
 
 (parameters:Boundary_20temperature_20model/Function/Minimal_20temperature)=
 ### __Parameter name:__ Minimal temperature
@@ -547,7 +547,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Minimal temperature. Units: \si{\kelvin}.
+**Documentation:** Minimal temperature. Units: $\text{K}$.
 
 (parameters:Boundary_20temperature_20model/Function/Variable_20names)=
 ### __Parameter name:__ Variable names
@@ -565,7 +565,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Maximal temperature. Units: \si{\kelvin}.
+**Documentation:** Maximal temperature. Units: $\text{K}$.
 
 (parameters:Boundary_20temperature_20model/Initial_20temperature/Minimal_20temperature)=
 ### __Parameter name:__ Minimal temperature
@@ -573,7 +573,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Minimal temperature. Units: \si{\kelvin}.
+**Documentation:** Minimal temperature. Units: $\text{K}$.
 
 (parameters:Boundary_20temperature_20model/Spherical_20constant)=
 ## **Subsection:** Boundary temperature model / Spherical constant
@@ -583,7 +583,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Temperature at the inner boundary (core mantle boundary). Units: \si{\kelvin}.
+**Documentation:** Temperature at the inner boundary (core mantle boundary). Units: $\text{K}$.
 
 (parameters:Boundary_20temperature_20model/Spherical_20constant/Outer_20temperature)=
 ### __Parameter name:__ Outer temperature
@@ -591,4 +591,4 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Temperature at the outer boundary (lithosphere water/air). Units: \si{\kelvin}.
+**Documentation:** Temperature at the outer boundary (lithosphere water/air). Units: $\text{K}$.
