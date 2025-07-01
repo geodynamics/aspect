@@ -75,11 +75,11 @@ namespace aspect
                           function_max_sum += pdf.get_max();
                           function_min_min = std::min(function_min_min, pdf.get_min());
                           function_max_max = std::max(function_max_max, pdf.get_max());
-                      }
+                        }
                     }
                   else
                     {
-                        for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
+                      for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
                         {
                           ParticlePDF<dim> pdf(bandwidth,kernel_function);
                           const typename Particle::ParticleHandler<dim>::particle_iterator_range particle_range = this->get_particle_manager(particle_manager_index).get_particle_handler().particles_in_cell(cell);

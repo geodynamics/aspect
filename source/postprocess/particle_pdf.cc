@@ -65,7 +65,7 @@ namespace aspect
 
     template <int dim>
     void ParticlePDF<dim>::fill_from_particle_range(const typename Particle::ParticleHandler<dim>::particle_iterator_range particle_range,
-                                          const unsigned int n_particles_in_cell)
+                                                    const unsigned int n_particles_in_cell)
     {
       if (is_defined_per_particle == false)
         {
@@ -106,24 +106,24 @@ namespace aspect
                 }
             }
         }
-        else
+      else
         {
-         // Sum the value of the kernel function on that position from every other particle.
-            for (const auto &reference_particle: particle_range)
-              {
-                const auto reference_coordinates = reference_particle.get_reference_location();
-                double function_value = 0;
+          // Sum the value of the kernel function on that position from every other particle.
+          for (const auto &reference_particle: particle_range)
+            {
+              const auto reference_coordinates = reference_particle.get_reference_location();
+              double function_value = 0;
 
-                for (const auto &kernel_position_particle: particle_range)
-                  {
-                    const auto kernel_coordinates = kernel_position_particle.get_reference_location();
-                    const double distance = reference_coordinates.distance(kernel_coordinates);
-                    function_value += apply_selected_kernel_function(distance);
-                  }
+              for (const auto &kernel_position_particle: particle_range)
+                {
+                  const auto kernel_coordinates = kernel_position_particle.get_reference_location();
+                  const double distance = reference_coordinates.distance(kernel_coordinates);
+                  function_value += apply_selected_kernel_function(distance);
+                }
 
-                add_value_to_function_table(function_value/n_particles_in_cell,reference_particle.get_id());
-              }
-          
+              add_value_to_function_table(function_value/n_particles_in_cell,reference_particle.get_id());
+            }
+
         }
 
 
@@ -132,7 +132,7 @@ namespace aspect
     template <int dim>
     void ParticlePDF<dim>::insert_kernel_sum_from_particle_range(
       const Point<dim> reference_point,
-      std::array<unsigned int, dim> table_index, 
+      std::array<unsigned int, dim> table_index,
       const unsigned int n_particles_in_cell,
       const typename Particle::ParticleHandler<dim>::particle_iterator_range particle_range)
     {

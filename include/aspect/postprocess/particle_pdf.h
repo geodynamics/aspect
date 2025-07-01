@@ -86,7 +86,7 @@ namespace aspect
          * @param n_particles_in_cell The number of particles belonging to the particle manager in question within the cell.
          */
         void fill_from_particle_range(const typename Particle::ParticleHandler<dim>::particle_iterator_range particle_range,
-                            const unsigned int n_particles_in_cell);
+                                      const unsigned int n_particles_in_cell);
 
         /**
          * This function is only called from `fill_from_cell`.
