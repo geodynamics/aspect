@@ -57,7 +57,7 @@ Select one of the following models:
 ### __Parameter name:__ List of particle properties
 **Default value:**
 
-**Pattern:** [MultipleSelection composition|composition reaction|cpo bingham average|cpo elastic tensor|crystal preferred orientation|elastic stress|elastic tensor decomposition|function|grain size|initial composition|initial position|integrated strain|integrated strain invariant|melt particle|pT path|position|reference position|strain rate|velocity|viscoplastic strain invariants ]
+**Pattern:** [MultipleSelection composition|composition reaction|cpo bingham average|cpo elastic tensor|crust and lithosphere formation|crystal preferred orientation|elastic stress|elastic tensor decomposition|function|grain size|initial composition|initial position|integrated strain|integrated strain invariant|melt particle|pT path|position|reference position|strain rate|velocity|velocity gradient|viscoplastic strain invariants ]
 
 **Documentation:** A comma separated list of particle properties that should be tracked. By default none is selected, which means only position, velocity and id of the particles are output.
 
@@ -71,9 +71,11 @@ The following properties are available:
 
 &lsquo;cpo elastic tensor&rsquo;: A plugin in which the particle property tensor is defined as the Voigt average of the elastic tensors of the minerals in the textured rock.Currently only Olivine and Enstatite are supported.
 
+&lsquo;crust and lithosphere formation&rsquo;: A plugin in which the particle property is defined as the evolving chemical composition that results from the formation of oceanic crust and lithosphere as mantle material approaches the surface and melts. Note that this does not necessarily conserves the bulk chemical composition of the mantle, since the conversion only depends on the mantle flow. See the crust and lithosphere formation reaction model documentation for more detailed information.
+
 &lsquo;crystal preferred orientation&rsquo;: WARNING: all the CPO plugins are a work in progress and not ready for production use yet. See https://github.com/geodynamics/aspect/issues/3885 for current status and alternatives. The plugin manages and computes the evolution of Lattice/Crystal Preferred Orientations (LPO/CPO) on particles. Each ASPECT particle can be assigned many grains. Each grain is assigned a size and a orientation matrix. This allows for CPO evolution tracking with polycrystalline kinematic CrystalPreferredOrientation evolution models such as D-Rex (Kaminski and Ribe, 2001; Kaminski et al., 2004).
 
-&lsquo;elastic stress&rsquo;: A plugin in which the particle property tensor is defined as the total elastic stress a particle has accumulated. See the viscoelastic material model documentation for more detailed information.
+&lsquo;elastic stress&rsquo;: A plugin in which the particle property tensor is defined as the total elastic stress a particle has accumulated. This plugin modifies the properties with the name ve_stress_*. It first applies the stress change resulting from system evolution during the previous computational timestep, and then the rotation of those stresses into the current timestep. See the viscoelastic or visco_plastic material model documentation for more detailed information.
 
 &lsquo;elastic tensor decomposition&rsquo;: A plugin which decomposes the elastic tensor into different approximations (Isotropic, Hexagonal, Tetragonal, Orthorhombic, Monoclinic and Triclinic) and provides the eigenvectors of the tensor.
 
@@ -100,6 +102,8 @@ The following properties are available:
 &lsquo;strain rate&rsquo;: Implementation of a plugin in which the time evolution of strain rate is saved and stored on the particles.
 
 &lsquo;velocity&rsquo;: Implementation of a plugin in which the particle property is defined as the recent velocity at this position.
+
+&lsquo;velocity gradient&rsquo;: Implementation of a plugin in which the particle property is defined as the recent velocity gradient at this position.
 
 &lsquo;viscoplastic strain invariants&rsquo;: A plugin that calculates the finite strain invariant a particle has experienced and assigns it to either the plastic and/or viscous strain field based on whether the material is plastically yielding, or the total strain field used in the visco plastic material model. The implementation of this property is equivalent to the implementation for compositional fields that is located in the plugin in `benchmarks/buiter\_et\_al\_2008\_jgr/plugin/`,and is effectively the same as what the visco plastic material model uses for compositional fields.
 
@@ -283,6 +287,24 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. Instead of spatial coordinates, the inputs for this function represent the value of the &lsquo;reactant&rsquo; and &lsquo;product&rsquo; compositions so that the value of the current composition can be used to calculate the change due to the reaction. Additionally, &lsquo;t&rsquo; represents the time. You can use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression.
 
+(parameters:Particles/Crust_20and_20lithosphere_20formation)=
+## **Subsection:** Particles / Crust and lithosphere formation
+(parameters:Particles/Crust_20and_20lithosphere_20formation/Crustal_20thickness)=
+### __Parameter name:__ Crustal thickness
+**Default value:** 7000
+
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Thickness of the crustal layer generated at the surface.Units: \si{\meter}.
+
+(parameters:Particles/Crust_20and_20lithosphere_20formation/Lithosphere_20thickness)=
+### __Parameter name:__ Lithosphere thickness
+**Default value:** 63000
+
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Thickness of the lithosphere layer generated below the crust.Units: \si{\meter}.
+
 (parameters:Particles/Crystal_20Preferred_20Orientation)=
 ## **Subsection:** Particles / Crystal Preferred Orientation
 (parameters:Particles/Crystal_20Preferred_20Orientation/CPO_20derivatives_20algorithm)=
@@ -373,7 +395,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The Dimensionless Grain Boundary Sliding (GBS) threshold. This is a grain size threshold below which grain deform by GBS and become strain-free grains.
+**Documentation:** The Dimensionless Grain Boundary Sliding (GBS) threshold. This is a grain size threshold below which grains deform by GBS and become strain-free grains.
 
 (parameters:Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Volume_20fractions_20minerals)=
 ### __Parameter name:__ Volume fractions minerals
@@ -385,13 +407,21 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 (parameters:Particles/Crystal_20Preferred_20Orientation/Initial_20grains)=
 ## **Subsection:** Particles / Crystal Preferred Orientation / Initial grains
+(parameters:Particles/Crystal_20Preferred_20Orientation/Initial_20grains/CPX_20RRSS)=
+### __Parameter name:__ CPX RRSS
+**Default value:** 1,5,5,1.5
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** The default RRSS values for CPX, used in fabric calculations.(preliminary results, pending further investigations).This list expects 4 entries separated by commas.Main slip systems from Bascou et al., 2002 JSG and Zhang et al., 2006 EPSL and from numerical experiments
+
 (parameters:Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Minerals)=
 ### __Parameter name:__ Minerals
 **Default value:** Olivine: Karato 2008, Enstatite
 
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** This determines what minerals and fabrics or fabric selectors are used used for the LPO/CPO calculation. The options are Olivine: Passive, A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric, Olivine: E-fabric, Olivine: Karato 2008 or Enstatite. Passive sets all RRSS entries to the maximum. The Karato 2008 selector selects a fabric based on stress and water content as defined in figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).
+**Documentation:** This determines what minerals and fabrics or fabric selectors are used used for the LPO/CPO calculation. The options are Olivine: Passive, A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric, Olivine: E-fabric, Olivine: Karato 2008 or Enstatite or CPX. Passive sets all RRSS entries to the maximum. The Karato 2008 selector selects a fabric based on stress and water content as defined in figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).
 
 (parameters:Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Model_20name)=
 ### __Parameter name:__ Model name
@@ -401,13 +431,31 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Documentation:** The model used to initialize the CPO for all particles. Currently &rsquo;Uniform grains and random uniform rotations&rsquo; and &rsquo;World Builder&rsquo; are the only valid option.
 
+(parameters:Particles/Crystal_20Preferred_20Orientation/Initial_20grains/OlivineD_20RRSS)=
+### __Parameter name:__ OlivineD RRSS
+**Default value:** 3.,5.,1.e60,1.
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** Alternative RRSS values for Olivine D-type fabric when incorporating slip plane {0kl}, used in fabric calculations.(preliminary results, pending further investigations).This list expects 4 entries separated by commas.Main slip systems from Karato 2008 and Bystricky et al., 2001 and from numerical experiments
+
 (parameters:Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Volume_20fractions_20minerals)=
 ### __Parameter name:__ Volume fractions minerals
 **Default value:** 0.7, 0.3
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The volume fractions for the different minerals. There need to be the same number of values as there are minerals.Note that the currently implemented scheme is incompressible and does not allow chemical interaction or the formation of new phases
+**Documentation:** The volume fractions for the different minerals. There need to be the same number of values as there are minerals. Note that the currently implemented scheme is incompressible and does not allow chemical interaction or the formation of new phases.
+
+(parameters:Particles/Elastic_20stress)=
+## **Subsection:** Particles / Elastic stress
+(parameters:Particles/Elastic_20stress/Particle_20stress_20value_20weight)=
+### __Parameter name:__ Particle stress value weight
+**Default value:** 1.0
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The weight given to the value of the stress tensor components stored on the particles in the weighted average of those values and the values of the compositional fields evaluated on the particle location. The average is used in the Material Model inputs used to compute the reaction rates and to update the particle property with the reaction rates. In some cases, using the field values leads to more stable results.
 
 (parameters:Particles/Function)=
 ## **Subsection:** Particles / Function

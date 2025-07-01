@@ -79,7 +79,7 @@ As a consequence of choosing this element for the pressure rather than the more 
 
 On the other hand, if this parameter is set to &ldquo;false&rdquo;(the default), then the finite element space is chosen as $Q_{k-1}$. This choice does not yield the local conservation property but has the advantage of requiring fewer degrees of freedom. Furthermore, the error is generally smaller with this choice.
 
-For an in-depth discussion of these issues and a quantitative evaluation of the different choices, see {cite}`kronbichler:etal:2012`.
+For an in-depth discussion of these issues and a quantitative evaluation of the different choices, see {cite}&lsquo;kronbichler:etal:2012&lsquo;.
 
 (parameters:Discretization/Stabilization_20parameters)=
 ## **Subsection:** Discretization / Stabilization parameters
@@ -145,7 +145,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 **Pattern:** [Bool]
 
-**Documentation:** If set to false, the artificial viscosity of a cell is computed and is computed on every cell separately as discussed in {cite}`kronbichler:etal:2012`. If set to true, the maximum of the artificial viscosity in the cell as well as the neighbors of the cell is computed and used instead.
+**Documentation:** If set to false, the artificial viscosity of a cell is computed and is computed on every cell separately as discussed in {cite}&lsquo;kronbichler:etal:2012&lsquo;. If set to true, the maximum of the artificial viscosity in the cell as well as the neighbors of the cell is computed and used instead.
 
 (parameters:Discretization/Stabilization_20parameters/Use_20limiter_20for_20discontinuous_20composition_20solution)=
 ### __Parameter name:__ Use limiter for discontinuous composition solution
@@ -169,7 +169,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 **Pattern:** [Integer range 1...2 (inclusive)]
 
-**Documentation:** The exponent $\alpha$ in the entropy viscosity stabilization. Valid options are 1 or 2. The recommended setting is 2. (This parameter does not correspond to any variable in the 2012 paper by Kronbichler, Heister and Bangerth that describes ASPECT, see {cite}`kronbichler:etal:2012`. Rather, the paper always uses 2 as the exponent in the definition of the entropy, following equation (15) of the paper. The full approach is discussed in {cite}`guermond:etal:2011`.) Note that this is not the thermal expansion coefficient, also commonly referred to as $\alpha$.Units: None.
+**Documentation:** The exponent $\alpha$ in the entropy viscosity stabilization. Valid options are 1 or 2. The recommended setting is 2. (This parameter does not correspond to any variable in the 2012 paper by Kronbichler, Heister and Bangerth that describes ASPECT, see {cite}&lsquo;kronbichler:etal:2012&lsquo;. Rather, the paper always uses 2 as the exponent in the definition of the entropy, following equation (15) of the paper. The full approach is discussed in {cite}`guermond:etal:2011`.) Note that this is not the thermal expansion coefficient, also commonly referred to as $\alpha$.Units: None.
 
 (parameters:Discretization/Stabilization_20parameters/beta)=
 ### __Parameter name:__ beta
@@ -177,7 +177,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The $\beta$ factor in the artificial viscosity stabilization. This parameter controls the maximum dissipation of the entropy viscosity, which is the part that only scales with the cell diameter and the maximum velocity in the cell, but does not depend on the solution field itself or its residual. An appropriate value for 2d is 0.052 and 0.78 for 3d. (For historical reasons, the name used here is different from the one used in the 2012 paper by Kronbichler, Heister and Bangerth that describes ASPECT, see {cite}`kronbichler:etal:2012`. This parameter can be given as a single value or as a list with as many entries as one plus the number of compositional fields. In the former case all advection fields use the same stabilization parameters, in the latter case each field (temperature first, then all compositions) use individual parameters. This can be useful to reduce the stabilization for the temperature, which already has some physical diffusion. This parameter corresponds to the factor $\alpha_{\text{max}}$ in the formulas following equation (15) of the paper.) Units: None.
+**Documentation:** The $\beta$ factor in the artificial viscosity stabilization. This parameter controls the maximum dissipation of the entropy viscosity, which is the part that only scales with the cell diameter and the maximum velocity in the cell, but does not depend on the solution field itself or its residual. An appropriate value for 2d is 0.052 and 0.78 for 3d. (For historical reasons, the name used here is different from the one used in the 2012 paper by Kronbichler, Heister and Bangerth that describes ASPECT, see {cite}&lsquo;kronbichler:etal:2012&lsquo;. This parameter can be given as a single value or as a list with as many entries as one plus the number of compositional fields. In the former case all advection fields use the same stabilization parameters, in the latter case each field (temperature first, then all compositions) use individual parameters. This can be useful to reduce the stabilization for the temperature, which already has some physical diffusion. This parameter corresponds to the factor $\alpha_{\text{max}}$ in the formulas following equation (15) of the paper.) Units: None.
 
 (parameters:Discretization/Stabilization_20parameters/cR)=
 ### __Parameter name:__ cR
@@ -185,7 +185,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The $c_R$ factor in the entropy viscosity stabilization. This parameter controls the part of the entropy viscosity that depends on the solution field itself and its residual in addition to the cell diameter and the maximum velocity in the cell. This parameter can be given as a single value or as a list with as many entries as one plus the number of compositional fields. In the former case all advection fields use the same stabilization parameters, in the latter case each field (temperature first, then all compositions) use individual parameters. This can be useful to reduce the stabilization for the temperature, which already has some physical diffusion. (For historical reasons, the name used here is different from the one used in the 2012 paper by Kronbichler, Heister and Bangerth that describes ASPECT, see {cite}`kronbichler:etal:2012`. This parameter corresponds to the factor $\alpha_E$ in the formulas following equation (15) of the paper.) Units: None.
+**Documentation:** The $c_R$ factor in the entropy viscosity stabilization. This parameter controls the part of the entropy viscosity that depends on the solution field itself and its residual in addition to the cell diameter and the maximum velocity in the cell. This parameter can be given as a single value or as a list with as many entries as one plus the number of compositional fields. In the former case all advection fields use the same stabilization parameters, in the latter case each field (temperature first, then all compositions) use individual parameters. This can be useful to reduce the stabilization for the temperature, which already has some physical diffusion. (For historical reasons, the name used here is different from the one used in the 2012 paper by Kronbichler, Heister and Bangerth that describes ASPECT, see {cite}&lsquo;kronbichler:etal:2012&lsquo;. This parameter corresponds to the factor $\alpha_E$ in the formulas following equation (15) of the paper.) Units: None.
 
 (parameters:Discretization/Stabilization_20parameters/gamma)=
 ### __Parameter name:__ gamma
@@ -193,4 +193,4 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The strain rate scaling factor in the artificial viscosity stabilization. This parameter determines how much the strain rate (in addition to the velocity) should influence the stabilization. (This parameter does not correspond to any variable in the 2012 paper by Kronbichler, Heister and Bangerth that describes ASPECT, see {cite}`kronbichler:etal:2012`. Rather, the paper always uses 0, i.e. they specify the maximum dissipation $\nu_h^\text{max}$ as $\nu_h^\text{max}\vert_K = \alpha_{\text{max}} h_K \|\mathbf u\|_{\infty,K}$. Here, we use $\|\lvert\mathbf u\rvert + \gamma h_K \lvert\varepsilon (\mathbf u)\rvert\|_{\infty,K}$ instead of $\|\mathbf u\|_{\infty,K}$. Units: None.
+**Documentation:** The strain rate scaling factor in the artificial viscosity stabilization. This parameter determines how much the strain rate (in addition to the velocity) should influence the stabilization. (This parameter does not correspond to any variable in the 2012 paper by Kronbichler, Heister and Bangerth that describes ASPECT, see {cite}&lsquo;kronbichler:etal:2012&lsquo;. Rather, the paper always uses 0, i.e. they specify the maximum dissipation $\nu_h^\text{max}$ as $\nu_h^\text{max}\vert_K = \alpha_{\text{max}} h_K \|\mathbf u\|_{\infty,K}$. Here, we use $\|\lvert\mathbf u\rvert + \gamma h_K \lvert\varepsilon (\mathbf u)\rvert\|_{\infty,K}$ instead of $\|\mathbf u\|_{\infty,K}$. Units: None.

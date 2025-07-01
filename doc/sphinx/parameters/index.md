@@ -8,6 +8,7 @@ maxdepth: 2
 global.md
 Adiabatic_20conditions_20model.md
 Boundary_20composition_20model.md
+Boundary_20convective_20heating_20model.md
 Boundary_20fluid_20pressure_20model.md
 Boundary_20heat_20flux_20model.md
 Boundary_20temperature_20model.md
