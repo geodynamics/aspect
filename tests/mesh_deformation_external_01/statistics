@@ -1,0 +1,19 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of nonlinear iterations
+# 8: Visualization file name
+# 9: Minimum topography (m)
+# 10: Maximum topography (m)
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 0 output-mesh_deformation_external_01/solution/solution-00000  0.00000000e+00 1.00000000e-01 
+1 5.000000000000e-04 5.000000000000e-04 256 2467 1089 0 output-mesh_deformation_external_01/solution/solution-00001 -1.75000000e-03 1.00000000e-01 
+2 1.000000000000e-03 5.000000000000e-04 256 2467 1089 0 output-mesh_deformation_external_01/solution/solution-00002 -3.50000000e-03 1.00000000e-01 
+3 1.500000000000e-03 5.000000000000e-04 256 2467 1089 0 output-mesh_deformation_external_01/solution/solution-00003 -5.25000000e-03 1.00000000e-01 
+4 2.000000000000e-03 5.000000000000e-04 256 2467 1089 0 output-mesh_deformation_external_01/solution/solution-00004 -7.00000000e-03 1.00000000e-01 
+5 2.500000000000e-03 5.000000000000e-04 256 2467 1089 0 output-mesh_deformation_external_01/solution/solution-00005 -8.75000000e-03 1.00000000e-01 
+6 3.000000000000e-03 5.000000000000e-04 256 2467 1089 0 output-mesh_deformation_external_01/solution/solution-00006 -1.05000000e-02 1.00000000e-01 
+7 3.500000000000e-03 5.000000000000e-04 256 2467 1089 0 output-mesh_deformation_external_01/solution/solution-00007 -1.22500000e-02 1.05000000e-01 
+8 4.000000000000e-03 5.000000000000e-04 256 2467 1089 0 output-mesh_deformation_external_01/solution/solution-00008 -1.40000000e-02 1.20000000e-01 

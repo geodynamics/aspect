@@ -112,6 +112,11 @@ namespace aspect
                                                  AffineConstraints<double> &mesh_velocity_constraints,
                                                  const std::set<types::boundary_id> &boundary_ids) const override;
 
+        /**
+         * Given all solution variables at each surface point, compute velocities at these points.
+         *
+         * This needs to be implemented by the derived class and implement the "surface evolution".
+         */
         virtual
         std::vector<Tensor<1,dim>>
         compute_updated_velocities_at_points (const std::vector<std::vector<double>> &current_solution_at_points) const = 0;
@@ -176,14 +181,11 @@ namespace aspect
         LinearAlgebra::Vector
         interpolate_velocities_to_surface_points (const std::vector<Tensor<1,dim>> &vertical_velocities) const;
 
-
-      private:
+      protected:
 
         std::vector<Point<dim>> evaluation_points;
 
-        // Timo: Replace by whatever type you need here
-        class X {};
-        std::unique_ptr<X> remote_point_evaluator;
+        std::unique_ptr<Utilities::MPI::RemotePointEvaluation<dim, dim>> remote_point_evaluator;
     };
   }
 }
