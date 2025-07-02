@@ -27,6 +27,8 @@
 #include <limits>
 #include <deal.II/base/table.h>
 #include <deal.II/particles/property_pool.h>
+#include <aspect/particle/manager.h>
+
 namespace aspect
 {
   namespace Postprocess

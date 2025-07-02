@@ -25,7 +25,6 @@
 #include <aspect/postprocess/particle_pdf.h>
 #include <deal.II/base/function_lib.h>
 #include <aspect/particle/manager.h>
-#include <deal.II/particles/particle_handler.h>
 
 namespace aspect
 {
