@@ -1,0 +1,79 @@
+# This model generates a representation of a phase diagram for the equilibrium
+# wt% water that can be stored in an upper mantle peridotite (PUM) as shown in
+# Figure 11 of  Tian et. al., 2019. This model reproduces that phase diagram
+# (very low res by default), with an important caveat being that the pressure axis
+# is inverted relative to the ASPECT output. A surface pressure of 600 MPa is imposed
+# to reproduce the pressure axis,and a lateral temperature gradient is imposed to
+# reproduce the temperature axis.
+include $ASPECT_SOURCE_DIR/tests/tian_peridotite.prm
+set Nonlinear solver scheme                = iterated Advection and Stokes
+# set Surface pressure                       = 0.6e9
+
+# The Tian approximation implementation requires that all 4 rock compositions exist
+# as compositional fields, though they do not have to all be non zero.
+subsection Compositional fields
+  set Number of fields = 10
+  set Names of fields = porosity, bound_fluid, peridotite, gabbro, MORB, sediment, peridotite_porosity, gabbro_porosity, MORB_porosity, sediment_porosity
+  set Compositional field methods = darcy field, field, field, field, field, field, darcy field, darcy field, darcy field, darcy field
+  set Types of fields = porosity, generic, chemical composition, chemical composition, chemical composition, chemical composition, porosity, porosity, porosity, porosity
+end
+
+# Specify that the entire domain is peridotite, with an initial bound water content
+# of 11% everywhere, the bound_water will evolve to the parametrized phase diagram
+# for peridotite.
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function constants  = initial_porosity=0.0, initial_bound_water=0.11
+    set Function expression = initial_porosity; \
+                              initial_bound_water; \
+                              0.4; \
+                              0.3; \
+                              0.2; \
+                              0.1; \
+                              0; \
+                              0; \
+                              0; \
+                              0
+  end
+end
+
+# No gravity
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+# Material model, using the simpler base model and selecting the tian approximation
+# as the fluid solid reaction scheme for the reactive fluid transport model.
+subsection Material model
+  set Model name = reactive fluid transport
+
+  subsection Reactive Fluid Transport Model
+    set Base model                                       = visco plastic
+    set Reference fluid density                          = 2000
+    subsection Tian 2019 model
+      set Track source of free water                     = true
+      set Maximum weight percent water in peridotite     = 11
+      set Maximum weight percent water in gabbro         = 11
+      set Maximum weight percent water in MORB           = 11
+      set Maximum weight percent water in sediment       = 11
+    end
+  end
+
+  subsection Visco Plastic
+    set Viscous flow law      = diffusion
+    set Densities             = 3000, 3000, 3000, 3300, 3100, 2900, 2300, 3000, 3000, 3000, 3000
+    set Thermal expansivities = 0
+    set Minimum viscosity     = 1e21
+    set Maximum viscosity     = 1e21
+  end
+end
+
+subsection Melt settings
+  set Include melt transport = false
+end

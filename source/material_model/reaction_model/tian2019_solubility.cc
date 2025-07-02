@@ -147,6 +147,13 @@ namespace aspect
       void
       Tian2019Solubility<dim>::declare_parameters (ParameterHandler &prm)
       {
+        prm.declare_entry ("Track source of free water", "false",
+                           Patterns::Bool(),
+                           "Whether to track the volume fraction of the free water that comes from each of the "
+                           "four rock compositions (sediment, MORB, gabbro, peridotite). If false, only the "
+                           "total water is tracked. If true, the total water, and the volume fraction from "
+                           "each rock composition is tracked. This requires defining four compositional fields: "
+                           "sediment_porosity, MORB_porosity, gabbro_porosity, and peridotite_porosity. ");
         prm.declare_entry ("Maximum weight percent water in sediment", "3",
                            Patterns::Double (0),
                            "The maximum allowed weight percent that the sediment composition can hold.");
@@ -178,6 +185,24 @@ namespace aspect
         AssertThrow(this->introspection().compositional_name_exists("peridotite"),
                     ExcMessage("The Tian approximation only works "
                                "if there is a compositional field called peridotite."));
+
+        track_unique_water_components = prm.get_bool ("Track source of free water");
+        if (track_unique_water_components)
+          {
+            AssertThrow(this->introspection().compositional_name_exists("sediment_porosity"),
+                        ExcMessage("Tracking the contribution of free water sourced from sediment "
+                                   "requires a compositional field named sediment_porosity."));
+            AssertThrow(this->introspection().compositional_name_exists("MORB_porosity"),
+                        ExcMessage("Tracking the contribution of free water sourced from MORB "
+                                   "requires a compositional field named MORB_porosity."));
+            AssertThrow(this->introspection().compositional_name_exists("gabbro_porosity"),
+                        ExcMessage("Tracking the contribution of free water sourced from gabbro "
+                                   "requires a compositional field named gabbro_porosity."));
+            AssertThrow(this->introspection().compositional_name_exists("peridotite_porosity"),
+                        ExcMessage("Tracking the contribution of free water sourced from peridotite "
+                                   "requires a compositional field named peridotite_porosity."));
+          }
+
         tian_max_peridotite_water         = prm.get_double ("Maximum weight percent water in peridotite");
         tian_max_gabbro_water             = prm.get_double ("Maximum weight percent water in gabbro");
         tian_max_MORB_water               = prm.get_double ("Maximum weight percent water in MORB");

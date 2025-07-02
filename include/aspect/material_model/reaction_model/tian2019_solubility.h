@@ -92,6 +92,12 @@ namespace aspect
           void
           parse_parameters (ParameterHandler &prm);
 
+          /**
+           * A boolean that indicates whether the model tracks the contribution of each
+           * lithology to the total volume fraction of free water.
+          */
+          bool track_unique_water_components;
+
         private:
 
           /**
