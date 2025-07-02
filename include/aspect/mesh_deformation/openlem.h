@@ -24,6 +24,7 @@
 
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/simulator_access.h>
+#include <limits>
 #include <openlem.cpp>
 #include <deal.II/base/parsed_function.h>
 
@@ -157,9 +158,11 @@ namespace openlem
                 double  dhdy = vy[i][j]<0 ?
                                g->getNodeP(i,j+1)->h-g->getNode(i,j)->h :
                                g->getNode(i,j)->h-g->getNodeP(i,j-1)->h;
-                std::cout << "before dhdx:y = " << dhdx << ':' << dhdy << ", u = " << g->getNode(i,j)->u << ", vx:y:z = " << vx[i][j] << ":" << vy[i][j] << ":" << vz[i][j] << std::endl;
+                if (i == 19 && j == 24)
+                  std::cout << "before dhdx:y = " << dhdx << ':' << dhdy << ", u = " << g->getNode(i,j)->u << ", vx:y:z = " << vx[i][j] << ":" << vy[i][j] << ":" << vz[i][j] << std::endl;
                 g->getNode(i,j)->u = vz[i][j]-vx[i][j]*dhdx-vy[i][j]*dhdy;
-                std::cout << "dhdx:y = " << dhdx << ':' << dhdy << ", u = " << g->getNode(i,j)->u << ", vx:y:z = " << vx[i][j] << ":" << vy[i][j] << ":" << vz[i][j] << std::endl;
+                if (i == 19 && j == 24)
+                  std::cout << "dhdx:y = " << dhdx << ':' << dhdy << ", u = " << g->getNode(i,j)->u << ", vx:y:z = " << vx[i][j] << ":" << vy[i][j] << ":" << vz[i][j] << std::endl;
               }
       }
 
@@ -173,9 +176,9 @@ namespace openlem
         updateXY();
       }
 
-      double interpolation(double x, double y, const std::vector<std::vector<double>> &interperolat) const
+      double interpolation(double x, double y, const std::vector<std::vector<double>> &interperolat, double dx, double dy, double origin_x, double origin_y) const
       {
-
+        /*
         double c = cos(alpha);
         double s = sin(alpha);
         double x_temp = (x - x0)/hscale;
@@ -202,17 +205,43 @@ namespace openlem
         else if (j >= interperolat[i].size())
           {
             j = interperolat[i].size()-1;
+          }*/
+        // find the closest point
+        double closest_distance = std::numeric_limits<double>::infinity();
+        size_t closest_xi = std::numeric_limits<size_t>::signaling_NaN();
+        size_t closest_yi = std::numeric_limits<size_t>::signaling_NaN();
+        for (unsigned int xi = 0; xi < interperolat.size()-1; ++xi)
+          {
+            for (unsigned int yi = 0; yi < interperolat[xi].size()-1; ++yi)
+              {
+                double distance = (x-xi*dx-origin_x)*(x-xi*dx-origin_x)+(y-yi*dy-origin_y)*(y-yi*dy-origin_y);
+                if (distance < closest_distance)
+                  {
+                    closest_distance = distance;
+                    closest_xi = xi;
+                    closest_yi = yi;
+                  }
+
+              }
           }
-        return g->getNode(i,j)->h;//interperolat[i][j];
+
+        //if (x > -6345.87-100. && x < -6345.87+4000. && y > 28103. - 200. && y < 28103. + 200. )
+        //if (x > -6345.87-100. && x < -6345.87+5000. && y > 28103. - 400. && y < 28103. + 400. )
+        if (x > 3125-100. && x < 3125+5000. && y > 45312.5 - 400. && y < 45312.5 + 400. )
+          std::cout << "closest_xi = " << closest_xi << ", closest_yi = " << closest_yi << ", interp = " << interperolat[closest_xi][closest_yi] << std::endl;
+        return interperolat[closest_xi][closest_yi];//g->getNode(i,j)->h;//interperolat[i][j];
       }
 
-      void write_vtk(double reference_surface_height, int timestep)
+      void write_vtk(double reference_surface_height, int timestep, std::string prestring = "") const
       {
         std::cout << "writing openlem VTK file" << std::endl;
         std::vector<double> grid_x(0);
         std::vector<double> grid_y(0);
         std::vector<double> grid_z(0);
         std::vector<double> grid_elevation(0);
+        std::vector<double> grid_uplift(0);
+        std::vector<double> grid_vx(0);
+        std::vector<double> grid_vy(0);
 
         std::vector<std::vector<size_t> > grid_connectivity(0);
 
@@ -225,6 +254,9 @@ namespace openlem
         grid_y.resize(n_p);
 
         grid_elevation.resize(n_p);
+        grid_uplift.resize(n_p);
+        grid_vx.resize(n_p);
+        grid_vy.resize(n_p);
         grid_connectivity.resize(n_cell,std::vector<size_t>((2-1)*4));
 
         size_t counter = 0;
@@ -236,6 +268,9 @@ namespace openlem
                 grid_y[counter] = y[i][j];
                 grid_z[counter] = reference_surface_height + g->getNode(i,j)->h;
                 grid_elevation[counter] = g->getNode(i,j)->h;
+                grid_uplift[counter] = g->getNode(i,j)->u;
+                grid_vx[counter] = vx[i][j];//g->getNode(i,j)->u;
+                grid_vy[counter] = vy[i][j];//g->getNode(i,j)->u;
                 counter++;
               }
           }
@@ -254,7 +289,7 @@ namespace openlem
           }
         std::stringstream buffer;
         std::ofstream myfile;
-        myfile.open ("openlem_surface_" + std::to_string(timestep) +".vtu");
+        myfile.open ("openlem_surface_" + prestring + std::to_string(timestep) +".vtu");
         buffer << "<?xml version=\"1.0\" ?> " << std::endl;
         buffer << R"(<VTKFile type="UnstructuredGrid" version="0.1" byte_order="LittleEndian">)" << std::endl;
         buffer << "<UnstructuredGrid>" << std::endl;
@@ -292,6 +327,24 @@ namespace openlem
         for (size_t i = 0; i < n_p; ++i)
           {
             buffer <<  grid_elevation[i] << std::endl;
+          }
+        buffer << "</DataArray>" << std::endl;
+        buffer << R"(<DataArray type="Float32" Name="Uplift" format="ascii">)" << std::endl;
+        for (size_t i = 0; i < n_p; ++i)
+          {
+            buffer <<  grid_uplift[i] << std::endl;
+          }
+        buffer << "</DataArray>" << std::endl;
+        buffer << R"(<DataArray type="Float32" Name="vx" format="ascii">)" << std::endl;
+        for (size_t i = 0; i < n_p; ++i)
+          {
+            buffer <<  grid_vx[i] << std::endl;
+          }
+        buffer << "</DataArray>" << std::endl;
+        buffer << R"(<DataArray type="Float32" Name="vy" format="ascii">)" << std::endl;
+        for (size_t i = 0; i < n_p; ++i)
+          {
+            buffer <<  grid_vy[i] << std::endl;
           }
         buffer << "</DataArray>" << std::endl;
         buffer << "  </PointData>" << std::endl;
@@ -388,7 +441,7 @@ namespace aspect
                              //std::vector<double> &velocity_y,
                              //std::vector<double> &velocity_z,
                              const double &openlem_timestep_in_years,
-                             const unsigned int &openlem_iterations) const;
+                             const unsigned int &openlem_iterations);
 
         /**
          * Function to fill the openlem arrays (height and velocities) with the data received from ASPECT in the correct index order.
@@ -426,7 +479,7 @@ namespace aspect
         unsigned int aspect_x_extent;
         unsigned int aspect_y_extent;
         std::vector<std::vector<double>> mesh_velocity_z;
-        std::vector<std::vector<double>> aspect_mesh_velocity_z;
+        std::vector<std::vector<double>> aspect_mesh_elevation_h;
         /**
          * Variable to hold ASPECT domain extents.
          */
