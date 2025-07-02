@@ -88,38 +88,46 @@ namespace aspect
         // Td polynomials are defined in equations 15, B3, B11, and B19.
         for (unsigned int i = 0; i<devolatilization_enthalpy_changes.size(); ++i)
           {
-            // Pressure, which must be in GPa for the parametrization, or GPa^-1. The polynomials for each lithology
-            // breaks down above certain pressures, make sure that we cap the pressure just before this break down.
-            // Introduce minimum pressure to avoid a division by 0.
+            // The Tian parametrization uses pressure in GPa, convert our pressure
+            double pressure_for_reaction_in_GPa = (use_adiabatic_pressure_for_reactions)
+                                                  ?
+                                                  this->get_adiabatic_conditions().pressure(in.position[q]) / 1.e9
+                                                  :
+                                                  in.pressure[q] / 1.e9;
+
+            // The polynomials for each lithology breaks down above certain pressures, make sure that we
+            // cap the pressure just before this break down. Additionally, the inverse pressure is used for
+            // parameterized enthalpy change, so introduce a minimum pressure to avoid a division by 0.
             const double minimum_pressure = 1e-12;
-            const double pressure = std::min(std::max(minimum_pressure, in.pressure[q]/1.e9), pressure_cutoffs[i]);
-            const double inverse_pressure = 1.0/pressure;
+            pressure_for_reaction_in_GPa = std::min(std::max(minimum_pressure, pressure_for_reaction_in_GPa), pressure_cutoffs[i]);
+            const double inverse_pressure_for_reaction = 1.0/pressure_for_reaction_in_GPa;
+
             for (unsigned int j = 0; j<devolatilization_enthalpy_changes[i].size(); ++j)
               {
 #if DEAL_II_VERSION_GTE(9, 6, 0)
-                LR_values[i] += devolatilization_enthalpy_changes[i][j] * Utilities::pow(inverse_pressure, devolatilization_enthalpy_changes[i].size() - 1 - j);
+                LR_values[i] += devolatilization_enthalpy_changes[i][j] * Utilities::pow(inverse_pressure_for_reaction, devolatilization_enthalpy_changes[i].size() - 1 - j);
 #else
-                LR_values[i] += devolatilization_enthalpy_changes[i][j] * std::pow(inverse_pressure, devolatilization_enthalpy_changes[i].size() - 1 - j);
+                LR_values[i] += devolatilization_enthalpy_changes[i][j] * std::pow(inverse_pressure_for_reaction, devolatilization_enthalpy_changes[i].size() - 1 - j);
 #endif
               }
 
             for (unsigned int j = 0; j<water_mass_fractions[i].size(); ++j)
               {
 #if DEAL_II_VERSION_GTE(9, 6, 0)
-                csat_values[i] += i==3 ? water_mass_fractions[i][j] * Utilities::pow(std::log10(pressure), water_mass_fractions[i].size() - 1 - j) :\
-                                  water_mass_fractions[i][j] * Utilities::pow(pressure, water_mass_fractions[i].size() - 1 - j);
+                csat_values[i] += i==3 ? water_mass_fractions[i][j] * Utilities::pow(std::log10(pressure_for_reaction_in_GPa), water_mass_fractions[i].size() - 1 - j) :\
+                                  water_mass_fractions[i][j] * Utilities::pow(pressure_for_reaction_in_GPa, water_mass_fractions[i].size() - 1 - j);
 #else
-                csat_values[i] += i==3 ? water_mass_fractions[i][j] * std::pow(std::log10(pressure), water_mass_fractions[i].size() - 1 - j) :\
-                                  water_mass_fractions[i][j] * std::pow(pressure, water_mass_fractions[i].size() - 1 - j);
+                csat_values[i] += i==3 ? water_mass_fractions[i][j] * std::pow(std::log10(pressure_for_reaction_in_GPa), water_mass_fractions[i].size() - 1 - j) :\
+                                  water_mass_fractions[i][j] * std::pow(pressure_for_reaction_in_GPa, water_mass_fractions[i].size() - 1 - j);
 #endif
               }
 
             for (unsigned int j = 0; j<devolatilization_onset_temperatures[i].size(); ++j)
               {
 #if DEAL_II_VERSION_GTE(9, 6, 0)
-                Td_values[i] += devolatilization_onset_temperatures[i][j] * Utilities::pow(pressure, devolatilization_onset_temperatures[i].size() - 1 - j);
+                Td_values[i] += devolatilization_onset_temperatures[i][j] * Utilities::pow(pressure_for_reaction_in_GPa, devolatilization_onset_temperatures[i].size() - 1 - j);
 #else
-                Td_values[i] += devolatilization_onset_temperatures[i][j] * std::pow(pressure, devolatilization_onset_temperatures[i].size() - 1 - j);
+                Td_values[i] += devolatilization_onset_temperatures[i][j] * std::pow(pressure_for_reaction_in_GPa, devolatilization_onset_temperatures[i].size() - 1 - j);
 #endif
               }
           }
@@ -147,6 +155,12 @@ namespace aspect
       void
       Tian2019Solubility<dim>::declare_parameters (ParameterHandler &prm)
       {
+        prm.declare_entry ("Use adiabatic pressure for reactions", "false",
+                           Patterns::Bool(),
+                           "If true, the adiabatic pressure is used in the Tian 2019 solubility model. "
+                           "If false, the full pressure is used instead. When simulating fully coupled "
+                           "fluid transport, setting this to true is recommended since the compaction "
+                           "pressure can lead to numerical instabilities when determining reaction rates.");
         prm.declare_entry ("Maximum weight percent water in sediment", "3",
                            Patterns::Double (0),
                            "The maximum allowed weight percent that the sediment composition can hold.");
@@ -178,6 +192,7 @@ namespace aspect
         AssertThrow(this->introspection().compositional_name_exists("peridotite"),
                     ExcMessage("The Tian approximation only works "
                                "if there is a compositional field called peridotite."));
+        use_adiabatic_pressure_for_reactions = prm.get_bool ("Use adiabatic pressure for reactions");
         tian_max_peridotite_water         = prm.get_double ("Maximum weight percent water in peridotite");
         tian_max_gabbro_water             = prm.get_double ("Maximum weight percent water in gabbro");
         tian_max_MORB_water               = prm.get_double ("Maximum weight percent water in MORB");
