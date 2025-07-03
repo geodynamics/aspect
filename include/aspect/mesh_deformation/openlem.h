@@ -36,7 +36,7 @@ namespace openlem
   {
     public:
       double  hscale, x0, y0, alpha, dx0, dy0, dalpha;
-      vector<vector<double> >  x, y, vx, vy, vz;
+      vector<vector<double>>  x, y, vx, vy, vz;
       Grid<>  *g;
 
       Connector ( Grid<> *g, double hscale = 1, double x0 = 0, double y0 = 0, double alpha = 0 )
@@ -232,9 +232,14 @@ namespace openlem
         return interperolat[closest_xi][closest_yi];//g->getNode(i,j)->h;//interperolat[i][j];
       }
 
-      void write_vtk(double reference_surface_height, int timestep, std::string prestring = "") const
+      void write_vtk(double reference_surface_height, int timestep, double time, std::string path, std::string prestring = "") const
       {
-        std::cout << "writing openlem VTK file" << std::endl;
+        std::string timestep_string = std::to_string(timestep);
+        size_t n_zero = 5;
+        std::string relative_path = "openLEM/openlem_surface_" + prestring + std::string(n_zero - std::min(n_zero, timestep_string.length()), '0') +timestep_string +".vtu";
+        std::string full_path = path + relative_path;
+        std::string pvtu_full_path = path + "openlem_surface.pvd";
+        std::cout << "writing openlem VTK file to " << full_path << std::endl;
         std::vector<double> grid_x(0);
         std::vector<double> grid_y(0);
         std::vector<double> grid_z(0);
@@ -243,7 +248,7 @@ namespace openlem
         std::vector<double> grid_vx(0);
         std::vector<double> grid_vy(0);
 
-        std::vector<std::vector<size_t> > grid_connectivity(0);
+        std::vector<std::vector<size_t>> grid_connectivity(0);
 
         unsigned int n_cell = x.size() * y.size();
         unsigned int n_p = (x.size() + 1) * (y.size() + 1);
@@ -289,7 +294,7 @@ namespace openlem
           }
         std::stringstream buffer;
         std::ofstream myfile;
-        myfile.open ("openlem_surface_" + prestring + std::to_string(timestep) +".vtu");
+        myfile.open (full_path);
         buffer << "<?xml version=\"1.0\" ?> " << std::endl;
         buffer << R"(<VTKFile type="UnstructuredGrid" version="0.1" byte_order="LittleEndian">)" << std::endl;
         buffer << "<UnstructuredGrid>" << std::endl;
@@ -361,6 +366,48 @@ namespace openlem
         buffer << "</VTKFile>" << std::endl;
         myfile << buffer.str();
         buffer.str(std::string());
+
+        myfile.close();
+
+        std::string new_pvtu_line = "    <DataSet timestep=\"" + std::to_string(time) + "\" group=\"\" part=\"0\" file=\"" + relative_path + "\"/>";
+        if (timestep == 0)
+          {
+
+            myfile.open (pvtu_full_path);
+
+            buffer << R"(<?xml version="1.0"?>)" << std::endl;
+            buffer << R"(<VTKFile type="Collection" version="0.1" ByteOrder="LittleEndian">)";
+            buffer << R"(  <Collection>)" << std::endl;
+            buffer << new_pvtu_line << std::endl;
+            buffer << R"(  </Collection>)" << std::endl;
+            buffer << R"(</VTKFile>)" << std::endl;
+            myfile << buffer.str();
+            buffer.str(std::string());
+            myfile.close();
+          }
+        else
+          {
+            // read file into vector
+            std::ifstream infile(pvtu_full_path);
+            std::string line;
+            std::vector<std::string> lines_vector;
+            while (std::getline(infile, line))
+              {
+                std::istringstream iss(line);
+                lines_vector.emplace_back(line);
+              }
+            infile.close();
+            lines_vector.insert(lines_vector.end() - 2, new_pvtu_line + '\n');
+
+            myfile.open (pvtu_full_path);
+
+            for (std::string &line : lines_vector)
+              {
+                buffer << line << std::endl;
+              }
+            myfile << buffer.str();
+            buffer.str(std::string());
+          }
 
         //std::cout << "                                                                                \r";
         //std::cout.flush();
@@ -441,7 +488,8 @@ namespace aspect
                              //std::vector<double> &velocity_y,
                              //std::vector<double> &velocity_z,
                              const double &openlem_timestep_in_years,
-                             const unsigned int &openlem_iterations);
+                             const unsigned int &openlem_iterations,
+                             const std::string &dirname);
 
         /**
          * Function to fill the openlem arrays (height and velocities) with the data received from ASPECT in the correct index order.
@@ -478,7 +526,7 @@ namespace aspect
         unsigned int aspect_dy;
         unsigned int aspect_x_extent;
         unsigned int aspect_y_extent;
-        std::vector<std::vector<double>> mesh_velocity_z;
+        //std::vector<std::vector<double>> mesh_velocity_z;
         std::vector<std::vector<double>> aspect_mesh_elevation_h;
         /**
          * Variable to hold ASPECT domain extents.
