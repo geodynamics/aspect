@@ -64,7 +64,7 @@ namespace aspect
 
         // Get the deformation type names called for each boundary.
         std::map<types::boundary_id, std::vector<std::string>> mesh_deformation_boundary_indicators_map
-          = this->get_mesh_deformation_handler().get_active_mesh_deformation_names();
+                                                            = this->get_mesh_deformation_handler().get_active_mesh_deformation_names();
 
         // Loop over each mesh deformation boundary, and make sure openlem is only called on the surface.
         for (const types::boundary_id id : mesh_deformation_boundary_ids)
@@ -382,11 +382,13 @@ namespace aspect
 
 
               bool found_a_value = false;
+              std::vector<Point<dim>> unit_point(1);
               double closest_distance_cell = std::numeric_limits<double>::infinity();
               for (const auto &cell : this->get_dof_handler().active_cell_iterators())
                 {
                   if (closest_distance_cell == 0.0)
                     {
+                      // if the point is inside the cell it is defined as exactly zero
                       break;
                     }
                   if (cell->is_locally_owned() && cell->at_boundary())
@@ -404,108 +406,49 @@ namespace aspect
                                 {
                                   const Point<dim> vertex = fe_face_values.quadrature_point(corner);
 
-                                  double x_coord = vertex[0] - grid_extent[0].first;
-                                  double y_coord = vertex[1] - grid_extent[1].first;
-                                  size_t ixa = std::round(x_coord/aspect_dx);
-                                  size_t iya = std::round(y_coord/aspect_dy);
+                                  const double x_coord = vertex[0] - grid_extent[0].first;
+                                  const double y_coord = vertex[1] - grid_extent[1].first;
+                                  const size_t ixa = std::round(x_coord/aspect_dx);
+                                  const size_t iya = std::round(y_coord/aspect_dy);
                                   aspect_mesh_z[ixa][iya] = vertex[dim-1];
                                 }
 
-                              constexpr bool inside_zone = false;//this->get_timestep_number() == 2 && x_i == 2 && y_i == 4;//(x_i == 19 && y_i == 24) || (x_i == 0 && y_i == 0);//(mesh_locations[x_i][y_i][0] > -3e3 && mesh_locations[x_i][y_i][0] < 3e3 && mesh_locations[x_i][y_i][1] > 15e3 && mesh_locations[x_i][y_i][1] < 30e3 ) ? true : false;
-                              //if (inside_zone)
-                              //  std::cout << "flag 103: location = " << mesh_locations[x_i][y_i] << ", boundary points = " << this->get_mapping().get_bounding_box(cell).get_boundary_points().first  <<  " -- " << this->get_mapping().get_bounding_box(cell).get_boundary_points().second << "PI: " << (cell->point_inside(mesh_locations[x_i][y_i]) ? "true" : "false") << ", vertex = " << cell->face(face_no)->vertex(0) << std::endl;
-                              //if (this->get_mapping().get_bounding_box(cell).point_inside(mesh_locations[x_i][y_i]))
-                              {
-                                //Point<dim> reference_point = this->get_mapping().transform_real_to_unit_cell(cell,mesh_locations[x_i][y_i]);
-                                //Point<dim-1> unit_point = this->get_mapping().project_real_point_to_unit_point_on_face(cell,
-                                std::vector<Point<dim>> unit_point(1);
-                                this->get_mapping().transform_points_real_to_unit_cell(cell, {mesh_locations[x_i][y_i]},unit_point);
-                                auto reference_cell = this->get_triangulation().get_reference_cells()[0];
-                                //if (inside_zone)
-                                //  std::cout << "flag 103: location = " << mesh_locations[x_i][y_i] << ", boundary points = " << this->get_mapping().get_bounding_box(cell).get_boundary_points().first  <<  " -- " << this->get_mapping().get_bounding_box(cell).get_boundary_points().second << "PI: " << (cell->point_inside(mesh_locations[x_i][y_i]) ? "true" : "false") << ", vertex = " << cell->face(face_no)->vertex(0)  << "up = " << unit_point[0]<< std::endl;
-                                // std::cout << "flag 104: reference point = " << reference_point << ", unit point = " << unit_point[0] << std::endl;
-                                //std::cout << "flag 104: reference point = " << ", unit point = " << unit_point[0] << std::endl;
-                                const double distance_to_unit_cell = GeometryInfo<dim>::distance_to_unit_cell(unit_point[0]);
-                                if (distance_to_unit_cell == 0.0 || distance_to_unit_cell < closest_distance_cell) //cell->point_inside(mesh_locations[x_i][y_i]))//reference_cell.contains_point(unit_point[0]))
-                                  {
-                                    closest_distance_cell = distance_to_unit_cell; // TODO: probably just skip out if distance is exactly zero.
-                                    if (inside_zone)
-                                      std::cout << "flag 104.1: closest_distance_cell = " << closest_distance_cell << std::endl;
-                                    std::vector<Point<dim>> closest_point = {reference_cell.closest_point(unit_point[0])};
-                                    Point<dim> closest_point_real = this->get_mapping().transform_unit_to_real_cell(cell,closest_point[0]);
-                                    if (cell->state() != IteratorState::valid)
-                                      {
-                                        continue;
-                                      }
-                                    if (inside_zone)
-                                      std::cout << "flag 104.2: cpu = " <<  closest_point[0] << ", cpr = " << closest_point_real<< std::endl;
-                                    small_vector<double,50> solution_values(this->get_fe().dofs_per_cell);
-                                    cell->get_dof_values(this->get_solution(),//input_solution,
-                                                         solution_values.begin(),
-                                                         solution_values.end());
+                              this->get_mapping().transform_points_real_to_unit_cell(cell, {mesh_locations[x_i][y_i]},unit_point);
+                              auto reference_cell = this->get_triangulation().get_reference_cells()[0];
+                              const double distance_to_unit_cell = GeometryInfo<dim>::distance_to_unit_cell(unit_point[0]);
+                              if (distance_to_unit_cell < closest_distance_cell)
+                                {
+                                  closest_distance_cell = distance_to_unit_cell; // TODO: probably just skip out if distance is exactly zero.
+                                  std::vector<Point<dim>> closest_point = {reference_cell.closest_point(unit_point[0])};
+                                  Point<dim> closest_point_real = this->get_mapping().transform_unit_to_real_cell(cell,closest_point[0]);
+                                  if (cell->state() != IteratorState::valid)
+                                    {
+                                      continue;
+                                    }
+                                  small_vector<double,50> solution_values(this->get_fe().dofs_per_cell);
+                                  cell->get_dof_values(this->get_solution(),//input_solution,
+                                                       solution_values.begin(),
+                                                       solution_values.end());
 
-                                    //for (unsigned int position_i = 0; position_i < positions.size(); position_i++)
-                                    //{
 
-                                    solution[0] = std::vector<double>(evaluator->n_components(), numbers::signaling_nan<double>());
+                                  solution[0] = std::vector<double>(evaluator->n_components(), numbers::signaling_nan<double>());
 
-                                    //gradients[0]=std::vector<Tensor<1,dim>>(evaluator->n_components(), numbers::signaling_nan<Tensor<1,dim>>());
+                                  evaluator->reinit(cell, closest_point);
+                                  evaluator->evaluate({solution_values.data(),solution_values.size()},evaluation_flags);
+                                  evaluator->get_solution(0, {&solution[0][0],solution[0].size()}, evaluation_flags);
 
-                                    //std::vector<Point<dim>> reference_position = {reference_positions[position_i]};
-                                    evaluator->reinit(cell, closest_point);
-                                    //reference_position);
-                                    evaluator->evaluate({solution_values.data(),solution_values.size()},evaluation_flags);
-                                    evaluator->get_solution(0, {&solution[0][0],solution[0].size()}, evaluation_flags);
-                                    //evaluator->get_gradients(0, {&gradients[0][0],gradients[0].size()}, evaluation_flags);
+                                  Tensor<1,dim> velocity;
 
-                                    Tensor<1,dim> velocity;
+                                  for (unsigned int i = 0; i < dim; ++i)
+                                    velocity[i] = solution_values[this->introspection().component_indices.velocities[i]] * year_in_seconds;
 
-                                    for (unsigned int i = 0; i < dim; ++i)
-                                      velocity[i] = solution_values[this->introspection().component_indices.velocities[i]] * year_in_seconds;
-                                    /////////////////////
-                                    /*
-                                                    std::cout << "flag 105" << std::endl;
-                                                    std::vector<std::vector<double>> solution(this->get_fe().dofs_per_cell);
-                                                    solution.resize(1,std::vector<double>(evaluator->n_components(), numbers::signaling_nan<double>()));
-                                                    std::vector<Point<dim>> closest_point = {reference_cell.closest_point(reference_point)};
-                                                    Point<dim> closest_point_real = this->get_mapping().transform_unit_to_real_cell(cell,closest_point[0]);
-                                                    small_vector<double,50> solution_values(this->get_fe().dofs_per_cell);
-                                                    cell->get_dof_values(this->get_solution(),
-                                                                         solution_values.begin(),
-                                                                         solution_values.end());
-
-                                                    //solution[0] = std::vector<double>(evaluator->n_components(), numbers::signaling_nan<double>());
-
-                                                    solution[0] = std::vector<double>(evaluator->n_components(), numbers::signaling_nan<double>());
-                                                    evaluator->reinit(cell, closest_point);
-                                                    evaluator->evaluate({solution_values.data(),solution_values.size()},evaluation_flags);
-                                                    evaluator->get_solution(0, {&solution[0][0],solution[0].size()}, evaluation_flags);
-
-                                                    Tensor<1,dim> velocity;
-                                                    for (unsigned int i = 0; i < dim; ++i)
-                                                      velocity = solution_values[this->introspection().component_indices.velocities[i]];
-                                    */
-                                    //if (inside_zone)
-                                    //  std::cout << "flag 104.4: " << velocity << std::endl;
-
-                                    // TODO: maybe don't need the closest point real in the tuple?
-                                    std::tuple<unsigned int, unsigned int, Point<dim>, Tensor<1,dim>> tuple = std::make_tuple(x_i, y_i, closest_point_real, velocity);
-                                    found_a_value = true;
-                                    total_found_velocities++;
-                                    //if ( velocity.norm() > 0.)
-                                    //std::cout << total_found_velocities << ": velocty = vx=" <<  velocity[0] << ", vy=" <<  velocity[1] << ", vz=" <<  velocity[2] << ", location = " << mesh_locations[x_i][y_i] << ", boundary points = " << this->get_mapping().get_bounding_box(cell).get_boundary_points().first  <<  " -- " << this->get_mapping().get_bounding_box(cell).get_boundary_points().second << std::endl;
-                                    //if (velocity[2] > 0)
-                                    // {
-                                    //   std::cout << "/////////// HERE!!!! ////////////////////" << std::endl;
-                                    // }
-                                    //<< (double) solution[this->introspection().component_indices.velocities[0]][0] << " : "
-                                    //<< (double) solution[this->introspection().component_indices.velocities[1]][0] << " : "
-                                    //<< (double) solution[this->introspection().component_indices.velocities[2]][0]
-                                    //<< std::endl;
-                                    mesh_velocities_vector.emplace_back(tuple);
-                                    break;
-                                  }
-                              }
+                                  // TODO: maybe don't need the closest point real in the tuple?
+                                  //std::tuple<unsigned int, unsigned int, Point<dim>, Tensor<1,dim>> tuple = std::make_tuple(x_i, y_i, closest_point_real, velocity);
+                                  found_a_value = true;
+                                  total_found_velocities++;
+                                  mesh_velocities_vector.emplace_back(std::make_tuple(x_i, y_i, closest_point_real, velocity));
+                                  break;
+                                }
                             }
                         }
                     }
@@ -958,7 +901,7 @@ namespace aspect
 
     template <int dim>
     std::vector<std::vector<double>>
-    OpenLEM<dim>::get_aspect_values() const
+                                  OpenLEM<dim>::get_aspect_values() const
     {
 
       /*
