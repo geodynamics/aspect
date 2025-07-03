@@ -28,6 +28,7 @@
 #include <deal.II/base/table.h>
 #include <deal.II/particles/property_pool.h>
 #include <aspect/particle/manager.h>
+#include <deal.II/base/function_lib.h>
 
 namespace aspect
 {
