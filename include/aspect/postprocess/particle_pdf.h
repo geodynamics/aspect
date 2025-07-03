@@ -27,6 +27,9 @@
 #include <limits>
 #include <deal.II/base/table.h>
 #include <deal.II/particles/property_pool.h>
+#include <aspect/particle/manager.h>
+#include <deal.II/base/function_lib.h>
+
 namespace aspect
 {
   namespace Postprocess
@@ -46,22 +49,63 @@ namespace aspect
       public:
 
         /**
+         * The `KernelFunctions` enum class is a data structure which
+         * contains the kernel functions available for use in the Kernel
+         * Density Estimator.
+         */
+        enum class KernelFunctions
+        {
+          gaussian,
+          triangular,
+          uniform,
+          cutoff_function_w1_dealii
+        };
+
+        /**
          * This is the constructor for ParticlePDF.
          * This constructor is called when creating a point-density function which is defined
          * at regular intervals throughout a cell, as opposed to a function which is defined
          * at the positions of each particle in the cell.
          * @param granularity determines the number of reference points to sum the kernel function
          * from. The point density function is only defined at these reference points.
+         * @param bandwidth determines the bandwidth to be used in the kernel function.
+         * @param kernel_function determines which kernel function to use when generating the point-density function.
          */
-        ParticlePDF(const unsigned int granularity);
+        ParticlePDF(const unsigned int granularity, const double bandwidth,KernelFunctions kernel_function);
 
         /**
          * This is the constructor for ParticlePDF.
          * This constructor is called when creating a point-density function
          * which is defined at the positions of the particles within the cell,
-         * as opposed to at regular intervals based on a granularity value
+         * as opposed to at regular intervals based on a granularity value.
+         * @param bandwidth determines the bandwidth to be used in the kernel function.
+         * @param kernel_function determines which kernel function to use when generating the point-density function.
          */
-        ParticlePDF();
+        ParticlePDF(const double bandwidth,KernelFunctions kernel_function);
+
+        /**
+         * Fills the point-density function with values from the particles in the given cell.
+         * @param particle_range The particle_iterator_range to operate on.
+         * @param n_particles_in_cell The number of particles belonging to the particle manager in question within the cell.
+         */
+        void fill_from_particle_range(const typename Particle::ParticleHandler<dim>::particle_iterator_range particle_range,
+                                      const unsigned int n_particles_in_cell);
+
+        /**
+         * This function is only called from `fill_from_cell`.
+         * It iterates through every particle in the cell and
+         * sums the value of the kernel function between the
+         * reference point and the position of the cell.
+         * @param reference_point The point from which to get the value of the kernel function.
+         * @param table_index The index in the PDF to insert the data into.
+         * @param n_particles_in_cell The number of particles in the cell.
+         * @param particle_range The particle_iterator_range to sum particles from.
+         */
+        void insert_kernel_sum_from_particle_range(
+          const Point<dim> reference_point,
+          std::array<unsigned int,dim> table_index,
+          const unsigned int n_particles_in_cell,
+          const typename Particle::ParticleHandler<dim>::particle_iterator_range particle_range);
 
         /**
          * Inserts a value into the point-density function.
@@ -136,11 +180,27 @@ namespace aspect
         Table<dim,double> function_output_table;
 
         /**
-         * `pdf_granularity` determines the number of inputs at which
-         * the point-density function is defined. The function is defined for
-         * pdf_granularity^dim inputs.
+         * The `bandwidth` variable scales the point-density function.
+         * Choosing an appropriate bandwidth is important because a
+         * bandwidth value which is too low or too high can result
+         * in oversmoothing or undersmoothing of the point-density function.
+         * Oversmoothing or undersmoothing results in a function which
+         * represents the underlying data less accurately.
          */
-        unsigned int pdf_granularity;
+        double bandwidth;
+
+        /**
+         * `kernel_function` is an internal variable to keep track of which
+         * kernel function is being used by the ParticlePDF.
+         */
+        KernelFunctions kernel_function;
+
+        /**
+         * `granularity` determines the number of inputs at which
+         * the point-density function is defined. The function is defined for
+         * granularity^dim inputs.
+         */
+        unsigned int granularity;
 
         /**
          * `max` holds the maximum value of the point-density function after it has been computed.
@@ -187,6 +247,37 @@ namespace aspect
          * point-density function value.
          */
         types::particle_index min_particle_index;
+
+        /**
+         * Returns the value of the selected kernel function.
+         * @param distance the distance to pass to the selected kernel function.
+         * @param coordinates the coordinates representing the offset between the reference
+         * and sampled particle. This is needed because Functions::CutOffFunctionW1<dim>
+         * only takes a Point<dim> as input, not a double.
+         */
+        double apply_selected_kernel_function(const double distance) const;
+
+        /**
+         * The Uniform kernel function returns a value of 1.0 as long as the
+         * distance is less than the KDE's bandwidth.
+         * @param distance the output of the kernel function depends on the distance between the reference point and the center of the kernel function.
+         */
+        double kernelfunction_uniform(const double distance) const;
+
+        /**
+         * The Triangular kernel function returns a value of 1.0 minus
+         * the distance variable.
+         * @param distance the output of the kernel function depends on the distance between the reference point and the center of the kernel function.
+         */
+        double kernelfunction_triangular(const double distance) const;
+
+        /**
+         * The gaussian function returns the value of a gaussian distribution
+         * at the specified distance.
+         * @param distance the output of the kernel function depends on the distance between the reference point and the center of the kernel function.
+         */
+        double kernelfunction_gaussian(const double distance) const;
+
     };
   }
 }

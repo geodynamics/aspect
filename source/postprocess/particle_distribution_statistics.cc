@@ -52,33 +52,51 @@ namespace aspect
 
                   if (KDE_per_particle == false)
                     {
-                      ParticlePDF<dim> pdf(granularity);
-                      fill_PDF_from_cell(cell,pdf);
-                      pdf.compute_statistical_values();
+                      /*
+                        Loop through every particle manager here, since the ParticlePDF class operates
+                        on a single particle_iterator_range. The ParticlePDF class is written to operate
+                        on a single particle_iterator_range at a time so that it can be called directly
+                        by the particle_manager class to assist in particle load balancing.
+                      */
+                      for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
+                        {
+                          ParticlePDF<dim> pdf(granularity,bandwidth,kernel_function);
+                          const typename Particle::ParticleHandler<dim>::particle_iterator_range particle_range = this->get_particle_manager(particle_manager_index).get_particle_handler().particles_in_cell(cell);
+                          const unsigned int this_manager_particles_in_cell = this->get_particle_manager(particle_manager_index).get_particle_handler().n_particles_in_cell(cell);
 
-                      standard_deviation_min = std::min(standard_deviation_min, pdf.get_standard_deviation());
-                      standard_deviation_max = std::max(standard_deviation_max, pdf.get_standard_deviation());
-                      standard_deviation_sum += pdf.get_standard_deviation();
+                          pdf.fill_from_particle_range(particle_range,this_manager_particles_in_cell);
+                          pdf.compute_statistical_values();
 
-                      function_min_sum += pdf.get_min();
-                      function_max_sum += pdf.get_max();
-                      function_min_min = std::min(function_min_min, pdf.get_min());
-                      function_max_max = std::max(function_max_max, pdf.get_max());
+                          standard_deviation_min = std::min(standard_deviation_min, pdf.get_standard_deviation());
+                          standard_deviation_max = std::max(standard_deviation_max, pdf.get_standard_deviation());
+                          standard_deviation_sum += pdf.get_standard_deviation();
+
+                          function_min_sum += pdf.get_min();
+                          function_max_sum += pdf.get_max();
+                          function_min_min = std::min(function_min_min, pdf.get_min());
+                          function_max_max = std::max(function_max_max, pdf.get_max());
+                        }
                     }
                   else
                     {
-                      ParticlePDF<dim> pdf;
-                      fill_PDF_from_cell(cell,pdf);
-                      pdf.compute_statistical_values();
+                      for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
+                        {
+                          ParticlePDF<dim> pdf(bandwidth,kernel_function);
+                          const typename Particle::ParticleHandler<dim>::particle_iterator_range particle_range = this->get_particle_manager(particle_manager_index).get_particle_handler().particles_in_cell(cell);
+                          const unsigned int this_manager_particles_in_cell = this->get_particle_manager(particle_manager_index).get_particle_handler().n_particles_in_cell(cell);
 
-                      standard_deviation_min = std::min(standard_deviation_min, pdf.get_standard_deviation());
-                      standard_deviation_max = std::max(standard_deviation_max, pdf.get_standard_deviation());
-                      standard_deviation_sum += pdf.get_standard_deviation();
+                          pdf.fill_from_particle_range(particle_range,this_manager_particles_in_cell);
+                          pdf.compute_statistical_values();
 
-                      function_min_sum += pdf.get_min();
-                      function_max_sum += pdf.get_max();
-                      function_min_min = std::min(function_min_min, pdf.get_min());
-                      function_max_max = std::max(function_max_max, pdf.get_max());
+                          standard_deviation_min = std::min(standard_deviation_min, pdf.get_standard_deviation());
+                          standard_deviation_max = std::max(standard_deviation_max, pdf.get_standard_deviation());
+                          standard_deviation_sum += pdf.get_standard_deviation();
+
+                          function_min_sum += pdf.get_min();
+                          function_max_sum += pdf.get_max();
+                          function_min_min = std::min(function_min_min, pdf.get_min());
+                          function_max_max = std::max(function_max_max, pdf.get_max());
+                        }
                     }
                 }
             }
@@ -125,184 +143,6 @@ namespace aspect
     ParticleDistributionStatistics<dim>::required_other_postprocessors() const
     {
       return {"particles"};
-    }
-
-
-
-    template <int dim>
-    void ParticleDistributionStatistics<dim>::fill_PDF_from_cell(
-      const typename Triangulation<dim>::active_cell_iterator &cell,
-      ParticlePDF<dim> &pdf)
-    {
-      unsigned int particles_in_cell = 0;
-      for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
-        particles_in_cell += this->get_particle_manager(particle_manager_index).get_particle_handler().n_particles_in_cell(cell);
-
-      if (KDE_per_particle == false)
-        {
-          for (unsigned int x=0; x<granularity; ++x)
-            {
-              for (unsigned int y=0; y<granularity; ++y)
-                {
-                  double granularity_double = static_cast<double>(granularity);
-                  double x_double = static_cast<double>(x);
-                  double y_double = static_cast<double>(y);
-
-                  if (dim == 3)
-                    {
-                      for (unsigned int z=0; z<granularity; ++z)
-                        {
-                          const double z_double = static_cast<double>(z);
-                          Point<dim> reference_point;
-                          reference_point[0] = x_double/granularity_double;
-                          reference_point[1] = y_double/granularity_double;
-                          reference_point[2] = z_double/granularity_double;
-                          std::array<unsigned int,dim> table_index;
-                          table_index[0] = x;
-                          table_index[1] = y;
-                          table_index[2] = z;
-                          insert_kernel_sum_into_pdf(cell,reference_point,table_index,particles_in_cell,pdf);
-                        }
-                    }
-                  else
-                    {
-                      Point<dim> reference_point;
-                      reference_point[0] = x_double/granularity_double;
-                      reference_point[1] = y_double/granularity_double;
-                      std::array<unsigned int,dim> table_index;
-                      table_index[0] = x;
-                      table_index[1] = y;
-                      insert_kernel_sum_into_pdf(cell,reference_point,table_index,particles_in_cell,pdf);
-                    }
-                }
-            }
-        }
-      else
-        {
-          // Sum the value of the kernel function on that position from every other particle.
-          for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
-            {
-              const typename Particle::ParticleHandler<dim>::particle_iterator_range particle_range =
-                this->get_particle_manager(particle_manager_index).get_particle_handler().particles_in_cell(cell);
-
-              for (const auto &reference_particle: particle_range)
-                {
-                  const auto reference_coordinates = reference_particle.get_reference_location();
-                  double function_value = 0;
-
-                  for (const auto &kernel_position_particle: particle_range)
-                    {
-                      const auto kernel_coordinates = kernel_position_particle.get_reference_location();
-                      const double distance = reference_coordinates.distance(kernel_coordinates);
-                      function_value += apply_selected_kernel_function(distance);
-                    }
-
-                  pdf.add_value_to_function_table(function_value/particles_in_cell,reference_particle.get_id());
-                }
-            }
-        }
-    }
-
-
-
-    template <int dim>
-    void ParticleDistributionStatistics<dim>::insert_kernel_sum_into_pdf(
-      const typename Triangulation<dim>::active_cell_iterator &cell,
-      const Point<dim> reference_point,
-      std::array<unsigned int,dim> table_index,
-      const unsigned int particles_in_cell,
-      ParticlePDF<dim> &pdf)
-    {
-      // Add every particle in the cell using the kernel function and add that value to the PDF.
-      for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
-        {
-
-          const typename Particle::ParticleHandler<dim>::particle_iterator_range particle_range = this->get_particle_manager(particle_manager_index).get_particle_handler().particles_in_cell(cell);
-
-          for (const auto &particle: particle_range)
-            {
-              const auto coordinates = particle.get_reference_location();
-              const double distance = coordinates.distance(reference_point);
-              const double kernel_function_value = apply_selected_kernel_function(distance);
-              pdf.add_value_to_function_table(table_index,kernel_function_value/particles_in_cell);
-            }
-        }
-    }
-
-
-
-    template <int dim>
-    double ParticleDistributionStatistics<dim>::apply_selected_kernel_function(const double distance) const
-    {
-      if (kernel_function == KernelFunctions::uniform)
-        {
-          return kernelfunction_uniform(distance);
-        }
-      else if (kernel_function == KernelFunctions::triangular)
-        {
-          return kernelfunction_triangular(distance);
-        }
-      else if (kernel_function == KernelFunctions::gaussian)
-        {
-          return kernelfunction_gaussian(distance);
-        }
-      else if (kernel_function == KernelFunctions::cutoff_function_w1_dealii)
-        {
-          Functions::CutOffFunctionW1<1> cutoff_function(bandwidth);
-          return cutoff_function.value(Point<1>(distance));
-        }
-      else
-        {
-          Assert(false, ExcMessage("Unknown kernel function used in insert_kernel_sum_into_pdf."));
-          return 0.0;
-        }
-    }
-
-
-
-    template <int dim>
-    double ParticleDistributionStatistics<dim>::kernelfunction_uniform(double distance) const
-    {
-      if (distance < bandwidth)
-        {
-          return 1;
-        }
-      else
-        {
-          return 0.0;
-        }
-    }
-
-
-
-    template <int dim>
-    double ParticleDistributionStatistics<dim>::kernelfunction_triangular(double distance) const
-    {
-      if (distance < bandwidth)
-        {
-          return (1.0-distance)*bandwidth;
-        }
-      else
-        {
-          return 0.0;
-        }
-    }
-
-
-
-    template <int dim>
-    double ParticleDistributionStatistics<dim>::kernelfunction_gaussian(double distance) const
-    {
-      if (distance < bandwidth)
-        {
-          const double exponent = distance * distance / (2.*bandwidth*bandwidth);
-          const double gaussian = (1 / (bandwidth * std::sqrt(2*numbers::PI))) * std::exp(-exponent);
-          return gaussian;
-        }
-      else
-        {
-          return 0.0;
-        }
     }
 
 
@@ -363,19 +203,19 @@ namespace aspect
 
           if (kernel_function_string =="Triangular")
             {
-              kernel_function = KernelFunctions::triangular;
+              kernel_function = ParticlePDF<dim>::KernelFunctions::triangular;
             }
           else if (kernel_function_string =="Gaussian")
             {
-              kernel_function = KernelFunctions::gaussian;
+              kernel_function = ParticlePDF<dim>::KernelFunctions::gaussian;
             }
           else if (kernel_function_string == "CutoffFunctionW1")
             {
-              kernel_function = KernelFunctions::cutoff_function_w1_dealii;
+              kernel_function = ParticlePDF<dim>::KernelFunctions::cutoff_function_w1_dealii;
             }
           else
             {
-              kernel_function = KernelFunctions::uniform;
+              kernel_function = ParticlePDF<dim>::KernelFunctions::uniform;
             }
         }
         prm.leave_subsection ();
@@ -384,6 +224,7 @@ namespace aspect
     }
   }
 }
+
 
 
 // explicit instantiations

@@ -26,7 +26,6 @@
 #include <deal.II/base/function_lib.h>
 #include <aspect/particle/manager.h>
 
-
 namespace aspect
 {
   namespace Postprocess
@@ -98,23 +97,10 @@ namespace aspect
         double bandwidth;
 
         /**
-         * The `KernelFunctions` enum class is a data structure which
-         * contains the kernel functions available for use in the Kernel
-         * Density Estimator.
-         */
-        enum class KernelFunctions
-        {
-          gaussian,
-          triangular,
-          uniform,
-          cutoff_function_w1_dealii
-        };
-
-        /**
          * `kernel_function` is an internal variable to keep track of which
          * kernel function was read from the .prm file.
          */
-        KernelFunctions kernel_function;
+        typename ParticlePDF<dim>::KernelFunctions kernel_function;
 
         /**
          * Fills the supplied PDF instance with values from the particles in the given cell.
