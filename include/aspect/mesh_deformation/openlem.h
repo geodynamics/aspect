@@ -24,11 +24,13 @@
 
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/simulator_access.h>
+#include <deal.II/base/exceptions.h>
 #include <limits>
 #include <openlem.cpp>
 #include <deal.II/base/parsed_function.h>
 
 #include <aspect/mesh_deformation/openlem.h>
+#include <string>
 
 namespace openlem
 {
@@ -75,8 +77,10 @@ namespace openlem
             }
       }
 
-      void convertVelocities()
+      void convertVelocities(bool no_rot_trans = false)
       {
+
+        //todo: add and substract 4 of b
         std::cout << "connector convertVelocities" << std::endl;
         int     n = 0;
         double  xmean = 0, ymean = 0, vxmean = 0, vymean = 0, cross = 0, rsq = 0;
@@ -99,9 +103,18 @@ namespace openlem
                   vxmean += vx[i][j];
                   vymean += vy[i][j];
                   cross += i*vy[i][j]-j*vx[i][j];
+                  //if (std::fabs(vx[i][j]-(-y[i][j])) > std::numeric_limits<double>::epsilon() || std::fabs(vy[i][j]-x[i][j]) > std::numeric_limits<double>::epsilon())
+                  //  {
+                  //    std::cout << "wrong: i:j = " + std::to_string(i) + ":" + std::to_string(j) + ", x:y = " << x[i][j] << ":" << y[i][j] << ", vx:vy = " <<vx[i][j] << ":" << vy[i][j] << ", diff x:y = "  << vx[i][j]-(-y[i][j]) << ":" << vy[i][j]-x[i][j] << std::endl;
+                  //    AssertThrow(false, aspect::ExcMessage("wrong!!"));
+                  //  }
                   rsq += i*i+j*j;
                 }
             }
+        if (n == 0 || no_rot_trans == true)
+          {
+            return;
+          }
         assert(n > 0);
         xmean /= n;
         ymean /= n;
@@ -116,15 +129,31 @@ namespace openlem
         dy0 = vymean-dalpha*xmean;
         printf ( "%e %e %e\n", dalpha, dx0, dy0 );
         //std::cout << " vx:vy = " << 0 << ":" << 0 << " = "<< vx[0][0] << " : " << vy[0][0] << std::endl;
-        for ( int i = 0; i < g->m; i=i+10 )
-          for ( int j = 0; j < g->n; j=j+10 )
-            {
-              //if (vx[i][j] > 0 && vy[i][j] > 0)
-              std::cout << " vx:vy = " << i << ":" << j << " = "<< vx[i][j] << " : " << vy[i][j] << std::endl;
-            }
+        //for ( int i = 0; i < g->m; i=i+10 )
+        //  for ( int j = 0; j < g->n; j=j+10 )
+        //    {
+        //      if (
+        //        //(i == 5 && j == 5) ||
+        //        //(i == 50 && j == 50) ||
+        //        //(i == 100 && j == 100) ||
+        //        (i == 116 && j == 26)
+        //      )
+        //        {
+        //          std::cout << " vx:vy = " << i << ":" << j << " = "<< vx[i][j] << " : " << vy[i][j] << std::endl;
+        //        }
+        //    }
         for ( int i = 0; i < g->m; ++i )
           for ( int j = 0; j < g->n; ++j )
             {
+              //if (
+              //  //(i == 5 && j == 5) ||
+              //  //(i == 50 && j == 50) ||
+              //  //(i == 100 && j == 100) ||
+              //  (i == 116 && j == 26)
+              //)
+              //  {
+              //    std::cout << " i:j= " << i << ":" << j << " vx:vy = "<< vx[i][j] << " : " << vy[i][j] << ", vx-dx0-dalpha*j = " << vx[i][j]-(dx0-dalpha *j) << ", vy-dy0+daplha*i = " << vy[i][j]-(dy0+dalpha *i) << std::endl;
+              //  }
               vx[i][j] -= dx0-dalpha*j;
               vy[i][j] -= dy0+dalpha*i;
             }
@@ -137,12 +166,20 @@ namespace openlem
         //std::cout << "residual x:y = " << 0 << ":" << openlem_ny << " = "<< vx[0][openlem_ny-1]            << " : " << vy[0][openlem_ny-1] << std::endl;
         //std::cout << "residual x:y = " << 0 << ":" << 0 << " = "<< vx[openlem_nx-1][openlem_ny-1] << " : " << vy[openlem_nx-1][openlem_ny-1] << std::endl;
         //std::cout << "residual x:y = " << 0 << ":" << 0 << " = "<< vx[openlem_nx-1][0]            << " : " << vy[openlem_nx-1][0] << std::endl;
-        for ( int i = 0; i < g->m; i=i+10 )
-          for ( int j = 0; j < g->n; j=j+10 )
-            {
-              //if (vx[i][j] > 0 && vy[i][j] > 0)
-              std::cout << "residual x:y = " << i << ":" << j << " = "<< vx[i][j] << " : " << vy[i][j] << std::endl;
-            }
+        //for ( int i = 0; i < g->m; i=i+10 )
+        //  for ( int j = 0; j < g->n; j=j+10 )
+        //    {
+        //      //if (vx[i][j] > 0 && vy[i][j] > 0)
+        //      if (
+        //        //(i == 5 && j == 5) ||
+        //        //(i == 50 && j == 50) ||
+        //        //(i == 100 && j == 100) ||
+        //        (i == 116 && j == 126)
+        //      )
+        //        {
+        //          std::cout << "residual x:y = " << i << ":" << j << " = "<< vx[i][j] << " : " << vy[i][j] << std::endl;
+        //        }
+        //    }
       }
 
       void computeUpliftRate()
@@ -158,25 +195,26 @@ namespace openlem
                 double  dhdy = vy[i][j]<0 ?
                                g->getNodeP(i,j+1)->h-g->getNode(i,j)->h :
                                g->getNode(i,j)->h-g->getNodeP(i,j-1)->h;
-                if (i == 19 && j == 24)
-                  std::cout << "before dhdx:y = " << dhdx << ':' << dhdy << ", u = " << g->getNode(i,j)->u << ", vx:y:z = " << vx[i][j] << ":" << vy[i][j] << ":" << vz[i][j] << std::endl;
+                //if (i == 19 && j == 24)
+                //  std::cout << "before dhdx:y = " << dhdx << ':' << dhdy << ", u = " << g->getNode(i,j)->u << ", vx:y:z = " << vx[i][j] << ":" << vy[i][j] << ":" << vz[i][j] << std::endl;
                 g->getNode(i,j)->u = vz[i][j]-vx[i][j]*dhdx-vy[i][j]*dhdy;
-                if (i == 19 && j == 24)
-                  std::cout << "dhdx:y = " << dhdx << ':' << dhdy << ", u = " << g->getNode(i,j)->u << ", vx:y:z = " << vx[i][j] << ":" << vy[i][j] << ":" << vz[i][j] << std::endl;
+                //if (i == 19 && j == 24)
+                //  std::cout << "dhdx:y = " << dhdx << ':' << dhdy << ", u = " << g->getNode(i,j)->u << ", vx:y:z = " << vx[i][j] << ":" << vy[i][j] << ":" << vz[i][j] << std::endl;
               }
       }
 
       void updateCoordinateSystem ( double dt )
       {
-        std::cout << "connector updateCoordinatesystem x0:y0 = " << x0 << ":" << y0 << ", dx0:dy0 = " << dx0 << ":" << dy0 << ", dt = " << dt << ", aplha = " << alpha << ", dalhpa = " << dalpha <<std::endl;
+        std::cout << ".. connector updateCoordinatesystem ..";
+        //std::cout << "connector updateCoordinatesystem x0:y0 = " << x0 << ":" << y0 << ", dx0:dy0 = " << dx0 << ":" << dy0 << ", dt = " << dt << ", aplha = " << alpha << ", dalhpa = " << dalpha <<std::endl;
         x0 += dx0*dt;
         y0 += dy0*dt;
         alpha += dalpha*dt;
-        std::cout << "connector updateCoordinatesystem x0:y0 = " << x0 << ":" << y0 << ", dx0:dy0 = " << dx0 << ":" << dy0 << ", dt = " << dt << ", alpha = " << alpha << std::endl;
+        //std::cout << "connector updateCoordinatesystem x0:y0 = " << x0 << ":" << y0 << ", dx0:dy0 = " << dx0 << ":" << dy0 << ", dt = " << dt << ", alpha = " << alpha << std::endl;
         updateXY();
       }
 
-      double interpolation(double x, double y, const std::vector<std::vector<double>> &interperolat, double dx, double dy, double origin_x, double origin_y) const
+      double interpolation(double x, double y, const std::vector<std::vector<double>> &interperolat, const std::vector<std::vector<double>> &interperolat2,  double dx, double dy, double origin_x, double origin_y) const
       {
         /*
         double c = cos(alpha);
@@ -227,24 +265,25 @@ namespace openlem
 
         //if (x > -6345.87-100. && x < -6345.87+4000. && y > 28103. - 200. && y < 28103. + 200. )
         //if (x > -6345.87-100. && x < -6345.87+5000. && y > 28103. - 400. && y < 28103. + 400. )
-        if (x > 3125-100. && x < 3125+5000. && y > 45312.5 - 400. && y < 45312.5 + 400. )
-          std::cout << "closest_xi = " << closest_xi << ", closest_yi = " << closest_yi << ", interp = " << interperolat[closest_xi][closest_yi] << std::endl;
-        return interperolat[closest_xi][closest_yi];//g->getNode(i,j)->h;//interperolat[i][j];
+        //if (x > 3125-100. && x < 3125+5000. && y > 45312.5 - 400. && y < 45312.5 + 400. )
+        //std::cout << "closest_xi = " << closest_xi << ", closest_yi = " << closest_yi << ", interp = " << interperolat[closest_xi][closest_yi] << ", interp2 = " <<  interperolat2[closest_xi][closest_yi] << std::endl;
+        return interperolat[closest_xi][closest_yi] - interperolat2[closest_xi][closest_yi];//g->getNode(i,j)->h;//interperolat[i][j];
       }
 
       void write_vtk(double reference_surface_height, int timestep, double time, std::string path, std::string prestring = "") const
       {
         std::string timestep_string = std::to_string(timestep);
         size_t n_zero = 5;
-        std::string relative_path = "openLEM/openlem_surface_" + prestring + std::string(n_zero - std::min(n_zero, timestep_string.length()), '0') +timestep_string +".vtu";
+        std::string relative_path = "openLEM/openlem_surface" + prestring + std::string(n_zero - std::min(n_zero, timestep_string.length()), '0') +timestep_string +".vtu";
         std::string full_path = path + relative_path;
-        std::string pvtu_full_path = path + "openlem_surface.pvd";
+        std::string pvtu_full_path = path + "openlem_surface" + prestring + ".pvd";
         std::cout << "writing openlem VTK file to " << full_path << std::endl;
         std::vector<double> grid_x(0);
         std::vector<double> grid_y(0);
         std::vector<double> grid_z(0);
         std::vector<double> grid_elevation(0);
         std::vector<double> grid_uplift(0);
+        std::vector<double> grid_boundary(0);
         std::vector<double> grid_vx(0);
         std::vector<double> grid_vy(0);
 
@@ -260,6 +299,7 @@ namespace openlem
 
         grid_elevation.resize(n_p);
         grid_uplift.resize(n_p);
+        grid_boundary.resize(n_p);
         grid_vx.resize(n_p);
         grid_vy.resize(n_p);
         grid_connectivity.resize(n_cell,std::vector<size_t>((2-1)*4));
@@ -274,6 +314,7 @@ namespace openlem
                 grid_z[counter] = reference_surface_height + g->getNode(i,j)->h;
                 grid_elevation[counter] = g->getNode(i,j)->h;
                 grid_uplift[counter] = g->getNode(i,j)->u;
+                grid_boundary[counter] = g->getNode(i,j)->b;
                 grid_vx[counter] = vx[i][j];//g->getNode(i,j)->u;
                 grid_vy[counter] = vy[i][j];//g->getNode(i,j)->u;
                 counter++;
@@ -340,6 +381,12 @@ namespace openlem
             buffer <<  grid_uplift[i] << std::endl;
           }
         buffer << "</DataArray>" << std::endl;
+        buffer << R"(<DataArray type="Float32" Name="Boundary value" format="ascii">)" << std::endl;
+        for (size_t i = 0; i < n_p; ++i)
+          {
+            buffer <<  grid_boundary[i] << std::endl;
+          }
+        buffer << "</DataArray>" << std::endl;
         buffer << R"(<DataArray type="Float32" Name="vx" format="ascii">)" << std::endl;
         for (size_t i = 0; i < n_p; ++i)
           {
@@ -368,7 +415,11 @@ namespace openlem
         buffer.str(std::string());
 
         myfile.close();
-
+        if (prestring != "")
+          {
+            std::cout << "Finished writing openlem VTK file" << std::endl;
+            return;
+          }
         std::string new_pvtu_line = "    <DataSet timestep=\"" + std::to_string(time) + "\" group=\"\" part=\"0\" file=\"" + relative_path + "\"/>";
         if (timestep == 0)
           {
@@ -528,6 +579,7 @@ namespace aspect
         unsigned int aspect_y_extent;
         //std::vector<std::vector<double>> mesh_velocity_z;
         std::vector<std::vector<double>> aspect_mesh_elevation_h;
+        std::vector<std::vector<double>> aspect_mesh_z;
         /**
          * Variable to hold ASPECT domain extents.
          */
