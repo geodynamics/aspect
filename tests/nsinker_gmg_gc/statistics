@@ -1,0 +1,21 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of nonlinear iterations
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: System matrix memory consumption (MB) 
+# 12: Triangulation memory consumption (MB) 
+# 13: p4est memory consumption (MB) 
+# 14: DoFHandler memory consumption (MB) 
+# 15: AffineConstraints<double> memory consumption (MB) 
+# 16: Solution vector memory consumption (MB) 
+# 17: MGTransfer memory consumption (MB) 
+# 18: Matrix-free cell data memory consumption (MB) 
+# 19: Peak virtual memory usage (VmPeak) (MB) 
+# 20: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 64 2312 729 1 21 22 22 0.0455 0.0468 0.0070 0.0670 0.1648 0.0355 0.0828 0.0039 546.2383 output-nsinker_gmg_gc/solution/solution-00000 
