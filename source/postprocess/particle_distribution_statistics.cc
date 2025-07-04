@@ -60,11 +60,11 @@ namespace aspect
                       */
                       for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
                         {
-                          ParticlePDF<dim> pdf(granularity,bandwidth,kernel_function);
-                          const typename Particle::ParticleHandler<dim>::particle_iterator_range particle_range = this->get_particle_manager(particle_manager_index).get_particle_handler().particles_in_cell(cell);
-                          const unsigned int this_manager_particles_in_cell = this->get_particle_manager(particle_manager_index).get_particle_handler().n_particles_in_cell(cell);
+                          const auto &particle_handler = this->get_particle_manager(particle_manager_index).get_particle_handler();
 
-                          pdf.fill_from_particle_range(particle_range,this_manager_particles_in_cell);
+                          Particle::ParticlePDF<dim> pdf(granularity,bandwidth,kernel_function);
+                          pdf.fill_from_particle_range(particle_handler.particles_in_cell(cell),
+                                                       particle_handler.n_particles_in_cell(cell));
                           pdf.compute_statistical_values();
 
                           standard_deviation_min = std::min(standard_deviation_min, pdf.get_standard_deviation());
@@ -81,11 +81,11 @@ namespace aspect
                     {
                       for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
                         {
-                          ParticlePDF<dim> pdf(bandwidth,kernel_function);
-                          const typename Particle::ParticleHandler<dim>::particle_iterator_range particle_range = this->get_particle_manager(particle_manager_index).get_particle_handler().particles_in_cell(cell);
-                          const unsigned int this_manager_particles_in_cell = this->get_particle_manager(particle_manager_index).get_particle_handler().n_particles_in_cell(cell);
+                          const auto &particle_handler = this->get_particle_manager(particle_manager_index).get_particle_handler();
 
-                          pdf.fill_from_particle_range(particle_range,this_manager_particles_in_cell);
+                          Particle::ParticlePDF<dim> pdf(bandwidth,kernel_function);
+                          pdf.fill_from_particle_range(particle_handler.particles_in_cell(cell),
+                                                       particle_handler.n_particles_in_cell(cell));
                           pdf.compute_statistical_values();
 
                           standard_deviation_min = std::min(standard_deviation_min, pdf.get_standard_deviation());
@@ -203,19 +203,19 @@ namespace aspect
 
           if (kernel_function_string =="Triangular")
             {
-              kernel_function = ParticlePDF<dim>::KernelFunctions::triangular;
+              kernel_function = Particle::ParticlePDF<dim>::KernelFunction::triangular;
             }
           else if (kernel_function_string =="Gaussian")
             {
-              kernel_function = ParticlePDF<dim>::KernelFunctions::gaussian;
+              kernel_function = Particle::ParticlePDF<dim>::KernelFunction::gaussian;
             }
           else if (kernel_function_string == "CutoffFunctionW1")
             {
-              kernel_function = ParticlePDF<dim>::KernelFunctions::cutoff_function_w1_dealii;
+              kernel_function = Particle::ParticlePDF<dim>::KernelFunction::cutoff_function_w1_dealii;
             }
           else
             {
-              kernel_function = ParticlePDF<dim>::KernelFunctions::uniform;
+              kernel_function = Particle::ParticlePDF<dim>::KernelFunction::uniform;
             }
         }
         prm.leave_subsection ();
