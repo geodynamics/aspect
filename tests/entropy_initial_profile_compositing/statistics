@@ -1,0 +1,42 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: RMS velocity (m/year)
+# 10: Max. velocity (m/year)
+# 11: Minimal temperature (K)
+# 12: Average temperature (K)
+# 13: Maximal temperature (K)
+# 14: Average nondimensional temperature (K)
+# 15: Average density (kg/m^3)
+# 16: Average viscosity (Pa s)
+# 17: Total mass (kg)
+# 18: Minimal pressure (Pa)
+# 19: Average pressure (Pa)
+# 20: Maximal pressure (Pa)
+# 21: Minimal value for composition entropy
+# 22: Maximal value for composition entropy
+# 23: Global mass for composition entropy
+# 24: Minimal value for composition density_field
+# 25: Maximal value for composition density_field
+# 26: Global mass for composition density_field
+# 27: Minimal value for composition grain_size
+# 28: Maximal value for composition grain_size
+# 29: Global mass for composition grain_size
+# 30: Minimal value for composition composition
+# 31: Maximal value for composition composition
+# 32: Global mass for composition composition
+# 33: Outward heat flux through boundary with indicator 0 ("bottom") (W)
+# 34: Outward heat flux through boundary with indicator 1 ("top") (W)
+# 35: Maximum velocity magnitude on boundary with indicator 0 ("bottom") (m/year)
+# 36: Minimum velocity magnitude on boundary with indicator 0 ("bottom") (m/year)
+# 37: RMS velocity on boundary with indicator 0 ("bottom") (m/year)
+# 38: Maximum velocity magnitude on boundary with indicator 1 ("top") (m/year)
+# 39: Minimum velocity magnitude on boundary with indicator 1 ("top") (m/year)
+# 40: RMS velocity on boundary with indicator 1 ("top") (m/year)
+# 41: Number of advected particles
+0 0.000000000000e+00 0.000000000000e+00 192 1968 864 3456 0 0.00000000e+00 0.00000000e+00 3.21018877e+02 1.95851126e+03 3.33091299e+03 4.34002751e-01 4.31991999e+03 2.30415492e+23 3.86409524e+17 0.00000000e+00 5.21182173e+10 1.24428311e+11 6.56462000e+02 2.95618700e+03 2.18856129e+17 3.30000000e+03 5.50000000e+03 3.00973605e+17 2.00000000e-05 5.00000000e-03 1.29485819e+11 0.00000000e+00 0.00000000e+00 0.00000000e+00 -3.47521855e+05 8.66202447e+05 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 3072 
