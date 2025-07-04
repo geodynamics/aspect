@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/postprocess/particle_pdf.h>
+#include <aspect/particle/distribution.h>
 
 
 namespace aspect

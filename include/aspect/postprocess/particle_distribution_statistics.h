@@ -22,7 +22,7 @@
 #ifndef _aspect_postprocess_particle_distribution_statistics_h
 #define _aspect_postprocess_particle_distribution_statistics_h
 
-#include <aspect/postprocess/particle_pdf.h>
+#include <aspect/particle/distribution.h>
 #include <deal.II/base/function_lib.h>
 #include <aspect/particle/manager.h>
 
