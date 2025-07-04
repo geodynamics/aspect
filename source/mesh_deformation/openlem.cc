@@ -64,7 +64,7 @@ namespace aspect
 
         // Get the deformation type names called for each boundary.
         std::map<types::boundary_id, std::vector<std::string>> mesh_deformation_boundary_indicators_map
-          = this->get_mesh_deformation_handler().get_active_mesh_deformation_names();
+                                                            = this->get_mesh_deformation_handler().get_active_mesh_deformation_names();
 
         // Loop over each mesh deformation boundary, and make sure openlem is only called on the surface.
         for (const types::boundary_id id : mesh_deformation_boundary_ids)
@@ -425,16 +425,13 @@ namespace aspect
 
                               this->get_mapping().transform_points_real_to_unit_cell(cell, {mesh_locations[x_i][y_i]},unit_point);
                               //auto reference_cell = this->get_triangulation().get_reference_cells()[0];
-                              //unit_point[0][0] = 1;
-                              //unit_point[0][1] = 1;
-                              //unit_point[0][2] = 1;
                               const double distance_to_unit_cell = GeometryInfo<dim>::distance_to_unit_cell(unit_point[0]);
 
 
-                              const double x_coord = mesh_locations[x_i][y_i][0] - grid_extent[0].first;
-                              const double y_coord = mesh_locations[x_i][y_i][1] - grid_extent[1].first;
-                              const size_t ixa = std::round(x_coord/aspect_dx);
-                              const size_t iya = std::round(y_coord/aspect_dy);
+                              //const double x_coord = mesh_locations[x_i][y_i][0] - grid_extent[0].first;
+                              //const double y_coord = mesh_locations[x_i][y_i][1] - grid_extent[1].first;
+                              //const size_t ixa = std::round(x_coord/aspect_dx);
+                              //const size_t iya = std::round(y_coord/aspect_dy);
                               //if ((x_i == 116 && y_i == 26))
                               //  std::cout << "flag 100 ixa:iya = " << ixa << ":" << iya << ", distance_to_unit_cell = " <<distance_to_unit_cell << ", closest_distance_cell = " << closest_distance_cell  << std::endl;
 
@@ -566,8 +563,8 @@ namespace aspect
                 //if ( mesh_velocities[x_i][y_i][2] > 0.)
                 //  std::cout << "mesh velocties = " <<  mesh_velocities[x_i][y_i][0] << ":" <<  mesh_velocities[x_i][y_i][1] << ":" <<  mesh_velocities[x_i][y_i][2] << ", node u = " <<  node->u << std::endl;
               }
-          connector.write_vtk(grid_extent[dim-1].second,this->get_timestep_number(), 0.0, dirname  , "_preconvert");
-          connector.convertVelocities();
+          //connector.write_vtk(grid_extent[dim-1].second,this->get_timestep_number(), 0.0, dirname  , "_preconvert");
+          connector.convertVelocities(openlem_minimize_advection);
           //connector.write_vtk(grid_extent[dim-1].second, this->get_timestep_number() , "postconvert");
           connector.computeUpliftRate();
           //connector.write_vtk(grid_extent[dim-1].second, this->get_timestep_number() , "postuplift");
@@ -787,8 +784,8 @@ namespace aspect
       // add the velocity to the closest grid point and count how many grid points contributed to that point
       // then divide the value by the counter.
       std::vector<std::vector<size_t>> aspect_mesh_counter = std::vector<std::vector<size_t>>(aspect_nx,std::vector<size_t>(aspect_ny));
-      double min_openlem_h = std::numeric_limits<double>::infinity();
-      double max_openlem_h = -std::numeric_limits<double>::infinity();
+      //double min_openlem_h = std::numeric_limits<double>::infinity();
+      //double max_openlem_h = -std::numeric_limits<double>::infinity();
       for (unsigned int ix=0; ix<openlem_nx; ++ix)
         for (unsigned int iy=0; iy<openlem_ny; ++iy)
           {
@@ -808,9 +805,9 @@ namespace aspect
                 size_t closest_point_ixa = std::round(x_coord/aspect_dx);//aspect_point_round[0];//std::numeric_limits<size_t>::signaling_NaN();
                 size_t closest_point_iya = std::round(y_coord/aspect_dy);//aspect_point_round[1];//std::numeric_limits<size_t>::signaling_NaN();
                 //if (grid_new.getNode(ix,iy)->b == 0)
-                min_openlem_h = std::min(min_openlem_h,grid_new.getNode(ix,iy)->h);
-                max_openlem_h = std::max(max_openlem_h,grid_new.getNode(ix,iy)->h);
-                aspect_mesh_elevation_h[closest_point_ixa][closest_point_iya] += grid_new.getNode(ix,iy)->h;// - aspect_mesh_z[closest_point_ixa][closest_point_iya] +grid_extent[dim-1].second;//- mesh_velocity_locations[ix][iy][dim-1]+grid_extent[dim-1].second ;// grid_old.getNode(ix,iy)->h;//TODO: check if this is alright or if I need to get the closest node in the old grid sepeartly. //mesh_velocity_z[ix][iy];
+                //min_openlem_h = std::min(min_openlem_h,grid_new.getNode(ix,iy)->h);
+                //max_openlem_h = std::max(max_openlem_h,grid_new.getNode(ix,iy)->h);
+                aspect_mesh_elevation_h[closest_point_ixa][closest_point_iya] += grid_new.getNode(ix,iy)->h - aspect_mesh_z[closest_point_ixa][closest_point_iya] +grid_extent[dim-1].second;//- mesh_velocity_locations[ix][iy][dim-1]+grid_extent[dim-1].second ;// grid_old.getNode(ix,iy)->h;//TODO: check if this is alright or if I need to get the closest node in the old grid sepeartly. //mesh_velocity_z[ix][iy];
                 //if (closest_point_iya == 10)
                 //  std::cout << "ix:iy = " << ix << ":" << iy << ", ixa:iya = " << closest_point_ixa << ":" << closest_point_iya << ", h = " << grid_new.getNode(ix,iy)->h << ", aspect_mesh_z =" << aspect_mesh_z[closest_point_ixa][closest_point_iya] << ", result = " << aspect_mesh_elevation_h[closest_point_ixa][closest_point_iya] << std::endl;
                 aspect_mesh_counter[closest_point_ixa][closest_point_iya] += 1;
@@ -833,7 +830,7 @@ namespace aspect
               else
                 {
                   AssertThrow(aspect_mesh_counter[ixa][iya] != 0, ExcMessage("Division by zero when averaging aspect mesh velocity z"));
-                  const double before = aspect_mesh_elevation_h[ixa][iya];
+                  //const double before = aspect_mesh_elevation_h[ixa][iya];
                   aspect_mesh_elevation_h[ixa][iya] /= (aspect_mesh_counter[ixa][iya]);
                   //AssertThrow(aspect_mesh_elevation_h[ixa][iya] <= max_openlem_h && aspect_mesh_elevation_h[ixa][iya] >= min_openlem_h  , ExcMessage("wrong!!!! min:max h = " + std::to_string(min_openlem_h) + ":" + std::to_string(max_openlem_h) + ", value:after:counter = " + std::to_string(aspect_mesh_elevation_h[ixa][iya]) + ":" + std::to_string(before)   + ":" +  std::to_string(aspect_mesh_counter[ixa][iya])));
                 }
@@ -842,7 +839,7 @@ namespace aspect
             }
 
           }
-      std::cout << "min:max h = " << min_openlem_h << ":" << max_openlem_h << std::endl;
+      //std::cout << "min:max h = " << min_openlem_h << ":" << max_openlem_h << std::endl;
       // Get the sizes needed for a data table of the mesh velocities.
       //TableIndices<dim> size_idx;
       //for (unsigned int d=0; d<dim; ++d)
@@ -925,11 +922,11 @@ namespace aspect
       VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
         [&](const Point<dim> &p) -> double
       {
-        if (p[0] > -6345.87-100. && p[0] < -6345.87+15000. && p[1] > 28103. - 400. && p[1] < 28103. + 400. && p[2] > 25076.5 - 400. && p[2] < 25076.5+5000.)
-          //if (p[0] >  3125.00-100. && p[0] <  3125.00+5000. && p[1] > 34375. - 400. && p[1] < 34375. + 400. && p[2] > 28028.4 - 400. && p[2] < 28028.4+5000.)
-          {
-            //std::cout << "p = " << p << ", vel = " << (connector.interpolation(p[0],p[1], aspect_mesh_elevation_h, aspect_mesh_z, aspect_dx, aspect_dy, grid_extent[0].first, grid_extent[1].first)-(p[2]-grid_extent[2].second)-(p[2]-grid_extent[2].second))/this->get_timestep() << ", interp = " << connector.interpolation(p[0],p[1], aspect_mesh_elevation_h, aspect_mesh_z, aspect_dx, aspect_dy, grid_extent[0].first, grid_extent[1].first)-(p[2]-grid_extent[2].second) << ", p2 = " << p[2] << ", ge = " << grid_extent[2].second << ", dt = " << this->get_timestep() << ", without timestep = " << (connector.interpolation(p[0],p[1], aspect_mesh_elevation_h, aspect_mesh_z, aspect_dx, aspect_dy, grid_extent[0].first, grid_extent[1].first)-(p[2]-grid_extent[2].second)-(p[2]-grid_extent[2].second)) << ", interp/timestep = " <<  (connector.interpolation(p[0],p[1], aspect_mesh_elevation_h, aspect_mesh_z, aspect_dx, aspect_dy, grid_extent[0].first, grid_extent[1].first))/this->get_timestep()<< std::endl;
-          }
+        //if (p[0] > -6345.87-100. && p[0] < -6345.87+15000. && p[1] > 28103. - 400. && p[1] < 28103. + 400. && p[2] > 25076.5 - 400. && p[2] < 25076.5+5000.)
+        //  //if (p[0] >  3125.00-100. && p[0] <  3125.00+5000. && p[1] > 34375. - 400. && p[1] < 34375. + 400. && p[2] > 28028.4 - 400. && p[2] < 28028.4+5000.)
+        //  {
+        //    //std::cout << "p = " << p << ", vel = " << (connector.interpolation(p[0],p[1], aspect_mesh_elevation_h, aspect_mesh_z, aspect_dx, aspect_dy, grid_extent[0].first, grid_extent[1].first)-(p[2]-grid_extent[2].second)-(p[2]-grid_extent[2].second))/this->get_timestep() << ", interp = " << connector.interpolation(p[0],p[1], aspect_mesh_elevation_h, aspect_mesh_z, aspect_dx, aspect_dy, grid_extent[0].first, grid_extent[1].first)-(p[2]-grid_extent[2].second) << ", p2 = " << p[2] << ", ge = " << grid_extent[2].second << ", dt = " << this->get_timestep() << ", without timestep = " << (connector.interpolation(p[0],p[1], aspect_mesh_elevation_h, aspect_mesh_z, aspect_dx, aspect_dy, grid_extent[0].first, grid_extent[1].first)-(p[2]-grid_extent[2].second)-(p[2]-grid_extent[2].second)) << ", interp/timestep = " <<  (connector.interpolation(p[0],p[1], aspect_mesh_elevation_h, aspect_mesh_z, aspect_dx, aspect_dy, grid_extent[0].first, grid_extent[1].first))/this->get_timestep()<< std::endl;
+        //  }
         //if ((connector.interpolation(p[0],p[1], aspect_mesh_elevation_h, aspect_mesh_z, aspect_dx, aspect_dy, grid_extent[0].first, grid_extent[1].first)+ grid_extent[dim-1].second )< 0.0)
         //  {
         //    std::cout << "p = " << p << ", vel = " << (connector.interpolation(p[0],p[1], aspect_mesh_elevation_h, aspect_mesh_z, aspect_dx, aspect_dy, grid_extent[0].first, grid_extent[1].first)-(p[2]-grid_extent[2].second)-(p[2]-grid_extent[2].second))/this->get_timestep() << ", interp = " << connector.interpolation(p[0],p[1], aspect_mesh_elevation_h, aspect_mesh_z, aspect_dx, aspect_dy, grid_extent[0].first, grid_extent[1].first)-(p[2]-grid_extent[2].second) << ", p2 = " << p[2] << ", ge = " << grid_extent[2].second << ", dt = " << this->get_timestep() << ", without timestep = " << (connector.interpolation(p[0],p[1], aspect_mesh_elevation_h, aspect_mesh_z, aspect_dx, aspect_dy, grid_extent[0].first, grid_extent[1].first)-(p[2]-grid_extent[2].second)-(p[2]-grid_extent[2].second)) << ", interp/timestep = " <<  (connector.interpolation(p[0],p[1], aspect_mesh_elevation_h, aspect_mesh_z, aspect_dx, aspect_dy, grid_extent[0].first, grid_extent[1].first))/this->get_timestep()<< std::endl;
@@ -949,7 +946,7 @@ namespace aspect
 
     template <int dim>
     std::vector<std::vector<double>>
-    OpenLEM<dim>::get_aspect_values() const
+                                  OpenLEM<dim>::get_aspect_values() const
     {
 
       /*
@@ -1275,6 +1272,9 @@ namespace aspect
       {
         prm.enter_subsection ("OpenLEM");
         {
+          prm.declare_entry("Minimize advection", "true",
+                            Patterns::Bool(),
+                            "Whether to rotate and translate the openLEM grid to minimize the advection");
           prm.declare_entry("Number of openlem timesteps per aspect timestep", "5",
                             Patterns::Integer(),
                             "Initial number of openlem time steps per ASPECT timestep, this value will double if"
@@ -1335,7 +1335,7 @@ namespace aspect
             prm.declare_entry ("Front", "1",
                                Patterns::Integer (0, 1),
                                "Front (bottom) boundary condition, where 1 is fixed and 0 is reflective.");
-            prm.declare_entry ("Right", "1",
+            prm.declare_entry ("R ight", "1",
                                Patterns::Integer (0, 1),
                                "Right boundary condition, where 1 is fixed and 0 is reflective.");
             prm.declare_entry ("Back", "1",
@@ -1486,6 +1486,7 @@ namespace aspect
       {
         prm.enter_subsection("OpenLEM");
         {
+          openlem_minimize_advection = prm.get_bool("Minimize advection");
           openlem_steps_per_aspect_step = prm.get_integer("Number of openlem timesteps per aspect timestep");
           maximum_openlem_timestep = prm.get_double("Maximum timestep length");
           //vexp = prm.get_double("Vertical exaggeration");

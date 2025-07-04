@@ -77,7 +77,7 @@ namespace openlem
             }
       }
 
-      void convertVelocities(bool no_rot_trans = false)
+      void convertVelocities(bool minimize_rotation = true)
       {
 
         //todo: add and substract 4 of b
@@ -111,7 +111,7 @@ namespace openlem
                   rsq += i*i+j*j;
                 }
             }
-        if (n == 0 || no_rot_trans == true)
+        if (n == 0 || minimize_rotation)
           {
             return;
           }
@@ -267,7 +267,7 @@ namespace openlem
         //if (x > -6345.87-100. && x < -6345.87+5000. && y > 28103. - 400. && y < 28103. + 400. )
         //if (x > 3125-100. && x < 3125+5000. && y > 45312.5 - 400. && y < 45312.5 + 400. )
         //std::cout << "closest_xi = " << closest_xi << ", closest_yi = " << closest_yi << ", interp = " << interperolat[closest_xi][closest_yi] << ", interp2 = " <<  interperolat2[closest_xi][closest_yi] << std::endl;
-        return interperolat[closest_xi][closest_yi] - interperolat2[closest_xi][closest_yi];//g->getNode(i,j)->h;//interperolat[i][j];
+        return interperolat[closest_xi][closest_yi];// - interperolat2[closest_xi][closest_yi];//g->getNode(i,j)->h;//interperolat[i][j];
       }
 
       void write_vtk(double reference_surface_height, int timestep, double time, std::string path, std::string prestring = "") const
@@ -577,6 +577,8 @@ namespace aspect
         unsigned int aspect_dy;
         unsigned int aspect_x_extent;
         unsigned int aspect_y_extent;
+
+        bool openlem_minimize_advection;
         //std::vector<std::vector<double>> mesh_velocity_z;
         std::vector<std::vector<double>> aspect_mesh_elevation_h;
         std::vector<std::vector<double>> aspect_mesh_z;
