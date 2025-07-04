@@ -20,6 +20,7 @@
 
 #include "entropy_advection.h"
 #include <aspect/material_model/entropy_model.h>
+#include <aspect/material_model/compositing.h>
 
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
@@ -264,9 +265,15 @@ namespace aspect
                                         Assemblers::Manager<dim> &assemblers)
   {
     AssertThrow (Plugins::plugin_type_matches<MaterialModel::EntropyModel<dim>>
-                 (simulator_access.get_material_model()),
+                 (simulator_access.get_material_model()) ||
+                 Plugins::plugin_type_matches<MaterialModel::Compositing<dim>>
+                 (simulator_access.get_material_model()) ,
                  ExcMessage ("The entropy advection assembler can only be used with the "
-                             "material model 'entropy model'!"));
+                             "material models 'entropy model' or 'compositing'."));
+
+    AssertThrow (simulator_access.introspection().composition_type_exists(CompositionalFieldDescription::entropy),
+                 ExcMessage ("The entropy advection assembler can only be used with a "
+                             "compositional field of type 'entropy'."));
 
     AssertThrow (simulator_access.get_heating_model_manager().adiabatic_heating_enabled() == false,
                  ExcMessage("The entropy advection assembler requires "
