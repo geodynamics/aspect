@@ -1,0 +1,6 @@
+Changed: The entropy method can now also be used with the 'compositing'
+material model. Additionally, the adiabatic conditions plugin
+'compute entropy profile' now considers initial composition to compute
+the initial reference profile, identical to the 'compute profile' plugin.
+<br>
+(Rene Gassmoeller, 2025/07/04)
