@@ -237,8 +237,8 @@ namespace aspect
     void
     ParticlePDF<dim>::compute_statistical_values()
     {
-      standard_deviation = 0;
-      mean = 0;
+      standard_deviation = 0.0;
+      mean = 0.0;
 
       if (!is_defined_per_particle)
         {
@@ -303,9 +303,8 @@ namespace aspect
             }
 
           // Standard deviation of all the defined points in the density function
-          // TODO: this is wrong it should be divided by granularity^dim
-          squared_deviation_sum /= (granularity*dim);
-          standard_deviation = std::sqrt(squared_deviation_sum);
+          const double squared_deviation_mean = squared_deviation_sum / Utilities::fixed_power<dim>(granularity);
+          standard_deviation = std::sqrt(squared_deviation_mean);
         }
       else
         {
@@ -316,7 +315,6 @@ namespace aspect
           // Compute the mean
           mean /= function_output_vector.size();
           double squared_deviation_sum = 0;
-          standard_deviation = 0;
 
           // Sum all the squared deviations for standard deviation
           for (const double this_value : function_output_vector)
@@ -324,8 +322,8 @@ namespace aspect
               const double deviation_squared = (this_value-mean)*(this_value-mean);
               squared_deviation_sum += deviation_squared;
             }
-          squared_deviation_sum /= function_output_vector.size();
-          standard_deviation = std::sqrt(squared_deviation_sum);
+          const double squared_deviation_mean = squared_deviation_sum / function_output_vector.size();
+          standard_deviation = std::sqrt(squared_deviation_mean);
         }
     }
 
