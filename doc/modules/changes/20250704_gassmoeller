@@ -1,0 +1,5 @@
+Fixed: The default value for the parameter 'Lateral viscosity file name'
+in the material model 'entropy model' referred to a non-existent file.
+This parameter now refers to an example data file.
+<br>
+(Rene Gassmoeller, 2025/07/04)

@@ -109,7 +109,6 @@ subsection Material model
   subsection Entropy model
     set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/entropy-table/pyrtable/
     set Material file name               = material_table_entropy_pressure.txt
-    set Lateral viscosity file name      = constant_lateral_vis_prefactor.txt
     set Thermal conductivity formulation = constant
     set Thermal conductivity             = 0.1
   end
