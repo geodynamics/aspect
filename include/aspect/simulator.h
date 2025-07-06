@@ -1854,11 +1854,6 @@ namespace aspect
       const std::unique_ptr<BoundaryHeatFlux::Interface<dim>>   boundary_heat_flux;
 
       /**
-       * The managers holding different sets of particles
-       */
-      std::vector<Particle::Manager<dim>>                       particle_managers;
-
-      /**
        * @}
        */
       /**
@@ -1920,6 +1915,11 @@ namespace aspect
       DoFHandler<dim>                                           dof_handler;
 
       Postprocess::Manager<dim>                                 postprocess_manager;
+
+      /**
+       * The managers holding different sets of particles
+       */
+      std::vector<Particle::Manager<dim>>                       particle_managers;
 
       /**
        * Constraint objects. The first of these describes all constraints that
