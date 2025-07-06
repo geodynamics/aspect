@@ -480,7 +480,7 @@ namespace aspect
                              "The viscosity that is used in this model. "
                              "\n\n"
                              "Units: \\si{\\pascal\\second}");
-          prm.declare_entry ("Lateral viscosity file name", "temp-viscosity-prefactor.txt",
+          prm.declare_entry ("Lateral viscosity file name", "constant_lateral_vis_prefactor.txt",
                              Patterns::Anything (),
                              "The file name of the lateral viscosity prefactor.");
           prm.declare_entry ("Minimum viscosity", "1e19",
