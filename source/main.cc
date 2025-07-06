@@ -56,6 +56,12 @@
 
 #include <catch.hpp>
 
+#ifdef ASPECT_WITH_PYTHON
+#  define PY_SSIZE_T_CLEAN
+#  include <Python.h>
+#  define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+#  include <numpy/arrayobject.h>
+#endif
 
 namespace
 {
@@ -674,6 +680,11 @@ int main (int argc, char *argv[])
 #endif
 #endif
 
+#ifdef ASPECT_WITH_PYTHON
+  Py_Initialize();
+  _import_array(); // required for Numpy interop
+#endif
+
   std::string prm_name = "";
   bool output_json         = false;
   bool output_xml          = false;
@@ -922,6 +933,11 @@ int main (int argc, char *argv[])
       MPI_Abort(MPI_COMM_WORLD, 1);
       return 1;
     }
+
+
+#ifdef ASPECT_WITH_PYTHON
+  Py_FinalizeEx();
+#endif
 
   return 0;
 }
