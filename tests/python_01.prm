@@ -1,0 +1,5 @@
+# Test that we can use Python
+#
+# Enable if: ASPECT_WITH_PYTHON
+
+set Dimension = 2
