@@ -2,8 +2,6 @@
 # This is an even harder edge case to solve.
 # This also tests that multicomponent averaging method works well with three components.
 
-set Additional shared libraries            = $ASPECT_SOURCE_DIR/benchmarks/entropy_adiabat/plugins/libentropy_plugins.so
-
 set Dimension                              = 2
 set Use years in output instead of seconds = true
 set End time                               = 4e6
