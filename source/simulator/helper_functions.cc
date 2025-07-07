@@ -1540,6 +1540,11 @@ namespace aspect
     tmp.block(block_index) +=  distributed_reaction_vector.block(block_index);
     old_old_solution.block(block_index) = tmp.block(block_index);
 
+    // Same here for the current linearization point.
+    tmp.block(block_index) = current_linearization_point.block(block_index);
+    tmp.block(block_index) +=  distributed_reaction_vector.block(block_index);
+    current_linearization_point.block(block_index) = tmp.block(block_index);
+
     operator_split_reaction_vector.block(block_index) = distributed_reaction_vector.block(block_index);
   }
 
@@ -1888,8 +1893,6 @@ namespace aspect
     update_solution_vectors_with_reaction_results(introspection.block_indices.temperature,
                                                   distributed_vector,
                                                   distributed_reaction_vector);
-
-    initialize_current_linearization_point();
 
     double average_iteration_count = number_of_reaction_steps;
     if (parameters.reaction_solver_type == Parameters<dim>::ReactionSolverType::ARKode)
