@@ -8,8 +8,6 @@
 # at global refinement 0, it converges to nearly zero with increasing global refinement.
 # Analytical solution: every 1e5 yr, the topo increase 988.230952 m
 
-set Additional shared libraries            = $ASPECT_SOURCE_DIR/benchmarks/entropy_adiabat/plugins/libentropy_plugins.so
-
 set Dimension                              = 2
 set Use years in output instead of seconds = true
 set End time                               = 2e6

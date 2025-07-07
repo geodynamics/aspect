@@ -1,0 +1,6 @@
+Changed: The entropy method can now be used without loading additional shared
+libraries. If there is at least one compositional field of type 'entropy'
+the entropy equation will govern the thermodynamic evolution of the model
+and the temperature equation will only be used to compute heat conduction.
+<br>
+(Rene Gassmoeller, 2025/07/08)

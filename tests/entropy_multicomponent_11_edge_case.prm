@@ -6,8 +6,6 @@
 # This test shows that the multicomponent averaging method can well solve such edge cases
 # using a slightly smoothed property lookup table.
 
-set Additional shared libraries            = $ASPECT_SOURCE_DIR/benchmarks/entropy_adiabat/plugins/libentropy_plugins.so
-
 set Dimension                              = 2
 set Use years in output instead of seconds = true
 set End time                               = 4e6

@@ -25,7 +25,6 @@
 # that have been precomputed (in this case one for 1600 K), while the 'compute
 # entropy profile' plugin can compute adiabats at arbitrary entropy.
 
-set Additional shared libraries            = ./plugins/libentropy_plugins.so
 set Dimension                              = 2
 set Use years in output instead of seconds = true
 set End time                               = 2.5e8

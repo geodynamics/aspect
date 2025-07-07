@@ -4,8 +4,6 @@
 # At the end, the temperature in the pipe gradually equilibrates to the value at the top
 # boundary.
 
-set Additional shared libraries            = $ASPECT_SOURCE_DIR/benchmarks/entropy_adiabat/plugins/libentropy_plugins.so
-
 set Dimension                              = 2
 set Use years in output instead of seconds = true
 set End time                               = 2e9

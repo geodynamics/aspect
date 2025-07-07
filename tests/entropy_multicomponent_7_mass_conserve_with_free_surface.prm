@@ -3,8 +3,6 @@
 # Mass conservation is achieved after initial 3 timesteps. 
 # The oscillation in mass for the initial timesteps decreases with increasing global refinement.
 
-set Additional shared libraries            = $ASPECT_SOURCE_DIR/benchmarks/entropy_adiabat/plugins/libentropy_plugins.so
-
 set Dimension                              = 2
 set Use years in output instead of seconds = true
 set End time                               = 2e6
