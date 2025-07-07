@@ -145,6 +145,7 @@ namespace aspect
   template class CrustLithosphereFormation<dim>;
 
       ASPECT_INSTANTIATE(INSTANTIATE)
+#undef INSTANTIATE
     }
   }
 }
