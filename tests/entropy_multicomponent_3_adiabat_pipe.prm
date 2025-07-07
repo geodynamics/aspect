@@ -4,8 +4,6 @@
 # reference profile which is computed by the thermodynamic modeling package
 # that produced the entropy-pressure tables for material properties (in this case, Burnman).
 
-set Additional shared libraries            = $ASPECT_SOURCE_DIR/benchmarks/entropy_adiabat/plugins/libentropy_plugins.so
-
 set Resume computation                     = auto
 set Dimension                              = 2
 set Use years in output instead of seconds = true
