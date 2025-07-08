@@ -29,19 +29,159 @@
 #include <openlem.cpp>
 #include <deal.II/base/parsed_function.h>
 
-#include <aspect/mesh_deformation/openlem.h>
+//#include <aspect/mesh_deformation/openlem.h>
 #include <string>
 
 namespace openlem
 {
+  class OceanGrid : public Grid<Node>
+  {
+    public:
+      double  odiff;
+
+      OceanGrid ( int m = 1, int n = 1 ) : Grid<Node>(m,n)
+      {
+        addKey ( "od", "od", &odiff, sizeof(odiff), 8, 0 );
+      }
+
+      void clearOceans()
+      {
+        for ( int i = 0; i < m; ++i )
+          for ( int j = 0; j < n; ++j )  getNode(i,j)->b &= 1;
+      }
+
+      void markOcean ( Point p, double l )
+      {
+        if ( getNode(p)->h < l )
+          {
+            getNode(p)->l = l;
+            getNode(p)->b |= 2;
+            vector<Point>  neigh = getNeighbors(p);
+            for ( vector<Point>::iterator u = neigh.begin(); u != neigh.end(); ++u )
+              if ( getNode(u)->drainsTo(p) )
+                markOcean(*u,l);
+          }
+      }
+
+      vector<PointValue<double>> findDeltas ( double dt )
+      {
+        vector <PointValue<double>>  delta;
+        for ( int i = 0; i < m; ++i )
+          for ( int j = 0; j < n; ++j )
+            if ( getNode(i,j)->b & 2 )
+              {
+                if ( getNode(i,j)->qs )
+                  delta.push_back(PointValue<double>(Point(i,j),getNode(i,j)->qs));
+                getNode(i,j)->qp = getNode(i,j)->h+getNode(i,j)->u*dt;
+              }
+        sort<double>(delta);
+        for ( int i = 0; i < delta.size(); ++i )
+          printf ( "%i %i %f %e\n", delta[i].p.i, delta[i].p.j, getNode(delta[i].p)->h, delta[i].d );
+        if ( offset.size() < m*n )
+          {
+            printf ( "Computing offsets\n" );
+            offset.resize(m*n);
+            int  k = 0;
+            for ( int i = 0; i < m; ++i )
+              for ( int j = 0; j < n; ++j )
+                {
+                  offset[k].p = Point(i,j);
+                  int di = i <= m/2 ? i : m-i;
+                  int dj = j <= n/2 ? j : n-j;
+                  offset[k++].d = di*di+dj*dj;
+                }
+            offset[0].d = -1;
+            sort(offset);
+          }
+// Use qp for sediment surface
+        for ( int i = 0; i < delta.size(); ++i )
+          {
+            double v = delta[i].d*dt;
+            double tmp;
+            double vd = 0;
+            Point p = delta[i].p;
+            vector<PointValue<float>>::iterator  it = offset.begin();
+            while ( it != offset.end() )
+              {
+                if ( (tmp=getNode(p)->qp+v) <= getNode(p)->l )
+                  {
+                    getNode(p)->qp = tmp;
+                    vd += getNode(p)->qp-getNode(p)->h;
+                    break;
+                  }
+                else
+                  {
+                    v = v-(getNode(p)->l-getNode(p)->qp);
+                    getNode(p)->qp = getNode(p)->l;
+                    do
+                      {
+                        p = (*(it++)).p;
+                        p = Point((delta[i].p.i+p.i)%m,(delta[i].p.j+p.j)%n);
+                      }
+                    while ( (getNode(p)->b&2) == 0 );
+                  }
+              }
+          }
+        for ( int i = 0; i < m; ++i )
+          for ( int j = 0; j < n; ++j )
+            {
+              Node  *pn = getNode(i,j);
+//        pn->l = 0;
+              if ( pn->b&2 )
+                {
+                  pn->qp = (pn->qp-pn->h)/dt;
+//          pn->l = pn->qp;
+                }
+            }
+
+
+        return delta;
+      }
+
+      void diffuse ( double dt )
+      {
+        for ( int i = 0; i < m; ++i )
+          for ( int j = 0; j < n; ++j )
+            {
+              Node  *pn = getNode(i,j);
+              if ( pn->b&2 )
+                {
+                  pn->h += 0.5*dt*(pn->u+pn->qp);
+                  pn->l = pn->h;
+                }
+            }
+        for ( int i = 0; i < m; ++i )
+          for ( int j = 0; j < n; ++j )
+            {
+              Node  *pn = getNode(i,j);
+              if ( pn->b&2 )
+                {
+                  if ( getNodeP(i+1,j)->b&2 )
+                    {
+                      double  dh = dt*odiff*(pn->l-getNodeP(i+1,j)->l);
+                      pn->h -= dh;
+                      if ( getNodeP(i+1,j)->b==2 ) getNodeP(i+1,j)->h += dh;
+                    }
+                  if ( getNodeP(i,j+1)->b&2 )
+                    {
+                      double  dh = dt*odiff*(pn->l-getNodeP(i,j+1)->l);
+                      pn->h -= dh;
+                      if ( getNodeP(i,j+1)->b==2 )  getNodeP(i,j+1)->h += dh;
+                    }
+                  pn->h += 0.5*dt*(pn->u+pn->qp);
+                }
+            }
+      }
+  };
+
   class Connector
   {
     public:
       double  hscale, x0, y0, alpha, dx0, dy0, dalpha;
       vector<vector<double>>  x, y, vx, vy, vz;
-      Grid<>  *g;
+      OceanGrid  *g;
 
-      Connector ( Grid<> *g, double hscale = 1, double x0 = 0, double y0 = 0, double alpha = 0 )
+      Connector ( OceanGrid *g, double hscale = 1, double x0 = 0, double y0 = 0, double alpha = 0 )
       {
         std::cout << "connector construct" << std::endl;
         this->g = g;
@@ -193,7 +333,7 @@ namespace openlem
         for ( int i = 0; i < g->m; ++i )
           for ( int j = 0; j < g->n; ++j )
             if ( g->getNode(i,j)->b != 3 ) //&1 )
-              //if ( !g->getNode(i,j)->b != 3 ) //&1 )
+              //if ( !g->getNode(i,j)->b &1 )
               {
                 double  dhdx = vx[i][j]<0 ?
                                g->getNodeP(i+1,j)->h-g->getNode(i,j)->h :
@@ -290,6 +430,7 @@ namespace openlem
         std::vector<double> grid_elevation(0);
         std::vector<double> grid_uplift(0);
         std::vector<double> grid_boundary(0);
+        std::vector<double> grid_q(0);
         std::vector<double> grid_vx(0);
         std::vector<double> grid_vy(0);
 
@@ -306,6 +447,7 @@ namespace openlem
         grid_elevation.resize(n_p);
         grid_uplift.resize(n_p);
         grid_boundary.resize(n_p);
+        grid_q.resize(n_p);
         grid_vx.resize(n_p);
         grid_vy.resize(n_p);
         grid_connectivity.resize(n_cell,std::vector<size_t>((2-1)*4));
@@ -321,6 +463,7 @@ namespace openlem
                 grid_elevation[counter] = g->getNode(i,j)->h;
                 grid_uplift[counter] = g->getNode(i,j)->u;
                 grid_boundary[counter] = g->getNode(i,j)->b;
+                grid_q[counter] = g->getNode(i,j)->q;
                 grid_vx[counter] = vx[i][j];//g->getNode(i,j)->u;
                 grid_vy[counter] = vy[i][j];//g->getNode(i,j)->u;
                 counter++;
@@ -391,6 +534,12 @@ namespace openlem
         for (size_t i = 0; i < n_p; ++i)
           {
             buffer <<  grid_boundary[i] << std::endl;
+          }
+        buffer << "</DataArray>" << std::endl;
+        buffer << R"(<DataArray type="Float32" Name="q" format="ascii">)" << std::endl;
+        for (size_t i = 0; i < n_p; ++i)
+          {
+            buffer <<  grid_q[i] << std::endl;
           }
         buffer << "</DataArray>" << std::endl;
         buffer << R"(<DataArray type="Float32" Name="vx" format="ascii">)" << std::endl;
@@ -538,7 +687,7 @@ namespace aspect
         /**
          * Execute openlem
          */
-        void execute_openlem(openlem::Grid<openlem::Node> &grid,
+        void execute_openlem(openlem::OceanGrid &grid,
                              //std::vector<double> &elevation,
                              //std::vector<double> &extra_vtk_field,
                              //std::vector<double> &velocity_x,
@@ -551,7 +700,7 @@ namespace aspect
         /**
          * Function to fill the openlem arrays (height and velocities) with the data received from ASPECT in the correct index order.
          */
-        void fill_openlem_arrays(openlem::Grid<openlem::Node> &grid,
+        void fill_openlem_arrays(openlem::OceanGrid &grid,
                                  // std::vector<double> &elevation,
                                  // std::vector<double> &bedrock_transport_coefficient_array,
                                  // std::vector<double> &bedrock_river_incision_rate_array,
@@ -568,8 +717,8 @@ namespace aspect
         /**
                * define a old and new grid, so that we can compute a difference
                */
-        openlem::Grid<> grid_old;
-        openlem::Grid<> grid_new;
+        openlem::OceanGrid grid_old;
+        openlem::OceanGrid grid_new;
         openlem::Connector connector;
         unsigned int openlem_nx;
         unsigned int openlem_ny;
@@ -583,6 +732,8 @@ namespace aspect
         unsigned int aspect_dy;
         unsigned int aspect_x_extent;
         unsigned int aspect_y_extent;
+        openlem::Point deepest_point;
+        double openlem_ocean_diffusivity;
 
         bool openlem_minimize_advection;
         double openlem_kd;

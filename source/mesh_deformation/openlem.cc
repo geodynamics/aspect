@@ -186,8 +186,8 @@ namespace aspect
 
         last_output_time = 0;
         // preparte the openLEM variables
-        grid_old = openlem::Grid<>(openlem_nx,openlem_ny);
-        grid_new = openlem::Grid<>(openlem_nx,openlem_ny);
+        grid_old = openlem::OceanGrid(openlem_nx,openlem_ny);
+        grid_new = openlem::OceanGrid(openlem_nx,openlem_ny);
         std::cout << "nx = " << openlem_nx << ", ny = " << openlem_ny << std::endl;
 
         connector = openlem::Connector(&grid_new,openlem_dy,grid_extent[0].first, grid_extent[1].first  );
@@ -198,19 +198,32 @@ namespace aspect
         for ( int i = 0; i < grid_new.m; ++i )
           for ( int j = 0; j < grid_new.n; ++j )
             {
-              grid_new[i][j].h = this->get_initial_topography_model().value(Point<dim-1>(connector.x[i][j],connector.y[i][j]));
               //grid_new[i][j].b = grid_new[i][j].h  <= 0 || i == 0 || j == 0 || i == grid_new.m-1 || j == grid_new.n-1;
-              grid_new[i][j].b =
-                i == 0 || j == 0 || i == grid_new.m-1 || j == grid_new.n-1 ||
-                i == 1 || j == 1 || i == grid_new.m-2 || j == grid_new.n-2
-                ;
-              grid_new[i][j].b += (grid_new[i][j].h  <= 0)*2;
+              grid_new[i][j].b = i == 0 || j == 0 || i == grid_new.m-1 || j == grid_new.n-1
+                                 || i == 1 || j == 1 || i == grid_new.m-2 || j == grid_new.n-2
+                                 ;
+              //grid_new[i][j].h = (grid_new[i][j].b =
+              //                     i == 0 || j == 0 || i == grid_new.m-1 || j == grid_new.n-1) ? 1 : this->get_initial_topography_model().value(Point<dim-1>(connector.x[i][j],connector.y[i][j])); //||
+              //i == 1 || j == 1 || i == grid_new.m-2 || j == grid_new.n-2
+              //;
+              grid_new[i][j].h = i == 0 || j == 0 || i == grid_new.m-1 || j == grid_new.n-1 || i == 1 || j == 1 || i == grid_new.m-2 || j == grid_new.n-2 ? 1 : this->get_initial_topography_model().value(Point<dim-1>(connector.x[i][j],connector.y[i][j]));
+              //grid_new[i][j].b += (grid_new[i][j].h  <= 0)*2;
             }
 
         // Compute initial flow pattern and water level
+        deepest_point = openlem::Point(0,0);
+        for ( int i = 0; i < grid_new.m; ++i )
+          for ( int j = 0; j < grid_new.n; ++j )
+            {
+              if ( grid_new[i][j].h < grid_new[deepest_point].h )
+                deepest_point = openlem::Point(i,j);
+            }
+        grid_new[deepest_point].b = 1;
+        grid_new.odiff = openlem_ocean_diffusivity;
         grid_new.fillLakes();
+        grid_new.computeFluxes();
         grid_old = grid_new;
-        std::cout << "opelem_dy = " << openlem_dy << ", dox = " << grid_extent[0].first << ", doy" << grid_extent[1].first   << std::endl;
+        std::cout << "opelem_dy = " << openlem_dy << ", dox = " << grid_extent[0].first << ", doy" << grid_extent[1].first << ", deepest point = " << deepest_point.i << ":" << deepest_point.j  << ", q of deepest point = " << grid_new[deepest_point].q << ", deepest point h = " << grid_new[deepest_point].h << ", b = " << (int)grid_new[deepest_point].b << std::endl;
         connector = openlem::Connector(&grid_new,openlem_dy,grid_extent[0].first, grid_extent[1].first, 0.5);
         //connector.interpolation(double &x, double &y)
         for (unsigned int x_i = 0; x_i < openlem_nx; ++x_i)
@@ -243,9 +256,9 @@ namespace aspect
           for (unsigned int x_i=0; x_i<openlem_nx; ++x_i)
             for (unsigned int y_i=0; y_i<openlem_ny; ++y_i)
               {
-                openlem::Node *node = grid_new.getNode(x_i,y_i);
+                //openlem::Node *node = grid_new.getNode(x_i,y_i);
                 // TODO: should I use the openlem location here or the aspect projected point?
-                node->h = this->get_initial_topography_model().value(Point<dim-1>(connector.x[x_i][y_i],connector.y[x_i][y_i]));
+                //node->h = this->get_initial_topography_model().value(Point<dim-1>(connector.x[x_i][y_i],connector.y[x_i][y_i]));
               }
           if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
             connector.write_vtk(grid_extent[dim-1].second, 0, 0., dirname);
@@ -584,18 +597,26 @@ namespace aspect
               {
                 //grid_new[i][j].b = grid_new[i][j].h <= 0;
                 //  grid_new[i][j].b =  i == 0 || j == 0 || i == grid_new.m-1 || j == grid_new.n;
-                grid_new[i][j].b =
-                  i == 0 || j == 0 || i == grid_new.m-1 || j == grid_new.n-1 ||
-                  i == 1 || j == 1 || i == grid_new.m-2 || j == grid_new.n-2
-                  ;
-                grid_new[i][j].b += (grid_new[i][j].h  <= 0)*2;
+                //grid_new[i][j].b = 0;
+                //i == 0 || j == 0 || i == grid_new.m-1 || j == grid_new.n-1 ||
+                //i == 1 || j == 1 || i == grid_new.m-2 || j == grid_new.n-2
+                //;
+                //grid_new[i][j].b += (grid_new[i][j].h  <= 0)*2;
                 //    grid_new[i][j].u = grid_new[i][j].h <= 0;
               }
-          openlem::Grid<openlem::Node> &g = grid_new;
+          openlem::OceanGrid &g = grid_new;
           grid_new.kt = openlem_kt;//1e-14;
           grid_new.kd = openlem_kd;// 1e-14;
 
-          grid_new.fillLakes();
+          //grid_new.fillLakes();
+          // find deepest point
+          // call set deepest point to 1
+          // fill lakes
+          // in each timestep compute water level()
+          // call function clear ocean()
+          // call function mark ocean ()
+          //
+
         }
       if (this->get_timestep_number() == 0)
         {
@@ -988,7 +1009,7 @@ namespace aspect
       return std::vector<std::vector<double>>();
     }
     template <int dim>
-    void OpenLEM<dim>::execute_openlem(openlem::Grid<openlem::Node> &grid,
+    void OpenLEM<dim>::execute_openlem(openlem::OceanGrid &grid,
                                        //std::vector<double> &elevation,
                                        //std::vector<double> &extra_vtk_field,
                                        //std::vector<double> &velocity_x,
@@ -1024,12 +1045,18 @@ namespace aspect
             //                     dirname_char,
             //                     &dirname_length);
           }
+        constexpr double sea_level = 0;
 
         for (unsigned int openlem_iteration = 0; openlem_iteration < openlem_iterations; ++openlem_iteration)//openlem_iterations; ++openlem_iteration)
           {
             //std::cout << "before = " << (grid.getNode(5,7))->h << std::endl;
+            grid.computeWaterLevel();
+            grid.clearOceans();
+            grid.markOcean(deepest_point, sea_level);
             int nc = grid.computeFlowDirection();
             double ch = grid.erode(openlem_timestep_in_years);
+            grid.findDeltas(openlem_timestep_in_years);
+            grid.diffuse(openlem_timestep_in_years);
             printf("it: %i, Changes in flow direction: %i, Maximum elevation change: %e; ",openlem_iteration,nc,ch);
             unsigned int aspect_timestep_number = this->get_timestep_number();
             connector.updateCoordinateSystem (openlem_timestep_in_years);
@@ -1061,6 +1088,7 @@ namespace aspect
             //    openlem_set_h_(elevation.data());
             //  }
           }
+        std::cout << "deepest point = " << deepest_point.i << ":" << deepest_point.j << ", deepest point q = " <<  grid_new[deepest_point].q << ", deepest point h = " << grid_new[deepest_point].h  << ", b = " << (int)grid_new[deepest_point].b<< std::endl;
         //updateCoordinateSystem
         // Copy h values.
         //openlem_copy_h_(elevation.data());
@@ -1101,7 +1129,7 @@ namespace aspect
 
 
     template <int dim>
-    void OpenLEM<dim>::fill_openlem_arrays(openlem::Grid<openlem::Node> &grid,
+    void OpenLEM<dim>::fill_openlem_arrays(openlem::OceanGrid &grid,
                                            // std::vector<double> &elevation,
                                            // std::vector<double> &bedrock_transport_coefficient_array,
                                            // std::vector<double> &bedrock_river_incision_rate_array,
@@ -1227,6 +1255,9 @@ namespace aspect
           prm.declare_entry("Kt", "1e-14",
                             Patterns::Double(0),
                             "Kt erosion rate for openlem. Units: $\\{yrs}$");
+          prm.declare_entry("Ocean diffusivity", "1",
+                            Patterns::Double(0),
+                            "The diffusivisty of the ocean openlem. Units: $\\{yrs}$");
           prm.declare_entry("Maximum timestep length", "10e3",
                             Patterns::Double(0),
                             "Maximum timestep for openlem. Units: $\\{yrs}$");
@@ -1434,6 +1465,7 @@ namespace aspect
       {
         prm.enter_subsection("OpenLEM");
         {
+          openlem_ocean_diffusivity = prm.get_double("Ocean diffusivity");
           openlem_minimize_advection = prm.get_bool("Minimize advection");
           openlem_kd = prm.get_double("Kd");
           openlem_kt = prm.get_double("Kt");
