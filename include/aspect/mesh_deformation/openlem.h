@@ -77,7 +77,7 @@ namespace openlem
             }
       }
 
-      void convertVelocities(bool minimize_rotation = true)
+      void convertVelocities(bool minimize_advection = true)
       {
 
         //todo: add and substract 4 of b
@@ -94,6 +94,9 @@ namespace openlem
               double  tmp = vx[i][j];
               vx[i][j] = (c*vx[i][j]+s*vy[i][j])/hscale;;
               vy[i][j] = (-s*tmp+c*vy[i][j])/hscale;
+
+              AssertThrow(!std::isnan(vx[i][j]) && !std::isnan(vy[i][j]),
+                          aspect::ExcMessage("vx and/or vy are nan at " + std::to_string(i) + ":" + std::to_string(j) + ", vxx:y = "  + std::to_string(vx[i][j]) + ":" + std::to_string(vy[i][j])));
 // Only continental area
               if ( g->getNode(i,j)->b == 0 )
                 {
@@ -111,7 +114,7 @@ namespace openlem
                   rsq += i*i+j*j;
                 }
             }
-        if (n == 0 || minimize_rotation)
+        if (n == 0 || minimize_advection == false)
           {
             return;
           }
@@ -156,6 +159,8 @@ namespace openlem
               //  }
               vx[i][j] -= dx0-dalpha*j;
               vy[i][j] -= dy0+dalpha*i;
+              AssertThrow(!std::isnan(vx[i][j]) && !std::isnan(vy[i][j]),
+                          aspect::ExcMessage("vx and/or vy are nan at " + std::to_string(i) + ":" + std::to_string(j) + ", vxx:y = "  + std::to_string(vx[i][j]) + ":" + std::to_string(vy[i][j])));
             }
 
         double dx0_old = dx0;
@@ -187,7 +192,8 @@ namespace openlem
         std::cout << "connector computeUpliftRate" << std::endl;
         for ( int i = 0; i < g->m; ++i )
           for ( int j = 0; j < g->n; ++j )
-            if ( !g->getNode(i,j)->b&1 )
+            if ( g->getNode(i,j)->b != 3 ) //&1 )
+              //if ( !g->getNode(i,j)->b != 3 ) //&1 )
               {
                 double  dhdx = vx[i][j]<0 ?
                                g->getNodeP(i+1,j)->h-g->getNode(i,j)->h :
@@ -579,8 +585,10 @@ namespace aspect
         unsigned int aspect_y_extent;
 
         bool openlem_minimize_advection;
+        double openlem_kd;
+        double openlem_kt;
         //std::vector<std::vector<double>> mesh_velocity_z;
-        std::vector<std::vector<double>> aspect_mesh_elevation_h;
+        std::vector<std::vector<double>> aspect_mesh_dh;
         std::vector<std::vector<double>> aspect_mesh_z;
         /**
          * Variable to hold ASPECT domain extents.
