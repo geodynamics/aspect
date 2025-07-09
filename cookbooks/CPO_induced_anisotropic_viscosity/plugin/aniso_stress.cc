@@ -37,14 +37,14 @@ namespace aspect
                                       update_values | update_gradients | update_quadrature_points),
         Interface<dim>("Pa")
       {}
-    
+
 
 
       template <int dim>
       void
       AnisoStress<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double> > &computed_quantities) const
+                            std::vector<Vector<double>> &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
@@ -55,14 +55,14 @@ namespace aspect
 
         MaterialModel::MaterialModelInputs<dim> in(input_data,this->introspection());
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,this->n_compositional_fields());
-        
+
         this->get_material_model().create_additional_named_outputs(out);
         this->get_material_model().evaluate(in, out);
 
-        const MaterialModel::AV<dim> *anisotropic_viscosity = out.template get_additional_output<MaterialModel::AV<dim> >();
+        const MaterialModel::AV<dim> *anisotropic_viscosity = out.template get_additional_output<MaterialModel::AV<dim>>();
         AssertThrow(anisotropic_viscosity != nullptr,
                     ExcMessage("Need anisotropic viscosity tensor from the anisotropic viscosity material model for computing the anisotropic stress."));
-        
+
         // ...and use it to compute the stresses
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
@@ -75,23 +75,23 @@ namespace aspect
                  strain_rate);
 
             const double eta = out.viscosities[q];
-            
+
             SymmetricTensor<2,dim> aniso_stress;
             aniso_stress= 2.*eta*deviatoric_strain_rate*anisotropic_viscosity->stress_strain_directors[q];
             // std::cout << "aniso stress: " << anisotropic_viscosity->stress_strain_directors[q] << std::endl;
-            
+
             for (unsigned int d=0; d<dim; ++d)
               for (unsigned int e=0; e<dim; ++e)
                 computed_quantities[q][Tensor<2,dim>::component_to_unrolled_index(TableIndices<2>(d,e))]
                   = aniso_stress[d][e];
           }
-      
+
         // average the values if requested
-        const auto &viz = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Visualization<dim> >();
+        const auto &viz = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Visualization<dim>>();
         if (!viz.output_pointwise_stress_and_strain())
           average_quantities(computed_quantities);
       }
-    
+
       template <int dim>
       void
       AnisoStress<dim>::
@@ -127,4 +127,5 @@ namespace aspect
                                                   "of positive compressive stress is followed. ")
     }
   }
+}
 }
