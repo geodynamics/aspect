@@ -1,0 +1,5 @@
+Added: A boolean parameter in the bingham
+average plugin to choose rotation matrix or
+Euler angle representation.
+<br>
+(Yijun Wang, 2025/07/09)
