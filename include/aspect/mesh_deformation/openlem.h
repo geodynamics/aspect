@@ -741,6 +741,7 @@ namespace aspect
         //std::vector<std::vector<double>> mesh_velocity_z;
         std::vector<std::vector<double>> aspect_mesh_dh;
         std::vector<std::vector<double>> aspect_mesh_z;
+        std::vector<std::vector<typename DoFHandler<dim>::active_cell_iterator>> aspect_mesh_cell_id;
         /**
          * Variable to hold ASPECT domain extents.
          */

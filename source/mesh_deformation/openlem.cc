@@ -332,6 +332,7 @@ namespace aspect
       std::vector<std::vector<Point<dim>>> mesh_velocity_locations(openlem_nx,std::vector<Point<dim>>(openlem_ny));
       std::vector<std::vector<double>> mesh_velocity_distances(openlem_nx,std::vector<double>(openlem_ny));
       aspect_mesh_z = std::vector<std::vector<double>>(aspect_nx,std::vector<double>(aspect_ny));
+      aspect_mesh_cell_id = std::vector<std::vector<typename DoFHandler<dim>::active_cell_iterator>>(aspect_nx,std::vector<typename DoFHandler<dim>::active_cell_iterator>(aspect_ny));
 
 
       for (unsigned int x_i = 0; x_i < aspect_nx; ++x_i)
@@ -511,6 +512,7 @@ namespace aspect
                                       closest_distance_cell = distance_to_unit_cell; // TODO: probably just skip out if distance is exactly zero.
                                       //total_found_velocities++;
                                       mesh_velocities_vector.emplace_back(std::make_tuple(x_i, y_i, distance_to_unit_cell, closest_point_real, velocity));
+                                      aspect_mesh_cell_id[x_i][y_i] = cell;
                                       break;
                                     }
                                 }
