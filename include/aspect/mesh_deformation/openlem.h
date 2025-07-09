@@ -52,7 +52,7 @@ namespace openlem
 
       void markOcean ( Point p, double l )
       {
-        if ( getNode(p)->h < l )
+        if ( getNode(p)->h <= l )
           {
             getNode(p)->l = l;
             getNode(p)->b |= 2;
@@ -65,6 +65,11 @@ namespace openlem
 
       vector<PointValue<double>> findDeltas ( double dt )
       {
+        return emplaceSediments(dt);
+      }
+
+      vector<PointValue<double>> emplaceSediments ( double dt )
+      {
         vector <PointValue<double>>  delta;
         for ( int i = 0; i < m; ++i )
           for ( int j = 0; j < n; ++j )
@@ -72,11 +77,9 @@ namespace openlem
               {
                 if ( getNode(i,j)->qs )
                   delta.push_back(PointValue<double>(Point(i,j),getNode(i,j)->qs));
-                getNode(i,j)->qp = getNode(i,j)->h+getNode(i,j)->u*dt;
+                getNode(i,j)->h += getNode(i,j)->u*dt;
               }
         sort<double>(delta);
-        for ( int i = 0; i < delta.size(); ++i )
-          printf ( "%i %i %f %e\n", delta[i].p.i, delta[i].p.j, getNode(delta[i].p)->h, delta[i].d );
         if ( offset.size() < m*n )
           {
             printf ( "Computing offsets\n" );
@@ -93,7 +96,6 @@ namespace openlem
             offset[0].d = -1;
             sort(offset);
           }
-// Use qp for sediment surface
         for ( int i = 0; i < delta.size(); ++i )
           {
             double v = delta[i].d*dt;
@@ -103,16 +105,16 @@ namespace openlem
             vector<PointValue<float>>::iterator  it = offset.begin();
             while ( it != offset.end() )
               {
-                if ( (tmp=getNode(p)->qp+v) <= getNode(p)->l )
+                if ( (tmp=getNode(p)->h+v) <= getNode(p)->l )
                   {
-                    getNode(p)->qp = tmp;
-                    vd += getNode(p)->qp-getNode(p)->h;
+                    getNode(p)->h = tmp;
+                    vd += v;
                     break;
                   }
                 else
                   {
-                    v = v-(getNode(p)->l-getNode(p)->qp);
-                    getNode(p)->qp = getNode(p)->l;
+                    v = v-(getNode(p)->l-getNode(p)->h);
+                    getNode(p)->h = getNode(p)->l;
                     do
                       {
                         p = (*(it++)).p;
@@ -122,19 +124,6 @@ namespace openlem
                   }
               }
           }
-        for ( int i = 0; i < m; ++i )
-          for ( int j = 0; j < n; ++j )
-            {
-              Node  *pn = getNode(i,j);
-//        pn->l = 0;
-              if ( pn->b&2 )
-                {
-                  pn->qp = (pn->qp-pn->h)/dt;
-//          pn->l = pn->qp;
-                }
-            }
-
-
         return delta;
       }
 
@@ -144,11 +133,7 @@ namespace openlem
           for ( int j = 0; j < n; ++j )
             {
               Node  *pn = getNode(i,j);
-              if ( pn->b&2 )
-                {
-                  pn->h += 0.5*dt*(pn->u+pn->qp);
-                  pn->l = pn->h;
-                }
+              if ( pn->b&2 )  pn->qp = pn->h;
             }
         for ( int i = 0; i < m; ++i )
           for ( int j = 0; j < n; ++j )
@@ -156,19 +141,20 @@ namespace openlem
               Node  *pn = getNode(i,j);
               if ( pn->b&2 )
                 {
-                  if ( getNodeP(i+1,j)->b&2 )
+                  if ( getNodeP(i+1,j)->b&2 && getNodeP(i+1,j)->b&2 )
                     {
-                      double  dh = dt*odiff*(pn->l-getNodeP(i+1,j)->l);
+                      double  dh = dt*odiff*(pn->qp-getNodeP(i+1,j)->qp);
                       pn->h -= dh;
-                      if ( getNodeP(i+1,j)->b==2 ) getNodeP(i+1,j)->h += dh;
+                      //if ( getNodeP(i+1,j)->b&2 )
+                      getNodeP(i+1,j)->h += dh;
                     }
-                  if ( getNodeP(i,j+1)->b&2 )
+                  if ( getNodeP(i,j+1)->b&2 && getNodeP(i,j+1)->b&2 )
                     {
-                      double  dh = dt*odiff*(pn->l-getNodeP(i,j+1)->l);
+                      double  dh = dt*odiff*(pn->qp-getNodeP(i,j+1)->qp);
                       pn->h -= dh;
-                      if ( getNodeP(i,j+1)->b==2 )  getNodeP(i,j+1)->h += dh;
+                      // if ( getNodeP(i,j+1)->b&2 )
+                      getNodeP(i,j+1)->h += dh;
                     }
-                  pn->h += 0.5*dt*(pn->u+pn->qp);
                 }
             }
       }
