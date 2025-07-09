@@ -17,26 +17,26 @@ subsection Initial composition model
     set Function expression = 0;\
                               0; 0; 0; 0;\
                               0; 0; 0; 0;\
-                              0; 0; 0; 0;\ 
+                              0; 0; 0; 0;\
                               0; 0
   end
 end
 
 subsection Compositional fields
-	set Number of fields = 15
-	set Names of fields = scalar_vis, \
+  set Number of fields = 15
+  set Names of fields = scalar_vis, \
                         phi1, eigvalue_a1, eigvalue_a2, eigvalue_a3,\
                         theta, eigvalue_b1, eigvalue_b2, eigvalue_b3,\
                         phi2, eigvalue_c1, eigvalue_c2, eigvalue_c3,\
                         D, water
-	set Compositional field methods = prescribed field, \
+  set Compositional field methods = prescribed field, \
                                     particles, particles, particles, particles, \
                                     particles, particles, particles, particles, \
                                     particles, particles, particles, particles, \
                                     static, static
   set Mapped particle properties = phi1:cpo mineral ea 0 phi1[0], eigvalue_a1:cpo mineral ea 0 eigenvalues a axis[0], eigvalue_a2:cpo mineral ea 0 eigenvalues a axis[1], eigvalue_a3:cpo mineral ea 0 eigenvalues a axis[2], \
                                    theta:cpo mineral ea 0 theta[0], eigvalue_b1:cpo mineral ea 0 eigenvalues b axis[0], eigvalue_b2:cpo mineral ea 0 eigenvalues b axis[1], eigvalue_b3:cpo mineral ea 0 eigenvalues b axis[2], \
-                                   phi2:cpo mineral ea 0 phi2[0], eigvalue_c1:cpo mineral ea 0 eigenvalues c axis[0], eigvalue_c2:cpo mineral ea 0 eigenvalues c axis[1], eigvalue_c3:cpo mineral ea 0 eigenvalues c axis[2] 
+                                   phi2:cpo mineral ea 0 phi2[0], eigvalue_c1:cpo mineral ea 0 eigenvalues c axis[0], eigvalue_c2:cpo mineral ea 0 eigenvalues c axis[1], eigvalue_c3:cpo mineral ea 0 eigenvalues c axis[2]
   set Types of fields = generic, \
                         generic, generic, generic, generic, \
                         generic, generic, generic, generic, \
@@ -47,7 +47,7 @@ end
 subsection Gravity model
   set Model name = vertical
   subsection Vertical
-	  set Magnitude = 0
+    set Magnitude = 0
   end
 end
 
@@ -69,7 +69,7 @@ subsection Initial temperature model
   set Model name = function
 
   subsection Function
-	set Function expression = 1600 ## Annotation: Temperature function (note: anisotropic viscosity is not considered at T<1000K)
+  set Function expression = 1600 ## Annotation: Temperature function (note: anisotropic viscosity is not considered at T<1000K)
   end
 end
 
@@ -104,7 +104,7 @@ end
 subsection Material model
   set Model name = LPO Anisotropic Viscosity Hill material
 
-  subsection AV Hill    
+  subsection AV Hill
     set Reference viscosity = 1e9 # so that the initial stress is 0.3 MPa
   end
 end
@@ -121,7 +121,7 @@ subsection Postprocess
     subsection Visualization
         set Time between graphical output = 0.1 #100
         set List of output variables = material properties, strain rate,  named additional outputs,  shear stress,  stress
-    
+
       subsection Material properties
         set List of material properties = density, viscosity
       end
@@ -134,7 +134,7 @@ subsection Postprocess
     subsection Crystal Preferred Orientation
         set Time between data output = 0.1 #100
         set Write in background thread = true
-        set Compress cpo data files = false 
+        set Compress cpo data files = false
         set Write out raw cpo data = mineral 0: volume fraction, mineral 0: Euler angles #, mineral 1: volume fraction, mineral 1: Euler angles
         set Write out draw volume weighted cpo data = mineral 0: volume fraction, mineral 0: Euler angles #, mineral 1: volume fraction, mineral 1: Euler angles
     end
@@ -146,7 +146,7 @@ subsection Particles
     set Interpolation scheme = nearest neighbor
     set Minimum particles per cell = 1
     set Maximum particles per cell = 5
-    set Load balancing strategy     = add particles 
+    set Load balancing strategy     = add particles
     set Particle generator name = ascii file #random uniform #
     subsection Generator
         # subsection Probability density function
