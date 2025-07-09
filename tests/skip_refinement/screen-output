@@ -259,12 +259,12 @@ Skipping mesh refinement, because the mesh did not change.
    Solving UM system ... 1 iterations.
    Solving Lith system ... 1 iterations.
    Solving Stokes system (GMG)... 4+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.23218e-16, 6.3467e-08, 6.3467e-08, 7.23424e-13, 0, 0, 0, 0, 0, 0, 0, 7.8265e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.23202e-16, 6.3467e-08, 6.3467e-08, 7.23424e-13, 0, 0, 0, 0, 0, 0, 0, 7.8265e-10
       Relative nonlinear residual (total system) after nonlinear iteration 3: 6.3467e-08
 
 
    Postprocessing:
-     Compositions min/max/mass: -5.994e+07/2.057e+08/9.967e+18 // -2.057e+08/5.994e+07/-9.967e+18 // -1.092/1.092/2.415e+06 // -5.994e+07/2.057e+08/9.967e+18 // -2.057e+08/5.994e+07/-9.967e+18 // -1.092/1.092/2.414e+06 // 0/1/3.343e+12 // 0/1/3.615e+11 // -6.617e-24/1/5.081e+11 // 0/1/1.242e+11
+     Compositions min/max/mass: -5.994e+07/2.057e+08/9.967e+18 // -2.057e+08/5.994e+07/-9.967e+18 // -1.092/1.092/2.415e+06 // -5.994e+07/2.057e+08/9.967e+18 // -2.057e+08/5.994e+07/-9.967e+18 // -1.092/1.092/2.414e+06 // 0/1/3.343e+12 // 0/1/3.615e+11 // -1.694e-21/1/5.081e+11 // 0/1/1.242e+11
      Temperature min/avg/max:   293 K, 293 K, 293 K
      Topography min/max:        -5.553e-06 m, -1.069e-06 m
      RMS, max velocity:         0.146 m/year, 0.631 m/year
