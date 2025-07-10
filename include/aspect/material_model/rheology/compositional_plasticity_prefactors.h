@@ -34,8 +34,8 @@ namespace aspect
     namespace Rheology
     {
       /**
-       * A class that handles multiplication of viscosity for a given compositional
-       * field. The multiplication factors for each composition (viscosity
+       * A class that handles multiplication of the plastic parameters for a given compositional
+       * field. The multiplication factors for each composition (plasticity
        * prefactors) are also declared, parsed, and in some cases calculated in this class.
        */
       template <int dim>
@@ -61,7 +61,7 @@ namespace aspect
           parse_parameters (ParameterHandler &prm);
 
           /**
-           * Compute the viscosity.
+           * Compute the plasticity weakening factor.
            */
           std::pair<double, double>
           compute_weakening_factor (const MaterialModel::MaterialModelInputs<dim> &in,
@@ -73,18 +73,16 @@ namespace aspect
 
         private:
           /**
-           * The viscosity prefactors or terms used to calculate the viscosity
+           * The plasticity prefactors or terms used to calculate the plasticity
            * prefactors, which are read in from the input file by the
            * parse_parameters() function. Users can choose between different schemes.
-           * none: no viscosity change
-           * hk04_olivine_hydration: calculate the viscosity change due to hydrogen
-           * incorporation into olivine using Hirth & Kohlstaedt 2004 10.1029/138GM06.
-           * This method requires a composition called 'bound_fluid' which tracks the wt%
-           * water in the solid, which is used to compute an atomic ratio of H/Si ppm
-           * assuming 90 mol% forsterite and 10 mol% fayalite, and finally calculates
-           * a water fugacity.
+           * none: no change in the plasticity parameters
+           * porosity: calculate the change in the plasticity parameters due to the amount
+           * of porosity at each quadrature point.
+           * function: calculate the change in the plasticity parameters by specifying the
+           * prefactors via a function.
            * The prefactor for a given compositional field is multiplied with a
-           * base_viscosity value provided by the material model, which is then returned
+           * cohesions and the friction angles provided by the material model, which is then returned
            * to the material model.
            */
           enum WeakeningMechanism
@@ -100,13 +98,13 @@ namespace aspect
           std::vector<double> minimum_cohesions;
           std::vector<double> minimum_friction_angles;
           /**
-           * Parsed functions that specify the friction angle which must be
+           * Parsed functions that specify the plasticity prefactors which must be
            * given in the input file using the function method.
            */
           std::unique_ptr<Functions::ParsedFunction<dim>> prefactor_function;
 
           /**
-           * The coordinate representation to evaluate the function for the friction angle.
+           * The coordinate representation to evaluate the function for the plasticity prefactors.
            * Possible choices are depth, cartesian and spherical.
            */
           Utilities::Coordinates::CoordinateSystem coordinate_system_prefactor_function;

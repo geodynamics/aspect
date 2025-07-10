@@ -61,7 +61,6 @@ namespace aspect
             {
               // Use the porosity to compute the cohesion and friction angle
               // The porosity is computed in the MaterialModel::MaterialModelInputs
-              // and is available as in.porosity[i]
               const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
               plasticity_parameters.first *= std::max((max_porosities_for_cohesion_prefactors[volume_fraction_index] - in.composition[i][porosity_idx]) / max_porosities_for_cohesion_prefactors[volume_fraction_index], 0.0);
               plasticity_parameters.second *= std::max((max_porosities_for_friction_angle_prefactors[volume_fraction_index] - in.composition[i][porosity_idx]) / max_porosities_for_friction_angle_prefactors[volume_fraction_index], 0.0);
@@ -72,7 +71,7 @@ namespace aspect
             }
             case function:
             {
-              // Use a given function input per composition to get the friction angle
+              // Use a given function input per composition to get the prefactors
               Utilities::NaturalCoordinate<dim> point =
                 this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system_prefactor_function);
 
@@ -83,7 +82,7 @@ namespace aspect
               else
                 prefactor_function->set_time (this->get_time());
 
-              // determine the friction angle based on position and composition
+              // determine the prefactors based on position and composition
               // The volume_fraction_index is based on the number of chemical compositional fields.
               // However, this plugin reads a function for every compositional field, regardless of
               // its type. Therefore we have to get the correct index.
@@ -96,6 +95,7 @@ namespace aspect
               double prefactor_from_function =
                 prefactor_function->value(Utilities::convert_array_to_point<dim>(point.get_coordinates()),index);
 
+              // Multiply the cohesion and the friction angle by the prefactor.
               plasticity_parameters.first *= prefactor_from_function;
               plasticity_parameters.second *= prefactor_from_function * constants::degree_to_radians;
 
@@ -110,14 +110,14 @@ namespace aspect
       CompositionalPlasticityPrefactors<dim>::declare_parameters (ParameterHandler &prm)
       {
         prm.declare_entry ("Maximum porosity for cohesion prefactor", "1.0",
-                           Patterns::List(Patterns::Double(0., 1.0)),
+                           Patterns::List(Patterns::Double(std::numeric_limits<double>::epsilon(), 1.0)),
                            "List of the maximum porosity value for calculating the prefactor for the cohesion. "
                            "entered as a volume fraction. If chosen to be 0.1 (10 percent porosity), the "
                            "cohesion will be linearly reduced from its default value when the model porosity is 0"
                            "to a maximum reduction when the model porosity is 0.1. Units: none.");
 
         prm.declare_entry ("Maximum porosity for friction angle prefactor", "1.0",
-                           Patterns::List(Patterns::Double(0., 1.0)),
+                           Patterns::List(Patterns::Double(std::numeric_limits<double>::epsilon(), 1.0)),
                            "List of the maximum porosity value for calculating the prefactor for the friction "
                            "angle, entered as a volume fraction. If chosen to be 0.1 (10 percent porosity), the "
                            "friction angle will be linearly reduced from its default value when the model porosity is 0"
@@ -149,12 +149,14 @@ namespace aspect
       CompositionalPlasticityPrefactors<dim>::parse_parameters (ParameterHandler &prm)
       {
 
-        // if friction is specified as a function
         const unsigned int n_fields = this->n_compositional_fields() + 1;
         if (prm.get ("Plasticity prefactor scheme") == "none")
           prefactor_mechanism = none;
-        if (prm.get ("Plasticity prefactor scheme") == "porosity")
+        else if (prm.get ("Plasticity prefactor scheme") == "porosity")
           {
+            AssertThrow(this->introspection().compositional_name_exists("porosity"),
+                        ExcMessage("The 'porosity' Plasticity prefactor scheme work only if "
+                                   "is a compositional field called porosity."));
             prefactor_mechanism = porosity;
 
             // Retrieve the list of chemical names
@@ -178,7 +180,7 @@ namespace aspect
             minimum_friction_angles = Utilities::MapParsing::parse_map_to_double_array (prm.get("Minimum friction angles"),
                                                                                         options);
           }
-        if (prm.get ("Plasticity prefactor scheme") == "function")
+        else if (prm.get ("Plasticity prefactor scheme") == "function")
           {
             prefactor_mechanism = function;
             prm.enter_subsection("Prefactor function");
@@ -201,6 +203,8 @@ namespace aspect
             }
             prm.leave_subsection();
           }
+        else
+          AssertThrow(false, ExcMessage("Not a valid plasticity prefactor scheme"));
       }
     }
   }

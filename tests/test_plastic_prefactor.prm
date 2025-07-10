@@ -131,7 +131,7 @@ subsection Material model
     set Cohesions                                      = 100e6 
     set Angles of internal friction                    = 30
     set Plasticity prefactor scheme                    = porosity
-    set Maximum porosity for friction angle prefactor  = 0.2
+    set Maximum porosity for friction angle prefactor  = 0.
     set Maximum porosity for cohesion prefactor        = 0.1
 
     set Minimum cohesions                              = 10e6
