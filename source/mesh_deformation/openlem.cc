@@ -238,6 +238,19 @@ namespace aspect
         //    std::cout << "x:y = " << x_i << ":" << y_i << " = " << connector.x[x_i][y_i] << ":" << connector.y[x_i][y_i] << std::endl;
       }
       openlem_mesh_aspect_cell = std::vector<std::vector<CellId>>(openlem_nx,std::vector<CellId>(openlem_ny));
+      aspect_mesh_aspect_cell_id = std::vector<std::vector<CellId>>(aspect_nx,std::vector<CellId>(aspect_ny));
+      aspect_mesh_aspect_cell_face_number = std::vector<std::vector<unsigned int>>(aspect_nx,std::vector<unsigned int>(aspect_ny,std::numeric_limits<unsigned int>::signaling_NaN()));
+      //for (unsigned int xi = 0; xi < aspect_nx; ++xi)
+      //  {
+      //    for (unsigned int yi = 0; yi < aspect_ny; ++yi)
+      //      {
+      //        const double x_coord = xi*aspect_dx + 0.5*aspect_dx - grid_extent[0].first;
+      //        const double y_coord = yi*aspect_dy + 0.5*aspect_dy - grid_extent[1].first;
+      //        aspect_mesh_aspect_cell[xi][yi] = 1;
+      //      }
+      //  }
+
+
     }
 
 
@@ -245,6 +258,67 @@ namespace aspect
     void
     OpenLEM<dim>::update ()
     {
+      if (this->get_timestep_number() == 0)
+        {
+          aspect_mesh_aspect_cell_id = std::vector<std::vector<CellId>>(aspect_nx,std::vector<CellId>(aspect_ny));
+          aspect_mesh_aspect_cell_face_number = std::vector<std::vector<unsigned int>>(aspect_nx,std::vector<unsigned int>(aspect_ny,std::numeric_limits<unsigned int>::signaling_NaN()));
+
+          const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
+          // Get a quadrature rule that exists only on the corners, and increase the refinement if specified.
+          const QIterated<dim-1> face_corners (QTrapezoid<1>(),
+                                               1);//additional_refinement_levels+surface_refinement_difference));
+
+          FEFaceValues<dim> fe_face_values (this->get_mapping(),
+                                            this->get_fe(),
+                                            face_corners,
+                                            update_values |
+                                            update_quadrature_points);
+          // first check if the stored cell is still the cell we need.
+          //std::cout << "face_corners.size() = " << face_corners.size() << std::endl;
+          for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+            if (cell->is_locally_owned() && cell->at_boundary())
+              for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
+                if (cell->face(face_no)->at_boundary())
+                  {
+                    if ( cell->face(face_no)->boundary_id() != relevant_boundary)
+                      continue;
+
+                    fe_face_values.reinit(cell, face_no);
+                    const Point<dim> vertex = fe_face_values.get_cell()->center();
+                    const double x_coord = vertex[0] - grid_extent[0].first;
+                    const double y_coord = vertex[1] - grid_extent[1].first;
+                    const size_t ixa = std::floor(x_coord/aspect_dx);
+                    const size_t iya = std::floor(y_coord/aspect_dy);
+                    //std::cout << "x:y = " << ixa << ":" << iya << ", vertex = " << vertex << std::endl;
+                    aspect_mesh_aspect_cell_id[ixa][iya] = cell->id();
+                    aspect_mesh_aspect_cell_face_number[ixa][iya] = face_no;
+                  }
+
+          for (unsigned int i = 0; i < aspect_nx-1; ++i)
+            {
+              aspect_mesh_aspect_cell_id[i][aspect_ny-1] = aspect_mesh_aspect_cell_id[i][aspect_ny-2];
+              aspect_mesh_aspect_cell_face_number[i][aspect_ny-1] = aspect_mesh_aspect_cell_face_number[i][aspect_ny-2];
+            }
+          for (unsigned int i = 0; i < aspect_ny; ++i)
+            {
+              aspect_mesh_aspect_cell_id[aspect_nx-1][i] = aspect_mesh_aspect_cell_id[aspect_nx-2][i];
+              aspect_mesh_aspect_cell_face_number[aspect_nx-1][i] = aspect_mesh_aspect_cell_face_number[aspect_nx-2][i];
+            }
+          for (unsigned int xia = 0; xia < aspect_nx; ++xia)
+            {
+              for (unsigned int yia = 0; yia < aspect_nx; ++yia)
+                {
+                  if (aspect_mesh_aspect_cell_id[xia][yia].get_coarse_cell_id() != numbers::invalid_coarse_cell_id)
+                    {
+                      const auto &cell = this->get_triangulation().create_cell_iterator(aspect_mesh_aspect_cell_id[xia][yia])->as_dof_handler_iterator(this->get_dof_handler());
+
+                      fe_face_values.reinit(cell, aspect_mesh_aspect_cell_face_number[xia][yia]);
+                      const Point<dim> vertex = fe_face_values.get_cell()->center();
+                      //std::cout << "x:y = " << xia << ":" << yia << ", fn: = " << aspect_mesh_aspect_cell_face_number[xia][yia] << ", cellid = " <<  aspect_mesh_aspect_cell_id[xia][yia].get_coarse_cell_id() << ", 2d cell center = " << vertex << std::endl;
+                    }
+                }
+            }
+        }
       std::string dirname = this->get_output_directory();
       const char *dirname_char=dirname.c_str();
       const unsigned int dirname_length = dirname.length();
@@ -275,11 +349,11 @@ namespace aspect
       // Find a openlem timestep that is below our maximum timestep.
       unsigned int openlem_iterations = openlem_steps_per_aspect_step;
       double openlem_timestep_in_years = aspect_timestep_in_years/openlem_iterations;
-      //while (openlem_timestep_in_years>maximum_openlem_timestep)
-      {
-        //openlem_iterations *= 2;
-        //openlem_timestep_in_years *= 0.5;
-      }
+      while (openlem_timestep_in_years>maximum_openlem_timestep)
+        {
+          openlem_iterations *= 2;
+          openlem_timestep_in_years *= 0.5;
+        }
 
       // Vector to hold the velocities that represent the change to the surface.
       //const unsigned int openlem_array_size = openlem_nx*openlem_ny;
@@ -318,44 +392,19 @@ namespace aspect
       mesh_locations = Utilities::MPI::broadcast(this->get_mpi_communicator(),mesh_locations,0);
       std::cout << "after  broadcast mesh_locations" << std::endl;
 
-      for (unsigned int x_i = 0; x_i < openlem_nx; ++x_i)
+      Tensor<1,dim> invalid_velocity;
+      for (unsigned int dim_i = 0; dim_i < dim-1; ++dim_i)
         {
-          for (unsigned int y_i = 0; y_i < openlem_nx; ++y_i)
-            {
-              if (dim == 3)
-                {
-                  //if (x_i == 10)
-                  //  std::cout << "B: rank = " <<Utilities::MPI::this_mpi_process(this->get_mpi_communicator())  << ", x:y = " << x_i << ":" << y_i << ", mesh_locations[x_i][y_i] = " << mesh_locations[x_i][y_i] << ", connector x:y = " <<  connector.x[x_i][y_i] << ":" << connector.y[x_i][y_i] << std::endl;
-                }
-            }
+          invalid_velocity[dim_i] = std::numeric_limits<double>::quiet_NaN();
         }
-      std::vector<std::vector<Tensor<1,dim>>> mesh_velocities(openlem_nx,std::vector<Tensor<1,dim>>(openlem_ny));
-      std::vector<std::vector<Point<dim>>> mesh_velocity_locations(openlem_nx,std::vector<Point<dim>>(openlem_ny));
-      std::vector<std::vector<double>> mesh_velocity_distances(openlem_nx,std::vector<double>(openlem_ny));
-      aspect_mesh_z = std::vector<std::vector<double>>(aspect_nx,std::vector<double>(aspect_ny));
+      invalid_velocity[dim-1] = 0;
+      std::vector<std::vector<Tensor<1,dim>>> openlem_mesh_velocities(openlem_nx,std::vector<Tensor<1,dim>>(openlem_ny, invalid_velocity));
+      //std::vector<std::vector<Point<dim>>> mesh_velocity_locations(openlem_nx,std::vector<Point<dim>>(openlem_ny));
+      //std::vector<std::vector<double>> mesh_velocity_distances(openlem_nx,std::vector<double>(openlem_ny));
+      aspect_mesh_z = std::vector<std::vector<double>>(aspect_nx,std::vector<double>(aspect_ny,std::numeric_limits<double>::signaling_NaN()));
 
 
-      for (unsigned int x_i = 0; x_i < aspect_nx; ++x_i)
-        {
-          for (unsigned int y_i = 0; y_i < aspect_ny; ++y_i)
-            {
-              aspect_mesh_z[x_i][y_i] = std::numeric_limits<double>::signaling_NaN();
-            }
-        }
-      for (unsigned int x_i = 0; x_i < openlem_nx; ++x_i)
-        {
-          for (unsigned int y_i = 0; y_i < openlem_ny; ++y_i)
-            {
-              mesh_velocities[x_i][y_i][0] = std::numeric_limits<double>::signaling_NaN();
-              mesh_velocities[x_i][y_i][1] = std::numeric_limits<double>::signaling_NaN();
-              mesh_velocities[x_i][y_i][dim-1] = std::numeric_limits<double>::signaling_NaN();
-              mesh_velocity_locations[x_i][y_i][0] = std::numeric_limits<double>::signaling_NaN();
-              mesh_velocity_locations[x_i][y_i][1] = std::numeric_limits<double>::signaling_NaN();
-              mesh_velocity_locations[x_i][y_i][dim-1] = std::numeric_limits<double>::signaling_NaN();
-              mesh_velocity_distances[x_i][y_i] = std::numeric_limits<double>::infinity();
-            }
-        }
-      std::vector<std::tuple<unsigned int, unsigned int, double,Point<dim>, Tensor<1,dim>>> mesh_velocities_vector;
+      std::vector<std::vector<std::vector<Tensor<1,dim>>>> mesh_velocities_vector;
 
       //const UpdateFlags update_flags = update_values | update_gradients;
       //std::unique_ptr<SolutionEvaluator<dim>> evaluator = construct_solution_evaluator(*this,update_flags);
@@ -401,137 +450,166 @@ namespace aspect
                                         face_corners,
                                         update_values |
                                         update_quadrature_points);
-      // first check if the stored cell is still the cell we need.
-      //std::cout << "face_corners.size() = " << face_corners.size() << std::endl;
-      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
-        if (cell->is_locally_owned() && cell->at_boundary())
-          for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
-            if (cell->face(face_no)->at_boundary())
-              {
-                if ( cell->face(face_no)->boundary_id() != relevant_boundary)
-                  continue;
 
-                //std::vector<Tensor<1,dim>> vel(face_corners.size());
-                fe_face_values.reinit(cell, face_no);
-                //fe_face_values[this->introspection().extractors.velocities].get_function_values(this->get_solution(), vel);
-
-                for (unsigned int corner = 0; corner < face_corners.size(); ++corner)
-                  {
-                    const Point<dim> vertex = fe_face_values.quadrature_point(corner);
-
-                    const double x_coord = vertex[0] - grid_extent[0].first;
-                    const double y_coord = vertex[1] - grid_extent[1].first;
-                    const size_t ixa = std::round(x_coord/aspect_dx);
-                    const size_t iya = std::round(y_coord/aspect_dy);
-                    aspect_mesh_z[ixa][iya] = vertex[dim-1] - grid_extent[dim-1].second;
-                  }
-              }
-
-      //unsigned int total_found_velocities = 0;
       const CellId unitialized_cell_id = CellId();
-      for (unsigned int x_i = 0; x_i < openlem_nx; ++x_i)
+      //Tensor<1,dim> invalid_velocity;
+      //for (unsigned int dim_i = 0; dim_i < dim; ++dim_i)
+      //  {
+      //    velocity[dim_i] = std::numeric_limits<double>::signaling_NaN();
+      //  }
+      for (unsigned int xi = 0; xi < openlem_nx; ++xi)
         {
-          for (unsigned int y_i = 0; y_i < openlem_ny; ++y_i)
+          for (unsigned int yi = 0; yi < openlem_ny; ++yi)
             {
-              bool found_a_value = false;
-              std::vector<Point<dim>> unit_point(1);
-              double closest_distance_cell = std::numeric_limits<double>::infinity();
-              //std::cout << "cellid = " << openlem_mesh_aspect_cell[x_i][y_i].get_coarse_cell_id() << "..." << std::endl;
-              //std::cout << "try cell id at " << x_i << ":" << y_i << ", coarse cell id = " <<  openlem_mesh_aspect_cell[x_i][y_i].get_coarse_cell_id()<< std::endl;
-              if (openlem_mesh_aspect_cell[x_i][y_i].get_coarse_cell_id() != numbers::invalid_coarse_cell_id)
+              // get corresponding aspect index
+              Point<2> openlem_point_2d(connector.x[xi][yi],connector.y[xi][yi]);
+
+              double x_coord = connector.x[xi][yi] - grid_extent[0].first;
+              double y_coord = connector.y[xi][yi] - grid_extent[1].first;
+              if (
+                x_coord >= 0 && x_coord <= grid_extent[0].second &&
+                y_coord >= 0 && y_coord <= grid_extent[1].second
+              )
                 {
-                  //std::cout << "found a valid cell id at " << x_i << ":" << y_i << std::endl;
-                  const auto &cell = this->get_triangulation().create_cell_iterator(openlem_mesh_aspect_cell[x_i][y_i])->as_dof_handler_iterator(this->get_dof_handler());
-                  if ( cell->state() == IteratorState::valid && cell->is_locally_owned() && cell->at_boundary())
+                  const double x_coord = openlem_point_2d[0] - grid_extent[0].first;
+                  const double y_coord = openlem_point_2d[1] - grid_extent[1].first;
+                  const size_t xia = std::floor(x_coord/aspect_dx);
+                  const size_t yia = std::floor(y_coord/aspect_dy);
+                  //if (xi < openlem_nx-2 && yi > 30 && yi < 50)
+                  //  std::cout << "F:  openlem_point_2d = " << openlem_point_2d << ", x:ycoord = " <<  x_coord << ":" << y_coord << ", x:ycoord/dx:dy = " << x_coord/aspect_dx << ":" << y_coord/aspect_dy << ", xia:yia = " << xia << ":" << yia << ", aspect dx:dy = " << aspect_dx << ":" << aspect_dy << std::endl;
+
+                  if (aspect_mesh_aspect_cell_id[xia][yia].get_coarse_cell_id() != numbers::invalid_coarse_cell_id)
                     {
-                      //std::cout << "found a valid cell at " << x_i << ":" << y_i << std::endl;
-                      for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
+                      if (!std::isnan(aspect_mesh_aspect_cell_face_number[xia][yia]))
                         {
-                          if (cell->face(face_no)->at_boundary())
+                          const auto &cell = this->get_triangulation().create_cell_iterator(aspect_mesh_aspect_cell_id[xia][yia])->as_dof_handler_iterator(this->get_dof_handler());
+                          if (cell->state() == IteratorState::valid && cell->is_locally_owned() )
                             {
-                              if ( cell->face(face_no)->boundary_id() != relevant_boundary)
-                                continue;
-
-                              this->get_mapping().transform_points_real_to_unit_cell(cell, {mesh_locations[x_i][y_i]},unit_point);
-                              const double distance_to_unit_cell = GeometryInfo<dim>::distance_to_unit_cell(unit_point[0]);
-
-                              if (distance_to_unit_cell < closest_distance_cell)
+                              bool found_a_value = false;
+                              std::vector<Point<dim>> unit_point(1);
+                              double closest_distance_cell = std::numeric_limits<double>::infinity();
+                              fe_face_values.reinit(cell, aspect_mesh_aspect_cell_face_number[xia][yia]);
+                              for (unsigned int corner = 0; corner < face_corners.size(); ++corner)
                                 {
-                                  std::vector<Point<dim>> closest_point = {cell->reference_cell().closest_point(unit_point[0])};
-                                  Point<dim> closest_point_real = this->get_mapping().transform_unit_to_real_cell(cell,closest_point[0]);
+                                  const Point<dim> vertex = fe_face_values.quadrature_point(corner);
 
-                                  Point<2> cp2d(closest_point_real[0],closest_point_real[1]);
-                                  Point<2> openlem_point_2d(connector.x[x_i][y_i],connector.y[x_i][y_i]);
-
-
-                                  if (cell->state() != IteratorState::valid)
-                                    {
-                                      continue;
-                                    }
-
-                                  auto &velocity_evaluator = evaluator->get_velocity_or_fluid_velocity_evaluator(false);
-                                  small_vector<double,50> solution_values(this->get_fe().dofs_per_cell);
-                                  cell->get_dof_values(this->get_current_linearization_point(),//input_solution,
-                                                       solution_values.begin(),
-                                                       solution_values.end());
-
-
-                                  solution[0] = std::vector<double>(evaluator->n_components(), numbers::signaling_nan<double>());
-
-
-                                  evaluator->reinit(cell, closest_point);
-                                  //evaluator->evaluate({solution_values.data(),solution_values.size()},evaluation_flags);
-                                  //evaluator->get_solution(0, {&solution[0][0],solution[0].size()}, evaluation_flags);
-
-                                  velocity_evaluator.evaluate({solution_values.data(),solution_values.size()},
-                                                              EvaluationFlags::values);
-
-                                  auto &mapping_info = evaluator->get_mapping_info();
-                                  mapping_info.reinit(cell, {closest_point.data(),closest_point.size()});
-
-
-                                  Point<3> velocity_3d;
-                                  Point<3> velocity_original;
-                                  Point<3> velocity_analytical(-openlem_point_2d[1],openlem_point_2d[0],0.0);
-                                  Tensor<1,dim> velocity = velocity_evaluator.get_value(0)*year_in_seconds;
-
-                                  //if (y_i == 10)
-                                  //  std::cout << "rank = " <<Utilities::MPI::this_mpi_process(this->get_mpi_communicator())  << ", x:y = " << x_i << ":" << y_i << ", closest_point = " << closest_point[0] << ", closest_point_real = " << closest_point_real<< ", mesh_locations = " << mesh_locations[x_i][y_i] << ", velo = " <<  velocity << ", velo ana = " << velocity_analytical << ", distance_to_unit_cell = " << distance_to_unit_cell<< ", vel raw = " << velocity_evaluator.get_value(0) << std::endl;
-                                  for (unsigned int i = 0; i < dim; ++i)
-                                    {
-                                      velocity_original[i] = velocity[i];
-                                      //velocity[i] = velocity_analytical[i];// * year_in_seconds;//solution_values[this->introspection().component_indices.velocities[i]] * year_in_seconds;
-                                      velocity_3d[i] = velocity[i];//solution_values[this->introspection().component_indices.velocities[i]] * year_in_seconds;
-                                    }
-
-                                  // TODO: maybe don't need the closest point real in the tuple?
-                                  //std::tuple<unsigned int, unsigned int, Point<dim>, Tensor<1,dim>> tuple = std::make_tuple(x_i, y_i, closest_point_real, velocity);
-                                  if (!isnan(velocity[0]))
-                                    {
-                                      found_a_value = true;
-                                      closest_distance_cell = distance_to_unit_cell; // TODO: probably just skip out if distance is exactly zero.
-                                      //total_found_velocities++;
-                                      mesh_velocities_vector.emplace_back(std::make_tuple(x_i, y_i, distance_to_unit_cell, closest_point_real, velocity));
-                                      openlem_mesh_aspect_cell[x_i][y_i] = cell->id();
-                                      //std::cout << "set cell id at " << x_i << ":" << y_i << ", coarse cell id = " <<  cell->id().get_coarse_cell_id() << ", " << openlem_mesh_aspect_cell[x_i][y_i]  << std::endl;
-                                      break;
-                                    }
+                                  const double x_coord = vertex[0] - grid_extent[0].first;
+                                  const double y_coord = vertex[1] - grid_extent[1].first;
+                                  const size_t ixa = std::round(x_coord/aspect_dx);
+                                  const size_t iya = std::round(y_coord/aspect_dy);
+                                  aspect_mesh_z[ixa][iya] = vertex[dim-1] - grid_extent[dim-1].second;
+                                  //mesh_locations[ixa][iya][dim-1] = vertex[dim-1];
                                 }
+                              {
+
+                                this->get_mapping().transform_points_real_to_unit_cell(cell, {mesh_locations[xi][yi]},unit_point);
+                                const double distance_to_unit_cell = GeometryInfo<dim>::distance_to_unit_cell(unit_point[0]);
+
+                                //if (xi < openlem_nx-2 && yi > 30 && yi < 50)
+                                //  std::cout << "U1: velocity " << xi << ":" << yi << ", aspect x:y = " << xia << ":" <<yia << ", distance_to_unit_cell = " << distance_to_unit_cell << ", closest_distance_cell = " << closest_distance_cell << ", unit_point[0] = " << unit_point[0] << ", mesh_locations[xia][yia] = " << mesh_locations[xi][yi] << std::endl;
+                                if (distance_to_unit_cell < closest_distance_cell)
+                                  {
+                                    std::vector<Point<dim>> closest_point = {cell->reference_cell().closest_point(unit_point[0])};
+                                    Point<dim> closest_point_real = this->get_mapping().transform_unit_to_real_cell(cell,closest_point[0]);
+
+                                    //if (xi == 54 && yi > 125 && yi < 130)
+                                    //if (xi < 6 && yi < 6)
+                                    //if (xi < openlem_nx-2 && yi > 30 && yi < 50)
+                                    //  std::cout << "U2: velocity " << xi << ":" << yi << " closest_point_real = " << closest_point_real << ", mesh_locations[xi][yi] = " << mesh_locations[xi][yi] << ", diff = " << (closest_point_real-mesh_locations[xi][yi]).norm() << ", diff 2d = " << (closest_point_real[0]-mesh_locations[xi][yi][0]) << ":" << (closest_point_real[1]-mesh_locations[xi][yi][1]) <<  std::endl;
+                                    Point<2> cp2d(closest_point_real[0],closest_point_real[1]);
+
+                                    auto &velocity_evaluator = evaluator->get_velocity_or_fluid_velocity_evaluator(false);
+                                    small_vector<double,50> solution_values(this->get_fe().dofs_per_cell);
+                                    cell->get_dof_values(this->get_current_linearization_point(),//input_solution,
+                                                         solution_values.begin(),
+                                                         solution_values.end());
+
+
+                                    solution[0] = std::vector<double>(evaluator->n_components(), numbers::signaling_nan<double>());
+
+
+                                    evaluator->reinit(cell, closest_point);
+                                    //evaluator->evaluate({solution_values.data(),solution_values.size()},evaluation_flags);
+                                    //evaluator->get_solution(0, {&solution[0][0],solution[0].size()}, evaluation_flags);
+
+                                    velocity_evaluator.evaluate({solution_values.data(),solution_values.size()},
+                                                                EvaluationFlags::values);
+
+                                    auto &mapping_info = evaluator->get_mapping_info();
+                                    mapping_info.reinit(cell, {closest_point.data(),closest_point.size()});
+
+
+                                    //Point<3> velocity_analytical(-openlem_point_2d[1],openlem_point_2d[0],0.0);
+                                    Tensor<1,dim> velocity = velocity_evaluator.get_value(0)*year_in_seconds;
+                                    //if (xi < openlem_nx-2 && yi > 30 && yi < 50)
+                                    //  std::cout << "X: velocity " << xi << ":" << yi << " = " << velocity << std::endl;
+
+                                    if (!isnan(velocity[0]))
+                                      {
+                                        openlem_mesh_velocities[xi][yi] = velocity;
+                                        //if (xi < openlem_nx-2 && yi > 30 && yi < 50)
+                                        //  std::cout << "Y: velocity " << xi << ":" << yi << " = " << velocity << ", mesh_velocities[xi][yi] = " << openlem_mesh_velocities[xi][yi] << std::endl;
+                                      }
+                                  }
+                              }
                             }
                         }
+
                     }
                 }
-              if (closest_distance_cell != 0.0)
+              //else
+              //  {
+              //    mesh_velocities[xi][yi] = velocity;
+              //  }
+            }
+        }
+      // first check if the stored cell is still the cell we need.
+      //std::cout << "face_corners.size() = " << face_corners.size() << std::endl;
+      /*
+          for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+            if (cell->is_locally_owned() && cell->at_boundary())
+              for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
+                if (cell->face(face_no)->at_boundary())
+                  {
+                    if ( cell->face(face_no)->boundary_id() != relevant_boundary)
+                      continue;
+
+                    //std::vector<Tensor<1,dim>> vel(face_corners.size());
+                    fe_face_values.reinit(cell, face_no);
+                    //fe_face_values[this->introspection().extractors.velocities].get_function_values(this->get_solution(), vel);
+
+                    for (unsigned int corner = 0; corner < face_corners.size(); ++corner)
+                      {
+                        const Point<dim> vertex = fe_face_values.quadrature_point(corner);
+
+                        const double x_coord = vertex[0] - grid_extent[0].first;
+                        const double y_coord = vertex[1] - grid_extent[1].first;
+                        const size_t ixa = std::round(x_coord/aspect_dx);
+                        const size_t iya = std::round(y_coord/aspect_dy);
+                        aspect_mesh_z[ixa][iya] = vertex[dim-1] - grid_extent[dim-1].second;
+
+                      }
+                  }
+      */
+      //unsigned int total_found_velocities = 0;
+      //const CellId unitialized_cell_id = CellId();
+      /*
+          for (unsigned int x_i = 0; x_i < openlem_nx; ++x_i)
+            {
+              for (unsigned int y_i = 0; y_i < openlem_ny; ++y_i)
                 {
-                  for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+                  bool found_a_value = false;
+                  std::vector<Point<dim>> unit_point(1);
+                  double closest_distance_cell = std::numeric_limits<double>::infinity();
+                  //std::cout << "cellid = " << openlem_mesh_aspect_cell[x_i][y_i].get_coarse_cell_id() << "..." << std::endl;
+                  //std::cout << "try cell id at " << x_i << ":" << y_i << ", coarse cell id = " <<  openlem_mesh_aspect_cell[x_i][y_i].get_coarse_cell_id()<< std::endl;
+                  if (openlem_mesh_aspect_cell[x_i][y_i].get_coarse_cell_id() != numbers::invalid_coarse_cell_id)
                     {
-                      if (closest_distance_cell == 0.0)
+                      //std::cout << "found a valid cell id at " << x_i << ":" << y_i << std::endl;
+                      const auto &cell = this->get_triangulation().create_cell_iterator(openlem_mesh_aspect_cell[x_i][y_i])->as_dof_handler_iterator(this->get_dof_handler());
+                      if ( cell->state() == IteratorState::valid && cell->is_locally_owned() && cell->at_boundary())
                         {
-                          // if the point is inside the cell it is defined as exactly zero
-                          break;
-                        }
-                      if (cell->is_locally_owned() && cell->at_boundary())
-                        {
+                          //std::cout << "found a valid cell at " << x_i << ":" << y_i << std::endl;
                           for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
                             {
                               if (cell->face(face_no)->at_boundary())
@@ -541,7 +619,6 @@ namespace aspect
 
                                   this->get_mapping().transform_points_real_to_unit_cell(cell, {mesh_locations[x_i][y_i]},unit_point);
                                   const double distance_to_unit_cell = GeometryInfo<dim>::distance_to_unit_cell(unit_point[0]);
-
 
                                   if (distance_to_unit_cell < closest_distance_cell)
                                     {
@@ -609,22 +686,113 @@ namespace aspect
                             }
                         }
                     }
+                  if (closest_distance_cell != 0.0)
+                    {
+                      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+                        {
+                          if (closest_distance_cell == 0.0)
+                            {
+                              // if the point is inside the cell it is defined as exactly zero
+                              break;
+                            }
+                          if (cell->is_locally_owned() && cell->at_boundary())
+                            {
+                              for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
+                                {
+                                  if (cell->face(face_no)->at_boundary())
+                                    {
+                                      if ( cell->face(face_no)->boundary_id() != relevant_boundary)
+                                        continue;
+
+                                      this->get_mapping().transform_points_real_to_unit_cell(cell, {mesh_locations[x_i][y_i]},unit_point);
+                                      const double distance_to_unit_cell = GeometryInfo<dim>::distance_to_unit_cell(unit_point[0]);
+
+
+                                      if (distance_to_unit_cell < closest_distance_cell)
+                                        {
+                                          std::vector<Point<dim>> closest_point = {cell->reference_cell().closest_point(unit_point[0])};
+                                          Point<dim> closest_point_real = this->get_mapping().transform_unit_to_real_cell(cell,closest_point[0]);
+
+                                          Point<2> cp2d(closest_point_real[0],closest_point_real[1]);
+                                          Point<2> openlem_point_2d(connector.x[x_i][y_i],connector.y[x_i][y_i]);
+
+
+                                          if (cell->state() != IteratorState::valid)
+                                            {
+                                              continue;
+                                            }
+
+                                          auto &velocity_evaluator = evaluator->get_velocity_or_fluid_velocity_evaluator(false);
+                                          small_vector<double,50> solution_values(this->get_fe().dofs_per_cell);
+                                          cell->get_dof_values(this->get_current_linearization_point(),//input_solution,
+                                                               solution_values.begin(),
+                                                               solution_values.end());
+
+
+                                          solution[0] = std::vector<double>(evaluator->n_components(), numbers::signaling_nan<double>());
+
+
+                                          evaluator->reinit(cell, closest_point);
+                                          //evaluator->evaluate({solution_values.data(),solution_values.size()},evaluation_flags);
+                                          //evaluator->get_solution(0, {&solution[0][0],solution[0].size()}, evaluation_flags);
+
+                                          velocity_evaluator.evaluate({solution_values.data(),solution_values.size()},
+                                                                      EvaluationFlags::values);
+
+                                          auto &mapping_info = evaluator->get_mapping_info();
+                                          mapping_info.reinit(cell, {closest_point.data(),closest_point.size()});
+
+
+                                          Point<3> velocity_3d;
+                                          Point<3> velocity_original;
+                                          Point<3> velocity_analytical(-openlem_point_2d[1],openlem_point_2d[0],0.0);
+                                          Tensor<1,dim> velocity = velocity_evaluator.get_value(0)*year_in_seconds;
+
+                                          //if (y_i == 10)
+                                          //  std::cout << "rank = " <<Utilities::MPI::this_mpi_process(this->get_mpi_communicator())  << ", x:y = " << x_i << ":" << y_i << ", closest_point = " << closest_point[0] << ", closest_point_real = " << closest_point_real<< ", mesh_locations = " << mesh_locations[x_i][y_i] << ", velo = " <<  velocity << ", velo ana = " << velocity_analytical << ", distance_to_unit_cell = " << distance_to_unit_cell<< ", vel raw = " << velocity_evaluator.get_value(0) << std::endl;
+                                          for (unsigned int i = 0; i < dim; ++i)
+                                            {
+                                              velocity_original[i] = velocity[i];
+                                              //velocity[i] = velocity_analytical[i];// * year_in_seconds;//solution_values[this->introspection().component_indices.velocities[i]] * year_in_seconds;
+                                              velocity_3d[i] = velocity[i];//solution_values[this->introspection().component_indices.velocities[i]] * year_in_seconds;
+                                            }
+
+                                          // TODO: maybe don't need the closest point real in the tuple?
+                                          //std::tuple<unsigned int, unsigned int, Point<dim>, Tensor<1,dim>> tuple = std::make_tuple(x_i, y_i, closest_point_real, velocity);
+                                          if (!isnan(velocity[0]))
+                                            {
+                                              found_a_value = true;
+                                              closest_distance_cell = distance_to_unit_cell; // TODO: probably just skip out if distance is exactly zero.
+                                              //total_found_velocities++;
+                                              mesh_velocities_vector.emplace_back(std::make_tuple(x_i, y_i, distance_to_unit_cell, closest_point_real, velocity));
+                                              openlem_mesh_aspect_cell[x_i][y_i] = cell->id();
+                                              //std::cout << "set cell id at " << x_i << ":" << y_i << ", coarse cell id = " <<  cell->id().get_coarse_cell_id() << ", " << openlem_mesh_aspect_cell[x_i][y_i]  << std::endl;
+                                              break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                  else
+                    {
+                      //std::cout << "Found the right cell in storage! " << std::endl;
+                    }
+                  AssertThrow(found_a_value,ExcMessage("Could not found a value for " + std::to_string(x_i) + ":" + std::to_string(y_i)));
                 }
-              else
-                {
-                  //std::cout << "Found the right cell in storage! " << std::endl;
-                }
-              AssertThrow(found_a_value,ExcMessage("Could not found a value for " + std::to_string(x_i) + ":" + std::to_string(y_i)));
             }
-        }
+      */
 
       // the mesh velocties vector should contain all the entries now, return to process 0 and unpack
       std::cout << "before gather mesh_velocites_vector" << std::endl;
       std::vector<std::vector<std::vector<double>>> aspect_mesh_z_vectors = Utilities::MPI::gather(this->get_mpi_communicator(),aspect_mesh_z,0);
-      std::vector<std::vector<std::tuple<unsigned int, unsigned int, double,Point<dim>, Tensor<1,dim>>>> mesh_velocties_vectors = Utilities::MPI::gather(this->get_mpi_communicator(),mesh_velocities_vector,0);
+      //std::vector<std::vector<std::tuple<unsigned int, unsigned int, double,Point<dim>, Tensor<1,dim>>>> mesh_velocties_vectors = Utilities::MPI::gather(this->get_mpi_communicator(),mesh_velocities_vector,0);
+      std::vector<std::vector<std::vector<Tensor<1,dim>>>> mesh_velocties_vectors = Utilities::MPI::gather(this->get_mpi_communicator(),openlem_mesh_velocities,0);
       std::cout << "after gather mesh_velocites_vector" << std::endl;
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
+          //std::cout << " aspect_mesh_z_vectors = " << aspect_mesh_z_vectors.size() << std::endl;
           for (auto &aspect_mesh_z_item : aspect_mesh_z_vectors)
             {
               for (size_t xi = 0; xi < aspect_nx; ++xi)
@@ -632,31 +800,44 @@ namespace aspect
                   for (size_t yi = 0; yi < aspect_ny; ++yi)
                     {
 
+                      //if (xi == 54/4 && yi > 125/4 && yi < 130/4)
+                      //if (xi == 2 && yi > 0 && yi < 10)
+                      //  std::cout << "Flag 100: mesh z " << xi << ":" << yi << " = " << aspect_mesh_z_item[xi][yi]  << std::endl;
                       if (!std::isnan(aspect_mesh_z_item[xi][yi]))
                         {
                           aspect_mesh_z[xi][yi] = aspect_mesh_z_item[xi][yi];
+                          //if (xi == 54/4 && yi > 125/4 && yi < 130/4)
+                          //if (xi == 2 && yi > 0 && yi < 10)
+                          //  std::cout << "Flag 101: mesh z " << xi << ":" << yi << " = " << aspect_mesh_z[xi][yi]  << std::endl;
                         }
                     }
 
                 }
             }
-          size_t counter = 0;
-          for (auto &mesh_velocities_vector : mesh_velocties_vectors)
+          //std::cout << "mesh_velocties_vectors = " << mesh_velocties_vectors.size() << std::endl;
+          for (auto &openlem_mesh_velocities_vector : mesh_velocties_vectors)
             {
-              for (auto &position_velocity : mesh_velocities_vector)
+              //std::cout << "B: mesh_velocties_vectors = " << mesh_velocties_vectors.size() << std::endl;
+              for (size_t xi = 0; xi < openlem_nx; ++xi)
                 {
-                  //if (std::get<0>(position_velocity) == 10)
-                  //  std::cout << counter << "a: rank = " <<Utilities::MPI::this_mpi_process(this->get_mpi_communicator())  << ", mesh velocties x:y = " << std::get<0>(position_velocity) << ":" << std::get<1>(position_velocity) << ", velo = " << std::get<3>(position_velocity) << ", distance = " <<  std::get<2>(position_velocity)<< ", mesh_velocity_distances  = " << mesh_velocity_distances[std::get<0>(position_velocity)][std::get<1>(position_velocity)] << std::endl;
-                  if (!std::isnan(std::get<4>(position_velocity)[0]) && std::get<2>(position_velocity) < mesh_velocity_distances[std::get<0>(position_velocity)][std::get<1>(position_velocity)] )
+                  for (size_t yi = 0; yi < openlem_ny; ++yi)
                     {
-                      //   if (std::get<0>(position_velocity) == 10)
-                      //     std::cout << counter << "b: rank = " <<Utilities::MPI::this_mpi_process(this->get_mpi_communicator())  << ", mesh velocties x:y = " << std::get<0>(position_velocity) << ":" << std::get<1>(position_velocity) << ", velo = " << std::get<3>(position_velocity) << ", distance = " <<  std::get<2>(position_velocity)<< std::endl;
-                      mesh_velocities[std::get<0>(position_velocity)][std::get<1>(position_velocity)] = std::get<4>(position_velocity);
-                      mesh_velocity_locations[std::get<0>(position_velocity)][std::get<1>(position_velocity)] = std::get<3>(position_velocity);
-                      mesh_velocity_distances[std::get<0>(position_velocity)][std::get<1>(position_velocity)] = std::get<2>(position_velocity);
+                      //if (std::get<0>(position_velocity) == 10)
+                      //  std::cout << counter << "a: rank = " <<Utilities::MPI::this_mpi_process(this->get_mpi_communicator())  << ", mesh velocties x:y = " << std::get<0>(position_velocity) << ":" << std::get<1>(position_velocity) << ", velo = " << std::get<3>(position_velocity) << ", distance = " <<  std::get<2>(position_velocity)<< ", mesh_velocity_distances  = " << mesh_velocity_distances[std::get<0>(position_velocity)][std::get<1>(position_velocity)] << std::endl;
+                      //if (xi == 2 && yi > 0 && yi < 10)
+                      //  std::cout << "Flag 102: openlem_mesh_velocities " << xi << ":" << yi << " = " << openlem_mesh_velocities_vector[xi][yi]  << std::endl;
+                      if (!std::isnan(openlem_mesh_velocities_vector[xi][yi][0]))
+                        {
+                          //   if (std::get<0>(position_velocity) == 10)
+                          //     std::cout << counter << "b: rank = " <<Utilities::MPI::this_mpi_process(this->get_mpi_communicator())  << ", mesh velocties x:y = " << std::get<0>(position_velocity) << ":" << std::get<1>(position_velocity) << ", velo = " << std::get<3>(position_velocity) << ", distance = " <<  std::get<2>(position_velocity)<< std::endl;
+                          openlem_mesh_velocities[xi][yi] = openlem_mesh_velocities_vector[xi][yi];
+                          //if (xi == 2 && yi > 0 && yi < 10)
+                          //  std::cout << "Flag 103: openlem_mesh_velocities " << xi << ":" << yi << " = " << openlem_mesh_velocities[xi][yi]  << std::endl;
+                          //mesh_velocity_locations[std::get<0>(position_velocity)][std::get<1>(position_velocity)] = std::get<3>(position_velocity);
+                          //mesh_velocity_distances[std::get<0>(position_velocity)][std::get<1>(position_velocity)] = std::get<2>(position_velocity);
+                        }
                     }
                 }
-              counter++;
             }
           // TODO: check whether the x and y of the closest_point_real and the original connector point are actually the same (or close enought)
 
@@ -675,17 +856,19 @@ namespace aspect
                   }
 
                 node->l = 0;
-                node->u = mesh_velocities[x_i][y_i][dim-1];//*100000;//1;//local_aspect_values[dim+2][i];
+                node->u = openlem_mesh_velocities[x_i][y_i][dim-1];//*100000;//1;//local_aspect_values[dim+2][i];
                 // TODO: 2D
-                connector.vx[x_i][y_i] =  mesh_velocities[x_i][y_i][0];//*100000;
-                connector.vy[x_i][y_i] =  mesh_velocities[x_i][y_i][1];//*100000;
-                connector.vz[x_i][y_i] =  mesh_velocities[x_i][y_i][2];//*100000;
+                connector.vx[x_i][y_i] =  openlem_mesh_velocities[x_i][y_i][0];//*100000;
+                connector.vy[x_i][y_i] =  openlem_mesh_velocities[x_i][y_i][1];//*100000;
+                connector.vz[x_i][y_i] =  openlem_mesh_velocities[x_i][y_i][2];//*100000;
               }
           //connector.write_vtk(grid_extent[dim-1].second,this->get_timestep_number(), 0.0, dirname  , "_preconvert");
           connector.convertVelocities(openlem_minimize_advection);
-          //connector.write_vtk(grid_extent[dim-1].second, this->get_timestep_number() , "postconvert");
+          //connector.write_vtk(grid_extent[dim-1].second,this->get_timestep_number(), 0.0, dirname  , "_postconvert");
+          //connector.write_vtk(grid_extent[dim-1].second, this->get_timestep_number() , "_postconvert");
           connector.computeUpliftRate();
-          //connector.write_vtk(grid_extent[dim-1].second, this->get_timestep_number() , "postuplift");
+          //connector.write_vtk(grid_extent[dim-1].second,this->get_timestep_number(), 0.0, dirname  , "_postuplift");
+          //connector.write_vtk(grid_extent[dim-1].second, this->get_timestep_number() , "_postuplift");
           // Define all nodes with non-positive elevations (here, the ocean around the
           // island as boundary nodes
           for ( int i = 0; i < grid_new.m; ++i )
@@ -771,10 +954,11 @@ namespace aspect
           //const unsigned int inds = std::distance(sediment_rain_times.begin(), it);
           //const double sediment_rain = sediment_rain_rates[inds];
 
-          grid_old = grid_new;
+          //grid_old = grid_new;
           std::cout << "main before (old:new)= " << (grid_old.getNode(5,7))->h << ":" << (grid_new.getNode(5,7))->h << std::endl;
           execute_openlem(grid_new,openlem_timestep_in_years,openlem_iterations,dirname);
 
+          //connector.write_vtk(grid_extent[dim-1].second,this->get_timestep_number(), 0.0, dirname  , "_postexectuteopenlem");
           //connector.updateCoordinateSystem (aspect_timestep_in_years);
           std::cout << "main after (old:new)= " << (grid_old.getNode(5,7))->h << ":" << (grid_new.getNode(5,7))->h << std::endl;
           // Write a file to store h, b & step for restarting.
@@ -811,33 +995,37 @@ namespace aspect
           std::vector<std::vector<size_t>> aspect_mesh_counter = std::vector<std::vector<size_t>>(aspect_nx,std::vector<size_t>(aspect_ny));
           //double min_openlem_h = std::numeric_limits<double>::infinity();
           //double max_openlem_h = -std::numeric_limits<double>::infinity();
-          for (unsigned int ix=0; ix<openlem_nx; ++ix)
-            for (unsigned int iy=0; iy<openlem_ny; ++iy)
-              {
-                double x_coord = connector.x[ix][iy] - grid_extent[0].first;
-                double y_coord = connector.y[ix][iy] - grid_extent[1].first;
-                if (
-                  x_coord >= 0 && x_coord <= grid_extent[0].second &&
-                  y_coord >= 0 && y_coord <= grid_extent[1].second
-                  //connector.x[ix][iy] >= grid_extent[0].first && connector.x[ix][iy] <= grid_extent[0].first+ grid_extent[0].second &&
-                  //connector.y[ix][iy] >= grid_extent[1].first && connector.x[ix][iy] <= grid_extent[1].first+ grid_extent[1].second
-                )
-                  {
+          for (unsigned int xi=0; xi<openlem_nx; ++xi)
+            for (unsigned int yi=0; yi<openlem_ny; ++yi)
+              if (grid_new[xi][yi].b != 1)
+                {
+                  double x_coord = connector.x[xi][yi] - grid_extent[0].first;
+                  double y_coord = connector.y[xi][yi] - grid_extent[1].first;
+                  if (
+                    x_coord >= 0 && x_coord <= grid_extent[0].second &&
+                    y_coord >= 0 && y_coord <= grid_extent[1].second
 
-                    //Point<2> openlem_point (connector.x[ix][iy],connector.y[ix][iy]);
-                    //Point<2> aspect_point_round (std::round((connector.x[ix][iy]-grid_extent[0].first)/aspect_dx),std::round((connector.y[ix][iy]-grid_extent[1].first)/aspect_dy));
-                    // TODO: add assert that points are > 0
-                    size_t closest_point_ixa = std::round(x_coord/aspect_dx);//aspect_point_round[0];//std::numeric_limits<size_t>::signaling_NaN();
-                    size_t closest_point_iya = std::round(y_coord/aspect_dy);//aspect_point_round[1];//std::numeric_limits<size_t>::signaling_NaN();
-                    //if (grid_new.getNode(ix,iy)->b == 0)
-                    //min_openlem_h = std::min(min_openlem_h,grid_new.getNode(ix,iy)->h);
-                    //max_openlem_h = std::max(max_openlem_h,grid_new.getNode(ix,iy)->h);
-                    aspect_mesh_dh[closest_point_ixa][closest_point_iya] += grid_new.getNode(ix,iy)->h - aspect_mesh_z[closest_point_ixa][closest_point_iya];// + grid_extent[dim-1].second;//- mesh_velocity_locations[ix][iy][dim-1]+grid_extent[dim-1].second ;// grid_old.getNode(ix,iy)->h;//TODO: check if this is alright or if I need to get the closest node in the old grid sepeartly. //mesh_velocity_z[ix][iy];
-                    //if (grid_new.getNode(ix,iy)->h > 10 )
-                    //  std::cout << "rank = " <<  Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) << ", ix:iy = " << ix << ":" << iy << ", ixa:iya = " << closest_point_ixa << ":" << closest_point_iya << ", h = " << grid_new.getNode(ix,iy)->h << ", aspect_mesh_z =" << aspect_mesh_z[closest_point_ixa][closest_point_iya] << ", result = " << aspect_mesh_dh[closest_point_ixa][closest_point_iya] << std::endl;
-                    aspect_mesh_counter[closest_point_ixa][closest_point_iya] += 1;
-                  }
-              }
+                    //connector.x[ix][iy] >= grid_extent[0].first && connector.x[ix][iy] <= grid_extent[0].first+ grid_extent[0].second &&
+                    //connector.y[ix][iy] >= grid_extent[1].first && connector.x[ix][iy] <= grid_extent[1].first+ grid_extent[1].second
+                  )
+                    {
+
+                      //Point<2> openlem_point (connector.x[ix][iy],connector.y[ix][iy]);
+                      //Point<2> aspect_point_round (std::round((connector.x[ix][iy]-grid_extent[0].first)/aspect_dx),std::round((connector.y[ix][iy]-grid_extent[1].first)/aspect_dy));
+                      // TODO: add assert that points are > 0
+                      size_t closest_point_ixa = std::round(x_coord/aspect_dx);//aspect_point_round[0];//std::numeric_limits<size_t>::signaling_NaN();
+                      size_t closest_point_iya = std::round(y_coord/aspect_dy);//aspect_point_round[1];//std::numeric_limits<size_t>::signaling_NaN();
+                      //if (grid_new.getNode(ix,iy)->b == 0)
+                      //min_openlem_h = std::min(min_openlem_h,grid_new.getNode(ix,iy)->h);
+                      //max_openlem_h = std::max(max_openlem_h,grid_new.getNode(ix,iy)->h);
+                      aspect_mesh_dh[closest_point_ixa][closest_point_iya] += grid_new.getNode(xi,yi)->h - aspect_mesh_z[closest_point_ixa][closest_point_iya];// + grid_extent[dim-1].second;//- mesh_velocity_locations[ix][iy][dim-1]+grid_extent[dim-1].second ;// grid_old.getNode(ix,iy)->h;//TODO: check if this is alright or if I need to get the closest node in the old grid sepeartly. //mesh_velocity_z[ix][iy];
+                      if (xi == 2 && yi > 0 && yi < 10)
+                        std::cout << "Flag 201 x:y " << xi << ":" << yi << ", aspect x:y = " << closest_point_ixa << ":" << closest_point_iya <<  ", aspect_mesh_dh = " << aspect_mesh_dh[closest_point_ixa][closest_point_iya] << ", grid_new.getNode(xi,yi)->h = " << grid_new.getNode(xi,yi)->h << ", aspect_mesh_z = " <<  aspect_mesh_z[closest_point_ixa][closest_point_iya]  << std::endl;
+                      //if (grid_new.getNode(ix,iy)->h > 10 )
+                      //  std::cout << "rank = " <<  Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) << ", ix:iy = " << ix << ":" << iy << ", ixa:iya = " << closest_point_ixa << ":" << closest_point_iya << ", h = " << grid_new.getNode(ix,iy)->h << ", aspect_mesh_z =" << aspect_mesh_z[closest_point_ixa][closest_point_iya] << ", result = " << aspect_mesh_dh[closest_point_ixa][closest_point_iya] << std::endl;
+                      aspect_mesh_counter[closest_point_ixa][closest_point_iya] += 1;
+                    }
+                }
 
           for (unsigned int ixa=0; ixa<aspect_nx; ++ixa)
             for (unsigned int iya=0; iya<aspect_ny; ++iya)

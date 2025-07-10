@@ -215,31 +215,32 @@ namespace openlem
 
         for ( int i = 0; i < g->m; ++i )
           for ( int j = 0; j < g->n; ++j )
-            {
+            if (!std::isnan(vx[i][j]))
+              {
 // Convert velocities to OpenLEM coordinate system
-              double  tmp = vx[i][j];
-              vx[i][j] = (c*vx[i][j]+s*vy[i][j])/hscale;;
-              vy[i][j] = (-s*tmp+c*vy[i][j])/hscale;
+                double  tmp = vx[i][j];
+                vx[i][j] = (c*vx[i][j]+s*vy[i][j])/hscale;;
+                vy[i][j] = (-s*tmp+c*vy[i][j])/hscale;
 
-              AssertThrow(!std::isnan(vx[i][j]) && !std::isnan(vy[i][j]),
-                          aspect::ExcMessage("vx and/or vy are nan at " + std::to_string(i) + ":" + std::to_string(j) + ", vxx:y = "  + std::to_string(vx[i][j]) + ":" + std::to_string(vy[i][j])));
+                AssertThrow(!std::isnan(vx[i][j]) && !std::isnan(vy[i][j]),
+                            aspect::ExcMessage("vx and/or vy are nan at " + std::to_string(i) + ":" + std::to_string(j) + ", vxx:y = "  + std::to_string(vx[i][j]) + ":" + std::to_string(vy[i][j])));
 // Only continental area
-              if ( g->getNode(i,j)->b == 0 )
-                {
-                  ++n;
-                  xmean += i;
-                  ymean += j;
-                  vxmean += vx[i][j];
-                  vymean += vy[i][j];
-                  cross += i*vy[i][j]-j*vx[i][j];
-                  //if (std::fabs(vx[i][j]-(-y[i][j])) > std::numeric_limits<double>::epsilon() || std::fabs(vy[i][j]-x[i][j]) > std::numeric_limits<double>::epsilon())
-                  //  {
-                  //    std::cout << "wrong: i:j = " + std::to_string(i) + ":" + std::to_string(j) + ", x:y = " << x[i][j] << ":" << y[i][j] << ", vx:vy = " <<vx[i][j] << ":" << vy[i][j] << ", diff x:y = "  << vx[i][j]-(-y[i][j]) << ":" << vy[i][j]-x[i][j] << std::endl;
-                  //    AssertThrow(false, aspect::ExcMessage("wrong!!"));
-                  //  }
-                  rsq += i*i+j*j;
-                }
-            }
+                if ( g->getNode(i,j)->b == 0 )
+                  {
+                    ++n;
+                    xmean += i;
+                    ymean += j;
+                    vxmean += vx[i][j];
+                    vymean += vy[i][j];
+                    cross += i*vy[i][j]-j*vx[i][j];
+                    //if (std::fabs(vx[i][j]-(-y[i][j])) > std::numeric_limits<double>::epsilon() || std::fabs(vy[i][j]-x[i][j]) > std::numeric_limits<double>::epsilon())
+                    //  {
+                    //    std::cout << "wrong: i:j = " + std::to_string(i) + ":" + std::to_string(j) + ", x:y = " << x[i][j] << ":" << y[i][j] << ", vx:vy = " <<vx[i][j] << ":" << vy[i][j] << ", diff x:y = "  << vx[i][j]-(-y[i][j]) << ":" << vy[i][j]-x[i][j] << std::endl;
+                    //    AssertThrow(false, aspect::ExcMessage("wrong!!"));
+                    //  }
+                    rsq += i*i+j*j;
+                  }
+              }
         if (n == 0 || minimize_advection == false)
           {
             return;
@@ -273,21 +274,22 @@ namespace openlem
         //    }
         for ( int i = 0; i < g->m; ++i )
           for ( int j = 0; j < g->n; ++j )
-            {
-              //if (
-              //  //(i == 5 && j == 5) ||
-              //  //(i == 50 && j == 50) ||
-              //  //(i == 100 && j == 100) ||
-              //  (i == 116 && j == 26)
-              //)
-              //  {
-              //    std::cout << " i:j= " << i << ":" << j << " vx:vy = "<< vx[i][j] << " : " << vy[i][j] << ", vx-dx0-dalpha*j = " << vx[i][j]-(dx0-dalpha *j) << ", vy-dy0+daplha*i = " << vy[i][j]-(dy0+dalpha *i) << std::endl;
-              //  }
-              vx[i][j] -= dx0-dalpha*j;
-              vy[i][j] -= dy0+dalpha*i;
-              AssertThrow(!std::isnan(vx[i][j]) && !std::isnan(vy[i][j]),
-                          aspect::ExcMessage("vx and/or vy are nan at " + std::to_string(i) + ":" + std::to_string(j) + ", vxx:y = "  + std::to_string(vx[i][j]) + ":" + std::to_string(vy[i][j])));
-            }
+            if (!std::isnan(vx[i][j]))
+              {
+                //if (
+                //  //(i == 5 && j == 5) ||
+                //  //(i == 50 && j == 50) ||
+                //  //(i == 100 && j == 100) ||
+                //  (i == 116 && j == 26)
+                //)
+                //  {
+                //    std::cout << " i:j= " << i << ":" << j << " vx:vy = "<< vx[i][j] << " : " << vy[i][j] << ", vx-dx0-dalpha*j = " << vx[i][j]-(dx0-dalpha *j) << ", vy-dy0+daplha*i = " << vy[i][j]-(dy0+dalpha *i) << std::endl;
+                //  }
+                vx[i][j] -= dx0-dalpha*j;
+                vy[i][j] -= dy0+dalpha*i;
+                AssertThrow(!std::isnan(vx[i][j]) && !std::isnan(vy[i][j]),
+                            aspect::ExcMessage("vx and/or vy are nan at " + std::to_string(i) + ":" + std::to_string(j) + ", vxx:y = "  + std::to_string(vx[i][j]) + ":" + std::to_string(vy[i][j])));
+              }
 
         double dx0_old = dx0;
         dx0 = (c*dx0-s*dy0)*hscale;
@@ -318,8 +320,7 @@ namespace openlem
         std::cout << "connector computeUpliftRate" << std::endl;
         for ( int i = 0; i < g->m; ++i )
           for ( int j = 0; j < g->n; ++j )
-            if ( g->getNode(i,j)->b != 3 ) //&1 )
-              //if ( !g->getNode(i,j)->b &1 )
+            if ( g->getNode(i,j)->b &1 && !std::isnan(vx[i][j]))
               {
                 double  dhdx = vx[i][j]<0 ?
                                g->getNodeP(i+1,j)->h-g->getNode(i,j)->h :
@@ -417,6 +418,8 @@ namespace openlem
         std::vector<double> grid_uplift(0);
         std::vector<double> grid_boundary(0);
         std::vector<double> grid_q(0);
+        std::vector<double> grid_i(0);
+        std::vector<double> grid_j(0);
         std::vector<double> grid_vx(0);
         std::vector<double> grid_vy(0);
 
@@ -434,6 +437,8 @@ namespace openlem
         grid_uplift.resize(n_p);
         grid_boundary.resize(n_p);
         grid_q.resize(n_p);
+        grid_i.resize(n_p);
+        grid_j.resize(n_p);
         grid_vx.resize(n_p);
         grid_vy.resize(n_p);
         grid_connectivity.resize(n_cell,std::vector<size_t>((2-1)*4));
@@ -450,6 +455,8 @@ namespace openlem
                 grid_uplift[counter] = g->getNode(i,j)->u;
                 grid_boundary[counter] = g->getNode(i,j)->b;
                 grid_q[counter] = g->getNode(i,j)->q;
+                grid_i[counter] = i;
+                grid_j[counter] = j;
                 grid_vx[counter] = vx[i][j];//g->getNode(i,j)->u;
                 grid_vy[counter] = vy[i][j];//g->getNode(i,j)->u;
                 counter++;
@@ -526,6 +533,18 @@ namespace openlem
         for (size_t i = 0; i < n_p; ++i)
           {
             buffer <<  grid_q[i] << std::endl;
+          }
+        buffer << "</DataArray>" << std::endl;
+        buffer << R"(<DataArray type="Float32" Name="grid i" format="ascii">)" << std::endl;
+        for (size_t i = 0; i < n_p; ++i)
+          {
+            buffer <<  grid_i[i] << std::endl;
+          }
+        buffer << "</DataArray>" << std::endl;
+        buffer << R"(<DataArray type="Float32" Name="grid j" format="ascii">)" << std::endl;
+        for (size_t i = 0; i < n_p; ++i)
+          {
+            buffer <<  grid_j[i] << std::endl;
           }
         buffer << "</DataArray>" << std::endl;
         buffer << R"(<DataArray type="Float32" Name="vx" format="ascii">)" << std::endl;
@@ -714,8 +733,8 @@ namespace aspect
         unsigned int openlem_y_extent;
         unsigned int aspect_nx;
         unsigned int aspect_ny;
-        unsigned int aspect_dx;
-        unsigned int aspect_dy;
+        double aspect_dx;
+        double aspect_dy;
         unsigned int aspect_x_extent;
         unsigned int aspect_y_extent;
         openlem::Point deepest_point;
@@ -728,6 +747,8 @@ namespace aspect
         std::vector<std::vector<double>> aspect_mesh_dh;
         std::vector<std::vector<double>> aspect_mesh_z;
         std::vector<std::vector<CellId>> openlem_mesh_aspect_cell;
+        std::vector<std::vector<CellId>> aspect_mesh_aspect_cell_id;
+        std::vector<std::vector<unsigned int>> aspect_mesh_aspect_cell_face_number;
         /**
          * Variable to hold ASPECT domain extents.
          */
