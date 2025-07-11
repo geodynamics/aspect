@@ -3,7 +3,7 @@ set Dimension                = 3
 set Pressure normalization   = surface
 set Surface pressure         = 0
 set Nonlinear solver scheme  = single Advection, no Stokes
-set End time                 = 2e6
+set End time                 = 1e3
 set Use years in output instead of seconds = false
 set Maximum time step = 1e3
 
@@ -154,6 +154,6 @@ subsection Particles
 
   subsection CPO Bingham Average
     set Random number seed  = 200
-    set Use rotation matrix = true
+    set Use rotation matrix = false
   end
 end
