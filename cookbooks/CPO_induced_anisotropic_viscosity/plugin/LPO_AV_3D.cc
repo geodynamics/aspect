@@ -561,8 +561,8 @@ namespace aspect
     {
       const int dim=3;
       const double sqrt2 = sqrt(2);
-      MaterialModel::AV<dim> *anisotropic_viscosity
-        = out.template get_additional_output<MaterialModel::AV<dim>>();
+      const std::shared_ptr<MaterialModel::AV<dim>> anisotropic_viscosity =
+        out.template get_additional_output_object<MaterialModel::AV<dim>>();
       EquationOfStateOutputs<dim> eos_outputs (1);
 
 
@@ -777,7 +777,7 @@ namespace aspect
                     {
                       Jhill = std::abs(F)*pow((S_CPO[0][0]-S_CPO[1][1]),2) + std::abs(G)*pow((S_CPO[1][1]-S_CPO[2][2]),2) + std::abs(H)*pow((S_CPO[2][2]-S_CPO[0][0]),2) + 2*L*pow(S_CPO[1][2],2) + 2*M*pow(S_CPO[0][2],2) + 2*N*pow(S_CPO[0][1],2);
                     }
-                  double S_ii= std::sqrt(-second_invariant(stress));
+                  // double S_ii= std::sqrt(-second_invariant(stress));
 
                   AssertThrow(isfinite(Jhill),
                               ExcMessage("Jhill should be finite"));
@@ -832,7 +832,8 @@ namespace aspect
                 }
             }
           // Prescribe the stress strain directors and scalar viscosity to compositional field for access in the next time step
-          if (PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim>>())
+          if (const std::shared_ptr<PrescribedFieldOutputs<dim>> prescribed_field_out
+              = out.template get_additional_output_object<PrescribedFieldOutputs<dim>>())
             {
               const unsigned int ind_vis = this->introspection().compositional_index_for_name("scalar_vis");
               prescribed_field_out->prescribed_field_outputs[q][ind_vis] = out.viscosities[q];
@@ -981,14 +982,14 @@ namespace aspect
     void
     LPO_AV_3D<dim>::create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<AV<dim>>() == nullptr)
+      if (out.template get_additional_output_object<AV<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::AV<dim>> (n_points));
         }
 
-      if (out.template get_additional_output<PrescribedFieldOutputs<dim>>() == NULL)
+      if (out.template get_additional_output_object<PrescribedFieldOutputs<dim>>() == NULL)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
