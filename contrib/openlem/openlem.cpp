@@ -1,4 +1,4 @@
-// OpenLEM Version 44 experimental 2025-06-14
+// OpenLEM Version 44 experimental 2025-07-10
 //
 // Copyright (C) 2012-2025 Stefan Hergarten
 //
@@ -19,7 +19,7 @@
 //
 // Changelog
 //
-// Version 44 2024-07-30
+// Version 44 2025-07-10
 // Reimplemented the method fillLakes for better efficiency.
 // Fixed problem with flow directions if boundaries are changed during the
 // simulation.
@@ -198,17 +198,11 @@
 #include <map>
 #include <set>
 #include <unordered_set>
+
 namespace openlem
 {
 #define SHAREDSP
-#define OCEANS
-//#define CHANNEL
-//#define DEPOS
-//#define LAYERS 3
-//#define LAKES
-//#define ICE
-//#define PRECIP
-
+#define LAYERS 2
 #ifdef ICE
 #define SHAREDSP
 #define BUFFERS
@@ -1015,6 +1009,17 @@ namespace openlem
                                  Point(nextrow[p.i],prevcol[p.j]),
                                  Point(nextrow[p.i],p.j),
                                  Point(nextrow[p.i],nextcol[p.j])
+                               };
+        return neigh;
+      }
+
+      vector<Point> getNearestNeighbors ( Point p )
+// Returns a vector of the 4 nearest neighbors
+      {
+        vector<Point>  neigh = { Point(prevrow[p.i],p.j),
+                                 Point(p.i,prevcol[p.j]),
+                                 Point(p.i,nextcol[p.j]),
+                                 Point(nextrow[p.i],p.j)
                                };
         return neigh;
       }
@@ -3303,7 +3308,3 @@ namespace openlem
       }
   };
 }
-
-
-
-

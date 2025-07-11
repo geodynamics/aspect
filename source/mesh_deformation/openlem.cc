@@ -64,7 +64,7 @@ namespace aspect
 
         // Get the deformation type names called for each boundary.
         std::map<types::boundary_id, std::vector<std::string>> mesh_deformation_boundary_indicators_map
-          = this->get_mesh_deformation_handler().get_active_mesh_deformation_names();
+                                                            = this->get_mesh_deformation_handler().get_active_mesh_deformation_names();
 
         // Loop over each mesh deformation boundary, and make sure openlem is only called on the surface.
         for (const types::boundary_id id : mesh_deformation_boundary_ids)
@@ -884,8 +884,10 @@ namespace aspect
                 //    grid_new[i][j].u = grid_new[i][j].h <= 0;
               }
           openlem::OceanGrid &g = grid_new;
-          grid_new.kt = openlem_kt;//1e-14;
-          grid_new.kd = openlem_kd;// 1e-14;
+          grid_new.kt[0] = openlem_kt;//1e-14;
+          grid_new.kt[1] = openlem_kt;//1e-14;
+          grid_new.kd[0] = 1e6*openlem_kd;// 1e-14;
+          grid_new.kd[1] = openlem_kd;// 1e-14;
 
           //grid_new.fillLakes();
           // find deepest point
@@ -1193,7 +1195,7 @@ namespace aspect
 
     template <int dim>
     std::vector<std::vector<double>>
-    OpenLEM<dim>::get_aspect_values() const
+                                  OpenLEM<dim>::get_aspect_values() const
     {
 
       /*

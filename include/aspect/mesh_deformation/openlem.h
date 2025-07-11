@@ -63,14 +63,14 @@ namespace openlem
           }
       }
 
-      vector<PointValue<double>> findDeltas ( double dt )
+      vector<openlem::PointValue<double> > findDeltas ( double dt )
       {
         return emplaceSediments(dt);
       }
 
-      vector<PointValue<double>> emplaceSediments ( double dt )
+      vector<openlem::PointValue<double> > emplaceSediments ( double dt )
       {
-        vector <PointValue<double>>  delta;
+        vector <PointValue<double> >  delta;
         for ( int i = 0; i < m; ++i )
           for ( int j = 0; j < n; ++j )
             if ( getNode(i,j)->b & 2 )
@@ -102,18 +102,24 @@ namespace openlem
             double tmp;
             double vd = 0;
             Point p = delta[i].p;
-            vector<PointValue<float>>::iterator  it = offset.begin();
+            vector<PointValue<float> >::iterator  it = offset.begin();
             while ( it != offset.end() )
               {
                 if ( (tmp=getNode(p)->h+v) <= getNode(p)->l )
                   {
+#ifdef LAYERS
+                    getNode(p)->adjustLayers(v);
+#endif
                     getNode(p)->h = tmp;
                     vd += v;
                     break;
                   }
                 else
                   {
-                    v = v-(getNode(p)->l-getNode(p)->h);
+                    v = v-(tmp=getNode(p)->l-getNode(p)->h);
+#ifdef LAYERS
+                    getNode(p)->adjustLayers(tmp);
+#endif
                     getNode(p)->h = getNode(p)->l;
                     do
                       {
@@ -126,6 +132,50 @@ namespace openlem
           }
         return delta;
       }
+
+#ifdef LAYERS
+      void diffuse ( double dt, Point p )
+      {
+        Node  *pn = getNode(p);
+        double  dhsum = 0;
+        vector<Point>  neigh = getNearestNeighbors(p);
+        vector<double>  dh(4);
+        for ( int i = 0; i < 4; ++i )
+          if ( getNode(neigh[i])->m )
+            if ( ( dh[i] = pn->qp-getNode(neigh[i])->qp ) < 0 )
+              {
+                dh[i] = 0;
+                diffuse ( dt, neigh[i] );
+              }
+            else
+              dhsum += dh[i];
+        dhsum *= dt*odiff;
+        double  avail = pn->h-pn->qp;
+        if ( pn->bottom[0] < 0)  avail -= pn->bottom[0];
+        double  f = 1;
+        if ( dhsum > avail )  f = avail/dhsum;
+        for ( int i = 0; i < 4; ++i )
+          getNode(neigh[i])->h += f*dt*odiff*dh[i];
+        pn->h -= f*dhsum;
+        pn->adjustLayers(pn->h-pn->qp,t);
+        pn->m = 0;
+      }
+
+      void diffuse ( double dt )
+      {
+        for ( int i = 0; i < m; ++i )
+          for ( int j = 0; j < n; ++j )
+            {
+              Node  *pn = getNode(i,j);
+              if ( pn->b&2 )  pn->qp = pn->h;
+              pn->m = pn->b&2;
+            }
+        for ( int i = 0; i < m; ++i )
+          for ( int j = 0; j < n; ++j )
+            if ( getNode(i,j)->m )  diffuse(dt,Point(i,j));
+      }
+
+#else
 
       void diffuse ( double dt )
       {
@@ -141,23 +191,24 @@ namespace openlem
               Node  *pn = getNode(i,j);
               if ( pn->b&2 )
                 {
-                  if ( getNodeP(i+1,j)->b&2 && getNodeP(i+1,j)->b&2 )
+                  if ( getNodeP(i+1,j)->b&2 )
                     {
                       double  dh = dt*odiff*(pn->qp-getNodeP(i+1,j)->qp);
                       pn->h -= dh;
-                      //if ( getNodeP(i+1,j)->b&2 )
                       getNodeP(i+1,j)->h += dh;
                     }
-                  if ( getNodeP(i,j+1)->b&2 && getNodeP(i,j+1)->b&2 )
+                  if ( getNodeP(i,j+1)->b&2 )
                     {
                       double  dh = dt*odiff*(pn->qp-getNodeP(i,j+1)->qp);
                       pn->h -= dh;
-                      // if ( getNodeP(i,j+1)->b&2 )
                       getNodeP(i,j+1)->h += dh;
                     }
                 }
             }
       }
+#endif
+
+
   };
 
   class Connector
