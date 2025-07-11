@@ -7,7 +7,7 @@ In the crustal deformation examples above, the viscosity depends solely on the
 Drucker Prager yield criterion defined by the cohesion and internal friction
 angle. While this approximation works reasonably well for the uppermost crust,
 deeper portions of the lithosphere may undergo a combination of brittle, viscous,
-or elastic deformation, with the latter depending on a combination of composition,
+or elastic deformation, which depend on a combination of composition,
 temperature, pressure and strain-rate. In effect, a combination of the
 Drucker-Prager, Diffusion dislocation, and Viscoelastic material models is required.
 The visco-plastic material model is designed to take into account both brittle
@@ -56,8 +56,8 @@ with particles. Material (viscous flow law parameters, cohesion, internal
 friction angle) and thermodynamic properties for each compositional field
 are based largely on previous numerical studies. Dislocation creep viscous
 flow parameters are taken from published deformation experiments for wet
-quartzite ({cite}`RB04`), wet anorthite ({cite}`RGWD06`) and dry olivine
-({cite}`HK04`). Additional compositional fields are used to track plastic
+quartzite ({cite}`gleason:tullis:1995`), wet anorthite ({cite}`RGWD06`) and dry
+olivine ({cite}`HK04`). Additional compositional fields are used to track plastic
 strain and the non-initial plastic strain, with the latter value tracking
 the same quantity as the plastic strain absent the initial plastic strain
 values. As discussed further on, the plastic strain is used to soften

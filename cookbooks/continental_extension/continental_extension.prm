@@ -141,7 +141,7 @@ end
 # Initial values of different compositional fields
 # The upper crust (20 km thick), lower crust (20 km thick)
 # and mantle (60 km thick) are continuous horizontal layers
-# of constant thickness. The  non initial plastic strain is
+# of constant thickness. The non initial plastic strain is
 # set to 0, while the initial plastic strain is randomized
 # between 0.5 and 1.5.
 subsection Initial composition model
@@ -287,8 +287,12 @@ subsection Material model
     #    Rybacki et al. (2006), https://doi.org/10.1029/2005JB003663.
     #    "Influence of water fugacity and activation volume on the flow properties of fine-grained
     #    anorthite aggregates"
-    # Note that the viscous pre-factors below are scaled to plane strain from unixial strain experiments.
-    # For ease of identification, fields tracking strain are assigned prefactors of 1e-50
+    # Note that the viscous pre-factors below are scaled to plane strain from uniaxial strain experiments,
+    # following the approach outlined in Dannberg et al. (2017) - https://doi.org/10.1002/2017GC006944.
+    # Significantly, the exact scaling required for each code depends on how the effective viscosity
+    # is formulated and the definition of the invariant used for the strain rate. The prefactor
+    # values below, relative to previous versions of the cookbook, are now consistent with the correct
+    # scaling procedure outlined in Dannberg et al. (2017).
     set Prefactors for dislocation creep          = background: 7.37e-15, \
                                                     crust_upper: 1.37e-26, \
                                                     crust_lower: 5.71e-23, \
@@ -344,7 +348,6 @@ subsection Particles
   set Load balancing strategy     = remove and add particles
   set List of particle properties = initial composition, viscoplastic strain invariants, position
   set Interpolation scheme        = bilinear least squares
-  set Update ghost particles      = true
   set Particle generator name     = reference cell
   subsection Generator
     subsection Reference cell
@@ -372,5 +375,4 @@ subsection Postprocess
       set List of material properties = density, viscosity
     end
   end
-
 end
