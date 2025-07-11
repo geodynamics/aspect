@@ -982,7 +982,11 @@ namespace aspect
     void
     LPO_AV_3D<dim>::create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const
     {
+<<<<<<< HEAD
       if (out.template get_additional_output_object<AV<dim>>() == nullptr)
+=======
+      if (out.template get_additional_output<AV<dim>>() == nullptr)
+>>>>>>> dfeae74048e1ba237fd105c6e0e312c5fe806c96
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
