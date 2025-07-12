@@ -305,6 +305,8 @@ namespace aspect
                   // based on all elements of the entropy fields:
                   if (c == last_entropy_field_index)
                     {
+                      if (parameters.use_operator_splitting)
+                        compute_reactions ();
                       const AdvectionField T_field (AdvectionField::temperature());
                       interpolate_material_output_into_advection_field({T_field});
                     }
