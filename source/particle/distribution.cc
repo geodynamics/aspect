@@ -18,16 +18,17 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/postprocess/particle_pdf.h>
+#include <aspect/particle/distribution.h>
 
 
 namespace aspect
 {
-  namespace Postprocess
+  namespace Particle
   {
-
     template <int dim>
-    ParticlePDF<dim>::ParticlePDF(const unsigned int granularity,const double bandwidth,KernelFunctions kernel_function)
+    ParticlePDF<dim>::ParticlePDF(const unsigned int granularity,
+                                  const double bandwidth,
+                                  KernelFunction kernel_function)
       :
       bandwidth (bandwidth),
       kernel_function (kernel_function),
@@ -46,8 +47,11 @@ namespace aspect
       function_output_table.reinit(bucket_sizes);
     }
 
+
+
     template <int dim>
-    ParticlePDF<dim>::ParticlePDF(const double bandwidth,KernelFunctions kernel_function)
+    ParticlePDF<dim>::ParticlePDF(const double bandwidth,
+                                  KernelFunction kernel_function)
       :
       bandwidth (bandwidth),
       kernel_function (kernel_function),
@@ -57,21 +61,20 @@ namespace aspect
       standard_deviation (numbers::signaling_nan<double>()),
       mean (numbers::signaling_nan<double>()),
       is_defined_per_particle (true)
-    {
-
-    }
+    {}
 
 
 
     template <int dim>
-    void ParticlePDF<dim>::fill_from_particle_range(const typename Particle::ParticleHandler<dim>::particle_iterator_range particle_range,
-                                                    const unsigned int n_particles_in_cell)
+    void
+    ParticlePDF<dim>::fill_from_particle_range(const typename ParticleHandler<dim>::particle_iterator_range particle_range,
+                                               const unsigned int n_particles_in_cell)
     {
       if (is_defined_per_particle == false)
         {
-          for (unsigned int x=0; x<this->granularity; ++x)
+          for (unsigned int x=0; x<granularity; ++x)
             {
-              for (unsigned int y=0; y<this->granularity; ++y)
+              for (unsigned int y=0; y<granularity; ++y)
                 {
                   double granularity_double = static_cast<double>(this->granularity);
                   double x_double = static_cast<double>(x);
@@ -79,7 +82,7 @@ namespace aspect
 
                   if (dim == 3)
                     {
-                      for (unsigned int z=0; z<this->granularity; ++z)
+                      for (unsigned int z=0; z<granularity; ++z)
                         {
                           const double z_double = static_cast<double>(z);
                           Point<dim> reference_point;
@@ -111,12 +114,12 @@ namespace aspect
           // Sum the value of the kernel function on that position from every other particle.
           for (const auto &reference_particle: particle_range)
             {
-              const auto reference_coordinates = reference_particle.get_reference_location();
+              const auto &reference_coordinates = reference_particle.get_reference_location();
               double function_value = 0;
 
               for (const auto &kernel_position_particle: particle_range)
                 {
-                  const auto kernel_coordinates = kernel_position_particle.get_reference_location();
+                  const auto &kernel_coordinates = kernel_position_particle.get_reference_location();
                   const double distance = reference_coordinates.distance(kernel_coordinates);
                   function_value += apply_selected_kernel_function(distance);
                 }
@@ -130,11 +133,11 @@ namespace aspect
     }
 
     template <int dim>
-    void ParticlePDF<dim>::insert_kernel_sum_from_particle_range(
-      const Point<dim> reference_point,
-      std::array<unsigned int, dim> table_index,
-      const unsigned int n_particles_in_cell,
-      const typename Particle::ParticleHandler<dim>::particle_iterator_range particle_range)
+    void
+    ParticlePDF<dim>::insert_kernel_sum_from_particle_range(const Point<dim> reference_point,
+                                                            const std::array<unsigned int, dim> table_index,
+                                                            const unsigned int n_particles_in_cell,
+                                                            const typename Particle::ParticleHandler<dim>::particle_iterator_range particle_range)
     {
       for (const auto &particle: particle_range)
         {
@@ -143,16 +146,18 @@ namespace aspect
           const double kernel_function_value = apply_selected_kernel_function(distance);
           add_value_to_function_table(table_index,kernel_function_value/n_particles_in_cell);
         }
-
     }
 
     template <int dim>
-    void ParticlePDF<dim>::add_value_to_function_table(const unsigned int x_index,
-                                                       const unsigned int y_index,
-                                                       const unsigned int z_index,
-                                                       const double input_value)
+    void
+    ParticlePDF<dim>::add_value_to_function_table(const unsigned int x_index,
+                                                  const unsigned int y_index,
+                                                  const unsigned int z_index,
+                                                  const double input_value)
     {
-      Assert(is_defined_per_particle == false, ExcMessage("This function can only be called if the ParticlePDF is computed on a regular grid."));
+      Assert(is_defined_per_particle == false,
+             ExcMessage("This function can only be called if the ParticlePDF is computed on a regular grid."));
+
       TableIndices<dim> entry_index;
       entry_index[0] = x_index;
       entry_index[1] = y_index;
@@ -165,11 +170,13 @@ namespace aspect
 
 
     template <int dim>
-    void ParticlePDF<dim>::add_value_to_function_table(const double input_value,types::particle_index reference_particle_id)
+    void
+    ParticlePDF<dim>::add_value_to_function_table(const double input_value,
+                                                  const types::particle_index reference_particle_id)
     {
-      // This needs to be summed before calling this function, unlike
-      // when using regular intervals to sum the kernel values.
-      Assert(is_defined_per_particle == true, ExcMessage("This function can only be called if the ParticlePDF is computed per particle location."));
+      Assert(is_defined_per_particle == true,
+             ExcMessage("This function can only be called if the ParticlePDF is computed per particle location."));
+
       if (input_value > max)
         {
           max = input_value;
@@ -181,17 +188,20 @@ namespace aspect
           min = input_value;
           min_particle_index = reference_particle_id;
         }
+
       function_output_vector.push_back(input_value);
     }
 
 
 
     template <int dim>
-    void ParticlePDF<dim>::add_value_to_function_table(
-      std::array<unsigned int,dim> &index_point,
-      const double input_value)
+    void
+    ParticlePDF<dim>::add_value_to_function_table(const std::array<unsigned int,dim> &index_point,
+                                                  const double input_value)
     {
-      Assert(is_defined_per_particle == false, ExcMessage("This function can only be called if the ParticlePDF is computed on a regular grid."));
+      Assert(is_defined_per_particle == false,
+             ExcMessage("This function can only be called if the ParticlePDF is computed on a regular grid."));
+
       TableIndices<dim> entry_index;
       entry_index[0] = index_point[0];
       entry_index[1] = index_point[1];
@@ -204,12 +214,14 @@ namespace aspect
 
 
     template <int dim>
-    double ParticlePDF<dim>::evaluate_function_at_index(
-      const unsigned int x_index,
-      const unsigned int y_index,
-      const unsigned int z_index) const
+    double
+    ParticlePDF<dim>::evaluate_function_at_index(const unsigned int x_index,
+                                                 const unsigned int y_index,
+                                                 const unsigned int z_index) const
     {
-      Assert(is_defined_per_particle == false, ExcMessage("This function can only be called if the ParticlePDF is computed on a regular grid."));
+      Assert(is_defined_per_particle == false,
+             ExcMessage("This function can only be called if the ParticlePDF is computed on a regular grid."));
+
       TableIndices<dim> entry_index;
       entry_index[0] = x_index;
       entry_index[1] = y_index;
@@ -222,21 +234,22 @@ namespace aspect
 
 
     template <int dim>
-    void ParticlePDF<dim>::compute_statistical_values()
+    void
+    ParticlePDF<dim>::compute_statistical_values()
     {
-      standard_deviation = 0;
-      mean = 0;
+      standard_deviation = 0.0;
+      mean = 0.0;
 
       if (!is_defined_per_particle)
         {
           // Loop through all values of the function to set initial stats
-          for (unsigned int x = 0; x< granularity; ++x)
+          for (unsigned int x=0; x<granularity; ++x)
             {
-              for (unsigned int y = 0; y< granularity; ++y)
+              for (unsigned int y=0; y<granularity; ++y)
                 {
                   if (dim == 3)
                     {
-                      for (unsigned int z = 0; z< granularity; ++z)
+                      for (unsigned int z=0; z<granularity; ++z)
                         {
                           const double this_value = evaluate_function_at_index(x,y,z);
                           max = std::max(max, this_value);
@@ -260,13 +273,13 @@ namespace aspect
           double squared_deviation_sum = 0;
 
           // Then sum all the squared deviations for standard deviation
-          for (unsigned int x = 0; x< granularity; ++x)
+          for (unsigned int x=0; x<granularity; ++x)
             {
-              for (unsigned int y = 0; y< granularity; ++y)
+              for (unsigned int y=0; y<granularity; ++y)
                 {
-                  if (dim==3)
+                  if (dim == 3)
                     {
-                      for (unsigned int z = 0; z< granularity; ++z)
+                      for (unsigned int z=0; z<granularity; ++z)
                         {
                           TableIndices<dim> entry_index;
                           entry_index[0] = x;
@@ -288,21 +301,20 @@ namespace aspect
                     }
                 }
             }
+
           // Standard deviation of all the defined points in the density function
-          squared_deviation_sum /= (granularity*dim);
-          standard_deviation = std::sqrt(squared_deviation_sum);
+          const double squared_deviation_mean = squared_deviation_sum / Utilities::fixed_power<dim>(granularity);
+          standard_deviation = std::sqrt(squared_deviation_mean);
         }
       else
         {
-          // Loop through the vector and sum mean.
+          // Loop through the vector and compute the sum.
           for (const double this_value : function_output_vector)
-            {
-              mean += this_value;
-            }
-          // Set the true mean
+            mean += this_value;
+
+          // Compute the mean
           mean /= function_output_vector.size();
           double squared_deviation_sum = 0;
-          standard_deviation = 0;
 
           // Sum all the squared deviations for standard deviation
           for (const double this_value : function_output_vector)
@@ -310,15 +322,16 @@ namespace aspect
               const double deviation_squared = (this_value-mean)*(this_value-mean);
               squared_deviation_sum += deviation_squared;
             }
-          squared_deviation_sum /= function_output_vector.size();
-          standard_deviation = std::sqrt(squared_deviation_sum);
+          const double squared_deviation_mean = squared_deviation_sum / function_output_vector.size();
+          standard_deviation = std::sqrt(squared_deviation_mean);
         }
     }
 
 
 
     template <int dim>
-    double ParticlePDF<dim>::get_max()
+    double
+    ParticlePDF<dim>::get_max() const
     {
       return max;
     }
@@ -326,7 +339,8 @@ namespace aspect
 
 
     template <int dim>
-    double ParticlePDF<dim>::get_min()
+    double
+    ParticlePDF<dim>::get_min() const
     {
       return min;
     }
@@ -334,7 +348,8 @@ namespace aspect
 
 
     template <int dim>
-    double ParticlePDF<dim>::get_standard_deviation()
+    double
+    ParticlePDF<dim>::get_standard_deviation() const
     {
       return standard_deviation;
     }
@@ -342,21 +357,22 @@ namespace aspect
 
 
     template <int dim>
-    double ParticlePDF<dim>::apply_selected_kernel_function(const double distance) const
+    double
+    ParticlePDF<dim>::apply_selected_kernel_function(const double distance) const
     {
-      if (kernel_function == KernelFunctions::uniform)
+      if (kernel_function == KernelFunction::uniform)
         {
           return kernelfunction_uniform(distance);
         }
-      else if (kernel_function == KernelFunctions::triangular)
+      else if (kernel_function == KernelFunction::triangular)
         {
           return kernelfunction_triangular(distance);
         }
-      else if (kernel_function == KernelFunctions::gaussian)
+      else if (kernel_function == KernelFunction::gaussian)
         {
           return kernelfunction_gaussian(distance);
         }
-      else if (kernel_function == KernelFunctions::cutoff_function_w1_dealii)
+      else if (kernel_function == KernelFunction::cutoff_function_w1_dealii)
         {
           Functions::CutOffFunctionW1<1> cutoff_function(bandwidth);
           return cutoff_function.value(Point<1>(distance));
@@ -371,7 +387,8 @@ namespace aspect
 
 
     template <int dim>
-    double ParticlePDF<dim>::kernelfunction_uniform(double distance) const
+    double
+    ParticlePDF<dim>::kernelfunction_uniform(double distance) const
     {
       if (distance < bandwidth)
         {
@@ -386,7 +403,8 @@ namespace aspect
 
 
     template <int dim>
-    double ParticlePDF<dim>::kernelfunction_triangular(double distance) const
+    double
+    ParticlePDF<dim>::kernelfunction_triangular(double distance) const
     {
       if (distance < bandwidth)
         {
@@ -401,8 +419,13 @@ namespace aspect
 
 
     template <int dim>
-    double ParticlePDF<dim>::kernelfunction_gaussian(double distance) const
+    double
+    ParticlePDF<dim>::kernelfunction_gaussian(double distance) const
     {
+      // This implementation can be problematic. It ensures the function
+      // has a compact support (within bandwidth), but it includes a jump
+      // when distance == bandwidth, since a gaussian usually extends to
+      // infinity
       if (distance < bandwidth)
         {
           const double exponent = distance * distance / (2.*bandwidth*bandwidth);
@@ -420,7 +443,7 @@ namespace aspect
 // explicit instantiation
 namespace aspect
 {
-  namespace Postprocess
+  namespace Particle
   {
 #define INSTANTIATE(dim) \
   template class ParticlePDF<dim>;
