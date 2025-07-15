@@ -272,7 +272,7 @@ namespace aspect
                              "material models 'entropy model' or 'compositing'."));
 
     AssertThrow (simulator_access.introspection().composition_type_exists(CompositionalFieldDescription::entropy),
-                 ExcMessage ("The entropy advection assembler can only be used with a "
+                 ExcMessage ("The entropy advection assembler can only be used if there is at least one "
                              "compositional field of type 'entropy'."));
 
     AssertThrow (simulator_access.get_heating_model_manager().adiabatic_heating_enabled() == false,
