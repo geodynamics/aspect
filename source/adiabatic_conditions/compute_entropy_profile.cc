@@ -44,6 +44,13 @@ namespace aspect
       if (initialized)
         return;
 
+      // The simulator only keeps the initial conditions around for
+      // the first time step. As a consequence, we have to save a
+      // shared pointer to that object ourselves the first time we get
+      // here.
+      if (initial_composition_manager == nullptr)
+        initial_composition_manager = this->get_initial_composition_manager_pointer();
+
       temperatures.resize(n_points, numbers::signaling_nan<double>());
       pressures.resize(n_points, numbers::signaling_nan<double>());
       densities.resize(n_points, numbers::signaling_nan<double>());
@@ -64,30 +71,45 @@ namespace aspect
                              "for this adiabatic conditions plugin."));
 
       const std::vector<unsigned int> &entropy_indices = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::entropy);
-      const std::vector<unsigned int> &chemical_composition_indices = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::chemical_composition);
 
       AssertThrow(entropy_indices.size() >= 1,
                   ExcMessage("The 'compute entropy' adiabatic conditions plugin "
                              "requires at least one field of type 'entropy'."));
 
       // We only need the material model to compute the density
+      // and prescribed temperature. Unfortunately 'additional_outputs' computes
+      // a lot of other outputs as well, but we have currently no way to prevent this.
       in.requested_properties = MaterialModel::MaterialProperties::density | MaterialModel::MaterialProperties::additional_outputs;
 
       // No deformation on the reference profile
       in.velocity[0] = Tensor <1,dim> ();
       in.strain_rate[0] = SymmetricTensor<2,dim>();
 
-      // The entropy along an adiabat is constant (equals the surface entropy)
-      // When there is more than one entropy field, we use the background field to compute the adiabatic profile
+      // Strictly speaking the temperature on the adiabat should be defined by the pressure
+      // and entropy alone. However, we only compute the temperature in the call to the material
+      // model below. This is a problem if we use multiple material models via a compositing
+      // material model. We cannot copy the computed temperature into the MaterialModelInputs
+      // until after all material models have been evaluated, and material models that do not
+      // rely on entropy will access the temperature beforehand to compute their properties.
+      // Therefore, we provide a reasonable temperature guess anyway. It is important to note
+      // that all properties that are relevant for the equation of state will be provided by
+      // the entropy material model, and will therefore not be affected by this temperature.
+      in.temperature[0] = this->get_adiabatic_surface_temperature();
+
+      // Set all chemical composition to the initial composition, except the entropies, which
+      // are set to the surface entropy (since entropy is constant along an adiabat).
+      // Note, that if there a multiple entropy components they could have different entropies.
+      // However, since we are only interested in setting the
+      // equilibrated entropy, we do not need to compute the individual entropies for all components,
+      // and instead set all components to the equilibrated value.
       // TODO : provide more ways to specify compositional fields like in compute_profile.cc
-
-      // set all entropy fields to surface entropy
-      for (unsigned int i=0; i < entropy_indices.size(); ++i)
-        in.composition[0][entropy_indices[i]] = surface_entropy;
-
-      // set all chemical composition to 0, so only the background entropy field is used.
-      for (unsigned int i=0; i < chemical_composition_indices.size(); ++i)
-        in.composition[0][chemical_composition_indices[i]] = 0.;
+      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+        {
+          if (this->introspection().get_composition_descriptions()[c].type == CompositionalFieldDescription::entropy)
+            in.composition[0][c] = surface_entropy;
+          else
+            in.composition[0][c] = initial_composition_manager->initial_composition(this->get_geometry_model().representative_point(0), c);
+        }
 
       // Check whether gravity is pointing up / out or down / in. In the normal case it should
       // point down / in and therefore gravity should be positive, leading to increasing
@@ -133,6 +155,7 @@ namespace aspect
 
           densities[i] = out.densities[0];
           temperatures[i] = prescribed_temperature_out->prescribed_temperature_outputs[0];
+          in.temperature[0] = temperatures[i];
         }
 
       if (gravity_direction == 1 && this->get_surface_pressure() >= 0)

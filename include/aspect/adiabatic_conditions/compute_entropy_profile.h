@@ -24,6 +24,7 @@
 
 
 #include <aspect/adiabatic_conditions/interface.h>
+#include <aspect/initial_composition/interface.h>
 
 namespace aspect
 {
@@ -130,6 +131,14 @@ namespace aspect
          * with regard to the depth coordinate.
          */
         double delta_z;
+
+        /**
+         * A shared pointer to the initial composition object
+         * that ensures that the current object can continue
+         * to access the initial composition object beyond the
+         * first time step.
+         */
+        std::shared_ptr<const aspect::InitialComposition::Manager<dim>> initial_composition_manager;
 
         /**
          * Internal helper function. Returns the reference property at a
