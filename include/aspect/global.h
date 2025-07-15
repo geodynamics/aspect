@@ -26,6 +26,7 @@
 #include <aspect/citation_info.h>
 
 #include <deal.II/base/mpi.h>
+#include <deal.II/base/exceptions.h>
 
 DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 

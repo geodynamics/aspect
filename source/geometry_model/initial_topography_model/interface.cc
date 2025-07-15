@@ -23,7 +23,6 @@
 #include <aspect/geometry_model/initial_topography_model/interface.h>
 #include <aspect/simulator_access.h>
 
-#include <deal.II/base/exceptions.h>
 #include <tuple>
 #include <list>
 

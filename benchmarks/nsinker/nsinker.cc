@@ -23,7 +23,6 @@
 #include <aspect/simulator_signals.h>
 
 #include <deal.II/base/point.h>
-#include <deal.II/base/exceptions.h>
 
 
 namespace aspect

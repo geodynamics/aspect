@@ -21,8 +21,6 @@
 #include <aspect/geometry_model/ellipsoidal_chunk.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 
-#include <deal.II/base/exceptions.h>
-
 #include <iostream>
 
 using namespace aspect;

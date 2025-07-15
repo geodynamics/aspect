@@ -20,7 +20,6 @@
 
 #include "common.h"
 #include <aspect/utilities.h>
-#include <deal.II/base/exceptions.h>
 
 
 TEST_CASE("Utilities::MapParsing::parse_map_to_double_array")

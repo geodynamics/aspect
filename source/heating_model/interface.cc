@@ -25,10 +25,9 @@
 #include <aspect/heating_model/adiabatic_heating.h>
 #include <aspect/heating_model/shear_heating.h>
 
-#include <deal.II/base/exceptions.h>
 #include <deal.II/base/signaling_nan.h>
-#include <tuple>
 
+#include <tuple>
 #include <list>
 
 

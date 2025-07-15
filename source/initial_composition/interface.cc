@@ -23,9 +23,7 @@
 #include <aspect/utilities.h>
 #include <aspect/initial_composition/interface.h>
 
-#include <deal.II/base/exceptions.h>
 #include <tuple>
-
 #include <list>
 
 

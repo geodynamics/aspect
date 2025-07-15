@@ -25,12 +25,11 @@
 #include <aspect/utilities.h>
 #include <aspect/newton.h>
 
-#include <deal.II/base/exceptions.h>
 #include <deal.II/base/signaling_nan.h>
-#include <tuple>
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/fe/fe_q.h>
 
+#include <tuple>
 #include <list>
 
 #ifdef DEBUG
