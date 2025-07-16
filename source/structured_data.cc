@@ -30,8 +30,6 @@
 #include <aspect/geometry_model/initial_topography_model/ascii_data.h>
 #include <aspect/geometry_model/two_merged_chunks.h>
 
-#include <deal.II/base/exceptions.h>
-
 #include <boost/lexical_cast.hpp>
 #include <regex>
 

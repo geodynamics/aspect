@@ -23,9 +23,7 @@
 #include <aspect/boundary_fluid_pressure/interface.h>
 #include <aspect/simulator_access.h>
 
-#include <deal.II/base/exceptions.h>
 #include <tuple>
-
 #include <list>
 
 

@@ -22,10 +22,11 @@
 #include <aspect/global.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/simulator_access.h>
-#include <deal.II/base/exceptions.h>
-#include <tuple>
+
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/base/utilities.h>
+
+#include <tuple>
 
 namespace aspect
 {
