@@ -195,11 +195,11 @@ namespace aspect
     {
       /**
        * This gravity model is a plugin for a case where the
-       * tidal potential by flattening and non-synchronnous rotation chages gravity with position and time.
+       * tidal potential by flattening and non-synchronnous rotation changes gravity with position and time.
        *
        * The equation implemented in this heating model is from Tobie et al. (2025) (https://doi.org/10.1007/s11214-025-01136-y),
        * which is defined as:
-       * g = -(magnitude - gradient (tidal potential)).
+       * g = -magnitude - gradient (-tidal potential)).
        * potential = (3 G M_p) / (2 a_s^3) * r^2 * (Tstar + T0)
        * Tstar = 1/6 *(1-3*cos(theta)^2) and T0=1/2sin(theta)^2*cos(2*lambda + 2*b*t)
        * where G = gravitational constant, M_p = mass of planet, a_s = semimajor axis of satellite's orbit, b = angular rate of nonsynchronous rotation.

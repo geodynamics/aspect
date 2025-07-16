@@ -1,0 +1,4 @@
+Added: ASPECT now has a new gravity model plugin called 'Radial linear with tidal potnetial' for tidal force.
+This plugin is useful for modeling long-term interior and surface evolution in moons orbiting a large planet.
+<br>
+(Hyunseong Kim, 2025/07/16)

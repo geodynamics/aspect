@@ -3,7 +3,7 @@
 # 
 # The equation implemented in this heating model is from Tobie et al. (2025) (https://doi.org/10.1007/s11214-025-01136-y),
 # which is defined as:
-# g = -magnitude + gradient of tidal potential.
+# g = - magnitude - gradient ( - tidal potential ).
 # potential = 3 G M_p R_s^2 / 2 a_s^3 r^2 (Tstar + T0)
 # Tstar = 1/6 *(1-3*cos(theta)^2) and T0=1/2sin(theta)^2*cos(2*lambda + 2*b*t),
 # where G: gravitational constant, M_p: mass of planet, R_s: radius of satellite, a_s: semimajor axis of satellite's orbit, b = angular rate of nonsynchronous rotation.
@@ -14,13 +14,13 @@
 
 set Dimension                              = 3
 set Use years in output instead of seconds = true
-set End time                               = 5e5
+set End time                               = 1e4
 
 set Output directory                       = gravity_tidal_potential
 
-set Maximum first time step                    = 5e4
+set Maximum first time step                    = 1e3
 set CFL number                                 = 0.8
-set Maximum time step                          = 5e4
+set Maximum time step                          = 1e3
 
 
 set Pressure normalization                 = surface
@@ -93,7 +93,7 @@ subsection Postprocess
 			       pressure statistics, material statistics
 
   subsection Visualization
-    set Time between graphical output = 5e4
+    set Time between graphical output = 1e3
     set Output format                 = vtu
     set List of output variables      = material properties, strain rate, shear stress, stress, nonadiabatic pressure, gravity
   end
