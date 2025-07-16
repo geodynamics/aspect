@@ -137,6 +137,7 @@ namespace aspect
         // repetitions are specified we need to adjust the number of points to match what ASPECT has,
         // which can be determined by multiplying the points by the repetitions before adding 1.
         // Finally, if ghost nodes are used we add two additional points on each side.
+        const unsigned int multiply_openlem_extent_factor = 2;
         const unsigned int ghost_nodes = 2*use_ghost_nodes;
         const unsigned int openlem_refinement_level = maximum_surface_refinement_level + additional_refinement_levels;
         const unsigned int aspect_refinement_level = maximum_surface_refinement_level;
@@ -151,18 +152,18 @@ namespace aspect
 
         // openlem X extent, which is generally ASPECT's extent unless the ghost nodes are used,
         // in which case 2 cells are added on either side.
-        openlem_x_extent = (grid_extent[0].second) + openlem_dx * ghost_nodes;
+        openlem_x_extent = (grid_extent[0].second* multiply_openlem_extent_factor) + openlem_dx * ghost_nodes;
         aspect_x_extent = (grid_extent[0].second) + aspect_dx * ghost_nodes;
 
         // Sub intervals are 3 less than points, if including the ghost nodes. Otherwise 1 less.
-        table_intervals[0] = openlem_nodes * repetitions[0];
-        table_intervals[dim-1] = 1;
+        //table_intervals[0] = openlem_nodes * repetitions[0];
+        //table_intervals[dim-1] = 1;
 
         if (dim == 2)
           {
             openlem_dy = openlem_dx;
             openlem_y_extent = std::round(openlem_y_extent_2d/openlem_dy)*openlem_dy + openlem_dy * ghost_nodes;
-            openlem_ny = 1+openlem_y_extent/openlem_dy;
+            openlem_ny = 1+(openlem_y_extent/openlem_dy);
             aspect_dy = aspect_dx;
             aspect_y_extent = std::round(openlem_y_extent_2d/aspect_dy)*aspect_dy + aspect_dy * ghost_nodes;
             aspect_ny = 1+aspect_y_extent/aspect_dy;
@@ -171,13 +172,17 @@ namespace aspect
           {
             openlem_ny = openlem_nodes * repetitions[1] + ghost_nodes + 1;
             openlem_dy = (grid_extent[1].second)/(openlem_nodes * repetitions[1]);
-            table_intervals[1] = openlem_nodes * repetitions[1];
-            openlem_y_extent = (grid_extent[1].second) + openlem_dy * ghost_nodes;
+            //table_intervals[1] = openlem_nodes * repetitions[1];
+            openlem_y_extent = (grid_extent[1].second * multiply_openlem_extent_factor) + openlem_dy *ghost_nodes;
             aspect_ny = aspect_nodes * repetitions[1] + ghost_nodes + 1;
             aspect_dy = (grid_extent[1].second)/(aspect_nodes * repetitions[1]);
-            openlem_y_extent = (grid_extent[1].second) + aspect_dy * ghost_nodes;
+            aspect_y_extent = (grid_extent[1].second) + aspect_dy * ghost_nodes;
           }
 
+        openlem_x_extent *= multiply_openlem_extent_factor;
+        openlem_y_extent *= multiply_openlem_extent_factor;
+        openlem_nx *= multiply_openlem_extent_factor;
+        openlem_ny *= multiply_openlem_extent_factor;
 
         // Create a folder for the openlem visualization files.
         Utilities::create_directory (this->get_output_directory() + "openLEM/",
@@ -188,13 +193,15 @@ namespace aspect
         // preparte the openLEM variables
         grid_old = openlem::OceanGrid(openlem_nx,openlem_ny);
         grid_new = openlem::OceanGrid(openlem_nx,openlem_ny);
-        std::cout << "nx = " << openlem_nx << ", ny = " << openlem_ny << std::endl;
+        std::cout << "nx = " << openlem_nx << ", ny = " << openlem_ny << ", grid_extent.first = " << grid_extent[0].first << ":" << grid_extent[1].first<< ", grid_extent.second = " << grid_extent[0].second << ":" << grid_extent[1].second << ", openlem extent = " << openlem_x_extent << ":" << openlem_y_extent  << std::endl;
 
-        connector = openlem::Connector(&grid_new,openlem_dy,grid_extent[0].first, grid_extent[1].first  );
+        connector = openlem::Connector(&grid_new,openlem_dy,grid_extent[0].first-(grid_extent[0].second/multiply_openlem_extent_factor), grid_extent[1].first-(grid_extent[1].second/multiply_openlem_extent_factor));
         // todo: fill the grid new
 
         // Define all nodes with non-positive elevations (here, the ocean around the
         // island as boundary nodes
+        std::mt19937 random_number_generator(1);//(openlem_seed);
+        std::uniform_real_distribution<double> random_distribution(-1.0,1.0);//(-noise_elevation,noise_elevation);
         for ( int i = 0; i < grid_new.m; ++i )
           for ( int j = 0; j < grid_new.n; ++j )
             {
@@ -206,7 +213,7 @@ namespace aspect
               //                     i == 0 || j == 0 || i == grid_new.m-1 || j == grid_new.n-1) ? 1 : this->get_initial_topography_model().value(Point<dim-1>(connector.x[i][j],connector.y[i][j])); //||
               //i == 1 || j == 1 || i == grid_new.m-2 || j == grid_new.n-2
               //;
-              grid_new[i][j].h = i == 0 || j == 0 || i == grid_new.m-1 || j == grid_new.n-1 || i == 1 || j == 1 || i == grid_new.m-2 || j == grid_new.n-2 ? 1 : this->get_initial_topography_model().value(Point<dim-1>(connector.x[i][j],connector.y[i][j]));
+              grid_new[i][j].h = i == 0 || j == 0 || i == grid_new.m-1 || j == grid_new.n-1 || i == 1 || j == 1 || i == grid_new.m-2 || j == grid_new.n-2 ? 1 : this->get_initial_topography_model().value(Point<dim-1>(connector.x[i][j],connector.y[i][j]))+random_distribution(random_number_generator);
               //grid_new[i][j].b += (grid_new[i][j].h  <= 0)*2;
             }
 
@@ -222,9 +229,9 @@ namespace aspect
         grid_new.odiff = openlem_ocean_diffusivity;
         grid_new.fillLakes();
         grid_new.computeFluxes();
-        grid_old = grid_new;
+        //grid_old = grid_new;
         std::cout << "opelem_dy = " << openlem_dy << ", dox = " << grid_extent[0].first << ", doy" << grid_extent[1].first << ", deepest point = " << deepest_point.i << ":" << deepest_point.j  << ", q of deepest point = " << grid_new[deepest_point].q << ", deepest point h = " << grid_new[deepest_point].h << ", b = " << (int)grid_new[deepest_point].b << std::endl;
-        connector = openlem::Connector(&grid_new,openlem_dy,grid_extent[0].first, grid_extent[1].first, 0.5);
+        //connector = openlem::Connector(&grid_new,openlem_dy,grid_extent[0].first, grid_extent[1].first, 0.5);
         //connector.interpolation(double &x, double &y)
         for (unsigned int x_i = 0; x_i < openlem_nx; ++x_i)
           for (unsigned int y_i= 0; y_i < openlem_ny; ++y_i)
@@ -232,7 +239,7 @@ namespace aspect
               //std::cout << "a x:y = " << x_i << ":" << y_i << " = " << connector.x[x_i][y_i] << ":" << connector.y[x_i][y_i] << std::endl;
               //connector.interpolation(connector.x[x_i][y_i], connector.y[x_i][y_i]);
             }
-        connector = openlem::Connector(&grid_new,openlem_dy,grid_extent[0].first, grid_extent[1].first  );
+        //connector = openlem::Connector(&grid_new,openlem_dy,grid_extent[0].first, grid_extent[1].first  );
         //for (unsigned int x_i = 0; x_i < openlem_nx; ++x_i)
         //  for (unsigned int y_i= 0; y_i < openlem_ny; ++y_i)
         //    std::cout << "x:y = " << x_i << ":" << y_i << " = " << connector.x[x_i][y_i] << ":" << connector.y[x_i][y_i] << std::endl;

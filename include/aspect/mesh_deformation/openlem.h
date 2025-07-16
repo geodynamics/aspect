@@ -220,7 +220,7 @@ namespace openlem
 
       Connector ( OceanGrid *g, double hscale = 1, double x0 = 0, double y0 = 0, double alpha = 0 )
       {
-        std::cout << "connector construct" << std::endl;
+        std::cout << "connector construct << hscale = " << hscale << ", x0:y0 = " << x0 << ":" << y0 << ", alpha = " << alpha << std::endl;
         this->g = g;
         this->hscale = hscale;
         this->x0 = x0;
@@ -251,6 +251,10 @@ namespace openlem
             {
               x[i][j] = x0 + hscale*(c*i-s*j);
               y[i][j] = y0 + hscale*(s*i+c*j);
+              //if (i == 0 && j == 0)
+              //  {
+              //    std::cout << "x:y = " << x[i][j] << ":" << y[i][j] << ", x0:y0 = " << x0 << ":" << y0 << ", hscale = " << hscale << std::endl;
+              //  }
             }
       }
 
