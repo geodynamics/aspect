@@ -7,9 +7,9 @@ This cookbook explains how to use the CPO-induced anisotropic viscosity material
 
 ## Introduction
 
-The directional-dependence (anisotropy) in the viscous properties of olivine crystals suggests that the effective viscosity for olivine rocks/aggregates is different when deformations occur in different directions relative to the CPO. This CPO-induced anisotropic viscosity material model computes anisotropic viscosity based on the CPO evolution predicted by D-Rex (Fraters & Billen *et al.* in {cite:t}`fratersbillen:etal:2021`; Kaminski *et al.* in {cite:t}`kaminski:etal:2004`) and modifies the subsequent deformation.
+The directional-dependence (anisotropy) in the viscous properties of olivine crystals suggests that the effective viscosity for olivine rocks/aggregates is different when deformations occur in different directions relative to the CPO. This CPO-induced anisotropic viscosity material model computes anisotropic viscosity based on the CPO evolution predicted by D-Rex ({cite}`fraters_billen_2021_cpo`; {cite}`kaminski2004`) and modifies the subsequent deformation.
 
-Our constitutive equation for the relationship between the strain rate and stress using the anisotropic viscosity tensor is adapted from Signorelli *et al.* in {cite:t}`signorelli:etal:2021`:
+Our constitutive equation for the relationship between the strain rate and stress using the anisotropic viscosity tensor is adapted from {cite:t}`signorelli:etal:2021`:
 
 $$\dot \varepsilon_{ij} = \gamma J(\sigma_{ij})^{(n-1)} A_{ij} \sigma_{ij}$$
 
@@ -17,7 +17,7 @@ where $\gamma$ is the part of fluidity which is temperature- and grain-size depe
 
 $$\gamma=\gamma_0 exp \left(\frac{-Q}{RT} \right) /d^m$$
 
-$\gamma_0=1.1\times 10^{5}$ is the isotropic fluidity, $Q=530 kJ/mol$ is the activation energy, $R=8.314 m^3 \cdot Pa \cdot K^{−1} \cdot mol^{−1}$ is the gas constant, $d=0.001 m$ is the grain size, and $m=0.73$ is the grain size exponent. These values are taken from Hansen *et al.* in {cite:t}`hansen:etal:2016b` and Hirth & Kohlstedt *et al.* in {cite:t}`hirth_kohlstedt:etal:2003`. $J(\sigma_{ij})$ is the equivalent yield stress, where $\sigma_{ij}$ is the deviatoric (anisotropic) stress computed using the tensorial and scalar component of the anisotropic viscosity:
+$\gamma_0=1.1\times 10^{5}$ is the isotropic fluidity, $Q=530 kJ/mol$ is the activation energy, $R=8.314 m^3 \cdot Pa \cdot K^{−1} \cdot mol^{−1}$ is the gas constant, $d=0.001 m$ is the grain size, and $m=0.73$ is the grain size exponent. These values are taken from {cite:t}`hansen:etal:2016b` and {cite:t}`HK04`. $J(\sigma_{ij})$ is the equivalent yield stress, where $\sigma_{ij}$ is the deviatoric (anisotropic) stress computed using the tensorial and scalar component of the anisotropic viscosity:
 
 $$J(\sigma_{ij})=(F(\sigma_{11} - \sigma_{22})^2+G(\sigma_{22} - \sigma_{33})^2+H(\sigma_{33} - \sigma_{11})^2+2L\sigma_{23}^2+2M\sigma_{13}^2+2N\sigma_{12}^2)^{1/2}$$
 
@@ -33,7 +33,7 @@ F+H & -F & -H & 0 & 0 & 0 \\
 0 & 0 & 0 & 0 & 0 & N
 \end{matrix} \right]$$
 
-$$J(\sigma_{ij})$$ and $A_{ij}$ are computed using Hill coefficients $H, J, K, L, M,$ and $N$ ({cite:t}`hill_1948`), which are obtained from regression analysis of a texture database constructed with olivine textures from laboratory experiments, shear box models, and subduction models (Kiraly et al., in rev.).
+$$J(\sigma_{ij})$$ and $A_{ij}$ are computed using Hill coefficients $H, J, K, L, M,$ and $N$ {cite}`hill:1948`, which are obtained from regression analysis of a texture database constructed with olivine textures from laboratory experiments, shear box models, and subduction models (Kiraly et al., in rev.).
 
 In this material model plugin, strain rate, density, temperature, and other parameters are taken as input to compute the viscosity, which is passed into the Stokes system to compute the stress (Figure 1). As a result, we adapt eq. (1) to be:
 
@@ -86,7 +86,7 @@ Since the AV material model computes viscosity based on the evolving CPO stored 
 ```{literalinclude} min_particles_per_cell.part.prm
 ```
 
-- **CPO particle property**: The CPO particle property must be stored for use by the AV model. This requires enabling the particle and crystal preferred orientation postprocessors and the relavant subsuctions for them, including the CPO Bingham Average plugin, which calculates the Hill coefficients:
+- **CPO particle property**: The CPO particle property must be stored for use by the AV model. This requires enabling the particle and crystal preferred orientation postprocessors and the relevant subsuctions for them, including the CPO Bingham Average plugin, which calculates the Hill coefficients:
 
 ```{literalinclude} cpo_particle_property.part.prm
 ```
@@ -108,7 +108,7 @@ On the implementation and usability of crystal preferred orientation evolution i
 - Hansen, L. N., Conrad, C. P., Boneh, Y., Skemer, P., Warren, J. M., & Kohlstedt, D. L. (2016).
 Viscous anisotropy of textured olivine aggregates: 2. Micromechanical model. Journal of Geophysical Research: Solid Earth, 121(10), 7137–7160.
 
-- Hirth, G., & Kohlstedt, D. (2003).
+- Hirth, G., & Kohlstedt, D. (2004).
 Rheology of the upper mantle and the mantle wedge: A view from the experimentalists. In J. Eiler (Ed.), Geophysical Monograph Series (Vol. 138, pp. 83–105). American Geophysical Union.
 
 - Hill, R. (1948).

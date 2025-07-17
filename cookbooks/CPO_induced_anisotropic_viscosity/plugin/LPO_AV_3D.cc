@@ -751,7 +751,7 @@ namespace aspect
               double scalar_viscosity = composition[ind_vis];
 
               //In first time step using input viscosity can lead to convergence issue if the strainrate varies significantly within the model domain.
-              //Thus for the first timestep we calculate an intial viscosity based on the strain rate. Why not later: seems to cause unstable solution(?)
+              //Thus for the first timestep we calculate an initial viscosity based on the strain rate. Why not later: seems to cause unstable solution(?)
               if (this->get_timestep_number() == 1)
                 {
                   const double edot_ii=std::max(std::sqrt(std::max(-second_invariant(deviator(strain_rate)), 0.)),

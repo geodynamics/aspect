@@ -37,7 +37,7 @@ namespace aspect
      * A material model that implements the micromechanical behaviour of olivine grains to create anisotropic viscosity.
      * Based on Hansen et al., 2016 (JGR) and Kiraly et al., 2020 (G3).
      * The micromechanical model requires the euler angles of the olivine grains (now stored on 3 compositional field),
-     * the grainsize, tempreature, and strain rate to calculate the stress that is needed to create the input strain rate.
+     * the grainsize, temperature, and strain rate to calculate the stress that is needed to create the input strain rate.
      * The material model otherwise is based on the Simple material model.
      * @ingroup MaterialModels
      */
