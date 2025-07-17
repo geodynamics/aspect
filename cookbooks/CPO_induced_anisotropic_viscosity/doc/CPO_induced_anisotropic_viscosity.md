@@ -17,7 +17,7 @@ where $\gamma$ is the part of fluidity which is temperature- and grain-size depe
 
 $$\gamma=\gamma_0 exp \left(\frac{-Q}{RT} \right) /d^m$$
 
-$\gamma_0=1.1\times 10^{5}$ is the isotropic fluidity, $Q=530 kJ/mol$ is the activation energy, $R=8.314 m^3 \cdot Pa \cdot K^{−1} \cdot mol^{−1}$ is the gas constant, $d=0.001 m$ is the grain size, and $m=0.73$ is the grain size exponent. These values are taken from {cite:t}`hansen:etal:2016b` and {cite:t}`HK04`. $J(\sigma_{ij})$ is the equivalent yield stress, where $\sigma_{ij}$ is the deviatoric (anisotropic) stress computed using the tensorial and scalar component of the anisotropic viscosity:
+$\gamma_0=1.1\times 10^{5}$ is the isotropic fluidity, $Q=530 kJ/mol$ is the activation energy, $R=8.314 m^3 \cdot Pa \cdot K^{−1} \cdot mol^{−1}$ is the gas constant, $d=0.001 m$ is the grain size, and $m=0.73$ is the grain size exponent. These values are taken from {cite:t}`hansen:etal:2016` and {cite:t}`HK04`. $J(\sigma_{ij})$ is the equivalent yield stress, where $\sigma_{ij}$ is the deviatoric (anisotropic) stress computed using the tensorial and scalar component of the anisotropic viscosity:
 
 $$J(\sigma_{ij})=(F(\sigma_{11} - \sigma_{22})^2+G(\sigma_{22} - \sigma_{33})^2+H(\sigma_{33} - \sigma_{11})^2+2L\sigma_{23}^2+2M\sigma_{13}^2+2N\sigma_{12}^2)^{1/2}$$
 
