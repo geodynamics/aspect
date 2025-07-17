@@ -72,7 +72,7 @@ We save $\frac{1}{\gamma J(R\prime*\sigma_{ij}* R)^{(n-1)}}$ as the material mod
 
 ## Compiling requirement
 
-Since the determinant of $A_{ij}$ is 0, $A_{ij}$ is a singular, non-invertible matrix. We find the MoorePenrose pseudoinverse of the matrix $A_{ij}$ as an approximate of the inverse of $A_{ij}$, using the SCALAPACK package in deal.ii. Thus it is required to link ASPECT with a deal.ii version with the scalapack package included and you can turn on the scalapack package when compiling deal.ii, for example, with "./candi.sh -j 8 --packages="p4est trilinos sundials scalapack dealii".
+Since the determinant of $A_{ij}$ is 0, $A_{ij}$ is a singular, non-invertible matrix. We find the MoorePenrose pseudoinverse of the matrix $A_{ij}$ as an approximate of the inverse of $A_{ij}$, using the SCALAPACK package in deal.ii. Thus it is required to link ASPECT with a deal.ii version with the scalapack package included and you can turn on the scalapack package when compiling deal.ii, for example, with `./candi.sh -j 8 --packages="p4est trilinos sundials scalapack dealii"`.
 
 ## Input
 
