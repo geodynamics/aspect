@@ -21,7 +21,7 @@ $\gamma_0=1.1\times 10^{5}$ is the isotropic fluidity, $Q=530 kJ/mol$ is the act
 
 $$J(\sigma_{ij})=(F(\sigma_{11} - \sigma_{22})^2+G(\sigma_{22} - \sigma_{33})^2+H(\sigma_{33} - \sigma_{11})^2+2L\sigma_{23}^2+2M\sigma_{13}^2+2N\sigma_{12}^2)^{1/2}$$
 
-and $A_{ij}$ is the anisotropic tensor of fluidity in Kelvin notation: 
+and $A_{ij}$ is the anisotropic tensor of fluidity in Kelvin notation:
 
 $$A_{ij}=\frac{2}{3} \left[
 \begin{matrix}
@@ -48,7 +48,7 @@ max\_eigenvector\_a_{2} & max\_eigenvector\_b_{2} & max\_eigenvector\_c_{2} \\
 max\_eigenvector\_a_{3} & max\_eigenvector\_b_{3} & max\_eigenvector\_c_{3}
 \end{matrix} \right]$$
 
-We compute the rotation matrix R on the particles and further convert it to Euler angles for computation and memory efficiency. These properties need to be interpolated from particles to fields to be used in the material model (Fig.1). As a result, the anisotropic viscosity material model requires at least one particle in each cell so that all cells can have the texture parameters (Euler angles and eigenvalues) for constructing the rotation matrix R and compute the Hill coefficients. In the material model, the interpolated Euler angles are converted to the rotation matrix again. We use the same notation R to describe the rotation matrix used in the material model in the following paragraphs. 
+We compute the rotation matrix R on the particles and further convert it to Euler angles for computation and memory efficiency. These properties need to be interpolated from particles to fields to be used in the material model (Fig.1). As a result, the anisotropic viscosity material model requires at least one particle in each cell so that all cells can have the texture parameters (Euler angles and eigenvalues) for constructing the rotation matrix R and compute the Hill coefficients. In the material model, the interpolated Euler angles are converted to the rotation matrix again. We use the same notation R to describe the rotation matrix used in the material model in the following paragraphs.
 
 The inverse of the A tensor then needs to be rotated to the model reference frame. Since $inv(A)$ is the Kelvin notation of the rank-4 tensor, we apply the Kelvin notation representation of the R rotation matrix, $R_K$, on $inv(A_{ij})$:
 
@@ -111,7 +111,7 @@ Viscous anisotropy of textured olivine aggregates: 2. Micromechanical model. Jou
 - Hirth, G., & Kohlstedt, D. (2003).
 Rheology of the upper mantle and the mantle wedge: A view from the experimentalists. In J. Eiler (Ed.), Geophysical Monograph Series (Vol. 138, pp. 83–105). American Geophysical Union.
 
-- Hill, R. (1948). 
+- Hill, R. (1948).
 A theory of the yielding and plastic flow of anisotropic metals. Proceedings of the Royal Society of London. Series A. Mathematical and Physical Sciences, 193(1033), 281–297.
 
 - Kaminski, E., Ribe, N. M., & Browaeys, J. T. (2004).
