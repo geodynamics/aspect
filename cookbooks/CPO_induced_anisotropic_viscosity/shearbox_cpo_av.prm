@@ -18,22 +18,22 @@ subsection Initial composition model
                               0; 0; 0; 0;\
                               0; 0; 0; 0;\
                               0; 0; 0; 0;\
-                              0; 0
+                              0
   end
 end
 
 subsection Compositional fields
-  set Number of fields = 15
+  set Number of fields = 14
   set Names of fields = scalar_vis, \
                         phi1, eigvalue_a1, eigvalue_a2, eigvalue_a3,\
                         theta, eigvalue_b1, eigvalue_b2, eigvalue_b3,\
                         phi2, eigvalue_c1, eigvalue_c2, eigvalue_c3,\
-                        D, water
+                        water
   set Compositional field methods = prescribed field, \
                                     particles, particles, particles, particles, \
                                     particles, particles, particles, particles, \
                                     particles, particles, particles, particles, \
-                                    static, static
+                                    static
   set Mapped particle properties = phi1:cpo mineral 0 phi1[0], eigvalue_a1:cpo mineral 0 eigenvalues a axis[0], eigvalue_a2:cpo mineral 0 eigenvalues a axis[1], eigvalue_a3:cpo mineral 0 eigenvalues a axis[2], \
                                    theta:cpo mineral 0 theta[0], eigvalue_b1:cpo mineral 0 eigenvalues b axis[0], eigvalue_b2:cpo mineral 0 eigenvalues b axis[1], eigvalue_b3:cpo mineral 0 eigenvalues b axis[2], \
                                    phi2:cpo mineral 0 phi2[0], eigvalue_c1:cpo mineral 0 eigenvalues c axis[0], eigvalue_c2:cpo mineral 0 eigenvalues c axis[1], eigvalue_c3:cpo mineral 0 eigenvalues c axis[2]
@@ -41,7 +41,7 @@ subsection Compositional fields
                         generic, generic, generic, generic, \
                         generic, generic, generic, generic, \
                         generic, generic, generic, generic, \
-                        generic, generic
+                        generic
 end
 
 subsection Gravity model
@@ -61,7 +61,6 @@ subsection Geometry model
     set Box origin X coordinate = 0
     set Box origin Y coordinate = 0
     set Box origin Z coordinate = 0
-    # set X periodic = true
   end
 end
 
@@ -92,11 +91,6 @@ subsection Boundary velocity model
   subsection Function
     set Variable names = x,y,z,t
     set Function expression = (z-0.5);0;0 ## 13, top
-    # set Function expression = if (t<16, (z-0.5), 0); 0; if (t<16, 0, (x-0.5)) ## 13 to 31 at t=16, top&left
-    # set Function expression = if (t<16, (z-0.5), 0); if (t<16, 0, (z-0.5)); 0 ## 13 to 23 at t=16, top
-    # set Function expression = if (t<16, (z-0.5), 0); 0; if (t<16, 0, (y-0.5)) ## 13 to 32 at t=16, top&front
-    # set Function expression = if (t<16, (z-0.5), (y-0.5)); 0; 0 ## 13 to 12 at t=16, top&front
-    # set Function expression = if (t<16, (z-0.5), 0); if (t<16, 0, (x-0.5)); 0 ## 13 to 21 at t=16, top&left
   end
 end
 
@@ -119,7 +113,7 @@ subsection Postprocess
     set List of postprocessors = velocity statistics, composition statistics, memory statistics, visualization, particles, crystal preferred orientation
 
     subsection Visualization
-        set Time between graphical output = 0.1 #100
+        set Time between graphical output = 0.1
         set List of output variables = material properties, strain rate,  named additional outputs,  shear stress,  stress
 
       subsection Material properties
@@ -127,12 +121,12 @@ subsection Postprocess
       end
     end
     subsection Particles
-        set Time between data output = 0.1 #100
+        set Time between data output = 0.1
         set Data output format       = gnuplot, vtu
         set Exclude output properties = rotation_matrix, volume fraction
     end
     subsection Crystal Preferred Orientation
-        set Time between data output = 0.1 #100
+        set Time between data output = 0.1
         set Write in background thread = true
         set Compress cpo data files = false
         set Write out raw cpo data = mineral 0: volume fraction, mineral 0: Euler angles #, mineral 1: volume fraction, mineral 1: Euler angles
@@ -147,11 +141,8 @@ subsection Particles
     set Minimum particles per cell = 1
     set Maximum particles per cell = 5
     set Load balancing strategy     = add particles
-    set Particle generator name = ascii file #random uniform #
+    set Particle generator name = ascii file
     subsection Generator
-        # subsection Probability density function
-        #     set Number of particles = 100
-        # end
         subsection Ascii file
             set Data directory = ./
             set Data file name = particle_one.dat
@@ -159,16 +150,15 @@ subsection Particles
     end
     subsection Crystal Preferred Orientation
         subsection Initial grains
-            # set Model name = World Builder
             set Minerals = Olivine: A-fabric
-            set Volume fractions minerals = 1.0 #0.7,0.3 ## Annotation Volume fractions minerals
+            set Volume fractions minerals = 1.0
         end
         set Number of grains per particle = 1000 ## Annotation grain count
         set Property advection method = Backward Euler ## Annotation Property advection method
         set Property advection tolerance = 1e-15
         set CPO derivatives algorithm = D-Rex 2004
         subsection D-Rex 2004
-            set Mobility = 10 ## 125+-75 Annotation LPO Mobility
+            set Mobility = 10 ## Annotation LPO Mobility
             set Stress exponents = 3.5
             set Exponents p = 1.5
             set Threshold GBS = 0.3 ## Annotation TGBS
