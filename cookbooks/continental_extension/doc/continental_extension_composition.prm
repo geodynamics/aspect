@@ -1,6 +1,21 @@
 subsection Compositional fields
-  set Number of fields = 4
-  set Names of fields = upper, lower, mantle, seed
+  set Number of fields = 5
+  set Names of fields  = noninitial_plastic_strain, \
+                         plastic_strain, \
+                         crust_upper, \
+                         crust_lower, \
+                         mantle_lithosphere
+  set Types of fields = strain, \
+                        strain, \
+                        chemical composition, \
+                        chemical composition, \
+                        chemical composition
+  set Compositional field methods = particles
+  set Mapped particle properties  = plastic_strain: plastic_strain, \
+                                    noninitial_plastic_strain: noninitial_plastic_strain, \
+                                    crust_upper: initial crust_upper, \
+                                    crust_lower: initial crust_lower, \
+                                    mantle_lithosphere: initial mantle_lithosphere
 end
 
 subsection Initial composition model
@@ -8,7 +23,9 @@ subsection Initial composition model
 
   subsection Function
     set Variable names      = x,y
-    set Function expression = if(y>=80.e3, 1, 0); \
+    set Function expression = 0; \
+                              if(x>50.e3 && x<150.e3 && y>50.e3, 0.5 + rand_seed(1), 0); \
+                              if(y>=80.e3, 1, 0); \
                               if(y<80.e3 && y>=70.e3, 1, 0); \
                               if(y<70.e3 && y>-100.e3,1, 0); \
                               if(y<68.e3 && y>60.e3 && x>=198.e3 && x<=202.e3 , 1, 0);

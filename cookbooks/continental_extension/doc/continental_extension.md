@@ -7,14 +7,14 @@ Magni*
 In the crustal deformation examples above, the viscosity depends solely on the
 Drucker Prager yield criterion defined by the cohesion and internal friction
 angle. While this approximation works reasonably well for the uppermost crust,
-deeper portions of the lithosphere may undergo either brittle or viscous
-deformation, with the latter depending on a combination of composition,
+deeper portions of the lithosphere may undergo a combination of brittle, viscous,
+or elastic deformation, which depend on a combination of composition,
 temperature, pressure and strain-rate. In effect, a combination of the
-Drucker-Prager and Diffusion dislocation material models is required. The
-visco-plastic material model is designed to take into account both brittle
-(plastic) and non-linear viscous deformation, thus providing a template for
-modeling complex lithospheric processes. Such a material model can be used in
-using the following set of input parameters:
+Drucker-Prager, Diffusion dislocation, and Viscoelastic material models is required.
+The visco-plastic material model is designed to take into account both brittle
+(plastic), non-linear viscous flow, and viscoelastic deformation, thus providing
+a template for modeling complex lithospheric processes. This material model can be
+selected using the following set of input parameters:
 
 ```{literalinclude} continental_extension_material_model.prm
 ```
@@ -40,8 +40,8 @@ surface. However, in this example the free surface is advected using the full
 velocity (e.g., normal projection) rather than only the vertical component. As
 this projection can lead to significant surface mesh deformation and associated
 solver convergence issues, diffusion is applied to the free surface at each
-time step. Deformation is driven by constant horizontal ($x$-component)
-velocities (0.25 cm/yr) on the side boundaries ($y$-velocity component
+time step. Deformation is driven by constant horizontal (x-component)
+velocities (0.25 cm/yr) on the side boundaries (y-velocity component
 unconstrained), while the bottom boundary has vertical inflow to balance the
 lateral outflow. The top, and bottom boundaries have fixed temperatures, while
 the sides are insulating. The bottom boundary is also assigned a fixed
@@ -52,18 +52,19 @@ composition, while the top and sides are unconstrained.
 
 Sections of the lithosphere with distinct properties are represented by
 compositional fields for the upper crust (20 km thick), lower crust (20 km
-thick) and mantle lithosphere (60 km thick). Material (viscous flow law
-parameters, cohesion, internal friction angle) and thermodynamic properties
-for each compositional field are based largely on previous numerical studies.
-Dislocation creep viscous flow parameters are taken from published deformation
-experiments for wet quartzite ({cite}`RB04`), wet anorthite ({cite}`RGWD06`) and dry olivine ({cite}`HK04`). Additional
-compositional fields are used to track plastic strain and the non-initial
-plastic strain, with the latter value tracking the same quantity as the
-plastic strain absent the initial plastic strain values. As discussed further
-on, the plastic strain is used to soften (e.g., reduce) the friction and
-cohesion through time based on user-specified bounds and magnitudes. The
-initial randomized values of plastic strain in the model center localize
-distributed deformation in this region.
+thick) and mantle lithosphere (60 km thick), which are tracked and advected
+with particles. Material (viscous flow law parameters, cohesion, internal
+friction angle) and thermodynamic properties for each compositional field
+are based largely on previous numerical studies. Dislocation creep viscous
+flow parameters are taken from published deformation experiments for wet
+quartzite ({cite}`gleason:tullis:1995`), wet anorthite ({cite}`RGWD06`) and dry
+olivine ({cite}`HK04`). Additional compositional fields are used to track plastic
+strain and the non-initial plastic strain, with the latter value tracking
+the same quantity as the plastic strain absent the initial plastic strain
+values. As discussed further on, the plastic strain is used to soften
+(e.g., reduce) the friction and cohesion through time based on user-specified
+bounds and magnitudes. The initial randomized values of plastic strain in
+the model center localize distributed deformation in this region.
 
 ```{literalinclude} continental_extension_composition.prm
 ```
@@ -105,12 +106,8 @@ in both the active and finite deformation fields and surface topography over
 an approximately 100 km wide region ({numref}`fig:continental_extension_cookbook_5myr`).
 While deformation is distributed within this region, the fault system is clearly
 asymmetric as the rate of deformation and accumulated brittle strain varies between faults.
-Localization onto the two conjugate rift-bounding border faults is evident
-from the active deformation field. Notably, deformation of the free surface
-near the fixed left and right walls is evident at 5 Myr. Continued distortion
-of the surface mesh near the lateral boundaries may lead to solver issues,
-which can be overcome by either widening the model or allowing the mesh to
-deform along these boundaries.
+Localization onto both rift-bounding and inter-rift faults is evident
+from the active deformation field.
 
 With further extension for millions of years, significant crustal thinning and
 surface topography development should occur in response to displacement along
@@ -119,7 +116,8 @@ depth, the simulation will not produce a realistic representation of
 continental breakup due to the lack of an upwelling asthenosphere layer.
 Indeed, numerical studies that examine continental breakup, rather than just
 the initial stages of continental extension, include an asthenospheric layer
-or modified basal boundary conditions (e.g. Winkler boundary condition in {cite}`Bru14` for example) as temperature variations associated with
+or modified basal boundary conditions (e.g. Winkler boundary condition in
+{cite}`Bru14` for example) as temperature variations associated with
 lithospheric thinning exert a first-order influence on the deformation
 patterns. As noted below, numerous additional parameters may also affect the
 temporal evolution of deformation patterns.
@@ -136,6 +134,6 @@ and distribution of plastic strain. The white line marks the (893 $K$) isotherm
 <img src="continental_extension_cookbook_5myr.png" />
 
 Active (strain rate second invariant in units of $s^{-1}$) and finite (plastic)
-deformation after 50 million years of extension. The white line marks the (893 $K$)
+deformation after 5 million years of extension. The white line marks the (893 $K$)
 isotherm (initial Moho temperature).
 ```

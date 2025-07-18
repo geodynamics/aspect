@@ -32,6 +32,11 @@ end
 # geothermal initial temperature plugin.
 subsection Compositional fields
   set Names of fields = noninitial_plastic_strain, plastic_strain, upper_crust, lower_crust, lithospheric_mantle
+  set Mapped particle properties  = noninitial_plastic_strain: noninitial_plastic_strain, \
+                                    plastic_strain: plastic_strain, \
+                                    upper_crust: initial upper_crust, \
+                                    lower_crust: initial lower_crust, \
+                                    lithospheric_mantle: initial lithospheric_mantle
 end
 
 # Initial temperature field
@@ -45,7 +50,46 @@ subsection Initial temperature model
   end
 end
 
+# Updating the naming scheme and formatting to be consistent with the naming
+# scheme enforced by the continental geothermal initial temperature plugin.
+subsection Material model
+  subsection Visco Plastic
+    set Densities = 3300, 0, 0, 2700, 2900, 3300
+
+    set Prefactors for dislocation creep          = background: 7.37e-15, \
+                                                    upper_crust: 1.37e-26, \
+                                                    lower_crust: 5.71e-23, \
+                                                    lithospheric_mantle: 7.37e-15
+
+    set Stress exponents for dislocation creep    = background: 3.5, \
+                                                    upper_crust: 4.0, \
+                                                    lower_crust: 3.0, \
+                                                    lithospheric_mantle: 3.5
+
+    set Activation energies for dislocation creep = background: 530.e3, \
+                                                    upper_crust: 223.e3, \
+                                                    lower_crust: 345.e3, \
+                                                    lithospheric_mantle: 530.e3
+
+    set Activation volumes for dislocation creep  = background: 18.e-6, \
+                                                    upper_crust: 0, \
+                                                    lower_crust: 0, \
+                                                    lithospheric_mantle: 18.e-6
+  end
+end
+
+# Reduce the number of particles per cell for efficiency
+subsection Particles
+  set Minimum particles per cell  = 4
+  set Maximum particles per cell  = 4
+  subsection Generator
+    subsection Reference cell
+      set Number of particles per cell per direction = 4
+    end
+  end
+end
+
 # Post processing
 subsection Postprocess
-  set List of postprocessors = temperature statistics
+  set List of postprocessors = particles, temperature statistics
 end

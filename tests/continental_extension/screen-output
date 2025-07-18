@@ -7,17 +7,11 @@ Number of mesh deformation degrees of freedom: 462
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 0 iterations.
-   Skipping noninitial_plastic_strain composition solve because RHS is zero.
-   Solving plastic_strain system ... 0 iterations.
-   Solving upper_crust system ... 0 iterations.
-   Solving lower_crust system ... 0 iterations.
-   Solving lithospheric_mantle system ... 0 iterations.
-   Initial Newton Stokes residual = 3.04034e+14, v = 2.95216e+14, p = 7.26906e+13
-
+   Advecting particles...  done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 0+20 iterations.
-      Newton system information: Norm of the rhs: 3.04034e+14
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+   Solving Stokes system (AMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.56338e-16, 0, 0, 0, 0, 0, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -25,23 +19,18 @@ Number of mesh deformation degrees of freedom: 462
    Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
+     Writing particle output: output-continental_extension/particles/particles-00000
      Temperature min/avg/max: 273 K, 1052 K, 1613 K
 
 *** Timestep 1:  t=10000 years, dt=10000 years
    Solving mesh surface diffusion
    Solving mesh displacement system... 1 iterations.
    Solving temperature system... 7 iterations.
-   Solving noninitial_plastic_strain system ... 12 iterations.
-   Solving plastic_strain system ... 9 iterations.
-   Solving upper_crust system ... 9 iterations.
-   Solving lower_crust system ... 9 iterations.
-   Solving lithospheric_mantle system ... 9 iterations.
-   Initial Newton Stokes residual = 8.15787e+16, v = 8.15787e+16, p = 1.24975e+13
-
+   Advecting particles...  done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 0+18 iterations.
-      Newton system information: Norm of the rhs: 2.11532e+13
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000259297
+   Solving Stokes system (AMG)... 21+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000140692, 0, 0, 0, 0, 0, 0.977752
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.977752
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -49,7 +38,8 @@ Number of mesh deformation degrees of freedom: 462
    Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
-     Temperature min/avg/max: 273 K, 1052 K, 1613 K
+     Number of advected particles: 800
+     Temperature min/avg/max:      273 K, 1052 K, 1613 K
 
 Termination requested by criterion: end time
 
