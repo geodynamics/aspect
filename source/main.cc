@@ -682,7 +682,9 @@ int main (int argc, char *argv[])
 
 #ifdef ASPECT_WITH_PYTHON
   Py_Initialize();
-  _import_array(); // required for Numpy interop
+  // required for Numpy interop
+  if (_import_array() < 0)
+    AssertThrow(false, ExcMessage("Numpy init failed!"));
 #endif
 
   std::string prm_name = "";
