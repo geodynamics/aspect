@@ -2,8 +2,6 @@
 # entropy (therefore also temperature), and the model runs until the temperature everywhere becomes almost constant
 # due to thermal conduction. The setup follows the entropy conduction benchmark.
 
-set Additional shared libraries            = $ASPECT_SOURCE_DIR/benchmarks/entropy_adiabat/plugins/libentropy_plugins.so
-
 set Dimension                              = 2
 set Use years in output instead of seconds = true
 set End time                               = 2e9
