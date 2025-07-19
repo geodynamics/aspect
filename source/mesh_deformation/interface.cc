@@ -914,14 +914,22 @@ namespace aspect
       mesh_matrix.compress (VectorOperation::add);
 
       // Make the AMG preconditioner
+#if !DEAL_II_VERSION_GTE(9,7,0)
       std::vector<std::vector<bool>> constant_modes;
       DoFTools::extract_constant_modes (mesh_deformation_dof_handler,
                                         ComponentMask(dim, true),
                                         constant_modes);
+#endif
+
       // TODO: think about keeping object between time steps
       LinearAlgebra::PreconditionAMG preconditioner_stiffness;
       LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
+#if !DEAL_II_VERSION_GTE(9,7,0)
       Amg_data.constant_modes = constant_modes;
+#else
+      Amg_data.constant_modes = DoFTools::extract_constant_modes (mesh_deformation_dof_handler,
+                                                                  ComponentMask(dim, true));
+#endif
       Amg_data.elliptic = true;
       Amg_data.higher_order_elements = false;
       Amg_data.smoother_sweeps = 2;
@@ -1514,7 +1522,7 @@ namespace aspect
       // to transfer to the MG levels below. The conversion is done by
       // going through a ReadWriteVector.
       dealii::LinearAlgebra::distributed::Vector<double> displacements(mesh_deformation_dof_handler.locally_owned_dofs(),
-                                                                       this->get_triangulation().get_communicator());
+                                                                       this->get_mpi_communicator());
       dealii::LinearAlgebra::ReadWriteVector<double> rwv;
       rwv.reinit(mesh_displacements);
       displacements.import_elements(rwv, VectorOperation::insert);

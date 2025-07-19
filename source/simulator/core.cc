@@ -60,7 +60,11 @@
 #include <deal.II/numerics/derivative_approximation.h>
 #include <deal.II/numerics/vector_tools.h>
 
+#if DEAL_II_VERSION_GTE(9,7,0)
+#include <deal.II/numerics/solution_transfer.h>
+#else
 #include <deal.II/distributed/solution_transfer.h>
+#endif
 #include <deal.II/distributed/grid_refinement.h>
 
 #include <fstream>
@@ -1647,11 +1651,21 @@ namespace aspect
   void
   Simulator<dim>::refine_mesh (const unsigned int max_grid_level)
   {
+
+#if !DEAL_II_VERSION_GTE(9,7,0)
     parallel::distributed::SolutionTransfer<dim,LinearAlgebra::BlockVector>
     system_trans(dof_handler);
 
     std::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>>
     mesh_deformation_trans;
+#else
+    SolutionTransfer<dim,LinearAlgebra::BlockVector>
+    system_trans(dof_handler);
+
+    std::unique_ptr<SolutionTransfer<dim,LinearAlgebra::Vector>>
+    mesh_deformation_trans;
+#endif
+
 
     {
       TimerOutput::Scope timer (computing_timer, "Refine mesh structure, part 1");
@@ -1721,9 +1735,15 @@ namespace aspect
           x_fs_system.push_back (&mesh_deformation->mesh_displacements);
           x_fs_system.push_back (&mesh_deformation->old_mesh_displacements);
           x_fs_system.push_back (&mesh_deformation->initial_topography);
+#if !DEAL_II_VERSION_GTE(9,7,0)
           mesh_deformation_trans
             = std::make_unique<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>>
               (mesh_deformation->mesh_deformation_dof_handler);
+#else
+          mesh_deformation_trans
+            = std::make_unique<SolutionTransfer<dim,LinearAlgebra::Vector>>
+              (mesh_deformation->mesh_deformation_dof_handler);
+#endif
         }
 
 

@@ -476,10 +476,12 @@ namespace aspect
 
     // then extract the other information necessary to build the
     // AMG preconditioners for the A and M blocks
+#if !DEAL_II_VERSION_GTE(9,7,0)
     std::vector<std::vector<bool>> constant_modes;
     DoFTools::extract_constant_modes (dof_handler,
                                       introspection.component_masks.velocities,
                                       constant_modes);
+#endif
 
     // When we solve with melt migration, the pressure block contains
     // both pressures and contains an elliptic operator, so it makes
@@ -492,7 +494,12 @@ namespace aspect
     Amg_preconditioner = std::make_unique<LinearAlgebra::PreconditionAMG>();
 
     LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
+#if !DEAL_II_VERSION_GTE(9,7,0)
     Amg_data.constant_modes = constant_modes;
+#else
+    Amg_data.constant_modes = DoFTools::extract_constant_modes (dof_handler,
+                                                                introspection.component_masks.velocities);
+#endif
     Amg_data.elliptic = true;
     Amg_data.higher_order_elements = true;
 
@@ -540,21 +547,27 @@ namespace aspect
     else
       {
         // in the case of melt transport we have an AMG preconditioner for the lower right block.
-        LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
-        std::vector<std::vector<bool>> constant_modes;
         dealii::ComponentMask cm_pressure = introspection.component_masks.pressure;
         if (parameters.include_melt_transport)
           cm_pressure = cm_pressure | introspection.variable("compaction pressure").component_mask;
-        DoFTools::extract_constant_modes (dof_handler,
-                                          cm_pressure,
-                                          constant_modes);
 
+        LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
         Amg_data.elliptic = true;
         Amg_data.higher_order_elements = false;
 
         Amg_data.smoother_sweeps = 2;
         Amg_data.coarse_type = "symmetric Gauss-Seidel";
+
+#if !DEAL_II_VERSION_GTE(9,7,0)
+        std::vector<std::vector<bool>> constant_modes;
+        DoFTools::extract_constant_modes (dof_handler,
+                                          cm_pressure,
+                                          constant_modes);
         Amg_data.constant_modes = constant_modes;
+#else
+        Amg_data.constant_modes = DoFTools::extract_constant_modes (dof_handler,
+                                                                    cm_pressure);
+#endif
 
         LinearAlgebra::PreconditionAMG *Mp_preconditioner_AMG
           = dynamic_cast<LinearAlgebra::PreconditionAMG *> (Mp_preconditioner.get());
