@@ -172,7 +172,7 @@ namespace aspect
   void StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::evaluate_material_model ()
   {
     dealii::LinearAlgebra::distributed::Vector<double> active_viscosity_vector(dof_handler_projection.locally_owned_dofs(),
-                                                                               this->get_triangulation().get_communicator());
+                                                                               this->get_mpi_communicator());
 
     const Quadrature<dim> &quadrature_formula = this->introspection().quadratures.velocities;
 
@@ -279,8 +279,8 @@ namespace aspect
       active_viscosity_vector.compress(VectorOperation::insert);
     }
 
-    minimum_viscosity = dealii::Utilities::MPI::min(minimum_viscosity_local, this->get_triangulation().get_communicator());
-    maximum_viscosity = dealii::Utilities::MPI::max(maximum_viscosity_local, this->get_triangulation().get_communicator());
+    minimum_viscosity = dealii::Utilities::MPI::min(minimum_viscosity_local, this->get_mpi_communicator());
+    maximum_viscosity = dealii::Utilities::MPI::max(maximum_viscosity_local, this->get_mpi_communicator());
 
     FEValues<dim> fe_values_projection (this->get_mapping(),
                                         fe_projection,
@@ -1566,7 +1566,7 @@ namespace aspect
                 }
             }
 
-      have_periodic_hanging_nodes = (dealii::Utilities::MPI::max(have_periodic_hanging_nodes ? 1 : 0, this->get_triangulation().get_communicator())) == 1;
+      have_periodic_hanging_nodes = (dealii::Utilities::MPI::max(have_periodic_hanging_nodes ? 1 : 0, this->get_mpi_communicator())) == 1;
       AssertThrow(have_periodic_hanging_nodes==false, ExcNotImplemented());
     }
 

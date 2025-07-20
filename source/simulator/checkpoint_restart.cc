@@ -27,7 +27,13 @@
 #include <deal.II/base/mpi.h>
 #include <deal.II/base/utilities.h>
 #include <deal.II/grid/grid_tools.h>
+
+#if DEAL_II_VERSION_GTE(9,7,0)
+#include <deal.II/numerics/solution_transfer.h>
+#else
 #include <deal.II/distributed/solution_transfer.h>
+#endif
+
 #include <deal.II/fe/mapping_q_cache.h>
 
 #include <cstring>
@@ -269,7 +275,11 @@ namespace aspect
       if (parameters.mesh_deformation_enabled)
         x_system.push_back( &mesh_deformation->mesh_velocity );
 
-      parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector>
+#if !DEAL_II_VERSION_GTE(9,7,0)
+      using namespace dealii::parallel::distributed;
+#endif
+
+      SolutionTransfer<dim, LinearAlgebra::BlockVector>
       system_trans (dof_handler);
 
       system_trans.prepare_for_serialization (x_system);
@@ -278,14 +288,14 @@ namespace aspect
       // If we are deforming the mesh, also serialize the mesh vertices vector, which
       // uses its own dof handler
       std::vector<const LinearAlgebra::Vector *> x_fs_system;
-      std::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>> mesh_deformation_trans;
+      std::unique_ptr<SolutionTransfer<dim,LinearAlgebra::Vector>> mesh_deformation_trans;
       if (parameters.mesh_deformation_enabled)
         {
           x_fs_system.push_back (&mesh_deformation->mesh_displacements);
           x_fs_system.push_back (&mesh_deformation->initial_topography);
 
           mesh_deformation_trans
-            = std::make_unique<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>>
+            = std::make_unique<SolutionTransfer<dim,LinearAlgebra::Vector>>
               (mesh_deformation->mesh_deformation_dof_handler);
 
           mesh_deformation_trans->prepare_for_serialization(x_fs_system);
@@ -522,7 +532,10 @@ namespace aspect
     if (parameters.mesh_deformation_enabled)
       x_system.push_back(&distributed_mesh_velocity);
 
-    parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector>
+#if !DEAL_II_VERSION_GTE(9,7,0)
+    using namespace dealii::parallel::distributed;
+#endif
+    SolutionTransfer<dim, LinearAlgebra::BlockVector>
     system_trans (dof_handler);
 
     system_trans.deserialize (x_system);
@@ -537,7 +550,7 @@ namespace aspect
         mesh_deformation->mesh_velocity = distributed_mesh_velocity;
 
         // deserialize and copy the vectors using the mesh deformation dof handler
-        parallel::distributed::SolutionTransfer<dim, LinearAlgebra::Vector> mesh_deformation_trans( mesh_deformation->mesh_deformation_dof_handler );
+        SolutionTransfer<dim, LinearAlgebra::Vector> mesh_deformation_trans( mesh_deformation->mesh_deformation_dof_handler );
         LinearAlgebra::Vector distributed_mesh_displacements( mesh_deformation->mesh_locally_owned,
                                                               mpi_communicator );
         LinearAlgebra::Vector distributed_initial_topography( mesh_deformation->mesh_locally_owned,
