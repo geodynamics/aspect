@@ -86,23 +86,24 @@ namespace aspect
                     std::vector<double> &melt_fractions,
                     const MaterialModel::MaterialModelOutputs<dim> *out) const
     {
-      const std::shared_ptr<const MeltOutputs<dim>> fluid_out = out->template get_additional_output_object<MeltOutputs<dim>>();
+      std::shared_ptr<const MeltOutputs<dim>> fluid_out;
+      if (out != nullptr)
+        fluid_out = out->template get_additional_output_object<MeltOutputs<dim>>();
+
       if (fluid_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))
         {
+          const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+
           for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
             {
-              const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
               switch (fluid_solid_reaction_scheme)
                 {
                   case no_reaction:
                   {
-                    Assert(out != nullptr,
-                           ExcMessage("The MaterialModelOutputs provided to the No Reactions reaction model is a nullptr."));
                     const double volume_fraction_porosity = in.composition[q][porosity_idx];
                     // Melt fractions outputs the mass fraction of equilibrium free water at each quadrature point. However,
                     // the free water is a volume fraction, while the bound water is a mass fraction. Convert the free water
                     // to a mass fraction so that we correctly compare the two values.
-                    const std::shared_ptr<const MeltOutputs<dim>> fluid_out = out->template get_additional_output_object<MeltOutputs<dim>>();
                     const double bulk_density = compute_bulk_density(volume_fraction_porosity, out->densities[q], fluid_out->fluid_densities[q]);
                     const double mass_fraction_porosity = compute_mass_fraction(volume_fraction_porosity, fluid_out->fluid_densities[q], bulk_density);
                     // No reactions occur between the solid and fluid phases,
@@ -116,14 +117,12 @@ namespace aspect
                     // The fluid volume fraction in equilibrium with the solid
                     // at any point (stored in the melt_fractions vector) is
                     // equal to the sum of the bound fluid content and porosity.
-                    Assert(out != nullptr,
-                           ExcMessage("The MaterialModelOutputs provided to the Zero Solubility reaction model is a nullptr."));
+
                     const double volume_fraction_porosity = in.composition[q][porosity_idx];
                     const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
                     // Melt fractions outputs the mass fraction of equilibrium free water at each quadrature point. However,
                     // the free water is a volume fraction, while the bound water is a mass fraction. Convert the free water
                     // to a mass fraction so that we correctly compare the two values.
-                    const std::shared_ptr<const MeltOutputs<dim>> fluid_out = out->template get_additional_output_object<MeltOutputs<dim>>();
                     const double bulk_density = compute_bulk_density(volume_fraction_porosity, out->densities[q], fluid_out->fluid_densities[q]);
                     const double mass_fraction_porosity = compute_mass_fraction(volume_fraction_porosity, fluid_out->fluid_densities[q], bulk_density);
                     melt_fractions[q] = in.composition[q][bound_fluid_idx] + mass_fraction_porosity;
@@ -131,13 +130,10 @@ namespace aspect
                   }
                   case tian_approximation:
                   {
-                    Assert(out != nullptr,
-                           ExcMessage("The MaterialModelOutputs provided to the Tian 2019 reaction model is a nullptr."));
                     // The tian2019_model melt_fraction function requires the mass fraction of free water at each quadrature
                     // point as an input. However, the free water is stored in the porosity field as a volume fraction.
                     // We therefore convert the free water to a mass fraction so that we have the correct input.
                     const double volume_fraction_porosity = in.composition[q][porosity_idx];
-                    const std::shared_ptr<const MeltOutputs<dim>> fluid_out = out->template get_additional_output_object<MeltOutputs<dim>>();
                     const double bulk_density = compute_bulk_density(volume_fraction_porosity, out->densities[q], fluid_out->fluid_densities[q]);;
                     const double mass_fraction_porosity = compute_mass_fraction(volume_fraction_porosity, fluid_out->fluid_densities[q], bulk_density);
                     melt_fractions[q] = tian2019_model.melt_fraction(in, mass_fraction_porosity, q);
