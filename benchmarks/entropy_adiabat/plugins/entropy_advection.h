@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2025 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -18,41 +18,6 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _aspect_simulator_assemblers_entropy_advection_h
-#define _aspect_simulator_assemblers_entropy_advection_h
-
-
-#include <aspect/simulator/assemblers/interface.h>
-#include <aspect/simulator_access.h>
-
-namespace aspect
-{
-  namespace Assemblers
-  {
-    /**
-     * This class assembles the terms for the matrix and right-hand-side of the entropy
-     * advection equation for the current cell.
-     */
-    template <int dim>
-    class EntropyAdvectionSystem : public Assemblers::Interface<dim>, public Assemblers::AdvectionStabilizationInterface<dim>,
-      public SimulatorAccess<dim>
-    {
-      public:
-        void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const override;
-
-        std::vector<double>
-        compute_residual(internal::Assembly::Scratch::ScratchBase<dim>  &scratch) const override;
-
-        std::vector<double>
-        advection_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const override;
-
-        std::vector<double>
-        diffusion_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const override;
-    };
-  }
-}
-
-
-#endif
+// This header has been replaced by the one below. This file
+// is only kept for backward compatibility.
+#include <aspect/simulator/assemblers/entropy_advection.h>

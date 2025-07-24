@@ -10,7 +10,6 @@
 
 include ./entropy_adiabat.prm
 
-set Additional shared libraries            = ./plugins/libentropy_plugins.so
 set Dimension                              = 2
 set End time                               = 2.5e8
 set Output directory                       = output-entropy-combined

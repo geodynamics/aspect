@@ -29,6 +29,7 @@
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/simulator/assemblers/stokes.h>
 #include <aspect/simulator/assemblers/advection.h>
+#include <aspect/simulator/assemblers/entropy_advection.h>
 
 #include <aspect/simulator/solver/stokes_matrix_free.h>
 
@@ -282,6 +283,9 @@ namespace aspect
       }
     else
       AssertThrow(false,ExcInternalError());
+
+    if (introspection.composition_type_exists(CompositionalFieldDescription::entropy))
+      Assemblers::set_assemblers_entropy_advection(SimulatorAccess<dim>(*this), *assemblers);
 
     // allow other assemblers to add themselves or modify the existing ones by firing the signal
     this->signals.set_assemblers(*this, *assemblers);

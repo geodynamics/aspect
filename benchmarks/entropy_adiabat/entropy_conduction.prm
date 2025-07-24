@@ -8,7 +8,6 @@
 # reaching a constant temperature.
 
 
-set Additional shared libraries            = ./plugins/libentropy_plugins.so
 set Dimension                              = 2
 set Use years in output instead of seconds = true
 set End time                               = 2.5e11

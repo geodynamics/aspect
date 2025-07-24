@@ -5,7 +5,6 @@
 # At the last time step (pressure = 4e10) the expected temperature (calculated by BurnMan)
 # should be 1320.6975594320584; entropy should be 2100; density should be 3897.462703346402
 
-set Additional shared libraries            = $ASPECT_SOURCE_DIR/benchmarks/entropy_adiabat/plugins/libentropy_plugins.so
 set Output directory                       = output-change-adiabatic-p
 
 set Dimension                              = 2
