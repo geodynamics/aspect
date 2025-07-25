@@ -1154,25 +1154,28 @@ namespace aspect
                            "This parameter corresponds "
                            "to the factor $\\alpha_E$ in the formulas following equation (15) of "
                            "the paper.) Units: None.");
-        prm.declare_entry ("beta", "0.052",
+        prm.declare_entry ("beta", "0.0",
                            Patterns::List(Patterns::Double (0.)),
-                           "The $\\beta$ factor in the artificial viscosity "
+                           "This parameter is deprecated and has been replaced by 'alpha_max' and is "
+                           "only kept for backward compatibility. If this parameter is set to a value "
+                           "different from 0 it will overwrite the usual maximum entropy viscosity "
+                           "stabilization constant of $\\alpha_{\\text{max}} d$, with $\\beta$."
+                           "Units: None.");
+        prm.declare_entry ("alpha max", "0.026",
+                           Patterns::List(Patterns::Double (0.)),
+                           "The $\\alpha_{\\text{max}}$ factor in the artificial viscosity "
                            "stabilization. This parameter controls the maximum dissipation of the "
                            "entropy viscosity, which is the part that only scales with the cell diameter "
                            "and the maximum velocity in the cell, but does not depend on the solution "
-                           "field itself or its residual. An appropriate value for 2d is 0.052 and "
-                           "0.078 for 3d. (For historical reasons, the name used here is different "
-                           "from the one used in the 2012 paper by Kronbichler, "
-                           "Heister and Bangerth that describes ASPECT, see \\cite{kronbichler:etal:2012}. "
+                           "field itself or its residual. An appropriate value is 0.026, which was "
+                           "experimentally determined in \\cite{kronbicher:etal:2012}."
                            "This parameter can be given as a single value or as a list with as "
                            "many entries as one plus the number of compositional fields. In the "
                            "former case all advection fields use the same stabilization parameters, "
                            "in the latter case each field (temperature first, then all compositions) "
                            "use individual parameters. This can be useful to reduce the stabilization "
                            "for the temperature, which already has some physical diffusion. "
-                           "This parameter corresponds "
-                           "to the factor $\\alpha_{\\text{max}}$ in the formulas following equation (15) of "
-                           "the paper.) Units: None.");
+                           "Units: None.");
         prm.declare_entry ("gamma", "0.0",
                            Patterns::Double (0.),
                            "The strain rate scaling factor in the artificial viscosity "
@@ -1931,9 +1934,19 @@ namespace aspect
         stabilization_c_R                   = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("cR"))),
                                                                                       n_compositional_fields+1,
                                                                                       "cR");
-        stabilization_beta                  = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("beta"))),
-                                                                                      n_compositional_fields+1,
-                                                                                      "beta");
+        stabilization_beta         = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("alpha max"))),
+                                                                             n_compositional_fields+1,
+                                                                             "alpha max");
+
+        const std::vector<double> stabilization_constant_beta                  = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("beta"))),
+                                                                                 n_compositional_fields+1,
+                                                                                 "beta");
+
+        for (unsigned int i=0; i<stabilization_beta.size(); ++i)
+          if (stabilization_constant_beta[i] != 0.0)
+            stabilization_beta[i] = stabilization_constant_beta[i];
+          else
+            stabilization_beta[i] *= dim;
 
         stabilization_gamma                 = prm.get_double ("gamma");
         discontinuous_penalty               = prm.get_double ("Discontinuous penalty");

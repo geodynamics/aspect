@@ -24,11 +24,11 @@ Number of degrees of freedom: 9,602 (2,187+125+729+729+729+729+729+729+729+729+7
    Skipping temperature solve because RHS is zero.
    Solving strain_xx system ... 9 iterations.
    Skipping strain_xy composition solve because RHS is zero.
-   Solving strain_xz system ... 11 iterations.
-   Solving strain_yx system ... 11 iterations.
+   Solving strain_xz system ... 10 iterations.
+   Solving strain_yx system ... 10 iterations.
    Skipping strain_yy composition solve because RHS is zero.
-   Solving strain_yz system ... 11 iterations.
-   Solving strain_zx system ... 11 iterations.
+   Solving strain_yz system ... 10 iterations.
+   Solving strain_zx system ... 10 iterations.
    Skipping strain_zy composition solve because RHS is zero.
    Solving strain_zz system ... 9 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.

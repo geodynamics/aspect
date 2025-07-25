@@ -39,7 +39,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
 
 *** Timestep 4:  t=16022.2 years, dt=3996.72 years
    Solving temperature system... 8 iterations.
-   Solving C_1 system ... 9 iterations.
+   Solving C_1 system ... 8 iterations.
    Solving Stokes system (GMG)... 14+0 iterations.
 
    Postprocessing:
@@ -175,7 +175,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
 
 *** Timestep 21:  t=82868.4 years, dt=3874.24 years
    Solving temperature system... 8 iterations.
-   Solving C_1 system ... 8 iterations.
+   Solving C_1 system ... 7 iterations.
    Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
@@ -183,7 +183,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
 
 *** Timestep 22:  t=86736.5 years, dt=3868.06 years
    Solving temperature system... 8 iterations.
-   Solving C_1 system ... 8 iterations.
+   Solving C_1 system ... 7 iterations.
    Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
@@ -191,7 +191,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
 
 *** Timestep 23:  t=90598.7 years, dt=3862.23 years
    Solving temperature system... 8 iterations.
-   Solving C_1 system ... 8 iterations.
+   Solving C_1 system ... 7 iterations.
    Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
@@ -207,7 +207,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
 
 *** Timestep 25:  t=98307.2 years, dt=3851.76 years
    Solving temperature system... 8 iterations.
-   Solving C_1 system ... 8 iterations.
+   Solving C_1 system ... 7 iterations.
    Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
