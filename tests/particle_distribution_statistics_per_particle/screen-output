@@ -32,12 +32,12 @@ Number of degrees of freedom: 76,062 (44,331+2,177+14,777+14,777)
 *** Timestep 1:  t=0.03 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
    Advecting particles...  done.
-   Solving C_1 system ... 10 iterations.
+   Solving C_1 system ... 9 iterations.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
-     Temperature min/avg/max:                                                           0 K, 0.8557 K, 1.268 K
-     Heat fluxes through boundary parts:                                                0.000632 W, 0.000632 W, 0.02101 W, -0.02296 W, 0.000632 W, 0.000632 W
+     Temperature min/avg/max:                                                           0 K, 0.8557 K, 1.266 K
+     Heat fluxes through boundary parts:                                                0.0006333 W, 0.0006333 W, 0.02101 W, -0.02296 W, 0.0006333 W, 0.0006333 W
      Writing graphical output:                                                          output-particle_distribution_statistics_per_particle/solution/solution-00001
      Writing particle output:                                                           output-particle_distribution_statistics_per_particle/particles/particles-00001
      Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0.0205774/0.0337293/0.0498717, 0.0380249/0.170451, 0.03125/0.21875
@@ -49,8 +49,8 @@ Number of degrees of freedom: 76,062 (44,331+2,177+14,777+14,777)
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
-     Temperature min/avg/max:                                                           0 K, 0.8557 K, 1.27 K
-     Heat fluxes through boundary parts:                                                0.0006358 W, 0.0006358 W, 0.021 W, -0.02295 W, 0.0006358 W, 0.0006358 W
+     Temperature min/avg/max:                                                           0 K, 0.8557 K, 1.267 K
+     Heat fluxes through boundary parts:                                                0.0006373 W, 0.0006373 W, 0.021 W, -0.02295 W, 0.0006373 W, 0.0006373 W
      Writing graphical output:                                                          output-particle_distribution_statistics_per_particle/solution/solution-00002
      Writing particle output:                                                           output-particle_distribution_statistics_per_particle/particles/particles-00002
      Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0.0205774/0.0337293/0.0498717, 0.0380249/0.170451, 0.03125/0.21875
@@ -62,8 +62,8 @@ Number of degrees of freedom: 76,062 (44,331+2,177+14,777+14,777)
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
-     Temperature min/avg/max:                                                           0 K, 0.8557 K, 1.273 K
-     Heat fluxes through boundary parts:                                                0.0006394 W, 0.0006394 W, 0.021 W, -0.02295 W, 0.0006394 W, 0.0006394 W
+     Temperature min/avg/max:                                                           0 K, 0.8557 K, 1.269 K
+     Heat fluxes through boundary parts:                                                0.000641 W, 0.000641 W, 0.021 W, -0.02295 W, 0.000641 W, 0.000641 W
      Writing graphical output:                                                          output-particle_distribution_statistics_per_particle/solution/solution-00003
      Writing particle output:                                                           output-particle_distribution_statistics_per_particle/particles/particles-00003
      Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0.0202818/0.0349653/0.0993601, 0.0385514/0.175035, 0.03125/0.34375
@@ -75,8 +75,8 @@ Number of degrees of freedom: 76,062 (44,331+2,177+14,777+14,777)
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
-     Temperature min/avg/max:                                                           0 K, 0.8556 K, 1.277 K
-     Heat fluxes through boundary parts:                                                0.0006432 W, 0.0006432 W, 0.021 W, -0.02295 W, 0.0006432 W, 0.0006432 W
+     Temperature min/avg/max:                                                           0 K, 0.8556 K, 1.272 K
+     Heat fluxes through boundary parts:                                                0.0006448 W, 0.0006448 W, 0.021 W, -0.02295 W, 0.0006448 W, 0.0006448 W
      Writing graphical output:                                                          output-particle_distribution_statistics_per_particle/solution/solution-00004
      Writing particle output:                                                           output-particle_distribution_statistics_per_particle/particles/particles-00004
      Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0.0202818/0.0349653/0.0993601, 0.0385514/0.175035, 0.03125/0.34375
@@ -88,8 +88,8 @@ Number of degrees of freedom: 76,062 (44,331+2,177+14,777+14,777)
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
-     Temperature min/avg/max:                                                           0 K, 0.8556 K, 1.281 K
-     Heat fluxes through boundary parts:                                                0.0006472 W, 0.0006472 W, 0.021 W, -0.02295 W, 0.0006472 W, 0.0006472 W
+     Temperature min/avg/max:                                                           0 K, 0.8556 K, 1.276 K
+     Heat fluxes through boundary parts:                                                0.0006487 W, 0.0006487 W, 0.021 W, -0.02295 W, 0.0006487 W, 0.0006487 W
      Writing graphical output:                                                          output-particle_distribution_statistics_per_particle/solution/solution-00005
      Writing particle output:                                                           output-particle_distribution_statistics_per_particle/particles/particles-00005
      Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0.0202818/0.0349653/0.0993601, 0.0385514/0.175035, 0.03125/0.34375
@@ -101,8 +101,8 @@ Number of degrees of freedom: 76,062 (44,331+2,177+14,777+14,777)
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
-     Temperature min/avg/max:                                                           0 K, 0.8556 K, 1.287 K
-     Heat fluxes through boundary parts:                                                0.0006514 W, 0.0006514 W, 0.021 W, -0.02294 W, 0.0006514 W, 0.0006514 W
+     Temperature min/avg/max:                                                           0 K, 0.8556 K, 1.281 K
+     Heat fluxes through boundary parts:                                                0.0006527 W, 0.0006527 W, 0.021 W, -0.02294 W, 0.0006527 W, 0.0006527 W
      Writing graphical output:                                                          output-particle_distribution_statistics_per_particle/solution/solution-00006
      Writing particle output:                                                           output-particle_distribution_statistics_per_particle/particles/particles-00006
      Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0.0202818/0.035304/0.10881, 0.0387814/0.176102, 0.03125/0.37931

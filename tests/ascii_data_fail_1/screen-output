@@ -17,10 +17,10 @@ The violated condition was:
     in.eof()
 Additional information: 
     While reading the data file
-    'ASPECT_DIR/data/boundary-velocity/ascii-data/test/fail_1.txt'
-    the ascii data plugin has encountered an error before the end of the
-    file. Please check for malformed data values (e.g. NaN) or superfluous
-    lines at the end of the data file.
+    'ASPECT_DIR/data/boundary-velocity/ascii-data/test/fail_1.txt' the
+    ascii data plugin has encountered an error before the end of the file.
+    Please check for malformed data values (e.g. NaN) or superfluous lines
+    at the end of the data file.
 
 Stacktrace:
 (rest of the output replaced by default.sh script)
