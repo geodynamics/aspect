@@ -1161,7 +1161,7 @@ namespace aspect
                            "different from 0 it will overwrite the usual maximum entropy viscosity "
                            "stabilization constant of $\\alpha_{\\text{max}} d$, with $\\beta$."
                            "Units: None.");
-        prm.declare_entry ("alpha_max", "0.026",
+        prm.declare_entry ("alpha max", "0.026",
                            Patterns::List(Patterns::Double (0.)),
                            "The $\\alpha_{\\text{max}}$ factor in the artificial viscosity "
                            "stabilization. This parameter controls the maximum dissipation of the "
@@ -1934,9 +1934,9 @@ namespace aspect
         stabilization_c_R                   = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("cR"))),
                                                                                       n_compositional_fields+1,
                                                                                       "cR");
-        stabilization_beta         = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("alpha_max"))),
+        stabilization_beta         = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("alpha max"))),
                                                                              n_compositional_fields+1,
-                                                                             "alpha_max");
+                                                                             "alpha max");
 
         const std::vector<double> stabilization_constant_beta                  = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("beta"))),
                                                                                  n_compositional_fields+1,
