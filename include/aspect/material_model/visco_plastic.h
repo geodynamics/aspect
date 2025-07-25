@@ -24,6 +24,7 @@
 #include <aspect/simulator_access.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
+#include <aspect/material_model/equation_of_state/multicomponent_compressible.h>
 #include <aspect/material_model/rheology/visco_plastic.h>
 
 #include<deal.II/fe/component_mask.h>
@@ -263,7 +264,23 @@ namespace aspect
         /**
          * Object for computing the equation of state.
          */
-        EquationOfState::MulticomponentIncompressible<dim> equation_of_state;
+        EquationOfState::MulticomponentIncompressible<dim> equation_of_state_incompressible;
+
+        /**
+         * Object for computing the equation of state.
+         */
+        EquationOfState::MulticomponentCompressible<dim> equation_of_state_compressible;
+
+        /**
+         * Enumeration for selecting which type of Equation of State
+         * model to use. Select between multicomponent incompressible
+         * or multicomponent incompressible.
+         */
+        enum EquationOfStateScheme
+        {
+          multicomponent_incompressible,
+          multicomponent_compressible
+        } equation_of_state;
 
         /**
          * Object that handles phase transitions.
