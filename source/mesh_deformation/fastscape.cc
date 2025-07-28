@@ -19,8 +19,6 @@
  */
 #include <aspect/global.h>
 
-#ifdef ASPECT_WITH_FASTSCAPE
-
 #include <aspect/mesh_deformation/fastscape.h>
 #include <aspect/geometry_model/box.h>
 #include <deal.II/numerics/vector_tools.h>
@@ -30,6 +28,9 @@
 
 namespace aspect
 {
+
+#ifdef ASPECT_WITH_FASTSCAPE
+
   namespace MeshDeformation
   {
     /**
@@ -2148,5 +2149,6 @@ namespace aspect
                                            "on the input parameters. ")
 
   }
-}
+
 #endif
+}
