@@ -624,9 +624,15 @@ namespace aspect
       this->get_signals().post_compute_no_normal_flux_constraints(sim.triangulation);
 
       // Ask all plugins to add their constraints.
-      // For the moment add constraints from all plugins into one matrix, then
-      // merge that matrix with the existing constraints (respecting the existing
-      // constraints as more important)
+      // For the moment add constraints from all plugins into one object, then
+      // merge that object with the existing constraints (respecting the existing
+      // constraints as more important).
+      //
+      // We initialize the constraints object with the locally
+      // relevant DoF indices as the set of constraints to store (also
+      // using the locally relevant indices for the "locally owned"
+      // DoFs). This way, plugins can fill information for all locally
+      // relevant DoFs and we do not need to communicate.
 #if DEAL_II_VERSION_GTE(9,7,0)
       AffineConstraints<double> plugin_constraints(mesh_vertex_constraints.get_local_lines(),
                                                    mesh_vertex_constraints.get_local_lines());
