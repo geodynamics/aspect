@@ -86,91 +86,69 @@ namespace aspect
                     std::vector<double> &melt_fractions,
                     const MaterialModel::MaterialModelOutputs<dim> *out) const
     {
-      const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-
-      for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
+      // the Katz 2003 model does not need information about fluid content
+      if (fluid_solid_reaction_scheme == katz2003)
         {
-          switch (fluid_solid_reaction_scheme)
+          for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
+            melt_fractions[q] = katz2003_model.melt_fraction(in.temperature[q],
+                                                             this->get_adiabatic_conditions().pressure(in.position[q]));
+        }
+      else
+        {
+          Assert(out != nullptr,
+                 ExcMessage("The material model 'ReactiveFluidTransport' requires the material model "
+                            "outputs in order to compute melt fractions, but none were provided."));
+          Assert(out->template has_additional_output_object<MeltOutputs<dim>>(),
+                 ExcMessage("The material model 'ReactiveFluidTransport' requires melt material "
+                            "outputs to compute the melt fractions, but none were provided."));
+
+          const std::shared_ptr<const MeltOutputs<dim>> fluid_out = out->template get_additional_output_object<MeltOutputs<dim>>();
+
+          const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+          const unsigned int bound_fluid_idx = (fluid_solid_reaction_scheme == zero_solubility)
+                                               ?
+                                               this->introspection().compositional_index_for_name("bound_fluid")
+                                               :
+                                               numbers::invalid_unsigned_int;
+
+          for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
             {
-              case no_reaction:
-              {
-                Assert(out != nullptr,
-                       ExcMessage("The material model 'ReactiveFluidTransport' requires the material model "
-                                  "outputs in order to compute melt fractions, but none were provided."));
-                Assert(out->template has_additional_output_object<MeltOutputs<dim>>(),
-                       ExcMessage("The material model 'ReactiveFluidTransport' requires melt material "
-                                  "outputs to compute the melt fractions, but none were provided."));
+              // This function outputs the mass fraction of equilibrium free water at each quadrature point. However,
+              // the free water is a volume fraction, while the bound water is a mass fraction. Convert the free water
+              // to a mass fraction so that we correctly compare the two values.
+              const double volume_fraction_porosity = in.composition[q][porosity_idx];
+              const double bulk_density = compute_bulk_density(volume_fraction_porosity, out->densities[q], fluid_out->fluid_densities[q]);
+              const double mass_fraction_porosity = compute_mass_fraction(volume_fraction_porosity, fluid_out->fluid_densities[q], bulk_density);
 
-                const std::shared_ptr<const MeltOutputs<dim>> fluid_out = out->template get_additional_output_object<MeltOutputs<dim>>();
-
-                const double volume_fraction_porosity = in.composition[q][porosity_idx];
-                // Melt fractions outputs the mass fraction of equilibrium free water at each quadrature point. However,
-                // the free water is a volume fraction, while the bound water is a mass fraction. Convert the free water
-                // to a mass fraction so that we correctly compare the two values.
-                const double bulk_density = compute_bulk_density(volume_fraction_porosity, out->densities[q], fluid_out->fluid_densities[q]);
-                const double mass_fraction_porosity = compute_mass_fraction(volume_fraction_porosity, fluid_out->fluid_densities[q], bulk_density);
-                // No reactions occur between the solid and fluid phases,
-                // and the fluid mass fraction (stored in the melt_fractions
-                // vector) is equal to the mass fraction of the porosity.
-                melt_fractions[q] = mass_fraction_porosity;
-                break;
-              }
-              case zero_solubility:
-              {
-                Assert(out != nullptr,
-                       ExcMessage("The material model 'ReactiveFluidTransport' requires the material model "
-                                  "outputs in order to compute melt fractions, but none were provided."));
-                Assert(out->template has_additional_output_object<MeltOutputs<dim>>(),
-                       ExcMessage("The material model 'ReactiveFluidTransport' requires melt material "
-                                  "outputs to compute the melt fractions, but none were provided."));
-
-                const std::shared_ptr<const MeltOutputs<dim>> fluid_out = out->template get_additional_output_object<MeltOutputs<dim>>();
-
-                // The fluid volume fraction in equilibrium with the solid
-                // at any point (stored in the melt_fractions vector) is
-                // equal to the sum of the bound fluid content and porosity.
-
-                const double volume_fraction_porosity = in.composition[q][porosity_idx];
-                const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
-                // Melt fractions outputs the mass fraction of equilibrium free water at each quadrature point. However,
-                // the free water is a volume fraction, while the bound water is a mass fraction. Convert the free water
-                // to a mass fraction so that we correctly compare the two values.
-                const double bulk_density = compute_bulk_density(volume_fraction_porosity, out->densities[q], fluid_out->fluid_densities[q]);
-                const double mass_fraction_porosity = compute_mass_fraction(volume_fraction_porosity, fluid_out->fluid_densities[q], bulk_density);
-                melt_fractions[q] = in.composition[q][bound_fluid_idx] + mass_fraction_porosity;
-                break;
-              }
-              case tian_approximation:
-              {
-                Assert(out != nullptr,
-                       ExcMessage("The material model 'ReactiveFluidTransport' requires the material model "
-                                  "outputs in order to compute melt fractions, but none were provided."));
-                Assert(out->template has_additional_output_object<MeltOutputs<dim>>(),
-                       ExcMessage("The material model 'ReactiveFluidTransport' requires melt material "
-                                  "outputs to compute the melt fractions, but none were provided."));
-
-                const std::shared_ptr<const MeltOutputs<dim>> fluid_out = out->template get_additional_output_object<MeltOutputs<dim>>();
-
-                // The tian2019_model melt_fraction function requires the mass fraction of free water at each quadrature
-                // point as an input. However, the free water is stored in the porosity field as a volume fraction.
-                // We therefore convert the free water to a mass fraction so that we have the correct input.
-                const double volume_fraction_porosity = in.composition[q][porosity_idx];
-                const double bulk_density = compute_bulk_density(volume_fraction_porosity, out->densities[q], fluid_out->fluid_densities[q]);;
-                const double mass_fraction_porosity = compute_mass_fraction(volume_fraction_porosity, fluid_out->fluid_densities[q], bulk_density);
-                melt_fractions[q] = tian2019_model.melt_fraction(in, mass_fraction_porosity, q);
-                break;
-              }
-              case katz2003:
-              {
-                melt_fractions[q] = katz2003_model.melt_fraction(in.temperature[q],
-                                                                 this->get_adiabatic_conditions().pressure(in.position[q]));
-                break;
-              }
-              default:
-              {
-                AssertThrow(false, ExcNotImplemented());
-                break;
-              }
+              switch (fluid_solid_reaction_scheme)
+                {
+                  case no_reaction:
+                  {
+                    // No reactions occur between the solid and fluid phases,
+                    // and the fluid mass fraction (stored in the melt_fractions
+                    // vector) is equal to the mass fraction of the porosity.
+                    melt_fractions[q] = mass_fraction_porosity;
+                    break;
+                  }
+                  case zero_solubility:
+                  {
+                    // The fluid volume fraction in equilibrium with the solid
+                    // at any point (stored in the melt_fractions vector) is
+                    // equal to the sum of the bound fluid content and porosity.
+                    melt_fractions[q] = in.composition[q][bound_fluid_idx] + mass_fraction_porosity;
+                    break;
+                  }
+                  case tian_approximation:
+                  {
+                    melt_fractions[q] = tian2019_model.melt_fraction(in, mass_fraction_porosity, q);
+                    break;
+                  }
+                  default:
+                  {
+                    AssertThrow(false, ExcNotImplemented());
+                    break;
+                  }
+                }
             }
         }
     }
