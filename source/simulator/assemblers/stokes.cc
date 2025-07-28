@@ -436,7 +436,6 @@ namespace aspect
           const double density = scratch.material_model_outputs.densities[q];
           const double JxW = scratch.finite_element_values.JxW(q);
 
-          bool material_model_is_compressible = (this->get_material_model().is_compressible());
           for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
             {
               data.local_rhs(i) += (density * gravity * scratch.phi_u[i])
