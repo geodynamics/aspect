@@ -464,13 +464,14 @@ namespace aspect
               if (enable_prescribed_dilation)
                 {
                   const unsigned int index_direction=fe.system_to_component_index(i).first;
-                  data.local_rhs(i) += (
-                                         - pressure_scaling
-                                         * (prescribed_dilation->dilation_rhs_term[index_direction][q] -
-                                            prescribed_dilation->dilation_lhs_term[q] *
-                                            scratch.material_model_inputs.pressure[q])
-                                         * scratch.phi_p[i]
-                                       ) * JxW;
+                  if (index_direction < dim)
+                    data.local_rhs(i) += (
+                                           - pressure_scaling
+                                           * (prescribed_dilation->dilation_rhs_term[index_direction][q] -
+                                              prescribed_dilation->dilation_lhs_term[q] *
+                                              scratch.material_model_inputs.pressure[q])
+                                           * scratch.phi_p[i]
+                                         ) * JxW;
                 }
             }
 
