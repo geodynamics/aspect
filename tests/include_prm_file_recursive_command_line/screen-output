@@ -1,0 +1,25 @@
+
+Loading shared library <./libinclude_prm_file_recursive_command_line.debug.so>
+* Starting from command line ...
+* Executing the following command:
+cd output-include_prm_file_recursive_command_line ; (cat ASPECT_DIR/tests/include_prm_file_recursive_command_line.prm  ;  echo 'set Output directory = output1.tmp'  ;  rm -rf output1.tmp ; mkdir output1.tmp ) | ../../aspect -- > /dev/null
+* Copying output files ...
+* Continuing run from parameter file ...
+
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 17+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-include_prm_file_recursive_command_line/solution/solution-00000
+     RMS, max velocity:                  9e-09 m/s, 3.27e-08 m/s
+     Temperature min/avg/max:            0 K, 1.035 K, 1.1 K
+     Heat fluxes through boundary parts: 1.667e-07 W, 6.239e-05 W, 0 W, 0 W
+
+Termination requested by criterion: end time
+
+
+

@@ -407,8 +407,7 @@ namespace
                                                     /*root=*/0);
       }
 
-
-    // Search and replace include directives in the input file.
+    // Now search for and replace include directives in the input string.
     std::match_results<std::string::const_iterator> matches;
     const std::string search_regex = "(?:^|\n)[ \t]*include[ \t]+(.*?)[ \t]*(?:#|\n|$)";
     const std::string replace_regex = "(?:^|\n)[ \t]*include[ \t]+.*";
