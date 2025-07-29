@@ -1,0 +1,28 @@
+
+Number of active cells: 4 (on 2 levels)
+Number of degrees of freedom: 134 (50+9+25+25+25)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 6+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 1500 K, 1619 K, 1671 K
+     RMS, max velocity:       0.00723 m/year, 0.0207 m/year
+
+*** Timestep 1:  t=1 years, dt=1 years
+   Solving temperature system... 2 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 2+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 1500 K, 1619 K, 1671 K
+     RMS, max velocity:       0.00723 m/year, 0.0207 m/year
+
+Termination requested by criterion: end time
+
+
+
