@@ -1,0 +1,80 @@
+# This test makes sure the timing statistics postprocessor
+# works as intended.
+
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set End time                               = 1
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Adiabatic surface temperature          = 1723.15   # 1450°C adiabat
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1000000
+    set Y extent = 1000000
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = porosity, peridotite
+end
+
+subsection Initial temperature model
+  set Model name = harmonic perturbation
+
+  subsection Harmonic perturbation
+    set Magnitude = 100
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0.1; 0.0
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names = initial temperature
+  set Fixed temperature boundary indicators = left, right, top, bottom
+end
+
+subsection Boundary composition model
+  set List of model names = initial composition
+  set Fixed composition boundary indicators = left, right, top, bottom
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, top, bottom
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+subsection Material model
+  set Model name = simpler
+
+  subsection Simpler model
+    set Reference density = 3400
+    set Viscosity = 1e21
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 1
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = temperature statistics, velocity statistics, timing statistics
+end
