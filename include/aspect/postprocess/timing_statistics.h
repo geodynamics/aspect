@@ -33,7 +33,7 @@ namespace aspect
     /**
      * A postprocessor that outputs timing information in
      * the statistics file, in particular the total wall time spent
-     * in the different timing sections for each timestep.
+     * in the different timing sections until the current timestep.
      * Note that this postprocessor cannot report accurate
      * timings for the postprocessing section as it is
      * executed before postprocessing is complete.

@@ -35,7 +35,7 @@ namespace aspect
 
       for (const auto &section: timing_map)
         {
-          const std::string section_name = "Wall time: " + section.first;
+          const std::string section_name = "Total wall time: " + section.first;
           statistics.add_value(section_name,
                                section.second);
           statistics.set_scientific(section_name, true);
@@ -56,7 +56,7 @@ namespace aspect
                                   "timing statistics",
                                   "A postprocessor that outputs timing information in "
                                   "the statistics file, in particular the total wall time spent "
-                                  "in the different timing sections for each timestep. "
+                                  "in the different timing sections until the current timestep. "
                                   "Note that this postprocessor cannot report accurate "
                                   "timings for the postprocessing section as it is "
                                   "executed before postprocessing is complete.")
