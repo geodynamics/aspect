@@ -456,7 +456,6 @@ namespace aspect
                   // Only want the velocity components and not the pressure one (which is the last one), so add 1
                   if (introspection.is_stokes_component(index_direction+1))
                     {
-                      const unsigned int index_direction=fe.system_to_component_index(i).first;
                       if (index_direction < dim)
                         data.local_rhs(i) += (
                                                - pressure_scaling
