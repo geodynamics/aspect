@@ -456,14 +456,13 @@ namespace aspect
                   // Only want the velocity components and not the pressure one (which is the last one), so add 1
                   if (introspection.is_stokes_component(index_direction+1))
                     {
-                      if (index_direction < dim)
-                        data.local_rhs(i) += (
-                                               - pressure_scaling
-                                               * (prescribed_dilation->dilation_rhs_term[index_direction][q] -
-                                                  prescribed_dilation->dilation_lhs_term[q] *
-                                                  scratch.material_model_inputs.pressure[q])
-                                               * scratch.phi_p[i]
-                                             ) * JxW;
+                      data.local_rhs(i) += (
+                                             - pressure_scaling
+                                             * (prescribed_dilation->dilation_rhs_term[index_direction][q] -
+                                                prescribed_dilation->dilation_lhs_term[q] *
+                                                scratch.material_model_inputs.pressure[q])
+                                             * scratch.phi_p[i]
+                                           ) * JxW;
                     }
                 }
 
