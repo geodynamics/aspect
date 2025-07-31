@@ -44,9 +44,9 @@ subsection Formulation
   set Temperature equation = reference density profile
 end
 
-# constraining adiabatic temperature profile in compositional fields. 
+# constraining adiabatic temperature profile in compositional fields.
 # each component referring to compositional fields. First three
-# components are referring to strain and then chemical composition fields. 
+# components are referring to strain and then chemical composition fields.
 # see subsection Compositional fields
 subsection Adiabatic conditions model
   subsection Compute profile
@@ -63,20 +63,30 @@ subsection Adiabatic conditions model
   end
 end
 
+# Specify the reference depth-dependent compositional profile used when
+# computing the adiabatic conditions. A function is required for each compositional
+# field, and the order of the functions should correspond to the same order of in
+# which the fields were listed under "set Names of fields".  As such, the first
+# three fields correspond to various types of "strain", and should be set to
+# 0, while the remaining fields correspond to fields representing chemical
+# compositions. Note that in the function expression "x" refers to depth.
+
 subsection Discretization
   set Composition polynomial degree           = 2
   set Stokes velocity polynomial degree       = 2
   set Temperature polynomial degree           = 2
-  # The gradient at quadrature points will not be a precise approximation of the true gradient 
-  # since it excludes the contribution of jumps in the compositional field between cells.
-  # Even though the finite element solution varies from cell to cell, the gradient of the 
-  # solution at quadrature locations inside each cell will always be precisely zero.
   set Use discontinuous composition discretization = true
+  # Discontinuous composition discretization is required when using viscoelastic or
+  # other history-dependent rheologies in ASPECT. This ensures that compositional fields
+  # remain cell-local and consistent with the assumptions of the constitutive law.
+  # While it may increase the number of degrees of freedom, it is essential for maintaining
+  # the accuracy and stability of stress evolution in models involving localized rheological heterogeneity.
 end
 
 # Model geometry (400x400 km, 20 km spacing)
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X repetitions = 20
     set Y repetitions = 20
@@ -95,6 +105,7 @@ subsection Mesh refinement
   set Initial global refinement          = 3
   set Time steps between mesh refinement = 0
   set Strategy = minimum refinement function
+
   subsection Minimum refinement function
     set Coordinate system   = cartesian
     set Variable names      = x,y
@@ -109,9 +120,11 @@ end
 subsection Mesh deformation
   set Mesh deformation boundary indicators        = top: free surface, top: diffusion
   set Additional tangential mesh velocity boundary indicators = left, right
+
   subsection Free surface
     set Surface velocity projection = normal
   end
+
   subsection Diffusion
     # Diffusivity term. Increasing this value will result
     # in a smoother free surface and lower topography
@@ -121,17 +134,17 @@ subsection Mesh deformation
 end
 
 # Velocity on boundaries characterized by functions
-# A horizontal velocity (x-direction) of 0.1 cm/year is applied to the left and right walls 
-# resulting in inflow, which is balanced by the 0.2 cm/yr vertical (y-direction) outflow on the bottom boundary.
+# A horizontal velocity (x-direction) of 0.1 cm/year (~0.0001 m/s)  is applied to the left and right walls
+# resulting in inflow, which is balanced by the 0.2 cm/yr  (~0.0002 m/s) vertical (y-direction) outflow on the bottom boundary.
 # Velocity components parallel to the base (x-velocity) and side walls (y-velocity)
 # are unconstrained (i.e. 'free').
+
 subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = left x: function, right x:function, bottom y:function
+  set Prescribed velocity boundary indicators = left x:function, right x:function, bottom y:function
 
   subsection Function
     set Variable names      = x,y
-    set Function constants  = v=-0.0001, w=400.e3, d=400.e3    # 1mmyr
-    # negative sign indicates compression   (v=-0.0025)
+    set Function constants  = v=0.0001, w=400.e3, d=400.e3    # 0.1 cm/yr
     set Function expression = if (x < w/2 , -v, v) ; v*2*d/w
   end
 end
@@ -139,7 +152,7 @@ end
 # Number and name of compositional fields, which are tracked with particles
 # The seven compositional fields represent:
 # 1. Plastic strain that accumulated over time, including the initial plastic strain values
-# 2. Plastic strain that accumualates over time, with the initial plastic strain removed
+# 2. Plastic strain that accumualated over time, with the initial plastic strain removed
 # 3. Viscous strain that accumulated over time, including the initial viscous strain values
 # 4. Upper crust
 # 5. Lower crust
@@ -174,7 +187,7 @@ end
 
 # Initial values of different compositional fields
 # The upper crust (20 km thick), lower crust (20 km thick)
-# and mantle lithosphere(40 km thick) and asthenosphere (320 km thick )are continuous 
+# and mantle lithosphere (40 km thick) and asthenosphere (320 km thick) are continuous
 # horizontal layers of constant thickness. The non initial plastic strain is
 # set to 0, while the initial plastic and viscous strain is
 # randomized between 0.5 and 1.5.
@@ -203,16 +216,23 @@ subsection Boundary composition model
 end
 
 # Temperature boundary conditions
-# Top and bottom (fixed) temperatures are consistent with the initial temperature field
-# Note that while temperatures are specified for the model sides, these values are
-# not used as the sides are not specified "Fixed temperature boundaries".  Rather,
-# these boundaries are insulating (zero net heat flux).
-# Initial temperature model can be computed using plugin from continental_extension cookbook
+# Top and bottom (fixed) temperatures are consistent with the initial temperature field.
+# Side boundaries are set to insulating, i.e. a net zero heat flux.
+# These boundaries are insulating (i.e., zero net heat flux), so the temperature
+# field evolves due to internal heat production and conduction alone.
+# The initial geotherm defined here is consistent with these constraints and can
+# also be generated using the 'continental geotherm' plugin in ASPECT.
+# For an example of how to implement this plugin, refer to:
+# tests/continental_extension.prm
+
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = bottom, top
   set List of model names = box
+
   subsection Box
     set Bottom temperature = 1669
+    # (calculated at y = 0 using the asthenosphere expression)
+    # Continuity in temperature and heat flux at each layer boundary
     set Top temperature    =  273
   end
 end
@@ -236,11 +256,13 @@ end
 #   Surface Heat Flow    - lower crust (qs2) = 0.06125 W/m^2;
 #                        - mantle      (qs3) = 0.04125 W/m^2;
 #       - asthenosphere (qs4)= 0.03625 W/m^2;
+
 # Note: The continental geotherm initial temperature model
 #       plugin can be used to compute an identical geotherm
 #       for the lithosphere. An example of how to use this
 #       plugin is illustrated in the test for this cookbook
 #       (tests/continental_extension.prm).
+
 subsection Initial temperature model
   set Model name = function
   subsection Function
@@ -323,6 +345,10 @@ subsection Material model
     # so no need to specify diffusion creep parameters below, which are
     # only used if "diffusion" or "composite" option is selected.
     set Viscous flow law = dislocation
+    # The model currently uses a dislocation creep flow law, so the diffusion creep parameters
+    # listed below are NOT active. They are included here for reference and future use —
+    # if the viscous flow law is switched to "composite", the model will incorporate both
+    # dislocation and diffusion creep mechanisms.
 
     # Dislocation creep parameters for
     # 1. Background material/mantle (dry olivine)
@@ -422,8 +448,8 @@ subsection Particles
   set Load balancing strategy     = remove and add particles
   set List of particle properties = initial composition, viscoplastic strain invariants, pT path, position
   set Interpolation scheme        = bilinear least squares
-  set Update ghost particles      = true
   set Particle generator name     = reference cell
+
   subsection Generator
     subsection Reference cell
       set Number of particles per cell per direction = 7
@@ -435,17 +461,21 @@ end
 # Post processing
 subsection Postprocess
   set List of postprocessors = basic statistics, composition statistics, heat flux densities, heat flux statistics, mass flux statistics, particles, pressure statistics, temperature statistics, topography, velocity statistics, visualization
+
   subsection Visualization
     set List of output variables = heat flux map, material properties, named additional outputs, strain rate
+
     subsection Material properties
       set List of material properties = density, viscosity
     end
+
     set Output format = vtu
     set Time between graphical output = 100.e3
     set Interpolate output            = true
     set Write higher order output     = true
     set Output format                 = vtu
   end
+
   subsection Particles
     set Time between data output    = 100.e3
     set Data output format          = vtu
