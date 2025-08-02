@@ -1,0 +1,18 @@
+
+Number of active cells: 16 (on 1 levels)
+Number of degrees of freedom: 349 (162+25+81+81)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving right system ... 0 iterations.
+   Solving Stokes system... 0+5 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+
+   Postprocessing:
+     Writing graphical output: output-visco_plastic_diffusion_phases_w_diffusivity/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
+
