@@ -1,0 +1,13 @@
+# Prescribe a fixed vertical traction on the top boundary
+# Adding parabolic ice load on top boundary at the middle of the model. The ice load is linearly
+# decreasing over time.
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = top: function
+
+  subsection Function
+    set Variable names = x,y,t
+    set Function constants = rho=917, g=9.81, thickness=1e3, x_center=200e3, half_width=100e3, t1=1e6, t2=1.02e6
+    set Function expression = 0; - ( if(t<=t1, rho*g*thickness, if(t<t2, rho*g*thickness*(t2-t)/(t2-t1), 0))) \
+    * (if(abs(x-x_center)<half_width, (1-((x-x_center)/half_width)^2), 0))
+  end
+end
