@@ -1,0 +1,8 @@
+# Test for recursively including prm files when starting ASPECT
+# from the command line. The shared library loaded with this
+# test will first execute this test from the terminal, then
+# continue to execute the regular file. Both outputs should
+# be identical except for the status messages of the
+# shared library.
+
+include $ASPECT_SOURCE_DIR/tests/include_prm_file.prm

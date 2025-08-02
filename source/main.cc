@@ -392,49 +392,6 @@ namespace
           }
 
         input_as_string = aspect::Utilities::read_and_distribute_file_content(parameter_file_name, comm);
-
-        // Search and replace include directives in the input file.
-        std::match_results<std::string::const_iterator> matches;
-        const std::string search_regex = "(?:^|\n)[ \t]*include[ \t]+(.*?)[ \t]*(?:#|\n|$)";
-        const std::string replace_regex = "(?:^|\n)[ \t]*include[ \t]+.*";
-
-        unsigned int n_included_files = 0;
-
-        while (std::regex_search(input_as_string, matches, std::regex(search_regex)))
-          {
-            // Make sure we are not circularly including files. This is not easily possible
-            // by making sure included files are unique, because we may have multiple
-            // files including the same file in a non-circular way. So we just limit
-            // the number of included files to a reasonable number.
-            AssertThrow(n_included_files < 15,
-                        dealii::ExcMessage("Too many included files in parameter file. You likely have a circular include."));
-
-            // Since the line as a whole matched, the 'matches' variable needs to
-            // contain two entries: [0] denotes the whole line, and [1] the
-            // part that was matched by the '(.*?)' expression.
-            Assert (matches.size() == 2, dealii::ExcInternalError());
-
-            const std::string included_filename(matches.str(1));
-            const std::string prefix = "\n# Included content from " + included_filename + ":\n\n";
-
-            // Expand ASPECT_SOURCE_DIR in the included file name, but not the content of the file
-            // (to keep the formatting of all parameter files intact, which we will copy into the output directory).
-            const std::string expanded_filename = aspect::Utilities::expand_ASPECT_SOURCE_DIR(matches.str(1));
-
-            // Prepend a newline character to the included file content, because if the include directive
-            // is not in the first line, we will replace one newlince character
-            // from the original input file in the regex_replace below.
-            const std::string included_file_content = aspect::Utilities::read_and_distribute_file_content(expanded_filename, comm);
-
-            // Replace the include line with the content of the included file. Note that we only replace the first
-            // include line we find (there may be several, which we will replace in subsequent iterations).
-            input_as_string = std::regex_replace(input_as_string,
-                                                 std::regex(replace_regex),
-                                                 prefix + included_file_content,
-                                                 std::regex_constants::format_first_only);
-
-            ++n_included_files;
-          }
       }
     else
       {
@@ -448,6 +405,49 @@ namespace
           input_as_string = read_until_end (std::cin);
         input_as_string = Utilities::MPI::broadcast(MPI_COMM_WORLD, input_as_string,
                                                     /*root=*/0);
+      }
+
+    // Now search for and replace include directives in the input string.
+    std::match_results<std::string::const_iterator> matches;
+    const std::string search_regex = "(?:^|\n)[ \t]*include[ \t]+(.*?)[ \t]*(?:#|\n|$)";
+    const std::string replace_regex = "(?:^|\n)[ \t]*include[ \t]+.*";
+
+    unsigned int n_included_files = 0;
+
+    while (std::regex_search(input_as_string, matches, std::regex(search_regex)))
+      {
+        // Make sure we are not circularly including files. This is not easily possible
+        // by making sure included files are unique, because we may have multiple
+        // files including the same file in a non-circular way. So we just limit
+        // the number of included files to a reasonable number.
+        AssertThrow(n_included_files < 15,
+                    dealii::ExcMessage("Too many included files in parameter file. You likely have a circular include."));
+
+        // Since the line as a whole matched, the 'matches' variable needs to
+        // contain two entries: [0] denotes the whole line, and [1] the
+        // part that was matched by the '(.*?)' expression.
+        Assert (matches.size() == 2, dealii::ExcInternalError());
+
+        const std::string included_filename(matches.str(1));
+        const std::string prefix = "\n# Included content from " + included_filename + ":\n\n";
+
+        // Expand ASPECT_SOURCE_DIR in the included file name, but not the content of the file
+        // (to keep the formatting of all parameter files intact, which we will copy into the output directory).
+        const std::string expanded_filename = aspect::Utilities::expand_ASPECT_SOURCE_DIR(matches.str(1));
+
+        // Prepend a newline character to the included file content, because if the include directive
+        // is not in the first line, we will replace one newlince character
+        // from the original input file in the regex_replace below.
+        const std::string included_file_content = aspect::Utilities::read_and_distribute_file_content(expanded_filename, comm);
+
+        // Replace the include line with the content of the included file. Note that we only replace the first
+        // include line we find (there may be several, which we will replace in subsequent iterations).
+        input_as_string = std::regex_replace(input_as_string,
+                                             std::regex(replace_regex),
+                                             prefix + included_file_content,
+                                             std::regex_constants::format_first_only);
+
+        ++n_included_files;
       }
 
     return input_as_string;
