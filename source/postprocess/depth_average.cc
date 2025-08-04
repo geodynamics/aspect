@@ -227,7 +227,7 @@ namespace aspect
                              "graphical output files. A value of zero indicates "
                              "that output should be generated in each time step. "
                              "Units: years if the "
-                             "'Use years in output instead of seconds' parameter is set; "
+                             "'Use years instead of seconds' parameter is set; "
                              "seconds otherwise.");
           prm.declare_entry ("Number of zones", "10",
                              Patterns::Integer (1),
@@ -517,7 +517,7 @@ namespace aspect
                                   "In the output files, the $x$-value of each data point corresponds "
                                   "to the depth, whereas the $y$-value corresponds to the "
                                   "simulation time. The time is provided in seconds or, if the "
-                                  "global ``Use years in output instead of seconds'' parameter is "
+                                  "global ``Use years instead of seconds'' parameter is "
                                   "set, in years.")
   }
 }

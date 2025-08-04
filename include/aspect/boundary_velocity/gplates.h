@@ -220,7 +220,7 @@ namespace aspect
          * Time from which on the data file with number 'First data file
          * number' is used as boundary condition. Previous to this time, 0 is
          * returned for every field. Depending on the setting of the global
-         * 'Use years in output instead of seconds' flag in the input file,
+         * 'Use years instead of seconds' flag in the input file,
          * this number is either interpreted as seconds or as years."
          */
         double first_data_file_model_time;

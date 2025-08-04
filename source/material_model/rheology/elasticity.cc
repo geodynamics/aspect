@@ -112,7 +112,7 @@ namespace aspect
                            Patterns::Double (0.),
                            "The fixed elastic time step $dte$. It is always used during the first "
                            "timestep; afterwards on if 'Used fixed elastic time step' is true. "
-                           "Units: years if the 'Use years in output instead of seconds' parameter is set; "
+                           "Units: years if the 'Use years instead of seconds' parameter is set; "
                            "seconds otherwise.");
         prm.declare_entry ("Stabilization time scale factor", "1.",
                            Patterns::Double (1.),

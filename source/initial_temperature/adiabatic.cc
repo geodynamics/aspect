@@ -376,13 +376,13 @@ namespace aspect
                              Patterns::Double (0.),
                              "The age of the upper thermal boundary layer, used for the calculation "
                              "of the half-space cooling model temperature. Units: years if the "
-                             "'Use years in output instead of seconds' parameter is set; "
+                             "'Use years instead of seconds' parameter is set; "
                              "seconds otherwise.");
           prm.declare_entry ("Age bottom boundary layer", "0.",
                              Patterns::Double (0.),
                              "The age of the lower thermal boundary layer, used for the calculation "
                              "of the half-space cooling model temperature. Units: years if the "
-                             "'Use years in output instead of seconds' parameter is set; "
+                             "'Use years instead of seconds' parameter is set; "
                              "seconds otherwise.");
           prm.declare_entry ("Radius", "0.",
                              Patterns::Double (0.),
