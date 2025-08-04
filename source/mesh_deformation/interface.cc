@@ -656,7 +656,7 @@ namespace aspect
               model->compute_velocity_constraints_on_boundary(mesh_deformation_dof_handler,
                                                               current_plugin_constraints,
                                                               boundary_id_set);
-              if ((this->is_stokes_matrix_free()))
+              if (this->is_stokes_matrix_free())
                 {
                   mg_constrained_dofs.make_zero_boundary_constraints(mesh_deformation_dof_handler,
                                                                      boundary_id_set);
