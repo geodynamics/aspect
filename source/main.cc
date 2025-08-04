@@ -936,6 +936,14 @@ int main (int argc, char *argv[])
       return 1;
     }
 
+#ifdef DEBUG
+#ifdef ASPECT_USE_FP_EXCEPTIONS
+  // Now disable floating exceptions again. This fixes an issue
+  // of CGAL checking floating points exceptions during
+  // finalization and throwing an error:
+  fedisableexcept(FE_DIVBYZERO|FE_INVALID);
+#endif
+#endif
 
 #ifdef ASPECT_WITH_PYTHON
   Py_FinalizeEx();
