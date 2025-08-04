@@ -30,8 +30,8 @@ e temperature          = \
 set Surface pressure\
                        = \
 0
-set Use years in out\
-put instead of seconds = \
+set Use years \
+instead of seconds = \
 false
 set Nonlinear solver \
  scheme                = \
