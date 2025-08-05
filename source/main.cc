@@ -26,6 +26,7 @@
 #include <deal.II/base/mpi.h>
 #include <deal.II/base/multithread_info.h>
 #include <deal.II/base/revision.h>
+#include <deal.II/base/scope_exit.h>
 #include <csignal>
 #include <string>
 #include <thread>
@@ -677,6 +678,16 @@ int main (int argc, char *argv[])
 
   // enable floating point exceptions
   feenableexcept(FE_DIVBYZERO|FE_INVALID);
+
+  // Make sure that at the end of the program run, we
+  // disable floating exceptions again. This fixes an issue
+  // of CGAL checking floating points exceptions during
+  // finalization and throwing an error:
+  ScopeExit fp_except_cleanup(
+    []()
+  {
+    fedisableexcept(FE_DIVBYZERO|FE_INVALID);
+  });
 #endif
 #endif
 
@@ -685,6 +696,12 @@ int main (int argc, char *argv[])
   // required for Numpy interop
   if (_import_array() < 0)
     AssertThrow(false, ExcMessage("Numpy init failed!"));
+
+  ScopeExit python_cleanup(
+    []()
+  {
+    Py_FinalizeEx();
+  });
 #endif
 
   std::string prm_name = "";
@@ -935,19 +952,6 @@ int main (int argc, char *argv[])
       MPI_Abort(MPI_COMM_WORLD, 1);
       return 1;
     }
-
-#ifdef DEBUG
-#ifdef ASPECT_USE_FP_EXCEPTIONS
-  // Now disable floating exceptions again. This fixes an issue
-  // of CGAL checking floating points exceptions during
-  // finalization and throwing an error:
-  fedisableexcept(FE_DIVBYZERO|FE_INVALID);
-#endif
-#endif
-
-#ifdef ASPECT_WITH_PYTHON
-  Py_FinalizeEx();
-#endif
 
   return 0;
 }
