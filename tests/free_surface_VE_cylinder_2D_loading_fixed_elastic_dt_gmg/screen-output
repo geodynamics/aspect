@@ -85,7 +85,7 @@ Number of mesh deformation degrees of freedom: 1,162
    Solving ve_stress_yy_old system ... 3 iterations.
    Solving ve_stress_xy_old system ... 3 iterations.
    Solving Stokes system (GMG)... 51+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.57127e-16, 0.000111719, 0.000111719, 6.13859e-05, 0, 0, 0, 0.000387195
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.46961e-16, 0.000111719, 0.000111719, 6.13851e-05, 0, 0, 0, 0.000387195
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000387195
 
    Solving temperature system... 0 iterations.
@@ -96,7 +96,7 @@ Number of mesh deformation degrees of freedom: 1,162
    Solving ve_stress_yy_old system ... 2 iterations.
    Solving ve_stress_xy_old system ... 3 iterations.
    Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.41175e-16, 0.000312023, 0.000312023, 0.00019392, 0, 0, 0, 7.41174e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.56368e-16, 0.000312023, 0.000312023, 0.000193921, 0, 0, 0, 7.41179e-07
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000312023
 
    Solving temperature system... 0 iterations.
@@ -107,8 +107,8 @@ Number of mesh deformation degrees of freedom: 1,162
    Solving ve_stress_yy_old system ... 2 iterations.
    Solving ve_stress_xy_old system ... 2 iterations.
    Solving Stokes system (GMG)... 7+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.67369e-16, 9.17564e-08, 9.17564e-08, 7.09507e-08, 0, 0, 0, 3.73564e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 9.17564e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.39953e-16, 9.17591e-08, 9.17591e-08, 7.0952e-08, 0, 0, 0, 3.73571e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 9.17591e-08
 
 
    Postprocessing:
@@ -135,7 +135,7 @@ Number of mesh deformation degrees of freedom: 1,156
    Solving ve_stress_yy_old system ... 2 iterations.
    Solving ve_stress_xy_old system ... 2 iterations.
    Solving Stokes system (GMG)... 52+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.2273e-16, 8.4198e-05, 8.4198e-05, 5.96163e-05, 0, 0, 0, 0.000425063
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.35672e-16, 8.41985e-05, 8.41985e-05, 5.96159e-05, 0, 0, 0, 0.000425063
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000425063
 
    Solving temperature system... 0 iterations.
@@ -146,8 +146,8 @@ Number of mesh deformation degrees of freedom: 1,156
    Solving ve_stress_yy_old system ... 2 iterations.
    Solving ve_stress_xy_old system ... 2 iterations.
    Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.26615e-16, 0.000264181, 0.000264181, 0.000196185, 0, 0, 0, 6.58586e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000264181
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.4549e-16, 0.000264182, 0.000264182, 0.000196186, 0, 0, 0, 6.58589e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000264182
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 1 iterations.
@@ -157,8 +157,8 @@ Number of mesh deformation degrees of freedom: 1,156
    Solving ve_stress_yy_old system ... 1 iterations.
    Solving ve_stress_xy_old system ... 1 iterations.
    Solving Stokes system (GMG)... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.40432e-16, 5.64033e-08, 5.64033e-08, 4.10989e-08, 0, 0, 0, 2.03536e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 5.64033e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.23214e-16, 5.64047e-08, 5.64047e-08, 4.10997e-08, 0, 0, 0, 2.03539e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 5.64047e-08
 
 
    Postprocessing:
@@ -185,7 +185,7 @@ Number of mesh deformation degrees of freedom: 1,150
    Solving ve_stress_yy_old system ... 2 iterations.
    Solving ve_stress_xy_old system ... 2 iterations.
    Solving Stokes system (GMG)... 49+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.26101e-16, 8.9036e-05, 8.9036e-05, 6.40023e-05, 0, 0, 0, 8.35235e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.39849e-16, 8.9036e-05, 8.9036e-05, 6.40024e-05, 0, 0, 0, 8.35235e-05
       Relative nonlinear residual (total system) after nonlinear iteration 1: 8.9036e-05
 
    Solving temperature system... 0 iterations.
@@ -196,7 +196,7 @@ Number of mesh deformation degrees of freedom: 1,150
    Solving ve_stress_yy_old system ... 2 iterations.
    Solving ve_stress_xy_old system ... 2 iterations.
    Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.32118e-16, 4.92419e-05, 4.92419e-05, 3.99903e-05, 0, 0, 0, 1.76209e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24371e-16, 4.92419e-05, 4.92419e-05, 3.99903e-05, 0, 0, 0, 1.76209e-07
       Relative nonlinear residual (total system) after nonlinear iteration 2: 4.92419e-05
 
    Solving temperature system... 0 iterations.
@@ -207,8 +207,8 @@ Number of mesh deformation degrees of freedom: 1,150
    Solving ve_stress_yy_old system ... 1 iterations.
    Solving ve_stress_xy_old system ... 1 iterations.
    Solving Stokes system (GMG)... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.21193e-16, 1.14622e-08, 1.14622e-08, 7.62417e-09, 0, 0, 0, 4.57527e-11
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.14622e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.29223e-16, 1.14624e-08, 1.14624e-08, 7.6243e-09, 0, 0, 0, 4.5753e-11
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.14624e-08
 
 
    Postprocessing:

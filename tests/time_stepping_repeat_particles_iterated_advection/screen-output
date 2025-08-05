@@ -41,7 +41,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
    Advecting particles...  done.
    Solving field system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.35635e-11, 3.47873e-13, 0, 1.64276e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.35635e-11, 3.47909e-13, 0, 1.64276e-09
       Relative nonlinear residual (total system) after nonlinear iteration 3: 1.64276e-09
 
 
@@ -60,7 +60,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
    Advecting particles...  done.
    Solving field system ... 7 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.27326e-07, 6.80572e-07, 0, 5.83848e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.27326e-07, 6.80572e-07, 0, 5.83849e-10
       Relative nonlinear residual (total system) after nonlinear iteration 2: 7.27326e-07
 
 
@@ -252,27 +252,27 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0048243, 0.00439402, 0, 0.321599
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.321599
 
-   Solving temperature system... 768 iterations.
+   Solving temperature system... 732 iterations.
    Advecting particles...  done.
    Solving field system ... retrying linear solve with different preconditioner...
-202 iterations.
+174 iterations.
    Solving Stokes system (GMG)... 6+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.322224, 0.307388, 0, 9.77972e-06
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.322224
 
-   Solving temperature system... 608 iterations.
+   Solving temperature system... 547 iterations.
    Advecting particles...  done.
    Solving field system ... retrying linear solve with different preconditioner...
-35 iterations.
+44 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.86262e-05, 6.51843e-05, 0, 7.34773e-09
       Relative nonlinear residual (total system) after nonlinear iteration 3: 6.86262e-05
 
-   Solving temperature system... 73 iterations.
+   Solving temperature system... 67 iterations.
    Advecting particles...  done.
    Solving field system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.61308e-11, 9.47013e-13, 0, 7.34773e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.61552e-11, 8.81132e-13, 0, 7.34773e-09
       Relative nonlinear residual (total system) after nonlinear iteration 4: 7.34773e-09
 
 
@@ -308,14 +308,14 @@ Repeating the current time step based on the time stepping manager ...
 
    Solving temperature system... 79 iterations.
    Advecting particles...  done.
-   Solving field system ... 90 iterations.
+   Solving field system ... 92 iterations.
    Solving Stokes system (GMG)... 6+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.163827, 0.156336, 0, 5.70654e-06
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.163827
 
    Solving temperature system... 47 iterations.
    Advecting particles...  done.
-   Solving field system ... 64 iterations.
+   Solving field system ... 61 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.28593e-05, 2.17021e-05, 0, 4.12668e-09
       Relative nonlinear residual (total system) after nonlinear iteration 3: 2.28593e-05
@@ -324,7 +324,7 @@ Repeating the current time step based on the time stepping manager ...
    Advecting particles...  done.
    Solving field system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.80056e-12, 9.50237e-13, 0, 4.12668e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.80058e-12, 8.7472e-13, 0, 4.12668e-09
       Relative nonlinear residual (total system) after nonlinear iteration 4: 4.12668e-09
 
 

@@ -96,49 +96,49 @@ Number of degrees of freedom: 268 (162+25+81)
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 6+0 iterations.
-      Newton system information: Norm of the rhs: 1.01086e+08, Derivative scaling factor: 1
-      Relative nonlinear residuals (temperature, Stokes system): 9.54579e-17, 6.14227e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 13: 6.14227e-09
+      Newton system information: Norm of the rhs: 1.01087e+08, Derivative scaling factor: 1
+      Relative nonlinear residuals (temperature, Stokes system): 9.54579e-17, 6.14231e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 13: 6.14231e-09
 
    Solving temperature system... 0 iterations.
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 7+0 iterations.
-      Newton system information: Norm of the rhs: 2.90402e+07, Derivative scaling factor: 1
-      Relative nonlinear residuals (temperature, Stokes system): 9.54579e-17, 1.76457e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 14: 1.76457e-09
+      Newton system information: Norm of the rhs: 2.90504e+07, Derivative scaling factor: 1
+      Relative nonlinear residuals (temperature, Stokes system): 9.54579e-17, 1.76519e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 14: 1.76519e-09
 
    Solving temperature system... 0 iterations.
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 4+0 iterations.
-      Newton system information: Norm of the rhs: 4.76543e+06, Derivative scaling factor: 1
-      Relative nonlinear residuals (temperature, Stokes system): 9.54579e-17, 2.89561e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 15: 2.89561e-10
+      Newton system information: Norm of the rhs: 4.76463e+06, Derivative scaling factor: 1
+      Relative nonlinear residuals (temperature, Stokes system): 9.54579e-17, 2.89512e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 15: 2.89512e-10
 
    Solving temperature system... 0 iterations.
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 6+0 iterations.
-      Newton system information: Norm of the rhs: 1.47137e+06, Derivative scaling factor: 1
-      Relative nonlinear residuals (temperature, Stokes system): 9.54579e-17, 8.94045e-11
-      Relative nonlinear residual (total system) after nonlinear iteration 16: 8.94045e-11
+      Newton system information: Norm of the rhs: 1.47059e+06, Derivative scaling factor: 1
+      Relative nonlinear residuals (temperature, Stokes system): 9.54579e-17, 8.93573e-11
+      Relative nonlinear residual (total system) after nonlinear iteration 16: 8.93573e-11
 
    Solving temperature system... 0 iterations.
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 4+0 iterations.
-      Newton system information: Norm of the rhs: 317224, Derivative scaling factor: 1
-      Relative nonlinear residuals (temperature, Stokes system): 9.54579e-17, 1.92754e-11
-      Relative nonlinear residual (total system) after nonlinear iteration 17: 1.92754e-11
+      Newton system information: Norm of the rhs: 317265, Derivative scaling factor: 1
+      Relative nonlinear residuals (temperature, Stokes system): 9.54579e-17, 1.92779e-11
+      Relative nonlinear residual (total system) after nonlinear iteration 17: 1.92779e-11
 
    Solving temperature system... 0 iterations.
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 9+0 iterations.
-      Newton system information: Norm of the rhs: 76830.6, Derivative scaling factor: 1
-      Relative nonlinear residuals (temperature, Stokes system): 9.54579e-17, 4.66845e-12
-      Relative nonlinear residual (total system) after nonlinear iteration 18: 4.66845e-12
+      Newton system information: Norm of the rhs: 76844.9, Derivative scaling factor: 1
+      Relative nonlinear residuals (temperature, Stokes system): 9.54579e-17, 4.66932e-12
+      Relative nonlinear residual (total system) after nonlinear iteration 18: 4.66932e-12
 
 
    Postprocessing:

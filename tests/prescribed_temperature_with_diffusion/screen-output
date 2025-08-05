@@ -6,12 +6,12 @@ Number of degrees of freedom: 6,618 (4,010+603+2,005)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Copying properties into prescribed temperature field... done.
-   Solving temperature system... 152 iterations.
+   Solving temperature system... 150 iterations.
    Solving Stokes system (GMG)... 73+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-prescribed_temperature_with_diffusion/solution/solution-00000
-     Temperature min/avg/max:  1.906e-14 K, 0.1253 K, 0.953 K
+     Temperature min/avg/max:  1.869e-14 K, 0.1253 K, 0.953 K
 
 Termination requested by criterion: end time
 

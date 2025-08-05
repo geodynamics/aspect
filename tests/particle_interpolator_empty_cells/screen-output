@@ -23,7 +23,7 @@ Number of degrees of freedom: 10,643 (4,996+651+2,498+2,498)
      Particle count per cell min/avg/max: 2, 6, 27
 
 *** Timestep 1:  t=7e+09 years, dt=7e+09 years
-   Solving temperature system... 149 iterations.
+   Solving temperature system... 145 iterations.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 22+0 iterations.
 

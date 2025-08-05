@@ -139,8 +139,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 87+0 iterations.
-      Newton system information: Norm of the rhs: 65817.6, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.43411e-12
+      Newton system information: Norm of the rhs: 65817.8, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.43412e-12
 
 
    Postprocessing:
@@ -154,13 +154,13 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
-      Newton system information: Norm of the rhs: 234332
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.1059e-12
+      Newton system information: Norm of the rhs: 234331
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.10588e-12
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 91+0 iterations.
-      Newton system information: Norm of the rhs: 25617.5, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.58185e-13
+      Newton system information: Norm of the rhs: 25617.6, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.58187e-13
 
 
    Postprocessing:
@@ -175,7 +175,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
-      Newton system information: Norm of the rhs: 97675.1
+      Newton system information: Norm of the rhs: 97675
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.12826e-12
 
 
@@ -191,7 +191,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
       Newton system information: Norm of the rhs: 176024
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 3.83544e-12
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 3.83542e-12
 
 
    Postprocessing:

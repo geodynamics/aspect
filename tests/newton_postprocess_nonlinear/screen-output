@@ -33,8 +33,8 @@ Number of degrees of freedom: 93,572 (8,450+1,089+1,089+9,216+9,216+9,216+9,216+
    Skipping ve_stress_xx_old composition solve because RHS is zero.
    Skipping ve_stress_yy_old composition solve because RHS is zero.
    Skipping ve_stress_xy_old composition solve because RHS is zero.
-   Solving block system ... 1 iterations.
-   Solving air system ... 1 iterations.
+   Solving block system ... 2 iterations.
+   Solving air system ... 2 iterations.
    Solving inclusion system ... 1 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+25 iterations.
@@ -54,14 +54,14 @@ Number of degrees of freedom: 93,572 (8,450+1,089+1,089+9,216+9,216+9,216+9,216+
    Skipping ve_stress_xx_old composition solve because RHS is zero.
    Skipping ve_stress_yy_old composition solve because RHS is zero.
    Skipping ve_stress_xy_old composition solve because RHS is zero.
-   Solving block system ... 1 iterations.
-   Solving air system ... 1 iterations.
+   Solving block system ... 2 iterations.
+   Solving air system ... 2 iterations.
    Solving inclusion system ... 1 iterations.
    The linear solver tolerance is set to 0.1. 
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+1 iterations.
       Newton system information: Norm of the rhs: 7.48612e+11, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.52391e-17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0174943
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.36302e-17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0174943
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.0174943
 
    Postprocessing:
@@ -78,7 +78,7 @@ Number of degrees of freedom: 93,572 (8,450+1,089+1,089+9,216+9,216+9,216+9,216+
    Skipping ve_stress_xy_old composition solve because RHS is zero.
    Solving block system ... 1 iterations.
    Solving air system ... 1 iterations.
-   Solving inclusion system ... 1 iterations.
+   Solving inclusion system ... 2 iterations.
    The linear solver tolerance is set to 0.1. 
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+1 iterations.
@@ -98,14 +98,14 @@ Number of degrees of freedom: 93,572 (8,450+1,089+1,089+9,216+9,216+9,216+9,216+
    Skipping ve_stress_xx_old composition solve because RHS is zero.
    Skipping ve_stress_yy_old composition solve because RHS is zero.
    Skipping ve_stress_xy_old composition solve because RHS is zero.
-   Solving block system ... 1 iterations.
-   Solving air system ... 1 iterations.
-   Solving inclusion system ... 1 iterations.
+   Solving block system ... 2 iterations.
+   Solving air system ... 2 iterations.
+   Solving inclusion system ... 2 iterations.
    The linear solver tolerance is set to 0.1. 
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+1 iterations.
       Newton system information: Norm of the rhs: 7.42874e+11, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.36302e-17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0173602
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.98693e-17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0173602
       Relative nonlinear residual (total system) after nonlinear iteration 5: 0.0173602
 
    Postprocessing:

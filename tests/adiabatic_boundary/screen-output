@@ -7,11 +7,11 @@ Number of degrees of freedom: 20,381 (14,739+729+4,913)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 52+0 iterations.
+   Solving Stokes system (GMG)... 51+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0326625
 
-   Solving Stokes system (GMG)... 8+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 2.80156e-09
+   Solving Stokes system (GMG)... 7+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.62188e-09
 
 
    Postprocessing:

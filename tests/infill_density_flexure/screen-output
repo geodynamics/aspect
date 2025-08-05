@@ -34,7 +34,7 @@ Number of mesh deformation degrees of freedom: 14,762
    Skipping ve_stress_xx_old composition solve because RHS is zero.
    Skipping ve_stress_yy_old composition solve because RHS is zero.
    Skipping ve_stress_xy_old composition solve because RHS is zero.
-   Solving lithosphere system ... 1 iterations.
+   Solving lithosphere system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 12+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.70436e-16, 0, 0, 0, 0, 0, 0, 0, 8.83042e-08

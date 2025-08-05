@@ -5,11 +5,11 @@ Number of active cells: 64 (on 3 levels)
 Number of degrees of freedom: 3,041 (2,187+125+729)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
-   Solving Stokes system (GMG)... 0+508 iterations.
+   Solving Stokes system (GMG)... 0+500 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.01105
 
-   Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 9.38623e-13
+   Solving Stokes system (GMG)... 0+4 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.00318e-12
 
 
    Postprocessing:

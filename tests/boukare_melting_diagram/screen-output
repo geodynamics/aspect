@@ -5,10 +5,10 @@ Number of degrees of freedom: 39,050 (8,450+4,161+8,450+1,089+4,225+4,225+4,225+
 *** Timestep 0:  t=0 years, dt=0 years
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 35+0 iterations.
-   Solving fluid velocity system... 12 iterations.
+   Solving fluid velocity system... 13 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  2.07e-23 m/year, 9.8e-23 m/year
+     RMS, max velocity:                  8.61e-24 m/year, 5.28e-23 m/year
      Temperature min/avg/max:            3400 K, 4200 K, 5000 K
      Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
      Writing graphical output:           output-boukare_melting_diagram/solution/solution-00000

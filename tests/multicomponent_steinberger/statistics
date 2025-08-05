@@ -13,5 +13,5 @@
 # 13: Velocity iterations in Stokes preconditioner
 # 14: Schur complement iterations in Stokes preconditioner
 # 15: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 512 4851 2145 6435 0 0  0 0 69 179 111 output-multicomponent_steinberger/solution/solution-00000 
-1 6.000000000000e+04 6.000000000000e+04 512 4851 2145 6435 0 8 10 9 59 148  91                                                        "" 
+0 0.000000000000e+00 0.000000000000e+00 512 4851 2145 6435 0 0  0 0 69 176 109 output-multicomponent_steinberger/solution/solution-00000 
+1 6.000000000000e+04 6.000000000000e+04 512 4851 2145 6435 0 8 10 9 59 144  89                                                        "" 

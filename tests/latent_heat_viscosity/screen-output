@@ -24,14 +24,14 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 142+0 iterations.
+   Solving Stokes system (GMG)... 137+0 iterations.
 
 Number of active cells: 2,535 (on 5 levels)
 Number of degrees of freedom: 35,586 (21,840+2,826+10,920)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 166+0 iterations.
+   Solving Stokes system (GMG)... 165+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-latent_heat_viscosity/solution/solution-00000
@@ -42,7 +42,7 @@ Number of degrees of freedom: 35,586 (21,840+2,826+10,920)
 
 *** Timestep 1:  t=1.15653e+06 years, dt=1.15653e+06 years
    Solving temperature system... 21 iterations.
-   Solving Stokes system (GMG)... 139+0 iterations.
+   Solving Stokes system (GMG)... 136+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-latent_heat_viscosity/solution/solution-00001

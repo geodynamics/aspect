@@ -15,7 +15,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Heating rate (average/total):       0 W/kg, 0 W
 
 *** Timestep 1:  t=6.16847e-05 seconds, dt=6.16847e-05 seconds
-   Solving temperature system... 67 iterations.
+   Solving temperature system... 66 iterations.
    Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
@@ -35,7 +35,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Heating rate (average/total):       0 W/kg, 0 W
 
 *** Timestep 3:  t=0.000174407 seconds, dt=5.50955e-05 seconds
-   Solving temperature system... 87 iterations.
+   Solving temperature system... 86 iterations.
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
@@ -45,7 +45,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Heating rate (average/total):       0 W/kg, 0 W
 
 *** Timestep 4:  t=0.000224042 seconds, dt=4.96349e-05 seconds
-   Solving temperature system... 89 iterations.
+   Solving temperature system... 88 iterations.
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
@@ -55,7 +55,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Heating rate (average/total):       0 W/kg, 0 W
 
 *** Timestep 5:  t=0.000266202 seconds, dt=4.216e-05 seconds
-   Solving temperature system... 84 iterations.
+   Solving temperature system... 83 iterations.
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
@@ -75,7 +75,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Heating rate (average/total):       0 W/kg, 0 W
 
 *** Timestep 7:  t=0.000340489 seconds, dt=3.65191e-05 seconds
-   Solving temperature system... 59 iterations.
+   Solving temperature system... 58 iterations.
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
@@ -355,7 +355,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Heating rate (average/total):       0 W/kg, 0 W
 
 *** Timestep 35:  t=0.00457251 seconds, dt=0.000150542 seconds
-   Solving temperature system... 56 iterations.
+   Solving temperature system... 57 iterations.
    Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
@@ -395,7 +395,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Heating rate (average/total):       0 W/kg, 0 W
 
 *** Timestep 39:  t=0.00501588 seconds, dt=7.93956e-05 seconds
-   Solving temperature system... 69 iterations.
+   Solving temperature system... 68 iterations.
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
@@ -415,7 +415,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Heating rate (average/total):       0 W/kg, 0 W
 
 *** Timestep 41:  t=0.0051513 seconds, dt=6.60667e-05 seconds
-   Solving temperature system... 57 iterations.
+   Solving temperature system... 56 iterations.
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
@@ -475,7 +475,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Heating rate (average/total):       0 W/kg, 0 W
 
 *** Timestep 47:  t=0.00566264 seconds, dt=8.68766e-05 seconds
-   Solving temperature system... 50 iterations.
+   Solving temperature system... 49 iterations.
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
@@ -985,7 +985,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Heating rate (average/total):       0 W/kg, 0 W
 
 *** Timestep 98:  t=0.0117573 seconds, dt=0.000108778 seconds
-   Solving temperature system... 50 iterations.
+   Solving temperature system... 49 iterations.
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
@@ -995,7 +995,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Heating rate (average/total):       0 W/kg, 0 W
 
 *** Timestep 99:  t=0.0118574 seconds, dt=0.000100126 seconds
-   Solving temperature system... 52 iterations.
+   Solving temperature system... 50 iterations.
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
@@ -1005,7 +1005,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Heating rate (average/total):       0 W/kg, 0 W
 
 *** Timestep 100:  t=0.011951 seconds, dt=9.36245e-05 seconds
-   Solving temperature system... 51 iterations.
+   Solving temperature system... 50 iterations.
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
@@ -1048,7 +1048,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Heating rate (average/total):       0 W/kg, 0 W
 
 *** Timestep 104:  t=0.0123065 seconds, dt=8.79848e-05 seconds
-   Solving temperature system... 52 iterations.
+   Solving temperature system... 51 iterations.
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
@@ -1068,7 +1068,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Heating rate (average/total):       0 W/kg, 0 W
 
 *** Timestep 106:  t=0.0124766 seconds, dt=8.40282e-05 seconds
-   Solving temperature system... 50 iterations.
+   Solving temperature system... 49 iterations.
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:

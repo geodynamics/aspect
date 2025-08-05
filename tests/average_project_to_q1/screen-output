@@ -5,10 +5,10 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
 *** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system (GMG)... 273+0 iterations.
+   Solving Stokes system (GMG)... 242+0 iterations.
 
    Postprocessing:
-     Pressure min/avg/max: -3.013 Pa, -6.65e-16 Pa, 3.013 Pa
+     Pressure min/avg/max: -3.013 Pa, -2.921e-15 Pa, 3.013 Pa
 
 Termination requested by criterion: end time
 

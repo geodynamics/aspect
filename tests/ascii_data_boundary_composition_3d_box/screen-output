@@ -26,7 +26,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
      RMS, max velocity:                  1 m/year, 1 m/year
      Temperature min/avg/max:            0 K, 1369 K, 1913 K
      Heat fluxes through boundary parts: -7.452e+13 W, 7.452e+13 W, 0 W, 0 W, 1.414e+11 W, -9.493e+10 W
-     Compositions min/max/mass:          -3.3e-16/1/6.189e+16
+     Compositions min/max/mass:          -3.119e-16/1/6.189e+16
 
 *** Timestep 1:  t=10000 years, dt=10000 years
    Solving temperature system... 9 iterations.

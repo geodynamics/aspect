@@ -13,7 +13,7 @@ Number of degrees of freedom: 970 (228+34+114+198+198+198)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving advection_field system ... 0 iterations.
-   Solving Stokes system (GMG)... 16+0 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
 
 Number of active cells: 34 (on 4 levels)
 Number of degrees of freedom: 1,470 (336+48+168+306+306+306)

@@ -9,8 +9,8 @@ Number of degrees of freedom: 1,156 (578+289+289)
    Solving Stokes system (AMG)... 17+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
-   Solving Stokes system (AMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.27324e-08
+   Solving Stokes system (AMG)... 3+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.78963e-07
 
 
    Postprocessing:

@@ -1,9 +1,4 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 6,823 (2,178+289+1,089+1,089+1,089+1,089)
 
@@ -12,11 +7,8 @@ Number of degrees of freedom: 6,823 (2,178+289+1,089+1,089+1,089+1,089)
    Advecting particles...  done.
    Solving advection_field system ... 0 iterations.
 
---------------------------------------------------------
-An error occurred in line <354> of file </home/juliane/software/aspect-melt/source/simulator/initial_conditions.cc> in function
+An error occurred in file <initial_conditions.cc> in function
 (line in output replaced by default.sh script)
-The violated condition was: 
-    false
 Additional information: 
     The field composition 1 (advection_particle) is marked as advected by
     particles, but no particle property exists that is mapped to this

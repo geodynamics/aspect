@@ -11,21 +11,21 @@ Number of degrees of freedom: 1,913 (1,170+158+585)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 185+0 iterations.
+   Solving Stokes system (GMG)... 187+0 iterations.
 
 Number of active cells: 202 (on 3 levels)
 Number of degrees of freedom: 3,001 (1,838+244+919)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 185+0 iterations.
+   Solving Stokes system (GMG)... 187+0 iterations.
 
 Number of active cells: 352 (on 4 levels)
 Number of degrees of freedom: 5,271 (3,234+420+1,617)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 184+0 iterations.
+   Solving Stokes system (GMG)... 185+0 iterations.
 
    Postprocessing:
      Writing depth average: output-adiabatic_initial_conditions_chunk/depth_average

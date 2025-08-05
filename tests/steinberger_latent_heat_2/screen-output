@@ -20,7 +20,7 @@ Number of degrees of freedom: 6,201 (2,898+405+1,449+1,449)
      Temperature min/avg/max:   999 K, 1001 K, 1006 K
      Compositions min/max/mass: 8e-05/8e-05/4e+06
 
-*** Timestep 2:  t=5.73826e+14 seconds, dt=2.82169e+14 seconds
+*** Timestep 2:  t=5.73826e+14 seconds, dt=2.82168e+14 seconds
    Solving temperature system... 26 iterations.
    Solving grain_size system ... 0 iterations.
    Solving Stokes system (GMG)... 22+0 iterations.
@@ -44,7 +44,7 @@ Number of degrees of freedom: 6,201 (2,898+405+1,449+1,449)
    Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:   999 K, 1005 K, 1020 K
+     Temperature min/avg/max:   999.1 K, 1005 K, 1020 K
      Compositions min/max/mass: 8e-05/8e-05/4e+06
 
 Termination requested by criterion: end time
