@@ -9,7 +9,7 @@
 set Dimension                              = 2
 set End time                               = 1e7
 set Output directory                       = output-grain_size_plunge
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Maximum first time step                = 10
 set Maximum relative increase in time step = 1
 set Nonlinear solver scheme                = iterated Advection and defect correction Stokes

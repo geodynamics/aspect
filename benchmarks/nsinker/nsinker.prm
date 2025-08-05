@@ -11,7 +11,7 @@ set End time                               = 0
 set Pressure normalization                 = volume
 set Nonlinear solver scheme                = no Advection, single Stokes
 set Max nonlinear iterations               = 1
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 
 # Follow as closely as possible the parameters from Rudi et al. (2017)
 subsection Solver parameters

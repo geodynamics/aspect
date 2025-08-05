@@ -2,7 +2,7 @@
 # that we solve for the velocity solution and remove the angular momentum.
 
 set Dimension                              = 3
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set End time                               = 1
 set Nonlinear solver scheme                = single Advection, single Stokes
 

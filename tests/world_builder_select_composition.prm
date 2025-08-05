@@ -3,7 +3,7 @@
 # a subset of compositions for which to evaluate the world builder.
 
 set World builder file                     = $ASPECT_SOURCE_DIR/tests/world_builder_select_composition.wb
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set Adiabatic surface temperature = 1613
 set End time = 0
 

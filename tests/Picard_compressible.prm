@@ -3,7 +3,7 @@
 #### version of a production type setup.
 #### Global parameters
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Start time                             = 0
 set End time                               = 0
 set Nonlinear solver scheme                = single Advection, iterated Stokes

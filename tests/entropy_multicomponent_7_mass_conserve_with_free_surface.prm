@@ -4,7 +4,7 @@
 # The oscillation in mass for the initial timesteps decreases with increasing global refinement.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 2e6
 set Maximum time step                      = 1e5
 set Output directory                       = output-entropy-multi-free-surface-with-heating

@@ -5,7 +5,7 @@
 set Adiabatic surface temperature          = 1600
 set Dimension                              = 2
 set End time                               = 1
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 
 subsection Termination criteria
   set Termination criteria = end step

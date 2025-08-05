@@ -6,7 +6,7 @@
 
 set Resume computation                     = auto
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 1e8
 set Maximum time step                      = 1e6
 set Output directory                       = output-entropy-multicomponent-adiabat

@@ -2,7 +2,7 @@
 # (standard deviation min/mean/max, mean of function min/max, absolute min/max): 0.25/0.25/0.25, 0/0.5, 0/0.5
 
 set Dimension                              = 2
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set End time                               = 0
 set Nonlinear solver scheme                = single Advection, no Stokes
 set Resume computation                     = false

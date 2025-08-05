@@ -9,7 +9,7 @@ set End time                               = 1.098612289
 set Output directory                       = output
 set Pressure normalization                 = volume
 set Nonlinear solver scheme                = single Advection, single Stokes
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 
 subsection Geometry model
   set Model name = box

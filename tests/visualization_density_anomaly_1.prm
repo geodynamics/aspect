@@ -4,7 +4,7 @@
 set Output directory                       = output-visualization_density_anomaly_1
 set End time                               = 0
 set Adiabatic surface temperature          = 1600.0
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 
 # Compared to the passive material model, we here make
 # the density composition dependent by letting it depend

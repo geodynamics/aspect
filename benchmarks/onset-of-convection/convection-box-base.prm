@@ -6,7 +6,7 @@
 # without substituting appropriate values for each UPPERCASE string.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set Output directory                       = output
 set Pressure normalization                 = surface
 set Surface pressure                       = 0

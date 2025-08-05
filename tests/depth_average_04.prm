@@ -1,7 +1,7 @@
 # Like _03, but output stuff in a different format than gnuplot
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 10 # but note the very low viscosity
 set Output directory                       = output
 set Pressure normalization                 = surface

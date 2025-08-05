@@ -10,7 +10,7 @@ set Nonlinear solver tolerance             = 1e-10
 set CFL number                             = 0.5
 set Pressure normalization                 = no
 set End time                               = 0
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set Dimension                              = 3
 
 subsection Mesh refinement

@@ -1,7 +1,7 @@
 #This is a test based on benchmarks/onset-of-convection/convection-box-base.prm. It makes sure that the gravity plugin 'function' works correctly for a  Cartesian coordinate system.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Output directory                       = output-gravity_model_depth
 set Pressure normalization                 = surface
 set Surface pressure                       = 0

@@ -32,7 +32,7 @@
 
 set Dimension                              = 2
 set End time                               = 0.025
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set Output directory = simple_shear_output_the_mobility
 
 subsection Geometry model

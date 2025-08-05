@@ -2,7 +2,7 @@
 # A variation of composition-active (but only because that
 # one has prescribed, variable boundary conditions).
 #
-# We used to have a bug in that when "Use years in output instead of seconds"
+# We used to have a bug in that when "Use years instead of seconds          "
 # was set to "true", we would still interpret velocities given in the input
 # file as in m/s. Presumably, people mean to use m/year in that case. See the
 # email thread with Cedric Thieulot, subject "velocity RMS" in December 2012.
@@ -10,7 +10,7 @@
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 
 subsection Geometry model
   set Model name = box

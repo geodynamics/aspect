@@ -10,7 +10,7 @@ set Dimension                              = 2
 # time system we want to work in and what the end time is. We
 # also designate an output directory.
 set CFL number                             = 1.0
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 6e5
 set Output directory                       = output_bulk_3
 set Nonlinear solver scheme                = iterated Advection and Stokes

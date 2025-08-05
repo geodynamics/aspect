@@ -9,7 +9,7 @@ set Nonlinear solver tolerance             = 1e-5
 set Dimension                              = 2
 set End time                               = 0
 set Pressure normalization                 = no
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 
 subsection Compositional fields
   set Number of fields = 3

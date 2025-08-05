@@ -24,7 +24,7 @@ set Pressure normalization                 = surface
 set Surface pressure                       = 0.01
 set Resume computation                     = false
 set Start time                             = 0
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 
 subsection Mesh refinement
   set Initial global refinement                = 4

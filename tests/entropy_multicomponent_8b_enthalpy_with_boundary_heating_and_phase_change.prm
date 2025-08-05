@@ -4,7 +4,7 @@
 # The error converges to zero as the time step length reduces.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 8e6
 set Maximum time step                      = 1e5
 set Output directory                       = output-enthalpy-with-phase-change

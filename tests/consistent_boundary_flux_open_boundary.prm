@@ -6,7 +6,7 @@
 
 
 set Dimension                              = 2
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set End time                               = 1e13
 set Pressure normalization                 = surface
 set Surface pressure                       = 0

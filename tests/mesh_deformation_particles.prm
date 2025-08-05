@@ -7,7 +7,7 @@ set Nonlinear solver scheme                = single Advection, no Stokes
 set CFL number                             = 1.0
 set Maximum first time step                = 0.5
 set Pressure normalization                 = no
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set Output directory                       = mesh_def_particles
 
 subsection Prescribed Stokes solution

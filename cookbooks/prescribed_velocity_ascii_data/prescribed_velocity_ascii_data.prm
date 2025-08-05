@@ -12,7 +12,7 @@ set End time                               = 1e7
 set Maximum time step                      = 1e5
 set Resume computation                     = false
 set Pressure normalization = surface
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Output directory = output-prescribed_velocity_ascii_data
 

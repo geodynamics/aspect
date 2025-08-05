@@ -13,7 +13,7 @@ set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Pressure normalization = no
 set Timing output frequency                = 5
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Additional shared libraries = ./libcrameri_benchmark_1.so
 
 subsection Boundary temperature model

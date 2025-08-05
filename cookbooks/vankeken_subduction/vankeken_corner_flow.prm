@@ -10,7 +10,7 @@
 set Additional shared libraries            = ./plugin/libvankeken_subduction.so
 set Dimension                              = 2
 set Output directory                       = vankeken-output
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Pressure normalization                 = no
 set Surface pressure                       = 0
 set Use conduction timestep                = true

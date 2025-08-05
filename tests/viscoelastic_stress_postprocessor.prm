@@ -45,7 +45,7 @@ include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build_up/viscoelastic_
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 1000
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Output directory                       = viscoelastic_stress_postprocessor
 
 # Velocity boundary conditions

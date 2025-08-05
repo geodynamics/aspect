@@ -5,7 +5,7 @@
 # The error converges to zero as the time step length reduces.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 3e5
 set Maximum time step                      = 3.33333e3
 set Output directory                       = output-entropy-multi-free-surface-heat-from-bottom

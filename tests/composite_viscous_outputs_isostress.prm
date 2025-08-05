@@ -5,7 +5,7 @@
 set Additional shared libraries = tests/libcomposite_viscous_outputs_isostress.so
 set Dimension                              = 3
 set End time                               = 0
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Nonlinear solver scheme                = no Advection, no Stokes
 
 # Model geometry (100x100 km, 10 km spacing)

@@ -6,7 +6,7 @@ set Pressure normalization   = surface
 set Surface pressure         = 0
 set Nonlinear solver scheme  = single Advection, no Stokes
 set End time                 = 3e5
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set Output directory = out_drex_olivineA
 
 subsection Compositional fields

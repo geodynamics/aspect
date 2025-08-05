@@ -776,7 +776,7 @@ namespace aspect
                              "Also note that the melting time scale has to be larger than or equal to the reaction "
                              "time step used in the operator splitting scheme, otherwise reactions can not be "
                              "computed. "
-                             "Units: yr or s, depending on the ``Use years in output instead of seconds'' parameter.");
+                             "Units: yr or s, depending on the ``Use years instead of seconds'' parameter.");
 
           prm.declare_entry ("A1", "1085.7",
                              Patterns::Double (),

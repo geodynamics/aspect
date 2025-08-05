@@ -5,7 +5,7 @@
 # (rather than through an ipython notebook).
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Output directory                       = output
 set Pressure normalization                 = surface
 set Surface pressure                       = 0

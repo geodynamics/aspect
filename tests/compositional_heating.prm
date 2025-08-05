@@ -2,7 +2,7 @@
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 1e9
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Nonlinear solver scheme                = single Advection, single Stokes
 set Output directory                       = compositional_heating
 set Timing output frequency                = 1

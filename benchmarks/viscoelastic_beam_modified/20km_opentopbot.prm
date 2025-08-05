@@ -17,7 +17,7 @@ include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_bending_beam/viscoelastic_ben
 # Global parameters
 set Start time                             = 0
 set End time                               = 200e3
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Maximum time step                      = 1e3
 set Output directory                       = 20kmh_05drho
 

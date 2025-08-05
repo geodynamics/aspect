@@ -7,7 +7,7 @@
 
 set Resume computation                     = auto
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 5e7
 set Maximum time step                      = 1e5
 set Output directory                       = output-entropy-multi-transition-to-new-adiabat-with-phase-change

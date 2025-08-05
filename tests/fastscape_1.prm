@@ -6,7 +6,7 @@
 # At the top, we define the number of space dimensions we would like to
 # work in:
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 2e5
 set Maximum time step                      = 100000
 set Output directory                       = fastscape_test

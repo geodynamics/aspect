@@ -5,7 +5,7 @@
 # of dynamic topography should be the same as the grid output in dynamic topography postprocessor.
 
 set Dimension                              = 3
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Start time                             = 0
 set End time                               = 0
 set Adiabatic surface temperature          = 0.0

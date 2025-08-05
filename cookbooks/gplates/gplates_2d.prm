@@ -2,7 +2,7 @@
 # manual for more information.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 3e8
 set Output directory                       = output-gplates-2d
 set Adiabatic surface temperature          = 1600

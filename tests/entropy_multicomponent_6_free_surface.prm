@@ -9,7 +9,7 @@
 # Analytical solution: every 1e5 yr, the topo increase 988.230952 m
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 2e6
 set Maximum time step                      = 1e5
 set Output directory                       = output-entropy-multi-calculate-uplift

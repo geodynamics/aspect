@@ -17,7 +17,7 @@ set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Resume computation                     = false
 set Start time                             = 0
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 
 # we want to have a similar contribution of velocity and strain rate
 # in the stabilization. Velocities are on the order of 1e-3 and cell

@@ -4,7 +4,7 @@
 # EXPECT FAILURE
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 1e6
 set Adiabatic surface temperature          = 1613.0
 

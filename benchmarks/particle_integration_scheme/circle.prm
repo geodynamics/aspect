@@ -1,7 +1,7 @@
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 1.0
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set CFL number                             = 1.0
 set Output directory                       = circle_euler_1.0
 set Timing output frequency                = 100
