@@ -30,7 +30,7 @@ pipeline {
       {
         // first build a docker image for running the tests from the repo
         docker {
-          image 'geodynamics/aspect-tester:focal-dealii-9.5-v3'
+          image 'geodynamics/aspect-tester:jammy-dealii-9.6-v1'
           // We mount /repos into the docker image. This allows us to cache
           // the git repo by setting "advanced clone behaviors". If the
           // directory does not exist, this will be ignored.
