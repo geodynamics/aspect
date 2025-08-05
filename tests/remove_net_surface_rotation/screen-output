@@ -4,7 +4,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 17+0 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
 
@@ -23,15 +23,15 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
      Rayleigh number:                               2.70712e+07
 
      RMS, max velocity:                                                               0.291 m/year, 0.433 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: -2.32e+12 kg*m^2/year, 2.3e+27 kg*m^2, -1.01e-15 1/year, -1.19e-15 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: -2.51e+11 kg*m^2/year, 2.3e+27 kg*m^2, -1.09e-16 1/year, -1.79e-22 1/year
 
 *** Timestep 1:  t=636369 years, dt=636369 years
    Solving temperature system... 15 iterations.
-   Solving Stokes system (GMG)... 15+0 iterations.
+   Solving Stokes system (GMG)... 14+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                                               0.777 m/year, 1.16 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: -4.17e+12 kg*m^2/year, 2.3e+27 kg*m^2, -1.81e-15 1/year, -1.97e-15 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.08e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.71e-18 1/year, -2.32e-22 1/year
 
 *** Timestep 2:  t=873067 years, dt=236698 years
    Solving temperature system... 17 iterations.
@@ -39,23 +39,23 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               1.24 m/year, 1.88 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: -2.29e+12 kg*m^2/year, 2.3e+27 kg*m^2, -9.97e-16 1/year, -1.15e-15 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.08e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.68e-18 1/year, -1.81e-22 1/year
 
 *** Timestep 3:  t=1.02013e+06 years, dt=147062 years
-   Solving temperature system... 16 iterations.
-   Solving Stokes system (GMG)... 14+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                                                               1.65 m/year, 2.52 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: -8.08e+11 kg*m^2/year, 2.3e+27 kg*m^2, -3.51e-16 1/year, -4.54e-16 1/year
-
-*** Timestep 4:  t=1.13024e+06 years, dt=110107 years
    Solving temperature system... 16 iterations.
    Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:
+     RMS, max velocity:                                                               1.65 m/year, 2.52 m/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.08e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.7e-18 1/year, -1.72e-22 1/year
+
+*** Timestep 4:  t=1.13024e+06 years, dt=110107 years
+   Solving temperature system... 16 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
+
+   Postprocessing:
      RMS, max velocity:                                                               1.98 m/year, 3.06 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: -1.89e+11 kg*m^2/year, 2.3e+27 kg*m^2, -8.23e-17 1/year, -1.19e-16 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.08e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.7e-18 1/year, -1.39e-22 1/year
 
 *** Timestep 5:  t=1.22141e+06 years, dt=91171.1 years
    Solving temperature system... 15 iterations.
@@ -63,15 +63,15 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               2.23 m/year, 3.47 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.9e+11 kg*m^2/year, 2.3e+27 kg*m^2, 2.13e-16 1/year, 7.24e-17 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.08e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.67e-18 1/year, -1.81e-22 1/year
 
 *** Timestep 6:  t=1.30191e+06 years, dt=80507.8 years
    Solving temperature system... 14 iterations.
-   Solving Stokes system (GMG)... 13+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                                               2.39 m/year, 3.76 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.18e+12 kg*m^2/year, 2.3e+27 kg*m^2, 5.14e-16 1/year, 2.18e-16 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.1e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.77e-18 1/year, -1.66e-22 1/year
 
 *** Timestep 7:  t=1.37643e+06 years, dt=74517.9 years
    Solving temperature system... 13 iterations.
@@ -79,7 +79,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               2.46 m/year, 3.91 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.32e+12 kg*m^2/year, 2.3e+27 kg*m^2, 5.73e-16 1/year, 3.21e-16 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.08e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.68e-18 1/year, -1.66e-22 1/year
 
 *** Timestep 8:  t=1.44807e+06 years, dt=71642.2 years
    Solving temperature system... 13 iterations.
@@ -87,63 +87,63 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               2.46 m/year, 3.92 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 7.79e+11 kg*m^2/year, 2.3e+27 kg*m^2, 3.39e-16 1/year, 3.33e-16 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.07e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.63e-18 1/year, -1.66e-22 1/year
 
 *** Timestep 9:  t=1.51938e+06 years, dt=71300.1 years
    Solving temperature system... 12 iterations.
-   Solving Stokes system (GMG)... 13+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                                               2.4 m/year, 3.82 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 2.6e+11 kg*m^2/year, 2.3e+27 kg*m^2, 1.13e-16 1/year, 2.79e-16 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.07e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.67e-18 1/year, -1.78e-22 1/year
 
 *** Timestep 10:  t=1.59162e+06 years, dt=72241.6 years
    Solving temperature system... 12 iterations.
-   Solving Stokes system (GMG)... 13+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                                               2.28 m/year, 3.64 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: -2.25e+10 kg*m^2/year, 2.3e+27 kg*m^2, -9.78e-18 1/year, 1.87e-16 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.07e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.66e-18 1/year, -1.56e-22 1/year
 
 *** Timestep 11:  t=1.66616e+06 years, dt=74548.2 years
    Solving temperature system... 12 iterations.
-   Solving Stokes system (GMG)... 13+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                                               2.13 m/year, 3.42 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 2.83e+11 kg*m^2/year, 2.3e+27 kg*m^2, 1.23e-16 1/year, 1.04e-16 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.06e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.59e-18 1/year, -1.57e-22 1/year
 
 *** Timestep 12:  t=1.74439e+06 years, dt=78226.5 years
    Solving temperature system... 12 iterations.
-   Solving Stokes system (GMG)... 13+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                                               1.94 m/year, 3.16 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.85e+11 kg*m^2/year, 2.3e+27 kg*m^2, 2.11e-16 1/year, 4.95e-17 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.08e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.69e-18 1/year, -1.43e-22 1/year
 
 *** Timestep 13:  t=1.82787e+06 years, dt=83473.7 years
    Solving temperature system... 11 iterations.
-   Solving Stokes system (GMG)... 13+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                                               1.75 m/year, 2.94 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 6.53e+11 kg*m^2/year, 2.3e+27 kg*m^2, 2.84e-16 1/year, 8.32e-18 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.07e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.64e-18 1/year, -1.63e-22 1/year
 
 *** Timestep 14:  t=1.91846e+06 years, dt=90594.7 years
    Solving temperature system... 11 iterations.
-   Solving Stokes system (GMG)... 13+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                                               1.54 m/year, 2.68 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 8.73e+11 kg*m^2/year, 2.3e+27 kg*m^2, 3.79e-16 1/year, -3.35e-17 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.07e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.65e-18 1/year, -1.61e-22 1/year
 
 *** Timestep 15:  t=2.01834e+06 years, dt=99880.2 years
    Solving temperature system... 11 iterations.
-   Solving Stokes system (GMG)... 13+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                                               1.33 m/year, 2.4 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 7.44e+11 kg*m^2/year, 2.3e+27 kg*m^2, 3.24e-16 1/year, -7.19e-17 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.07e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.65e-18 1/year, -1.57e-22 1/year
 
 *** Timestep 16:  t=2.12998e+06 years, dt=111641 years
    Solving temperature system... 11 iterations.
@@ -151,7 +151,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               1.13 m/year, 2.11 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: -2.11e+11 kg*m^2/year, 2.3e+27 kg*m^2, -9.18e-17 1/year, -8.93e-17 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.07e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.67e-18 1/year, -1.62e-22 1/year
 
 *** Timestep 17:  t=2.25648e+06 years, dt=126501 years
    Solving temperature system... 11 iterations.
@@ -159,15 +159,15 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               0.935 m/year, 1.82 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: -7.5e+11 kg*m^2/year, 2.3e+27 kg*m^2, -3.26e-16 1/year, -1.34e-16 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.08e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.71e-18 1/year, -1.67e-22 1/year
 
 *** Timestep 18:  t=2.40101e+06 years, dt=144533 years
    Solving temperature system... 11 iterations.
-   Solving Stokes system (GMG)... 13+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                                               0.762 m/year, 1.57 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: -6.41e+11 kg*m^2/year, 2.3e+27 kg*m^2, -2.78e-16 1/year, -1.74e-16 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.06e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.62e-18 1/year, -1.68e-22 1/year
 
 *** Timestep 19:  t=2.5675e+06 years, dt=166484 years
    Solving temperature system... 10 iterations.
@@ -175,7 +175,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               0.611 m/year, 1.35 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: -1.39e+12 kg*m^2/year, 2.3e+27 kg*m^2, -6.04e-16 1/year, -1.84e-16 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.06e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.61e-18 1/year, -1.8e-22 1/year
 
 *** Timestep 20:  t=2.7605e+06 years, dt=193005 years
    Solving temperature system... 10 iterations.
@@ -183,15 +183,15 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               0.484 m/year, 1.15 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: -2.91e+12 kg*m^2/year, 2.3e+27 kg*m^2, -1.27e-15 1/year, -1.78e-16 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.08e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.7e-18 1/year, -1.75e-22 1/year
 
 *** Timestep 21:  t=2.98388e+06 years, dt=223378 years
    Solving temperature system... 10 iterations.
-   Solving Stokes system (GMG)... 13+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                                               0.383 m/year, 0.994 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: -3.09e+12 kg*m^2/year, 2.3e+27 kg*m^2, -1.34e-15 1/year, -1.84e-16 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.08e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.7e-18 1/year, -1.69e-22 1/year
 
 *** Timestep 22:  t=3.23858e+06 years, dt=254703 years
    Solving temperature system... 10 iterations.
@@ -199,7 +199,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               0.306 m/year, 0.898 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: -2.25e+12 kg*m^2/year, 2.3e+27 kg*m^2, -9.79e-16 1/year, -1.85e-16 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.08e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.68e-18 1/year, -1.75e-22 1/year
 
 *** Timestep 23:  t=3.52167e+06 years, dt=283086 years
    Solving temperature system... 10 iterations.
@@ -207,47 +207,47 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               0.25 m/year, 0.819 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: -1.16e+12 kg*m^2/year, 2.3e+27 kg*m^2, -5.03e-16 1/year, -1.49e-16 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.09e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.74e-18 1/year, -1.68e-22 1/year
 
 *** Timestep 24:  t=3.83066e+06 years, dt=308986 years
    Solving temperature system... 10 iterations.
-   Solving Stokes system (GMG)... 13+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                                               0.21 m/year, 0.756 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: -2.05e+11 kg*m^2/year, 2.3e+27 kg*m^2, -8.89e-17 1/year, -1.07e-16 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.07e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.63e-18 1/year, -1.7e-22 1/year
 
 *** Timestep 25:  t=4.1692e+06 years, dt=338540 years
    Solving temperature system... 10 iterations.
-   Solving Stokes system (GMG)... 13+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                                               0.18 m/year, 0.706 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 8.24e+11 kg*m^2/year, 2.3e+27 kg*m^2, 3.58e-16 1/year, -6.1e-17 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.07e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.66e-18 1/year, -1.56e-22 1/year
 
 *** Timestep 26:  t=4.54982e+06 years, dt=380627 years
    Solving temperature system... 10 iterations.
-   Solving Stokes system (GMG)... 13+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                                               0.157 m/year, 0.667 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.71e+12 kg*m^2/year, 2.3e+27 kg*m^2, 7.42e-16 1/year, -2.75e-17 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.07e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.64e-18 1/year, -1.6e-22 1/year
 
 *** Timestep 27:  t=4.96395e+06 years, dt=414124 years
    Solving temperature system... 10 iterations.
-   Solving Stokes system (GMG)... 13+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                                               0.141 m/year, 0.638 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.68e+12 kg*m^2/year, 2.3e+27 kg*m^2, 7.3e-16 1/year, 1.11e-18 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.08e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.7e-18 1/year, -1.54e-22 1/year
 
 *** Timestep 28:  t=5e+06 years, dt=36052.9 years
    Solving temperature system... 8 iterations.
-   Solving Stokes system (GMG)... 11+0 iterations.
+   Solving Stokes system (GMG)... 10+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                                               0.14 m/year, 0.636 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: -5.21e+11 kg*m^2/year, 2.3e+27 kg*m^2, -2.26e-16 1/year, -7.15e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.08e+10 kg*m^2/year, 2.3e+27 kg*m^2, 4.69e-18 1/year, -1.31e-22 1/year
 
 Termination requested by criterion: end time
 

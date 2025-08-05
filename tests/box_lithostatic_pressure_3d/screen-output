@@ -5,7 +5,7 @@ Number of degrees of freedom: 25,294 (14,739+729+4,913+4,913)
 *** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system (GMG)... 26+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
 
@@ -24,8 +24,8 @@ Number of degrees of freedom: 25,294 (14,739+729+4,913+4,913)
      Rayleigh number:                               0
 
      RMS, max velocity:                               0.00277 m/year, 0.0331 m/year
-     Max, min, and rms velocity along boundary parts: 0.003669 m/year, 0.001258 m/year, 0.002664 m/year, 0.0008522 m/year, 3.898e-05 m/year, 0.0004613 m/year, 0.003167 m/year, 2.793e-05 m/year, 0.001515 m/year, 0.003167 m/year, 2.794e-05 m/year, 0.001515 m/year, 0.003999 m/year, 3.585e-05 m/year, 0.002299 m/year, 0.003987 m/year, 3.583e-05 m/year, 0.002291 m/year
-     Pressure at top/bottom of domain:                -2.198e-10 Pa, 9.411e+10 Pa
+     Max, min, and rms velocity along boundary parts: 0.003662 m/year, 0.001259 m/year, 0.002664 m/year, 0.0008522 m/year, 3.898e-05 m/year, 0.0004613 m/year, 0.003161 m/year, 2.796e-05 m/year, 0.001515 m/year, 0.003161 m/year, 2.796e-05 m/year, 0.001515 m/year, 0.003993 m/year, 3.584e-05 m/year, 0.002295 m/year, 0.003993 m/year, 3.584e-05 m/year, 0.002295 m/year
+     Pressure at top/bottom of domain:                -8.017e-10 Pa, 9.411e+10 Pa
 
 Termination requested by criterion: end time
 

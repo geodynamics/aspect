@@ -4,7 +4,7 @@ Number of degrees of freedom: 40,836 (25,090+3,201+12,545)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 144+0 iterations.
+   Solving Stokes system (GMG)... 121+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-latent_heat_viscosity_adiabatic/solution/solution-00000

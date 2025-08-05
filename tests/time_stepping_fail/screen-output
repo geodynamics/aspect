@@ -34,7 +34,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 5:  t=500 seconds, dt=100 seconds
    Solving temperature system... 2 iterations.
-   Solving Stokes system (GMG)... 0+0 iterations.
+   Solving Stokes system (GMG)... 1+0 iterations.
 
 TimerOutput objects finalize timed values printed to the
 screen by communicating over MPI in their destructors.

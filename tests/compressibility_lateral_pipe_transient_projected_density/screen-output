@@ -21,10 +21,10 @@ Number of degrees of freedom: 1,062 (390+96+288+288)
      Average density / Average viscosity / Total mass:  3300 kg/m^3, 1e+21 Pa s, 3.3e+14 kg
 
 *** Timestep 1:  t=3.15576e+12 seconds, dt=3.15576e+12 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Copying properties into prescribed compositional field density_field... done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 1+0 iterations.
+   Solving Stokes system (AMG)... 2+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00621118, 0, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
@@ -32,8 +32,8 @@ Number of degrees of freedom: 1,062 (390+96+288+288)
    Copying properties into prescribed compositional field density_field... done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.58922e-16, 0, 2.26459e-13
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.26459e-13
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.67113e-16, 0, 6.08962e-13
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 6.08962e-13
 
 
    Postprocessing:
@@ -47,16 +47,16 @@ Number of degrees of freedom: 1,062 (390+96+288+288)
    Solving temperature system... 0 iterations.
    Copying properties into prescribed compositional field density_field... done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 2+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.31276e-16, 0, 1.0002
+   Solving Stokes system (AMG)... 3+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.38887e-16, 0, 1.0002
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1.0002
 
    Solving temperature system... 0 iterations.
    Copying properties into prescribed compositional field density_field... done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.23724e-16, 0, 1.86842e-13
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.86842e-13
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.03073e-16, 0, 5.61599e-13
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 5.61599e-13
 
 
    Postprocessing:
@@ -70,16 +70,16 @@ Number of degrees of freedom: 1,062 (390+96+288+288)
    Solving temperature system... 0 iterations.
    Copying properties into prescribed compositional field density_field... done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 2+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.86816e-16, 0, 0.00010002
+   Solving Stokes system (AMG)... 3+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.15077e-16, 0, 0.00010002
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00010002
 
    Solving temperature system... 0 iterations.
    Copying properties into prescribed compositional field density_field... done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.58946e-16, 0, 7.22461e-14
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.22461e-14
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.58635e-16, 0, 7.11746e-14
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.11746e-14
 
 
    Postprocessing:
@@ -94,15 +94,15 @@ Number of degrees of freedom: 1,062 (390+96+288+288)
    Copying properties into prescribed compositional field density_field... done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 1+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.47745e-16, 0, 1.20053e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.20053e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.34223e-16, 0, 1.20052e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.20052e-08
 
    Solving temperature system... 0 iterations.
    Copying properties into prescribed compositional field density_field... done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.61855e-16, 0, 2.44575e-13
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.44575e-13
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.51546e-16, 0, 2.42717e-13
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.42717e-13
 
 
    Postprocessing:

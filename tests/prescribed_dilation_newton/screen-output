@@ -14,9 +14,9 @@ Number of degrees of freedom: 948 (578+81+289)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Skipping temperature solve because RHS is zero.
-   Nonlinear residual reduction has been very large (7.89635e-13); skipping Stokes solve
-      Relative nonlinear residuals (temperature, Stokes system): 0, 7.89635e-13
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.89635e-13
+   Nonlinear residual reduction has been very large (7.89667e-13); skipping Stokes solve
+      Relative nonlinear residuals (temperature, Stokes system): 0, 7.89667e-13
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.89667e-13
 
 
    Postprocessing:
@@ -37,9 +37,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Skipping temperature solve because RHS is zero.
-   Nonlinear residual reduction has been very large (3.51418e-13); skipping Stokes solve
-      Relative nonlinear residuals (temperature, Stokes system): 0, 3.51418e-13
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.51418e-13
+   Nonlinear residual reduction has been very large (3.51439e-13); skipping Stokes solve
+      Relative nonlinear residuals (temperature, Stokes system): 0, 3.51439e-13
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.51439e-13
 
 
    Postprocessing:
