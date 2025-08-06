@@ -62,7 +62,7 @@ subsection Material model
     set Reference specific heat       = 1250
     set Thermal conductivity          = 4.125
     set Thermal expansion coefficient = 2e-5
-    set Viscosity                     = 1
+    set Viscosity                     = 1e21
   end
 end
 
