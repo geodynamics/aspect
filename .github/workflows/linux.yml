@@ -32,7 +32,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y software-properties-common
-        sudo add-apt-repository ppa:ginggs/deal.ii-9.5.1-backports
+        sudo add-apt-repository ppa:ginggs/deal.ii-9.6.0-backports
         sudo apt-get update
         sudo apt-get install -yq --no-install-recommends libdeal.ii-dev
     - name: compile
@@ -52,6 +52,9 @@ jobs:
     - uses: actions/checkout@v4
     - name: setup
       run: |
+        sudo apt-get update
+        sudo apt-get install -y software-properties-common
+        sudo add-apt-repository ppa:ginggs/deal.ii-9.6.0-backports
         sudo apt-get update
         sudo apt-get install -yq --no-install-recommends texlive-plain-generic texlive-base texlive-latex-recommended texlive-latex-base texlive-fonts-recommended texlive-bibtex-extra lmodern texlive-latex-extra texlive-science graphviz python3-pip libdeal.ii-dev doxygen latexmk biber inkscape
         doxygen --version
