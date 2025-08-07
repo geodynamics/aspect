@@ -1019,10 +1019,13 @@ namespace aspect
             if (parameters.n_cheap_stokes_solver_steps == 0)
               throw SolverControl::NoConvergence(0,0);
 
+            SolverFGMRES<LinearAlgebra::BlockVector>::
+            AdditionalData additional_data(parameters.stokes_gmres_restart_length,
+                                           dealii::LinearAlgebra::OrthogonalizationStrategy::modified_gram_schmidt);
+
             SolverFGMRES<LinearAlgebra::BlockVector>
             solver(solver_control_cheap, mem,
-                   SolverFGMRES<LinearAlgebra::BlockVector>::
-                   AdditionalData(parameters.stokes_gmres_restart_length));
+                   additional_data);
 
             solver.solve (stokes_block,
                           distributed_stokes_solution,
