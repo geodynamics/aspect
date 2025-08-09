@@ -2,7 +2,7 @@
 # using a file # to specify depth-dependence.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 0
 set Pressure normalization                 = surface
 set Surface pressure                       = 0

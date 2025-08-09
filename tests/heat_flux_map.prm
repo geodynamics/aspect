@@ -1,5 +1,5 @@
 set Dimension                              = 2
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set End time                               = 0.01
 set Output directory                       = output
 set Pressure normalization                 = surface

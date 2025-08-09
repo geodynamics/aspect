@@ -89,7 +89,7 @@ namespace aspect
       bool convert_to_years;
       ia >> convert_to_years;
       AssertThrow (convert_to_years == parameters.convert_to_years,
-                   ExcMessage ("The value provided for `Use years in output instead of seconds' that was stored "
+                   ExcMessage ("The value provided for `Use years instead of seconds' that was stored "
                                "in the checkpoint file is not the same as the one "
                                "you currently set in your input file. "
                                "These need to be the same during restarting "

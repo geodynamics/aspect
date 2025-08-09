@@ -9,7 +9,7 @@
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0.1
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set Adiabatic surface temperature = 0
 
 subsection Geometry model

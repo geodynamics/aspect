@@ -5,7 +5,7 @@ set Nonlinear solver scheme  = single Advection, no Stokes
 # The model run to 3e5 seconds, at which the total strain will
 # be 1.5 with strain rate of 5e-6 1/s.
 set End time                 = 3e5
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 
 # Set zero gravity
 subsection Gravity model

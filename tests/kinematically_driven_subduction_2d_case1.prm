@@ -14,7 +14,7 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 1.e5
 set CFL number                             = 0.5
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 
 # Linear solver
 set Nonlinear solver scheme                = single Advection, single Stokes

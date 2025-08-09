@@ -7,7 +7,7 @@
 # using a slightly smoothed property lookup table.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 4e6
 set Maximum time step                      = 2e5
 set Output directory                       = output-entropy-multi-edge-case-change-adiabatic-p

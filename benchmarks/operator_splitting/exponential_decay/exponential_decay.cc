@@ -149,7 +149,7 @@ namespace aspect
                              Patterns::Double (0),
                              "Time required for a compositional field to reduce to half its "
                              "initial value. Units: Years if the "
-                             "'Use years in output instead of seconds' parameter is set; "
+                             "'Use years instead of seconds' parameter is set; "
                              "seconds otherwise.");
         }
         prm.leave_subsection();
@@ -243,7 +243,7 @@ namespace aspect
                              Patterns::Double (0),
                              "Time required for the temperature to reduce to half of its "
                              "initial value. Units: Years if the "
-                             "'Use years in output instead of seconds' parameter is set; "
+                             "'Use years instead of seconds' parameter is set; "
                              "seconds otherwise.");
         }
         prm.leave_subsection();

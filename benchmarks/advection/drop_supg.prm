@@ -1,7 +1,7 @@
 # Dropping box benchmark on the right half of the domain
 
 set Dimension                              = 2
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set End time                               = 5.0
 set Output directory                       = output-drop-supg
 set Nonlinear solver scheme                = single Advection, no Stokes

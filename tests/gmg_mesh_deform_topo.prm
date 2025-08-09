@@ -4,7 +4,7 @@
 # give the same solution in a moving domain with mesh deformation.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set End time                               = 0.0024
 set Pressure normalization                 = surface
 set Surface pressure                       = 0

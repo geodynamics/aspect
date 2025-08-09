@@ -17,7 +17,7 @@
 # technically W/m, but the postprocessor reports it as W)
 
 set Dimension                              = 2
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set End time                               = 0.01
 set Maximum time step                      = 0.0001
 set Nonlinear solver scheme                = single Advection, no Stokes

@@ -98,7 +98,7 @@ namespace aspect
     prm.declare_entry ("Start time", "0.",
                        Patterns::Double (),
                        "The start time of the simulation. Units: Years if the "
-                       "'Use years in output instead of seconds' parameter is set; "
+                       "'Use years instead of seconds' parameter is set; "
                        "seconds otherwise.");
 
     prm.declare_entry ("Timing output frequency", "100",
@@ -108,7 +108,7 @@ namespace aspect
                        "value is set to zero it will also output timing information at the "
                        "initiation timesteps.");
 
-    prm.declare_entry ("Use years in output instead of seconds", "true",
+    prm.declare_entry ("Use years instead of seconds", "true",
                        Patterns::Bool (),
                        "When computing results for mantle convection simulations, "
                        "it is often difficult to judge the order of magnitude of results "
@@ -131,6 +131,10 @@ namespace aspect
                        "For the purposes of this parameter, a year consists of "
                        "60*60*24*365.2425 seconds. In other words, a year is taken "
                        "to have 365.2425 days.");
+
+    prm.declare_alias ("Use years instead of seconds",
+                       "Use years in output instead of seconds",
+                       true);
 
     prm.declare_entry ("CFL number", "1.0",
                        Patterns::Double (0.),
@@ -920,7 +924,7 @@ namespace aspect
                          "are in a time range that we are interested in and where "
                          "we would like to use a finer mesh. Units: Each element of the "
                          "list has units years if the "
-                         "'Use years in output instead of seconds' parameter is set; "
+                         "'Use years instead of seconds' parameter is set; "
                          "seconds otherwise.");
       prm.declare_entry ("Run postprocessors on initial refinement", "false",
                          Patterns::Bool (),
@@ -1526,7 +1530,7 @@ namespace aspect
 
     CFL_number              = prm.get_double ("CFL number");
     use_conduction_timestep = prm.get_bool ("Use conduction timestep");
-    convert_to_years        = prm.get_bool ("Use years in output instead of seconds");
+    convert_to_years        = prm.get_bool ("Use years instead of seconds");
     timing_output_frequency = prm.get_integer ("Timing output frequency");
     world_builder_file      = prm.get("World builder file");
 

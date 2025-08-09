@@ -8,7 +8,7 @@
 # step before the program terminates.
 
 set Dimension                              = 3
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 0
 
 ############### Parameters describing the model

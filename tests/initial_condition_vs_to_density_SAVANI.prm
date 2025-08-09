@@ -1,7 +1,7 @@
 # This tests whether ASPECT reads in the
 # vs to density scaling form a file correctly
 set Dimension                              = 3
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set Start time                             = 0
 set End time                               = 0
 

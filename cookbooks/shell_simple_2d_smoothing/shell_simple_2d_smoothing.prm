@@ -3,7 +3,7 @@
 # manual for more information.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set End time                               = 1.5e16
 set Output directory                       = output-shell_simple_2d_smoothing
 

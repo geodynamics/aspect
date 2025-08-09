@@ -3,7 +3,7 @@
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set Nonlinear solver scheme                = no Advection, iterated Stokes
 set Output directory                       = output
 set Pressure normalization                 = volume

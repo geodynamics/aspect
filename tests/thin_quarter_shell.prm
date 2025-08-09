@@ -2,7 +2,7 @@
 # with correctly assigned boundary conditions.
 
 set Dimension                              = 3
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 0
 set Maximum first time step                    = 1e5
 set CFL number                                 = 0.8

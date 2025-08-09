@@ -1,6 +1,6 @@
 set Additional shared libraries            = libanalytical_topography.so
 set Dimension                              = 2
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set End time                               = 0.005
 set Maximum time step                      = 0.0005
 set Output directory                       = output-1_sine_zero_flux_ci_toppresvel_subtractmeshvel/

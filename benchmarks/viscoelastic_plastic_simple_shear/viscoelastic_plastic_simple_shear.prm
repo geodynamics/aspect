@@ -24,7 +24,7 @@
 set Dimension                                  = 2
 set Start time                                 = 0
 set End time                                   = 8
-set Use years in output instead of seconds     = false
+set Use years instead of seconds               = false
 set Maximum time step                          = 0.01
 set Output directory                           = output-viscoelastic_plastic_simple_shear
 set Pressure normalization                     = surface

@@ -3,7 +3,7 @@ set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Nonlinear solver scheme                = single Advection, no Stokes
 set End time                               = 1e5
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set Output directory                       = cpo_karato_simple_shearbox
 set Maximum time step                      = 1e4
 

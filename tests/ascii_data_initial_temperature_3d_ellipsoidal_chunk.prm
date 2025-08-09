@@ -1,7 +1,7 @@
 ##### simple test for ascii data initial temperature
 
 set Dimension                              = 3
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 1e5
 set Adiabatic surface temperature          = 1613.0
 

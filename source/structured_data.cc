@@ -1481,7 +1481,7 @@ namespace aspect
             prm.declare_entry ("Data file time step", "1e6",
                                Patterns::Double (0.),
                                "Time step between following data files. "
-                               "Depending on the setting of the global `Use years in output instead of seconds' flag "
+                               "Depending on the setting of the global `Use years instead of seconds' flag "
                                "in the input file, this number is either interpreted as seconds or as years. "
                                "The default is one million, i.e., either one million seconds or one million years.");
             prm.declare_entry ("First data file model time", "0",

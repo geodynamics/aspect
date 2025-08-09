@@ -3,7 +3,7 @@
 # latent heat material model to use a layered viscosity profile.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 3e8
 set Output directory                       = output_energy_density
 set Adiabatic surface temperature          = 1600

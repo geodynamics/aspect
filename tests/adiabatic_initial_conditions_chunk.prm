@@ -11,7 +11,7 @@ set CFL number                             = 1.0
 set End time                               = 0
 set Start time                             = 0
 set Surface pressure                       = 0
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set Nonlinear solver scheme                = single Advection, single Stokes
 set Adiabatic surface temperature = 1200
 

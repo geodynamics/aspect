@@ -10,7 +10,7 @@
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 1e5
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Nonlinear solver scheme                = single Advection, iterated defect correction Stokes
 set Nonlinear solver tolerance             = 1e-4
 set Max nonlinear iterations               = 5

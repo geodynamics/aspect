@@ -3,7 +3,7 @@
 # The gnuplot output illustrates the viscosity increase at 410 and 660 km depth.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 0
 set Adiabatic surface temperature          = 1600
 

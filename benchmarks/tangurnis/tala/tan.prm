@@ -13,7 +13,7 @@ set Output directory                       = output_tala
 # The temperature is prescibed, so we only need to
 # solve the Stokes system
 set Nonlinear solver scheme                = no Advection, iterated Stokes
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 

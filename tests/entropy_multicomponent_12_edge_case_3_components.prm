@@ -3,7 +3,7 @@
 # This also tests that multicomponent averaging method works well with three components.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 4e6
 set Maximum time step                      = 2e5
 set Output directory                       = output-entropy-multi-edgecase-change-adiabatic-p-3-comp

@@ -13,7 +13,7 @@
 # Global parameters
 set Dimension                              = 2
 set End time                               = 2e3
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set CFL number                             = 0.5
 set Maximum time step                      = 1e3
 

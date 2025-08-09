@@ -4,7 +4,7 @@
 # first and last isotherm (with a value taken from that isotherm).
 
 set Dimension                              = 3
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 0
 
 subsection Geometry model

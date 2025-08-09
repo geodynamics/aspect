@@ -196,7 +196,7 @@ namespace aspect
                              "point values output. A value of zero indicates "
                              "that output should be generated in each time step. "
                              "Units: years if the "
-                             "'Use years in output instead of seconds' parameter is set; "
+                             "'Use years instead of seconds' parameter is set; "
                              "seconds otherwise.");
           prm.declare_entry("Evaluation points", "",
                             // a list of points, separated by semicolons; each point has
@@ -358,7 +358,7 @@ namespace aspect
                                   "coordinates of the evaluation points, and (iii) followed by the "
                                   "values of the solution vector at this point. The time is provided "
                                   "in seconds or, if the "
-                                  "global ``Use years in output instead of seconds'' parameter is "
+                                  "global ``Use years instead of seconds'' parameter is "
                                   "set, in years. In the latter case, the velocity is also converted "
                                   "to meters/year, instead of meters/second."
                                   "\n\n"

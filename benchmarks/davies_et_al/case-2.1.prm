@@ -5,7 +5,7 @@ set End time                               = 2
 set Output directory                       = output
 set Resume computation                     = false
 set Start time                             = 0
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 
 subsection Checkpointing
   set Steps between checkpoint = 15

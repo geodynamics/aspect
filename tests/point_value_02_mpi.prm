@@ -9,7 +9,7 @@
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0.001
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Pressure normalization                 = volume
 
 subsection Geometry model

@@ -153,7 +153,7 @@ namespace aspect
                              "The minimum length of simulation time that the system "
                              "should be in steady state before termination."
                              "Units: years if the "
-                             "'Use years in output instead of seconds' parameter is set; "
+                             "'Use years instead of seconds' parameter is set; "
                              "seconds otherwise.");
         }
         prm.leave_subsection ();

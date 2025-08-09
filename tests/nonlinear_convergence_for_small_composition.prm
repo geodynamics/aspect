@@ -22,7 +22,7 @@ set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Start time                             = 0
 set End time                               = 1e4
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 
 subsection Discretization
   set Stokes velocity polynomial degree    = 2

@@ -26,7 +26,7 @@
 # entropy profile' plugin can compute adiabats at arbitrary entropy.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 2.5e8
 set Output directory                       = output-entropy-adiabat
 set Nonlinear solver scheme                = iterated Advection and Stokes

@@ -2,7 +2,7 @@
 # shells.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 5.e6 #by this time net rotation will start to be evident
 set Output directory                       = output
 

@@ -1,7 +1,7 @@
 # A simple setup for a plume in a 2D chunk based on Kellogg \& King, EPSL 148 (1997).
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 200e9
 set Output directory                       = output_plume2D
 set Maximum time step                      = 5e7

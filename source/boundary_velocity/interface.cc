@@ -219,7 +219,7 @@ namespace aspect
                            "the parameter ``Zero velocity boundary indicator'' in the "
                            "current parameter section."
                            "\n\n"
-                           "Note that when ``Use years in output instead of seconds'' is set "
+                           "Note that when ``Use years instead of seconds'' is set "
                            "to true, velocity should be given in m/yr. "
                            "The following boundary velocity models are available:\n\n"
                            +

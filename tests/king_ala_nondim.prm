@@ -4,7 +4,7 @@
 set Dimension                              = 2
 set CFL number                             = 10.0
 set Adiabatic surface temperature          = 0.091
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set End time                               = 0.15
 
 subsection Discretization

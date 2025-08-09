@@ -4,7 +4,7 @@
 # always hold this relation: stress_second_invariant = 2 * viscosity * strain_rate.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 1e4
 set Adiabatic surface temperature          = 1600.0
 set Output directory                       = output-steinberger_plasticity_1

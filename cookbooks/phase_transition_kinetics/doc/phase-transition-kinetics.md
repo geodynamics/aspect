@@ -74,7 +74,7 @@ A set of global parameters for the solver and other settings
 # material compresses and the velocity changes to conserve mass.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 75e6
 set Output directory                       = results/simple_subduction_Q_1e-9
 set Adiabatic surface temperature          = 1706

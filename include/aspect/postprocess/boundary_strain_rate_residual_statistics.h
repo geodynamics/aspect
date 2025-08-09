@@ -94,7 +94,7 @@ namespace aspect
         /**
          * Scale the input data by a scalar factor. Can be used to transform
          * the unit of the data (if they are not specified in SI units (/s or
-         * /yr depending on the "Use years in output instead of seconds"
+         * /yr depending on the "Use years instead of seconds"
          * parameter).
          */
         double scale_factor;

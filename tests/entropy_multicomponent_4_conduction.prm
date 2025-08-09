@@ -3,7 +3,7 @@
 # due to thermal conduction. The setup follows the entropy conduction benchmark.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 2e9
 set Maximum time step                      = 1e8
 set Output directory                       = output-entropy-multi-conduction

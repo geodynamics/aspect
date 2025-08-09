@@ -142,7 +142,7 @@ namespace aspect
                              "the check for steady state, this value should be much larger "
                              "than the time step size. "
                              "Units: years if the "
-                             "'Use years in output instead of seconds' parameter is set; "
+                             "'Use years instead of seconds' parameter is set; "
                              "seconds otherwise.");
           prm.declare_entry ("Boundary indicators", "",
                              Patterns::List (Patterns::Anything()),

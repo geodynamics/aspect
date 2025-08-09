@@ -2,7 +2,7 @@
 # Parameters from Bunge et al, Nature, 1996.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 5e9
 set Output directory                       = output_bunge_et_al
 set CFL number                             = 1

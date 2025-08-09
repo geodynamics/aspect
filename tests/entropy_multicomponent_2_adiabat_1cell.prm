@@ -8,7 +8,7 @@
 set Output directory                       = output-change-adiabatic-p
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 4e6
 set Maximum time step                      = 2e5
 

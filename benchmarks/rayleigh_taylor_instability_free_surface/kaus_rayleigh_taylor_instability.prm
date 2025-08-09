@@ -15,7 +15,7 @@ set End time                               = 6e6
 # the model is stable. For a timestep of 10000 yr,
 # it is not ("drunken sailor").
 set Maximum time step                      = 100e2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set CFL number                             = 0.5
 set Output directory                       = output_nostab_10000
 set Nonlinear solver scheme                = single Advection, single Stokes

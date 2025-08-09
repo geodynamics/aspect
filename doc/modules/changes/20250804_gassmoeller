@@ -1,0 +1,5 @@
+Changed: Deprecate the input parameter 'Use years in output instead of seconds'
+and replace with a new parameter called 'Use years instead of seconds' to indicate
+it is also used in input parameters.
+<br>
+(Rene Gassmoeller, 2025/08/04)

@@ -14,7 +14,7 @@ set Additional shared libraries = ./libexponential_decay.so
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 100
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 
 # We use a new solver scheme that enables the operator split.
 set Nonlinear solver scheme                = single Advection, single Stokes

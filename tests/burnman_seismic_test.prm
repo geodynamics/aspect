@@ -3,7 +3,7 @@
 # them in through an ascii data file.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 0
 
 subsection Material model

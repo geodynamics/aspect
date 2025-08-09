@@ -10,7 +10,7 @@
 set Output directory                       = output-entropy_multicomponent_1_equilibration
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 1e5
 set Maximum time step                      = 5e4
 

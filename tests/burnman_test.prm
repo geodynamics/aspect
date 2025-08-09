@@ -4,7 +4,7 @@
 # are based on a Birch-Murnaghan equation of state.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 1e6
 
 subsection Material model

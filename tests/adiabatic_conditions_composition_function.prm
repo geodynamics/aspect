@@ -3,7 +3,7 @@
 # initial composition plugin depends on the adiabatic
 # condition, and can therefore not be used to compute it.
 
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set Adiabatic surface temperature = 1613
 set End time = 0
 

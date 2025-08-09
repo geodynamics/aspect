@@ -667,7 +667,7 @@ namespace aspect
                              "output files. A value of zero indicates that "
                              "output should be generated every time step.\n\n"
                              "Units: years if the "
-                             "'Use years in output instead of seconds' parameter is set; "
+                             "'Use years instead of seconds' parameter is set; "
                              "seconds otherwise.");
 
           prm.declare_entry ("Random number seed", "1",
