@@ -82,7 +82,7 @@ Number of mesh deformation degrees of freedom: 1,162
    Solving ve_stress_yy_old system ... 2 iterations.
    Solving ve_stress_xy_old system ... 2 iterations.
    Solving Stokes system (GMG)... 51+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.4469e-16, 0.000101193, 0.000101193, 5.56018e-05, 0, 0, 0, 0.000381651
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.39848e-16, 0.000101193, 0.000101193, 5.56012e-05, 0, 0, 0, 0.000381651
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000381651
 
    Solving temperature system... 0 iterations.
@@ -93,7 +93,7 @@ Number of mesh deformation degrees of freedom: 1,162
    Solving ve_stress_yy_old system ... 2 iterations.
    Solving ve_stress_xy_old system ... 2 iterations.
    Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.48653e-16, 0.000280562, 0.000280562, 0.000173905, 0, 0, 0, 6.72539e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.35777e-16, 0.000280562, 0.000280562, 0.000173906, 0, 0, 0, 6.72543e-07
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000280562
 
 
@@ -114,7 +114,7 @@ Repeating the current time step based on the time stepping manager ...
    Solving ve_stress_yy_old system ... 1 iterations.
    Solving ve_stress_xy_old system ... 1 iterations.
    Solving Stokes system (GMG)... 45+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.613e-16, 2.70495e-05, 2.70495e-05, 1.74621e-05, 0, 0, 0, 6.90421e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.57672e-16, 2.70495e-05, 2.70495e-05, 1.74621e-05, 0, 0, 0, 6.90421e-05
       Relative nonlinear residual (total system) after nonlinear iteration 1: 6.90421e-05
 
    Solving temperature system... 0 iterations.
@@ -125,7 +125,7 @@ Repeating the current time step based on the time stepping manager ...
    Solving ve_stress_yy_old system ... 1 iterations.
    Solving ve_stress_xy_old system ... 1 iterations.
    Solving Stokes system (GMG)... 26+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.41992e-16, 1.88538e-05, 1.88538e-05, 1.09819e-05, 0, 0, 0, 4.89011e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.37034e-16, 1.88538e-05, 1.88538e-05, 1.09819e-05, 0, 0, 0, 4.89011e-08
       Relative nonlinear residual (total system) after nonlinear iteration 2: 1.88538e-05
 
 

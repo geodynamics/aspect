@@ -22,14 +22,14 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
      Writing depth average:              output-update_script/depth_average
      Writing particle output:            output-update_script/particles/particles-00000
      Heating rate (average/total):       -3.453e-10 W/kg, -2.903e+07 W
-     Pressure at top/bottom of domain:   4.489e-09 Pa, 1.08e+11 Pa
+     Pressure at top/bottom of domain:   -8.197e-09 Pa, 1.08e+11 Pa
      Computing dynamic topography        
 
 *** Timestep 1:  t=100000 years, dt=100000 years
    Solving temperature system... 14 iterations.
    Advecting particles...  done.
    Skipping C_1 composition solve because RHS is zero.
-   Solving Stokes system (GMG)... 13+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-update_script/solution/solution-00001
@@ -39,7 +39,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
      Writing depth average:              output-update_script/depth_average
      Number of advected particles:       50
      Heating rate (average/total):       -3.38e-10 W/kg, -2.842e+07 W
-     Pressure at top/bottom of domain:   -1.366e-08 Pa, 1.08e+11 Pa
+     Pressure at top/bottom of domain:   -6.44e-09 Pa, 1.08e+11 Pa
      Computing dynamic topography        
 
 Termination requested by criterion: end time

@@ -17,8 +17,6 @@ Exception 'ExcMessage (exception_message.str())' on rank 0 on processing:
 
 An error occurred in file <utilities.cc> in function
 (line in output replaced by default.sh script)
-The violated condition was: 
-    false
 Additional information: 
     The iterative Stokes solver in Simulator::solve_stokes did not
     converge.
@@ -40,8 +38,6 @@ Additional information:
     aspect::internal::BlockSchurPreconditioner<aspect::internal::InverseVelocityBlock<dealii::TrilinosWrappers::PreconditionAMG>,
     aspect::internal::SchurComplementOperator>; VectorType =
     dealii::TrilinosWrappers::MPI::BlockVector]
-    The violated condition was:
-    false
     Additional information:
     Iterative method reported convergence failure in step 10. The residual
     in the last step was 3.667e+11.

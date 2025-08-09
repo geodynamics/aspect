@@ -13,6 +13,6 @@
 # 13: Velocity iterations in Stokes preconditioner
 # 14: Schur complement iterations in Stokes preconditioner
 # 15: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 1198 11581 5129 15387  0  0  0  0 45 111 385 output-multicomponent_harmonic/solution/solution-00000 
-1 5.762928781106e+04 5.762928781106e+04 1198 11581 5129 15387 10 10 12 10 38  78 239                                                     "" 
-2 1.132389696854e+05 5.560968187437e+04 1198 11581 5129 15387 10 10 11 10 41  80 312                                                     "" 
+0 0.000000000000e+00 0.000000000000e+00 1198 11581 5129 15387  0  0  0  0 45 105 363 output-multicomponent_harmonic/solution/solution-00000 
+1 5.762928781106e+04 5.762928781106e+04 1198 11581 5129 15387 10 10 12 10 38  72 216                                                     "" 
+2 1.132389696854e+05 5.560968187437e+04 1198 11581 5129 15387 10 10 11 10 41  76 288                                                     "" 

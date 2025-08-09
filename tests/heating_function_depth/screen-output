@@ -4,7 +4,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 25+0 iterations.
+   Solving Stokes system (GMG)... 23+0 iterations.
 
    Postprocessing:
      Heating rate (average/total):  0.2032 W/kg, 0.4453 W

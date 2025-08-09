@@ -4,21 +4,21 @@ Number of degrees of freedom: 740 (450+65+225)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 12+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
 Number of active cells: 84 (on 4 levels)
 Number of degrees of freedom: 1,364 (834+113+417)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 15+0 iterations.
+   Solving Stokes system (GMG)... 13+0 iterations.
 
 Number of active cells: 120 (on 4 levels)
 Number of degrees of freedom: 1,846 (1,130+151+565)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 14+0 iterations.
+   Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-shell_quarter_BC/solution/solution-00000
@@ -29,7 +29,7 @@ Number of degrees of freedom: 1,846 (1,130+151+565)
 
 *** Timestep 1:  t=926963 years, dt=926963 years
    Solving temperature system... 11 iterations.
-   Solving Stokes system (GMG)... 15+0 iterations.
+   Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.158 m/year, 0.284 m/year
@@ -39,7 +39,7 @@ Number of degrees of freedom: 1,846 (1,130+151+565)
 
 *** Timestep 2:  t=1.458e+06 years, dt=531040 years
    Solving temperature system... 16 iterations.
-   Solving Stokes system (GMG)... 14+0 iterations.
+   Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-shell_quarter_BC/solution/solution-00001
@@ -60,7 +60,7 @@ Number of degrees of freedom: 1,846 (1,130+151+565)
 
 *** Timestep 4:  t=2.11377e+06 years, dt=286353 years
    Solving temperature system... 15 iterations.
-   Solving Stokes system (GMG)... 13+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-shell_quarter_BC/solution/solution-00002
@@ -81,7 +81,7 @@ Number of degrees of freedom: 1,846 (1,130+151+565)
 
 *** Timestep 6:  t=2.55535e+06 years, dt=204671 years
    Solving temperature system... 14 iterations.
-   Solving Stokes system (GMG)... 12+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.489 m/year, 0.854 m/year
@@ -91,7 +91,7 @@ Number of degrees of freedom: 1,846 (1,130+151+565)
 
 *** Timestep 7:  t=2.73774e+06 years, dt=182384 years
    Solving temperature system... 14 iterations.
-   Solving Stokes system (GMG)... 13+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.544 m/year, 0.947 m/year
@@ -101,7 +101,7 @@ Number of degrees of freedom: 1,846 (1,130+151+565)
 
 *** Timestep 8:  t=2.90411e+06 years, dt=166375 years
    Solving temperature system... 14 iterations.
-   Solving Stokes system (GMG)... 12+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.595 m/year, 1.03 m/year
@@ -109,7 +109,7 @@ Number of degrees of freedom: 1,846 (1,130+151+565)
      Heat fluxes through boundary parts: 1.124e+07 W, 7.176e+06 W, 0 W, 0 W
      Writing depth average:              output-shell_quarter_BC/depth_average
 
-*** Timestep 9:  t=3e+06 years, dt=95887.8 years
+*** Timestep 9:  t=3e+06 years, dt=95887.7 years
    Solving temperature system... 11 iterations.
    Solving Stokes system (GMG)... 11+0 iterations.
 

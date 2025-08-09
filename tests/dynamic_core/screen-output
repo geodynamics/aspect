@@ -7,7 +7,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
      4100           2019.37        0.0465432      0              0              0              
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 16+0 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
      CMB heat flux out of the core 0.953 TW,
@@ -17,7 +17,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
      Tc(K)          Ri(km)         Xi             dT/dt(K/year)  dR/dt(km/year) dX/dt(1/year)  
      4100.03        2019.15        0.0465416      3.48066e-08    -2.46581e-07   -1.84405e-12   
    Solving temperature system... 14 iterations.
-   Solving Stokes system (GMG)... 16+0 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
      CMB heat flux out of the core 0.953 TW,
@@ -25,9 +25,9 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
 *** Timestep 2:  t=1e+06 years, dt=102348 years
    Dynamic core data updated.
      Tc(K)          Ri(km)         Xi             dT/dt(K/year)  dR/dt(km/year) dX/dt(1/year)  
-     4100.03        2019.13        0.0465414      3.51812e-08    -2.49236e-07   -1.8636e-12    
+     4100.03        2019.13        0.0465414      3.51812e-08    -2.49236e-07   -1.86361e-12   
    Solving temperature system... 10 iterations.
-   Solving Stokes system (GMG)... 13+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      CMB heat flux out of the core 0.87 TW,

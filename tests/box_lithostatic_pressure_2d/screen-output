@@ -25,7 +25,7 @@ Number of degrees of freedom: 70,789 (33,282+4,225+16,641+16,641)
 
      RMS, max velocity:                               0.028 m/year, 0.0716 m/year
      Max, min, and rms velocity along boundary parts: 0.04213 m/year, 0.01887 m/year, 0.03334 m/year, 0.007951 m/year, 1.621e-05 m/year, 0.004741 m/year, 0.04501 m/year, 1.296e-05 m/year, 0.02831 m/year, 0.04501 m/year, 1.296e-05 m/year, 0.02831 m/year
-     Pressure at top/bottom of domain:                -1.716e-09 Pa, 9.413e+10 Pa
+     Pressure at top/bottom of domain:                -6.404e-09 Pa, 9.413e+10 Pa
 
 Termination requested by criterion: end time
 

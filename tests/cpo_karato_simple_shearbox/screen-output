@@ -42,7 +42,7 @@ Number of degrees of freedom: 143 (81+8+27+27)
    Advecting particles...  done.
 
    Postprocessing:
-     Number of advected particles: 110
+     Number of advected particles: 115
 
 *** Timestep 6:  t=60000 seconds, dt=10000 seconds
    Solving temperature system... 0 iterations.
