@@ -9,7 +9,7 @@ Number of degrees of freedom: 7,369 (2,178+1,057+2,178+289+1,089+289+289)
    Solving porosity system ... 0 iterations.
    Skipping peridotite composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 41+0 iterations.
+   Solving Stokes system (AMG)... 76+0 iterations.
    Solving fluid velocity system... 1 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.14566e-16, 1.03548e-16, 0, 0.333482
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.333482
@@ -18,15 +18,15 @@ Number of degrees of freedom: 7,369 (2,178+1,057+2,178+289+1,089+289+289)
    Solving porosity system ... 0 iterations.
    Skipping peridotite composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 0+0 iterations.
+   Solving Stokes system (AMG)... 2+0 iterations.
    Solving fluid velocity system... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.14566e-16, 1.03548e-16, 0, 9.96758e-13
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 9.96758e-13
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.14566e-16, 1.03548e-16, 0, 5.77594e-12
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 5.77594e-12
 
 
    Postprocessing:
      Temperature min/avg/max:       1600 K, 1600 K, 1600 K
-     Heating rate (average/total):  0.3906 W/kg, 0.7812 W
+     Heating rate (average/total):  0.3906 W/kg, 0.7813 W
      Writing graphical output:      output-segregation_heating/solution/solution-00000
 
 *** Timestep 1:  t=0.1 seconds, dt=0.1 seconds
@@ -36,16 +36,16 @@ Number of degrees of freedom: 7,369 (2,178+1,057+2,178+289+1,089+289+289)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 24+0 iterations.
    Solving fluid velocity system... 3 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.24316e-05, 3.86889e-16, 0, 8.38159e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.24316e-05, 1.10916e-15, 0, 8.38159e-07
       Relative nonlinear residual (total system) after nonlinear iteration 1: 3.24316e-05
 
    Solving temperature system... 1 iterations.
    Solving porosity system ... 2 iterations.
    Skipping peridotite composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 16+0 iterations.
+   Solving Stokes system (AMG)... 15+0 iterations.
    Solving fluid velocity system... 3 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.48606e-11, 1.37966e-08, 0, 7.40716e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.48606e-11, 1.37966e-08, 0, 7.40717e-09
       Relative nonlinear residual (total system) after nonlinear iteration 2: 1.37966e-08
 
 
@@ -54,15 +54,15 @@ Number of degrees of freedom: 7,369 (2,178+1,057+2,178+289+1,089+289+289)
      Heating rate (average/total):  0.3906 W/kg, 0.7812 W
      Writing graphical output:      output-segregation_heating/solution/solution-00001
 
-*** Timestep 2:  t=0.1 seconds, dt=1.39329e-11 seconds
+*** Timestep 2:  t=0.1 seconds, dt=1.39357e-11 seconds
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Skipping peridotite composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
    Solving fluid velocity system... 3 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.12058e-16, 1.26663e-16, 0, 8.17483e-13
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 8.17483e-13
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.80871e-16, 1.35848e-16, 0, 9.66181e-13
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 9.66181e-13
 
 
    Postprocessing:

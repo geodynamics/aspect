@@ -8,7 +8,7 @@ Number of degrees of freedom: 7,054 (1,302+176+176+1,350+1,350+1,350+1,350)
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
    Solving beam system ... 0 iterations.
-   Solving Stokes system (GMG)... 2000+32 iterations.
+   Solving Stokes system (GMG)... 2000+31 iterations.
 
    Postprocessing:
      RMS, max velocity:        5.28e-05 m/year, 0.00026 m/year
@@ -21,7 +21,7 @@ Number of degrees of freedom: 7,054 (1,302+176+176+1,350+1,350+1,350+1,350)
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
    Solving beam system ... 1 iterations.
-   Solving Stokes system (GMG)... 164+0 iterations.
+   Solving Stokes system (GMG)... 160+0 iterations.
 
    Postprocessing:
      RMS, max velocity:        5.28e-05 m/year, 0.000261 m/year
@@ -34,7 +34,7 @@ Number of degrees of freedom: 7,054 (1,302+176+176+1,350+1,350+1,350+1,350)
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
    Solving beam system ... 1 iterations.
-   Solving Stokes system (GMG)... 92+0 iterations.
+   Solving Stokes system (GMG)... 101+0 iterations.
 
    Postprocessing:
      RMS, max velocity:        5.29e-05 m/year, 0.000261 m/year

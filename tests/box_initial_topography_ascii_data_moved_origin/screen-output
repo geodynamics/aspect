@@ -16,11 +16,11 @@ Number of degrees of freedom: 1,968 (1,413+84+471)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 1000+25 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-box_initial_topography_ascii_data_moved_origin/solution/solution-00000
-     RMS, max velocity:        0.0384 m/year, 0.0902 m/year
+     RMS, max velocity:        3.28 m/year, 8.55 m/year
      Topography min/max:       2e+04 m, 5.5e+04 m
 
 Termination requested by criterion: end time

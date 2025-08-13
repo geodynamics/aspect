@@ -73,8 +73,8 @@ Number of mesh deformation degrees of freedom: 1,466
 
    Solving temperature system... 4 iterations.
    Solving Stokes system (GMG)... 0+2 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 6.70131e-08, 1.74103e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 6.70131e-08
+      Relative nonlinear residuals (temperature, Stokes system): 6.70132e-08, 1.74116e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 6.70132e-08
 
 
    Postprocessing:
@@ -100,8 +100,8 @@ Number of mesh deformation degrees of freedom: 1,466
 
    Solving temperature system... 4 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 1.43517e-07, 1.60996e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.43517e-07
+      Relative nonlinear residuals (temperature, Stokes system): 1.4352e-07, 1.61176e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.4352e-07
 
 
    Postprocessing:
@@ -127,7 +127,7 @@ Number of mesh deformation degrees of freedom: 1,466
 
    Solving temperature system... 3 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 1.88633e-08, 6.49224e-11
+      Relative nonlinear residuals (temperature, Stokes system): 1.88633e-08, 6.49113e-11
       Relative nonlinear residual (total system) after nonlinear iteration 4: 1.88633e-08
 
 
@@ -149,7 +149,7 @@ Number of mesh deformation degrees of freedom: 1,466
 
    Solving temperature system... 5 iterations.
    Solving Stokes system (GMG)... 0+11 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 5.54917e-06, 3.94535e-09
+      Relative nonlinear residuals (temperature, Stokes system): 5.54917e-06, 3.9454e-09
       Relative nonlinear residual (total system) after nonlinear iteration 3: 5.54917e-06
 
 
@@ -160,19 +160,19 @@ Number of mesh deformation degrees of freedom: 1,466
 *** Timestep 5:  t=882227 years, dt=189165 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 8 iterations.
-   Solving Stokes system (GMG)... 0+26 iterations.
+   Solving Stokes system (GMG)... 0+25 iterations.
       Relative nonlinear residuals (temperature, Stokes system): 0.019331, 0.000130973
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.019331
 
    Solving temperature system... 7 iterations.
    Solving Stokes system (GMG)... 0+19 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.000506481, 3.62158e-07
+      Relative nonlinear residuals (temperature, Stokes system): 0.000506481, 3.62159e-07
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000506481
 
    Solving temperature system... 5 iterations.
    Solving Stokes system (GMG)... 0+6 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 1.23064e-06, 8.63749e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.23064e-06
+      Relative nonlinear residuals (temperature, Stokes system): 1.23065e-06, 8.63765e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.23065e-06
 
 
    Postprocessing:
@@ -196,8 +196,8 @@ Number of mesh deformation degrees of freedom: 1,466
 
    Solving temperature system... 4 iterations.
    Solving Stokes system (GMG)... 0+5 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 5.91221e-07, 4.13728e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 5.91221e-07
+      Relative nonlinear residuals (temperature, Stokes system): 5.91222e-07, 4.13329e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 5.91222e-07
 
 
    Postprocessing:
@@ -207,19 +207,19 @@ Number of mesh deformation degrees of freedom: 1,466
 *** Timestep 7:  t=1.26258e+06 years, dt=192472 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 8 iterations.
-   Solving Stokes system (GMG)... 0+23 iterations.
+   Solving Stokes system (GMG)... 0+25 iterations.
       Relative nonlinear residuals (temperature, Stokes system): 0.00838215, 3.31867e-05
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00838215
 
    Solving temperature system... 6 iterations.
-   Solving Stokes system (GMG)... 0+16 iterations.
+   Solving Stokes system (GMG)... 0+17 iterations.
       Relative nonlinear residuals (temperature, Stokes system): 0.000127077, 8.7942e-08
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000127077
 
    Solving temperature system... 4 iterations.
-   Solving Stokes system (GMG)... 0+6 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 2.96053e-07, 2.10644e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 2.96053e-07
+   Solving Stokes system (GMG)... 0+5 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 2.96048e-07, 2.04488e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 2.96048e-07
 
 
    Postprocessing:
@@ -240,8 +240,8 @@ Number of mesh deformation degrees of freedom: 1,466
 
    Solving temperature system... 4 iterations.
    Solving Stokes system (GMG)... 0+5 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 1.38748e-07, 9.99141e-11
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.38748e-07
+      Relative nonlinear residuals (temperature, Stokes system): 1.3875e-07, 9.97281e-11
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.3875e-07
 
 
    Postprocessing:
@@ -257,13 +257,13 @@ Number of mesh deformation degrees of freedom: 1,466
 
    Solving temperature system... 6 iterations.
    Solving Stokes system (GMG)... 0+16 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 3.34711e-05, 2.23078e-08
+      Relative nonlinear residuals (temperature, Stokes system): 3.34711e-05, 2.23079e-08
       Relative nonlinear residual (total system) after nonlinear iteration 2: 3.34711e-05
 
    Solving temperature system... 4 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 7.5315e-08, 6.20303e-11
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 7.5315e-08
+      Relative nonlinear residuals (temperature, Stokes system): 7.53207e-08, 5.95001e-11
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 7.53207e-08
 
 
    Postprocessing:
@@ -279,13 +279,13 @@ Number of mesh deformation degrees of freedom: 1,466
 
    Solving temperature system... 6 iterations.
    Solving Stokes system (GMG)... 0+16 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 1.57868e-05, 1.02614e-08
+      Relative nonlinear residuals (temperature, Stokes system): 1.57868e-05, 1.02615e-08
       Relative nonlinear residual (total system) after nonlinear iteration 2: 1.57868e-05
 
    Solving temperature system... 3 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 3.57563e-08, 2.74613e-11
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 3.57563e-08
+      Relative nonlinear residuals (temperature, Stokes system): 3.57604e-08, 2.82789e-11
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 3.57604e-08
 
 
    Postprocessing:

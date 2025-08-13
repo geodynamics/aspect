@@ -41,58 +41,58 @@ Number of degrees of freedom: 246 (114+18+57+57)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 10 iterations.
-   Solving Stokes system (GMG)... 24+0 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
 
    Postprocessing:
      Writing particle output: output-particle_load_balancing_refinement_02/particles/particles-00002
 
 Skipping mesh refinement, because the mesh did not change.
 
-*** Timestep 4:  t=332.612 seconds, dt=85.6924 seconds
+*** Timestep 4:  t=329.535 seconds, dt=82.6156 seconds
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
-   Solving C_1 system ... 11 iterations.
-   Solving Stokes system (GMG)... 26+0 iterations.
+   Solving C_1 system ... 12 iterations.
+   Solving Stokes system (GMG)... 3+0 iterations.
 
    Postprocessing:
      Writing particle output: output-particle_load_balancing_refinement_02/particles/particles-00003
 
 Skipping mesh refinement, because the mesh did not change.
 
-*** Timestep 5:  t=398.037 seconds, dt=65.4253 seconds
+*** Timestep 5:  t=381.672 seconds, dt=52.1373 seconds
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
-   Solving C_1 system ... 11 iterations.
-   Solving Stokes system (GMG)... 24+0 iterations.
+   Solving C_1 system ... 12 iterations.
+   Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
      Number of advected particles: 10
 
 Skipping mesh refinement, because the mesh did not change.
 
-*** Timestep 6:  t=451.711 seconds, dt=53.6735 seconds
+*** Timestep 6:  t=437.294 seconds, dt=55.6217 seconds
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 10 iterations.
-   Solving Stokes system (GMG)... 24+0 iterations.
+   Solving Stokes system (GMG)... 6+0 iterations.
 
    Postprocessing:
      Writing particle output: output-particle_load_balancing_refinement_02/particles/particles-00004
 
 Skipping mesh refinement, because the mesh did not change.
 
-*** Timestep 7:  t=495.305 seconds, dt=43.5943 seconds
+*** Timestep 7:  t=482.628 seconds, dt=45.3338 seconds
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
-   Solving C_1 system ... 10 iterations.
-   Solving Stokes system (GMG)... 23+0 iterations.
+   Solving C_1 system ... 11 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
 
    Postprocessing:
      Number of advected particles: 10
 
 Skipping mesh refinement, because the mesh did not change.
 
-*** Timestep 8:  t=500 seconds, dt=4.69491 seconds
+*** Timestep 8:  t=500 seconds, dt=17.3721 seconds
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 9 iterations.

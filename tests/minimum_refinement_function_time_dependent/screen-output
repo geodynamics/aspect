@@ -17,8 +17,8 @@ Number of degrees of freedom: 2,509 (1,536+205+768)
 
    Postprocessing:
 
-Number of active cells: 541 (on 6 levels)
-Number of degrees of freedom: 7,635 (4,686+606+2,343)
+Number of active cells: 547 (on 6 levels)
+Number of degrees of freedom: 7,704 (4,728+612+2,364)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
@@ -54,7 +54,7 @@ Number of active cells: 1,486 (on 7 levels)
 Number of degrees of freedom: 20,680 (12,710+1,615+6,355)
 
 *** Timestep 1:  t=6.46792e+08 years, dt=6.46792e+08 years
-   Solving temperature system... 293 iterations.
+   Solving temperature system... 283 iterations.
    Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
@@ -63,7 +63,7 @@ Number of active cells: 1,021 (on 7 levels)
 Number of degrees of freedom: 14,428 (8,866+1,129+4,433)
 
 *** Timestep 2:  t=1.62038e+09 years, dt=9.73586e+08 years
-   Solving temperature system... 266 iterations.
+   Solving temperature system... 243 iterations.
    Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
@@ -72,7 +72,7 @@ Number of active cells: 760 (on 7 levels)
 Number of degrees of freedom: 10,703 (6,574+842+3,287)
 
 *** Timestep 3:  t=2.92073e+09 years, dt=1.30035e+09 years
-   Solving temperature system... 215 iterations.
+   Solving temperature system... 212 iterations.
    Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
@@ -81,7 +81,7 @@ Number of active cells: 661 (on 7 levels)
 Number of degrees of freedom: 9,420 (5,780+750+2,890)
 
 *** Timestep 4:  t=4.35571e+09 years, dt=1.43497e+09 years
-   Solving temperature system... 154 iterations.
+   Solving temperature system... 148 iterations.
    Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
@@ -90,7 +90,7 @@ Number of active cells: 631 (on 7 levels)
 Number of degrees of freedom: 8,922 (5,478+705+2,739)
 
 *** Timestep 5:  t=5e+09 years, dt=6.44294e+08 years
-   Solving temperature system... 122 iterations.
+   Solving temperature system... 126 iterations.
    Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:

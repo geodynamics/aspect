@@ -26,7 +26,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
 *** Timestep 2:  t=100000 years, dt=50000 years
    Solving temperature system... 0 iterations.
-   Solving grain_size system ... 1 iterations.
+   Solving grain_size system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
 
@@ -37,7 +37,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
 *** Timestep 3:  t=150000 years, dt=50000 years
    Solving temperature system... 0 iterations.
-   Solving grain_size system ... 1 iterations.
+   Solving grain_size system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
 
@@ -48,7 +48,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
 *** Timestep 4:  t=200000 years, dt=50000 years
    Solving temperature system... 0 iterations.
-   Solving grain_size system ... 1 iterations.
+   Solving grain_size system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
 
@@ -59,7 +59,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
 *** Timestep 5:  t=250000 years, dt=50000 years
    Solving temperature system... 0 iterations.
-   Solving grain_size system ... 1 iterations.
+   Solving grain_size system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
 
@@ -70,7 +70,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
 *** Timestep 6:  t=300000 years, dt=50000 years
    Solving temperature system... 0 iterations.
-   Solving grain_size system ... 1 iterations.
+   Solving grain_size system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
 
@@ -81,7 +81,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
 *** Timestep 7:  t=350000 years, dt=50000 years
    Solving temperature system... 0 iterations.
-   Solving grain_size system ... 1 iterations.
+   Solving grain_size system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
 
@@ -92,7 +92,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
 *** Timestep 8:  t=400000 years, dt=50000 years
    Solving temperature system... 0 iterations.
-   Solving grain_size system ... 1 iterations.
+   Solving grain_size system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
 
@@ -103,7 +103,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
 *** Timestep 9:  t=450000 years, dt=50000 years
    Solving temperature system... 0 iterations.
-   Solving grain_size system ... 1 iterations.
+   Solving grain_size system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
 
@@ -114,7 +114,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
 *** Timestep 10:  t=500000 years, dt=50000 years
    Solving temperature system... 0 iterations.
-   Solving grain_size system ... 1 iterations.
+   Solving grain_size system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
 
@@ -136,7 +136,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
 *** Timestep 12:  t=600000 years, dt=50000 years
    Solving temperature system... 0 iterations.
-   Solving grain_size system ... 1 iterations.
+   Solving grain_size system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
 
@@ -147,7 +147,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
 *** Timestep 13:  t=650000 years, dt=50000 years
    Solving temperature system... 0 iterations.
-   Solving grain_size system ... 1 iterations.
+   Solving grain_size system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
 
@@ -158,7 +158,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
 *** Timestep 14:  t=700000 years, dt=50000 years
    Solving temperature system... 0 iterations.
-   Solving grain_size system ... 1 iterations.
+   Solving grain_size system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
 
@@ -180,7 +180,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
 *** Timestep 16:  t=800000 years, dt=50000 years
    Solving temperature system... 0 iterations.
-   Solving grain_size system ... 1 iterations.
+   Solving grain_size system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
 
@@ -191,7 +191,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
 *** Timestep 17:  t=850000 years, dt=50000 years
    Solving temperature system... 0 iterations.
-   Solving grain_size system ... 1 iterations.
+   Solving grain_size system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
 
@@ -202,7 +202,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
 *** Timestep 18:  t=900000 years, dt=50000 years
    Solving temperature system... 0 iterations.
-   Solving grain_size system ... 1 iterations.
+   Solving grain_size system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
 
@@ -224,7 +224,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
 *** Timestep 20:  t=1e+06 years, dt=50000 years
    Solving temperature system... 0 iterations.
-   Solving grain_size system ... 1 iterations.
+   Solving grain_size system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
 

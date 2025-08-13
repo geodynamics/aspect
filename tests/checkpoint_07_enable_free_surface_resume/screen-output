@@ -16,7 +16,7 @@ Number of mesh deformation degrees of freedom: 1,728
    Solving mesh displacement system... 1 iterations.
    Solving temperature system... 6 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 202+0 iterations.
+   Solving Stokes system (AMG)... 200+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_resume/solution/solution-00008

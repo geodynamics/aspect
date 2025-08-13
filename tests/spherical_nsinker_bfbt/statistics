@@ -15,4 +15,4 @@
 # 15: AffineConstraints<double> memory consumption (MB) 
 # 16: Solution vector memory consumption (MB) 
 # 17: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 768 21760 6930 1 65 66 130 35.1113 0.4407 0.0805 0.1404 0.2380 0.3291 output-spherical_nsinker_bfbt/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 768 21760 6930 1 65 65 128 35.1114 0.4409 0.0805 0.1404 0.3743 0.3291 output-spherical_nsinker_bfbt/solution/solution-00000 
