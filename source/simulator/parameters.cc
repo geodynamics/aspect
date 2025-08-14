@@ -2121,7 +2121,7 @@ namespace aspect
                                        "At the moment the type of field " + names_of_compositional_fields[i] + " is unspecified."));
               }
             else if ((names_of_compositional_fields[i].find("strain") != std::string::npos)
-                     || (std::regex_match(names_of_compositional_fields[i],std::regex("s[1-3][1-3]"))))
+                     || (std::regex_match(names_of_compositional_fields[i], std::regex("s[1-3][1-3]"))))
               x_compositional_field_types[i] = "strain";
             else if (names_of_compositional_fields[i].find("grain_size") != std::string::npos)
               x_compositional_field_types[i] = "grain size";

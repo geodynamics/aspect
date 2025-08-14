@@ -91,8 +91,8 @@ namespace
           line.erase(line.size() - 1, std::string::npos);
 
         std::match_results<std::string::const_iterator> matches;
-        const std::string regex = "set[ \t]+" + parameter_name + "[ \t]*=[ \t]*(.*)";
-        if (std::regex_match(line, matches, std::regex(regex)))
+        const std::regex regex ("set[ \t]+" + parameter_name + "[ \t]*=[ \t]*(.*)");
+        if (std::regex_match(line, matches, regex))
           {
             // Since the line as a whole matched, the 'matches' variable needs to
             // contain two entries: [0] denotes the whole string, and [1] the
@@ -410,12 +410,12 @@ namespace
 
     // Now search for and replace include directives in the input string.
     std::match_results<std::string::const_iterator> matches;
-    const std::string search_regex = "(?:^|\n)[ \t]*include[ \t]+(.*?)[ \t]*(?:#|\n|$)";
-    const std::string replace_regex = "(?:^|\n)[ \t]*include[ \t]+.*";
+    const std::regex search_regex ("(?:^|\n)[ \t]*include[ \t]+(.*?)[ \t]*(?:#|\n|$)");
+    const std::regex replace_regex ("(?:^|\n)[ \t]*include[ \t]+.*");
 
     unsigned int n_included_files = 0;
 
-    while (std::regex_search(input_as_string, matches, std::regex(search_regex)))
+    while (std::regex_search(input_as_string, matches, search_regex))
       {
         // Make sure we are not circularly including files. This is not easily possible
         // by making sure included files are unique, because we may have multiple
@@ -444,7 +444,7 @@ namespace
         // Replace the include line with the content of the included file. Note that we only replace the first
         // include line we find (there may be several, which we will replace in subsequent iterations).
         input_as_string = std::regex_replace(input_as_string,
-                                             std::regex(replace_regex),
+                                             replace_regex,
                                              prefix + included_file_content,
                                              std::regex_constants::format_first_only);
 
