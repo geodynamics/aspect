@@ -129,7 +129,7 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, particles, Particle Distribution Statistics
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, particles, particle distribution statistics
 
   subsection Visualization
     set Time between graphical output = .001
