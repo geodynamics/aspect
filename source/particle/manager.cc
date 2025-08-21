@@ -33,6 +33,7 @@
 #include <boost/serialization/map.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
+#include <aspect/particle/distribution.h>
 
 namespace aspect
 {
@@ -357,14 +358,32 @@ namespace aspect
                     for (unsigned int i=0; i < n_particles_to_remove; ++i)
                       {
                         const unsigned int current_n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
-                        const unsigned int index_to_remove = std::uniform_int_distribution<unsigned int>
-                                                             (0,current_n_particles_in_cell-1)(random_number_generator);
 
-                        auto particle_to_remove = particle_handler->particles_in_cell(cell).begin();
-                        std::advance(particle_to_remove, index_to_remove);
-                        particle_handler->remove_particle(particle_to_remove);
+                        if (deletion_algorithm == DeletionAlgorithm::point_density_function)
+                          {
+                            ParticlePDF<dim> pdf(0.3,kernel_function);
+                            pdf.fill_from_particle_range(particle_handler->particles_in_cell(cell),current_n_particles_in_cell);
+                            pdf.compute_statistical_values();
+
+                            const unsigned int index_max = pdf.get_max_particle();
+                            auto particle_to_remove = particle_handler->particles_in_cell(cell).begin();
+                            while (particle_to_remove->get_id() != index_max && particle_to_remove != particle_handler->particles_in_cell(cell).end())
+                              {
+                                ++particle_to_remove;
+                              }
+                            particle_handler->remove_particle(particle_to_remove);
+                          }
+                        else if (deletion_algorithm == DeletionAlgorithm::random)
+                          {
+                            const unsigned int current_n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
+                            const unsigned int index_to_remove = std::uniform_int_distribution<unsigned int>
+                                                                 (0,current_n_particles_in_cell-1)(random_number_generator);
+
+                            auto particle_to_remove = particle_handler->particles_in_cell(cell).begin();
+                            std::advance(particle_to_remove, index_to_remove);
+                            particle_handler->remove_particle(particle_to_remove);
+                          }
                       }
-
                   }
               }
 
@@ -812,6 +831,12 @@ namespace aspect
                                                             "remove and add particles|repartition"),
                                "Strategy that is used to balance the computational "
                                "load across processors for adaptive meshes.");
+            prm.declare_entry ("Deletion algorithm", "random",
+                               Patterns::MultipleSelection ("random|point density function"),
+                               "Algorithm used to delete excess particles from cells.");
+            prm.declare_entry ("Point density kernel function", "cutoff w1 dealii",
+                               Patterns::MultipleSelection ("cutoff w1 dealii|uniform|triangular|gaussian"),
+                               "Algorithm used to delete excess particles from cells.");
             prm.declare_entry ("Minimum particles per cell", "0",
                                Patterns::Integer (0),
                                "Lower limit for particle number per cell. This limit is "
@@ -964,6 +989,25 @@ namespace aspect
             return (particle_manager == 0) ? 1000 + this->cell_weight(cell, status) : this->cell_weight(cell, status);
           });
 
+        // The deletion algorithm to use when there are too many particles in a cell
+        deletion_algorithm = DeletionAlgorithm::random;
+        std::string deletion_algorithm_string = prm.get("Deletion algorithm");
+
+        if (deletion_algorithm_string == "point density function")
+          deletion_algorithm = DeletionAlgorithm::point_density_function;
+
+        // The kernel function to use when using the point density function deletion algorithm
+        kernel_function = ParticlePDF<dim>::KernelFunction::cutoff_function_w1_dealii;
+        std::string kernel_function_string = prm.get("Point density kernel function");
+
+        if (kernel_function_string == "uniform")
+          kernel_function =  ParticlePDF<dim>::KernelFunction::uniform;
+
+        else if (kernel_function_string == "triangular")
+          kernel_function =  ParticlePDF<dim>::KernelFunction::triangular;
+
+        else if (kernel_function_string == "gaussian")
+          kernel_function =  ParticlePDF<dim>::KernelFunction::gaussian;
 
         TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Initialization");
 

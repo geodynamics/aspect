@@ -92,7 +92,7 @@ namespace aspect
          * @param n_particles_in_cell The number of particles belonging to the particle manager in question within the cell.
          */
         void
-        fill_from_particle_range(const typename ParticleHandler<dim>::particle_iterator_range particle_range,
+        fill_from_particle_range(const typename Particles::ParticleHandler<dim>::particle_iterator_range particle_range,
                                  const unsigned int n_particles_in_cell);
 
         /**
@@ -109,7 +109,7 @@ namespace aspect
         insert_kernel_sum_from_particle_range(const Point<dim> reference_point,
                                               std::array<unsigned int,dim> table_index,
                                               const unsigned int n_particles_in_cell,
-                                              const typename ParticleHandler<dim>::particle_iterator_range particle_range);
+                                              const typename Particles::ParticleHandler<dim>::particle_iterator_range particle_range);
 
         /**
          * Inserts a value into the point-density function.
@@ -180,6 +180,20 @@ namespace aspect
          */
         double
         get_standard_deviation() const;
+
+        /**
+         * Returns the index of the particle with whose position has the highest
+         * point-density value.
+         */
+        types::particle_index
+        get_max_particle() const;
+
+        /**
+         * Returns the index of the particle with whose position has the lowest
+         * point-density value.
+         */
+        types::particle_index
+        get_min_particle() const;
 
       private:
         /**
