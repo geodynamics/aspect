@@ -46,7 +46,7 @@
 #include <boost/serialization/unique_ptr.hpp>
 
 #include <random>
-
+#include <aspect/particle/distribution.h>
 
 namespace aspect
 {
@@ -306,6 +306,17 @@ namespace aspect
         };
 
         /**
+         * Enum class to keep track of which algorithm is used to delete excess particles.
+         */
+        enum class DeletionAlgorithm
+        {
+          random,
+          point_density_function,
+        };
+
+        typename ParticlePDF<dim>::KernelFunction kernel_function;
+
+        /**
          * Generation scheme for creating particles in this manager
          */
         std::unique_ptr<Generator::Interface<dim>> generator;
@@ -350,6 +361,11 @@ namespace aspect
          * Strategy for particle load balancing.
          */
         typename ParticleLoadBalancing::Kind particle_load_balancing;
+
+        /**
+         * Algorithm for deletion of excess particles.
+         */
+        DeletionAlgorithm deletion_algorithm;
 
         /**
          * Lower limit for particle number per cell. This limit is

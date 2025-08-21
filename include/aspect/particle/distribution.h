@@ -181,6 +181,20 @@ namespace aspect
         double
         get_standard_deviation() const;
 
+        /**
+         * Returns the index of the particle with whose position has the highest
+         * point-density value.
+         */
+        types::particle_index
+        get_max_particle() const;
+
+        /**
+         * Returns the index of the particle with whose position has the lowest
+         * point-density value.
+         */
+        types::particle_index
+        get_min_particle() const;
+
       private:
         /**
          * `function_output_table` holds the output of the point-density function
