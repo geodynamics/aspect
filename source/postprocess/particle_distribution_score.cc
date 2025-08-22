@@ -263,7 +263,7 @@ namespace aspect
   namespace Postprocess
   {
     ASPECT_REGISTER_POSTPROCESSOR(ParticleDistributionScore,
-                                  "Particle Distribution Score",
+                                  "particle distribution score",
                                   "This postprocessor is intended to help evaluate how much the density of particles "
                                   "varies within cells, with the goal of supporting the development of algorithms "
                                   "to select particles for deletion and addition during load balancing. "
