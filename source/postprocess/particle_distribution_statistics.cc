@@ -233,7 +233,7 @@ namespace aspect
   namespace Postprocess
   {
     ASPECT_REGISTER_POSTPROCESSOR(ParticleDistributionStatistics,
-                                  "Particle Distribution Statistics",
+                                  "particle distribution statistics",
                                   "A postprocessor that computes some statistics about "
                                   "the particle distribution within grid cells. In particular "
                                   "it calculates a point-density function for every cell and derives "
