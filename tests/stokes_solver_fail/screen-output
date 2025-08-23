@@ -38,7 +38,9 @@ Additional information:
     VectorType&, const VectorType&, const PreconditionerType&) [with
     MatrixType = aspect::internal::StokesBlock; PreconditionerType =
     aspect::internal::BlockSchurPreconditioner<aspect::internal::InverseVelocityBlock<dealii::TrilinosWrappers::PreconditionAMG>,
-    aspect::internal::SchurComplementOperator>; VectorType =
+    aspect::internal::SchurComplementOperator,
+    dealii::TrilinosWrappers::SparseMatrix,
+    dealii::TrilinosWrappers::MPI::BlockVector>; VectorType =
     dealii::TrilinosWrappers::MPI::BlockVector]
     The violated condition was:
     false

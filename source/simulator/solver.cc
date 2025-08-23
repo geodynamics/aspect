@@ -22,6 +22,7 @@
 #include <aspect/simulator.h>
 #include <aspect/global.h>
 #include <aspect/melt.h>
+#include <aspect/simulator/solver/block_stokes_preconditioner.h>
 #include <aspect/simulator/solver/stokes_matrix_free.h>
 #include <aspect/simulator/solver/stokes_direct.h>
 #include <aspect/mesh_deformation/interface.h>
@@ -165,85 +166,7 @@ namespace aspect
     }
 
 
-    /**
-     * Implement the block Schur preconditioner for the Stokes system.
-     */
-    template <class AInvOperator, class SInvOperator>
-    class BlockSchurPreconditioner : public Subscriptor
-    {
-      public:
-        /**
-         * @brief Constructor
-         *
-         * @param S The entire Stokes matrix
-         * @param Spre The matrix whose blocks are used in the definition of
-         *     the preconditioning of the Stokes matrix, i.e. containing approximations
-         *     of the A and S blocks.
-         * @param S_inverse_operator Approximation for the inverse Schur complement,
-         * can be chosen as the mass matrix.
-         * @param A_inv_operator Preconditioner object for the matrix A.
-         **/
-        BlockSchurPreconditioner (const LinearAlgebra::BlockSparseMatrix     &S,
-                                  const LinearAlgebra::BlockSparseMatrix     &Spre,
-                                  const SInvOperator                         &S_inverse_operator,
-                                  const AInvOperator                         &A_inv_operator);
 
-        /**
-         * Matrix vector product with this preconditioner object.
-         */
-        void vmult (LinearAlgebra::BlockVector       &dst,
-                    const LinearAlgebra::BlockVector &src) const;
-
-      private:
-        /**
-         * References to the various matrix object this preconditioner works on.
-         */
-        const LinearAlgebra::BlockSparseMatrix &stokes_matrix;
-        const LinearAlgebra::BlockSparseMatrix &stokes_preconditioner_matrix;
-        const SInvOperator                     &S_inv_operator;
-        const AInvOperator                     &A_inv_operator;
-    };
-
-
-    template <class AInvOperator, class SInvOperator>
-    BlockSchurPreconditioner<AInvOperator, SInvOperator>::
-    BlockSchurPreconditioner (const LinearAlgebra::BlockSparseMatrix     &S,
-                              const LinearAlgebra::BlockSparseMatrix     &Spre,
-                              const SInvOperator                         &S_inv_operator,
-                              const AInvOperator                         &A_inv_operator)
-      :
-      stokes_matrix (S),
-      stokes_preconditioner_matrix (Spre),
-      S_inv_operator (S_inv_operator),
-      A_inv_operator (A_inv_operator)
-    {}
-
-
-
-    template <class AInvOperator, class SInvOperator>
-    void
-    BlockSchurPreconditioner<AInvOperator, SInvOperator>::
-    vmult (LinearAlgebra::BlockVector       &dst,
-           const LinearAlgebra::BlockVector &src) const
-    {
-      LinearAlgebra::Vector utmp(src.block(0));
-
-      // first solve with the bottom right block, which we have built
-      // as a mass matrix with the inverse of the viscosity
-      {
-        S_inv_operator.vmult(dst.block(1),src.block(1));
-        dst.block(1) *= -1.0;
-      }
-
-      // apply the top right block
-      {
-        stokes_matrix.block(0,1).vmult(utmp, dst.block(1)); // B^T or J^{up}
-        utmp *= -1.0;
-        utmp += src.block(0);
-      }
-
-      A_inv_operator.vmult(dst.block(0), utmp);
-    }
 
 
     /**
@@ -988,11 +911,11 @@ namespace aspect
           stokes_A_block_is_symmetric(),
           parameters.linear_solver_A_block_tolerance);
         const internal::BlockSchurPreconditioner<internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG>,
-              internal::SchurComplementOperator>
-              preconditioner_cheap (system_matrix,
-                                    system_preconditioner_matrix,
-                                    *schur,
-                                    inverse_velocity_block_cheap);
+              internal::SchurComplementOperator, LinearAlgebra::SparseMatrix, dealii::TrilinosWrappers::MPI::BlockVector>
+              preconditioner_cheap (
+                inverse_velocity_block_cheap,
+                *schur,
+                system_matrix.block(0,1));
 
         // create an expensive preconditioner that solves for the A block with CG
         internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG> inverse_velocity_block_expensive(
@@ -1002,11 +925,11 @@ namespace aspect
           stokes_A_block_is_symmetric(),
           parameters.linear_solver_A_block_tolerance);
         const internal::BlockSchurPreconditioner<internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG>,
-              internal::SchurComplementOperator>
-              preconditioner_expensive (system_matrix,
-                                        system_preconditioner_matrix,
-                                        *schur,
-                                        inverse_velocity_block_expensive);
+              internal::SchurComplementOperator, LinearAlgebra::SparseMatrix, dealii::TrilinosWrappers::MPI::BlockVector>
+              preconditioner_expensive (
+                inverse_velocity_block_expensive,
+                *schur,
+                system_matrix.block(0,1));
         // step 1a: try if the simple and fast solver
         // succeeds in n_cheap_stokes_solver_steps steps or less.
         try
