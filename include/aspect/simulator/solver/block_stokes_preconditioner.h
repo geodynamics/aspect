@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2025 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -27,9 +27,8 @@ namespace aspect
   {
     /**
      * Implement the block Schur preconditioner
-     *(A B^T
-     * 0 S)^{-1}.
-     **/
+     * (A B^T; 0 S)^{-1}.
+     */
     template <class AInvOperator, class SInvOperator, class BTOperator,  class VectorType>
     class BlockSchurPreconditioner : public Subscriptor
     {
@@ -39,7 +38,7 @@ namespace aspect
          * @param A_inverse_operator Approximation of the inverse of the velocity block.
          * @param S_inverse_operator Approximation for the inverse Schur complement.
          * @param BToperator Operator for the B^T block of the Stokes system.
-         **/
+         */
         BlockSchurPreconditioner (
           const AInvOperator                         &A_inverse_operator,
           const SInvOperator                         &S_inverse_operator,
@@ -48,14 +47,13 @@ namespace aspect
         /**
          * Matrix vector product with this preconditioner object.
          */
-        void vmult (VectorType      &dst,
+        void vmult (VectorType       &dst,
                     const VectorType &src) const;
 
       private:
         /**
          * References to the various operators this preconditioner works with.
          */
-
 
         const AInvOperator                     &A_inverse_operator;
         const SInvOperator                     &S_inverse_operator;
@@ -70,18 +68,17 @@ namespace aspect
       const SInvOperator                         &S_inverse_operator,
       const BTOperator                           &BT_operator)
       :
-
       A_inverse_operator (A_inverse_operator),
       S_inverse_operator (S_inverse_operator),
-      BT_operator     (BT_operator)
+      BT_operator        (BT_operator)
     {}
 
 
 
     template <class AInvOperator, class SInvOperator, class BTOperator, class VectorType>
     void
-    BlockSchurPreconditioner<AInvOperator, SInvOperator, BTOperator,  VectorType>::
-    vmult (VectorType      &dst,
+    BlockSchurPreconditioner<AInvOperator, SInvOperator, BTOperator, VectorType>::
+    vmult (VectorType       &dst,
            const VectorType &src) const
     {
       typename VectorType::BlockType utmp(src.block(0));
@@ -103,4 +100,5 @@ namespace aspect
     }
   }
 }
+
 #endif
