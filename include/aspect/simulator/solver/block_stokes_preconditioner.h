@@ -36,14 +36,14 @@ namespace aspect
       public:
         /**
          * @brief Constructor
-         * @param A_inv_operator Approximation of the inverse of the velocity block.
+         * @param A_inverse_operator Approximation of the inverse of the velocity block.
          * @param S_inverse_operator Approximation for the inverse Schur complement.
          * @param BToperator Operator for the B^T block of the Stokes system.
          **/
         BlockSchurPreconditioner (
           const AInvOperator                         &A_inverse_operator,
-          const SInvOperator                         &S_inv_operator,
-          const BTOperator                           &BToperator);
+          const SInvOperator                         &S_inverse_operator,
+          const BTOperator                           &BT_operator);
 
         /**
          * Matrix vector product with this preconditioner object.
@@ -57,23 +57,23 @@ namespace aspect
          */
 
 
-        const AInvOperator                     &A_inv_operator;
-        const SInvOperator                     &S_inv_operator;
-        const BTOperator                       &BToperator;
+        const AInvOperator                     &A_inverse_operator;
+        const SInvOperator                     &S_inverse_operator;
+        const BTOperator                       &BT_operator;
     };
 
 
     template <class AInvOperator, class SInvOperator, class BTOperator,  class VectorType>
     BlockSchurPreconditioner<AInvOperator, SInvOperator, BTOperator, VectorType>::
     BlockSchurPreconditioner (
-      const AInvOperator                         &A_inv_operator,
-      const SInvOperator                         &S_inv_operator,
-      const BTOperator                           &BToperator)
+      const AInvOperator                         &A_inverse_operator,
+      const SInvOperator                         &S_inverse_operator,
+      const BTOperator                           &BT_operator)
       :
 
-      A_inv_operator (A_inv_operator),
-      S_inv_operator (S_inv_operator),
-      BToperator     (BToperator)
+      A_inverse_operator (A_inverse_operator),
+      S_inverse_operator (S_inverse_operator),
+      BT_operator     (BT_operator)
     {}
 
 
@@ -88,18 +88,18 @@ namespace aspect
 
       // first apply the Schur Complement inverse operator.
       {
-        S_inv_operator.vmult(dst.block(1),src.block(1));
+        S_inverse_operator.vmult(dst.block(1),src.block(1));
         dst.block(1) *= -1.0;
       }
 
       // apply the top right block
       {
-        BToperator.vmult(utmp, dst.block(1)); // B^T or J^{up}
+        BT_operator.vmult(utmp, dst.block(1)); // B^T or J^{up}
         utmp *= -1.0;
         utmp += src.block(0);
       }
 
-      A_inv_operator.vmult(dst.block(0), utmp);
+      A_inverse_operator.vmult(dst.block(0), utmp);
     }
   }
 }
