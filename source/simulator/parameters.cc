@@ -2446,6 +2446,7 @@ namespace aspect
     GravityModel::declare_parameters<dim> (prm);
     InitialTemperature::Manager<dim>::declare_parameters (prm);
     InitialComposition::Manager<dim>::declare_parameters (prm);
+    PrescribedSolution::Manager<dim>::declare_parameters (prm);
     PrescribedStokesSolution::declare_parameters<dim> (prm);
     BoundaryTemperature::Manager<dim>::declare_parameters (prm);
     BoundaryConvectiveHeating::Manager<dim>::declare_parameters (prm);

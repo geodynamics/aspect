@@ -37,6 +37,8 @@
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/particle/property/interface.h>
 #include <aspect/postprocess/visualization.h>
+#include <aspect/prescribed_solution/interface.h>
+#include <aspect/prescribed_stokes_solution/interface.h>
 
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
@@ -117,6 +119,7 @@ namespace aspect
     Particle::Property::Manager<dim>::write_plugin_graph(out);
     Postprocess::Manager<dim>::write_plugin_graph(out);
     Postprocess::Visualization<dim>::write_plugin_graph(out);
+    PrescribedSolution::Manager<dim>::write_plugin_graph(out);
     PrescribedStokesSolution::write_plugin_graph<dim>(out);
     TerminationCriteria::Manager<dim>::write_plugin_graph(out);
 
