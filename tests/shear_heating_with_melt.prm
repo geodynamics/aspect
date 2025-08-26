@@ -23,7 +23,7 @@
 # This means that melting reactions and the associated change
 # in porosity do not occur at the bottom boundary (as in
 # Dannberg & Heister, 2016) and instead the porosity starts to
-# change from its initial (zero) value at next degree of freedom
+# change from its initial (zero) value at the next degree of freedom
 # above the bottom boundary, moving further upward during the
 # model evolution.
 
