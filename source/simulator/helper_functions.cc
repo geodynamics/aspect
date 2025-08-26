@@ -1861,8 +1861,9 @@ namespace aspect
                   const unsigned int point_idx = support_point_index_by_field[field_index][index_within];
 
                   // The final step is grabbing the value from the reaction computation and write it into
-                  // the global vector (if we own it, of course):
-                  if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[dof_idx]))
+                  // the global vector (if we own it and if it is not a constrained degree of freedom).:
+                  if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[dof_idx]) &&
+                      !current_constraints.is_constrained(local_dof_indices[dof_idx]))
                     {
                       // temperatures and compositions are stored differently:
                       if (component_idx == component_idx_T)
@@ -1883,6 +1884,9 @@ namespace aspect
 
     distributed_vector.compress(VectorOperation::insert);
     distributed_reaction_vector.compress(VectorOperation::insert);
+
+    // Now apply constraints (boundary conditions and others) to the new solution vector.
+    current_constraints.distribute (distributed_vector);
 
     // put the final values into the solution vector
     for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)

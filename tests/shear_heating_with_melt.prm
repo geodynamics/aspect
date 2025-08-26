@@ -16,13 +16,23 @@
 # the bottom boundary temperature can be changed to 2000 K
 # (this is just not feasible in the test, as it would take too
 # many time time steps until the onset of melting).
+# However, note that ASPECT's handling of boundary conditions
+# in models with reactions has changed after the publication:
+# Reactions are now (correctly) no longer applied to degrees
+# of freedom at Dirichlet boundaries of compositional fields.
+# This means that melting reactions and the associated change
+# in porosity do not occur at the bottom boundary (as in
+# Dannberg & Heister, 2016) and instead the porosity starts to
+# change from its initial (zero) value at the next degree of freedom
+# above the bottom boundary, moving further upward during the
+# model evolution.
 
 set Adiabatic surface temperature          = 1600
 set CFL number                             = 1.0
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 10
 set Dimension                              = 2
-set End time                               = 1e4
+set End time                               = 2e4
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Resume computation                     = false
