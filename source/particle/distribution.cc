@@ -67,7 +67,7 @@ namespace aspect
 
     template <int dim>
     void
-    ParticlePDF<dim>::fill_from_particle_range(const typename ParticleHandler<dim>::particle_iterator_range particle_range,
+    ParticlePDF<dim>::fill_from_particle_range(const typename Particles::ParticleHandler<dim>::particle_iterator_range particle_range,
                                                const unsigned int n_particles_in_cell)
     {
       if (is_defined_per_particle == false)
@@ -137,7 +137,7 @@ namespace aspect
     ParticlePDF<dim>::insert_kernel_sum_from_particle_range(const Point<dim> reference_point,
                                                             const std::array<unsigned int, dim> table_index,
                                                             const unsigned int n_particles_in_cell,
-                                                            const typename Particle::ParticleHandler<dim>::particle_iterator_range particle_range)
+                                                            const typename Particles::ParticleHandler<dim>::particle_iterator_range particle_range)
     {
       for (const auto &particle: particle_range)
         {
