@@ -55,7 +55,6 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-
     template <int dim>
     class PhaseTransitionKinetics : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
@@ -138,10 +137,10 @@ namespace aspect
         Utilities::AsciiDataProfile<dim> profile;
 
         /**
-         * Column indices from the thermodynamic data along an adiabatic profile.
-         * The pressure column is used for searching the table via interpolation.
-         * All other columns store thermodynamic data required for calculating
-         * the thermodynamic driving force in the PhaseTransitionKinetics material model.
+         * Column indices of material properties in the data file.
+         * The first column (pressure) is used for searching the table via interpolation.
+         * All other columns store thermodynamic data required for calculating the
+         * thermodynamic driving force in the PhaseTransitionKinetics material model.
          *
          * Note: "a" and "b" represent phases "a" and "b" and "dG", "dS", "dV"
          * represent the differences in the molar Gibbs free energy, molar entropy,
@@ -159,6 +158,18 @@ namespace aspect
         unsigned int dG_idx;
         unsigned int dS_idx;
         unsigned int dV_idx;
+
+        /**
+         * Column indices of the seismic velocities and their temperature derivatives in the data file.
+         */
+        unsigned int Vp_a_idx;
+        unsigned int Vp_b_idx;
+        unsigned int Vs_a_idx;
+        unsigned int Vs_b_idx;
+        unsigned int dVp_dT_a_idx;
+        unsigned int dVp_dT_b_idx;
+        unsigned int dVs_dT_a_idx;
+        unsigned int dVs_dT_b_idx;
 
         /**
          * The reference viscosity.
@@ -223,6 +234,30 @@ namespace aspect
          * Units: J/mol/s
          */
         double Q_kinetic_prefactor;
+    };
+
+    /**
+     * Additional output fields for the PhaseTransitionKinetics material model
+     * to be added to the MaterialModel::MaterialModelOutputs structure and filled
+     * in the MaterialModel::Interface::evaluate() function.
+     */
+    template <int dim>
+    class PhaseTransitionKineticsOutputs : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        PhaseTransitionKineticsOutputs(const unsigned int n_points);
+
+        std::vector<double> get_nth_output(const unsigned int idx) const override;
+
+        /**
+         * Driving force $\Delta G$ at the evaluation points passed to
+         * the instance of MaterialModel::Interface::evaluate() that fills
+         * the current object.
+         *
+         * Units: J/mol
+         */
+        std::vector<double> driving_force;
+
     };
   } // namespace MaterialModel
 } // namespace aspect

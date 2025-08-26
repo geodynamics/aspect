@@ -8,7 +8,7 @@ You can find the input parameter file for this model at [https://github.com/geod
 
 ## Overview
 
-This cookbook demonstrates how to model phase transitions in a simple subduction model using reaction kinetics driven by non-equilibrium thermodynamics. This [`PhaseTransitionKinetics`](https://github.com/geodynamics/aspect/blob/main/cookbooks/phase_transition_kinetics/phase-transition-kinetics.h) material model differs from existing material models in `ASPECT` that apply the [`PhaseFunction`](https://github.com/geodynamics/aspect/blob/4a0743e738e65c3c8b371b4e8579e304f855ec0d/include/aspect/material_model/utilities.h#L756) class (e.g., see the [Convection in a 2d box with a phase transition](https://aspect-documentation.readthedocs.io/en/latest/user/cookbooks/cookbooks/christensen_yuen_phase_function/doc/christensen_yuen_phase_function.html) cookbook), which assumes phase transitions proceed over a finite depth (or pressure) interval under hydrostatic conditions after {cite:t}`christensen:yuen:1985`. As an alternative approach, the `PhaseTransitionKinetics` material model uses operator splitting to govern phase transitions under non-hydrostatic conditions---in this cookbook we focus on the olivine &rarr; wadsleyite reaction. In this simple subduction example, cold material flows into the top left boundary of a 300 $\times$ 200 km 2D box at a fixed temperature and velocity. The top part of the model consists of pure olivine, which becomes metastable as it flows downwards into the wadsleyite stability field. In this cookbook we ignore the reverse wadsleyite &rarr olivine reaction because the mantle flow is unidirectional.
+This cookbook demonstrates how to model phase transitions in a simple subduction model using reaction kinetics driven by non-equilibrium thermodynamics. This [`PhaseTransitionKinetics`](https://github.com/geodynamics/aspect/blob/main/cookbooks/phase_transition_kinetics/phase-transition-kinetics.h) material model differs from existing material models in `ASPECT` that apply the [`PhaseFunction`](https://github.com/geodynamics/aspect/blob/4a0743e738e65c3c8b371b4e8579e304f855ec0d/include/aspect/material_model/utilities.h#L756) class (e.g., see the [Convection in a 2d box with a phase transition](https://aspect-documentation.readthedocs.io/en/latest/user/cookbooks/cookbooks/christensen_yuen_phase_function/doc/christensen_yuen_phase_function.html) cookbook), which assumes phase transitions proceed over a finite depth (or pressure) interval under hydrostatic conditions after {cite:t}`christensen:yuen:1985`. As an alternative approach, the `PhaseTransitionKinetics` material model uses operator splitting to govern phase transitions under non-hydrostatic conditions---in this cookbook we focus on the olivine &rarr; wadsleyite reaction. In this simple subduction example, cold material flows from the top boundary of a 300 $\times$ 200 km 2D box at a fixed temperature and velocity. The top part of the model consists of pure olivine, which becomes metastable as it flows downwards into the wadsleyite stability field. In this cookbook we ignore the reverse wadsleyite &rarr olivine reaction because the mantle flow is unidirectional.
 
 Rather than explicitly prescribing a univariant reaction boundary as in the `PhaseFunction` class, the `PhaseTransitionKinetics` material model formulates the phase transition as a function of the excess Gibbs free energy relative to an adiabatic reference state:
 
@@ -43,7 +43,7 @@ where $Q$ is a kinetic prefactor constant (units: mol/J/s) and $X$ is the mass f
 ```{figure-md} fig:simple-subduction-Q9
 <img src="simple-subduction-Q9-evolution.*" style="width:80.0%" />
 
-Evolution of a simple subduction model with an olivine &rarr; wadsleyite phase transition and a kinetic prefactor $Q$ of 1e$^{-9}$. Cold material flows into the top left boundary at a fixed temperature and velocity (left column) and olivine transforms to wadsleyite (center column). The phase transition is governed by a reaction rate driven by non-equilibrium thermodynamics (Equation {math:numref}`eqn:reaction-rate`). A low-density metastable olivine layer forms below the equilibrium reaction boundary with a dynamic topography that responds to changes in non-hydrostatic ("dynamic") pressure and local heating (right column).
+Evolution of a simple subduction model with an olivine &rarr; wadsleyite phase transition and a kinetic prefactor $Q$ of 1e$^{-9}$. Cold material flows from the top boundary at a fixed temperature and velocity (left column) and olivine transforms to wadsleyite (center column). The phase transition is governed by a reaction rate driven by non-equilibrium thermodynamics (Equation {math:numref}`eqn:reaction-rate`). A high-density metastable wadsleyite layer and a low-density metastable olivine layer form above and below the equilibrium reaction boundary, respectively (right column). The morphology and sharpness of the phase transition layer develop dynamically as the reaction rate responds to changes in non-hydrostatic ("dynamic") pressure and local heating.
 ```
 
 ```{figure-md} fig:simple-subduction-Q10
@@ -76,7 +76,7 @@ A set of global parameters for the solver and other settings
 set Dimension                              = 2
 set Use years instead of seconds           = true
 set End time                               = 75e6
-set Output directory                       = results/simple_subduction_Q_1e-9
+set Output directory                       = results/simple_subduction_Q9
 set Adiabatic surface temperature          = 1706
 set Surface pressure                       = 1e10
 set Nonlinear solver scheme                = iterated Advection and Stokes
@@ -132,14 +132,14 @@ subsection Mesh refinement
 end
 ```
 
-A constant boundary velocity that flows from top-left to bottom-right
+A constant boundary velocity that flows from top to bottom
 
 ```
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = top:function, right x:function, left x:function, bottom x:function
 
   subsection Function
-    set Function expression = 1e-2; -1e-2
+    set Function expression = 0.0; -1.5e-2
     set Variable names      = x, y
   end
 end
@@ -153,13 +153,13 @@ subsection Boundary composition model
   set List of model names = function
 
   subsection Function
-    set Function expression = if(y<112e3, 1, 0); 3300
+    set Function expression = if(y<110e3, 1, 0); 3300
     set Variable names      = x, y
   end
 end
 ```
 
-A temperature field that models a cool lithospheric slab entering the model at the top-left boundary with a -500 K temperature difference from the adiabatic temperature
+A temperature field that models a cool lithospheric slab entering the model at the top boundary with a -500 K temperature difference from the adiabatic temperature
 
 ```
 subsection Boundary temperature model
@@ -171,7 +171,7 @@ subsection Initial temperature model
   set List of model names = adiabatic, function
 
   subsection Function
-    set Function expression = -500 * exp(-((y-200e3)*(y-200e3)+(x-10e3)*(x-10e3))/(2*35e3*35e3))
+    set Function expression = -500 * exp(-((y-200e3)*(y-200e3)+(x-150e3)*(x-150e3))/(2*35e3*35e3))
     set Variable names      = x, y
   end
 
@@ -207,7 +207,7 @@ subsection Gravity model
 end
 ```
 
-The adiabatic conditions are computed from the initial composition model, which defines a two-layered mantle with olivine at depths above 112 km (from the base of the model), and wadsleyite below. The composition field `X_field` stores the amount of wadsleyite and is updated by the reaction rate $dX/dt$ with a separate "reaction" timestep that is smaller than the advection timestep (see {ref}`sec:benchmark:operator-splitting`). We use the projected density approximation {cite}`gassmoller:etal:2020` formulation of the continuity equation, which requires a prescribed `density_field`
+The adiabatic conditions are computed from the initial composition model, which defines a two-layered mantle with olivine at depths above 110 km (from the base of the model), and wadsleyite below. The composition field `X_field` stores the amount of wadsleyite and is updated by the reaction rate $dX/dt$ with a separate "reaction" timestep that is smaller than the advection timestep (see {ref}`sec:benchmark:operator-splitting`). We use the projected density approximation {cite}`gassmoller:etal:2020` formulation of the continuity equation, which requires a prescribed `density_field`
 
 ```
 subsection Adiabatic conditions model
@@ -220,7 +220,7 @@ subsection Initial composition model
   set List of model names = function
 
   subsection Function
-    set Function expression = if(y<112e3, 1, 0); 3300
+    set Function expression = if(y<110e3, 1, 0); 3300
     set Variable names      = x, y
   end
 end
@@ -232,22 +232,24 @@ subsection Compositional fields
 end
 ```
 
-The `PhaseTransitionKinetic` material model that requires a data file that contains columns for pressure, temperature, $\rho_a$, $\rho_b$, $\alpha_a$, $\alpha_b$, $\text{Cp}_a$, $\text{Cp}_b$, $\Delta G$, $\Delta V$, and $\Delta S$ for a reaction of interest. The thermodynamic data profile could represent a reaction between polymorphic phases as demonstrated in this cookbook, or it could represent a reaction between two fixed mineral assemblages. The kinetic prefactor $Q$ scales the reaction rate according to Equation {math:numref}`eqn:reaction-rate`
+The `PhaseTransitionKinetic` material model that requires a data file that contains columns for pressure, temperature, $\rho_a$, $\rho_b$, $\alpha_a$, $\alpha_b$, $\text{Cp}_a$, $\text{Cp}_b$, $\Delta G$, $\Delta V$, and $\Delta S$ for a reaction of interest. The data file can optionally store seismic wave velocities and their temperature-derivatives. The thermodynamic data profile could represent a reaction between polymorphic phases as demonstrated in this cookbook, or it could represent a reaction between two fixed mineral assemblages. The kinetic prefactor $Q$ scales the reaction rate according to Equation {math:numref}`eqn:reaction-rate`
 
 ```
 subsection Material model
   set Model name = phase transition kinetics
 
   subsection Phase transition kinetics
-    set Kinetic prefactor Q  = 1e-9
+    set Kinetic prefactor Q        = 1e-9
 
-    set Transition depths    = 112e3
-    set Viscosity prefactors = 1, 1
-    set Minimum viscosity    = 1e19
-    set Maximum viscosity    = 1e24
+    set Viscosity                  = 1e21
+    set Minimum viscosity          = 1e19
+    set Maximum viscosity          = 1e24
+    set Thermal viscosity exponent = 0
+    set Transition depths          = 110e3
+    set Viscosity prefactors       = 1, 1
 
     set Data directory = $ASPECT_SOURCE_DIR/cookbooks/phase_transition_kinetics/
-    set Data file name = ol-wad-phase-transition-kinetics-profile.txt
+    set Data file name = thermodynamic-driving-force-profile-olivine-wadsleyite.txt
   end
 end
 ```
@@ -262,7 +264,7 @@ subsection Postprocess
     set Output format                 = vtu
     set Time between graphical output = 1e6
     set Number of grouped files       = 0
-    set List of output variables      = material properties, adiabat, nonadiabatic temperature, nonadiabatic pressure, stress, shear stress, strain rate, stress second invariant
+    set List of output variables      = material properties, adiabat, nonadiabatic temperature, nonadiabatic pressure, stress, shear stress, strain rate, stress second invariant, named additional outputs
 
     subsection Material properties
       set List of material properties = density, thermal expansivity, compressibility, specific heat, viscosity
