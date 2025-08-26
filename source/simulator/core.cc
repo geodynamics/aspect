@@ -2256,7 +2256,10 @@ namespace aspect
                     << 's'
                     << std::endl;
 
-    if (resource_usage > 0.1)
+    // Provide output about the resources used during the computation, but only
+    // if the model run is longer than our test cases. This ensures the
+    // additional empty lines do not confuse our test system.
+    if (resource_usage > 0.2)
       resource_output << "\n-- Approximate resource usage including restarts:             "
                       << resource_usage
                       << " core hours"
@@ -2273,7 +2276,7 @@ namespace aspect
                       << resource_usage * 0.005 * 0.3
                       << " kgCO2"
                       << std::endl
-                      << "-- Please use ASPECT responsibly. "
+                      << "-- Please use ASPECT responsibly."
                       << std::endl << std::endl;
 
     pcout << resource_output.str();
