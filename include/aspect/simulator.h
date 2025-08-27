@@ -438,28 +438,14 @@ namespace aspect
        * This function implements one scheme for the various
        * steps necessary to assemble and solve the nonlinear problem.
        *
-       * If `single Advection, single Stokes' is selected as the nonlinear solver scheme,
-       * no nonlinear iterations are done, and the temperature, compositional fields and
-       * Stokes equations are solved exactly once per time step, one after the other.
+       * The `no Advection, no Stokes' scheme skips solving the temperature,
+       * composition and Stokes equations, which permits to go directly to
+       * postprocessing after setting up the initial condition.
        *
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      void solve_single_advection_single_stokes ();
-
-      /**
-       * This function implements one scheme for the various
-       * steps necessary to assemble and solve the nonlinear problem.
-       *
-       * The `no Advection, iterated Stokes' scheme only solves the Stokes system and
-       * ignores compositions and the temperature equation (careful, the material
-       * model must not depend on the temperature; mostly useful for
-       * Stokes benchmarks).
-       *
-       * This function is implemented in
-       * <code>source/simulator/solver_schemes.cc</code>.
-       */
-      void solve_no_advection_iterated_stokes ();
+      void solve_no_advection_no_stokes ();
 
       /**
        * This function implements one scheme for the various
@@ -484,35 +470,21 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      void solve_first_timestep_only_single_stokes ();
+      void solve_no_advection_single_stokes_first_timestep_only ();
 
       /**
        * This function implements one scheme for the various
        * steps necessary to assemble and solve the nonlinear problem.
        *
-       * The `iterated Advection and Stokes' scheme iterates
-       * by alternating the solution of the temperature, composition and Stokes systems.
-       * This is essentially a type of Picard iterations for the whole
-       * system of equations.
+       * The `no Advection, iterated Stokes' scheme only solves the Stokes system and
+       * ignores compositions and the temperature equation (careful, the material
+       * model must not depend on the temperature; mostly useful for
+       * Stokes benchmarks).
        *
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      void solve_iterated_advection_and_stokes ();
-
-      /**
-       * This function implements one scheme for the various
-       * steps necessary to assemble and solve the nonlinear problem.
-       *
-       * The `single Advection, iterated Stokes' scheme solves the temperature and
-       * composition equations once at the beginning of each time step
-       * and then iterates out the solution of the Stokes equation using
-       * Picard iterations.
-       *
-       * This function is implemented in
-       * <code>source/simulator/solver_schemes.cc</code>.
-       */
-      void solve_single_advection_iterated_stokes ();
+      void solve_no_advection_iterated_stokes ();
 
       /**
        * This function implements one scheme for the various
@@ -532,6 +504,46 @@ namespace aspect
        * This function implements one scheme for the various
        * steps necessary to assemble and solve the nonlinear problem.
        *
+       * The `single Advection, no Stokes' scheme only solves the temperature and other
+       * advection systems and instead of solving for the Stokes system,
+       * a prescribed velocity and pressure is used."
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver_schemes.cc</code>.
+       */
+      void solve_single_advection_no_stokes ();
+
+      /**
+       * This function implements one scheme for the various
+       * steps necessary to assemble and solve the nonlinear problem.
+       *
+       * If `single Advection, single Stokes' is selected as the nonlinear solver scheme,
+       * no nonlinear iterations are done, and the temperature, compositional fields and
+       * Stokes equations are solved exactly once per time step, one after the other.
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver_schemes.cc</code>.
+       */
+      void solve_single_advection_single_stokes ();
+
+      /**
+       * This function implements one scheme for the various
+       * steps necessary to assemble and solve the nonlinear problem.
+       *
+       * The `single Advection, iterated Stokes' scheme solves the temperature and
+       * composition equations once at the beginning of each time step
+       * and then iterates out the solution of the Stokes equation using
+       * Picard iterations.
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver_schemes.cc</code>.
+       */
+      void solve_single_advection_iterated_stokes ();
+
+      /**
+       * This function implements one scheme for the various
+       * steps necessary to assemble and solve the nonlinear problem.
+       *
        * The `single Advection, iterated defect correction Stokes' scheme
        * solves the temperature and composition equations once at the beginning
        * of each time step and then iterates out the solution of the Stokes
@@ -541,6 +553,41 @@ namespace aspect
        * <code>source/simulator/solver_schemes.cc</code>.
        */
       void solve_single_advection_iterated_defect_correction_stokes ();
+
+      /**
+       * This function implements one scheme for the various
+       * steps necessary to assemble and solve the nonlinear problem.
+       *
+       * The `single Advection, iterated Newton Stokes' scheme solves the temperature and
+       * composition equations once at the beginning of each time step
+       * and then iterates out the solution of the Stokes equation using Newton iterations.
+       * For the Stokes system it is able to switch from a defect correction form of
+       * Picard iterations to Newton iterations after a certain tolerance or
+       * number of iterations is reached. This can greatly improve the
+       * convergence rate for particularly nonlinear viscosities.
+       *
+       * @param use_newton_iterations Sets whether this function should only use defect
+       * correction iterations (use_newton_iterations = false) or also use Newton iterations
+       * (use_newton_iterations = true).
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver_schemes.cc</code>.
+       */
+      void solve_single_advection_iterated_newton_stokes (bool use_newton_iterations);
+
+      /**
+       * This function implements one scheme for the various
+       * steps necessary to assemble and solve the nonlinear problem.
+       *
+       * The `iterated Advection and Stokes' scheme iterates
+       * by alternating the solution of the temperature, composition and Stokes systems.
+       * This is essentially a type of Picard iterations for the whole
+       * system of equations.
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver_schemes.cc</code>.
+       */
+      void solve_iterated_advection_and_stokes ();
 
       /**
        * This function implements one scheme for the various
@@ -576,53 +623,6 @@ namespace aspect
        * <code>source/simulator/solver_schemes.cc</code>.
        */
       void solve_iterated_advection_and_newton_stokes (bool use_newton_iterations);
-
-      /**
-       * This function implements one scheme for the various
-       * steps necessary to assemble and solve the nonlinear problem.
-       *
-       * The `single Advection, iterated Newton Stokes' scheme solves the temperature and
-       * composition equations once at the beginning of each time step
-       * and then iterates out the solution of the Stokes equation using Newton iterations.
-       * For the Stokes system it is able to switch from a defect correction form of
-       * Picard iterations to Newton iterations after a certain tolerance or
-       * number of iterations is reached. This can greatly improve the
-       * convergence rate for particularly nonlinear viscosities.
-       *
-       * @param use_newton_iterations Sets whether this function should only use defect
-       * correction iterations (use_newton_iterations = false) or also use Newton iterations
-       * (use_newton_iterations = true).
-       *
-       * This function is implemented in
-       * <code>source/simulator/solver_schemes.cc</code>.
-       */
-      void solve_single_advection_and_iterated_newton_stokes (bool use_newton_iterations);
-
-      /**
-       * This function implements one scheme for the various
-       * steps necessary to assemble and solve the nonlinear problem.
-       *
-       * The `single Advection, no Stokes' scheme only solves the temperature and other
-       * advection systems and instead of solving for the Stokes system,
-       * a prescribed velocity and pressure is used."
-       *
-       * This function is implemented in
-       * <code>source/simulator/solver_schemes.cc</code>.
-       */
-      void solve_single_advection_no_stokes ();
-
-      /**
-       * This function implements one scheme for the various
-       * steps necessary to assemble and solve the nonlinear problem.
-       *
-       * The `no Advection, no Stokes' scheme skips solving the temperature,
-       * composition and Stokes equations, which permits to go directly to
-       * postprocessing after setting up the initial condition.
-       *
-       * This function is implemented in
-       * <code>source/simulator/solver_schemes.cc</code>.
-       */
-      void solve_no_advection_no_stokes ();
 
       /**
        * Initiate the assembly of the Stokes preconditioner matrix via
