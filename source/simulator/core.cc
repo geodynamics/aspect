@@ -125,7 +125,7 @@ namespace aspect
 
     template <int dim>
     typename Triangulation<dim>::MeshSmoothing
-    smoothing_flags(bool global_coarsening)
+    smoothing_flags(const bool global_coarsening)
     {
       if (global_coarsening)
         return Triangulation<dim>::limit_level_difference_at_vertices;

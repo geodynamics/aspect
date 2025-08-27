@@ -435,7 +435,10 @@ namespace aspect
 
         prm.declare_entry ("Stokes GMG type", "local smoothing",
                            Patterns::Selection(StokesGMGType::pattern()),
-                           "local smoothing or global coarsening");
+                           "The choice of geometric multigrid, either 'local smoothing' (the default) "
+                           " or 'global coarsening'. Local smoothing (\\cite{clevenger:heister:2021}) "
+                           "has been extensively tested and works in many more situations, while "
+                           "global coarsening is shown to be up to 3x faster (\\cite{munch:globalcoarsening:2023}).");
 
         prm.declare_entry ("Use direct solver for Stokes system", "false",
                            Patterns::Bool(),
@@ -1117,7 +1120,7 @@ namespace aspect
         prm.declare_entry ("Stabilization method", "entropy viscosity",
                            Patterns::Selection("entropy viscosity|SUPG"),
                            "Select the method for stabilizing the advection equation. The original "
-                           "method implemented is 'entropy viscosity' as described in \\cite {kronbichler:etal:2012}. "
+                           "method implemented is 'entropy viscosity' as described in \\cite{kronbichler:etal:2012}. "
                            "SUPG is currently experimental.");
 
         prm.declare_entry ("List of compositional fields with disabled boundary entropy viscosity", "",

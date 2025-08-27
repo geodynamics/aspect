@@ -145,7 +145,7 @@ namespace aspect
   std::string
   StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::name () const
   {
-    return "GC-GMG";
+    return "GMG-GC";
   }
 
 
@@ -173,11 +173,10 @@ namespace aspect
   template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::evaluate_material_model ()
   {
-    sim.pcout << "evaluate_material_model()" << std::endl;
     const auto &dof_handler_projection = dofhandlers_projection.back();
 
     dealii::LinearAlgebra::distributed::Vector<double> active_viscosity_vector(dof_handler_projection.locally_owned_dofs(),
-                                                                               this->get_triangulation().get_communicator());
+                                                                               this->get_mpi_communicator());
 
     const Quadrature<dim> &quadrature_formula = this->introspection().quadratures.velocities;
 
@@ -248,8 +247,8 @@ namespace aspect
       active_viscosity_vector.compress(VectorOperation::insert);
     }
 
-    minimum_viscosity = dealii::Utilities::MPI::min(minimum_viscosity_local, this->get_triangulation().get_communicator());
-    maximum_viscosity = dealii::Utilities::MPI::max(maximum_viscosity_local, this->get_triangulation().get_communicator());
+    minimum_viscosity = dealii::Utilities::MPI::min(minimum_viscosity_local, this->get_mpi_communicator());
+    maximum_viscosity = dealii::Utilities::MPI::max(maximum_viscosity_local, this->get_mpi_communicator());
 
     FEValues<dim> fe_values_projection (this->get_mapping(),
                                         fe_projection,
@@ -369,7 +368,7 @@ namespace aspect
         AffineConstraints<double> cs;
         std::shared_ptr<MatrixFree<dim,double>>
         mf(new MatrixFree<dim,double>());
-        mf->reinit(*sim.mapping, dofhandlers_projection[l], cs, QGauss<1>(degree+1));
+        mf->reinit(this->get_mapping(), dofhandlers_projection[l], cs, QGauss<1>(degree+1));
         temp_ops[l].initialize(mf);
       }
 
@@ -380,9 +379,9 @@ namespace aspect
       temp_ops[l].initialize_dof_vector(vec);
     });
 
-    transfer.template interpolate_to_mg(dof_handler_projection,
-                                        level_viscosity_vector,
-                                        active_viscosity_vector);
+    transfer.interpolate_to_mg(dof_handler_projection,
+                               level_viscosity_vector,
+                               active_viscosity_vector);
 
     for (unsigned int level=min_level; level<=max_level; ++level)
       {
@@ -1454,14 +1453,6 @@ namespace aspect
     if (solve_newton_system == false)
       outputs.pressure_normalization_adjustment = this->normalize_pressure(solution_vector);
 
-    // convert melt pressures
-    // TODO: We assert in the StokesMatrixFreeHandler constructor that we
-    //       are not including melt transport.
-    // TODO: We have to const_cast, because the compute_melt_variables
-    //       function assembles and solves an equation. To avoid this we either
-    //       have to hand over non-const references to the current function, or
-    //       call the compute_melt_variables function after finishing the current function.
-
     return outputs;
   }
 
@@ -1489,16 +1480,16 @@ namespace aspect
                 }
             }
 
-      have_periodic_hanging_nodes = (dealii::Utilities::MPI::max(have_periodic_hanging_nodes ? 1 : 0, this->get_triangulation().get_communicator())) == 1;
+      have_periodic_hanging_nodes = (dealii::Utilities::MPI::max(have_periodic_hanging_nodes ? 1 : 0, this->get_mpi_communicator())) == 1;
       AssertThrow(have_periodic_hanging_nodes==false, ExcNotImplemented());
     }
 
-    const Mapping<dim> &mapping = *sim.mapping;
+    const Mapping<dim> &mapping = this->get_mapping();
 
     // This vector will be refilled with the new MatrixFree objects below:
     matrix_free_objects.clear();
 
-    trias = dealii::MGTransferGlobalCoarseningTools::create_geometric_coarsening_sequence (sim.triangulation);
+    trias = dealii::MGTransferGlobalCoarseningTools::create_geometric_coarsening_sequence (this->get_triangulation());
     min_level = 0;
     max_level = trias.size() - 1;
     constraints_v.resize(min_level, max_level);
@@ -1540,38 +1531,57 @@ namespace aspect
             constraint.reinit(locally_relevant_dofs);
 #endif
 
-            sim.compute_initial_velocity_boundary_constraints(constraint); // TODO: this can't work
-            sim.compute_current_velocity_boundary_constraints(constraint); // TODO: this can't work
 
-            for (const auto &p : sim.boundary_velocity_manager.get_zero_boundary_velocity_indicators())
+            std::set<types::boundary_id> dirichlet_boundary = this->get_boundary_velocity_manager().get_zero_boundary_velocity_indicators();
+            for (const auto boundary_id: this->get_boundary_velocity_manager().get_prescribed_boundary_velocity_indicators())
               {
-                VectorTools::interpolate_boundary_values (mapping,
-                                                          dof_handler,
-                                                          p,
-                                                          Functions::ZeroFunction<dim>(dim),
-                                                          constraint);
+                const ComponentMask component_mask = this->get_boundary_velocity_manager().get_component_mask(boundary_id);
 
+                if (component_mask != ComponentMask(this->introspection().n_components, false))
+                  {
+                    ComponentMask velocity_mask(fe_v.n_components(), false);
+
+                    for (unsigned int i=0; i<dim; ++i)
+                      velocity_mask.set(i, component_mask[this->introspection().component_indices.velocities[i]]);
+
+                    VectorTools::interpolate_boundary_values (mapping,
+                                                              dof_handler,
+                                                              boundary_id,
+                                                              Functions::ZeroFunction<dim>(dim),
+                                                              constraint,
+                                                              velocity_mask);
+                  }
+                else
+                  {
+                    // no mask given: add at the end
+                    dirichlet_boundary.insert(boundary_id);
+                  }
               }
 
 
-//            VectorTools::interpolate_boundary_values(
-//                mapping,
-//                dof_handler,
-//                0,
-//                Functions::ZeroFunction<dim, typename LevelOperatorType::value_type>(
-//                    dof_handler_in.get_fe().n_components()),
-//                constraint);
-            Assert(sim.boundary_velocity_manager.get_active_plugins().size() == 0,
+            for (const auto id : dirichlet_boundary)
+              {
+                VectorTools::interpolate_boundary_values (mapping,
+                                                          dof_handler,
+                                                          id,
+                                                          Functions::ZeroFunction<dim>(dim),
+                                                          constraint);
+              }
+
+
+            Assert(this->get_boundary_velocity_manager().get_active_plugins().size() == 0,
                    ExcNotImplemented());
 
-            Assert(sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators().size() == 0,
-                   ExcNotImplemented());
-//            VectorTools::compute_no_normal_flux_constraints (dof_handler_v,
-//                                                            /* first_vector_component= */
-//                                                            0,
-//                                                            sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators(),
-//                                                            constraints_v,
-//                                                            *sim.mapping);
+            if (this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators().size() > 0)
+              {
+                Assert(false, dealii::StandardExceptions::ExcNotImplemented("This is not tested."));
+                VectorTools::compute_no_normal_flux_constraints (dof_handler,
+                                                                 0 /* first_vector_component */,
+                                                                 this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators(),
+                                                                 constraint,
+                                                                 mapping);
+
+              }
 
             DoFTools::make_hanging_node_constraints(dof_handler, constraint);
             constraint.close();
@@ -1607,7 +1617,7 @@ namespace aspect
 
           matrix_free = std::make_shared<MatrixFree<dim,double>>();
           matrix_free_objects.push_back(matrix_free);
-          mg_matrices_A_block[l].reinit(mapping, dofhandlers_v[l], dofhandlers_p[l], constraints_v[l], matrix_free);
+          mg_matrices_A_block[l].reinit(mapping, dofhandlers_v[l], dofhandlers_p[l], constraints_v[l], constraints_p[l], matrix_free);
 
           matrix_free = std::make_shared<MatrixFree<dim,double>>();
           matrix_free_objects.push_back(matrix_free);
@@ -1624,52 +1634,6 @@ namespace aspect
           }
         }
     }
-
-
-
-    // Multigrid DoF setup
-#if 0
-    {
-      //Ablock GMG
-      dof_handler_v.distribute_mg_dofs();
-
-      mg_constrained_dofs_A_block.clear();
-      mg_constrained_dofs_A_block.initialize(dof_handler_v);
-
-      std::set<types::boundary_id> dirichlet_boundary = this->get_boundary_velocity_manager().get_zero_boundary_velocity_indicators();
-      for (const auto boundary_id: this->get_boundary_velocity_manager().get_prescribed_boundary_velocity_indicators())
-        {
-          const ComponentMask component_mask = this->get_boundary_velocity_manager().get_component_mask(boundary_id);
-
-          if (component_mask != ComponentMask(this->introspection().n_components, false))
-            {
-              ComponentMask velocity_mask(fe_v.n_components(), false);
-
-              for (unsigned int i=0; i<dim; ++i)
-                velocity_mask.set(i, component_mask[this->introspection().component_indices.velocities[i]]);
-
-              mg_constrained_dofs_A_block.make_zero_boundary_constraints(dof_handler_v, {boundary_id}, velocity_mask);
-            }
-          else
-            {
-              // no mask given: add at the end
-              dirichlet_boundary.insert(boundary_id);
-            }
-        }
-
-      // Unconditionally call this function, even if the set is empty. Otherwise, the data structure
-      // for boundary indices will not be created (if mesh has no Dirichlet conditions).
-      mg_constrained_dofs_A_block.make_zero_boundary_constraints(dof_handler_v, dirichlet_boundary);
-
-      //Schur complement matrix GMG
-      dof_handler_p.distribute_mg_dofs();
-
-      mg_constrained_dofs_Schur_complement.clear();
-      mg_constrained_dofs_Schur_complement.initialize(dof_handler_p);
-
-      dof_handler_projection.distribute_mg_dofs();
-    }
-#endif
 
     // Setup the matrix-free operators
     std::shared_ptr<MatrixFree<dim,double>> matrix_free = std::make_shared<MatrixFree<dim,double>>();
@@ -1758,13 +1722,14 @@ namespace aspect
   template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::build_preconditioner()
   {
-    TimerOutput::Scope timer (this->get_computing_timer(), "Build Stokes preconditioner");
+    this->get_computing_timer().enter_subsection("Build Stokes preconditioner");
 
     for (auto l = min_level; l <= max_level; ++l)
       {
         mg_matrices_Schur_complement[l].compute_diagonal();
         mg_matrices_A_block[l].compute_diagonal();
       }
+    this->get_computing_timer().leave_subsection("Build Stokes preconditioner");
   }
 
 

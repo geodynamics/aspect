@@ -483,12 +483,13 @@ namespace aspect
                                                                              const DoFHandler<dim>           &dof_handler_p,
                                                                              const AffineConstraints<number> &constraints_v,
                                                                              const AffineConstraints<number> &constraints_p,
-                                                                             std::shared_ptr<MatrixFree<dim,double>> mf_storage)
+                                                                             std::shared_ptr<MatrixFree<dim,double>> mf_storage,
+                                                                             const unsigned int level)
   {
     typename MatrixFree<dim, number>::AdditionalData data;
     data.mapping_update_flags =
       update_quadrature_points /*| update_gradients*/ | update_values;
-    data.mg_level = numbers::invalid_unsigned_int;
+    data.mg_level = level;
 
     data.tasks_parallel_scheme =
       MatrixFree<dim,double>::AdditionalData::none;
@@ -663,15 +664,16 @@ namespace aspect
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>::reinit(const Mapping<dim>              &mapping,
-                                                                         const DoFHandler<dim>           &dof_handler,
-                                                                         const DoFHandler<dim>           &dof_handler_other,
-                                                                         const AffineConstraints<number> &constraints,
-                                                                         std::shared_ptr<MatrixFree<dim,double>> mf_storage)
+                                                                         const DoFHandler<dim>           &dof_handler_v,
+                                                                         const DoFHandler<dim>           &dof_handler_p,
+                                                                         const AffineConstraints<number> &constraints_v,
+                                                                         const AffineConstraints<number> &constraints_p,
+                                                                         std::shared_ptr<MatrixFree<dim,double>> mf_storage,
+                                                                         const unsigned int level)
   {
     typename MatrixFree<dim, number>::AdditionalData data;
-    data.mapping_update_flags =
-      update_quadrature_points | update_gradients | update_values;
-    data.mg_level = numbers::invalid_unsigned_int;
+    data.mapping_update_flags = update_quadrature_points | update_gradients | update_values;
+    data.mg_level = level;
 
     typename MatrixFree<dim,double>::AdditionalData additional_data;
     additional_data.tasks_parallel_scheme =
@@ -681,8 +683,8 @@ namespace aspect
 
     AffineConstraints<number> dummy;
     mf_storage->reinit(mapping,
-    std::vector< const DoFHandler< dim > *> {&dof_handler, &dof_handler_other},
-    std::vector< const AffineConstraints< number > *> {&constraints, &dummy} ,
+    std::vector< const DoFHandler< dim > *> {&dof_handler_v, &dof_handler_p},
+    std::vector< const AffineConstraints< number > *> {&constraints_v, &constraints_p} ,
     QGauss<1>(degree_v+1), additional_data);
 
     this->initialize(mf_storage, std::vector< unsigned int > {0}, std::vector< unsigned int > {0});

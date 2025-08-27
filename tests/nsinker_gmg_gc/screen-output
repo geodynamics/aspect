@@ -5,8 +5,7 @@ Number of active cells: 64 (on 3 levels)
 Number of degrees of freedom: 3,041 (2,187+125+729)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
-evaluate_material_model()
-   Solving Stokes system (GC-GMG)... 
+   Solving Stokes system (GMG-GC)...
     GMG coarse size A: 81, coarse size S: 8
     GMG n_levels: 3
     Viscosity range: 0.01 - 0.198921
