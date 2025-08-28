@@ -4,7 +4,7 @@
 include $ASPECT_SOURCE_DIR/tests/drucker_prager_extension.prm
 
 set Dimension                              = 2
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set Nonlinear solver tolerance             = 1e-7
 set Adiabatic surface temperature          = 1600
 

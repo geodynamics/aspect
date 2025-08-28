@@ -7,7 +7,7 @@
 set CFL number                             = 1.0
 set End time                               = 0
 set Adiabatic surface temperature          = 1600.0
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 
 subsection Geometry model
   set Model name = box

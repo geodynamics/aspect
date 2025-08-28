@@ -12,7 +12,7 @@ set Surface pressure                       = 0
 set Pressure normalization                 = no
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Timing output frequency                = 5
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 
 subsection Boundary temperature model
   set List of model names = constant

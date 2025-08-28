@@ -2,7 +2,7 @@
 # parameters however we want.
 
 set End time                               = 0.002 # 1.0 for full benchmark
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 
 subsection Adiabatic conditions model
   set Model name = function

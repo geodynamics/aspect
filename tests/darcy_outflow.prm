@@ -4,7 +4,7 @@
 # composition dependent outflow boundary conditions for when a composition is advected with the 
 # Darcy field advection method.
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 50
 set Pressure normalization                 = surface
 set Maximum time step                      = 500

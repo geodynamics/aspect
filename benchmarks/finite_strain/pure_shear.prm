@@ -42,7 +42,7 @@
 set Additional shared libraries            = ./libfinite_strain.so
 set Dimension                              = 2
 set End time                               = 1.0
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set Output directory                       = output-pure_shear
 
 subsection Geometry model

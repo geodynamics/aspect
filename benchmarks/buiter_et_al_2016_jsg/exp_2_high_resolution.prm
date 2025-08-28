@@ -12,7 +12,7 @@
 set Dimension                                        = 2
 set Start time                                       = 0
 set End time                                         = 14400 #Equivalent to ~10 cm of shortening
-set Use years in output instead of seconds           = false
+set Use years instead of seconds                     = false
 set CFL number                                       = 0.5
 set Output directory                                 = output-Brittle_thrust_wedge_exp2
 set Pressure normalization                           = no

@@ -15,7 +15,7 @@ set End time                               = 3e7
 set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Nonlinear solver scheme                = single Advection, single Stokes
 
 subsection Checkpointing

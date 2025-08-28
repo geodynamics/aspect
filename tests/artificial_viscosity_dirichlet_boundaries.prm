@@ -8,7 +8,7 @@ set CFL number                             = 0.1
 set Nonlinear solver scheme                = single Advection, single Stokes
 set Dimension                              = 2
 set End time                               = 0.01
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 
 subsection Compositional fields
   set Number of fields = 1

@@ -5,7 +5,7 @@
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0.3
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 
 ############### Parameters describing the model
 # Let us here choose again a box domain of size 2x1

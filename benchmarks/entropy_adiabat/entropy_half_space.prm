@@ -10,9 +10,8 @@
 # time-dependent, so the solution might slightly deviate from this
 # reference profile.
 
-set Additional shared libraries            = ./plugins/libentropy_plugins.so
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 1e9
 set Maximum time step                      = 1e6
 set Output directory                       = output-entropy-half-space

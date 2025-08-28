@@ -1133,7 +1133,7 @@ namespace aspect
                              "graphical output files. A value of zero indicates "
                              "that output should be generated in each time step. "
                              "Units: years if the "
-                             "'Use years in output instead of seconds' parameter is set; "
+                             "'Use years instead of seconds' parameter is set; "
                              "seconds otherwise.");
 
           prm.declare_entry ("Time steps between graphical output", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),

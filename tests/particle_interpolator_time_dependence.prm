@@ -7,7 +7,7 @@
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0.015 # 1 for complete run
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 
 subsection Geometry model
   set Model name = box

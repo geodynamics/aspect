@@ -7,7 +7,7 @@ set Dimension                              = 2
 set Adiabatic surface temperature          = 1600
 set Maximum time step                      = 1e6
 set Output directory                       = output-global_no_melt
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 
 # The end time of the simulation. Because we want to see how upwellings
 # and downwellings evolve over time, and if differences develop between

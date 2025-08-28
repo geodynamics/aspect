@@ -9,7 +9,7 @@
 
 set Dimension                              = 2
 set End time                               = 70
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 
 subsection Geometry model
   set Model name = box

@@ -4,7 +4,7 @@ set CFL number                             = 10
 set End time                               = 2
 set Output directory                       = output
 set Start time                             = 0
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 
 ############### Parameters describing the model
 

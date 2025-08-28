@@ -902,15 +902,10 @@ namespace aspect
         }
   }
 
-#define INSTANTIATE(dim) \
-  template void colorize_quarter_hyper_shell<dim>(Triangulation<dim> &, \
-                                                  const Point<dim>   &, \
-                                                  const double      , \
-                                                  const double)     ;
-
-  ASPECT_INSTANTIATE(INSTANTIATE)
-
-#undef INSTANTIATE
+  template void colorize_quarter_hyper_shell<2>(Triangulation<2> &,
+                                                const Point<2> &,
+                                                const double,
+                                                const double);
 }
 
 #endif

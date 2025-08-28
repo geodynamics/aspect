@@ -10,7 +10,7 @@ set Additional shared libraries = ./libmagnetic_stripes.so
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 83.5e6
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Output directory                       = output-magnetic-stripes
 
 subsection Discretization

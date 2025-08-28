@@ -4,7 +4,7 @@ set Pressure normalization   = surface
 set Surface pressure         = 0
 set Nonlinear solver scheme  = single Advection, no Stokes
 set End time                 = 2e6
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set Maximum time step = 1e3
 
 subsection Compositional fields

@@ -10,7 +10,7 @@
 
 set Dimension                              = 2
 set End time                               = 0.032725
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set Nonlinear solver scheme                = single Advection, no Stokes
 set Maximum time step                      = 0.00818125
 

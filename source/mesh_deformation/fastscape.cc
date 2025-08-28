@@ -19,8 +19,6 @@
  */
 #include <aspect/global.h>
 
-#ifdef ASPECT_WITH_FASTSCAPE
-
 #include <aspect/mesh_deformation/fastscape.h>
 #include <aspect/geometry_model/box.h>
 #include <deal.II/numerics/vector_tools.h>
@@ -30,6 +28,9 @@
 
 namespace aspect
 {
+
+#ifdef ASPECT_WITH_FASTSCAPE
+
   namespace MeshDeformation
   {
     /**
@@ -806,7 +807,7 @@ namespace aspect
           const double y = grid_extent[1].first + (iy - use_ghost_nodes) * fastscape_dy;
 
           // Set time scaling factor based on time unit
-          // This factor is use to scale the quantities when "Use years in output instead of seconds" in ASPECT is off.
+          // This factor is use to scale the quantities when "Use years instead of seconds" in ASPECT is off.
           double time_scaling_factor = (this->convert_output_to_years() ? 1.0 : year_in_seconds);
           // Update bedrock transport coefficient kd
           bedrock_transport_coefficient_array[i] =
@@ -2148,5 +2149,6 @@ namespace aspect
                                            "on the input parameters. ")
 
   }
-}
+
 #endif
+}

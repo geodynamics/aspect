@@ -3,7 +3,7 @@
 
 set Dimension                              = 2
 set End time                               = 0.755
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set Maximum relative increase in time step     = 2
 
 subsection Time stepping

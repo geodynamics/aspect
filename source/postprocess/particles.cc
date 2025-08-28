@@ -190,9 +190,8 @@ namespace aspect
 
 
     template <int dim>
-    // We need to pass the arguments by value, as this function can be called on a separate thread:
-    void Particles<dim>::writer (const std::string &filename, //NOLINT(performance-unnecessary-value-param)
-                                 const std::string &temporary_output_location, //NOLINT(performance-unnecessary-value-param)
+    void Particles<dim>::writer (const std::string &filename,
+                                 const std::string &temporary_output_location,
                                  const std::string &file_contents)
     {
       std::string tmp_filename = filename;
@@ -670,7 +669,7 @@ namespace aspect
                              "output files. A value of zero indicates that "
                              "output should be generated every time step.\n\n"
                              "Units: years if the "
-                             "'Use years in output instead of seconds' parameter is set; "
+                             "'Use years instead of seconds' parameter is set; "
                              "seconds otherwise.");
 
           // now also see about the file format we're supposed to write in

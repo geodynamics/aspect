@@ -4,7 +4,7 @@
 # box_2d_left.0.nc is converted from data/boundary-velocity/ascii-data/test/box_2d_left.0.txt
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 0.01
 set Adiabatic surface temperature          = 1613.0
 

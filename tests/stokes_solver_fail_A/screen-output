@@ -4,80 +4,14 @@ Number of degrees of freedom: 2,724 (1,666+225+833)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 0+---------------------------------------------------------
-TimerOutput objects finalize timed values printed to the
-screen by communicating over MPI in their destructors.
-Since an exception is currently uncaught, this
-synchronization (and subsequent output) will be skipped
-to avoid a possible deadlock.
-
-
-Exception 'ExcMessage (exception_message.str())' on rank 0 on processing: 
-
-An error occurred in file <utilities.cc> in function
+   Solving Stokes system (GMG)... 0+
+An error occurred in file <solver_cg.h> in function
 (line in output replaced by default.sh script)
 The violated condition was: 
-    false
+    std::abs(p_dot_A_dot_p) != 0.
 Additional information: 
-    The iterative Stokes solver in
-    StokesMatrixFreeHandlerLocalSmoothingImplementation::solve did not
-    converge.
-    
-    The initial residual was: 1.169088e+14
-    The final residual is: 1.169088e+14
-    The required residual for convergence is: 1.169088e+07
-    See output-stokes_solver_fail_A/solver_history.txt for the full
-    convergence history.
-    
-    The solver reported the following error:
-    
-    --------------------------------------------------------
-(line in output replaced by default.sh script)
-(line in output replaced by default.sh script)
-    void aspect::Utilities::throw_linear_solver_failure_exception(const
-    string&, const string&, const std::vector<dealii::SolverControl>&,
-    const std::exception&, MPI_Comm, const string&)
-    The violated condition was:
-    false
-    Additional information:
-    The iterative (top left) solver in BlockSchurGMGPreconditioner::vmult
-    did not converge.
-    
-    The initial residual was: 1.000000e+00
-    The final residual is: 5.190472e-122
-    The required residual for convergence is: 0.000000e+00
-    
-    The solver reported the following error:
-    
-    --------------------------------------------------------
-(line in output replaced by default.sh script)
-(line in output replaced by default.sh script)
-    void dealii::SolverCG<VectorType>::solve(const MatrixType&,
-    VectorType&, const VectorType&, const PreconditionerType&) [with
-    MatrixType = aspect::MatrixFreeStokesOperators::ABlockOperator<2, 2,
-    double>; PreconditionerType = dealii::PreconditionMG<2,
-    dealii::LinearAlgebra::distributed::Vector<double>,
-    dealii::MGTransferMatrixFree<2, double> >; VectorType =
-    dealii::LinearAlgebra::distributed::Vector<double>]
-    The violated condition was:
-    solver_state == SolverControl::success
-    Additional information:
-    Iterative method reported convergence failure in step 1000. The
-    residual in the last step was 5.19047e-122.
-    
-    This error message can indicate that you have simply not allowed a
-    sufficiently large number of iterations for your iterative solver to
-    converge. This often happens when you increase the size of your
-    problem. In such cases, the last residual will likely still be very
-    small, and you can make the error go away by increasing the allowed
-    number of iterations when setting up the SolverControl object that
-    determines the maximal number of iterations you allow.
-    
-    The other situation where this error may occur is when your matrix is
-    not invertible (e.g., your matrix has a null-space), or if you try to
-    apply the wrong solver to a matrix (e.g., using CG for a matrix that
-    is not symmetric or not positive definite). In these cases, the
-    residual in the last iteration is likely going to be large.
-    
-    Stacktrace:
+    A piece of code is attempting a division by zero. This is likely going
+    to lead to results that make no sense.
+
+Stacktrace:
 (rest of the output replaced by default.sh script)

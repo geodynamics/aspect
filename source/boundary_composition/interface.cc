@@ -25,10 +25,9 @@
 #include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
 
-#include <deal.II/base/exceptions.h>
 #include <deal.II/base/signaling_nan.h>
-#include <tuple>
 
+#include <tuple>
 #include <list>
 
 

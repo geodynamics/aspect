@@ -19,7 +19,6 @@
 */
 
 #include <aspect/simulator.h>
-#include <deal.II/grid/tria.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/drucker_prager.h>
 #include <aspect/simulator_access.h>
@@ -27,10 +26,10 @@
 #include <aspect/utilities.h>
 #include <aspect/parameters.h>
 
-#include <deal.II/base/exceptions.h>
+#include <deal.II/grid/tria.h>
+
 #include <memory>
 #include <functional>
-
 #include <iostream>
 
 namespace aspect

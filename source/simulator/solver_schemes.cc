@@ -831,14 +831,42 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_single_advection_single_stokes ()
+  void Simulator<dim>::solve_no_advection_no_stokes ()
   {
-    assemble_and_solve_temperature();
-    assemble_and_solve_composition();
+    if (parameters.run_postprocessors_on_nonlinear_iterations)
+      postprocess ();
+
+    // Setup a nonlinear solver control that only allows a single iteration
+    SolverControl nonlinear_solver_control(1,1.0);
+    // Announce that we did a single iteration, and assume we have converged
+    nonlinear_solver_control.check(1,0.0);
+    signals.post_nonlinear_solver(nonlinear_solver_control);
+  }
+
+
+
+  template <int dim>
+  void Simulator<dim>::solve_no_advection_single_stokes ()
+  {
     assemble_and_solve_stokes();
 
     if (parameters.run_postprocessors_on_nonlinear_iterations)
       postprocess ();
+
+    // Setup a nonlinear solver control that only allows a single iteration
+    SolverControl nonlinear_solver_control(1,1.0);
+    // Announce that we did a single iteration, and assume we have converged
+    nonlinear_solver_control.check(1,0.0);
+    signals.post_nonlinear_solver(nonlinear_solver_control);
+  }
+
+
+
+  template <int dim>
+  void Simulator<dim>::solve_no_advection_single_stokes_first_timestep_only ()
+  {
+    if (timestep_number == 0)
+      assemble_and_solve_stokes();
 
     // Setup a nonlinear solver control that only allows a single iteration
     SolverControl nonlinear_solver_control(1,1.0);
@@ -955,24 +983,63 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_single_advection_iterated_defect_correction_stokes ()
+  void Simulator<dim>::solve_single_advection_no_stokes ()
   {
-    // The defect correction solver is just the Newton solver without derivatives.
-    solve_single_advection_and_iterated_newton_stokes(/*use_newton_iterations = */ false);
+    assemble_and_solve_temperature();
+    assemble_and_solve_composition();
+
+    {
+      TimerOutput::Scope timer (computing_timer, "Interpolate Stokes solution");
+
+      // Assign Stokes solution
+      LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.system_partitioning, mpi_communicator);
+
+      VectorFunctionFromVectorFunctionObject<dim> func(
+        [&](const Point<dim> &p, Vector<double> &result)
+      {
+        prescribed_stokes_solution->stokes_solution(p, result);
+      },
+      0,
+      parameters.include_melt_transport ? 2*dim+3 : dim+1, // velocity and pressure
+      introspection.n_components);
+
+      VectorTools::interpolate (*mapping, dof_handler, func, distributed_stokes_solution);
+
+      // distribute hanging node and other constraints
+      current_constraints.distribute (distributed_stokes_solution);
+
+      solution.block(introspection.block_indices.velocities) =
+        distributed_stokes_solution.block(introspection.block_indices.velocities);
+      solution.block(introspection.block_indices.pressure) =
+        distributed_stokes_solution.block(introspection.block_indices.pressure);
+
+      if (parameters.include_melt_transport)
+        {
+          const unsigned int block_u_f = introspection.variable("fluid velocity").block_index;
+          const unsigned int block_p_f = introspection.variable("fluid pressure").block_index;
+          solution.block(block_u_f) = distributed_stokes_solution.block(block_u_f);
+          solution.block(block_p_f) = distributed_stokes_solution.block(block_p_f);
+        }
+
+    }
+
+    if (parameters.run_postprocessors_on_nonlinear_iterations)
+      postprocess ();
+
+    // Setup a nonlinear solver control that only allows a single iteration
+    SolverControl nonlinear_solver_control(1,1.0);
+    // Announce that we did a single iteration, and assume we have converged
+    nonlinear_solver_control.check(1,0.0);
+    signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
-  template <int dim>
-  void Simulator<dim>::solve_iterated_advection_and_defect_correction_stokes ()
-  {
-    // The defect correction solver is just the Newton solver without derivatives.
-    solve_iterated_advection_and_newton_stokes(/*use_newton_iterations = */ false);
-  }
-
 
 
   template <int dim>
-  void Simulator<dim>::solve_no_advection_single_stokes ()
+  void Simulator<dim>::solve_single_advection_single_stokes ()
   {
+    assemble_and_solve_temperature();
+    assemble_and_solve_composition();
     assemble_and_solve_stokes();
 
     if (parameters.run_postprocessors_on_nonlinear_iterations)
@@ -985,16 +1052,161 @@ namespace aspect
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
-  template <int dim>
-  void Simulator<dim>::solve_first_timestep_only_single_stokes ()
-  {
-    if (timestep_number == 0)
-      assemble_and_solve_stokes();
 
-    // Setup a nonlinear solver control that only allows a single iteration
-    SolverControl nonlinear_solver_control(1,1.0);
-    // Announce that we did a single iteration, and assume we have converged
-    nonlinear_solver_control.check(1,0.0);
+
+  template <int dim>
+  void Simulator<dim>::solve_single_advection_iterated_stokes ()
+  {
+    // solve the temperature and composition systems once...
+    assemble_and_solve_temperature();
+
+    assemble_and_solve_composition();
+
+    // ...and then iterate the solution of the Stokes system
+    double initial_stokes_residual = 0;
+
+    const unsigned int max_nonlinear_iterations =
+      (pre_refinement_step < parameters.initial_adaptive_refinement)
+      ?
+      std::min(parameters.max_nonlinear_iterations,
+               parameters.max_nonlinear_iterations_in_prerefinement)
+      :
+      parameters.max_nonlinear_iterations;
+
+    SolverControl nonlinear_solver_control(max_nonlinear_iterations,
+                                           parameters.nonlinear_tolerance);
+
+    double relative_residual = std::numeric_limits<double>::max();
+    nonlinear_iteration = 0;
+    do
+      {
+        relative_residual =
+          assemble_and_solve_stokes(initial_stokes_residual,
+                                    nonlinear_iteration == 0 ? &initial_stokes_residual : nullptr);
+
+        pcout << "      Relative nonlinear residual (Stokes system) after nonlinear iteration " << nonlinear_iteration+1
+              << ": " << relative_residual
+              << std::endl
+              << std::endl;
+
+        if (parameters.run_postprocessors_on_nonlinear_iterations)
+          postprocess ();
+
+        ++nonlinear_iteration;
+      }
+    while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
+
+    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
+    signals.post_nonlinear_solver(nonlinear_solver_control);
+  }
+
+
+
+  template <int dim>
+  void Simulator<dim>::solve_single_advection_iterated_defect_correction_stokes ()
+  {
+    // The defect correction solver is just the Newton solver without derivatives.
+    solve_single_advection_iterated_newton_stokes(/*use_newton_iterations = */ false);
+  }
+
+
+
+  template <int dim>
+  void Simulator<dim>::solve_single_advection_iterated_newton_stokes (bool use_newton_iterations)
+  {
+    // First assemble and solve the temperature and compositional fields
+    assemble_and_solve_temperature();
+    assemble_and_solve_composition();
+
+    // Now store the linear_tolerance we started out with, because we might change
+    // it within this timestep.
+    double begin_linear_tolerance = parameters.linear_stokes_solver_tolerance;
+
+    std::vector<double> initial_composition_residual (parameters.n_compositional_fields,0);
+
+    DefectCorrectionResiduals dcr;
+    dcr.initial_residual = 1;
+
+    dcr.velocity_residual = 0;
+    dcr.pressure_residual = 0;
+    dcr.residual = 1;
+    dcr.residual_old = 1;
+
+    dcr.switch_initial_residual = 1;
+    dcr.newton_residual_for_derivative_scaling_factor = 1;
+
+    bool use_picard = true;
+
+    const Newton::Parameters::Stabilization starting_preconditioner_stabilization = newton_handler->parameters.preconditioner_stabilization;
+    const Newton::Parameters::Stabilization starting_velocity_block_stabilization = newton_handler->parameters.velocity_block_stabilization;
+
+    const unsigned int max_nonlinear_iterations =
+      (pre_refinement_step < parameters.initial_adaptive_refinement)
+      ?
+      std::min(parameters.max_nonlinear_iterations,
+               parameters.max_nonlinear_iterations_in_prerefinement)
+      :
+      parameters.max_nonlinear_iterations;
+
+    SolverControl nonlinear_solver_control(max_nonlinear_iterations,
+                                           parameters.nonlinear_tolerance);
+
+    SolverControl nonlinear_solver_control_picard(newton_handler->parameters.max_pre_newton_nonlinear_iterations,
+                                                  newton_handler->parameters.nonlinear_switch_tolerance);
+
+    // Now iterate out the nonlinearities.
+    dcr.stokes_residuals = {numbers::signaling_nan<double>(), numbers::signaling_nan<double>()};
+
+    double relative_residual = std::numeric_limits<double>::max();
+    nonlinear_iteration = 0;
+    do
+      {
+        // If we are in the Picard phase, check if we can switch to Newton
+        if (use_newton_iterations && use_picard &&
+            nonlinear_solver_control_picard.check(nonlinear_iteration, relative_residual) != SolverControl::iterate)
+          {
+            use_picard = false;
+            pcout << "   Switching from defect correction form of Picard to the Newton solver scheme." << std::endl;
+
+            /**
+             * This method allows to slowly introduce the derivatives based
+             * on the improvement of the residual. If we do not use it, we
+             * just set it so the newton_derivative_scaling_factor goes from
+             * zero to one when switching on the Newton solver.
+             */
+            if (!newton_handler->parameters.use_newton_residual_scaling_method)
+              dcr.newton_residual_for_derivative_scaling_factor = 0;
+          }
+
+        newton_handler->parameters.newton_derivative_scaling_factor
+          = (std::max(0.0,
+                      (1.0-(dcr.newton_residual_for_derivative_scaling_factor/dcr.switch_initial_residual))));
+
+        do_one_defect_correction_Stokes_step(dcr, use_picard);
+
+        relative_residual = dcr.residual/dcr.initial_residual;
+
+        pcout << "      Relative nonlinear residual (Stokes system) after nonlinear iteration " << nonlinear_iteration+1
+              << ": " << relative_residual
+              << std::endl
+              << std::endl;
+
+        if (parameters.run_postprocessors_on_nonlinear_iterations)
+          postprocess ();
+
+        ++nonlinear_iteration;
+      }
+    while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
+
+    // Reset the Newton stabilization at the end of the timestep.
+    newton_handler->parameters.preconditioner_stabilization = starting_preconditioner_stabilization;
+    newton_handler->parameters.velocity_block_stabilization = starting_velocity_block_stabilization;
+
+    // Reset the linear tolerance to what it was at the beginning of the time step.
+    parameters.linear_stokes_solver_tolerance = begin_linear_tolerance;
+
+    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
+
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
@@ -1098,49 +1310,10 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_single_advection_iterated_stokes ()
+  void Simulator<dim>::solve_iterated_advection_and_defect_correction_stokes ()
   {
-    // solve the temperature and composition systems once...
-    assemble_and_solve_temperature();
-
-    assemble_and_solve_composition();
-
-    // ...and then iterate the solution of the Stokes system
-    double initial_stokes_residual = 0;
-
-    const unsigned int max_nonlinear_iterations =
-      (pre_refinement_step < parameters.initial_adaptive_refinement)
-      ?
-      std::min(parameters.max_nonlinear_iterations,
-               parameters.max_nonlinear_iterations_in_prerefinement)
-      :
-      parameters.max_nonlinear_iterations;
-
-    SolverControl nonlinear_solver_control(max_nonlinear_iterations,
-                                           parameters.nonlinear_tolerance);
-
-    double relative_residual = std::numeric_limits<double>::max();
-    nonlinear_iteration = 0;
-    do
-      {
-        relative_residual =
-          assemble_and_solve_stokes(initial_stokes_residual,
-                                    nonlinear_iteration == 0 ? &initial_stokes_residual : nullptr);
-
-        pcout << "      Relative nonlinear residual (Stokes system) after nonlinear iteration " << nonlinear_iteration+1
-              << ": " << relative_residual
-              << std::endl
-              << std::endl;
-
-        if (parameters.run_postprocessors_on_nonlinear_iterations)
-          postprocess ();
-
-        ++nonlinear_iteration;
-      }
-    while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
-
-    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
-    signals.post_nonlinear_solver(nonlinear_solver_control);
+    // The defect correction solver is just the Newton solver without derivatives.
+    solve_iterated_advection_and_newton_stokes(/*use_newton_iterations = */ false);
   }
 
 
@@ -1288,174 +1461,6 @@ namespace aspect
 
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
-
-
-  template <int dim>
-  void Simulator<dim>::solve_single_advection_and_iterated_newton_stokes (bool use_newton_iterations)
-  {
-    // First assemble and solve the temperature and compositional fields
-    assemble_and_solve_temperature();
-    assemble_and_solve_composition();
-
-    // Now store the linear_tolerance we started out with, because we might change
-    // it within this timestep.
-    double begin_linear_tolerance = parameters.linear_stokes_solver_tolerance;
-
-    std::vector<double> initial_composition_residual (parameters.n_compositional_fields,0);
-
-    DefectCorrectionResiduals dcr;
-    dcr.initial_residual = 1;
-
-    dcr.velocity_residual = 0;
-    dcr.pressure_residual = 0;
-    dcr.residual = 1;
-    dcr.residual_old = 1;
-
-    dcr.switch_initial_residual = 1;
-    dcr.newton_residual_for_derivative_scaling_factor = 1;
-
-    bool use_picard = true;
-
-    const Newton::Parameters::Stabilization starting_preconditioner_stabilization = newton_handler->parameters.preconditioner_stabilization;
-    const Newton::Parameters::Stabilization starting_velocity_block_stabilization = newton_handler->parameters.velocity_block_stabilization;
-
-    const unsigned int max_nonlinear_iterations =
-      (pre_refinement_step < parameters.initial_adaptive_refinement)
-      ?
-      std::min(parameters.max_nonlinear_iterations,
-               parameters.max_nonlinear_iterations_in_prerefinement)
-      :
-      parameters.max_nonlinear_iterations;
-
-    SolverControl nonlinear_solver_control(max_nonlinear_iterations,
-                                           parameters.nonlinear_tolerance);
-
-    SolverControl nonlinear_solver_control_picard(newton_handler->parameters.max_pre_newton_nonlinear_iterations,
-                                                  newton_handler->parameters.nonlinear_switch_tolerance);
-
-    // Now iterate out the nonlinearities.
-    dcr.stokes_residuals = {numbers::signaling_nan<double>(), numbers::signaling_nan<double>()};
-
-    double relative_residual = std::numeric_limits<double>::max();
-    nonlinear_iteration = 0;
-    do
-      {
-        // If we are in the Picard phase, check if we can switch to Newton
-        if (use_newton_iterations && use_picard &&
-            nonlinear_solver_control_picard.check(nonlinear_iteration, relative_residual) != SolverControl::iterate)
-          {
-            use_picard = false;
-            pcout << "   Switching from defect correction form of Picard to the Newton solver scheme." << std::endl;
-
-            /**
-             * This method allows to slowly introduce the derivatives based
-             * on the improvement of the residual. If we do not use it, we
-             * just set it so the newton_derivative_scaling_factor goes from
-             * zero to one when switching on the Newton solver.
-             */
-            if (!newton_handler->parameters.use_newton_residual_scaling_method)
-              dcr.newton_residual_for_derivative_scaling_factor = 0;
-          }
-
-        newton_handler->parameters.newton_derivative_scaling_factor
-          = (std::max(0.0,
-                      (1.0-(dcr.newton_residual_for_derivative_scaling_factor/dcr.switch_initial_residual))));
-
-        do_one_defect_correction_Stokes_step(dcr, use_picard);
-
-        relative_residual = dcr.residual/dcr.initial_residual;
-
-        pcout << "      Relative nonlinear residual (Stokes system) after nonlinear iteration " << nonlinear_iteration+1
-              << ": " << relative_residual
-              << std::endl
-              << std::endl;
-
-        if (parameters.run_postprocessors_on_nonlinear_iterations)
-          postprocess ();
-
-        ++nonlinear_iteration;
-      }
-    while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
-
-    // Reset the Newton stabilization at the end of the timestep.
-    newton_handler->parameters.preconditioner_stabilization = starting_preconditioner_stabilization;
-    newton_handler->parameters.velocity_block_stabilization = starting_velocity_block_stabilization;
-
-    // Reset the linear tolerance to what it was at the beginning of the time step.
-    parameters.linear_stokes_solver_tolerance = begin_linear_tolerance;
-
-    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
-
-    signals.post_nonlinear_solver(nonlinear_solver_control);
-  }
-
-
-
-  template <int dim>
-  void Simulator<dim>::solve_single_advection_no_stokes ()
-  {
-    assemble_and_solve_temperature();
-    assemble_and_solve_composition();
-
-    {
-      TimerOutput::Scope timer (computing_timer, "Interpolate Stokes solution");
-
-      // Assign Stokes solution
-      LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.system_partitioning, mpi_communicator);
-
-      VectorFunctionFromVectorFunctionObject<dim> func(
-        [&](const Point<dim> &p, Vector<double> &result)
-      {
-        prescribed_stokes_solution->stokes_solution(p, result);
-      },
-      0,
-      parameters.include_melt_transport ? 2*dim+3 : dim+1, // velocity and pressure
-      introspection.n_components);
-
-      VectorTools::interpolate (*mapping, dof_handler, func, distributed_stokes_solution);
-
-      // distribute hanging node and other constraints
-      current_constraints.distribute (distributed_stokes_solution);
-
-      solution.block(introspection.block_indices.velocities) =
-        distributed_stokes_solution.block(introspection.block_indices.velocities);
-      solution.block(introspection.block_indices.pressure) =
-        distributed_stokes_solution.block(introspection.block_indices.pressure);
-
-      if (parameters.include_melt_transport)
-        {
-          const unsigned int block_u_f = introspection.variable("fluid velocity").block_index;
-          const unsigned int block_p_f = introspection.variable("fluid pressure").block_index;
-          solution.block(block_u_f) = distributed_stokes_solution.block(block_u_f);
-          solution.block(block_p_f) = distributed_stokes_solution.block(block_p_f);
-        }
-
-    }
-
-    if (parameters.run_postprocessors_on_nonlinear_iterations)
-      postprocess ();
-
-    // Setup a nonlinear solver control that only allows a single iteration
-    SolverControl nonlinear_solver_control(1,1.0);
-    // Announce that we did a single iteration, and assume we have converged
-    nonlinear_solver_control.check(1,0.0);
-    signals.post_nonlinear_solver(nonlinear_solver_control);
-  }
-
-
-
-  template <int dim>
-  void Simulator<dim>::solve_no_advection_no_stokes ()
-  {
-    if (parameters.run_postprocessors_on_nonlinear_iterations)
-      postprocess ();
-
-    // Setup a nonlinear solver control that only allows a single iteration
-    SolverControl nonlinear_solver_control(1,1.0);
-    // Announce that we did a single iteration, and assume we have converged
-    nonlinear_solver_control.check(1,0.0);
-    signals.post_nonlinear_solver(nonlinear_solver_control);
-  }
 }
 
 // explicit instantiation of the functions we implement in this file
@@ -1465,19 +1470,19 @@ namespace aspect
   template double Simulator<dim>::assemble_and_solve_temperature(const double &, double*); \
   template std::vector<double> Simulator<dim>::assemble_and_solve_composition(const std::vector<double> &, std::vector<double> *); \
   template double Simulator<dim>::assemble_and_solve_stokes(const double &, double*); \
-  template void Simulator<dim>::solve_single_advection_single_stokes(); \
-  template void Simulator<dim>::solve_no_advection_iterated_stokes(); \
+  template void Simulator<dim>::solve_no_advection_no_stokes(); \
   template void Simulator<dim>::solve_no_advection_single_stokes(); \
-  template void Simulator<dim>::solve_iterated_advection_and_stokes(); \
-  template void Simulator<dim>::solve_single_advection_iterated_stokes(); \
+  template void Simulator<dim>::solve_no_advection_single_stokes_first_timestep_only(); \
+  template void Simulator<dim>::solve_no_advection_iterated_stokes(); \
   template void Simulator<dim>::solve_no_advection_iterated_defect_correction_stokes(); \
+  template void Simulator<dim>::solve_single_advection_no_stokes(); \
+  template void Simulator<dim>::solve_single_advection_single_stokes(); \
+  template void Simulator<dim>::solve_single_advection_iterated_stokes(); \
   template void Simulator<dim>::solve_single_advection_iterated_defect_correction_stokes(); \
+  template void Simulator<dim>::solve_single_advection_iterated_newton_stokes(bool); \
+  template void Simulator<dim>::solve_iterated_advection_and_stokes(); \
   template void Simulator<dim>::solve_iterated_advection_and_defect_correction_stokes(); \
   template void Simulator<dim>::solve_iterated_advection_and_newton_stokes(bool); \
-  template void Simulator<dim>::solve_single_advection_and_iterated_newton_stokes(bool); \
-  template void Simulator<dim>::solve_single_advection_no_stokes(); \
-  template void Simulator<dim>::solve_first_timestep_only_single_stokes(); \
-  template void Simulator<dim>::solve_no_advection_no_stokes();
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 

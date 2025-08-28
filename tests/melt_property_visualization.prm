@@ -13,7 +13,7 @@ set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Resume computation                     = false
 set Start time                             = 0
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 
 # test if the melt material properties visulaization output works
 # (for both scalar and tensor output variables)

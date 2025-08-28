@@ -5,7 +5,7 @@
 # oscillations before the fix, but now gives accurate results.
 
 set End time                               = 0.002 # 1.0 for full benchmark
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set CFL number = 5.0
 
 subsection Adiabatic conditions model

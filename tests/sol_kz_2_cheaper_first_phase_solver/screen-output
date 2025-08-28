@@ -9,7 +9,7 @@ Number of degrees of freedom: 268 (162+25+81)
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.84597e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 2.79774e-08
 
 
    Postprocessing:

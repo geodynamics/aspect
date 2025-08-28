@@ -2,7 +2,7 @@
 # The perturbation is added to a constant density, i.e., degree 0 order 0 component.
 
 set Dimension                              = 3
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set Start time                             = 0
 set End time                               = 1e-6
 set Adiabatic surface temperature          = 0.0

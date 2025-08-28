@@ -9,7 +9,7 @@
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 
 ############### Parameters describing the model
 # The setup is a 3d box with edge length 2890000 in which

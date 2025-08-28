@@ -36,7 +36,7 @@
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 200
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 1
 set CFL number                             = 1.0

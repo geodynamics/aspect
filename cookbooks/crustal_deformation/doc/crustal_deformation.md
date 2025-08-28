@@ -87,8 +87,8 @@ as shown in {numref}`fig:extcompr`.
 ```
 
 Deformation localizes at the basal velocity discontinuity and plastic shear
-bands form at an angle of approximately $53^\\circ$ to the bottom in extension
-and $35^\\circ$ in compression, both of which correspond to the reported
+bands form at an angle of approximately $53^{\circ}$ to the bottom in extension
+and $35^{\circ}$ in compression, both of which correspond to the reported
 Arthur angle {cite}`kaus:2010,buiter:2012`.
 
 ```{figure-md} fig:extcompr

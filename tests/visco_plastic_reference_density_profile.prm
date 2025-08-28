@@ -2,7 +2,7 @@
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Max nonlinear iterations               = 1
 set Output directory                       = visco_plastic_reference_density_profile

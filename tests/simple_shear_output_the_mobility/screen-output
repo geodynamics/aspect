@@ -31,9 +31,9 @@ Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)
    Solving Stokes system (AMG)... 0+0 iterations.
 
    Postprocessing:
-     Number of advected particles 1
-     Compositions min/max/mass:   1/1/1 // 0.05/0.05/0.05 // -1.994e-17/2.336e-17/7.164e-32 // 1/1/1
-     Mobility:                    1.73
+     Number of advected particles: 1
+     Compositions min/max/mass:    1/1/1 // 0.05/0.05/0.05 // -1.994e-17/2.336e-17/-7.607e-32 // 1/1/1
+     Mobility:                     1.73
 
 Termination requested by criterion: end time
 

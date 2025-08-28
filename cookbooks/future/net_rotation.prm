@@ -2,7 +2,7 @@
 # net rotation removal
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 1.5e9
 set Output directory                       = output-netrot
 

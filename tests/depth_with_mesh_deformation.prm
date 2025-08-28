@@ -4,7 +4,7 @@
 # is output.
 set Dimension                              = 2
 
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 1e4
 set Maximum time step                      = 1e4
 set Output directory                       = depth_with_mesh_deformation

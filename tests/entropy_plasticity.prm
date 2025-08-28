@@ -2,7 +2,7 @@
 # reference viscosity profile, and p-T dependent conductivity
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 4e5
 set Output directory                       = output-entropy-plasticity
 set Nonlinear solver scheme                = iterated Advection and Stokes

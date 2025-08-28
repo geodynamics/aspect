@@ -10,7 +10,7 @@
 
 set Dimension                              = 2
 set Adiabatic surface temperature          = 293
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 
 # Because this model aims to capture rheological behavior under a range
 # of deformation regimes, we prescribe a flow field in the section called

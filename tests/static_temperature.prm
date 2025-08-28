@@ -3,7 +3,7 @@
 # composition or elastic stress can be advected and changed in time.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Start time                 = 0.0
 set End time                               = 20e3
 set Output directory                       = static_temperature

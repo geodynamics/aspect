@@ -7,7 +7,7 @@
 set Additional shared libraries = ../plugins/libcompressibility_formulations.so
 set Dimension = 2
 set End time                               = 2e8
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Adiabatic surface temperature          = 1600
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Nonlinear solver tolerance             = 1e-12

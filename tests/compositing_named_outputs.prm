@@ -3,7 +3,7 @@
 set CFL number                             = 1.0
 set End time                               = 1e5
 set Adiabatic surface temperature          = 1600.0
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 
 subsection Boundary temperature model
   set List of model names = spherical constant

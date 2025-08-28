@@ -3,10 +3,8 @@
 # There is a constant heating from radiogenic heating, distributed uniformly throughout the model.
 # The error converges to zero as the time step length is reduced.
 
-set Additional shared libraries            = $ASPECT_SOURCE_DIR/benchmarks/entropy_adiabat/plugins/libentropy_plugins.so
-
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 3e5
 set Maximum time step                      = 3.33333e3
 set Output directory                       = new-output-free-surface-with-heat-in-unequaled-gr-3-alpha-1000-vis-1e25-nlst1e6-ts333e3-radioactive

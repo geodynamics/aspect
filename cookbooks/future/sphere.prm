@@ -1,7 +1,7 @@
 # A simple setup for convection in a sphere
 # manual for more information.
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 5.0e8
 set Output directory                       = output-sphere
 

@@ -1,7 +1,7 @@
 # input file for model R of van der Wiel et al., 2024.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 1e9
 set Output directory                       = output-mantle-convection-annulus
 set World builder file                     = $ASPECT_SOURCE_DIR/cookbooks/mantle_convection_with_continents_in_annulus/world.wb

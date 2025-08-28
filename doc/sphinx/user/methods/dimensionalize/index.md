@@ -8,7 +8,7 @@ As a consequence, when ASPECT prints information about the simulation onto the s
 
 :::{note}
 For mantle convection simulations, it is often convenient to work with time units of *years* instead of *seconds*.
-The flag "`Use years in output instead of seconds`" ({ref}`parameters:global`) in the input file determines how input and output parameters with units of time or velocity are interpreted.
+The flag "`Use years instead of seconds`" ({ref}`parameters:global`) in the input file determines how input and output parameters with units of time or velocity are interpreted.
 For details, see {ref}`sec:methods:dimensionalize:years-or-seconds`.
 :::
 

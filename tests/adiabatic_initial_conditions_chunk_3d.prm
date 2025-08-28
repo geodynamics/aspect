@@ -12,7 +12,7 @@ set CFL number                             = 1.0
 set End time                               = 0
 set Start time                             = 0
 set Surface pressure                       = 0
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set Nonlinear solver scheme                = single Advection, single Stokes
 set Adiabatic surface temperature = 1200
 
@@ -69,7 +69,7 @@ subsection Material model
     set Reference temperature         = 1613
     set Thermal conductivity          = 4.125
     set Thermal expansion coefficient = 2e-5
-    set Viscosity                     = 1
+    set Viscosity                     = 1e21
   end
 end
 

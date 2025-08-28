@@ -5,7 +5,7 @@
 # are reduced to generate a lower Rayleigh number system.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Output directory                       = 2d_annulus_pyvista_cookbook
 set Pressure normalization                 = surface
 set Surface pressure                       = 0

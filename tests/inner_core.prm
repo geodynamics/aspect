@@ -13,7 +13,7 @@
 
 set Additional shared libraries            = ./libinner_core_convection.so
 set Dimension                              = 3
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set End time                               = 50
 set Output directory                       = output
 

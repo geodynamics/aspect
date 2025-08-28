@@ -15,7 +15,7 @@ include $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/2D_slice_wit
 
 set Additional shared libraries            = ./plugins/libtomography_based_plate_motions.so
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Output directory                       = 2D-slice-with-faults-slabs-topo
 set World builder file                     = $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/world_builder_smac_cratons_faults_2D.json
 set Nonlinear solver scheme                = iterated Advection and Stokes

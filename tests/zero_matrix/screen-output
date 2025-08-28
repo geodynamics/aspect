@@ -6,17 +6,17 @@ Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
    Skipping temperature solve because RHS is zero.
    Skipping C_1 composition solve because RHS is zero.
    Solving C_2 system ... 0 iterations.
-   Solving Stokes system (GMG)... 479+0 iterations.
+   Solving Stokes system (GMG)... 487+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.820077
 
-   Solving Stokes system (GMG)... 240+0 iterations.
+   Solving Stokes system (GMG)... 195+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0030758
 
-   Solving Stokes system (GMG)... 169+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 5.92742e-05
+   Solving Stokes system (GMG)... 102+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 5.92695e-05
 
    Solving Stokes system (GMG)... 36+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 7.6951e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 7.71572e-07
 
 
    Postprocessing:

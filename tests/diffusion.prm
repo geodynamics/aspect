@@ -87,7 +87,7 @@ set Surface pressure                       = 0
 # one wants results in their natural unit system as used inside the code. If
 # this flag is set to 'true' conversion to years happens; if it is 'false', no
 # such conversion happens.
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 
 subsection Boundary temperature model
   set List of model names = box
@@ -275,7 +275,7 @@ subsection Postprocess
   subsection Depth average
     # The time interval between each generation of graphical output files. A
     # value of zero indicates that output should be generated in each time
-    # step. Units: years if the 'Use years in output instead of seconds'
+    # step. Units: years if the 'Use years instead of seconds          '
     # parameter is set; seconds otherwise.
     set Time between graphical output = 1
     set Number of zones = 10
@@ -297,7 +297,7 @@ subsection Postprocess
 
     # The time interval between each generation of graphical output files. A
     # value of zero indicates that output should be generated in each time
-    # step. Units: years if the 'Use years in output instead of seconds'
+    # step. Units: years if the 'Use years instead of seconds          '
     # parameter is set; seconds otherwise.
     set Time between graphical output = 0
 

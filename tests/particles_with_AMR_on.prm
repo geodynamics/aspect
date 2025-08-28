@@ -6,7 +6,7 @@
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 5e5
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set CFL number                             = 1
 
 subsection Geometry model
