@@ -1904,15 +1904,9 @@ namespace aspect
       {
         switch (parameters.nonlinear_solver)
           {
-            case NonlinearSolver::single_Advection_single_Stokes:
+            case NonlinearSolver::no_Advection_no_Stokes:
             {
-              solve_single_advection_single_stokes();
-              break;
-            }
-
-            case NonlinearSolver::no_Advection_iterated_Stokes:
-            {
-              solve_no_advection_iterated_stokes();
+              solve_no_advection_no_stokes();
               break;
             }
 
@@ -1922,15 +1916,15 @@ namespace aspect
               break;
             }
 
-            case NonlinearSolver::iterated_Advection_and_Stokes:
+            case NonlinearSolver::first_timestep_only_single_Stokes:
             {
-              solve_iterated_advection_and_stokes();
+              solve_no_advection_single_stokes_first_timestep_only();
               break;
             }
 
-            case NonlinearSolver::single_Advection_iterated_Stokes:
+            case NonlinearSolver::no_Advection_iterated_Stokes:
             {
-              solve_single_advection_iterated_stokes();
+              solve_no_advection_iterated_stokes();
               break;
             }
 
@@ -1940,9 +1934,39 @@ namespace aspect
               break;
             }
 
+            case NonlinearSolver::single_Advection_no_Stokes:
+            {
+              solve_single_advection_no_stokes();
+              break;
+            }
+
+            case NonlinearSolver::single_Advection_single_Stokes:
+            {
+              solve_single_advection_single_stokes();
+              break;
+            }
+
+            case NonlinearSolver::single_Advection_iterated_Stokes:
+            {
+              solve_single_advection_iterated_stokes();
+              break;
+            }
+
             case NonlinearSolver::single_Advection_iterated_defect_correction_Stokes:
             {
               solve_single_advection_iterated_defect_correction_stokes();
+              break;
+            }
+
+            case NonlinearSolver::single_Advection_iterated_Newton_Stokes:
+            {
+              solve_single_advection_iterated_newton_stokes(/*use_newton_iterations =*/ true);
+              break;
+            }
+
+            case NonlinearSolver::iterated_Advection_and_Stokes:
+            {
+              solve_iterated_advection_and_stokes();
               break;
             }
 
@@ -1955,30 +1979,6 @@ namespace aspect
             case NonlinearSolver::iterated_Advection_and_Newton_Stokes:
             {
               solve_iterated_advection_and_newton_stokes(/*use_newton_iterations =*/ true);
-              break;
-            }
-
-            case NonlinearSolver::single_Advection_iterated_Newton_Stokes:
-            {
-              solve_single_advection_and_iterated_newton_stokes(/*use_newton_iterations =*/ true);
-              break;
-            }
-
-            case NonlinearSolver::single_Advection_no_Stokes:
-            {
-              solve_single_advection_no_stokes();
-              break;
-            }
-
-            case NonlinearSolver::first_timestep_only_single_Stokes:
-            {
-              solve_first_timestep_only_single_stokes();
-              break;
-            }
-
-            case NonlinearSolver::no_Advection_no_Stokes:
-            {
-              solve_no_advection_no_stokes();
               break;
             }
 
