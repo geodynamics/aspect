@@ -218,6 +218,7 @@ namespace aspect
                                                "single Advection, iterated Stokes|"
                                                "single Advection, iterated defect correction Stokes|"
                                                "single Advection, iterated Newton Stokes|"
+                                               "iterated Advection, no Stokes|"
                                                "iterated Advection and Stokes|"
                                                "iterated Advection and defect correction Stokes|"
                                                "iterated Advection and Newton Stokes";
@@ -256,6 +257,10 @@ namespace aspect
                        "the temperature and composition equations once at the beginning of each time step and "
                        "then iterates out the solution of the Stokes equation, using Newton iterations for the "
                        "Stokes system.\n"
+                       "The `iterated Advection, no Stokes' scheme iterates the temperature and other advection "
+                       "systems until it converges, and instead of solving for the Stokes system, a prescribed "
+                       "velocity and pressure is used. This is useful for kinematic models and advection benchmarks "
+                       "with nonlinear processes in the advection equations.\n"
                        "The `iterated Advection and Stokes' scheme iterates out the nonlinearity "
                        "by alternating the solution of the temperature, composition and Stokes systems.\n"
                        "The `iterated Advection and defect correction Stokes' scheme iterates by alternating the "
@@ -1590,6 +1595,8 @@ namespace aspect
         nonlinear_solver = NonlinearSolver::single_Advection_iterated_defect_correction_Stokes;
       else if (solver_scheme == "single Advection, iterated Newton Stokes")
         nonlinear_solver = NonlinearSolver::single_Advection_iterated_Newton_Stokes;
+      else if (solver_scheme == "iterated Advection, no Stokes")
+        nonlinear_solver = NonlinearSolver::iterated_Advection_no_Stokes;
       else if (solver_scheme == "iterated Advection and Stokes")
         nonlinear_solver = NonlinearSolver::iterated_Advection_and_Stokes;
       else if (solver_scheme == "iterated Advection and defect correction Stokes")

@@ -45,6 +45,7 @@ namespace aspect
         // models splits temperature diffusion from entropy advection.
         switch (parameters.nonlinear_solver)
           {
+            case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_no_Stokes:
             case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Stokes:
             case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_defect_correction_Stokes:
             case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Newton_Stokes:

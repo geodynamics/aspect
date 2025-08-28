@@ -579,6 +579,19 @@ namespace aspect
        * This function implements one scheme for the various
        * steps necessary to assemble and solve the nonlinear problem.
        *
+       * The `iterated Advection, no Stokes' scheme iterates the temperature and other
+       * advection systems and instead of solving for the Stokes system,
+       * a prescribed velocity and pressure is used."
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver_schemes.cc</code>.
+       */
+      void solve_iterated_advection_no_stokes ();
+
+      /**
+       * This function implements one scheme for the various
+       * steps necessary to assemble and solve the nonlinear problem.
+       *
        * The `iterated Advection and Stokes' scheme iterates
        * by alternating the solution of the temperature, composition and Stokes systems.
        * This is essentially a type of Picard iterations for the whole
