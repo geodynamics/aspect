@@ -2246,9 +2246,40 @@ namespace aspect
     if (nonlinear_solver_failures > 0)
       pcout << "\nWARNING: During this computation " << nonlinear_solver_failures << " nonlinear solver failures occurred!" << std::endl;
 
-    pcout << "-- Total wallclock time elapsed including restarts: "
-          << std::round(wall_timer.wall_time()+total_walltime_until_last_snapshot)
-          << 's' << std::endl;
+    const double wallclock_time = wall_timer.wall_time()+total_walltime_until_last_snapshot;
+    const double resource_usage = wallclock_time / 3600. * Utilities::MPI::n_mpi_processes(mpi_communicator);
+
+    std::ostringstream resource_output;
+    resource_output << std::setprecision(2);
+    resource_output << "-- Total wallclock time elapsed including restarts: "
+                    << std::round(wallclock_time)
+                    << 's'
+                    << std::endl;
+
+    // Provide output about the resources used during the computation, but only
+    // if the model run is longer than our test cases. This ensures the
+    // additional empty lines do not confuse our test system.
+    if (resource_usage > 0.2)
+      resource_output << "\n-- Approximate resource usage including restarts:             "
+                      << resource_usage
+                      << " core hours"
+                      << std::endl
+                      << "-- Approximate economic cost assuming 0.10 $/core hour:       "
+                      << resource_usage * 0.1
+                      << " $"
+                      << std::endl
+                      << "-- Approximate energy usage assuming 5 Wh/core hour:          "
+                      << resource_usage * 0.005
+                      << " kWh"
+                      << std::endl
+                      << "-- Approximate energy carbon footprint assuming 300 gCO2/kWh: "
+                      << resource_usage * 0.005 * 0.3
+                      << " kgCO2"
+                      << std::endl
+                      << "-- Please use ASPECT responsibly."
+                      << std::endl << std::endl;
+
+    pcout << resource_output.str();
 
     CitationInfo::print_info_block (pcout);
 
