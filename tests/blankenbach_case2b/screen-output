@@ -65,7 +65,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
      Heating rate (average/total):       0 W/kg, 0 W
 
 *** Timestep 6:  t=0.00344657 seconds, dt=0.000101198 seconds
-   Solving temperature system... 53 iterations.
+   Solving temperature system... 51 iterations.
    Solving Stokes system (GMG)... 24+0 iterations.
 
    Postprocessing:

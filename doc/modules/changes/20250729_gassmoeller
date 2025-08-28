@@ -1,0 +1,5 @@
+Added: A new postprocessor 'timing statistics' that writes the
+information about wall time spent in different sections of the
+computation into the statistics file.
+<br>
+(Rene Gassmoeller, 2025/07/29)

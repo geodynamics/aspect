@@ -1,7 +1,7 @@
 # Compute heat flux densities, this is blankenbach case 2b
 
 set End time                               = 0.004
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set CFL number = 5.0
 
 subsection Adiabatic conditions model

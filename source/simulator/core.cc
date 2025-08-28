@@ -60,7 +60,11 @@
 #include <deal.II/numerics/derivative_approximation.h>
 #include <deal.II/numerics/vector_tools.h>
 
+#if DEAL_II_VERSION_GTE(9,7,0)
+#include <deal.II/numerics/solution_transfer.h>
+#else
 #include <deal.II/distributed/solution_transfer.h>
+#endif
 #include <deal.II/distributed/grid_refinement.h>
 
 #include <fstream>
@@ -1647,11 +1651,21 @@ namespace aspect
   void
   Simulator<dim>::refine_mesh (const unsigned int max_grid_level)
   {
+
+#if !DEAL_II_VERSION_GTE(9,7,0)
     parallel::distributed::SolutionTransfer<dim,LinearAlgebra::BlockVector>
     system_trans(dof_handler);
 
     std::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>>
     mesh_deformation_trans;
+#else
+    SolutionTransfer<dim,LinearAlgebra::BlockVector>
+    system_trans(dof_handler);
+
+    std::unique_ptr<SolutionTransfer<dim,LinearAlgebra::Vector>>
+    mesh_deformation_trans;
+#endif
+
 
     {
       TimerOutput::Scope timer (computing_timer, "Refine mesh structure, part 1");
@@ -1721,9 +1735,15 @@ namespace aspect
           x_fs_system.push_back (&mesh_deformation->mesh_displacements);
           x_fs_system.push_back (&mesh_deformation->old_mesh_displacements);
           x_fs_system.push_back (&mesh_deformation->initial_topography);
+#if !DEAL_II_VERSION_GTE(9,7,0)
           mesh_deformation_trans
             = std::make_unique<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>>
               (mesh_deformation->mesh_deformation_dof_handler);
+#else
+          mesh_deformation_trans
+            = std::make_unique<SolutionTransfer<dim,LinearAlgebra::Vector>>
+              (mesh_deformation->mesh_deformation_dof_handler);
+#endif
         }
 
 
@@ -1884,15 +1904,9 @@ namespace aspect
       {
         switch (parameters.nonlinear_solver)
           {
-            case NonlinearSolver::single_Advection_single_Stokes:
+            case NonlinearSolver::no_Advection_no_Stokes:
             {
-              solve_single_advection_single_stokes();
-              break;
-            }
-
-            case NonlinearSolver::no_Advection_iterated_Stokes:
-            {
-              solve_no_advection_iterated_stokes();
+              solve_no_advection_no_stokes();
               break;
             }
 
@@ -1902,15 +1916,15 @@ namespace aspect
               break;
             }
 
-            case NonlinearSolver::iterated_Advection_and_Stokes:
+            case NonlinearSolver::first_timestep_only_single_Stokes:
             {
-              solve_iterated_advection_and_stokes();
+              solve_no_advection_single_stokes_first_timestep_only();
               break;
             }
 
-            case NonlinearSolver::single_Advection_iterated_Stokes:
+            case NonlinearSolver::no_Advection_iterated_Stokes:
             {
-              solve_single_advection_iterated_stokes();
+              solve_no_advection_iterated_stokes();
               break;
             }
 
@@ -1920,9 +1934,39 @@ namespace aspect
               break;
             }
 
+            case NonlinearSolver::single_Advection_no_Stokes:
+            {
+              solve_single_advection_no_stokes();
+              break;
+            }
+
+            case NonlinearSolver::single_Advection_single_Stokes:
+            {
+              solve_single_advection_single_stokes();
+              break;
+            }
+
+            case NonlinearSolver::single_Advection_iterated_Stokes:
+            {
+              solve_single_advection_iterated_stokes();
+              break;
+            }
+
             case NonlinearSolver::single_Advection_iterated_defect_correction_Stokes:
             {
               solve_single_advection_iterated_defect_correction_stokes();
+              break;
+            }
+
+            case NonlinearSolver::single_Advection_iterated_Newton_Stokes:
+            {
+              solve_single_advection_iterated_newton_stokes(/*use_newton_iterations =*/ true);
+              break;
+            }
+
+            case NonlinearSolver::iterated_Advection_and_Stokes:
+            {
+              solve_iterated_advection_and_stokes();
               break;
             }
 
@@ -1935,30 +1979,6 @@ namespace aspect
             case NonlinearSolver::iterated_Advection_and_Newton_Stokes:
             {
               solve_iterated_advection_and_newton_stokes(/*use_newton_iterations =*/ true);
-              break;
-            }
-
-            case NonlinearSolver::single_Advection_iterated_Newton_Stokes:
-            {
-              solve_single_advection_and_iterated_newton_stokes(/*use_newton_iterations =*/ true);
-              break;
-            }
-
-            case NonlinearSolver::single_Advection_no_Stokes:
-            {
-              solve_single_advection_no_stokes();
-              break;
-            }
-
-            case NonlinearSolver::first_timestep_only_single_Stokes:
-            {
-              solve_first_timestep_only_single_stokes();
-              break;
-            }
-
-            case NonlinearSolver::no_Advection_no_Stokes:
-            {
-              solve_no_advection_no_stokes();
               break;
             }
 
@@ -2226,9 +2246,40 @@ namespace aspect
     if (nonlinear_solver_failures > 0)
       pcout << "\nWARNING: During this computation " << nonlinear_solver_failures << " nonlinear solver failures occurred!" << std::endl;
 
-    pcout << "-- Total wallclock time elapsed including restarts: "
-          << std::round(wall_timer.wall_time()+total_walltime_until_last_snapshot)
-          << 's' << std::endl;
+    const double wallclock_time = wall_timer.wall_time()+total_walltime_until_last_snapshot;
+    const double resource_usage = wallclock_time / 3600. * Utilities::MPI::n_mpi_processes(mpi_communicator);
+
+    std::ostringstream resource_output;
+    resource_output << std::setprecision(2);
+    resource_output << "-- Total wallclock time elapsed including restarts: "
+                    << std::round(wallclock_time)
+                    << 's'
+                    << std::endl;
+
+    // Provide output about the resources used during the computation, but only
+    // if the model run is longer than our test cases. This ensures the
+    // additional empty lines do not confuse our test system.
+    if (resource_usage > 0.2)
+      resource_output << "\n-- Approximate resource usage including restarts:             "
+                      << resource_usage
+                      << " core hours"
+                      << std::endl
+                      << "-- Approximate economic cost assuming 0.10 $/core hour:       "
+                      << resource_usage * 0.1
+                      << " $"
+                      << std::endl
+                      << "-- Approximate energy usage assuming 5 Wh/core hour:          "
+                      << resource_usage * 0.005
+                      << " kWh"
+                      << std::endl
+                      << "-- Approximate energy carbon footprint assuming 300 gCO2/kWh: "
+                      << resource_usage * 0.005 * 0.3
+                      << " kgCO2"
+                      << std::endl
+                      << "-- Please use ASPECT responsibly."
+                      << std::endl << std::endl;
+
+    pcout << resource_output.str();
 
     CitationInfo::print_info_block (pcout);
 

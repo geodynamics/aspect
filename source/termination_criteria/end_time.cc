@@ -57,7 +57,7 @@ namespace aspect
                          "equal to the largest number representable in floating point "
                          "arithmetic. For all practical purposes, this equals infinity. "
                          "Units: Years if the "
-                         "'Use years in output instead of seconds' parameter is set; "
+                         "'Use years instead of seconds' parameter is set; "
                          "seconds otherwise.");
     }
 
@@ -69,7 +69,7 @@ namespace aspect
       // read end time from parameter file. if it is to be interpreted
       // in years rather than seconds, then do the conversion
       end_time = prm.get_double ("End time");
-      if (prm.get_bool ("Use years in output instead of seconds") == true)
+      if (prm.get_bool ("Use years instead of seconds") == true)
         end_time *= year_in_seconds;
     }
   }

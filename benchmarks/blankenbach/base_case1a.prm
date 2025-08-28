@@ -2,7 +2,7 @@
 
 set Additional shared libraries            = ./plugin/libblankenbach.so
 set End time                               = 1.0
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set CFL number = 5.0
 
 subsection Adiabatic conditions model

@@ -3,11 +3,11 @@ Number of active cells: 768 (on 2 levels)
 Number of degrees of freedom: 28,690 (20,790+970+6,930)
 
 *** Timestep 0:  t=0 years, dt=0 years
-   Solving Stokes system (GMG)... 43+0 iterations.
+   Solving Stokes system (GMG)... 44+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.27052
 
    Solving Stokes system (GMG)... 3+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.41798e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.12338e-08
 
 
    Postprocessing:
@@ -27,7 +27,7 @@ Number of degrees of freedom: 28,690 (20,790+970+6,930)
      Rayleigh number:                               0
 
      Density at top/bottom of domain:  1 kg/m^3, 1 kg/m^3
-     Pressure at top/bottom of domain: 5.386e-10 Pa, 1.96e+06 Pa
+     Pressure at top/bottom of domain: 4.823e-10 Pa, 1.96e+06 Pa
      Computing dynamic topography      
      Writing geoid anomaly:            output-geoid/geoid_anomaly.00000
 

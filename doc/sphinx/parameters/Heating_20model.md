@@ -183,7 +183,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** Half decay times. Units: (Seconds), or (Years) if set &lsquo;use years instead of seconds&rsquo;.
+**Documentation:** Half decay times. Units: (Seconds), or (Years) if set &lsquo;Use years instead of seconds&rsquo;.
 
 (parameters:Heating_20model/Radioactive_20decay/Heating_20rates)=
 ### __Parameter name:__ Heating rates

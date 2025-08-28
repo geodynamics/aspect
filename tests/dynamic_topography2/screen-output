@@ -15,7 +15,7 @@ Skipping mesh refinement, because the mesh did not change.
    Solving Stokes system (GMG)... 17+0 iterations.
 
    Postprocessing:
-     Pressure at top/bottom of domain: 9.494e-10 Pa, 2.309e+10 Pa
+     Pressure at top/bottom of domain: -5.764e-10 Pa, 2.309e+10 Pa
      Computing dynamic topography      
      Writing graphical output:         output-dynamic_topography2/solution/solution-00000
 

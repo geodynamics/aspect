@@ -179,7 +179,7 @@ namespace aspect
                                               "dimension independent expressions. "
                                               "Each coordinate system also includes a final `t' "
                                               "variable which represents the model time, evaluated "
-                                              "in years if the 'Use years in output instead of seconds' "
+                                              "in years if the 'Use years instead of seconds' "
                                               "parameter is set, otherwise evaluated in seconds. "
                                               "After evaluating the function, its values are "
                                               "rounded to the nearest integer."

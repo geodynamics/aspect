@@ -36,7 +36,7 @@
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 250e3
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Nonlinear solver tolerance             = 1e-5
 set Max nonlinear iterations               = 100

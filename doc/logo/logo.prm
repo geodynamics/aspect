@@ -25,7 +25,7 @@
 #-----------------------------------------------------------------------------
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Output directory                       = output-logo
 set Use conduction timestep                = true
 

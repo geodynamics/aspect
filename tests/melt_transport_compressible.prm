@@ -17,7 +17,7 @@ set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Resume computation                     = false
 set Start time                             = 0
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 
 # A testcase that demonstrates melt transport with a compactible matrix,
 # and compressible matrix and fluid. Boundary conditions for the

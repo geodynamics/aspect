@@ -9,7 +9,7 @@ set Dimension                              = 3
 # There are several global variables that have to do with what
 # time system we want to work in and what the end time is. We
 # also designate an output directory.
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set End time                               = 0.001 #100. #00.0 #0.0125 #5.0
 set Nonlinear solver scheme = single Advection, no Stokes
 set Output directory  = test_shearbox3d

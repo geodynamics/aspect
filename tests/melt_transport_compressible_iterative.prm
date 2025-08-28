@@ -14,7 +14,7 @@ set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Resume computation                     = false
 set Start time                             = 0
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 
 # Identical to melt_transport_compressible.prm except using an iterative
 # solver. Note that because of the low resolution the linear and nonlinear

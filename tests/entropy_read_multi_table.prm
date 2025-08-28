@@ -2,7 +2,7 @@
 # and computes the initial property based on the chemical compositions.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 0
 set Maximum time step                      = 1e6
 set Nonlinear solver scheme                = iterated Advection and Stokes

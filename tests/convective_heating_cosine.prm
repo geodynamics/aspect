@@ -34,7 +34,7 @@
 # Can be compared to output from the heat flux postprocessor.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set End time                               = 2000
 set Maximum time step                      = 10
 set Nonlinear solver scheme                = single Advection, no Stokes

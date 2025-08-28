@@ -11,7 +11,7 @@ set Dimension                              = 2
 # the nonlinearity of the viscosity correctly, we use
 # the iterated Advection and Stokes nonlinear solver and skip the cheap
 # Stokes solves.
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set End time                               = 0.01
 set Output directory                       = Case4_3_T15_NS_analytical_9e-1_release
 set Nonlinear solver scheme                = iterated Advection and Newton Stokes

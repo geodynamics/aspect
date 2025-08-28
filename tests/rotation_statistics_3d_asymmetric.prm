@@ -16,7 +16,7 @@
 # sign).
 
 set Dimension                              = 3
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set End time                               = 0.0
 set Nonlinear solver scheme                = single Advection, no Stokes
 

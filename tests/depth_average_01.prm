@@ -4,7 +4,7 @@
 # reasonable data, but not enough for actual resolution.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set End time                               = 0.5
 set Output directory                       = output
 set Pressure normalization                 = surface

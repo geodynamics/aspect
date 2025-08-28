@@ -5,7 +5,7 @@
 # than plus/minus 5% in a time frame of 2 Myr.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 2e8
 
 # This controls the solver accuracy

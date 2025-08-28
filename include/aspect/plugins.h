@@ -26,7 +26,6 @@
 
 #include <deal.II/base/utilities.h>
 #include <deal.II/base/parameter_handler.h>
-#include <deal.II/base/exceptions.h>
 #include <deal.II/fe/component_mask.h>
 
 #include <boost/core/demangle.hpp>

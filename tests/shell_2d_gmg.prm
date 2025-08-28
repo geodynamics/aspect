@@ -2,7 +2,7 @@
 
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 1.0e5
 set Output directory                       = output-shell_2d_gmg
 

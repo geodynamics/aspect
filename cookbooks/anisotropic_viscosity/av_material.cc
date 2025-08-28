@@ -22,7 +22,6 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/plugins.h>
 #include <aspect/simulator/assemblers/interface.h>
-#include <deal.II/base/exceptions.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/patterns.h>
 #include <deal.II/base/point.h>

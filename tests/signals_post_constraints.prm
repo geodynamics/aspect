@@ -4,7 +4,7 @@
 # otherwise identical to blankenbach.prm
 
 set End time                               = 0.002 # 1.0 for full benchmark
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 
 subsection Boundary temperature model
   set List of model names = box

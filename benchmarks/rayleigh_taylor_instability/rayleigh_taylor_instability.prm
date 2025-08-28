@@ -4,7 +4,7 @@ set Start time                   = 0
 set End time                     = 0
 set Output directory             = output
 set Pressure normalization       = volume
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 
 subsection Geometry model
   set Model name = box

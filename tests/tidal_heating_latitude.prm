@@ -15,7 +15,7 @@
 # These values align with ASPECT's results within numerical accuracy. ASPECT's results are 2.86027243e+02 K and 1.65661824e+02 K at poles and equators, respectively.
 
 set Dimension                              = 3
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 1e6
 
 set Output directory                       = tidal_heating_latitude

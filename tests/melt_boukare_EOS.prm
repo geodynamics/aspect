@@ -11,7 +11,7 @@ set Dimension                              = 2
 # There are several global variables that have to do with what
 # time system we want to work in and what the end time is. We
 # also designate an output directory.
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 0
 set Maximum time step                      = 1e7
 set Output directory                       = test

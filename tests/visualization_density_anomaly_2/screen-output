@@ -11,7 +11,7 @@ Number of degrees of freedom: 470 (286+41+143)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 15+0 iterations.
+   Solving Stokes system (GMG)... 14+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-visualization_density_anomaly_2/solution/solution-00000

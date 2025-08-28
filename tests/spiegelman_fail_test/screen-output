@@ -88,8 +88,8 @@ Number of degrees of freedom: 18,133 (8,514+1,105+4,257+4,257)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+1 iterations.
       Newton system information: Norm of the rhs: 1.08722e+14, Derivative scaling factor: 1
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.92488e-13, 0.0122851
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.0122851
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.92486e-13, 0.012285
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.012285
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.

@@ -22,9 +22,7 @@
 #include <aspect/global.h>
 #include <aspect/initial_temperature/interface.h>
 
-#include <deal.II/base/exceptions.h>
 #include <tuple>
-
 #include <list>
 
 

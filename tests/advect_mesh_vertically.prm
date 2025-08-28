@@ -6,7 +6,7 @@ set CFL number                             = 0.1
 set End time                               = 1e8
 set Output directory                       = output
 set Pressure normalization                 = no
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 
 subsection Boundary temperature model
   set List of model names = constant

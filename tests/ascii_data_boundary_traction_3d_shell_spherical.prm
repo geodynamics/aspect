@@ -10,7 +10,7 @@ set Dimension = 3
 # years and the output directory. Here we only calculate
 # the instantaneous solution.
 set End time                               = 0
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Output directory                       = output-ascii_data_boundary_traction_3d_shell_spherical
 
 # The following variables describe how the pressure should

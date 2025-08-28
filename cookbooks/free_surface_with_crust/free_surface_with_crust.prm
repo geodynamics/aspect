@@ -9,7 +9,7 @@
 set Additional shared libraries            = ./plugin/libsimpler_with_crust.so
 set Dimension                              = 2
 set End time                               = 2e7
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Output directory                       = output-free_surface_with_crust
 set Maximum first time step                = 1e3
 set Maximum relative increase in time step = 30

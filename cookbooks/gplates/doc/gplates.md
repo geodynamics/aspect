@@ -122,7 +122,7 @@ lithosphere model. All plugin specific options may be set in
 {ref}`parameters:Boundary_20velocity_20model`. Possible options
 include the data directory and file name of the velocity file/files, the time
 step (in model units, mostly seconds or years depending on the
-`Use years in output instead of seconds` flag) and the points
+`Use years instead of seconds` flag) and the points
 that define the 2D plane.
 
 ## Comparing and visualizing 2D and 3D models.

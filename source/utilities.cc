@@ -36,7 +36,6 @@
 #include <deal.II/base/table.h>
 #include <deal.II/base/table_indices.h>
 #include <deal.II/base/function_lib.h>
-#include <deal.II/base/exceptions.h>
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/patterns.h>
 #include <deal.II/grid/grid_tools.h>

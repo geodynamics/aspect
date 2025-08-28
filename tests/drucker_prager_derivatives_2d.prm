@@ -8,7 +8,7 @@
 set Additional shared libraries = tests/libdrucker_prager_derivatives_2d.so
 set Dimension                              = 2
 set End time                               = 0
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Nonlinear solver scheme                = no Advection, no Stokes
 
 # Model geometry (100x100 km, 10 km spacing)

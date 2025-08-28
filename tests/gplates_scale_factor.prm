@@ -3,7 +3,7 @@
 # scaling factor to make sure that velocities are scaled correctly.
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 0
 set Output directory                       = output
 set Adiabatic surface temperature          = 1600

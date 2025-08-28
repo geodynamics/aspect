@@ -624,11 +624,11 @@ namespace aspect
       this->get_signals().post_compute_no_normal_flux_constraints(sim.triangulation);
 
       // Ask all plugins to add their constraints.
-      // For the moment add constraints from all plugins into one matrix, then
-      // merge that matrix with the existing constraints (respecting the existing
-      // constraints as more important)
+      // For the moment add constraints from all plugins into one object, then
+      // merge that object with the existing constraints (respecting the existing
+      // constraints as more important).
 #if DEAL_II_VERSION_GTE(9,7,0)
-      AffineConstraints<double> plugin_constraints(mesh_vertex_constraints.get_local_lines(),
+      AffineConstraints<double> plugin_constraints(mesh_deformation_dof_handler.locally_owned_dofs(),
                                                    mesh_vertex_constraints.get_local_lines());
 #else
       AffineConstraints<double> plugin_constraints(mesh_vertex_constraints.get_local_lines());
@@ -641,7 +641,7 @@ namespace aspect
           for (const auto &model : boundary_id.second)
             {
 #if DEAL_II_VERSION_GTE(9,7,0)
-              AffineConstraints<double> current_plugin_constraints(mesh_vertex_constraints.get_local_lines(),
+              AffineConstraints<double> current_plugin_constraints(mesh_deformation_dof_handler.locally_owned_dofs(),
                                                                    mesh_vertex_constraints.get_local_lines());
 #else
               AffineConstraints<double> current_plugin_constraints(mesh_vertex_constraints.get_local_lines());
@@ -650,7 +650,7 @@ namespace aspect
               model->compute_velocity_constraints_on_boundary(mesh_deformation_dof_handler,
                                                               current_plugin_constraints,
                                                               boundary_id_set);
-              if ((this->is_stokes_matrix_free()))
+              if (this->is_stokes_matrix_free())
                 {
                   mg_constrained_dofs.make_zero_boundary_constraints(mesh_deformation_dof_handler,
                                                                      boundary_id_set);
@@ -914,14 +914,22 @@ namespace aspect
       mesh_matrix.compress (VectorOperation::add);
 
       // Make the AMG preconditioner
+#if !DEAL_II_VERSION_GTE(9,7,0)
       std::vector<std::vector<bool>> constant_modes;
       DoFTools::extract_constant_modes (mesh_deformation_dof_handler,
                                         ComponentMask(dim, true),
                                         constant_modes);
+#endif
+
       // TODO: think about keeping object between time steps
       LinearAlgebra::PreconditionAMG preconditioner_stiffness;
       LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
+#if !DEAL_II_VERSION_GTE(9,7,0)
       Amg_data.constant_modes = constant_modes;
+#else
+      Amg_data.constant_modes = DoFTools::extract_constant_modes (mesh_deformation_dof_handler,
+                                                                  ComponentMask(dim, true));
+#endif
       Amg_data.elliptic = true;
       Amg_data.higher_order_elements = false;
       Amg_data.smoother_sweeps = 2;
@@ -1514,7 +1522,7 @@ namespace aspect
       // to transfer to the MG levels below. The conversion is done by
       // going through a ReadWriteVector.
       dealii::LinearAlgebra::distributed::Vector<double> displacements(mesh_deformation_dof_handler.locally_owned_dofs(),
-                                                                       this->get_triangulation().get_communicator());
+                                                                       this->get_mpi_communicator());
       dealii::LinearAlgebra::ReadWriteVector<double> rwv;
       rwv.reinit(mesh_displacements);
       displacements.import_elements(rwv, VectorOperation::insert);

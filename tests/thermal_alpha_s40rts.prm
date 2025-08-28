@@ -1,7 +1,7 @@
 # Test for S40RTS initial condition using thermal expansion from the material model
 
 set Dimension                              = 3
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 0
 set Adiabatic surface temperature          = 1600
 

@@ -7,7 +7,7 @@
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 500e3
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Nonlinear solver scheme                = no Advection, single Stokes 
 set Nonlinear solver tolerance             = 1e-3 
 set Maximum time step                      = 20e3

@@ -18,7 +18,7 @@ set Additional shared libraries = ./plugin/libtime_dependent_annulus.so
 set Dimension                              = 2
 set End time                               = 0.09817477042468103
 set Output directory                       = output-time_dependent_annulus
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 
 subsection Geometry model
   set Model name = spherical shell

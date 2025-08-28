@@ -27,7 +27,6 @@
 #include <deal.II/particles/particle.h>
 #include <deal.II/particles/generators.h>
 #include <deal.II/base/parameter_handler.h>
-#include <deal.II/base/exceptions.h>
 
 #include <random>
 

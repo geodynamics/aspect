@@ -9,9 +9,9 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
     GMG n_levels: 6
     Viscosity range: 1e+20 - 1e+20
     GMG workload imbalance: 1.00073
-    Stokes solver: 51+0 iterations.
-    Schur complement preconditioner: 52+0 iterations.
-    A block preconditioner: 52+0 iterations.
+    Stokes solver: 53+0 iterations.
+    Schur complement preconditioner: 54+0 iterations.
+    A block preconditioner: 54+0 iterations.
 
 Number of active cells: 1,114 (on 7 levels)
 Number of degrees of freedom: 15,480 (9,506+1,221+4,753)
@@ -23,9 +23,9 @@ Number of degrees of freedom: 15,480 (9,506+1,221+4,753)
     GMG n_levels: 7
     Viscosity range: 1e+20 - 1e+20
     GMG workload imbalance: 1.00067
-    Stokes solver: 62+0 iterations.
-    Schur complement preconditioner: 63+0 iterations.
-    A block preconditioner: 63+0 iterations.
+    Stokes solver: 64+0 iterations.
+    Schur complement preconditioner: 65+0 iterations.
+    A block preconditioner: 65+0 iterations.
 
 Number of active cells: 1,183 (on 7 levels)
 Number of degrees of freedom: 16,481 (10,122+1,298+5,061)
@@ -37,9 +37,9 @@ Number of degrees of freedom: 16,481 (10,122+1,298+5,061)
     GMG n_levels: 7
     Viscosity range: 1e+20 - 1e+20
     GMG workload imbalance: 1.0298
-    Stokes solver: 66+0 iterations.
-    Schur complement preconditioner: 67+0 iterations.
-    A block preconditioner: 67+0 iterations.
+    Stokes solver: 68+0 iterations.
+    Schur complement preconditioner: 69+0 iterations.
+    A block preconditioner: 69+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-periodic_box_gmg/solution/solution-00000
@@ -51,9 +51,9 @@ Number of degrees of freedom: 16,481 (10,122+1,298+5,061)
     GMG n_levels: 7
     Viscosity range: 1e+20 - 1e+20
     GMG workload imbalance: 1.0298
-    Stokes solver: 62+0 iterations.
-    Schur complement preconditioner: 63+0 iterations.
-    A block preconditioner: 63+0 iterations.
+    Stokes solver: 65+0 iterations.
+    Schur complement preconditioner: 66+0 iterations.
+    A block preconditioner: 66+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-periodic_box_gmg/solution/solution-00001
@@ -65,9 +65,9 @@ Number of degrees of freedom: 16,481 (10,122+1,298+5,061)
     GMG n_levels: 7
     Viscosity range: 1e+20 - 1e+20
     GMG workload imbalance: 1.0298
-    Stokes solver: 61+0 iterations.
-    Schur complement preconditioner: 62+0 iterations.
-    A block preconditioner: 62+0 iterations.
+    Stokes solver: 64+0 iterations.
+    Schur complement preconditioner: 65+0 iterations.
+    A block preconditioner: 65+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-periodic_box_gmg/solution/solution-00002
@@ -79,9 +79,9 @@ Number of degrees of freedom: 16,481 (10,122+1,298+5,061)
     GMG n_levels: 7
     Viscosity range: 1e+20 - 1e+20
     GMG workload imbalance: 1.0298
-    Stokes solver: 61+0 iterations.
-    Schur complement preconditioner: 62+0 iterations.
-    A block preconditioner: 62+0 iterations.
+    Stokes solver: 64+0 iterations.
+    Schur complement preconditioner: 65+0 iterations.
+    A block preconditioner: 65+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-periodic_box_gmg/solution/solution-00003
@@ -93,9 +93,9 @@ Number of degrees of freedom: 16,481 (10,122+1,298+5,061)
     GMG n_levels: 7
     Viscosity range: 1e+20 - 1e+20
     GMG workload imbalance: 1.0298
-    Stokes solver: 61+0 iterations.
-    Schur complement preconditioner: 62+0 iterations.
-    A block preconditioner: 62+0 iterations.
+    Stokes solver: 64+0 iterations.
+    Schur complement preconditioner: 65+0 iterations.
+    A block preconditioner: 65+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-periodic_box_gmg/solution/solution-00004
@@ -107,9 +107,9 @@ Number of degrees of freedom: 16,481 (10,122+1,298+5,061)
     GMG n_levels: 7
     Viscosity range: 1e+20 - 1e+20
     GMG workload imbalance: 1.0298
-    Stokes solver: 61+0 iterations.
-    Schur complement preconditioner: 62+0 iterations.
-    A block preconditioner: 62+0 iterations.
+    Stokes solver: 64+0 iterations.
+    Schur complement preconditioner: 65+0 iterations.
+    A block preconditioner: 65+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-periodic_box_gmg/solution/solution-00005

@@ -5,7 +5,7 @@
 # the same data file.
 
 set Dimension = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Output directory                       = ascii-data-slice
 set Nonlinear solver scheme                = single Advection, single Stokes
 set Start time                             = 0

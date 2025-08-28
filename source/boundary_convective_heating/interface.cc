@@ -24,7 +24,6 @@
 
 #include <aspect/utilities.h>
 
-#include <deal.II/base/exceptions.h>
 #include <deal.II/base/signaling_nan.h>
 
 #include <list>

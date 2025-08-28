@@ -13,7 +13,7 @@ set End time                               = 0
 set Start time                             = 0
 set Adiabatic surface temperature          = 1613.0
 set Surface pressure                       = 0
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 
 ###################################
 # This is the part that is different: Specifically, do not actually

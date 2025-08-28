@@ -9,7 +9,7 @@ set Pressure normalization                 = no
 set Resume computation                     = false
 set Start time                             = 0
 set Timing output frequency                = 0
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 
 subsection Boundary temperature model
   set List of model names = initial temperature

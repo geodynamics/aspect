@@ -1,7 +1,7 @@
 # Rotating shapes
 
 set Dimension                              = 2
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set End time                               = 6.2831
 set Output directory                       = output-rotate-shape-supg
 set Nonlinear solver scheme                = single Advection, no Stokes

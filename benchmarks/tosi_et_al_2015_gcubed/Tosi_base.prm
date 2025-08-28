@@ -16,7 +16,7 @@ set Dimension                              = 2
 # the nonlinearity of the viscosity correctly, we use
 # the iterated Advection and Stokes nonlinear solver with 200 cheap
 # Stokes solves.
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set End time                               = 1
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 30

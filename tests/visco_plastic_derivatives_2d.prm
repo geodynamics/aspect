@@ -4,7 +4,7 @@
 set Additional shared libraries = tests/libvisco_plastic_derivatives.so
 set Dimension                              = 2
 set End time                               = 0
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Nonlinear solver scheme                = no Advection, no Stokes
 set Adiabatic surface temperature          = 273
 

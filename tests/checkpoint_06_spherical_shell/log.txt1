@@ -4,14 +4,14 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 16+0 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
      Writing graphical output: output1.tmp/solution/solution-00000
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
      RMS, max velocity:        0.0103 m/year, 0.0245 m/year
 
-*** Timestep 1:  t=6.89524e+06 years, dt=6.89524e+06 years
+*** Timestep 1:  t=6.89528e+06 years, dt=6.89528e+06 years
    Solving temperature system... 9 iterations.
    Solving Stokes system (GMG)... 15+0 iterations.
 
@@ -20,7 +20,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
      RMS, max velocity:        0.0103 m/year, 0.0244 m/year
 
-*** Timestep 2:  t=1.38243e+07 years, dt=6.9291e+06 years
+*** Timestep 2:  t=1.38244e+07 years, dt=6.9291e+06 years
    Solving temperature system... 9 iterations.
    Solving Stokes system (GMG)... 14+0 iterations.
 
@@ -29,7 +29,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
      RMS, max velocity:        0.0103 m/year, 0.0243 m/year
 
-*** Timestep 3:  t=2.07767e+07 years, dt=6.95238e+06 years
+*** Timestep 3:  t=2.07768e+07 years, dt=6.95238e+06 years
    Solving temperature system... 8 iterations.
    Solving Stokes system (GMG)... 13+0 iterations.
 
@@ -42,16 +42,16 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
 
 *** Timestep 4:  t=2.7754e+07 years, dt=6.97728e+06 years
    Solving temperature system... 8 iterations.
-   Solving Stokes system (GMG)... 14+0 iterations.
+   Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:
      Writing graphical output: output1.tmp/solution/solution-00004
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
      RMS, max velocity:        0.0103 m/year, 0.0241 m/year
 
-*** Timestep 5:  t=3e+07 years, dt=2.24601e+06 years
+*** Timestep 5:  t=3e+07 years, dt=2.24597e+06 years
    Solving temperature system... 5 iterations.
-   Solving Stokes system (GMG)... 13+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Writing graphical output: output1.tmp/solution/solution-00005

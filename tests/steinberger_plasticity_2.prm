@@ -7,7 +7,7 @@
 # yielding if yield stress <= stress second invariant
 
 set Dimension                              = 2
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set Adiabatic surface temperature          = 1600.0
 set End time                               = 0.5
 set Output directory                       = output-steinberger_plasticity_2

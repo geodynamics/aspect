@@ -5,7 +5,7 @@ set Output directory                       = output-multicomponent-steinberger
 set CFL number                             = 1.0
 set End time                               = 3e8
 set Adiabatic surface temperature          = 1600.0
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Maximum first time step                = 1.e4
 
 # Multiple composition setup

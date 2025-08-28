@@ -1,7 +1,7 @@
 # A test for velocity ascii files
 
 set Dimension                              = 2
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set End time                               = 0.005
 set Pressure normalization                 = surface
 set Surface pressure                       = 0

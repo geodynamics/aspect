@@ -22,9 +22,7 @@
 #include <aspect/global.h>
 #include <aspect/adiabatic_conditions/interface.h>
 
-#include <deal.II/base/exceptions.h>
 #include <tuple>
-
 #include <list>
 
 

@@ -1,7 +1,7 @@
 # Adapted from the drop-supg.prm benchmark
 
 set Dimension                              = 3
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set End time                               = 0.18
 set Nonlinear solver scheme                = single Advection, no Stokes
 set Resume computation                     = false
@@ -129,7 +129,7 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, particles, Particle Distribution Statistics
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, particles, particle distribution statistics
 
   subsection Visualization
     set Time between graphical output = .001

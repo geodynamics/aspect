@@ -13,6 +13,6 @@
 # 13: Velocity iterations in Stokes preconditioner
 # 14: Schur complement iterations in Stokes preconditioner
 # 15: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 1198 11581 5129 15387  0  0  0  0 47 109 434 output-multicomponent_geometric/solution/solution-00000 
-1 6.079051419574e+04 6.079051419574e+04 1198 11581 5129 15387 10 10 12 10 42  87 293                                                      "" 
-2 1.208882057196e+05 6.009769152389e+04 1198 11581 5129 15387 10 11 12 10 35  57 135                                                      "" 
+0 0.000000000000e+00 0.000000000000e+00 1198 11581 5129 15387  0  0  0  0 47 104 411 output-multicomponent_geometric/solution/solution-00000 
+1 6.079051419574e+04 6.079051419574e+04 1198 11581 5129 15387 10 10 12 10 42  84 272                                                      "" 
+2 1.208882057196e+05 6.009769152389e+04 1198 11581 5129 15387 10 11 12 10 35  53 117                                                      "" 

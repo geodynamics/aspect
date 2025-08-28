@@ -1,7 +1,7 @@
 # 2d quarter shell using a scaled viscosity profile
 
 set Dimension                              = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 1.0e5
 
 subsection Material model

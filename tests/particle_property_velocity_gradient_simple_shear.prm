@@ -6,7 +6,7 @@ set CFL number = 0.1
 set Timing output frequency = 5000
 set Dimension                              = 3
 
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set End time                               = 0.001
 set Nonlinear solver scheme = single Advection, no Stokes
 

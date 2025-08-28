@@ -140,7 +140,7 @@ namespace aspect
                                            "this plugin is later multiplied by the time step length "
                                            "to compute the displacement increment in this time step. "
                                            "Although the function's time variable is interpreted as "
-                                           "years when Use years in output instead of seconds is set to true, "
+                                           "years when Use years instead of seconds is set to true, "
                                            "the boundary deformation velocity should still be given "
                                            "in m/s. The format of the "
                                            "functions follows the syntax understood by the "

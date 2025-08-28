@@ -98,7 +98,7 @@ namespace aspect
     prm.declare_entry ("Start time", "0.",
                        Patterns::Double (),
                        "The start time of the simulation. Units: Years if the "
-                       "'Use years in output instead of seconds' parameter is set; "
+                       "'Use years instead of seconds' parameter is set; "
                        "seconds otherwise.");
 
     prm.declare_entry ("Timing output frequency", "100",
@@ -108,7 +108,7 @@ namespace aspect
                        "value is set to zero it will also output timing information at the "
                        "initiation timesteps.");
 
-    prm.declare_entry ("Use years in output instead of seconds", "true",
+    prm.declare_entry ("Use years instead of seconds", "true",
                        Patterns::Bool (),
                        "When computing results for mantle convection simulations, "
                        "it is often difficult to judge the order of magnitude of results "
@@ -131,6 +131,10 @@ namespace aspect
                        "For the purposes of this parameter, a year consists of "
                        "60*60*24*365.2425 seconds. In other words, a year is taken "
                        "to have 365.2425 days.");
+
+    prm.declare_alias ("Use years instead of seconds",
+                       "Use years in output instead of seconds",
+                       true);
 
     prm.declare_entry ("CFL number", "1.0",
                        Patterns::Double (0.),
@@ -488,7 +492,7 @@ namespace aspect
         prm.declare_entry ("Number of cheap Stokes solver steps", "1000",
                            Patterns::Integer(0),
                            "As explained in the paper that describes ASPECT (Kronbichler, Heister, and Bangerth, "
-                           "2012, see {cite}`kronbichler:etal:2012`) we first try to solve the Stokes system in every "
+                           "2012, see \\cite{kronbichler:etal:2012}) we first try to solve the Stokes system in every "
                            "time step using a GMRES iteration with a poor but cheap "
                            "preconditioner. By default, we try whether we can converge the GMRES "
                            "solver in 200 such iterations before deciding that we need a better "
@@ -522,7 +526,7 @@ namespace aspect
                            "of the Stokes system is computed. This approximate $A$ is used in the "
                            "preconditioning used in the GMRES solver. The exact definition of this "
                            "block preconditioner for the Stokes equation can be found in "
-                           "{cite}`kronbichler:etal:2012`.");
+                           "\\cite{kronbichler:etal:2012}.");
 
         prm.declare_entry ("Use full A block as preconditioner", "false",
                            Patterns::Bool(),
@@ -530,7 +534,7 @@ namespace aspect
                            "$A$ block as preconditioner for the Stokes solver, or the full $A$ block. The "
                            "simplified approximation only contains the terms that describe the coupling of "
                            "identical components (plus boundary conditions) as described in "
-                           "{cite}`kronbichler:etal:2012`. The full block is closer to the description in "
+                           "\\cite{kronbichler:etal:2012}. The full block is closer to the description in "
                            "\\cite{rudi2017weighted}."
                            "\n\n"
                            "There is no clear way to determine which preconditioner "
@@ -561,7 +565,7 @@ namespace aspect
                            "system is computed. This approximate inverse of the $S$ block is used "
                            "in the preconditioning used in the GMRES solver. The exact definition of "
                            "this block preconditioner for the Stokes equation can be found in "
-                           "{cite}`kronbichler:etal:2012`.");
+                           "\\cite{kronbichler:etal:2012}.");
       }
       prm.leave_subsection ();
 
@@ -920,7 +924,7 @@ namespace aspect
                          "are in a time range that we are interested in and where "
                          "we would like to use a finer mesh. Units: Each element of the "
                          "list has units years if the "
-                         "'Use years in output instead of seconds' parameter is set; "
+                         "'Use years instead of seconds' parameter is set; "
                          "seconds otherwise.");
       prm.declare_entry ("Run postprocessors on initial refinement", "false",
                          Patterns::Bool (),
@@ -1044,7 +1048,7 @@ namespace aspect
                          "the error is generally smaller with this choice."
                          "\n\n"
                          "For an in-depth discussion of these issues and a quantitative evaluation "
-                         "of the different choices, see {cite}`kronbichler:etal:2012`.");
+                         "of the different choices, see \\cite{kronbichler:etal:2012}.");
       prm.declare_entry ("Use equal order interpolation for Stokes", "false",
                          Patterns::Bool(),
                          "By default (i.e., when this parameter is set to its default value "
@@ -1120,7 +1124,7 @@ namespace aspect
         prm.declare_entry ("Use artificial viscosity smoothing", "false",
                            Patterns::Bool (),
                            "If set to false, the artificial viscosity of a cell is computed and "
-                           "is computed on every cell separately as discussed in {cite}`kronbichler:etal:2012`. "
+                           "is computed on every cell separately as discussed in \\cite{kronbichler:etal:2012}. "
                            "If set to true, the maximum of the artificial viscosity in "
                            "the cell as well as the neighbors of the cell is computed and used "
                            "instead.");
@@ -1130,7 +1134,7 @@ namespace aspect
                            "The exponent $\\alpha$ in the entropy viscosity stabilization. Valid "
                            "options are 1 or 2. The recommended setting is 2. (This parameter does "
                            "not correspond to any variable in the 2012 paper by Kronbichler, "
-                           "Heister and Bangerth that describes ASPECT, see {cite}`kronbichler:etal:2012`. "
+                           "Heister and Bangerth that describes ASPECT, see \\cite{kronbichler:etal:2012}. "
                            "Rather, the paper always uses 2 as the exponent in the definition "
                            "of the entropy, following equation (15) of the paper. The full "
                            "approach is discussed in \\cite{guermond:etal:2011}.) Note that this is not the "
@@ -1150,7 +1154,7 @@ namespace aspect
                            "for the temperature, which already has some physical diffusion. "
                            "(For historical reasons, the name used here is different "
                            "from the one used in the 2012 paper by Kronbichler, "
-                           "Heister and Bangerth that describes ASPECT, see {cite}`kronbichler:etal:2012`. "
+                           "Heister and Bangerth that describes ASPECT, see \\cite{kronbichler:etal:2012}. "
                            "This parameter corresponds "
                            "to the factor $\\alpha_E$ in the formulas following equation (15) of "
                            "the paper.) Units: None.");
@@ -1161,9 +1165,9 @@ namespace aspect
                            "entropy viscosity, which is the part that only scales with the cell diameter "
                            "and the maximum velocity in the cell, but does not depend on the solution "
                            "field itself or its residual. An appropriate value for 2d is 0.052 and "
-                           "0.78 for 3d. (For historical reasons, the name used here is different "
+                           "0.078 for 3d. (For historical reasons, the name used here is different "
                            "from the one used in the 2012 paper by Kronbichler, "
-                           "Heister and Bangerth that describes ASPECT, see {cite}`kronbichler:etal:2012`. "
+                           "Heister and Bangerth that describes ASPECT, see \\cite{kronbichler:etal:2012}. "
                            "This parameter can be given as a single value or as a list with as "
                            "many entries as one plus the number of compositional fields. In the "
                            "former case all advection fields use the same stabilization parameters, "
@@ -1179,7 +1183,7 @@ namespace aspect
                            "stabilization. This parameter determines how much the strain rate (in addition "
                            "to the velocity) should influence the stabilization. (This parameter does "
                            "not correspond to any variable in the 2012 paper by Kronbichler, "
-                           "Heister and Bangerth that describes ASPECT, see {cite}`kronbichler:etal:2012`. "
+                           "Heister and Bangerth that describes ASPECT, see \\cite{kronbichler:etal:2012}. "
                            "Rather, the paper always uses "
                            "0, i.e. they specify the maximum dissipation $\\nu_h^\\text{max}$ as "
                            "$\\nu_h^\\text{max}\\vert_K = \\alpha_{\\text{max}} h_K \\|\\mathbf u\\|_{\\infty,K}$. "
@@ -1308,18 +1312,67 @@ namespace aspect
                          "A user-defined name for each of the compositional fields requested.");
       prm.declare_entry ("Types of fields", "unspecified",
                          Patterns::List (Patterns::Selection("chemical composition|stress|strain|grain size|porosity|density|entropy|generic|unspecified")),
-                         "A type for each of the compositional fields requested. "
-                         "Each entry of the list must be "
-                         "one of several recognized types: chemical composition, "
-                         "stress, strain, grain size, porosity, density, entropy, "
-                         "general and unspecified. "
-                         "The generic type is intended to be a placeholder type "
-                         "that has no effect on the running of any material model, "
-                         "while the unspecified type is intended to tell ASPECT "
+                         "A comma separated list denoting a ``type'' for each of the "
+                         "compositional fields requested. ASPECT uses these types to "
+                         "determine how fields are handled when evaluating the "
+                         "material model and when solving "
+                         "the equations as described below."
+                         "\n\n"
+                         "Each entry of the list must be one of several recognized types: "
+                         "* ``chemical composition'': This type of field represents "
+                         "the bulk composition of the modeled material. "
+                         "This type of field is generally considered by the material model to "
+                         "determine the equation of state, rheology, and reactions."
+                         "\n"
+                         "* ``stress'': This type of field represents stress in the material. "
+                         "Whether the fields represents a scalar stress invariant or "
+                         "tensor components, and which type of stress is represented "
+                         "depends on the interpretation of the material model."
+                         "\n"
+                         "* ``strain'': This type of field represents accumulated strain. "
+                         "It behaves similar to the type ``stress'' discussed above except "
+                         "tracking the accumulated strain."
+                         "\n"
+                         "* ``grain size'': This type of field represents an average "
+                         "mineral grain size of the material. It will only be considered "
+                         "in material models that include models for grain size evolution."
+                         "\n"
+                         "* ``porosity'': This type of field represents porosity in "
+                         "a two-phase flow or Darcy flow system. Note that setting the "
+                         "type of a compositional field to ``porosity'' does not "
+                         "automatically enable melt transport, which is done with "
+                         "the parameter ``Melt settings/Include melt transport''."
+                         "\n"
+                         "* ``density'': This type of field is a finite-element "
+                         "field representation of the density in the model. "
+                         "This field type is not usually used except for the "
+                         "projected density approximation of the compressible "
+                         "Stokes equations, which uses this field type to compute "
+                         "gradients and time-derivatives of the density."
+                         "\n"
+                         "* ``entropy'': This type of field represents entropy. "
+                         "If one or more entropy fields are found in a model, they "
+                         "automatically replace temperature as the main thermodynamic "
+                         "state variable in the model. The temperature equation is "
+                         "then automatically changed to a pure diffusion equation, "
+                         "which is coupled to the entropy advection equation "
+                         "as described in the paper \\cite{dannberg:etal:2022}."
+                         "\n"
+                         "* ``generic'': The generic type is intended to be a placeholder type "
+                         "that is not used by any component of ASPECT unless in user-"
+                         "provided source code."
+                         "\n"
+                         "* ``unspecified'': The unspecified type is intended to tell ASPECT "
                          "that the user has not explicitly indicated the type of "
-                         "field (facilitating parameter file checking). "
-                         "Plugins such as material models can use these types "
-                         "to affect how that plugin functions.");
+                         "this field. ASPECT will then try to detect the type "
+                         "automatically based on the name, but will default to "
+                         "``chemical composition'' if the name does not correspond to "
+                         "a known type."
+                         "\n\n"
+                         "Note that while ASPECT's functionality can make use of "
+                         "the field types, not all of the code will make use of it. It is "
+                         "the user's responsibility to check that the chosen material model "
+                         "and other plugins interpret the compositional fields as intended.");
       prm.declare_entry ("Compositional field methods", "",
                          Patterns::List (Patterns::Selection("field|particles|volume of fluid|static|melt field|darcy field|prescribed field|prescribed field with diffusion")),
                          "A comma separated list denoting the solution method of each "
@@ -1477,7 +1530,7 @@ namespace aspect
 
     CFL_number              = prm.get_double ("CFL number");
     use_conduction_timestep = prm.get_bool ("Use conduction timestep");
-    convert_to_years        = prm.get_bool ("Use years in output instead of seconds");
+    convert_to_years        = prm.get_bool ("Use years instead of seconds");
     timing_output_frequency = prm.get_integer ("Timing output frequency");
     world_builder_file      = prm.get("World builder file");
 
@@ -2068,7 +2121,7 @@ namespace aspect
                                        "At the moment the type of field " + names_of_compositional_fields[i] + " is unspecified."));
               }
             else if ((names_of_compositional_fields[i].find("strain") != std::string::npos)
-                     || (std::regex_match(names_of_compositional_fields[i],std::regex("s[1-3][1-3]"))))
+                     || (std::regex_match(names_of_compositional_fields[i], std::regex("s[1-3][1-3]"))))
               x_compositional_field_types[i] = "strain";
             else if (names_of_compositional_fields[i].find("grain_size") != std::string::npos)
               x_compositional_field_types[i] = "grain size";

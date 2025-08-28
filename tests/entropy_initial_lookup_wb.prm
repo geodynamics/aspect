@@ -2,7 +2,7 @@
 # using the World Builder and a table lookup of (P, T) -> S.
 
 set Dimension = 2
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set Start time = 0
 set End time = 0
 set Output directory = output_3

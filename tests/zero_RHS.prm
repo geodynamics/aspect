@@ -10,7 +10,7 @@ set End time                               = 2e5
 set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 
 subsection Compositional fields
   set Number of fields = 2

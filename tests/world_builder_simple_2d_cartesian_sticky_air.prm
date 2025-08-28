@@ -1,7 +1,7 @@
 # Enable if: ASPECT_WITH_WORLD_BUILDER
 set Nonlinear solver scheme = no Advection, no Stokes
 set World builder file                     = $ASPECT_SOURCE_DIR/tests/world_builder_simple_2d_cartesian_sticky_air.wb
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set Output directory = wbdir3
 set Adiabatic surface temperature = 1613
 set End time = 0

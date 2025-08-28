@@ -501,7 +501,7 @@ namespace aspect
                            "Freezing rate of melt when in subsolidus regions. "
                            "If this parameter is set to a number larger than 0.0, it specifies the "
                            "fraction of melt that will freeze per year (or per second, depending on the "
-                           "``Use years in output instead of seconds'' parameter), as soon as the porosity "
+                           "``Use years instead of seconds'' parameter), as soon as the porosity "
                            "exceeds the equilibrium melt fraction, and the equilibrium melt fraction "
                            "falls below the depletion. In this case, melt will freeze according to the "
                            "given rate until one of those conditions is not fulfilled anymore. The "
@@ -537,7 +537,7 @@ namespace aspect
                            "Also note that the melting time scale has to be larger than or equal to the reaction "
                            "time step used in the operator splitting scheme, otherwise reactions can not be "
                            "computed. "
-                           "Units: yr or s, depending on the ``Use years in output instead of seconds'' parameter.");
+                           "Units: yr or s, depending on the ``Use years instead of seconds'' parameter.");
         prm.declare_entry ("Depletion solidus change", "200.0",
                            Patterns::Double (0.),
                            "The solidus temperature change for a depletion of 100\\%. For positive "

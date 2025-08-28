@@ -43,14 +43,14 @@ Number of degrees of freedom: 8,644 (882+121+441+900+900+900+900+900+900+900+900
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 1 iterations.
    Solving ve_stress_yy system ... 1 iterations.
-   Solving ve_stress_xy system ... 1 iterations.
+   Solving ve_stress_xy system ... 2 iterations.
    Solving ve_stress_xx_old system ... 1 iterations.
    Solving ve_stress_yy_old system ... 1 iterations.
    Solving ve_stress_xy_old system ... 1 iterations.
    Solving plastic_strain system ... 1 iterations.
    Solving viscous_strain system ... 1 iterations.
    Solving Stokes system (GMG)... 0+4 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.61984e-16, 1.14667e-07, 1.14667e-07, 1.38478e-07, 0, 0, 0, 0.0297771, 3.98623e-05, 6.2952e-06
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.61538e-16, 1.14667e-07, 1.14667e-07, 1.38478e-07, 0, 0, 0, 0.0297771, 3.98623e-05, 6.2952e-06
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0297771
 
    Solving temperature system... 0 iterations.
@@ -63,7 +63,7 @@ Number of degrees of freedom: 8,644 (882+121+441+900+900+900+900+900+900+900+900
    Solving plastic_strain system ... 1 iterations.
    Solving viscous_strain system ... 1 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.68936e-16, 5.1036e-10, 5.1036e-10, 1.04292e-07, 0, 0, 0, 8.71408e-08, 1.71537e-07, 1.11366e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.70149e-16, 5.1036e-10, 5.1036e-10, 1.04292e-07, 0, 0, 0, 8.71408e-08, 1.71537e-07, 1.11366e-09
       Relative nonlinear residual (total system) after nonlinear iteration 2: 1.71537e-07
 
 

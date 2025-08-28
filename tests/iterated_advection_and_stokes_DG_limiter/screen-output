@@ -12,10 +12,10 @@ Number of degrees of freedom: 16,212 (4,290+561+2,145+4,608+4,608)
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
-   Solving test system ... 1 iterations.
+   Solving test system ... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.3194e-16, 0, 0, 5.21787e-15
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 5.21787e-15
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.3194e-16, 0, 0, 5.13705e-15
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 5.13705e-15
 
 
    Postprocessing:
@@ -59,7 +59,7 @@ Number of degrees of freedom: 16,212 (4,290+561+2,145+4,608+4,608)
 
 
    Postprocessing:
-     Compositions min/max/mass: 4.985e-23/0.2/6.283e+07 // -3.809e-23/1/4.824e+09
+     Compositions min/max/mass: 4.985e-23/0.2/6.283e+07 // -2.575e-19/1/4.824e+09
 
 *** Timestep 2:  t=26110 years, dt=12859.1 years
    Solving temperature system... 13 iterations.
@@ -92,7 +92,7 @@ Number of degrees of freedom: 16,212 (4,290+561+2,145+4,608+4,608)
 
 
    Postprocessing:
-     Compositions min/max/mass: -7.585e-21/0.2001/6.283e+07 // -1.136e-22/1/4.824e+09
+     Compositions min/max/mass: -7.585e-21/0.2001/6.283e+07 // -2.043e-18/1/4.824e+09
 
 *** Timestep 3:  t=38522.2 years, dt=12412.2 years
    Solving temperature system... 13 iterations.
@@ -125,7 +125,7 @@ Number of degrees of freedom: 16,212 (4,290+561+2,145+4,608+4,608)
 
 
    Postprocessing:
-     Compositions min/max/mass: -3.617e-18/0.2003/6.283e+07 // -7.498e-19/1/4.824e+09
+     Compositions min/max/mass: -3.617e-18/0.2003/6.283e+07 // -7.051e-18/1/4.824e+09
 
 *** Timestep 4:  t=50507 years, dt=11984.8 years
    Solving temperature system... 13 iterations.
@@ -158,7 +158,7 @@ Number of degrees of freedom: 16,212 (4,290+561+2,145+4,608+4,608)
 
 
    Postprocessing:
-     Compositions min/max/mass: -1.393e-16/0.2007/6.283e+07 // -1.236e-17/1/4.824e+09
+     Compositions min/max/mass: -1.393e-16/0.2007/6.283e+07 // -2.058e-17/1/4.824e+09
 
 *** Timestep 5:  t=62100 years, dt=11593 years
    Solving temperature system... 13 iterations.
@@ -191,7 +191,7 @@ Number of degrees of freedom: 16,212 (4,290+561+2,145+4,608+4,608)
 
 
    Postprocessing:
-     Compositions min/max/mass: -6.641e-16/0.2012/6.283e+07 // -2.572e-17/1/4.824e+09
+     Compositions min/max/mass: -6.641e-16/0.2012/6.283e+07 // -1.62e-17/1/4.824e+09
 
 *** Timestep 6:  t=73010.9 years, dt=10910.9 years
    Solving temperature system... 13 iterations.
@@ -224,7 +224,7 @@ Number of degrees of freedom: 16,212 (4,290+561+2,145+4,608+4,608)
 
 
    Postprocessing:
-     Compositions min/max/mass: -1.664e-15/0.202/6.283e+07 // -2.072e-18/1/4.824e+09
+     Compositions min/max/mass: -1.664e-15/0.202/6.283e+07 // -2.655e-18/1/4.824e+09
 
 *** Timestep 7:  t=83267.4 years, dt=10256.5 years
    Solving temperature system... 13 iterations.
@@ -257,7 +257,7 @@ Number of degrees of freedom: 16,212 (4,290+561+2,145+4,608+4,608)
 
 
    Postprocessing:
-     Compositions min/max/mass: -1.473e-15/0.2031/6.283e+07 // -3.831e-20/1/4.824e+09
+     Compositions min/max/mass: -1.473e-15/0.2031/6.283e+07 // -5.979e-19/1/4.824e+09
 
 *** Timestep 8:  t=92948.5 years, dt=9681.09 years
    Solving temperature system... 13 iterations.
@@ -290,7 +290,7 @@ Number of degrees of freedom: 16,212 (4,290+561+2,145+4,608+4,608)
 
 
    Postprocessing:
-     Compositions min/max/mass: -5.441e-15/0.2044/6.284e+07 // -1.199e-19/1/4.824e+09
+     Compositions min/max/mass: -5.441e-15/0.2044/6.284e+07 // -8.225e-19/1/4.824e+09
 
 *** Timestep 9:  t=100000 years, dt=7051.5 years
    Solving temperature system... 12 iterations.
@@ -316,7 +316,7 @@ Number of degrees of freedom: 16,212 (4,290+561+2,145+4,608+4,608)
 
 
    Postprocessing:
-     Compositions min/max/mass: -7.943e-15/0.2056/6.284e+07 // -1.088e-18/1/4.824e+09
+     Compositions min/max/mass: -7.943e-15/0.2056/6.284e+07 // -9.861e-19/1/4.824e+09
 
 Termination requested by criterion: end time
 

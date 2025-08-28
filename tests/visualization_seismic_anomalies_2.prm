@@ -4,7 +4,7 @@
 
 set End time                               = 0
 set Adiabatic surface temperature          = 1600.0
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 
 subsection Formulation
   set Mass conservation = projected density field

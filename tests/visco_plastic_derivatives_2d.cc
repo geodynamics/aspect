@@ -28,10 +28,9 @@
 #include <aspect/parameters.h>
 
 #include <deal.II/grid/tria.h>
-#include <deal.II/base/exceptions.h>
+
 #include <memory>
 #include <functional>
-
 #include <iostream>
 
 namespace aspect

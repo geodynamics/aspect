@@ -1,0 +1,6 @@
+Fixed: On Mac systems, ASPECT sometimes crashed at the very end of the
+program run with an exception triggered by the CGAL library that was
+caused by the settings for floating point exceptions. This is now
+fixed.
+<br>
+(Timo Heister, Wolfgang Bangerth, 2025/08/04)

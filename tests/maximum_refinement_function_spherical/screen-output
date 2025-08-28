@@ -4,7 +4,7 @@ Number of degrees of freedom: 2,724 (1,666+225+833)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 13+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-maximum_refinement_function_spherical/solution/solution-00000
@@ -18,7 +18,7 @@ Number of degrees of freedom: 5,823 (3,570+468+1,785)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 45+0 iterations.
+   Solving Stokes system (GMG)... 43+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-maximum_refinement_function_spherical/solution/solution-00001
@@ -46,7 +46,7 @@ Number of degrees of freedom: 17,885 (10,982+1,412+5,491)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 46+0 iterations.
+   Solving Stokes system (GMG)... 45+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-maximum_refinement_function_spherical/solution/solution-00003
@@ -60,7 +60,7 @@ Number of degrees of freedom: 25,851 (15,878+2,034+7,939)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 20+0 iterations.
+   Solving Stokes system (GMG)... 19+0 iterations.
 
    Postprocessing:
 
@@ -84,8 +84,8 @@ Number of degrees of freedom: 25,851 (15,878+2,034+7,939)
      Heat fluxes through boundary parts: 990.7 W, 1962 W, 0 W, 0 W
      Writing depth average:              output-maximum_refinement_function_spherical/depth_average
 
-Number of active cells: 2,121 (on 7 levels)
-Number of degrees of freedom: 30,672 (18,840+2,412+9,420)
+Number of active cells: 2,127 (on 7 levels)
+Number of degrees of freedom: 30,744 (18,884+2,418+9,442)
 
 Termination requested by criterion: end time
 

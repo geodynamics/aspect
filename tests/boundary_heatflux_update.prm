@@ -1,7 +1,7 @@
 # This test is used to check if the heat flux boundary conditions
 # work correctly, in particular if the initialize and update functions work.
 # Otherwise, it is a copy of the boundary_heatflux test.
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set End time                               = 2e12
 set Maximum time step                      = 1e12
 set Pressure normalization                 = surface

@@ -48,6 +48,14 @@ namespace aspect
       , dG_idx(numbers::invalid_unsigned_int)
       , dS_idx(numbers::invalid_unsigned_int)
       , dV_idx(numbers::invalid_unsigned_int)
+      , Vp_a_idx(numbers::invalid_unsigned_int)
+      , Vp_b_idx(numbers::invalid_unsigned_int)
+      , Vs_a_idx(numbers::invalid_unsigned_int)
+      , Vs_b_idx(numbers::invalid_unsigned_int)
+      , dVp_dT_a_idx(numbers::invalid_unsigned_int)
+      , dVp_dT_b_idx(numbers::invalid_unsigned_int)
+      , dVs_dT_a_idx(numbers::invalid_unsigned_int)
+      , dVs_dT_b_idx(numbers::invalid_unsigned_int)
     {}
 
 
@@ -71,6 +79,16 @@ namespace aspect
       dG_idx = profile.get_column_index_from_name("delta_molar_gibbs");
       dS_idx = profile.get_column_index_from_name("delta_molar_entropy");
       dV_idx = profile.get_column_index_from_name("delta_molar_volume");
+
+      // Get optional column indices
+      Vp_a_idx = profile.maybe_get_column_index_from_name("pressure_wave_velocity_a");
+      Vp_b_idx = profile.maybe_get_column_index_from_name("pressure_wave_velocity_b");
+      dVp_dT_a_idx = profile.maybe_get_column_index_from_name("pressure_wave_velocity_T_derivative_a");
+      dVp_dT_b_idx = profile.maybe_get_column_index_from_name("pressure_wave_velocity_T_derivative_b");
+      Vs_a_idx = profile.maybe_get_column_index_from_name("shear_wave_velocity_a");
+      Vs_b_idx = profile.maybe_get_column_index_from_name("shear_wave_velocity_b");
+      dVs_dT_a_idx = profile.maybe_get_column_index_from_name("shear_wave_velocity_T_derivative_a");
+      dVs_dT_b_idx = profile.maybe_get_column_index_from_name("shear_wave_velocity_T_derivative_b");
     }
 
 
@@ -100,6 +118,12 @@ namespace aspect
       // Set up reaction rate outputs
       std::shared_ptr<ReactionRateOutputs<dim>> reaction_rate_out = out.template get_additional_output_object<ReactionRateOutputs<dim>>();
 
+      // Set up phase transition kinetics outputs
+      std::shared_ptr<PhaseTransitionKineticsOutputs<dim>> phase_transition_kinetics_out = out.template get_additional_output_object<PhaseTransitionKineticsOutputs<dim>>();
+
+      // Set up seismic velocity outputs
+      std::shared_ptr<SeismicAdditionalOutputs<dim>> seismic_out = out.template get_additional_output_object<SeismicAdditionalOutputs<dim>>();
+
       for (unsigned int q = 0; q < in.n_evaluation_points(); ++q)
         {
           // Get mesh coordinate
@@ -120,6 +144,10 @@ namespace aspect
           std::vector<double> alphas(this->introspection().n_compositional_fields);
           std::vector<double> betas(this->introspection().n_compositional_fields);
           std::vector<double> cps(this->introspection().n_compositional_fields);
+          std::vector<double> Vps(this->introspection().n_compositional_fields);
+          std::vector<double> Vss(this->introspection().n_compositional_fields);
+          std::vector<double> dVp_dTs(this->introspection().n_compositional_fields);
+          std::vector<double> dVs_dTs(this->introspection().n_compositional_fields);
 
           // Fill material property arrays with material data from profile
           densities[0] = profile.get_data_component(profile_pos, rho_a_idx);
@@ -130,6 +158,31 @@ namespace aspect
           betas[1] = profile.get_data_component(profile_pos, beta_b_idx);
           cps[0] = profile.get_data_component(profile_pos, cp_a_idx);
           cps[1] = profile.get_data_component(profile_pos, cp_b_idx);
+
+          // Fill seismic velocity arrays with material data from profile (if they exist)
+          if (seismic_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))
+            {
+              if (Vp_a_idx != numbers::invalid_unsigned_int && Vp_b_idx != numbers::invalid_unsigned_int)
+                {
+                  Vps[0] = profile.get_data_component(profile_pos, Vp_a_idx);
+                  Vps[1] = profile.get_data_component(profile_pos, Vp_b_idx);
+                }
+              if (Vs_a_idx != numbers::invalid_unsigned_int && Vs_b_idx != numbers::invalid_unsigned_int)
+                {
+                  Vss[0] = profile.get_data_component(profile_pos, Vs_a_idx);
+                  Vss[1] = profile.get_data_component(profile_pos, Vs_b_idx);
+                }
+              if (dVp_dT_a_idx != numbers::invalid_unsigned_int && dVp_dT_b_idx != numbers::invalid_unsigned_int)
+                {
+                  Vps[0] += profile.get_data_component(profile_pos, dVp_dT_a_idx) * (T - T_adiabatic);
+                  Vps[1] += profile.get_data_component(profile_pos, dVp_dT_b_idx) * (T - T_adiabatic);
+                }
+              if (dVs_dT_a_idx != numbers::invalid_unsigned_int && dVs_dT_b_idx != numbers::invalid_unsigned_int)
+                {
+                  Vss[0] += profile.get_data_component(profile_pos, dVs_dT_a_idx) * (T - T_adiabatic);
+                  Vss[1] += profile.get_data_component(profile_pos, dVs_dT_b_idx) * (T - T_adiabatic);
+                }
+            }
 
           // Get thermodynamic terms from profile
           const double dG = profile.get_data_component(profile_pos, dG_idx);
@@ -178,6 +231,31 @@ namespace aspect
           const double alpha = MaterialUtilities::average_value(volume_fractions, alphas, MaterialUtilities::arithmetic);
           const double cp = MaterialUtilities::average_value(mass_fractions, cps, MaterialUtilities::arithmetic);
 
+          // Average seismic wave velocities (if they exist)
+          if (seismic_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))
+            {
+              if (Vp_a_idx != numbers::invalid_unsigned_int && Vp_b_idx != numbers::invalid_unsigned_int)
+                {
+                  const double Vp = MaterialUtilities::average_value(volume_fractions, Vps, MaterialUtilities::arithmetic);
+                  seismic_out->vp[q] = Vp;
+                }
+              if (Vs_a_idx != numbers::invalid_unsigned_int && Vs_b_idx != numbers::invalid_unsigned_int)
+                {
+                  const double Vs = MaterialUtilities::average_value(volume_fractions, Vss, MaterialUtilities::arithmetic);
+                  seismic_out->vs[q] = Vs;
+                }
+              if (dVp_dT_a_idx != numbers::invalid_unsigned_int && dVp_dT_b_idx != numbers::invalid_unsigned_int)
+                {
+                  const double dVp_dT = MaterialUtilities::average_value(volume_fractions, dVp_dTs, MaterialUtilities::arithmetic);
+                  seismic_out->vp[q] += dVp_dT * (T - T_adiabatic);
+                }
+              if (dVs_dT_a_idx != numbers::invalid_unsigned_int && dVs_dT_b_idx != numbers::invalid_unsigned_int)
+                {
+                  const double dVs_dT = MaterialUtilities::average_value(volume_fractions, dVs_dTs, MaterialUtilities::arithmetic);
+                  seismic_out->vs[q] += dVs_dT * (T - T_adiabatic);
+                }
+            }
+
           // Calculate density
           const double density_factor = (1.0 - alpha * (T - T_adiabatic)) * (1.0 + beta * (P - P_adiabatic));
           const double final_rho = rho * density_factor;
@@ -208,16 +286,11 @@ namespace aspect
               // Calculate reaction rate: dX/dt = Q * ΔG * (1 - X)
               const double rate = (driving_force < 0) ? Q_kinetic_prefactor * std::abs(driving_force) * (1.0 - X_clamped) / time_scale : 0.0;
 
-              // Limit reaction rate
-              const double epsilon = 1e-15;
-              double rate_clamped = rate;
-              if (X_clamped <= 0.0 + epsilon)
-                rate_clamped = 0.0;
-              if (X_clamped >= 1.0 - epsilon && rate > 0)
-                rate_clamped = 0.0;
+              // Update additional named outputs
+              phase_transition_kinetics_out->driving_force[q] = driving_force;
 
               // Update reaction rates
-              reaction_rate_out->reaction_rates[q][X_idx] = rate_clamped;
+              reaction_rate_out->reaction_rates[q][X_idx] = rate;
 
               // Set other compositional fields to zero reaction rate
               for (unsigned int c = 0; c < this->introspection().n_compositional_fields; ++c)
@@ -259,7 +332,7 @@ namespace aspect
                                                                "$ASPECT_SOURCE_DIR/cookbooks/phase_transition_kinetics/",
                                                                "thermodynamic-driving-force-profile-olivine-wadsleyite.txt");
           prm.declare_entry("Data directory",
-                            "./",
+                            "$ASPECT_SOURCE_DIR/cookbooks/phase_transition_kinetics/",
                             Patterns::DirectoryName(),
                             "The name of a directory where the model data is found. This path may either be "
                             "absolute (if starting with '/') or relative to the current directory.");
@@ -368,6 +441,56 @@ namespace aspect
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(std::make_unique<MaterialModel::PrescribedFieldOutputs<dim>>(n_points, this->introspection().n_compositional_fields));
         }
+
+      // Create phase transition kinetics outputs
+      if (out.template get_additional_output_object<PhaseTransitionKineticsOutputs<dim>>() == nullptr)
+        {
+          const unsigned int n_points = out.n_evaluation_points();
+          out.additional_outputs.push_back(std::make_unique<MaterialModel::PhaseTransitionKineticsOutputs<dim>>(n_points));
+        }
+
+      // Create seismic velocity outputs
+      if (out.template get_additional_output_object<SeismicAdditionalOutputs<dim>>() == nullptr)
+        {
+          const unsigned int n_points = out.n_evaluation_points();
+          out.additional_outputs.push_back(std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>>(n_points));
+        }
+    }
+
+
+
+    namespace
+    {
+      std::vector<std::string> make_additional_output_names()
+      {
+        std::vector<std::string> names;
+        names.emplace_back("driving_force");
+        return names;
+      }
+    }
+
+    template <int dim>
+    PhaseTransitionKineticsOutputs<dim>::PhaseTransitionKineticsOutputs(const unsigned int n_points)
+      : NamedAdditionalMaterialOutputs<dim>(make_additional_output_names())
+      , driving_force(n_points, numbers::signaling_nan<double>())
+    {}
+
+
+
+    template <int dim>
+    std::vector<double>
+    PhaseTransitionKineticsOutputs<dim>::get_nth_output(const unsigned int idx) const
+    {
+      AssertIndexRange (idx, 1);
+      switch (idx)
+        {
+          case 0:
+            return driving_force;
+
+          default:
+            AssertThrow(false, ExcInternalError());
+        }
+      return driving_force;
     }
   } // namespace MaterialModel
 } // namespace aspect

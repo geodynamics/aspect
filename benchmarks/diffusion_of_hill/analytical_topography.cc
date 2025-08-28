@@ -288,7 +288,7 @@ namespace aspect
                              "text output files. A value of zero indicates "
                              "that output should be generated in each time step. "
                              "Units: years if the "
-                             "'Use years in output instead of seconds' parameter is set; "
+                             "'Use years instead of seconds' parameter is set; "
                              "seconds otherwise.");
           prm.declare_entry ("Analytical solution of example", "1",
                              Patterns::Integer (0),
