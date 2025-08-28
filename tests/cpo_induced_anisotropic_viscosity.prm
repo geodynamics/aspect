@@ -1,5 +1,5 @@
 include $ASPECT_SOURCE_DIR/cookbooks/CPO_induced_anisotropic_viscosity/shearbox_cpo_av.prm
-set Additional shared libraries = $ASPECT_SOURCE_DIR/cookbooks/CPO_induced_anisotropic_viscosity/plugin/libCPO_induced_anisotropic_viscosity.debug.so
+set Additional shared libraries = ./libCPO_induced_anisotropic_viscosity.debug.so
 
 set End time = 0
 
