@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _aspect_material_model_LPO_AV_3D_h
-#define _aspect_material_model_LPO_AV_3D_h
+#ifndef _aspect_material_model_CPO_AV_3D_h
+#define _aspect_material_model_CPO_AV_3D_h
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
@@ -68,12 +68,10 @@ namespace aspect
 
     };
 
-    /*template <int matrix_size>
-    void check_eigenvalues_positive(const SymmetricTensor<2,matrix_size> &matrix);*/
 
 
     template <int dim>
-    class LPO_AV_3D : public MaterialModel::Simple<dim>
+    class CPO_AV_3D : public MaterialModel::Simple<dim>
     {
       public:
         void initialize() override;
@@ -82,7 +80,6 @@ namespace aspect
         static void declare_parameters (ParameterHandler &prm);
         void parse_parameters (ParameterHandler &prm) override;
         bool is_compressible () const override;
-        // double reference_viscosity () const;
         void create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const override;
       private:
         double eta; //reference viscosity

@@ -19,8 +19,8 @@
 */
 
 
-#include "aniso_stress.h"
-#include "LPO_AV_3D.h"
+#include "anisotropic_stress.h"
+#include "cpo_induced_anisotropic_viscosity.h"
 
 
 namespace aspect
@@ -33,7 +33,7 @@ namespace aspect
       AnisoStress<dim>::
       AnisoStress ()
         :
-        DataPostprocessorTensor<dim> ("aniso_stress",
+        DataPostprocessorTensor<dim> ("anisotropic_stress",
                                       update_values | update_gradients | update_quadrature_points),
         Interface<dim>("Pa")
       {}
@@ -78,7 +78,6 @@ namespace aspect
 
             SymmetricTensor<2,dim> aniso_stress;
             aniso_stress= 2.*eta*deviatoric_strain_rate*anisotropic_viscosity->stress_strain_directors[q];
-            // std::cout << "aniso stress: " << anisotropic_viscosity->stress_strain_directors[q] << std::endl;
 
             for (unsigned int d=0; d<dim; ++d)
               for (unsigned int e=0; e<dim; ++e)
@@ -112,7 +111,7 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(AnisoStress,
-                                                  "Aniso stress",
+                                                  "Anisotropic stress",
                                                   "A visualization output object that generates output "
                                                   "for the 6 (in 3d) components of the shear stress "
                                                   "tensor, i.e., for the components of the tensor "
