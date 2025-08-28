@@ -6,7 +6,7 @@ Number of degrees of freedom: 1,617 (606+102+303+303+303)
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving field2 system ... 0 iterations.
-   Solving Stokes system (GMG)... 98+0 iterations.
+   Solving Stokes system (GMG)... 97+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 1000 K, 1000 K, 1000 K
@@ -161,7 +161,7 @@ Number of degrees of freedom: 1,617 (606+102+303+303+303)
    Postprocessing:
      Temperature min/avg/max: 995.2 K, 1047 K, 1374 K
 
-*** Timestep 16:  t=7.46896e+15 seconds, dt=4.6681e+14 seconds
+*** Timestep 16:  t=7.46895e+15 seconds, dt=4.6681e+14 seconds
    Solving composition reactions... in 1 substep(s).
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
@@ -171,7 +171,7 @@ Number of degrees of freedom: 1,617 (606+102+303+303+303)
    Postprocessing:
      Temperature min/avg/max: 995.2 K, 1051 K, 1375 K
 
-*** Timestep 17:  t=7.93577e+15 seconds, dt=4.6681e+14 seconds
+*** Timestep 17:  t=7.93576e+15 seconds, dt=4.6681e+14 seconds
    Solving composition reactions... in 1 substep(s).
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
@@ -671,7 +671,7 @@ Number of degrees of freedom: 1,617 (606+102+303+303+303)
    Postprocessing:
      Temperature min/avg/max: 995.4 K, 1176 K, 1363 K
 
-*** Timestep 67:  t=3.12763e+16 seconds, dt=4.6681e+14 seconds
+*** Timestep 67:  t=3.12762e+16 seconds, dt=4.6681e+14 seconds
    Solving composition reactions... in 1 substep(s).
    Solving temperature system... 14 iterations.
    Solving porosity system ... 12 iterations.
@@ -861,7 +861,7 @@ Number of degrees of freedom: 1,617 (606+102+303+303+303)
    Postprocessing:
      Temperature min/avg/max: 995.3 K, 1176 K, 1362 K
 
-*** Timestep 86:  t=4e+16 seconds, dt=3.21175e+14 seconds
+*** Timestep 86:  t=4e+16 seconds, dt=3.21177e+14 seconds
    Solving composition reactions... in 1 substep(s).
    Solving temperature system... 14 iterations.
    Solving porosity system ... 15 iterations.

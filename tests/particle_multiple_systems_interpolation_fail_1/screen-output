@@ -9,8 +9,6 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
 
 An error occurred in file <initial_conditions.cc> in function
 (line in output replaced by default.sh script)
-The violated condition was: 
-    false
 Additional information: 
     The field composition 1 (function) is marked as advected by particles,
     but no particle property exists that is mapped to this field. The

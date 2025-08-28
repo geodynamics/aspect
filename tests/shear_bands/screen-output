@@ -49,7 +49,7 @@ Number of degrees of freedom: 30,824 (8,514+4,177+8,514+1,105+4,257+4,257)
 
 *** Timestep 1:  t=3e-08 years, dt=3e-08 years
    Skipping temperature solve because RHS is zero.
-   Solving porosity system ... 56 iterations.
+   Solving porosity system ... 22 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 10+0 iterations.
    Solving fluid velocity system... 11 iterations.
@@ -57,7 +57,7 @@ Number of degrees of freedom: 30,824 (8,514+4,177+8,514+1,105+4,257+4,257)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00039958
 
    Skipping temperature solve because RHS is zero.
-   Solving porosity system ... 56 iterations.
+   Solving porosity system ... 21 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 10+0 iterations.
    Solving fluid velocity system... 11 iterations.
@@ -65,7 +65,7 @@ Number of degrees of freedom: 30,824 (8,514+4,177+8,514+1,105+4,257+4,257)
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000243985
 
    Skipping temperature solve because RHS is zero.
-   Solving porosity system ... 56 iterations.
+   Solving porosity system ... 21 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 10+0 iterations.
    Solving fluid velocity system... 11 iterations.
@@ -73,7 +73,7 @@ Number of degrees of freedom: 30,824 (8,514+4,177+8,514+1,105+4,257+4,257)
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000178924
 
    Skipping temperature solve because RHS is zero.
-   Solving porosity system ... 56 iterations.
+   Solving porosity system ... 21 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 10+0 iterations.
    Solving fluid velocity system... 11 iterations.

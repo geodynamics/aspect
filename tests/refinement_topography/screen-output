@@ -16,28 +16,31 @@ Number of active cells: 22 (on 4 levels)
 Number of degrees of freedom: 392 (238+35+119)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
-   Solving Stokes system (GMG)... 30+0 iterations.
+   Solving Stokes system (GMG)... 10+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
-   Solving Stokes system (GMG)... 9+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.00919806
+   Solving Stokes system (GMG)... 12+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0366847
 
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 3.1969e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 4.48628e-08
 
 
 Number of active cells: 46 (on 5 levels)
 Number of degrees of freedom: 791 (482+68+241)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
-   Solving Stokes system (GMG)... 33+0 iterations.
+   Solving Stokes system (GMG)... 6+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
-   Solving Stokes system (GMG)... 7+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.000150722
+   Solving Stokes system (GMG)... 9+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 15.1258
+
+   Solving Stokes system (GMG)... 9+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.000340611
 
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 4.14276e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 7.07194e-08
 
 
    Postprocessing:

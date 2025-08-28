@@ -6,11 +6,11 @@ Number of degrees of freedom: 4,560 (1,728+240+864+864+864)
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
-   Solving Stokes system (GMG)... 15+0 iterations.
+   Solving Stokes system (GMG)... 14+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-shell_boundary_composition_spherical_constant/solution/solution-00000
-     RMS, max velocity:         0.0978 m/year, 0.154 m/year
+     RMS, max velocity:         0.0976 m/year, 0.149 m/year
      Temperature min/avg/max:   973 K, 2463 K, 4273 K
      Compositions min/max/mass: 1/2/1.735e+14 // 2/3/1.808e+14
 

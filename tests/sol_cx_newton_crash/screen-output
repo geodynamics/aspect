@@ -12,8 +12,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
       Newton system information: Norm of the rhs: 0.0172385
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
-   Nonlinear residual reduction has been very large (8.73223e-10); skipping Stokes solve
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 8.73223e-10
+   Nonlinear residual reduction has been very large (8.73629e-10); skipping Stokes solve
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 8.73629e-10
 
 
    Postprocessing:

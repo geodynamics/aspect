@@ -6,7 +6,7 @@ Number of mesh deformation degrees of freedom: 2,187
    Solving mesh displacement system... 0 iterations.
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving mesh displacement system... 0 iterations.
-   Solving Stokes system (GMG)... 15+0 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
@@ -15,7 +15,7 @@ Number of mesh deformation degrees of freedom: 2,187
    Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
-     Max, min, and RMS residual strain rate invariant along boundary parts: 4.78651e-06 1/s, 1.30885e-06 1/s, 1.991e-06 1/s
+     Max, min, and RMS residual strain rate invariant along boundary parts: 4.99444e-06 1/s, 9.26126e-07 1/s, 1.91387e-06 1/s
      Writing graphical output:                                              output-box_simple_surface_strain_rate_residual/solution/solution-00000
 
 Termination requested by criterion: end time

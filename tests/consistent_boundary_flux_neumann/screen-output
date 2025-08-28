@@ -27,7 +27,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 1246 W, 0 W, -4000 W, 0 W
 
 *** Timestep 3:  t=4.77025e+14 seconds, dt=1.57922e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -35,7 +35,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 1532 W, 0 W, -4000 W, 0 W
 
 *** Timestep 4:  t=6.34002e+14 seconds, dt=1.56977e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -43,7 +43,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 1772 W, 0 W, -4000 W, 0 W
 
 *** Timestep 5:  t=7.90008e+14 seconds, dt=1.56006e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -51,7 +51,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 1983 W, 0 W, -4000 W, 0 W
 
 *** Timestep 6:  t=9.4512e+14 seconds, dt=1.55112e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -75,7 +75,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 2500 W, 0 W, -4000 W, 0 W
 
 *** Timestep 9:  t=1.40589e+15 seconds, dt=1.52905e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -91,7 +91,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 2769 W, 0 W, -4000 W, 0 W
 
 *** Timestep 11:  t=1.70996e+15 seconds, dt=1.51765e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -107,7 +107,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 2990 W, 0 W, -4000 W, 0 W
 
 *** Timestep 13:  t=2.01207e+15 seconds, dt=1.50832e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -115,7 +115,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3085 W, 0 W, -4000 W, 0 W
 
 *** Timestep 14:  t=2.1625e+15 seconds, dt=1.50431e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -131,7 +131,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3249 W, 0 W, -4000 W, 0 W
 
 *** Timestep 16:  t=2.46231e+15 seconds, dt=1.49739e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -139,7 +139,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3319 W, 0 W, -4000 W, 0 W
 
 *** Timestep 17:  t=2.61175e+15 seconds, dt=1.49441e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -147,7 +147,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3383 W, 0 W, -4000 W, 0 W
 
 *** Timestep 18:  t=2.76092e+15 seconds, dt=1.49172e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -155,7 +155,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3441 W, 0 W, -4000 W, 0 W
 
 *** Timestep 19:  t=2.90985e+15 seconds, dt=1.48928e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -171,7 +171,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3541 W, 0 W, -4000 W, 0 W
 
 *** Timestep 21:  t=3.20706e+15 seconds, dt=1.48507e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -179,7 +179,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3584 W, 0 W, -4000 W, 0 W
 
 *** Timestep 22:  t=3.35539e+15 seconds, dt=1.48325e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -187,7 +187,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3623 W, 0 W, -4000 W, 0 W
 
 *** Timestep 23:  t=3.50355e+15 seconds, dt=1.48161e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -203,7 +203,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3691 W, 0 W, -4000 W, 0 W
 
 *** Timestep 25:  t=3.79944e+15 seconds, dt=1.47878e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -211,7 +211,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3720 W, 0 W, -4000 W, 0 W
 
 *** Timestep 26:  t=3.94719e+15 seconds, dt=1.47756e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -219,7 +219,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3746 W, 0 W, -4000 W, 0 W
 
 *** Timestep 27:  t=4.09484e+15 seconds, dt=1.47645e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -227,7 +227,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3770 W, 0 W, -4000 W, 0 W
 
 *** Timestep 28:  t=4.24238e+15 seconds, dt=1.47545e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -235,7 +235,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3791 W, 0 W, -4000 W, 0 W
 
 *** Timestep 29:  t=4.38984e+15 seconds, dt=1.47454e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -259,7 +259,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3845 W, 0 W, -4000 W, 0 W
 
 *** Timestep 32:  t=4.83174e+15 seconds, dt=1.4723e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -267,7 +267,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3859 W, 0 W, -4000 W, 0 W
 
 *** Timestep 33:  t=4.97891e+15 seconds, dt=1.47169e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -275,7 +275,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3873 W, 0 W, -4000 W, 0 W
 
 *** Timestep 34:  t=5.12602e+15 seconds, dt=1.47114e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -291,7 +291,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3895 W, 0 W, -4000 W, 0 W
 
 *** Timestep 36:  t=5.4201e+15 seconds, dt=1.47018e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -299,7 +299,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3905 W, 0 W, -4000 W, 0 W
 
 *** Timestep 37:  t=5.56708e+15 seconds, dt=1.46977e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -307,7 +307,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3914 W, 0 W, -4000 W, 0 W
 
 *** Timestep 38:  t=5.71402e+15 seconds, dt=1.46939e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -315,7 +315,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3922 W, 0 W, -4000 W, 0 W
 
 *** Timestep 39:  t=5.86092e+15 seconds, dt=1.46905e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -323,7 +323,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3929 W, 0 W, -4000 W, 0 W
 
 *** Timestep 40:  t=6.0078e+15 seconds, dt=1.46875e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -339,7 +339,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3942 W, 0 W, -4000 W, 0 W
 
 *** Timestep 42:  t=6.30147e+15 seconds, dt=1.46822e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -347,7 +347,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3947 W, 0 W, -4000 W, 0 W
 
 *** Timestep 43:  t=6.44827e+15 seconds, dt=1.46799e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -363,7 +363,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3957 W, 0 W, -4000 W, 0 W
 
 *** Timestep 45:  t=6.7418e+15 seconds, dt=1.4676e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -371,7 +371,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3961 W, 0 W, -4000 W, 0 W
 
 *** Timestep 46:  t=6.88855e+15 seconds, dt=1.46743e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -387,7 +387,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3968 W, 0 W, -4000 W, 0 W
 
 *** Timestep 48:  t=7.18199e+15 seconds, dt=1.46713e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -395,7 +395,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3971 W, 0 W, -4000 W, 0 W
 
 *** Timestep 49:  t=7.32869e+15 seconds, dt=1.46701e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -411,7 +411,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3976 W, 0 W, -4000 W, 0 W
 
 *** Timestep 51:  t=7.62206e+15 seconds, dt=1.46679e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
@@ -419,7 +419,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Heat fluxes through boundary parts: 3978 W, 0 W, -4000 W, 0 W
 
 *** Timestep 52:  t=7.76872e+15 seconds, dt=1.46669e+14 seconds
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:

@@ -8,7 +8,7 @@ Number of degrees of freedom: 10,628 (4,010+603+2,005+2,005+2,005)
    Solving temperature system... 0 iterations.
    Skipping normal_field composition solve because RHS is zero.
    Copying properties into prescribed compositional field diffused_field... done.
-   Solving diffused_field system ... 152 iterations.
+   Solving diffused_field system ... 150 iterations.
    Solving Stokes system (GMG)... 46+0 iterations.
 
    Postprocessing:

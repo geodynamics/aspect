@@ -16,7 +16,7 @@ Number of degrees of freedom: 61,140 (37,570+4,785+18,785)
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 182+0 iterations.
+   Solving Stokes system (AMG)... 183+0 iterations.
       Relative nonlinear residuals (temperature, Stokes system): 1.73824e-16, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 

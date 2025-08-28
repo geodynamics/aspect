@@ -18,7 +18,7 @@ Number of degrees of freedom: 246 (114+18+57+57)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 8 iterations.
-   Solving Stokes system (GMG)... 13+0 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
 
    Postprocessing:
      Writing particle output: output-particle_load_balancing_removal/particles/particles-00001

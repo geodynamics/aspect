@@ -4,7 +4,7 @@ Number of degrees of freedom: 792 (480+72+240)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 16+0 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-initial_condition_S20RTS_2D/solution/solution-00000

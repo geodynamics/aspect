@@ -5,7 +5,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system (GMG)... 618+0 iterations.
+   Solving Stokes system (GMG)... 610+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-steinberger_phase_fractions_background/solution/solution-00000
@@ -17,7 +17,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
 *** Timestep 1:  t=100000 years, dt=100000 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
-   Solving Stokes system (GMG)... 500+0 iterations.
+   Solving Stokes system (GMG)... 489+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-steinberger_phase_fractions_background/solution/solution-00001

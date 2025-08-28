@@ -13,7 +13,7 @@ Number of degrees of freedom: 7,248 (4,215+223+1,405+1,405)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system (GMG)... 13+0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
 
 Number of active cells: 155 (on 5 levels)
 Number of degrees of freedom: 9,679 (5,631+294+1,877+1,877)
@@ -21,7 +21,7 @@ Number of degrees of freedom: 9,679 (5,631+294+1,877+1,877)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system (GMG)... 25+0 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
 
@@ -40,7 +40,7 @@ Number of degrees of freedom: 9,679 (5,631+294+1,877+1,877)
      Rayleigh number:                               0
 
      Writing graphical output: output-stokes/solution/solution-00000
-     RMS, max velocity:        1.37e-10 m/s, 1.15e-09 m/s
+     RMS, max velocity:        3.01e-10 m/s, 1.14e-09 m/s
 
 Termination requested by criterion: end time
 

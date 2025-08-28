@@ -6,7 +6,7 @@ Number of degrees of freedom: 65,926 (25,090+3,201+12,545+12,545+12,545)
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
-   Solving Stokes system (GMG)... 14+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-composition_passive_quarter_shell_spherical/solution/solution-00000
@@ -17,12 +17,12 @@ Number of degrees of freedom: 65,926 (25,090+3,201+12,545+12,545+12,545)
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving C_2 system ... 5 iterations.
-   Solving Stokes system (GMG)... 10+0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-composition_passive_quarter_shell_spherical/solution/solution-00001
      Temperature min/avg/max:   0 K, 0.2417 K, 1 K
-     Compositions min/max/mass: -1.635e-06/1/0.08914 // -1.058e-06/1/0.2124
+     Compositions min/max/mass: -1.53e-06/1/0.08914 // -8.839e-07/1/0.2124
 
 Termination requested by criterion: end time
 
