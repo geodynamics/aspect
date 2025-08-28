@@ -19,7 +19,7 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#include "LPO_AV_3D.h"
+#include "cpo_induced_anisotropic_viscosity.h"
 #include <aspect/material_model/simple.h>
 #include <aspect/material_model/grain_size.h>
 #include <aspect/material_model/equation_of_state/interface.h>
@@ -474,7 +474,7 @@ namespace aspect
 
     template <int dim>
     void
-    LPO_AV_3D<dim>::set_assemblers(const SimulatorAccess<dim> &,
+    CPO_AV_3D<dim>::set_assemblers(const SimulatorAccess<dim> &,
                                    Assemblers::Manager<dim> &assemblers) const
     {
       for (unsigned int i=0; i<assemblers.stokes_preconditioner.size(); ++i)
@@ -494,10 +494,10 @@ namespace aspect
 
     template <int dim>
     void
-    LPO_AV_3D<dim>::
+    CPO_AV_3D<dim>::
     initialize()
     {
-      this->get_signals().set_assemblers.connect (std::bind(&LPO_AV_3D<dim>::set_assemblers,
+      this->get_signals().set_assemblers.connect (std::bind(&CPO_AV_3D<dim>::set_assemblers,
                                                             std::cref(*this),
                                                             std::placeholders::_1,
                                                             std::placeholders::_2));
@@ -547,7 +547,7 @@ namespace aspect
 
     template <>
     void
-    LPO_AV_3D<2>::evaluate (const MaterialModel::MaterialModelInputs<2> &,
+    CPO_AV_3D<2>::evaluate (const MaterialModel::MaterialModelInputs<2> &,
                             MaterialModel::MaterialModelOutputs<2> &) const
     {
       Assert (false, ExcNotImplemented());
@@ -556,7 +556,7 @@ namespace aspect
 
     template <>
     void
-    LPO_AV_3D<3>::evaluate (const MaterialModel::MaterialModelInputs<3> &in,
+    CPO_AV_3D<3>::evaluate (const MaterialModel::MaterialModelInputs<3> &in,
                             MaterialModel::MaterialModelOutputs<3> &out) const
     {
       const int dim=3;
@@ -577,10 +577,7 @@ namespace aspect
           const std::vector<double> volume_fractions = MaterialUtilities::compute_only_composition_fractions(composition,
                                                        this->introspection().chemical_composition_field_indices());
 
-          // Compositional dependence of density, for Stokes sinker test
-          const unsigned int comp_density_ind = this->introspection().compositional_index_for_name("D");
-          double composition_dependence = composition[comp_density_ind];
-          out.densities[q] = eos_outputs.densities[0] + compositional_delta_rho * composition_dependence;
+          out.densities[q] = eos_outputs.densities[0];
           out.viscosities[q] = eta;
           out.thermal_expansion_coefficients[q] = eos_outputs.thermal_expansion_coefficients[0];
           out.specific_heat[q] = eos_outputs.specific_heat_capacities[0];
@@ -728,7 +725,7 @@ namespace aspect
                     }
                 }
 
-              //Calculate the fluidity tensor in the LPO frame
+              //Calculate the fluidity tensor in the CPO frame
               Tensor<2,6> V = R_CPO_K * invA * transpose(R_CPO_K);//invA;//
 
               //Convert rank 2 viscosity tensor to rank 4
@@ -777,7 +774,6 @@ namespace aspect
                     {
                       Jhill = std::abs(F)*pow((S_CPO[0][0]-S_CPO[1][1]),2) + std::abs(G)*pow((S_CPO[1][1]-S_CPO[2][2]),2) + std::abs(H)*pow((S_CPO[2][2]-S_CPO[0][0]),2) + 2*L*pow(S_CPO[1][2],2) + 2*M*pow(S_CPO[0][2],2) + 2*N*pow(S_CPO[0][1],2);
                     }
-                  // double S_ii= std::sqrt(-second_invariant(stress));
 
                   AssertThrow(isfinite(Jhill),
                               ExcMessage("Jhill should be finite"));
@@ -792,7 +788,7 @@ namespace aspect
 
                 }
               //Overwrite the scalar viscosity with an effective viscosity
-              out.viscosities[q] = scalar_viscosity;//composition[ind_vis];//
+              out.viscosities[q] = scalar_viscosity;
 
               AssertThrow(out.viscosities[q] > 0,
                           ExcMessage("Viscosity should be positive"));
@@ -845,29 +841,23 @@ namespace aspect
 
     template <int dim>
     bool
-    LPO_AV_3D<dim>::is_compressible () const
+    CPO_AV_3D<dim>::is_compressible () const
     {
       return false;
     }
 
 
 
-    // template <int dim>
-    // double
-    // LPO_AV_3D<dim>::reference_viscosity () const
-    // {
-    //   return 1e20;
-    // }
 
 
 
     template <int dim>
     void
-    LPO_AV_3D<dim>::parse_parameters (ParameterHandler &prm)
+    CPO_AV_3D<dim>::parse_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection("AV Hill");
+        prm.enter_subsection("CPO-induced Anisotropic Viscosity");
         {
 
           equation_of_state.parse_parameters (prm);
@@ -886,15 +876,7 @@ namespace aspect
       }
       prm.leave_subsection();
 
-      // prm.enter_subsection("Particles");
-      // {
-      //   prm.enter_subsection("Crystal Preferred Orientation");
-      //   {
-      //     n_grains = prm.get_integer("Number of grains per particle");
-      //   }
-      //   prm.leave_subsection();
-      // }
-      // prm.leave_subsection();
+
 
       // Declare dependence
       this->model_dependence.density = NonlinearDependence::compositional_fields;
@@ -904,33 +886,14 @@ namespace aspect
 
     template <int dim>
     void
-    LPO_AV_3D<dim>::declare_parameters (ParameterHandler &prm)
+    CPO_AV_3D<dim>::declare_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection("AV Hill");
+        prm.enter_subsection("CPO-induced Anisotropic Viscosity");
         {
           EquationOfState::LinearizedIncompressible<dim>::declare_parameters (prm);
-          // prm.declare_entry ("Coefficients and intercept for F", "4.600447869251792, -3.432107596, -0.132855296, -0.00130425,  2.360195770340767,  -1.503338915, 1.2635426953453306, 0.0071666,  1.2241252112687866, -2.655458732, -1.734603653, 0.039704515, 2.241765907780337",
-          //                    Patterns::List(Patterns::Double()),
-          //                    "6 Coefficients and 1 intercept to compute the Hill Parameter F.");
-          // prm.declare_entry ("Coefficients and intercept for G", "-4.684144376,  2.4501679747908645, -1.291945979, -0.000447184, 0.7364410668996572, -1.134353994, -1.369971542, 0.006638505,  1.8100476263969771, 0.278455287,  2.0422841708796087, -0.016914332, 0.37853585511038185",
-          //                    Patterns::List(Patterns::Double()),
-          //                    "6 Coefficients and 1 intercept to compute the Hill Parameter G.");
-          // prm.declare_entry ("Coefficients and intercept for H", "4.020574320458808, -2.637132566, 0.5755508961574253, 0.002686342,  1.5151533596671836, 0.3489226631973101, 1.3802207762705025, -0.007362419, 1.4996869664711834, -4.044348002, -1.978212652, 0.056659336732010734, 0.37853585511038185",
-          //                    Patterns::List(Patterns::Double()),
-          //                    "6 Coefficients and 1 intercept to compute the Hill Parameter H.");
-          // prm.declare_entry ("Coefficients and intercept for L", "1.3973326672504107,  -1.81296565,  0.8981686897139447, -0.001066616, -0.063667124, -0.374885301, 0.7288437733735754, -0.000503799, -0.99360894,  -0.153230898, -1.019483357, 0.007165858, 1.9767970726829662",
-          //                    Patterns::List(Patterns::Double()),
-          //                    "6 Coefficients and 1 intercept to compute the Hill Parameter L.");
-          // prm.declare_entry ("Coefficients and intercept for M", "1.6321611239635443,  0.30732770773835577,  1.1935547119876715, 0.002980557,  3.0859826232991554, -0.954888925, 0.6077177400767578, -0.009972845, -3.089290395, 0.648574284,  -0.558830801, -0.007724845, 0.8743203613069472",
-          //                    Patterns::List(Patterns::Double()),
-          //                    "6 Coefficients and 1 intercept to compute the Hill Parameter M.");
-          // prm.declare_entry ("Coefficients and intercept for N", "0.558022129, 0.27369095729305215,  0.11267428759159648,  0.001899995,  -1.59528053,  0.17253325907449615,  0.4514508967688472, -0.010286343, 2.9328835681486245, -1.375833649, -0.045106095, 0.015508168775970624, 1.338955424846116",
-          //                    Patterns::List(Patterns::Double()),
-          //                    "6 Coefficients and 1 intercept to compute the Hill Parameter N.");
 
-          // old
           prm.declare_entry ("Coefficients and intercept for F", "1.0390459583037057,  -0.767458622,  0.003066208,  0.19651133418307049,  0.413093763,  0.015463162,  -0.935925291,  -2.392877563,  0.051834768, 1.0799807050187482",
                              Patterns::List(Patterns::Double()),
                              "6 Coefficients and 1 intercept to compute the Hill Parameter F.");
@@ -980,7 +943,7 @@ namespace aspect
 
     template <int dim>
     void
-    LPO_AV_3D<dim>::create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const
+    CPO_AV_3D<dim>::create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       if (out.template get_additional_output_object<AV<dim>>() == nullptr)
         {
@@ -1009,7 +972,6 @@ namespace aspect
 #define INSTANTIATE(dim) \
   template class StokesPreconditionerAV<dim>; \
   template class StokesIncompressibleTermsAV<dim>; \
-  //template class StokesBoundaryTractionAV<dim>;
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }
@@ -1017,7 +979,7 @@ namespace aspect
   namespace HeatingModel
   {
     ASPECT_REGISTER_HEATING_MODEL(ShearHeatingAV,
-                                  "anisotropic shear heating for LPO_AV_3D",
+                                  "anisotropic shear heating for cpo_induced_anisotropic_viscosity",
                                   "Implementation of a standard model for shear heating. "
                                   "Adds the term: "
                                   "$  2 \\eta \\left( \\varepsilon - \\frac{1}{3} \\text{tr} "
@@ -1030,8 +992,8 @@ namespace aspect
 
   namespace MaterialModel
   {
-    ASPECT_REGISTER_MATERIAL_MODEL(LPO_AV_3D,
-                                   "LPO Anisotropic Viscosity Hill material",
-                                   "Olivine LPO related viscous anisotropy based on the Simple material model")
+    ASPECT_REGISTER_MATERIAL_MODEL(CPO_AV_3D,
+                                   "CPO-induced Anisotropic Viscosity",
+                                   "Olivine CPO related viscous anisotropy based on the Simple material model")
   }
 }
