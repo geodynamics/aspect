@@ -1059,7 +1059,6 @@ namespace aspect
   {
     // solve the temperature and composition systems once...
     assemble_and_solve_temperature();
-
     assemble_and_solve_composition();
 
     // ...and then iterate the solution of the Stokes system

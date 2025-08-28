@@ -463,7 +463,7 @@ namespace aspect
        * This function implements one scheme for the various
        * steps necessary to assemble and solve the nonlinear problem.
        *
-       * The `first timestep only, single Stokes' scheme only solves the Stokes system,
+       * The `no Advection, single Stokes first timestep only' scheme only solves the Stokes system,
        * for the initial timestep. This results in a `steady state' velocity field for
        * particle calculations.
        *
