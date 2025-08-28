@@ -45,9 +45,10 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 11 iterations.
    Solving entropy_enstatite system ... 11 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 3+0 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 9.95028e-13, 2.21455e-16, 0.00667117, 0.0066975, 0, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
@@ -56,10 +57,11 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 10 iterations.
    Solving entropy_enstatite system ... 10 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 3+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0112807, 2.08421e-16, 7.51622e-05, 7.54589e-05, 0, 0.000503785
+   Solving Stokes system (GMG)... 2+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0112807, 2.27192e-16, 7.51622e-05, 7.54589e-05, 0, 0.000488806
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0112807
 
    Copying properties into prescribed temperature field... done.
@@ -67,21 +69,23 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 8 iterations.
    Solving entropy_enstatite system ... 8 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 7+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000125883, 2.40822e-16, 8.29402e-07, 8.32676e-07, 0, 0.000174171
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000174171
+   Solving Stokes system (GMG)... 4+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000125883, 2.47106e-16, 8.29402e-07, 8.32676e-07, 0, 5.57842e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000125883
 
    Copying properties into prescribed temperature field... done.
    Solving temperature system... 7 iterations.
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 6 iterations.
    Solving entropy_enstatite system ... 6 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.38926e-06, 2.30952e-16, 9.15455e-09, 9.19068e-09, 0, 7.20206e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.38926e-06, 2.51961e-16, 9.15457e-09, 9.1907e-09, 0, 5.97357e-08
       Relative nonlinear residual (total system) after nonlinear iteration 4: 1.38926e-06
 
    Copying properties into prescribed temperature field... done.
@@ -89,11 +93,12 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 4 iterations.
    Solving entropy_enstatite system ... 4 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.53339e-08, 2.30952e-16, 1.01066e-10, 1.01466e-10, 0, 7.14512e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 5: 7.14512e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.5334e-08, 2.51961e-16, 1.01066e-10, 1.01468e-10, 0, 5.90807e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 5.90807e-08
 
 
    Postprocessing:
@@ -112,21 +117,23 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 0 iterations.
    Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 4+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.68179e-10, 1.3671e-16, 7.29336e-13, 7.34732e-13, 0, 4.56666
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 4.56666
+   Solving Stokes system (GMG)... 3+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.67272e-10, 1.23605e-16, 7.38889e-13, 7.42656e-13, 0, 4.56674
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 4.56674
 
    Copying properties into prescribed temperature field... done.
    Solving temperature system... 10 iterations.
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 6 iterations.
    Solving entropy_enstatite system ... 6 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0111155, 1.42315e-16, 4.85737e-05, 4.87636e-05, 0, 0.000878607
+   Solving Stokes system (GMG)... 2+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0111155, 1.49327e-16, 4.85737e-05, 4.87636e-05, 0, 0.00108103
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0111155
 
    Copying properties into prescribed temperature field... done.
@@ -134,21 +141,23 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 5 iterations.
    Solving entropy_enstatite system ... 5 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 1+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.22618e-05, 1.01799e-16, 3.55529e-07, 3.56919e-07, 0, 6.40081e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 8.22618e-05
+   Solving Stokes system (GMG)... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.22618e-05, 1.30108e-16, 3.55529e-07, 3.56919e-07, 0, 0.00058917
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00058917
 
    Copying properties into prescribed temperature field... done.
    Solving temperature system... 7 iterations.
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 3 iterations.
    Solving entropy_enstatite system ... 3 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.02152e-07, 1.87378e-16, 2.60268e-09, 2.61286e-09, 0, 6.70703e-08
+   Solving Stokes system (GMG)... 3+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.02152e-07, 1.10734e-16, 2.60268e-09, 2.61286e-09, 0, 2.09283e-07
       Relative nonlinear residual (total system) after nonlinear iteration 4: 6.02152e-07
 
 
@@ -168,21 +177,23 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 5 iterations.
    Solving entropy_enstatite system ... 5 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 8+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.36011e-09, 1.93377e-16, 1.57948e-05, 1.58571e-05, 0, 46.5205
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 46.5205
+   Solving Stokes system (GMG)... 4+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.35977e-09, 1.78394e-16, 1.57948e-05, 1.58571e-05, 0, 46.5029
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 46.5029
 
    Copying properties into prescribed temperature field... done.
    Solving temperature system... 10 iterations.
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 6 iterations.
    Solving entropy_enstatite system ... 6 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0110054, 1.79722e-16, 4.72627e-05, 4.74491e-05, 0, 0.0108913
+   Solving Stokes system (GMG)... 4+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0110054, 2.59128e-16, 4.72627e-05, 4.74491e-05, 0, 0.0109094
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0110054
 
    Copying properties into prescribed temperature field... done.
@@ -190,10 +201,11 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 5 iterations.
    Solving entropy_enstatite system ... 5 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 1+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.00884e-05, 1.70708e-16, 3.40198e-07, 3.4154e-07, 0, 7.84018e-05
+   Solving Stokes system (GMG)... 6+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.00884e-05, 2.74468e-16, 3.40198e-07, 3.4154e-07, 0, 7.87285e-05
       Relative nonlinear residual (total system) after nonlinear iteration 3: 8.00884e-05
 
    Copying properties into prescribed temperature field... done.
@@ -201,10 +213,11 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 3 iterations.
    Solving entropy_enstatite system ... 3 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 1+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.76522e-07, 1.44644e-16, 2.4492e-09, 2.45886e-09, 0, 5.66021e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.76522e-07, 1.2755e-16, 2.4492e-09, 2.45886e-09, 0, 5.64946e-07
       Relative nonlinear residual (total system) after nonlinear iteration 4: 5.76522e-07
 
 
@@ -212,7 +225,7 @@ Number of mesh deformation degrees of freedom: 18
      Writing graphical output:           output-entropy_multicomponent_9_internal_energy_with_radiogenic_heating/solution/solution-00003
      RMS, max velocity:                  0.00035 m/year, 0.000606 m/year
      Temperature min/avg/max:            1155 K, 1155 K, 1155 K
-     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 2.469e+04 kg/yr
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 2.47e+04 kg/yr
      Compositions min/max/mass:          0.3/0.3/5.046e+07 // 2144/2144/3.607e+11 // 2136/2136/3.593e+11 // 3135/3135/5.273e+11
      Topography min/max:                 -60.36 m, -60.36 m
 
@@ -224,32 +237,35 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 5 iterations.
    Solving entropy_enstatite system ... 5 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 8+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.11e-09, 2.12518e-16, 2.06057e-05, 2.06865e-05, 0, 11.5301
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 11.5301
+   Solving Stokes system (GMG)... 2+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.11257e-09, 1.50668e-16, 2.06057e-05, 2.06865e-05, 0, 11.5318
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 11.5318
 
    Copying properties into prescribed temperature field... done.
    Solving temperature system... 10 iterations.
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 6 iterations.
    Solving entropy_enstatite system ... 6 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0108747, 1.00726e-16, 4.59056e-05, 4.60855e-05, 0, 0.0107729
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0108747
+   Solving Stokes system (GMG)... 7+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0108747, 1.86587e-16, 4.59056e-05, 4.60855e-05, 0, 0.0111466
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0111466
 
    Copying properties into prescribed temperature field... done.
    Solving temperature system... 9 iterations.
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 5 iterations.
    Solving entropy_enstatite system ... 5 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 1+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.83604e-05, 1.72212e-16, 3.2723e-07, 3.28513e-07, 0, 7.6798e-05
+   Solving Stokes system (GMG)... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.83604e-05, 1.64863e-16, 3.2723e-07, 3.28513e-07, 0, 7.68802e-05
       Relative nonlinear residual (total system) after nonlinear iteration 3: 7.83604e-05
 
    Copying properties into prescribed temperature field... done.
@@ -257,10 +273,11 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 3 iterations.
    Solving entropy_enstatite system ... 3 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 1+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.5862e-07, 1.60059e-16, 2.3331e-09, 2.34224e-09, 0, 5.49144e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.5862e-07, 1.55653e-16, 2.3331e-09, 2.34224e-09, 0, 5.47718e-07
       Relative nonlinear residual (total system) after nonlinear iteration 4: 5.5862e-07
 
 
@@ -280,32 +297,35 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 5 iterations.
    Solving entropy_enstatite system ... 5 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.96187e-09, 2.50499e-16, 2.17628e-05, 2.18484e-05, 0, 0.0073815
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0073815
+   Solving Stokes system (GMG)... 6+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.96177e-09, 1.88578e-16, 2.17628e-05, 2.18484e-05, 0, 0.00834723
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00834723
 
    Copying properties into prescribed temperature field... done.
    Solving temperature system... 10 iterations.
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 6 iterations.
    Solving entropy_enstatite system ... 6 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0107358, 2.24447e-16, 4.45571e-05, 4.47323e-05, 0, 0.0106178
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0107358
+   Solving Stokes system (GMG)... 2+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0107357, 1.41905e-16, 4.45571e-05, 4.47323e-05, 0, 0.0106132
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0107357
 
    Copying properties into prescribed temperature field... done.
    Solving temperature system... 9 iterations.
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 5 iterations.
    Solving entropy_enstatite system ... 5 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 1+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.61049e-05, 2.11619e-16, 3.1251e-07, 3.13738e-07, 0, 7.44751e-05
+   Solving Stokes system (GMG)... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.61049e-05, 1.69351e-16, 3.1251e-07, 3.13738e-07, 0, 7.4493e-05
       Relative nonlinear residual (total system) after nonlinear iteration 3: 7.61049e-05
 
    Copying properties into prescribed temperature field... done.
@@ -313,20 +333,21 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 3 iterations.
    Solving entropy_enstatite system ... 3 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 1+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.33815e-07, 1.77178e-16, 2.19232e-09, 2.20094e-09, 0, 5.24039e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.33815e-07, 1.38642e-16, 2.19232e-09, 2.20094e-09, 0, 5.22183e-07
       Relative nonlinear residual (total system) after nonlinear iteration 4: 5.33815e-07
 
 
    Postprocessing:
      Writing graphical output:           output-entropy_multicomponent_9_internal_energy_with_radiogenic_heating/solution/solution-00005
-     RMS, max velocity:                  0.000352 m/year, 0.000609 m/year
+     RMS, max velocity:                  0.000352 m/year, 0.00061 m/year
      Temperature min/avg/max:            1180 K, 1180 K, 1180 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 2.482e+04 kg/yr
      Compositions min/max/mass:          0.3/0.3/5.051e+07 // 2171/2171/3.656e+11 // 2163/2163/3.641e+11 // 3132/3132/5.273e+11
-     Topography min/max:                 -48.21 m, -48.21 m
+     Topography min/max:                 -48.22 m, -48.22 m
 
 *** Timestep 6:  t=60000 years, dt=10000 years
    Solving mesh displacement system... 1 iterations.
@@ -336,21 +357,23 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 5 iterations.
    Solving entropy_enstatite system ... 5 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.73551e-09, 1.45259e-16, 2.17133e-05, 2.17987e-05, 0, 0.0170023
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0170023
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.73565e-09, 1.44089e-16, 2.17133e-05, 2.17987e-05, 0, 0.0166472
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0166472
 
    Copying properties into prescribed temperature field... done.
    Solving temperature system... 10 iterations.
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 6 iterations.
    Solving entropy_enstatite system ... 6 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.010626, 1.61804e-16, 4.33704e-05, 4.35409e-05, 0, 0.0104864
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.010626, 1.88938e-16, 4.33704e-05, 4.35409e-05, 0, 0.0104863
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.010626
 
    Copying properties into prescribed temperature field... done.
@@ -358,10 +381,11 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 5 iterations.
    Solving entropy_enstatite system ... 5 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 1+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.46234e-05, 1.32964e-16, 3.01378e-07, 3.02563e-07, 0, 7.2874e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.46234e-05, 1.6409e-16, 3.01378e-07, 3.02563e-07, 0, 7.28736e-05
       Relative nonlinear residual (total system) after nonlinear iteration 3: 7.46234e-05
 
    Copying properties into prescribed temperature field... done.
@@ -369,10 +393,11 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 3 iterations.
    Solving entropy_enstatite system ... 3 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 1+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.18591e-07, 1.34987e-16, 2.09473e-09, 2.10296e-09, 0, 5.08088e-07
+   Solving Stokes system (GMG)... 3+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.18591e-07, 9.56271e-17, 2.09473e-09, 2.10296e-09, 0, 5.10783e-07
       Relative nonlinear residual (total system) after nonlinear iteration 4: 5.18591e-07
 
 
@@ -380,7 +405,7 @@ Number of mesh deformation degrees of freedom: 18
      Writing graphical output:           output-entropy_multicomponent_9_internal_energy_with_radiogenic_heating/solution/solution-00006
      RMS, max velocity:                  0.000355 m/year, 0.000614 m/year
      Temperature min/avg/max:            1192 K, 1192 K, 1192 K
-     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 2.5e+04 kg/yr
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 2.501e+04 kg/yr
      Compositions min/max/mass:          0.3/0.3/5.054e+07 // 2184/2184/3.68e+11 // 2176/2176/3.665e+11 // 3130/3130/5.273e+11
      Topography min/max:                 -42.12 m, -42.12 m
 
@@ -392,21 +417,23 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 5 iterations.
    Solving entropy_enstatite system ... 5 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 4+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.60525e-09, 1.44606e-16, 2.13153e-05, 2.13988e-05, 0, 0.00109043
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00109043
+   Solving Stokes system (GMG)... 3+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.60496e-09, 2.13014e-16, 2.13153e-05, 2.13988e-05, 0, 0.000763304
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000763304
 
    Copying properties into prescribed temperature field... done.
    Solving temperature system... 10 iterations.
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 6 iterations.
    Solving entropy_enstatite system ... 6 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0104758, 1.59409e-16, 4.20571e-05, 4.22219e-05, 0, 0.0103521
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0104758, 1.62666e-16, 4.20571e-05, 4.22219e-05, 0, 0.0103509
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0104758
 
    Copying properties into prescribed temperature field... done.
@@ -414,10 +441,11 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 5 iterations.
    Solving entropy_enstatite system ... 5 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 1+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.24096e-05, 1.56841e-16, 2.87692e-07, 2.8882e-07, 0, 7.08182e-05
+   Solving Stokes system (GMG)... 2+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.24096e-05, 8.72538e-17, 2.87692e-07, 2.8882e-07, 0, 7.08104e-05
       Relative nonlinear residual (total system) after nonlinear iteration 3: 7.24096e-05
 
    Copying properties into prescribed temperature field... done.
@@ -425,18 +453,19 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 3 iterations.
    Solving entropy_enstatite system ... 3 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 1+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.95353e-07, 1.83855e-16, 1.9684e-09, 1.97612e-09, 0, 4.86126e-07
+   Solving Stokes system (GMG)... 2+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.95353e-07, 2.06971e-16, 1.96841e-09, 1.97612e-09, 0, 4.84989e-07
       Relative nonlinear residual (total system) after nonlinear iteration 4: 4.95353e-07
 
 
    Postprocessing:
      Writing graphical output:           output-entropy_multicomponent_9_internal_energy_with_radiogenic_heating/solution/solution-00007
-     RMS, max velocity:                  0.000354 m/year, 0.000614 m/year
+     RMS, max velocity:                  0.000354 m/year, 0.000613 m/year
      Temperature min/avg/max:            1205 K, 1205 K, 1205 K
-     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 2.496e+04 kg/yr
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 2.495e+04 kg/yr
      Compositions min/max/mass:          0.3/0.3/5.056e+07 // 2198/2198/3.704e+11 // 2189/2189/3.689e+11 // 3129/3129/5.273e+11
      Topography min/max:                 -35.98 m, -35.98 m
 
@@ -448,21 +477,23 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 5 iterations.
    Solving entropy_enstatite system ... 5 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.35199e-09, 1.80427e-16, 2.07611e-05, 2.08429e-05, 0, 0.0218892
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0218892
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.39754e-09, 8.26349e-17, 2.07611e-05, 2.08429e-05, 0, 0.0228711
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0228711
 
    Copying properties into prescribed temperature field... done.
    Solving temperature system... 10 iterations.
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 6 iterations.
    Solving entropy_enstatite system ... 6 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0103869, 1.69411e-16, 4.10272e-05, 4.11888e-05, 0, 0.0102177
+   Solving Stokes system (GMG)... 6+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0103869, 1.8569e-16, 4.10272e-05, 4.11888e-05, 0, 0.0102143
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0103869
 
    Copying properties into prescribed temperature field... done.
@@ -470,10 +501,11 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 5 iterations.
    Solving entropy_enstatite system ... 5 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 1+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.11574e-05, 1.53057e-16, 2.78178e-07, 2.79273e-07, 0, 6.92835e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.11574e-05, 1.49934e-16, 2.78178e-07, 2.79273e-07, 0, 6.92605e-05
       Relative nonlinear residual (total system) after nonlinear iteration 3: 7.11574e-05
 
    Copying properties into prescribed temperature field... done.
@@ -481,10 +513,11 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 3 iterations.
    Solving entropy_enstatite system ... 3 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 1+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.82503e-07, 8.03534e-17, 1.88656e-09, 1.89399e-09, 0, 4.71457e-07
+   Solving Stokes system (GMG)... 3+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.82503e-07, 1.78259e-16, 1.88656e-09, 1.89399e-09, 0, 4.7175e-07
       Relative nonlinear residual (total system) after nonlinear iteration 4: 4.82503e-07
 
 
@@ -492,8 +525,8 @@ Number of mesh deformation degrees of freedom: 18
      Writing graphical output:           output-entropy_multicomponent_9_internal_energy_with_radiogenic_heating/solution/solution-00008
      RMS, max velocity:                  0.000358 m/year, 0.00062 m/year
      Temperature min/avg/max:            1217 K, 1217 K, 1217 K
-     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 2.522e+04 kg/yr
-     Compositions min/max/mass:          0.3/0.3/5.058e+07 // 2211/2211/3.728e+11 // 2202/2202/3.713e+11 // 3128/3128/5.273e+11
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 2.523e+04 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.058e+07 // 2211/2211/3.727e+11 // 2202/2202/3.713e+11 // 3128/3128/5.273e+11
      Topography min/max:                 -29.84 m, -29.84 m
 
 *** Timestep 9:  t=90000 years, dt=10000 years
@@ -504,32 +537,35 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 5 iterations.
    Solving entropy_enstatite system ... 5 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 4+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.28454e-09, 1.90982e-16, 2.02463e-05, 2.03253e-05, 0, 0.00273904
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00273904
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.28492e-09, 1.77984e-16, 2.02463e-05, 2.03253e-05, 0, 0.00429591
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00429591
 
    Copying properties into prescribed temperature field... done.
    Solving temperature system... 10 iterations.
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 6 iterations.
    Solving entropy_enstatite system ... 6 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0102354, 2.25299e-16, 3.97841e-05, 3.99395e-05, 0, 0.0102515
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0102515
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0102354, 1.44469e-16, 3.97841e-05, 3.99395e-05, 0, 0.0102573
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0102573
 
    Copying properties into prescribed temperature field... done.
    Solving temperature system... 9 iterations.
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 5 iterations.
    Solving entropy_enstatite system ... 5 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 1+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.98555e-05, 1.6933e-16, 2.68773e-07, 2.69823e-07, 0, 6.92613e-05
+   Solving Stokes system (GMG)... 2+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.98555e-05, 1.61573e-16, 2.68773e-07, 2.69823e-07, 0, 6.93005e-05
       Relative nonlinear residual (total system) after nonlinear iteration 3: 6.98555e-05
 
    Copying properties into prescribed temperature field... done.
@@ -537,18 +573,19 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 3 iterations.
    Solving entropy_enstatite system ... 3 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-   Solving Stokes system (GMG)... 1+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.7196e-07, 1.08098e-16, 1.81618e-09, 1.82328e-09, 0, 4.69638e-07
+   Solving Stokes system (GMG)... 2+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.7196e-07, 1.62095e-16, 1.81618e-09, 1.82328e-09, 0, 4.69107e-07
       Relative nonlinear residual (total system) after nonlinear iteration 4: 4.7196e-07
 
 
    Postprocessing:
      Writing graphical output:           output-entropy_multicomponent_9_internal_energy_with_radiogenic_heating/solution/solution-00009
-     RMS, max velocity:                  0.000357 m/year, 0.000619 m/year
+     RMS, max velocity:                  0.000357 m/year, 0.000618 m/year
      Temperature min/avg/max:            1229 K, 1229 K, 1229 K
-     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 2.514e+04 kg/yr
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 2.513e+04 kg/yr
      Compositions min/max/mass:          0.3/0.3/5.061e+07 // 2224/2224/3.751e+11 // 2215/2215/3.736e+11 // 3126/3126/5.273e+11
      Topography min/max:                 -23.64 m, -23.64 m
 
@@ -560,21 +597,23 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 5 iterations.
    Solving entropy_enstatite system ... 5 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.20695e-09, 1.33219e-16, 1.96743e-05, 1.97518e-05, 0, 0.0226275
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0226275
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.20563e-09, 2.07165e-16, 1.96743e-05, 1.97518e-05, 0, 0.0245403
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0245403
 
    Copying properties into prescribed temperature field... done.
    Solving temperature system... 10 iterations.
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 6 iterations.
    Solving entropy_enstatite system ... 6 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0101524, 2.00039e-16, 3.88405e-05, 3.89933e-05, 0, 0.00997408
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0101524, 1.96637e-16, 3.88405e-05, 3.89933e-05, 0, 0.00996927
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0101524
 
    Copying properties into prescribed temperature field... done.
@@ -582,10 +621,11 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 5 iterations.
    Solving entropy_enstatite system ... 5 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 1+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.79067e-05, 1.70441e-16, 2.57185e-07, 2.58197e-07, 0, 6.60481e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.79067e-05, 1.66131e-16, 2.57185e-07, 2.58197e-07, 0, 6.60163e-05
       Relative nonlinear residual (total system) after nonlinear iteration 3: 6.79067e-05
 
    Copying properties into prescribed temperature field... done.
@@ -593,18 +633,19 @@ Number of mesh deformation degrees of freedom: 18
    Solving percent_enstatite system ... 0 iterations.
    Solving entropy_forsterite system ... 3 iterations.
    Solving entropy_enstatite system ... 3 iterations.
+   Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 1+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.49678e-07, 1.65316e-16, 1.70336e-09, 1.71006e-09, 0, 4.39139e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.49678e-07, 2.0903e-16, 1.70336e-09, 1.71006e-09, 0, 4.41258e-07
       Relative nonlinear residual (total system) after nonlinear iteration 4: 4.49678e-07
 
 
    Postprocessing:
      Writing graphical output:           output-entropy_multicomponent_9_internal_energy_with_radiogenic_heating/solution/solution-00010
-     RMS, max velocity:                  0.000361 m/year, 0.000625 m/year
+     RMS, max velocity:                  0.000361 m/year, 0.000626 m/year
      Temperature min/avg/max:            1242 K, 1242 K, 1242 K
-     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 2.54e+04 kg/yr
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 2.541e+04 kg/yr
      Compositions min/max/mass:          0.3/0.3/5.063e+07 // 2236/2236/3.774e+11 // 2228/2228/3.76e+11 // 3125/3125/5.273e+11
      Topography min/max:                 -17.45 m, -17.45 m
 
