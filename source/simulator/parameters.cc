@@ -1564,10 +1564,18 @@ namespace aspect
         nonlinear_solver = NonlinearSolver::no_Advection_no_Stokes;
       else if (solver_scheme == "no Advection, single Stokes")
         nonlinear_solver = NonlinearSolver::no_Advection_single_Stokes;
-      // deprecated: remove "first timestep only, single Stokes" eventually
-      else if (solver_scheme == "no Advection, single Stokes first timestep only" ||
-               solver_scheme == "first timestep only, single Stokes")
+      else if (solver_scheme == "no Advection, single Stokes first timestep only")
         nonlinear_solver = NonlinearSolver::no_Advection_single_Stokes_first_timestep_only;
+      // deprecated: use "no Advection, single Stokes first timestep only" instead
+      else if (solver_scheme == "first timestep only, single Stokes")
+        {
+          if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
+            {
+              std::cout << "Warning: You are using the deprecated solver scheme name <first timestep only, single Stokes>. " << std::endl
+                        << "         Use the new name <no Advection, single Stokes first timestep only> instead." << std::endl;
+            }
+          nonlinear_solver = NonlinearSolver::no_Advection_single_Stokes_first_timestep_only;
+        }
       else if (solver_scheme == "no Advection, iterated Stokes")
         nonlinear_solver = NonlinearSolver::no_Advection_iterated_Stokes;
       else if (solver_scheme == "no Advection, iterated defect correction Stokes")
