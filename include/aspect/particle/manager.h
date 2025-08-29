@@ -28,6 +28,7 @@
 #include <deal.II/particles/particle_iterator.h>
 #include <deal.II/particles/particle_handler.h>
 #include <deal.II/particles/property_pool.h>
+#include <aspect/particle/distribution.h>
 
 #include <deal.II/matrix_free/fe_point_evaluation.h>
 
@@ -46,7 +47,7 @@
 #include <boost/serialization/unique_ptr.hpp>
 
 #include <random>
-#include <aspect/particle/distribution.h>
+
 
 namespace aspect
 {
