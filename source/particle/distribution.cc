@@ -180,7 +180,7 @@ namespace aspect
       if (input_value > max)
         {
           max = input_value;
-          min_particle_index = reference_particle_id;
+          max_particle_index = reference_particle_id;
         }
 
       if (input_value < min)
@@ -352,6 +352,22 @@ namespace aspect
     ParticlePDF<dim>::get_standard_deviation() const
     {
       return standard_deviation;
+    }
+
+
+
+    template <int dim>
+    types::particle_index ParticlePDF<dim>::get_max_particle() const
+    {
+      return max_particle_index;
+    }
+
+
+
+    template <int dim>
+    types::particle_index ParticlePDF<dim>::get_min_particle() const
+    {
+      return min_particle_index;
     }
 
 
