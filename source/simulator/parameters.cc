@@ -207,57 +207,63 @@ namespace aspect
                        "This parameter indicates whether the simulator should also use "
                        "heat conduction in determining the length of each time step.");
 
-    const std::string allowed_solver_schemes = "single Advection, single Stokes|iterated Advection and Stokes|"
-                                               "single Advection, iterated Stokes|no Advection, iterated Stokes|"
+    const std::string allowed_solver_schemes = "no Advection, no Stokes|"
                                                "no Advection, single Stokes|"
+                                               "no Advection, single Stokes first timestep only|"
+                                               "first timestep only, single Stokes|" // deprecated: use "no Advection, single Stokes first timestep only" instead
+                                               "no Advection, iterated Stokes|"
                                                "no Advection, iterated defect correction Stokes|"
-                                               "single Advection, iterated defect correction Stokes|"
-                                               "iterated Advection and defect correction Stokes|"
-                                               "iterated Advection and Newton Stokes|single Advection, iterated Newton Stokes|"
                                                "single Advection, no Stokes|"
-                                               "first timestep only, single Stokes|no Advection, no Stokes";
+                                               "single Advection, single Stokes|"
+                                               "single Advection, iterated Stokes|"
+                                               "single Advection, iterated defect correction Stokes|"
+                                               "single Advection, iterated Newton Stokes|"
+                                               "iterated Advection and Stokes|"
+                                               "iterated Advection and defect correction Stokes|"
+                                               "iterated Advection and Newton Stokes";
 
     prm.declare_entry ("Nonlinear solver scheme", "single Advection, single Stokes",
                        Patterns::Selection (allowed_solver_schemes),
-                       "The kind of scheme used to resolve the nonlinearity in the system. "
-                       "`single Advection, single Stokes' means that no nonlinear iterations are done, "
-                       "and the temperature, compositional fields and Stokes equations are solved exactly "
-                       "once per time step, one after the other. "
-                       "The `iterated Advection and Stokes' scheme iterates this decoupled approach "
-                       "by alternating the solution of the temperature, composition and Stokes systems. "
-                       "The `single Advection, iterated Stokes' scheme solves the temperature and composition "
-                       "equation once at the beginning of each time step and then iterates out the solution of "
-                       "the Stokes equation. "
+                       "The kind of scheme used to resolve the nonlinearity in the system of equations:\n\n"
+                       "The `no Advection, no Stokes' scheme solves no equations. This "
+                       "is useful to investigate the initial and boundary conditions of the model.\n"
+                       "The `no Advection, single Stokes' scheme only solves the Stokes system once per "
+                       "timestep. This is mostly useful for instantaneous models and Stokes benchmarks.\n"
+                       "The `no Advection, single Stokes first timestep only' scheme solves the Stokes equations exactly "
+                       "once, at the first time step. No nonlinear iterations are done, and the temperature and "
+                       "composition systems are not solved.\n"
                        "The `no Advection, iterated Stokes' scheme only solves the Stokes system, iterating "
-                       "out the solution, and ignores compositions and the temperature equation (careful, "
-                       "the material model must not depend on the temperature or composition; this is mostly "
-                       "useful for Stokes benchmarks). "
-                       " The `no Advection, single Stokes' scheme only solves the Stokes system once per "
-                       "timestep. This is also mostly useful for Stokes benchmarks. "
-                       "The `single Advection, no Stokes' scheme only solves the temperature and other advection "
-                       "systems once, and instead of solving for the Stokes system, a prescribed velocity "
-                       "and pressure is used. "
-                       "The `iterated Advection and Newton Stokes' scheme iterates by alternating the solution "
-                       "of the temperature, composition and Stokes equations, using Picard iterations for the "
-                       "temperature and composition, and Newton iterations for the Stokes system. "
-                       "The `single Advection, iterated Newton Stokes' scheme solves "
-                       "the temperature and composition equations once at the beginning of each time step and "
-                       "then iterates out the solution of the Stokes equation, using Newton iterations for the "
-                       "Stokes system. "
-                       "The `iterated Advection and defect correction Stokes' scheme iterates by alternating the "
-                       "solution of the temperature, composition and Stokes equations, using Picard iterations for "
-                       "the temperature and composition, and defect correction Picard iterations for the Stokes system. "
-                       "The `single Advection, iterated defect correction Stokes' scheme solves "
-                       "the temperature and composition equations once at the beginning of each time step and "
-                       "then iterates out the solution of the Stokes equation, using defect correction Picard "
-                       "iterations for the Stokes system. "
+                       "out the solution, and does not solve the compositions and the temperature equation. "
+                       "This is mostly useful for instantaneous models and benchmarks with stress-dependent rheology.\n"
                        "The `no Advection, iterated defect correction Stokes' scheme solves "
                        "the temperature and composition equations once at the beginning of each time step and "
                        "then iterates out the solution of the Stokes equation, using defect correction Picard "
-                       "iterations for the Stokes system. "
-                       "The `first timestep only, single Stokes' scheme solves the Stokes equations exactly "
-                       "once, at the first time step. No nonlinear iterations are done, and the temperature and "
-                       "composition systems are not solved.");
+                       "iterations for the Stokes system.\n"
+                       "The `single Advection, no Stokes' scheme solves the temperature and other advection "
+                       "systems once per timestep, and instead of solving for the Stokes system, a prescribed "
+                       "velocity and pressure is used. This is useful for kinematic models and advection benchmarks.\n"
+                       "The `single Advection, single Stokes' solver scheme performs no nonlinear iterations, "
+                       "and the temperature, compositional fields and Stokes equations are solved exactly "
+                       "once per time step, one after the other. This is the default solver scheme.\n"
+                       "The `single Advection, iterated Stokes' scheme solves the temperature and composition "
+                       "equation once at the beginning of each time step and then iterates out the solution of "
+                       "the Stokes equation.\n"
+                       "The `single Advection, iterated defect correction Stokes' scheme solves "
+                       "the temperature and composition equations once at the beginning of each time step and "
+                       "then iterates out the solution of the Stokes equation, using defect correction Picard "
+                       "iterations for the Stokes system.\n"
+                       "The `single Advection, iterated Newton Stokes' scheme solves "
+                       "the temperature and composition equations once at the beginning of each time step and "
+                       "then iterates out the solution of the Stokes equation, using Newton iterations for the "
+                       "Stokes system.\n"
+                       "The `iterated Advection and Stokes' scheme iterates out the nonlinearity "
+                       "by alternating the solution of the temperature, composition and Stokes systems.\n"
+                       "The `iterated Advection and defect correction Stokes' scheme iterates by alternating the "
+                       "solution of the temperature, composition and Stokes equations, using Picard iterations for "
+                       "the temperature and composition, and defect correction Picard iterations for the Stokes system.\n"
+                       "The `iterated Advection and Newton Stokes' scheme iterates by alternating the solution "
+                       "of the temperature, composition and Stokes equations, using Picard iterations for the "
+                       "temperature and composition, and Newton iterations for the Stokes system.");
 
     prm.declare_entry ("Nonlinear solver failure strategy", "continue with next timestep",
                        Patterns::Selection("continue with next timestep|cut timestep size|abort program"),
@@ -1554,32 +1560,42 @@ namespace aspect
 
     {
       const std::string solver_scheme = prm.get ("Nonlinear solver scheme");
-      if (solver_scheme == "single Advection, single Stokes")
-        nonlinear_solver = NonlinearSolver::single_Advection_single_Stokes;
-      else if (solver_scheme == "iterated Advection and Stokes")
-        nonlinear_solver = NonlinearSolver::iterated_Advection_and_Stokes;
-      else if (solver_scheme == "single Advection, iterated Stokes")
-        nonlinear_solver = NonlinearSolver::single_Advection_iterated_Stokes;
-      else if (solver_scheme == "no Advection, iterated Stokes")
-        nonlinear_solver = NonlinearSolver::no_Advection_iterated_Stokes;
+      if (solver_scheme == "no Advection, no Stokes")
+        nonlinear_solver = NonlinearSolver::no_Advection_no_Stokes;
       else if (solver_scheme == "no Advection, single Stokes")
         nonlinear_solver = NonlinearSolver::no_Advection_single_Stokes;
+      else if (solver_scheme == "no Advection, single Stokes first timestep only")
+        nonlinear_solver = NonlinearSolver::no_Advection_single_Stokes_first_timestep_only;
+      // deprecated: use "no Advection, single Stokes first timestep only" instead
+      else if (solver_scheme == "first timestep only, single Stokes")
+        {
+          if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
+            {
+              std::cout << "Warning: You are using the deprecated solver scheme name <first timestep only, single Stokes>. " << std::endl
+                        << "         Use the new name <no Advection, single Stokes first timestep only> instead." << std::endl;
+            }
+          nonlinear_solver = NonlinearSolver::no_Advection_single_Stokes_first_timestep_only;
+        }
+      else if (solver_scheme == "no Advection, iterated Stokes")
+        nonlinear_solver = NonlinearSolver::no_Advection_iterated_Stokes;
       else if (solver_scheme == "no Advection, iterated defect correction Stokes")
         nonlinear_solver = NonlinearSolver::no_Advection_iterated_defect_correction_Stokes;
+      else if (solver_scheme == "single Advection, no Stokes")
+        nonlinear_solver = NonlinearSolver::single_Advection_no_Stokes;
+      else if (solver_scheme == "single Advection, single Stokes")
+        nonlinear_solver = NonlinearSolver::single_Advection_single_Stokes;
+      else if (solver_scheme == "single Advection, iterated Stokes")
+        nonlinear_solver = NonlinearSolver::single_Advection_iterated_Stokes;
       else if (solver_scheme == "single Advection, iterated defect correction Stokes")
         nonlinear_solver = NonlinearSolver::single_Advection_iterated_defect_correction_Stokes;
+      else if (solver_scheme == "single Advection, iterated Newton Stokes")
+        nonlinear_solver = NonlinearSolver::single_Advection_iterated_Newton_Stokes;
+      else if (solver_scheme == "iterated Advection and Stokes")
+        nonlinear_solver = NonlinearSolver::iterated_Advection_and_Stokes;
       else if (solver_scheme == "iterated Advection and defect correction Stokes")
         nonlinear_solver = NonlinearSolver::iterated_Advection_and_defect_correction_Stokes;
       else if (solver_scheme == "iterated Advection and Newton Stokes")
         nonlinear_solver = NonlinearSolver::iterated_Advection_and_Newton_Stokes;
-      else if (solver_scheme == "single Advection, iterated Newton Stokes")
-        nonlinear_solver = NonlinearSolver::single_Advection_iterated_Newton_Stokes;
-      else if (solver_scheme == "single Advection, no Stokes")
-        nonlinear_solver = NonlinearSolver::single_Advection_no_Stokes;
-      else if (solver_scheme == "first timestep only, single Stokes")
-        nonlinear_solver = NonlinearSolver::first_timestep_only_single_Stokes;
-      else if (solver_scheme == "no Advection, no Stokes")
-        nonlinear_solver = NonlinearSolver::no_Advection_no_Stokes;
       else
         AssertThrow (false, ExcNotImplemented());
     }
