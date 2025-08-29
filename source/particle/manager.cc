@@ -1015,9 +1015,9 @@ namespace aspect
         else if (deletion_algorithm_string == "random")
           deletion_algorithm = DeletionAlgorithm::random;
         else
-        {
-          AssertThrow(true, ExcNotImplemented());
-        }
+          {
+            AssertThrow(true, ExcNotImplemented());
+          }
 
         // The kernel function to use when using the point density function particle removal algorithm
         std::string kernel_function_string = prm.get("Point density kernel function");
@@ -1031,9 +1031,9 @@ namespace aspect
         else if (kernel_function_string == "gaussian")
           kernel_function = ParticlePDF<dim>::KernelFunction::gaussian;
         else
-        {
-          AssertThrow(true, ExcNotImplemented());
-        }
+          {
+            AssertThrow(true, ExcNotImplemented());
+          }
 
         TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Initialization");
 
