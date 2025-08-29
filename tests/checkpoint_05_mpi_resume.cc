@@ -19,7 +19,10 @@
 */
 
 #include <aspect/simulator.h>
+
 #include <iostream>
+#include <thread>
+#include <chrono>
 
 /*
  * Launch the following function when this plugin is created. Copy checkpoint
@@ -27,6 +30,8 @@
  */
 int f()
 {
+  std::this_thread::sleep_for(std::chrono::seconds(15));
+
   if (dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
     {
       std::cout << "* Copying checkpoint files." << std::endl;
