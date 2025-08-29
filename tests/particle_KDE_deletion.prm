@@ -1,7 +1,7 @@
 # This .prm file is intended to test the kernel density estimation
 # based algorithm for deleting excess particles. The KDE-based algorithm
 # generates a point-density function from the location of the particles 
-# and removes the particles whose location represents the maxiumum of the 
+# and removes the particles whose location represents the maximum of the 
 # point density function first. This method is intended to avoid some of the 
 # problems with particle clustering which are caused by randomly deleting
 # excess particles.
