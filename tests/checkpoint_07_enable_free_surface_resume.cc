@@ -20,6 +20,8 @@
 
 #include <aspect/simulator.h>
 #include <iostream>
+#include <thread>
+#include <chrono>
 
 /*
  * Launch the following function when this plugin is created. Copy checkpoint
@@ -27,6 +29,9 @@
  */
 int f()
 {
+  // Wait for file system operations of the test checkpoint_07_enable_free_surface_create to finish
+  std::this_thread::sleep_for(std::chrono::seconds(15));
+
   if (dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) != 0)
     return 42;
 
