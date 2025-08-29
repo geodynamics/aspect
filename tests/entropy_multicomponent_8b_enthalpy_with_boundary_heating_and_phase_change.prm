@@ -12,7 +12,7 @@ set Nonlinear solver scheme                = iterated Advection and Stokes
 set Use operator splitting                 = true
 
 set Nonlinear solver tolerance = 1e-6
-set Max nonlinear iterations = 15
+set Max nonlinear iterations = 50
 set Resume computation                     = false
 
 subsection Checkpointing

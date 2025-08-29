@@ -13,6 +13,7 @@ set Output directory                       = output-entropy-multicomponent-adiab
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Use operator splitting                 = true
 set Surface pressure                       = 0
+set Max nonlinear iterations               = 20
 
 subsection Solver parameters
   subsection Operator splitting parameters
