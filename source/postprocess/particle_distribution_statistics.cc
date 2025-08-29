@@ -118,7 +118,7 @@ namespace aspect
       const double global_function_max_mean = global_function_max_sum/global_cells_with_particles;
 
       // Write to statistics file
-      statistics.add_value ("Minimum PDF standard deviation ", global_standard_deviation_min);
+      statistics.add_value ("Minimum PDF standard deviation: ", global_standard_deviation_min);
       statistics.add_value ("Mean of PDF standard deviation: ", global_standard_deviation_mean);
       statistics.add_value ("Maximum PDF standard deviation: ", global_standard_deviation_max);
       statistics.add_value ("Mean of PDF minimum values: ", global_function_min_mean);
@@ -233,7 +233,7 @@ namespace aspect
   namespace Postprocess
   {
     ASPECT_REGISTER_POSTPROCESSOR(ParticleDistributionStatistics,
-                                  "Particle Distribution Statistics",
+                                  "particle distribution statistics",
                                   "A postprocessor that computes some statistics about "
                                   "the particle distribution within grid cells. In particular "
                                   "it calculates a point-density function for every cell and derives "

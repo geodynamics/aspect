@@ -1,10 +1,12 @@
-# Adapted from the drop-supg.prm benchmark
+# This parameter file is used as a starting point by the "run_all_deletion_algorithms.sh"
+# script. The script builds on this .prm file to run all particle removal algorithms with all
+# available kernel function.
 
 set Dimension                              = 2
 set Use years in output instead of seconds = false
 set End time                               = 6
 set Nonlinear solver scheme                = single Advection, no Stokes
-set Output directory                       = output
+set Output directory                       = output-default
 set Resume computation                     = false
 set Maximum time step                      = 0.03
 
@@ -15,8 +17,6 @@ subsection Geometry model
     set X extent = 0.5
     set Y extent = 5
     set Y repetitions = 10
-    set Box origin X coordinate = 0
-    set Box origin Y coordinate = 0
   end
 end
 
@@ -30,15 +30,6 @@ subsection Initial temperature model
   end
 end
 
-subsection Initial composition model
-  set Model name = function
-
-  subsection Function
-    set Variable names      = x,y
-    set Function expression = 1
-  end
-end
-
 subsection Boundary temperature model
   set List of model names = box
   set Fixed temperature boundary indicators   = top, bottom, left, right
@@ -48,18 +39,6 @@ subsection Boundary temperature model
     set Left temperature   = 0
     set Right temperature  = 0
     set Top temperature    = 0
-  end
-end
-
-subsection Boundary composition model
-  set List of model names = box
-  set Fixed composition boundary indicators   = top, bottom, left, right
-
-  subsection Box
-    set Bottom composition = 0
-    set Left composition   = 0
-    set Right composition  = 0
-    set Top composition    = 0
   end
 end
 
@@ -84,11 +63,6 @@ subsection Material model
   end
 end
 
-subsection Compositional fields
-  set Number of fields = 1
-  set Compositional field methods = field
-end
-
 subsection Mesh refinement
   set Initial adaptive refinement              = 2
   set Initial global refinement                = 1
@@ -108,7 +82,7 @@ subsection Particles
   set Particle generator name =  reference cell
   set Maximum particles per cell = 17
   set Load balancing strategy = remove and add particles
-  set Deletion algorithm = point density function
+  set Particle removal algorithm = point density function
   subsection Generator
     subsection Reference cell
       set Number of particles per cell per direction = 4
@@ -121,7 +95,6 @@ subsection Postprocess
 
   subsection Visualization
     set Time between graphical output = .001
-    set List of output variables = artificial viscosity
   end
 
   subsection Particles
@@ -131,6 +104,15 @@ subsection Postprocess
 
 end
 
-subsection Solver parameters
-  set Temperature solver tolerance = 1e-10
+
+subsection Prescribed Stokes solution
+  set Model name = function
+  subsection Velocity function
+    set Variable names      = x,y,t
+    set Function constants  = velConstant=-0
+    set Function expression = 0; (-0.5*sin(pi*t)) +velConstant
+  end
+end
+subsection Particles
+  set Particle removal algorithm = random
 end

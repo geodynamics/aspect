@@ -120,7 +120,7 @@ subsection Particles
   set Particle generator name =  reference cell
   set Maximum particles per cell = 32
   set Load balancing strategy = remove and add particles
-  set Deletion algorithm = point density function  
+  set Particle removal algorithm = point density function  
   subsection Generator
     subsection Reference cell
       set Number of particles per cell per direction = 4
