@@ -64,19 +64,19 @@ namespace aspect
     {
       enum Kind
       {
-        single_Advection_single_Stokes,
-        iterated_Advection_and_Stokes,
-        single_Advection_iterated_Stokes,
-        no_Advection_iterated_Stokes,
+        no_Advection_no_Stokes,
         no_Advection_single_Stokes,
+        no_Advection_single_Stokes_first_timestep_only,
+        no_Advection_iterated_Stokes,
         no_Advection_iterated_defect_correction_Stokes,
-        single_Advection_iterated_defect_correction_Stokes,
-        iterated_Advection_and_defect_correction_Stokes,
-        iterated_Advection_and_Newton_Stokes,
-        single_Advection_iterated_Newton_Stokes,
         single_Advection_no_Stokes,
-        first_timestep_only_single_Stokes,
-        no_Advection_no_Stokes
+        single_Advection_single_Stokes,
+        single_Advection_iterated_Stokes,
+        single_Advection_iterated_defect_correction_Stokes,
+        single_Advection_iterated_Newton_Stokes,
+        iterated_Advection_and_Stokes,
+        iterated_Advection_and_defect_correction_Stokes,
+        iterated_Advection_and_Newton_Stokes
       };
     };
 

@@ -859,21 +859,21 @@ namespace aspect
       // Check if we use a solver scheme that solves the advection equations
       switch (parameters.nonlinear_solver)
         {
+          case Parameters<dim>::NonlinearSolver::Kind::single_Advection_no_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_single_Stokes:
-          case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Stokes:
-          case Parameters<dim>::NonlinearSolver::Kind::no_Advection_iterated_defect_correction_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_defect_correction_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Newton_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_defect_correction_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Newton_Stokes:
-          case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Newton_Stokes:
-          case Parameters<dim>::NonlinearSolver::Kind::single_Advection_no_Stokes:
             return true;
 
-          case Parameters<dim>::NonlinearSolver::Kind::no_Advection_iterated_Stokes:
-          case Parameters<dim>::NonlinearSolver::Kind::no_Advection_single_Stokes:
-          case Parameters<dim>::NonlinearSolver::Kind::first_timestep_only_single_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::no_Advection_no_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::no_Advection_single_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::no_Advection_single_Stokes_first_timestep_only:
+          case Parameters<dim>::NonlinearSolver::Kind::no_Advection_iterated_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::no_Advection_iterated_defect_correction_Stokes:
             return false;
         }
       Assert(false, ExcNotImplemented());
@@ -888,21 +888,21 @@ namespace aspect
       // Check if we use a solver scheme that solves the Stokes equations
       switch (parameters.nonlinear_solver)
         {
-          case Parameters<dim>::NonlinearSolver::Kind::single_Advection_single_Stokes:
-          case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Stokes:
-          case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Stokes:
-          case Parameters<dim>::NonlinearSolver::Kind::no_Advection_iterated_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::no_Advection_single_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::no_Advection_single_Stokes_first_timestep_only:
+          case Parameters<dim>::NonlinearSolver::Kind::no_Advection_iterated_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::no_Advection_iterated_defect_correction_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::single_Advection_single_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_defect_correction_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Newton_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_defect_correction_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Newton_Stokes:
-          case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Newton_Stokes:
-          case Parameters<dim>::NonlinearSolver::Kind::first_timestep_only_single_Stokes:
             return true;
 
-          case Parameters<dim>::NonlinearSolver::Kind::single_Advection_no_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::no_Advection_no_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::single_Advection_no_Stokes:
             return false;
         }
       Assert(false, ExcNotImplemented());
@@ -1916,7 +1916,7 @@ namespace aspect
               break;
             }
 
-            case NonlinearSolver::first_timestep_only_single_Stokes:
+            case NonlinearSolver::no_Advection_single_Stokes_first_timestep_only:
             {
               solve_no_advection_single_stokes_first_timestep_only();
               break;
