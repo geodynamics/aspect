@@ -195,6 +195,14 @@ The following properties are available:
 
 **Documentation:** The seed used to generate random numbers. This will make sure that results are reproducible as long as the problem is run with the same amount of MPI processes. It is implemented as final seed = Random number seed + MPI Rank.
 
+(parameters:Particles/CPO_20Bingham_20Average/Use_20rotation_20matrix)=
+### __Parameter name:__ Use rotation matrix
+**Default value:** true
+
+**Pattern:** [Bool]
+
+**Documentation:** This determines whether the orientations will be saved as rotation matrices or Euler angles. Setting it to fause means that the orientations will be saved as Euler angles.
+
 (parameters:Particles/Composition_20reaction)=
 ## **Subsection:** Particles / Composition reaction
 (parameters:Particles/Composition_20reaction/List_20of_20products)=
@@ -219,7 +227,7 @@ The following properties are available:
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List a specific point in time when each reaction should occur during the simulation. If set to zero, the reaction occurs throughout the whole simulation.Units: yr or s, depending on the &ldquo;Use years in output instead of seconds&rdquo; parameter.
+**Documentation:** List a specific point in time when each reaction should occur during the simulation. If set to zero, the reaction occurs throughout the whole simulation.Units: yr or s, depending on the &ldquo;Use years instead of seconds&rdquo; parameter.
 
 (parameters:Particles/Composition_20reaction/Reaction_20area_20function)=
 ## **Subsection:** Particles / Composition reaction / Reaction area function

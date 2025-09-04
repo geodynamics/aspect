@@ -17,13 +17,13 @@ The format of valid entries for this parameter is that of a map given as &ldquo;
 
 Note that the no-slip boundary condition is a special case of the current one where the prescribed velocity happens to be zero. It can thus be implemented by indicating that a particular boundary is part of the ones selected using the current parameter and using &ldquo;zero velocity&rdquo; as the boundary values. Alternatively, you can simply list the part of the boundary on which the velocity is to be zero with the parameter &ldquo;Zero velocity boundary indicator&rdquo; in the current parameter section.
 
-Note that when &ldquo;Use years in output instead of seconds&rdquo; is set to true, velocity should be given in m/yr. The following boundary velocity models are available:
+Note that when &ldquo;Use years instead of seconds&rdquo; is set to true, velocity should be given in m/yr. The following boundary velocity models are available:
 
 &lsquo;ascii data&rsquo;: Implementation of a model in which the boundary velocity is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with &lsquo;#&rsquo;, but one of these lines needs to contain the number of grid points in each dimension as for example &lsquo;# POINTS: 3 3&rsquo;. The order of the data columns has to be &lsquo;x&rsquo;, &lsquo;velocity${}_x$&rsquo;, &lsquo;velocity${}_y$&rsquo; in a 2d model or &lsquo;x&rsquo;, &lsquo;y&rsquo;, &lsquo;velocity${}_x$&rsquo;, &lsquo;velocity${}_y$&rsquo;, &lsquo;velocity${}_z$&rsquo; in a 3d model. Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates.If you use a spherical model, then the assumed grid changes. &lsquo;x&rsquo; will be replaced by the radial distance of the point to the bottom of the model, &lsquo;y&rsquo; by the azimuth angle and &lsquo;z&rsquo; by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is &lsquo;r&rsquo;, &lsquo;phi&rsquo;, &lsquo;theta&rsquo; and not &lsquo;r&rsquo;, &lsquo;theta&rsquo;, &lsquo;phi&rsquo;, since this allows for dimension independent expressions. Velocities can be specified using cartesian (by default) or spherical unit vectors. No matter which geometry model is chosen, the unit of the velocities is assumed to be m/s or m/yr depending on the &lsquo;Use years in output instead of seconds&rsquo; flag. If you provide velocities in cm/yr, set the &lsquo;Scale factor&rsquo; option to 0.01.
 
 &lsquo;function&rsquo;: Implementation of a model in which the boundary velocity is given in terms of an explicit formula that is elaborated in the parameters in section &ldquo;Boundary velocity model|Function&rdquo;. The format of these functions follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.
 
-The formula you describe in the mentioned section is a semicolon separated list of velocities for each of the $d$ components of the velocity vector. These $d$ formulas are interpreted as having units m/s, unless the global input parameter &ldquo;Use years in output instead of seconds&rdquo; is set, in which case we interpret the formula expressions as having units m/year.
+The formula you describe in the mentioned section is a semicolon separated list of velocities for each of the $d$ components of the velocity vector. These $d$ formulas are interpreted as having units m/s, unless the global input parameter &ldquo;Use years instead of seconds&rdquo; is set, in which case we interpret the formula expressions as having units m/year.
 
 Likewise, since the symbol $t$ indicating time may appear in the formulas for the prescribed velocities, it is interpreted as having units seconds unless the global parameter above has been set.
 
@@ -75,7 +75,7 @@ The names of the boundaries listed here can either by numbers (in which case the
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Time step between following data files. Depending on the setting of the global &lsquo;Use years in output instead of seconds&rsquo; flag in the input file, this number is either interpreted as seconds or as years. The default is one million, i.e., either one million seconds or one million years.
+**Documentation:** Time step between following data files. Depending on the setting of the global &lsquo;Use years instead of seconds&rsquo; flag in the input file, this number is either interpreted as seconds or as years. The default is one million, i.e., either one million seconds or one million years.
 
 (parameters:Boundary_20velocity_20model/Ascii_20data_20model/Decreasing_20file_20order)=
 ### __Parameter name:__ Decreasing file order
@@ -179,7 +179,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Time step between following velocity files. Depending on the setting of the global &rsquo;Use years in output instead of seconds&rsquo; flag in the input file, this number is either interpreted as seconds or as years. The default is one million, i.e., either one million seconds or one million years.
+**Documentation:** Time step between following velocity files. Depending on the setting of the global &rsquo;Use years instead of seconds&rsquo; flag in the input file, this number is either interpreted as seconds or as years. The default is one million, i.e., either one million seconds or one million years.
 
 (parameters:Boundary_20velocity_20model/GPlates_20model/Decreasing_20file_20order)=
 ### __Parameter name:__ Decreasing file order
@@ -195,7 +195,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Time from which on the velocity file with number &rsquo;First velocity file number&rsquo; is used as boundary condition. Previous to this time, a no-slip boundary condition is assumed. Depending on the setting of the global &rsquo;Use years in output instead of seconds&rsquo; flag in the input file, this number is either interpreted as seconds or as years.
+**Documentation:** Time from which on the velocity file with number &rsquo;First velocity file number&rsquo; is used as boundary condition. Previous to this time, a no-slip boundary condition is assumed. Depending on the setting of the global &rsquo;Use years instead of seconds&rsquo; flag in the input file, this number is either interpreted as seconds or as years.
 
 (parameters:Boundary_20velocity_20model/GPlates_20model/First_20data_20file_20number)=
 ### __Parameter name:__ First data file number
