@@ -161,8 +161,7 @@ namespace aspect
                        "The default value is a value so that when converted from years into seconds "
                        "it equals the largest number representable by a floating "
                        "point number, implying an unlimited time step."
-                       "Units: Years or seconds, depending on the ``Use years "
-                       "in output instead of seconds'' parameter.");
+                       "Units: Years or seconds, depending on the ``Use years instead of seconds'' parameter.");
 
     prm.declare_entry ("Maximum first time step",
                        /* boost::lexical_cast<std::string>(std::numeric_limits<double>::max() /
@@ -177,8 +176,7 @@ namespace aspect
                        "The default value is a value so that when converted from years into seconds "
                        "it equals the largest number representable by a floating "
                        "point number, implying an unlimited time step. "
-                       "Units: Years or seconds, depending on the ``Use years "
-                       "in output instead of seconds'' parameter.");
+                       "Units: Years or seconds, depending on the ``Use years instead of seconds'' parameter.");
 
     prm.declare_entry ("Maximum relative increase in time step",
                        "91.0",
@@ -655,8 +653,8 @@ namespace aspect
                            "should use the parameter ``Reaction time steps per advection step'' and set "
                            "this parameter to the same (or larger) value as the ``Maximum time step'' "
                            "(which is 5.69e+300 by default). "
-                           "Units: Years or seconds, depending on the ``Use years "
-                           "in output instead of seconds'' parameter.");
+                           "Units: Years or seconds, depending on the ``Use years instead of seconds'' "
+                           "parameter.");
 
         prm.declare_entry ("Reaction time steps per advection step", "0",
                            Patterns::Integer (0),

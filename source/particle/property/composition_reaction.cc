@@ -172,8 +172,8 @@ namespace aspect
                              "List a specific point in time when each reaction should occur during "
                              "the simulation. If set to zero, the reaction occurs throughout the "
                              "whole simulation."
-                             "Units: yr or s, depending on the ``Use years "
-                             "in output instead of seconds'' parameter.");
+                             "Units: yr or s, depending on the ``Use years instead of seconds'' "
+                             "parameter.");
 
           prm.enter_subsection("Reaction area function");
           {

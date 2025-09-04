@@ -91,8 +91,7 @@ namespace aspect
           prm.declare_entry ("Reversal times", "5.0, 5.0, 2.0, 2.0, 2.092, 2.419, 2.419",
                              Patterns::List(Patterns::Double(0)),
                              "Reversal times of the magnetic field."
-                             "Units: yr or s, depending on the ``Use years "
-                             "in output instead of seconds'' parameter.");
+                             "Units: yr or s, depending on the ``Use years instead of seconds'' parameter.");
         }
         prm.leave_subsection();
       }

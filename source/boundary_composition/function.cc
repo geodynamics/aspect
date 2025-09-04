@@ -136,7 +136,7 @@ namespace aspect
                                                "may appear in the formulas for the prescribed "
                                                "composition, it is interpreted as having units "
                                                "seconds unless the global input parameter ``Use "
-                                               "years in output instead of seconds'' is set, in "
+                                               "years instead of seconds'' is set, in "
                                                "which case we interpret the formula expressions "
                                                "as having units year."
                                                "\n\n"
