@@ -567,9 +567,10 @@ namespace aspect
     // first build without diagonal strengthening:
     build_advection_preconditioner(advection_field, preconditioner, 0.);
 
-    TimerOutput::Scope timer (computing_timer, (advection_field.is_temperature() ?
-                                                "Solve temperature system" :
-                                                "Solve composition system"));
+    computing_timer.enter_subsection(advection_field.is_temperature() ?
+                                     "Solve temperature system" :
+                                     "Solve composition system");
+
     if (advection_field.is_temperature())
       {
         pcout << "   Solving temperature system... " << std::flush;
@@ -671,12 +672,21 @@ namespace aspect
          )))
       {
         apply_limiter_to_dg_solutions(advection_field);
+
+        computing_timer.leave_subsection(advection_field.is_temperature() ?
+                                         "Solve temperature system" :
+                                         "Solve composition system");
+
         // by applying the limiter we have modified the solution to no longer
         // satisfy the equation. Therefore the residual is meaningless and cannot
         // converge to zero in nonlinear iterations. Disable residual computation
         // for this field.
         return 0.0;
       }
+
+    computing_timer.leave_subsection(advection_field.is_temperature() ?
+                                     "Solve temperature system" :
+                                     "Solve composition system");
 
     return initial_residual;
   }
@@ -687,7 +697,7 @@ namespace aspect
   std::pair<double,double>
   Simulator<dim>::solve_stokes (LinearAlgebra::BlockVector &solution_vector)
   {
-    TimerOutput::Scope timer (computing_timer, "Solve Stokes system");
+    computing_timer.enter_subsection("Solve Stokes system");
 
     const std::string name = [&]() -> std::string
     {
@@ -1063,6 +1073,8 @@ namespace aspect
     // convert melt pressures:
     if (parameters.include_melt_transport)
       melt_handler->compute_melt_variables(system_matrix,solution_vector,system_rhs);
+
+    computing_timer.leave_subsection("Solve Stokes system");
 
     return {outputs.initial_nonlinear_residual,
             outputs.final_linear_residual

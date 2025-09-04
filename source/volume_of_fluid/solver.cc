@@ -33,7 +33,7 @@ namespace aspect
   {
     const unsigned int block_idx = field.volume_fraction.block_index;
 
-    TimerOutput::Scope timer (sim.computing_timer, "Solve volume of fluid system");
+    this->get_computing_timer().enter_subsection("Solve volume of fluid system");
     this->get_pcout() << "   Solving volume of fluid system... " << std::flush;
 
     const double tolerance = std::max(1e-50,
@@ -91,6 +91,8 @@ namespace aspect
     // Do not add VolumeOfFluid solver iterations to statistics, duplication due to
     // dimensional splitting results in incorrect line formatting (lines of
     // data split inconsistently with missing values)
+
+    this->get_computing_timer().leave_subsection("Solve volume of fluid system");
   }
 }
 

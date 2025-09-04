@@ -1881,13 +1881,15 @@ namespace aspect
   template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::build_preconditioner()
   {
-    TimerOutput::Scope timer (this->get_computing_timer(), "Build Stokes preconditioner");
+    this->get_computing_timer().enter_subsection("Build Stokes preconditioner");
 
     for (unsigned int level=0; level < this->get_triangulation().n_global_levels(); ++level)
       {
         mg_matrices_Schur_complement[level].compute_diagonal();
         mg_matrices_A_block[level].compute_diagonal();
       }
+
+    this->get_computing_timer().leave_subsection("Build Stokes preconditioner");
   }
 
 

@@ -316,7 +316,7 @@ namespace aspect
       if (this->get_timestep_number() == 0)
         return;
 
-      TimerOutput::Scope timer_section(this->get_computing_timer(), "FastScape plugin");
+      this->get_computing_timer().enter_subsection("FastScape plugin");
 
       const unsigned int current_timestep = this->get_timestep_number ();
       const double aspect_timestep_in_years = this->get_timestep() / year_in_seconds;
@@ -624,6 +624,8 @@ namespace aspect
                                                 *boundary_ids.begin(),
                                                 vector_function_object,
                                                 mesh_velocity_constraints);
+
+      this->get_computing_timer().leave_subsection("FastScape plugin");
     }
 
 
@@ -881,9 +883,13 @@ namespace aspect
                                            const double &fastscape_timestep_in_years,
                                            const unsigned int &fastscape_iterations) const
     {
-      TimerOutput::Scope timer_section(this->get_computing_timer(), "Execute FastScape");
+      this->get_computing_timer().enter_subsection("Execute FastScape");
+
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) != 0)
-        return;
+        {
+          this->get_computing_timer().leave_subsection("Execute FastScape");
+          return;
+        }
 
       // Because on the first timestep we will create an initial VTK file before running FastScape
       // and a second after, we first set the visualization step to zero.
@@ -997,6 +1003,8 @@ namespace aspect
 #endif
           }
       }
+
+      this->get_computing_timer().leave_subsection("Execute FastScape");
     }
 
 

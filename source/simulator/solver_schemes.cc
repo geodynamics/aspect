@@ -154,7 +154,7 @@ namespace aspect
           // outputs into the prescribed field before we assemble and solve the equation
           if (parameters.temperature_method == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
             {
-              TimerOutput::Scope timer (computing_timer, "Interpolate prescribed temperature");
+              computing_timer.enter_subsection("Interpolate prescribed temperature");
 
               interpolate_material_output_into_advection_field({adv_field});
 
@@ -162,6 +162,8 @@ namespace aspect
               // solution is the one that is used to assemble the diffusion system in
               // assemble_advection_system() for this solver scheme.
               old_solution.block(adv_field.block_index(introspection)) = solution.block(adv_field.block_index(introspection));
+
+              computing_timer.leave_subsection("Interpolate prescribed temperature");
             }
 
           assemble_advection_system (adv_field);
@@ -177,7 +179,7 @@ namespace aspect
         {
           const AdvectionField adv_field (AdvectionField::temperature());
 
-          TimerOutput::Scope timer (computing_timer, "Interpolate prescribed temperature");
+          computing_timer.enter_subsection("Interpolate prescribed temperature");
 
           interpolate_material_output_into_advection_field({adv_field});
 
@@ -187,6 +189,8 @@ namespace aspect
                                         adv_field.is_temperature(),
                                         adv_field.compositional_variable,
                                         dummy);
+
+          computing_timer.leave_subsection("Interpolate prescribed temperature");
 
           break;
         }
@@ -262,7 +266,7 @@ namespace aspect
               // outputs into the prescribed field before we assemble and solve the equation
               if (method == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
                 {
-                  TimerOutput::Scope timer (computing_timer, "Interpolate prescribed composition");
+                  computing_timer.enter_subsection("Interpolate prescribed composition");
 
                   interpolate_material_output_into_advection_field({adv_field});
 
@@ -270,6 +274,8 @@ namespace aspect
                   // solution is the one that is used to assemble the diffusion system in
                   // assemble_advection_system() for this solver scheme.
                   old_solution.block(adv_field.block_index(introspection)) = solution.block(adv_field.block_index(introspection));
+
+                  computing_timer.leave_subsection("Interpolate prescribed composition");
                 }
 
               assemble_advection_system (adv_field);
@@ -362,7 +368,7 @@ namespace aspect
 
     if (fields_interpolated_from_material_output.size() > 0)
       {
-        TimerOutput::Scope timer (computing_timer, "Interpolate prescribed composition");
+        computing_timer.enter_subsection("Interpolate prescribed composition");
 
         interpolate_material_output_into_advection_field(fields_interpolated_from_material_output);
 
@@ -375,6 +381,8 @@ namespace aspect
                                           adv_field.compositional_variable,
                                           dummy);
           }
+
+        computing_timer.leave_subsection("Interpolate prescribed composition");
       }
 
     if (fields_advected_by_particles.size() > 0)
@@ -991,7 +999,7 @@ namespace aspect
     assemble_and_solve_composition();
 
     {
-      TimerOutput::Scope timer (computing_timer, "Interpolate Stokes solution");
+      computing_timer.enter_subsection("Interpolate Stokes solution");
 
       // Assign Stokes solution
       LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.system_partitioning, mpi_communicator);
@@ -1023,6 +1031,7 @@ namespace aspect
           solution.block(block_p_f) = distributed_stokes_solution.block(block_p_f);
         }
 
+      computing_timer.leave_subsection("Interpolate Stokes solution");
     }
 
     if (parameters.run_postprocessors_on_nonlinear_iterations)
