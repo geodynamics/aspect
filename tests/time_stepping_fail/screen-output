@@ -36,11 +36,6 @@ Number of degrees of freedom: 948 (578+81+289)
    Solving temperature system... 2 iterations.
    Solving Stokes system (GMG)... 1+0 iterations.
 
-TimerOutput objects finalize timed values printed to the
-screen by communicating over MPI in their destructors.
-Since an exception is currently uncaught, this
-synchronization (and subsequent output) will be skipped
-to avoid a possible deadlock.
 
 
 Exception 'ExcMessage("The time step length for the each time step needs to be positive, " "but the computed step length of the \"function\" plugin was: " + std::to_string(new_time_step) + ".")' on rank 0 on processing: 

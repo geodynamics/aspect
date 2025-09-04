@@ -8,11 +8,6 @@ Number of degrees of freedom: 2,724 (1,666+225+833)
      that does not have any quadrature points in it.
      Consider reducing the number of depth layers for averaging.
 
-TimerOutput objects finalize timed values printed to the
-screen by communicating over MPI in their destructors.
-Since an exception is currently uncaught, this
-synchronization (and subsequent output) will be skipped
-to avoid a possible deadlock.
 
 
 Exception 'ExcMessage("In computing depth averages, there is at" " least one depth band that does not have" " any quadrature points in it." " Consider reducing number of depth layers" " for averaging specified in the parameter" " file.(Number lateral average bands)")' on rank 0 on processing: 
