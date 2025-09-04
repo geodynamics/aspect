@@ -263,9 +263,6 @@ namespace aspect
          * Returns the value of the selected kernel function.
          *
          * @param distance the distance to pass to the selected kernel function.
-         * @param coordinates the coordinates representing the offset between the reference
-         * and sampled particle. This is needed because Functions::CutOffFunctionW1<dim>
-         * only takes a Point<dim> as input, not a double.
          */
         double apply_selected_kernel_function(const double distance) const;
 
