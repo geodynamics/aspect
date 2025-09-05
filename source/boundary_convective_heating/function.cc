@@ -179,7 +179,7 @@ namespace aspect
                                                       "may appear in the formulas for the prescribed "
                                                       "heat flux is interpreted as having units "
                                                       "seconds unless the global parameter ``Use "
-                                                      "years in output instead of seconds'' has "
+                                                      "years instead of seconds'' has "
                                                       "been set.")
   }
 }

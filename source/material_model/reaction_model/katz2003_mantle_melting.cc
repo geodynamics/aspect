@@ -519,8 +519,7 @@ namespace aspect
                            "``Freezing rate'' and the ``Melting time scale for operator splitting'' "
                            "defines how fast freezing occurs with respect to melting (if the "
                            "product is 0.5, melting will occur twice as fast as freezing). "
-                           "Units: 1/yr or 1/s, depending on the ``Use years "
-                           "in output instead of seconds'' parameter.");
+                           "Units: 1/yr or 1/s, depending on the ``Use years instead of seconds'' parameter.");
         prm.declare_entry ("Melting time scale for operator splitting", "1e3",
                            Patterns::Double (0.),
                            "Because the operator splitting scheme is used, the porosity field can not "

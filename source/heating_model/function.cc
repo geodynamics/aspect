@@ -164,7 +164,7 @@ namespace aspect
                                   "Since the symbol $t$ indicating time "
                                   "may appear in the formulas for the heating rate"
                                   ", it is interpreted as having units "
-                                  "seconds unless the global parameter ``Use "
-                                  "years in output instead of seconds'' is set.")
+                                  "seconds unless the global parameter "
+                                  "``Use years instead of seconds'' is set.")
   }
 }
