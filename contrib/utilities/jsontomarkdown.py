@@ -126,7 +126,7 @@ def print_if_parameter_or_alias(entry, path_str, true_name, cur_path, output_fil
         # This is an alias for a parameter
         print("(parameters:" + path_str + ")=", file=output_file)
         aliased_name = entry["alias"]
-        alias_path_str = "/".join(cur_path) + "/" + mangle(aliased_name)
+        alias_path_str = "/".join(cur_path + [mangle(aliased_name)])
         print("### __Parameter name__: " +  true_name, file=output_file)
         print("**Alias:** [" + aliased_name + "](parameters:" + alias_path_str + ")\n", file=output_file)
         print("**Deprecation Status:** " + entry["deprecation_status"] + "\n", file=output_file)

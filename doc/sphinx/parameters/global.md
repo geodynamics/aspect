@@ -49,7 +49,7 @@ For more information, see the section in the manual that discusses the general m
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The end time of the simulation. The default value is a number so that when converted from years to seconds it is approximately equal to the largest number representable in floating point arithmetic. For all practical purposes, this equals infinity. Units: Years if the &rsquo;Use years in output instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The end time of the simulation. The default value is a number so that when converted from years to seconds it is approximately equal to the largest number representable in floating point arithmetic. For all practical purposes, this equals infinity. Units: Years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
 
 (parameters:Max_20nonlinear_20iterations)=
 ### __Parameter name:__ Max nonlinear iterations
@@ -73,7 +73,7 @@ For more information, see the section in the manual that discusses the general m
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Set a maximum time step size for only the first timestep. Generally the time step based on the CFL number should be sufficient, but for complicated models or benchmarking it may be useful to limit the first time step to some value, especially when using the free surface, which needs to settle to prevent instabilities. This should in that case be combined with a value set for &ldquo;Maximum relative increase in time step&rdquo;. The default value is a value so that when converted from years into seconds it equals the largest number representable by a floating point number, implying an unlimited time step. Units: Years or seconds, depending on the &ldquo;Use years in output instead of seconds&rdquo; parameter.
+**Documentation:** Set a maximum time step size for only the first timestep. Generally the time step based on the CFL number should be sufficient, but for complicated models or benchmarking it may be useful to limit the first time step to some value, especially when using the free surface, which needs to settle to prevent instabilities. This should in that case be combined with a value set for &ldquo;Maximum relative increase in time step&rdquo;. The default value is a value so that when converted from years into seconds it equals the largest number representable by a floating point number, implying an unlimited time step. Units: Years or seconds, depending on the &ldquo;Use years instead of seconds&rdquo; parameter.
 
 (parameters:Maximum_20relative_20increase_20in_20time_20step)=
 ### __Parameter name:__ Maximum relative increase in time step
@@ -93,7 +93,7 @@ Units: \%.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Set a maximum time step size for the solver to use. Generally the time step based on the CFL number should be sufficient, but for complicated models or benchmarking it may be useful to limit the time step to some value. The default value is a value so that when converted from years into seconds it equals the largest number representable by a floating point number, implying an unlimited time step.Units: Years or seconds, depending on the &ldquo;Use years in output instead of seconds&rdquo; parameter.
+**Documentation:** Set a maximum time step size for the solver to use. Generally the time step based on the CFL number should be sufficient, but for complicated models or benchmarking it may be useful to limit the time step to some value. The default value is a value so that when converted from years into seconds it equals the largest number representable by a floating point number, implying an unlimited time step.Units: Years or seconds, depending on the &ldquo;Use years instead of seconds&rdquo; parameter.
 
 (parameters:Nonlinear_20solver_20failure_20strategy)=
 ### __Parameter name:__ Nonlinear solver failure strategy
@@ -110,9 +110,23 @@ Units: \%.
 ### __Parameter name:__ Nonlinear solver scheme
 **Default value:** single Advection, single Stokes
 
-**Pattern:** [Selection single Advection, single Stokes|iterated Advection and Stokes|single Advection, iterated Stokes|no Advection, iterated Stokes|no Advection, single Stokes|no Advection, iterated defect correction Stokes|single Advection, iterated defect correction Stokes|iterated Advection and defect correction Stokes|iterated Advection and Newton Stokes|single Advection, iterated Newton Stokes|single Advection, no Stokes|first timestep only, single Stokes|no Advection, no Stokes ]
+**Pattern:** [Selection no Advection, no Stokes|no Advection, single Stokes|no Advection, single Stokes first timestep only|first timestep only, single Stokes|no Advection, iterated Stokes|no Advection, iterated defect correction Stokes|single Advection, no Stokes|single Advection, single Stokes|single Advection, iterated Stokes|single Advection, iterated defect correction Stokes|single Advection, iterated Newton Stokes|iterated Advection and Stokes|iterated Advection and defect correction Stokes|iterated Advection and Newton Stokes ]
 
-**Documentation:** The kind of scheme used to resolve the nonlinearity in the system. &lsquo;single Advection, single Stokes&rsquo; means that no nonlinear iterations are done, and the temperature, compositional fields and Stokes equations are solved exactly once per time step, one after the other. The &lsquo;iterated Advection and Stokes&rsquo; scheme iterates this decoupled approach by alternating the solution of the temperature, composition and Stokes systems. The &lsquo;single Advection, iterated Stokes&rsquo; scheme solves the temperature and composition equation once at the beginning of each time step and then iterates out the solution of the Stokes equation. The &lsquo;no Advection, iterated Stokes&rsquo; scheme only solves the Stokes system, iterating out the solution, and ignores compositions and the temperature equation (careful, the material model must not depend on the temperature or composition; this is mostly useful for Stokes benchmarks).  The &lsquo;no Advection, single Stokes&rsquo; scheme only solves the Stokes system once per timestep. This is also mostly useful for Stokes benchmarks. The &lsquo;single Advection, no Stokes&rsquo; scheme only solves the temperature and other advection systems once, and instead of solving for the Stokes system, a prescribed velocity and pressure is used. The &lsquo;iterated Advection and Newton Stokes&rsquo; scheme iterates by alternating the solution of the temperature, composition and Stokes equations, using Picard iterations for the temperature and composition, and Newton iterations for the Stokes system. The &lsquo;single Advection, iterated Newton Stokes&rsquo; scheme solves the temperature and composition equations once at the beginning of each time step and then iterates out the solution of the Stokes equation, using Newton iterations for the Stokes system. The &lsquo;iterated Advection and defect correction Stokes&rsquo; scheme iterates by alternating the solution of the temperature, composition and Stokes equations, using Picard iterations for the temperature and composition, and defect correction Picard iterations for the Stokes system. The &lsquo;single Advection, iterated defect correction Stokes&rsquo; scheme solves the temperature and composition equations once at the beginning of each time step and then iterates out the solution of the Stokes equation, using defect correction Picard iterations for the Stokes system. The &lsquo;no Advection, iterated defect correction Stokes&rsquo; scheme solves the temperature and composition equations once at the beginning of each time step and then iterates out the solution of the Stokes equation, using defect correction Picard iterations for the Stokes system. The &lsquo;first timestep only, single Stokes&rsquo; scheme solves the Stokes equations exactly once, at the first time step. No nonlinear iterations are done, and the temperature and composition systems are not solved.
+**Documentation:** The kind of scheme used to resolve the nonlinearity in the system of equations:
+
+The &lsquo;no Advection, no Stokes&rsquo; scheme solves no equations. This is useful to investigate the initial and boundary conditions of the model.
+The &lsquo;no Advection, single Stokes&rsquo; scheme only solves the Stokes system once per timestep. This is mostly useful for instantaneous models and Stokes benchmarks.
+The &lsquo;no Advection, single Stokes first timestep only&rsquo; scheme solves the Stokes equations exactly once, at the first time step. No nonlinear iterations are done, and the temperature and composition systems are not solved.
+The &lsquo;no Advection, iterated Stokes&rsquo; scheme only solves the Stokes system, iterating out the solution, and does not solve the compositions and the temperature equation. This is mostly useful for instantaneous models and benchmarks with stress-dependent rheology.
+The &lsquo;no Advection, iterated defect correction Stokes&rsquo; scheme solves the temperature and composition equations once at the beginning of each time step and then iterates out the solution of the Stokes equation, using defect correction Picard iterations for the Stokes system.
+The &lsquo;single Advection, no Stokes&rsquo; scheme solves the temperature and other advection systems once per timestep, and instead of solving for the Stokes system, a prescribed velocity and pressure is used. This is useful for kinematic models and advection benchmarks.
+The &lsquo;single Advection, single Stokes&rsquo; solver scheme performs no nonlinear iterations, and the temperature, compositional fields and Stokes equations are solved exactly once per time step, one after the other. This is the default solver scheme.
+The &lsquo;single Advection, iterated Stokes&rsquo; scheme solves the temperature and composition equation once at the beginning of each time step and then iterates out the solution of the Stokes equation.
+The &lsquo;single Advection, iterated defect correction Stokes&rsquo; scheme solves the temperature and composition equations once at the beginning of each time step and then iterates out the solution of the Stokes equation, using defect correction Picard iterations for the Stokes system.
+The &lsquo;single Advection, iterated Newton Stokes&rsquo; scheme solves the temperature and composition equations once at the beginning of each time step and then iterates out the solution of the Stokes equation, using Newton iterations for the Stokes system.
+The &lsquo;iterated Advection and Stokes&rsquo; scheme iterates out the nonlinearity by alternating the solution of the temperature, composition and Stokes systems.
+The &lsquo;iterated Advection and defect correction Stokes&rsquo; scheme iterates by alternating the solution of the temperature, composition and Stokes equations, using Picard iterations for the temperature and composition, and defect correction Picard iterations for the Stokes system.
+The &lsquo;iterated Advection and Newton Stokes&rsquo; scheme iterates by alternating the solution of the temperature, composition and Stokes equations, using Picard iterations for the temperature and composition, and Newton iterations for the Stokes system.
 
 (parameters:Nonlinear_20solver_20tolerance)=
 ### __Parameter name:__ Nonlinear solver tolerance
@@ -164,7 +178,7 @@ In order to use this parameter, your cluster must obviously be using the Lustre 
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The start time of the simulation. Units: Years if the &rsquo;Use years in output instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The start time of the simulation. Units: Years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
 
 (parameters:Surface_20pressure)=
 ### __Parameter name:__ Surface pressure
@@ -203,7 +217,13 @@ For more information, see the section in the manual that discusses the general m
 **Documentation:** If set to true, the advection and reactions of compositional fields and temperature are solved separately, and can use different time steps. Note that this will only work if the material/heating model fills the reaction\_rates/heating\_reaction\_rates structures. Operator splitting can be used with any existing solver schemes that solve the temperature/composition equations.
 
 (parameters:Use_20years_20in_20output_20instead_20of_20seconds)=
-### __Parameter name:__ Use years in output instead of seconds
+### __Parameter name__: Use years in output instead of seconds
+**Alias:** [Use years instead of seconds](parameters:Use_20years_20instead_20of_20seconds)
+
+**Deprecation Status:** true
+
+(parameters:Use_20years_20instead_20of_20seconds)=
+### __Parameter name:__ Use years instead of seconds
 **Default value:** true
 
 **Pattern:** [Bool]

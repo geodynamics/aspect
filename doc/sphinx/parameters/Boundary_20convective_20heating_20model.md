@@ -31,7 +31,7 @@ The following boundary heat flux models are available:
 
 The formula you describe in the mentioned section is a scalar value for the heat flux that is assumed to be the flux normal to the boundary, and that has the unit W/(m$^2$) (in 3d) or W/m (in 2d). Negative fluxes are interpreted as the flow of heat into the domain, and positive fluxes are interpreted as heat flowing out of the domain.
 
-The symbol $t$ indicating time that may appear in the formulas for the prescribed heat flux is interpreted as having units seconds unless the global parameter &ldquo;Use years in output instead of seconds&rdquo; has been set.
+The symbol $t$ indicating time that may appear in the formulas for the prescribed heat flux is interpreted as having units seconds unless the global parameter &ldquo;Use years instead of seconds&rdquo; has been set.
 
 (parameters:Boundary_20convective_20heating_20model/List_20of_20boundary_20temperature_20model_20names)=
 ### __Parameter name:__ List of boundary temperature model names
@@ -55,7 +55,7 @@ The following boundary temperature models are available:
 
 &lsquo;function&rsquo;: Implementation of a model in which the boundary temperature is given in terms of an explicit formula that is elaborated in the parameters in section &ldquo;Boundary temperature model|Function&rdquo;.
 
-Since the symbol $t$ indicating time may appear in the formulas for the prescribed temperatures, it is interpreted as having units seconds unless the global input parameter &ldquo;Use years in output instead of seconds&rdquo; is set, in which case we interpret the formula expressions as having units year.
+Since the symbol $t$ indicating time may appear in the formulas for the prescribed temperatures, it is interpreted as having units seconds unless the global input parameter &ldquo;Use years instead of seconds&rdquo; is set, in which case we interpret the formula expressions as having units year.
 
 Because this class simply takes what the function calculates, this class can not know certain pieces of information such as the minimal and maximal temperature on the boundary. For operations that require this, for example in post-processing, this boundary temperature model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section &ldquo;Boundary temperature model/Initial temperature&rdquo;.
 
@@ -81,7 +81,7 @@ The following heat transfer coefficient models are available:
 
 The formula you describe in the mentioned section is a scalar value for the heat transfer coefficient across the boundary that has the unit W/(m$^2$)/K (in 3d) or W/m/K (in 2d). The heat flux across the boundary is then computed as the sum of a term that is proportional to the product of the heat transfer coefficient and the difference between the temperature given by the boundary temperature model and the current temperature at the boundary and a term that prescribes a fixed heat flux across the boundary.
 
-The symbol $t$ indicating time that may appear in the formulas for the prescribed heat flux is interpreted as having units seconds unless the global parameter &ldquo;Use years in output instead of seconds&rdquo; has been set.
+The symbol $t$ indicating time that may appear in the formulas for the prescribed heat flux is interpreted as having units seconds unless the global parameter &ldquo;Use years instead of seconds&rdquo; has been set.
 
 (parameters:Boundary_20convective_20heating_20model/Function)=
 ## **Subsection:** Boundary convective heating model / Function

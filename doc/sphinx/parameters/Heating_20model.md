@@ -29,7 +29,7 @@ For full adiabatic heating, this has to be used in combination with the heating 
 
 The formula is interpreted as having units W/kg.
 
-Since the symbol $t$ indicating time may appear in the formulas for the heating rate, it is interpreted as having units seconds unless the global parameter &ldquo;Use years in output instead of seconds&rdquo; is set.
+Since the symbol $t$ indicating time may appear in the formulas for the heating rate, it is interpreted as having units seconds unless the global parameter &ldquo;Use years instead of seconds&rdquo; is set.
 
 &lsquo;latent heat&rsquo;: Implementation of a standard model for latent heat.
 
@@ -183,7 +183,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** Half decay times. Units: (Seconds), or (Years) if set &lsquo;Use years instead of seconds&rsquo;.
+**Documentation:** Half decay times. Units: (Seconds), or (Years) if set &lsquo;use years instead of seconds&rsquo;.
 
 (parameters:Heating_20model/Radioactive_20decay/Heating_20rates)=
 ### __Parameter name:__ Heating rates

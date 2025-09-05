@@ -912,7 +912,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 (parameters:Material_20model/Entropy_20model/Lateral_20viscosity_20file_20name)=
 ### __Parameter name:__ Lateral viscosity file name
-**Default value:** temp-viscosity-prefactor.txt
+**Default value:** constant_lateral_vis_prefactor.txt
 
 **Pattern:** [Anything]
 
@@ -2178,7 +2178,7 @@ Units: \si{\pascal\second}
 
 **Documentation:** In case the operator splitting scheme is used, the porosity field can not be set to a new equilibrium melt fraction instantly, but the model has to provide a melting time scale instead. This time scale defines how fast melting happens, or more specifically, the parameter defines the time after which the deviation of the porosity from the equilibrium melt fraction will be reduced to a fraction of $1/e$. So if the melting time scale is small compared to the time step size, the reaction will be so fast that the porosity is very close to the equilibrium melt fraction after reactions are computed. Conversely, if the melting time scale is large compared to the time step size, almost no melting and freezing will occur.
 
-Also note that the melting time scale has to be larger than or equal to the reaction time step used in the operator splitting scheme, otherwise reactions can not be computed. If the model does not use operator splitting, this parameter is not used. Units: yr or s, depending on the &ldquo;Use years in output instead of seconds&rdquo; parameter.
+Also note that the melting time scale has to be larger than or equal to the reaction time step used in the operator splitting scheme, otherwise reactions can not be computed. If the model does not use operator splitting, this parameter is not used. Units: yr or s, depending on the &ldquo;Use years instead of seconds&rdquo; parameter.
 
 (parameters:Material_20model/Melt_20boukare/Mg_20mantle_20melting_20temperature)=
 ### __Parameter name:__ Mg mantle melting temperature
@@ -2430,7 +2430,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Documentation:** In case the operator splitting scheme is used, the porosity field can not be set to a new equilibrium melt fraction instantly, but the model has to provide a melting time scale instead. This time scale defines how fast melting happens, or more specifically, the parameter defines the time after which the deviation of the porosity from the equilibrium melt fraction will be reduced to a fraction of $1/e$. So if the melting time scale is small compared to the time step size, the reaction will be so fast that the porosity is very close to the equilibrium melt fraction after reactions are computed. Conversely, if the melting time scale is large compared to the time step size, almost no melting and freezing will occur.
 
-Also note that the melting time scale has to be larger than or equal to the reaction time step used in the operator splitting scheme, otherwise reactions can not be computed. If the model does not use operator splitting, this parameter is not used. Units: yr or s, depending on the &ldquo;Use years in output instead of seconds&rdquo; parameter.
+Also note that the melting time scale has to be larger than or equal to the reaction time step used in the operator splitting scheme, otherwise reactions can not be computed. If the model does not use operator splitting, this parameter is not used. Units: yr or s, depending on the &ldquo;Use years instead of seconds&rdquo; parameter.
 
 (parameters:Material_20model/Melt_20global/Pressure_20solidus_20change)=
 ### __Parameter name:__ Pressure solidus change
@@ -2656,7 +2656,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Freezing rate of melt when in subsolidus regions. If this parameter is set to a number larger than 0.0, it specifies the fraction of melt that will freeze per year (or per second, depending on the &ldquo;Use years in output instead of seconds&rdquo; parameter), as soon as the porosity exceeds the equilibrium melt fraction, and the equilibrium melt fraction falls below the depletion. In this case, melt will freeze according to the given rate until one of those conditions is not fulfilled anymore. The reasoning behind this is that there should not be more melt present than the equilibrium melt fraction, as melt production decreases with increasing depletion, but the freezing process of melt also reduces the depletion by the same amount, and as soon as the depletion falls below the equilibrium melt fraction, we expect that material should melt again (no matter how much melt is present). This is quite a simplification and not a realistic freezing parameterization, but without tracking the melt composition, there is no way to compute freezing rates accurately. If this parameter is set to zero, no freezing will occur. Note that freezing can never be faster than determined by the &ldquo;Melting time scale for operator splitting&rdquo;. The product of the &ldquo;Freezing rate&rdquo; and the &ldquo;Melting time scale for operator splitting&rdquo; defines how fast freezing occurs with respect to melting (if the product is 0.5, melting will occur twice as fast as freezing). Units: 1/yr or 1/s, depending on the &ldquo;Use years in output instead of seconds&rdquo; parameter.
+**Documentation:** Freezing rate of melt when in subsolidus regions. If this parameter is set to a number larger than 0.0, it specifies the fraction of melt that will freeze per year (or per second, depending on the &ldquo;Use years instead of seconds&rdquo; parameter), as soon as the porosity exceeds the equilibrium melt fraction, and the equilibrium melt fraction falls below the depletion. In this case, melt will freeze according to the given rate until one of those conditions is not fulfilled anymore. The reasoning behind this is that there should not be more melt present than the equilibrium melt fraction, as melt production decreases with increasing depletion, but the freezing process of melt also reduces the depletion by the same amount, and as soon as the depletion falls below the equilibrium melt fraction, we expect that material should melt again (no matter how much melt is present). This is quite a simplification and not a realistic freezing parameterization, but without tracking the melt composition, there is no way to compute freezing rates accurately. If this parameter is set to zero, no freezing will occur. Note that freezing can never be faster than determined by the &ldquo;Melting time scale for operator splitting&rdquo;. The product of the &ldquo;Freezing rate&rdquo; and the &ldquo;Melting time scale for operator splitting&rdquo; defines how fast freezing occurs with respect to melting (if the product is 0.5, melting will occur twice as fast as freezing). Units: 1/yr or 1/s, depending on the &ldquo;Use years instead of seconds&rdquo; parameter.
 
 (parameters:Material_20model/Melt_20simple/Mass_20fraction_20cpx)=
 ### __Parameter name:__ Mass fraction cpx
@@ -2698,7 +2698,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Documentation:** Because the operator splitting scheme is used, the porosity field can not be set to a new equilibrium melt fraction instantly, but the model has to provide a melting time scale instead. This time scale defines how fast melting happens, or more specifically, the parameter defines the time after which the deviation of the porosity from the equilibrium melt fraction will be reduced to a fraction of $1/e$. So if the melting time scale is small compared to the time step size, the reaction will be so fast that the porosity is very close to the equilibrium melt fraction after reactions are computed. Conversely, if the melting time scale is large compared to the time step size, almost no melting and freezing will occur.
 
-Also note that the melting time scale has to be larger than or equal to the reaction time step used in the operator splitting scheme, otherwise reactions can not be computed. Units: yr or s, depending on the &ldquo;Use years in output instead of seconds&rdquo; parameter.
+Also note that the melting time scale has to be larger than or equal to the reaction time step used in the operator splitting scheme, otherwise reactions can not be computed. Units: yr or s, depending on the &ldquo;Use years instead of seconds&rdquo; parameter.
 
 (parameters:Material_20model/Melt_20simple/Peridotite_20melting_20entropy_20change)=
 ### __Parameter name:__ Peridotite melting entropy change
@@ -3402,7 +3402,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** In case the operator splitting scheme is used, the porosity field can not be set to a new equilibrium fluid fraction instantly, but the model has to provide a reaction time scale instead. This time scale defines how fast fluid release and absorption happen, or more specifically, the parameter defines the time after which the deviation of the porosity from the free fluid fraction that would be in equilibrium with the solid will be reduced to a fraction of $1/e$. So if the fluid reaction time scale is small compared to the time step size, the reaction will be so fast that the porosity is very close to this equilibrium value after reactions are computed. Conversely, if the fluid reaction time scale is large compared to the time step size, almost no fluid release and absorption will occur.
 
-Also note that the fluid reaction time scale has to be larger than or equal to the reaction time step used in the operator splitting scheme, otherwise reactions can not be computed. If the model does not use operator splitting, this parameter is not used. Units: yr or s, depending on the &ldquo;Use years in output instead of seconds&rdquo; parameter.
+Also note that the fluid reaction time scale has to be larger than or equal to the reaction time step used in the operator splitting scheme, otherwise reactions can not be computed. If the model does not use operator splitting, this parameter is not used. Units: yr or s, depending on the &ldquo;Use years instead of seconds&rdquo; parameter.
 
 (parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Fluid_2dsolid_20reaction_20scheme)=
 ### __Parameter name:__ Fluid-solid reaction scheme
@@ -3564,7 +3564,7 @@ Also note that the fluid reaction time scale has to be larger than or equal to t
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Freezing rate of melt when in subsolidus regions. If this parameter is set to a number larger than 0.0, it specifies the fraction of melt that will freeze per year (or per second, depending on the &ldquo;Use years in output instead of seconds&rdquo; parameter), as soon as the porosity exceeds the equilibrium melt fraction, and the equilibrium melt fraction falls below the depletion. In this case, melt will freeze according to the given rate until one of those conditions is not fulfilled anymore. The reasoning behind this is that there should not be more melt present than the equilibrium melt fraction, as melt production decreases with increasing depletion, but the freezing process of melt also reduces the depletion by the same amount, and as soon as the depletion falls below the equilibrium melt fraction, we expect that material should melt again (no matter how much melt is present). This is quite a simplification and not a realistic freezing parameterization, but without tracking the melt composition, there is no way to compute freezing rates accurately. If this parameter is set to zero, no freezing will occur. Note that freezing can never be faster than determined by the &ldquo;Melting time scale for operator splitting&rdquo;. The product of the &ldquo;Freezing rate&rdquo; and the &ldquo;Melting time scale for operator splitting&rdquo; defines how fast freezing occurs with respect to melting (if the product is 0.5, melting will occur twice as fast as freezing). Units: 1/yr or 1/s, depending on the &ldquo;Use years in output instead of seconds&rdquo; parameter.
+**Documentation:** Freezing rate of melt when in subsolidus regions. If this parameter is set to a number larger than 0.0, it specifies the fraction of melt that will freeze per year (or per second, depending on the &ldquo;Use years instead of seconds&rdquo; parameter), as soon as the porosity exceeds the equilibrium melt fraction, and the equilibrium melt fraction falls below the depletion. In this case, melt will freeze according to the given rate until one of those conditions is not fulfilled anymore. The reasoning behind this is that there should not be more melt present than the equilibrium melt fraction, as melt production decreases with increasing depletion, but the freezing process of melt also reduces the depletion by the same amount, and as soon as the depletion falls below the equilibrium melt fraction, we expect that material should melt again (no matter how much melt is present). This is quite a simplification and not a realistic freezing parameterization, but without tracking the melt composition, there is no way to compute freezing rates accurately. If this parameter is set to zero, no freezing will occur. Note that freezing can never be faster than determined by the &ldquo;Melting time scale for operator splitting&rdquo;. The product of the &ldquo;Freezing rate&rdquo; and the &ldquo;Melting time scale for operator splitting&rdquo; defines how fast freezing occurs with respect to melting (if the product is 0.5, melting will occur twice as fast as freezing). Units: 1/yr or 1/s, depending on the &ldquo;Use years instead of seconds&rdquo; parameter.
 
 (parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Mass_20fraction_20cpx)=
 ### __Parameter name:__ Mass fraction cpx
@@ -3606,7 +3606,7 @@ Also note that the fluid reaction time scale has to be larger than or equal to t
 
 **Documentation:** Because the operator splitting scheme is used, the porosity field can not be set to a new equilibrium melt fraction instantly, but the model has to provide a melting time scale instead. This time scale defines how fast melting happens, or more specifically, the parameter defines the time after which the deviation of the porosity from the equilibrium melt fraction will be reduced to a fraction of $1/e$. So if the melting time scale is small compared to the time step size, the reaction will be so fast that the porosity is very close to the equilibrium melt fraction after reactions are computed. Conversely, if the melting time scale is large compared to the time step size, almost no melting and freezing will occur.
 
-Also note that the melting time scale has to be larger than or equal to the reaction time step used in the operator splitting scheme, otherwise reactions can not be computed. Units: yr or s, depending on the &ldquo;Use years in output instead of seconds&rdquo; parameter.
+Also note that the melting time scale has to be larger than or equal to the reaction time step used in the operator splitting scheme, otherwise reactions can not be computed. Units: yr or s, depending on the &ldquo;Use years instead of seconds&rdquo; parameter.
 
 (parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Peridotite_20melting_20entropy_20change)=
 ### __Parameter name:__ Peridotite melting entropy change
@@ -3723,6 +3723,14 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The maximum allowed weight percent that the sediment composition can hold.
+
+(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Use_20adiabatic_20pressure_20for_20reactions)=
+### __Parameter name:__ Use adiabatic pressure for reactions
+**Default value:** false
+
+**Pattern:** [Bool]
+
+**Documentation:** If true, the adiabatic pressure is used in the Tian 2019 solubility model. If false, the full pressure is used instead. When simulating fully coupled fluid transport, setting this to true is recommended since the compaction pressure can lead to numerical instabilities when determining reaction rates.
 
 (parameters:Material_20model/Replace_20lithosphere_20viscosity)=
 ## **Subsection:** Material model / Replace lithosphere viscosity
@@ -4446,7 +4454,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The fixed elastic time step $dte$. It is always used during the first timestep; afterwards on if &rsquo;Used fixed elastic time step&rsquo; is true. Units: years if the &rsquo;Use years in output instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The fixed elastic time step $dte$. It is always used during the first timestep; afterwards on if &rsquo;Used fixed elastic time step&rsquo; is true. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
 
 (parameters:Material_20model/Visco_20Plastic/Friction_20mechanism)=
 ### __Parameter name:__ Friction mechanism
@@ -5178,7 +5186,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The fixed elastic time step $dte$. It is always used during the first timestep; afterwards on if &rsquo;Used fixed elastic time step&rsquo; is true. Units: years if the &rsquo;Use years in output instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The fixed elastic time step $dte$. It is always used during the first timestep; afterwards on if &rsquo;Used fixed elastic time step&rsquo; is true. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
 
 (parameters:Material_20model/Viscoelastic/Heat_20capacities)=
 ### __Parameter name:__ Heat capacities

@@ -29,7 +29,7 @@ This parameter only describes which boundaries have a fixed heat flux, but not w
 
 The formula you describe in the mentioned section is a scalar value for the heat flux that is assumed to be the flux normal to the boundary, and that has the unit W/(m$^2$) (in 3d) or W/m (in 2d). Negative fluxes are interpreted as the flow of heat into the domain, and positive fluxes are interpreted as heat flowing out of the domain.
 
-The symbol $t$ indicating time that may appear in the formulas for the prescribed heat flux is interpreted as having units seconds unless the global parameter &ldquo;Use years in output instead of seconds&rdquo; has been set.
+The symbol $t$ indicating time that may appear in the formulas for the prescribed heat flux is interpreted as having units seconds unless the global parameter &ldquo;Use years instead of seconds&rdquo; has been set.
 
 (parameters:Boundary_20heat_20flux_20model/Function)=
 ## **Subsection:** Boundary heat flux model / Function

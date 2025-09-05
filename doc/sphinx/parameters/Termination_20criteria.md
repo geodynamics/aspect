@@ -79,7 +79,7 @@ The names of the boundaries listed here can either be numbers (in which case the
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The minimum length of simulation time that the system should be in steady state before termination. Note that if the time step size is similar to or larger than this value, the termination criterion will only have very few (in the most extreme case, just two) heat flux values to check. To ensure that a larger number of time steps are included in the check for steady state, this value should be much larger than the time step size. Units: years if the &rsquo;Use years in output instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The minimum length of simulation time that the system should be in steady state before termination. Note that if the time step size is similar to or larger than this value, the termination criterion will only have very few (in the most extreme case, just two) heat flux values to check. To ensure that a larger number of time steps are included in the check for steady state, this value should be much larger than the time step size. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
 
 (parameters:Termination_20criteria/Steady_20state_20temperature)=
 ## **Subsection:** Termination criteria / Steady state temperature
@@ -97,7 +97,7 @@ The names of the boundaries listed here can either be numbers (in which case the
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The minimum length of simulation time that the system should be in steady state before termination.Units: years if the &rsquo;Use years in output instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The minimum length of simulation time that the system should be in steady state before termination.Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
 
 (parameters:Termination_20criteria/Steady_20state_20velocity)=
 ## **Subsection:** Termination criteria / Steady state velocity
@@ -115,7 +115,7 @@ The names of the boundaries listed here can either be numbers (in which case the
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The minimum length of simulation time that the system should be in steady state before termination.Units: years if the &rsquo;Use years in output instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The minimum length of simulation time that the system should be in steady state before termination.Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
 
 (parameters:Termination_20criteria/User_20request)=
 ## **Subsection:** Termination criteria / User request

@@ -201,7 +201,7 @@ Once derivatives are used in a Newton method, ASPECT always uses the Eisenstat W
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Set a time step size for computing reactions of compositional fields and the temperature field in case operator splitting is used. This is only used when the parameter &ldquo;Use operator splitting&rdquo; is set to true and when the &lsquo;fixed step&rsquo; reaction solver type is used. The reaction time step must be greater than 0. If you want to prescribe the reaction time step only as a relative value compared to the advection time step as opposed to as an absolute value, you should use the parameter &ldquo;Reaction time steps per advection step&rdquo; and set this parameter to the same (or larger) value as the &ldquo;Maximum time step&rdquo; (which is 5.69e+300 by default). Units: Years or seconds, depending on the &ldquo;Use years in output instead of seconds&rdquo; parameter.
+**Documentation:** Set a time step size for computing reactions of compositional fields and the temperature field in case operator splitting is used. This is only used when the parameter &ldquo;Use operator splitting&rdquo; is set to true and when the &lsquo;fixed step&rsquo; reaction solver type is used. The reaction time step must be greater than 0. If you want to prescribe the reaction time step only as a relative value compared to the advection time step as opposed to as an absolute value, you should use the parameter &ldquo;Reaction time steps per advection step&rdquo; and set this parameter to the same (or larger) value as the &ldquo;Maximum time step&rdquo; (which is 5.69e+300 by default). Units: Years or seconds, depending on the &ldquo;Use years instead of seconds&rdquo; parameter.
 
 (parameters:Solver_20parameters/Operator_20splitting_20parameters/Reaction_20time_20steps_20per_20advection_20step)=
 ### __Parameter name:__ Reaction time steps per advection step
@@ -251,7 +251,7 @@ Once derivatives are used in a Newton method, ASPECT always uses the Eisenstat W
 
 **Pattern:** [Double 0...1 (inclusive)]
 
-**Documentation:** A relative tolerance up to which the approximate inverse of the $A$ block of the Stokes system is computed. This approximate $A$ is used in the preconditioning used in the GMRES solver. The exact definition of this block preconditioner for the Stokes equation can be found in {cite}&lsquo;kronbichler:etal:2012&lsquo;.
+**Documentation:** A relative tolerance up to which the approximate inverse of the $A$ block of the Stokes system is computed. This approximate $A$ is used in the preconditioning used in the GMRES solver. The exact definition of this block preconditioner for the Stokes equation can be found in {cite}`kronbichler:etal:2012`.
 
 (parameters:Solver_20parameters/Stokes_20solver_20parameters/Linear_20solver_20S_20block_20tolerance)=
 ### __Parameter name:__ Linear solver S block tolerance
@@ -259,7 +259,7 @@ Once derivatives are used in a Newton method, ASPECT always uses the Eisenstat W
 
 **Pattern:** [Double 0...1 (inclusive)]
 
-**Documentation:** A relative tolerance up to which the approximate inverse of the $S$ block (i.e., the Schur complement matrix $S = BA^{-1}B^{T}$) of the Stokes system is computed. This approximate inverse of the $S$ block is used in the preconditioning used in the GMRES solver. The exact definition of this block preconditioner for the Stokes equation can be found in {cite}&lsquo;kronbichler:etal:2012&lsquo;.
+**Documentation:** A relative tolerance up to which the approximate inverse of the $S$ block (i.e., the Schur complement matrix $S = BA^{-1}B^{T}$) of the Stokes system is computed. This approximate inverse of the $S$ block is used in the preconditioning used in the GMRES solver. The exact definition of this block preconditioner for the Stokes equation can be found in {cite}`kronbichler:etal:2012`.
 
 (parameters:Solver_20parameters/Stokes_20solver_20parameters/Linear_20solver_20tolerance)=
 ### __Parameter name:__ Linear solver tolerance
@@ -285,7 +285,7 @@ In practice, you should choose the value of this parameter to be so that if you 
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
-**Documentation:** As explained in the paper that describes ASPECT (Kronbichler, Heister, and Bangerth, 2012, see {cite}&lsquo;kronbichler:etal:2012&lsquo;) we first try to solve the Stokes system in every time step using a GMRES iteration with a poor but cheap preconditioner. By default, we try whether we can converge the GMRES solver in 200 such iterations before deciding that we need a better preconditioner. This is sufficient for simple problems with variable viscosity and we never need the second phase with the more expensive preconditioner. On the other hand, for more complex problems, and in particular for problems with strongly nonlinear viscosity, the 200 cheap iterations don&rsquo;t actually do very much good and one might skip this part right away. In that case, this parameter can be set to zero, i.e., we immediately start with the better but more expensive preconditioner.
+**Documentation:** As explained in the paper that describes ASPECT (Kronbichler, Heister, and Bangerth, 2012, see {cite}`kronbichler:etal:2012`) we first try to solve the Stokes system in every time step using a GMRES iteration with a poor but cheap preconditioner. By default, we try whether we can converge the GMRES solver in 200 such iterations before deciding that we need a better preconditioner. This is sufficient for simple problems with variable viscosity and we never need the second phase with the more expensive preconditioner. On the other hand, for more complex problems, and in particular for problems with strongly nonlinear viscosity, the 200 cheap iterations don&rsquo;t actually do very much good and one might skip this part right away. In that case, this parameter can be set to zero, i.e., we immediately start with the better but more expensive preconditioner.
 
 (parameters:Solver_20parameters/Stokes_20solver_20parameters/Stokes_20solver_20type)=
 ### __Parameter name:__ Stokes solver type
@@ -309,7 +309,7 @@ In practice, you should choose the value of this parameter to be so that if you 
 
 **Pattern:** [Bool]
 
-**Documentation:** This parameter determines whether we use an simplified approximation of the $A$ block as preconditioner for the Stokes solver, or the full $A$ block. The simplified approximation only contains the terms that describe the coupling of identical components (plus boundary conditions) as described in {cite}&lsquo;kronbichler:etal:2012&lsquo;. The full block is closer to the description in {cite}`rudi2017weighted`.
+**Documentation:** This parameter determines whether we use an simplified approximation of the $A$ block as preconditioner for the Stokes solver, or the full $A$ block. The simplified approximation only contains the terms that describe the coupling of identical components (plus boundary conditions) as described in {cite}`kronbichler:etal:2012`. The full block is closer to the description in {cite}`rudi2017weighted`.
 
 There is no clear way to determine which preconditioner performs better. The default value (simplified approximation) requires more outer GMRES iterations, but is faster to apply in each iteration. The full block needs less assembly time (because the block is available anyway), converges in less GMRES iterations, but requires more time per iteration. There are also differences in the amount of memory consumption between the two approaches.
 
