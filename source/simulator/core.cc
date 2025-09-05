@@ -125,12 +125,15 @@ namespace aspect
 
     template <int dim>
     typename Triangulation<dim>::MeshSmoothing
-    smoothing_flags()
+    smoothing_flags(bool global_coarsening)
     {
-      return static_cast<typename Triangulation<dim>::MeshSmoothing>(
-               Triangulation<dim>::limit_level_difference_at_vertices |
-               Triangulation<dim>::smoothing_on_refinement | Triangulation<dim>::smoothing_on_coarsening
-             );
+      if (global_coarsening)
+        return Triangulation<dim>::limit_level_difference_at_vertices;
+      else
+        return static_cast<typename Triangulation<dim>::MeshSmoothing>(
+                 Triangulation<dim>::limit_level_difference_at_vertices |
+                 Triangulation<dim>::smoothing_on_refinement | Triangulation<dim>::smoothing_on_coarsening
+               );
     }
 
 
@@ -139,14 +142,15 @@ namespace aspect
     typename parallel::distributed::Triangulation<dim>::Settings
     settings(const Parameters<dim> &parameters)
     {
-      return (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg ||
-              parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::default_solver)
-             ?
-             static_cast<typename parallel::distributed::Triangulation<dim>::Settings>
-             (parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning |
-              parallel::distributed::Triangulation<dim>::construct_multigrid_hierarchy)
-             :
-             parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning;
+      // Only local smoothing GMG needs a mesh hierarchy to be constructed:
+      if ((parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg ||
+           parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::default_solver)
+          && parameters.stokes_gmg_type == Parameters<dim>::StokesGMGType::local_smoothing)
+        return static_cast<typename parallel::distributed::Triangulation<dim>::Settings>
+               (parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning |
+                parallel::distributed::Triangulation<dim>::construct_multigrid_hierarchy);
+      else
+        return parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning;
     }
   }
 
@@ -231,7 +235,7 @@ namespace aspect
     nonlinear_iteration (numbers::invalid_unsigned_int),
     nonlinear_solver_failures (0),
 
-    triangulation (mpi_communicator, smoothing_flags<dim>(), settings(parameters)),
+    triangulation (mpi_communicator, smoothing_flags<dim>(parameters.stokes_gmg_type == Parameters<dim>::StokesGMGType::global_coarsening), settings(parameters)),
 
     mapping(construct_mapping<dim>(*geometry_model,*initial_topography_model)),
 
