@@ -659,7 +659,79 @@ namespace
               }
           }
 
-        simulator.run();
+        try
+          {
+            simulator.run();
+          }
+        // unhandled exceptions usually do not result in
+        // anything good because they result in an unwinding of the stack
+        // and, if only one processor triggers an exception, the
+        // destruction of objects in Simulator often causes a deadlock. thus, if
+        // an exception is generated, catch it, print an error message,
+        // and abort the program
+        catch (ExceptionBase &exc)
+          {
+            // report name of the deal.II exception:
+            std::cerr << std::endl << std::endl
+                      << "----------------------------------------------------"
+                      << std::endl;
+            std::cerr << "Exception '" << exc.get_exc_name() << "'"
+                      << " on rank " << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                      << " on processing: " << std::endl
+                      << exc.what() << std::endl
+                      << "Aborting!" << std::endl
+                      << "----------------------------------------------------"
+                      << std::endl;
+
+            MPI_Abort(MPI_COMM_WORLD, 1);
+            return;
+          }
+        catch (std::exception &exc)
+          {
+            std::cerr << std::endl << std::endl
+                      << "----------------------------------------------------"
+                      << std::endl;
+            std::cerr << "Exception"
+                      << " on rank " << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                      << " on processing: " << std::endl
+                      << exc.what() << std::endl
+                      << "Aborting!" << std::endl
+                      << "----------------------------------------------------"
+                      << std::endl;
+
+            MPI_Abort(MPI_COMM_WORLD, 1);
+            return;
+          }
+        catch (aspect::QuietException &)
+          {
+            // Quietly treat an exception used on processors other than root
+            // when we already know that processor 0 will generate an
+            // exception. We do this to avoid creating too much (duplicate)
+            // screen output. Note that QuietException is not derived from
+            // std::exception, so the order of this and the previous 'catch'
+            // block does not matter.
+            //
+            // Sleep a few seconds before aborting. This allows text output from
+            // other ranks to be printed before the MPI implementation might kill
+            // the computation.
+            std::this_thread::sleep_for(std::chrono::seconds(5));
+
+            MPI_Abort(MPI_COMM_WORLD, 1);
+            return;
+          }
+        catch (...)
+          {
+            std::cerr << std::endl << std::endl
+                      << "----------------------------------------------------"
+                      << std::endl;
+            std::cerr << "Unknown exception!" << std::endl
+                      << "Aborting!" << std::endl
+                      << "----------------------------------------------------"
+                      << std::endl;
+
+            MPI_Abort(MPI_COMM_WORLD, 1);
+            return;
+          }
       }
   }
 }
