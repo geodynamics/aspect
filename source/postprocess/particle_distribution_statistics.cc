@@ -118,7 +118,7 @@ namespace aspect
       const double global_function_max_mean = global_function_max_sum/global_cells_with_particles;
 
       // Write to statistics file
-      statistics.add_value ("Minimum PDF standard deviation ", global_standard_deviation_min);
+      statistics.add_value ("Minimum PDF standard deviation: ", global_standard_deviation_min);
       statistics.add_value ("Mean of PDF standard deviation: ", global_standard_deviation_mean);
       statistics.add_value ("Maximum PDF standard deviation: ", global_standard_deviation_max);
       statistics.add_value ("Mean of PDF minimum values: ", global_function_min_mean);
