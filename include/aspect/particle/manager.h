@@ -47,7 +47,7 @@
 #include <boost/serialization/unique_ptr.hpp>
 
 #include <random>
-
+#include <vector>
 
 namespace aspect
 {

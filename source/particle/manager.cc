@@ -362,7 +362,25 @@ namespace aspect
                         if (deletion_algorithm == DeletionAlgorithm::point_density_function)
                           {
                             ParticlePDF<dim> pdf(0.3,kernel_function);
-                            pdf.fill_from_particle_range(particle_handler->particles_in_cell(cell),current_n_particles_in_cell);
+                            /*
+                            'particle_ranges_to_sum_over' includes this cell's and neighboring cell's particles.
+                            If neighboring cell's particles are not included in the KDE, particles at cell boundaries will
+                            have artificially low point density values.
+                            */
+                            std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over;
+
+                            std::vector<typename Triangulation<dim>::active_cell_iterator> neighboring_cells;
+                            GridTools::get_active_neighbors<Triangulation<dim>>(cell, neighboring_cells);
+                            for (const auto &neighbor_cell: neighboring_cells)
+                            {
+                              particle_ranges_to_sum_over.push_back(particle_handler->particles_in_cell(neighbor_cell));
+                            }
+
+                            //std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over = {particle_handler->particles_in_cell(cell)};
+                                          
+                            pdf.fill_from_particle_range(particle_handler->particles_in_cell(cell),
+                                                         particle_ranges_to_sum_over,
+                                                         current_n_particles_in_cell);
                             pdf.compute_statistical_values();
 
                             const types::particle_index index_max = pdf.get_max_particle();
@@ -834,13 +852,13 @@ namespace aspect
                                "Strategy that is used to balance the computational "
                                "load across processors for adaptive meshes.");
             prm.declare_entry ("Particle removal algorithm", "random",
-                               Patterns::MultipleSelection ("random|point density function"),
+                               Patterns::Selection ("random|point density function"),
                                "Algorithm used to delete excess particles from cells. If point density function "
                                "is chosen, the particle manager as the removal algorithm, the particle manager "
                                "will generate a point density function from the locations of each particle and remove "
                                "the particle whose position is at the maximum of the point density function.");
             prm.declare_entry ("Point density kernel function", "cutoff w1 dealii",
-                               Patterns::MultipleSelection ("cutoff w1 dealii|uniform|triangular|gaussian"),
+                               Patterns::Selection ("cutoff w1 dealii|uniform|triangular|gaussian"),
                                "The kernel function is summed at each particle location to generate a point "
                                "density function of the particle locations according to a process known as "
                                "kernel density estimation. Because kernel density estimation sums the value of "
@@ -1024,7 +1042,7 @@ namespace aspect
 
         if (kernel_function_string == "cutoff w1 dealii")
           kernel_function = ParticlePDF<dim>::KernelFunction::cutoff_function_w1_dealii;
-        if (kernel_function_string == "uniform")
+        else if (kernel_function_string == "uniform")
           kernel_function = ParticlePDF<dim>::KernelFunction::uniform;
         else if (kernel_function_string == "triangular")
           kernel_function = ParticlePDF<dim>::KernelFunction::triangular;

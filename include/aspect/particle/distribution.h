@@ -29,6 +29,7 @@
 #include <deal.II/particles/property_pool.h>
 #include <deal.II/particles/particle_handler.h>
 #include <deal.II/base/function_lib.h>
+#include <vector>
 
 namespace aspect
 {
@@ -93,6 +94,7 @@ namespace aspect
          */
         void
         fill_from_particle_range(const typename Particles::ParticleHandler<dim>::particle_iterator_range particle_range,
+                                 const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over,
                                  const unsigned int n_particles_in_cell);
 
         /**
