@@ -47,7 +47,7 @@ The following boundary composition models are available:
 
 &lsquo;function&rsquo;: Implementation of a model in which the boundary composition is given in terms of an explicit formula that is elaborated in the parameters in section &ldquo;Boundary composition model|Function&rdquo;.
 
-Since the symbol $t$ indicating time may appear in the formulas for the prescribed composition, it is interpreted as having units seconds unless the global input parameter &ldquo;Use years in output instead of seconds&rdquo; is set, in which case we interpret the formula expressions as having units year.
+Since the symbol $t$ indicating time may appear in the formulas for the prescribed composition, it is interpreted as having units seconds unless the global input parameter &ldquo;Use years instead of seconds&rdquo; is set, in which case we interpret the formula expressions as having units year.
 
 The format of these functions follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.
 
@@ -81,7 +81,7 @@ Because this class simply takes what the initial composition had described, this
 
 &lsquo;function&rsquo;: Implementation of a model in which the boundary composition is given in terms of an explicit formula that is elaborated in the parameters in section &ldquo;Boundary composition model|Function&rdquo;.
 
-Since the symbol $t$ indicating time may appear in the formulas for the prescribed composition, it is interpreted as having units seconds unless the global input parameter &ldquo;Use years in output instead of seconds&rdquo; is set, in which case we interpret the formula expressions as having units year.
+Since the symbol $t$ indicating time may appear in the formulas for the prescribed composition, it is interpreted as having units seconds unless the global input parameter &ldquo;Use years instead of seconds&rdquo; is set, in which case we interpret the formula expressions as having units year.
 
 The format of these functions follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.
 
@@ -117,7 +117,7 @@ Because this class simply takes what the initial composition had described, this
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Time step between following data files. Depending on the setting of the global &lsquo;Use years in output instead of seconds&rsquo; flag in the input file, this number is either interpreted as seconds or as years. The default is one million, i.e., either one million seconds or one million years.
+**Documentation:** Time step between following data files. Depending on the setting of the global &lsquo;Use years instead of seconds&rsquo; flag in the input file, this number is either interpreted as seconds or as years. The default is one million, i.e., either one million seconds or one million years.
 
 (parameters:Boundary_20composition_20model/Ascii_20data_20model/Decreasing_20file_20order)=
 ### __Parameter name:__ Decreasing file order

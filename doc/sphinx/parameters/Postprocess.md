@@ -9,17 +9,13 @@
 ### __Parameter name:__ List of postprocessors
 **Default value:**
 
-**Pattern:** [MultipleSelection ODE statistics|Particle Distribution Score|Particle Distribution Statistics|Stokes residual|basic statistics|boundary densities|boundary pressures|boundary strain rate residual statistics|boundary velocity residual statistics|command|composition statistics|composition velocity statistics|core statistics|crystal preferred orientation|current surface|depth average|domain volume statistics|dynamic topography|entropy statistics|entropy viscosity statistics|fluid velocity statistics|geoid|global statistics|gravity calculation|heat flux densities|heat flux map|heat flux statistics|heating statistics|load balance statistics|mass flux statistics|material statistics|matrix statistics|maximum depth of field|melt statistics|memory statistics|mobility statistics|particle count statistics|particles|point values|pressure statistics|rotation statistics|sea level|spherical velocity statistics|temperature statistics|topography|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization|volume of fluid statistics ]
+**Pattern:** [MultipleSelection ODE statistics|Stokes residual|basic statistics|boundary densities|boundary pressures|boundary strain rate residual statistics|boundary velocity residual statistics|command|composition statistics|composition velocity statistics|core statistics|crystal preferred orientation|current surface|depth average|domain volume statistics|dynamic topography|entropy statistics|entropy viscosity statistics|fluid velocity statistics|geoid|global statistics|gravity calculation|heat flux densities|heat flux map|heat flux statistics|heating statistics|load balance statistics|mass flux statistics|material statistics|matrix statistics|maximum depth of field|melt statistics|memory statistics|mobility statistics|particle count statistics|particle distribution score|particle distribution statistics|particles|point values|pressure statistics|rotation statistics|sea level|spherical velocity statistics|temperature statistics|timing statistics|topography|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization|volume of fluid statistics ]
 
 **Documentation:** A comma separated list of postprocessor objects that should be run at the end of each time step. Some of these postprocessors will declare their own parameters which may, for example, include that they will actually do something only every so many time steps or years. Alternatively, the text &lsquo;all&rsquo; indicates that all available postprocessors should be run after each time step.
 
 The following postprocessors are available:
 
 &lsquo;ODE statistics&rsquo;: A postprocessor that computes some statistics about ODEs solved during the model evolution, specifically, how many iterations are needed to solve these ODEs on average.
-
-&lsquo;Particle Distribution Score&rsquo;: This postprocessor is intended to help evaluate how much the density of particles varies within cells, with the goal of supporting the development of algorithms to select particles for deletion and addition during load balancing. Because particle deletion can happen in various ways when load balancing, there are times when unintended gradients of particle density can form, especially when particles are moving from more refined cells into coarser cells. The postprocessor calculates a value from 0 to 1 for every cell, with values closer to zero representing cells with a density which is more uniform across the cell&rsquo;s area and values closer to 1 representing a cell in which the particles are highly concentrated in one part of the cell. Essentially, the postprocessor is trying to describe numerically how much particle density varies within cells. It does this by sorting every particle in each cell into a bucket based on the particle&rsquo;s location, and comparing the resulting data structure to ideal and worst case versions.
-
-&lsquo;Particle Distribution Statistics&rsquo;: A postprocessor that computes some statistics about the particle distribution within grid cells. In particular it calculates a point-density function for every cell and derives the maximum, minimum, and standard deviation values for every cell. The postprocessor reports the average of these values from every cell. It also reports the absolute maximum and minimum values across all cells. These sorts of statistics are useful to determine whether schemes that move, add, remove, or otherwise change the number of particles associated with each cell result in a roughly uniform distribution of particles in each cell, or whether particles tend to cluster in some parts of cells leaving other parts mostly empty. For example, comparing the maximum standard deviations of different load balancing schemes applied to a given test case illuminates which load balancing method creates more clustered particles. The maximum and minimum values of these point-density functions are also useful in the same way. These statistical values are computed from the point-density function and make up a quantitative description of particle clustering which is intended to supplement qualitative descriptions of particle clustering. The goal behind describing particle clustering numerically is to assist in developing new methods to add and delete particles which maintain roughly uniform particle density within cells.
 
 &lsquo;Stokes residual&rsquo;: A postprocessor that outputs the Stokes residuals during the iterative solver algorithm into a file stokes_residuals.txt in the output directory.
 
@@ -47,7 +43,7 @@ The following postprocessors are available:
 
 &lsquo;depth average&rsquo;: A postprocessor that computes depth averaged quantities and writes them into a file <depth_average.ext> in the output directory, where the extension of the file is determined by the output format you select. In addition to the output format, a number of other parameters also influence this postprocessor, and they can be set in the section `Postprocess/Depth average` in the input file.
 
-In the output files, the $x$-value of each data point corresponds to the depth, whereas the $y$-value corresponds to the simulation time. The time is provided in seconds or, if the global &ldquo;Use years in output instead of seconds&rdquo; parameter is set, in years.
+In the output files, the $x$-value of each data point corresponds to the depth, whereas the $y$-value corresponds to the simulation time. The time is provided in seconds or, if the global &ldquo;Use years instead of seconds&rdquo; parameter is set, in years.
 
 &lsquo;domain volume statistics&rsquo;: A postprocessor that computes the total area (in 2d) or volume (in 3d) of the computational domain.
 
@@ -110,11 +106,15 @@ In geodynamics, the term &ldquo;mass flux&rdquo; is often understood to be the q
 
 &lsquo;particle count statistics&rsquo;: A postprocessor that computes some statistics about the particle distribution, if present in this simulation. In particular, it computes minimal, average and maximal values of particles per cell in the global domain.
 
+&lsquo;particle distribution score&rsquo;: This postprocessor is intended to help evaluate how much the density of particles varies within cells, with the goal of supporting the development of algorithms to select particles for deletion and addition during load balancing. Because particle deletion can happen in various ways when load balancing, there are times when unintended gradients of particle density can form, especially when particles are moving from more refined cells into coarser cells. The postprocessor calculates a value from 0 to 1 for every cell, with values closer to zero representing cells with a density which is more uniform across the cell&rsquo;s area and values closer to 1 representing a cell in which the particles are highly concentrated in one part of the cell. Essentially, the postprocessor is trying to describe numerically how much particle density varies within cells. It does this by sorting every particle in each cell into a bucket based on the particle&rsquo;s location, and comparing the resulting data structure to ideal and worst case versions.
+
+&lsquo;particle distribution statistics&rsquo;: A postprocessor that computes some statistics about the particle distribution within grid cells. In particular it calculates a point-density function for every cell and derives the maximum, minimum, and standard deviation values for every cell. The postprocessor reports the average of these values from every cell. It also reports the absolute maximum and minimum values across all cells. These sorts of statistics are useful to determine whether schemes that move, add, remove, or otherwise change the number of particles associated with each cell result in a roughly uniform distribution of particles in each cell, or whether particles tend to cluster in some parts of cells leaving other parts mostly empty. For example, comparing the maximum standard deviations of different load balancing schemes applied to a given test case illuminates which load balancing method creates more clustered particles. The maximum and minimum values of these point-density functions are also useful in the same way. These statistical values are computed from the point-density function and make up a quantitative description of particle clustering which is intended to supplement qualitative descriptions of particle clustering. The goal behind describing particle clustering numerically is to assist in developing new methods to add and delete particles which maintain roughly uniform particle density within cells.
+
 &lsquo;particles&rsquo;: A Postprocessor that creates particles that follow the velocity field of the simulation. The particles can be generated and propagated in various ways and they can carry a number of constant or time-varying properties. The postprocessor can write output positions and properties of all particles at chosen intervals, although this is not mandatory. It also allows other parts of the code to query the particles for information.
 
 &lsquo;point values&rsquo;: A postprocessor that evaluates the solution (i.e., velocity, pressure, temperature, and compositional fields along with other fields that are treated as primary variables) at the end of every time step or after a user-specified time interval at a given set of points and then writes this data into the file <point\_values.txt> in the output directory. The points at which the solution should be evaluated are specified in the section `Postprocess/Point values` in the input file.
 
-In the output file, data is organized as (i) time, (ii) the 2 or 3 coordinates of the evaluation points, and (iii) followed by the values of the solution vector at this point. The time is provided in seconds or, if the global &ldquo;Use years in output instead of seconds&rdquo; parameter is set, in years. In the latter case, the velocity is also converted to meters/year, instead of meters/second.
+In the output file, data is organized as (i) time, (ii) the 2 or 3 coordinates of the evaluation points, and (iii) followed by the values of the solution vector at this point. The time is provided in seconds or, if the global &ldquo;Use years instead of seconds&rdquo; parameter is set, in years. In the latter case, the velocity is also converted to meters/year, instead of meters/second.
 
 :::{note}
 Evaluating the solution of a finite element field at arbitrarily chosen points is an expensive process. Using this postprocessor will only be efficient if the number of evaluation points or output times is relatively small. If you need a very large number of evaluation points, you should consider extracting this information from the visualization program you use to display the output of the &lsquo;visualization&rsquo; postprocessor.
@@ -131,6 +131,8 @@ The file format then consists of lines with Euclidean coordinates followed by th
 &lsquo;spherical velocity statistics&rsquo;: A postprocessor that computes radial, tangential and total RMS velocity.
 
 &lsquo;temperature statistics&rsquo;: A postprocessor that computes some statistics about the temperature field.
+
+&lsquo;timing statistics&rsquo;: A postprocessor that outputs timing information in the statistics file, in particular the total wall time spent in the different timing sections until the current timestep. Note that this postprocessor cannot report accurate timings for the postprocessing section as it is executed before postprocessing is complete.
 
 &lsquo;topography&rsquo;: A postprocessor intended for use with a deforming top surface.  After every step it loops over all the vertices on the top surface and determines the maximum and minimum topography relative to a reference datum (initial box height for a box geometry model or initial radius for a sphere/spherical shell geometry model). If the parameter &rsquo;Output to file&rsquo; in subsection &rsquo;Postprocess/Topography&rsquo; (that is, the subsection corresponding to the current postprocessor) is set to true, this postprocessor also outputs topography into text files named &lsquo;topography.NNNNN&rsquo; in the output directory, where NNNNN is the number of the time step.
 The file format then consists of lines with Euclidean coordinates followed by the corresponding topography value.Topography is printed/written in meters.
@@ -293,7 +295,7 @@ It is worth comparing this postprocessor with the visualization postprocessor ca
 
 **Documentation:** The time interval between each generation of output files. A value of zero indicates that output should be generated every time step.
 
-Units: years if the &rsquo;Use years in output instead of seconds&rsquo; parameter is set; seconds otherwise.
+Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
 
 (parameters:Postprocess/Crystal_20Preferred_20Orientation/Write_20in_20background_20thread)=
 ### __Parameter name:__ Write in background thread
@@ -366,7 +368,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The time interval between each generation of graphical output files. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years in output instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The time interval between each generation of graphical output files. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
 
 (parameters:Postprocess/Dynamic_20core_20statistics)=
 ## **Subsection:** Postprocess / Dynamic core statistics
@@ -694,7 +696,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The time interval between each generation of gravity output files. A value of 0 indicates that output should be generated in each time step. Units: years if the &rsquo;Use years in output instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The time interval between each generation of gravity output files. A value of 0 indicates that output should be generated in each time step. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
 
 (parameters:Postprocess/Gravity_20calculation/Time_20steps_20between_20gravity_20output)=
 ### __Parameter name:__ Time steps between gravity output
@@ -800,7 +802,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 **Documentation:** The time interval between each generation of output files. A value of zero indicates that output should be generated every time step.
 
-Units: years if the &rsquo;Use years in output instead of seconds&rsquo; parameter is set; seconds otherwise.
+Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
 
 (parameters:Postprocess/Particles/Write_20in_20background_20thread)=
 ### __Parameter name:__ Write in background thread
@@ -826,7 +828,7 @@ Units: years if the &rsquo;Use years in output instead of seconds&rsquo; paramet
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The time interval between each generation of point values output. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years in output instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The time interval between each generation of point values output. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
 
 (parameters:Postprocess/Point_20values/Use_20natural_20coordinates)=
 ### __Parameter name:__ Use natural coordinates
@@ -910,7 +912,7 @@ Units: years if the &rsquo;Use years in output instead of seconds&rsquo; paramet
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The time interval between each generation of text output files. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years in output instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The time interval between each generation of text output files. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
 
 (parameters:Postprocess/Sea_20level/Water_20density)=
 ### __Parameter name:__ Water density
@@ -936,7 +938,7 @@ Units: years if the &rsquo;Use years in output instead of seconds&rsquo; paramet
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The time interval between each generation of text output files. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years in output instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The time interval between each generation of text output files. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
 
 (parameters:Postprocess/Visualization)=
 ## **Subsection:** Postprocess / Visualization
@@ -1279,7 +1281,7 @@ Physical units: $\frac{1}{\text{s}}$.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The time interval between each generation of graphical output files. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years in output instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The time interval between each generation of graphical output files. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
 
 (parameters:Postprocess/Visualization/Time_20steps_20between_20graphical_20output)=
 ### __Parameter name:__ Time steps between graphical output

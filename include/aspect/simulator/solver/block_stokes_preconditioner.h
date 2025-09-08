@@ -37,7 +37,7 @@ namespace aspect
          * @brief Constructor
          * @param A_inverse_operator Approximation of the inverse of the velocity block.
          * @param S_inverse_operator Approximation for the inverse Schur complement.
-         * @param BToperator Operator for the B^T block of the Stokes system.
+         * @param BT_operator Operator for the B^T block of the Stokes system.
          */
         BlockSchurPreconditioner (
           const AInvOperator                         &A_inverse_operator,

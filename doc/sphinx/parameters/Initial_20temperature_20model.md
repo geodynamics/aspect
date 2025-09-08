@@ -139,7 +139,7 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The age of the lower thermal boundary layer, used for the calculation of the half-space cooling model temperature. Units: years if the &rsquo;Use years in output instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The age of the lower thermal boundary layer, used for the calculation of the half-space cooling model temperature. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
 
 (parameters:Initial_20temperature_20model/Adiabatic/Age_20top_20boundary_20layer)=
 ### __Parameter name:__ Age top boundary layer
@@ -147,7 +147,7 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The age of the upper thermal boundary layer, used for the calculation of the half-space cooling model temperature. Units: years if the &rsquo;Use years in output instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The age of the upper thermal boundary layer, used for the calculation of the half-space cooling model temperature. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
 
 (parameters:Initial_20temperature_20model/Adiabatic/Amplitude)=
 ### __Parameter name:__ Amplitude
@@ -361,7 +361,7 @@ If the function you are describing represents a vector-valued function with mult
 
 (parameters:Initial_20temperature_20model/Ascii_20data_20model/Data_20file_20name)=
 ### __Parameter name:__ Data file name
-**Default value:** box_2d.txt
+**Default value:** initial_isotherm_500K_box_3d.txt
 
 **Pattern:** [Anything]
 
