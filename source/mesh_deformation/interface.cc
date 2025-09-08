@@ -967,8 +967,6 @@ namespace aspect
           mesh_displacements = solution;
         }
 
-      if (this->is_stokes_matrix_free())
-        update_multilevel_deformation();
     }
 
 
