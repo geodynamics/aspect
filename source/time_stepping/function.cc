@@ -30,7 +30,8 @@ namespace aspect
     double
     Function<dim>::execute()
     {
-      double new_time_step = function.value(Point<1>(this->get_time()));
+      const double time_scale = this->convert_output_to_years() ? constants::year_in_seconds : 1.0;
+      double new_time_step    = function.value(Point<1>(this->get_time()) / time_scale) * time_scale;
 
       AssertThrow (new_time_step > 0,
                    ExcMessage("The time step length for the each time step needs to be positive, "
@@ -52,7 +53,10 @@ namespace aspect
         Functions::ParsedFunction<1>::declare_parameters (prm, 1);
         prm.declare_entry("Function expression", "1.0",
                           Patterns::Anything(),
-                          "Expression for the time step size as a function of 'time'.");
+                          "Expression for the time step size as a function of 'time'."
+                          "Units: years if the "
+                          "'Use years instead of seconds' parameter is set; "
+                          "seconds otherwise.");
         prm.declare_entry("Variable names", "time",
                           Patterns::Anything(),
                           "Name for the variable representing the current time.");
