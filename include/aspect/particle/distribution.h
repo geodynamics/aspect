@@ -59,7 +59,8 @@ namespace aspect
           gaussian,
           triangular,
           uniform,
-          cutoff_function_w1_dealii
+          cutoff_function_w1_dealii,
+          cutoff_function_c1_dealii
         };
 
         /**
@@ -282,7 +283,7 @@ namespace aspect
          *
          * @param distance the distance to pass to the selected kernel function.
          */
-        double apply_selected_kernel_function(const double distance) const;
+        double apply_selected_kernel_function(const double distance, const double distance_max) const;
 
         /**
          * The Uniform kernel function returns a value of 1.0 as long as the
@@ -298,7 +299,7 @@ namespace aspect
          *
          * @param distance the output of the kernel function depends on the distance between the reference point and the center of the kernel function.
          */
-        double kernelfunction_triangular(const double distance) const;
+        double kernelfunction_triangular(const double distance, const double distance_max) const;
 
         /**
          * The gaussian function returns the value of a gaussian distribution
