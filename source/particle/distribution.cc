@@ -67,7 +67,7 @@ namespace aspect
 
     template <int dim>
     void
-    ParticlePDF<dim>::fill_from_particle_range(const typename ParticleHandler<dim>::particle_iterator_range particle_range,
+    ParticlePDF<dim>::fill_from_particle_range(const typename Particles::ParticleHandler<dim>::particle_iterator_range particle_range,
                                                const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over,
                                                const unsigned int n_particles_in_cell)
     {
