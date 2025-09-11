@@ -863,8 +863,8 @@ namespace aspect
                                "is chosen, the particle manager as the removal algorithm, the particle manager "
                                "will generate a point density function from the locations of each particle and remove "
                                "the particle whose position is at the maximum of the point density function.");
-            prm.declare_entry ("Point density kernel function", "cutoff w1 dealii",
-                               Patterns::Selection ("cutoff w1 dealii|uniform|triangular|gaussian"),
+            prm.declare_entry ("Point density kernel function", "cutoff c1 dealii",
+                               Patterns::Selection ("cutoff c1 dealii|cutoff w1 dealii|uniform|triangular|gaussian"),
                                "The kernel function is summed at each particle location to generate a point "
                                "density function of the particle locations according to a process known as "
                                "kernel density estimation. Because kernel density estimation sums the value of "
@@ -876,9 +876,9 @@ namespace aspect
                                "input distance. The output of the triangular function decreases at a constant rate "
                                "with increasing distance between the particles. The uniform function returns a constant "
                                "value as long as the distance between particles is less than the selected bandwidth."
-                               "The cutoff w1 dealii option calls a deal.ii function called cutoffW1, which is a function "
-                               "whose return value decreases with distance. A more detailed explanation on the cutoffW1 "
-                               "function is available in the deal.ii documentation.");
+                               "The cutoff w1 and cutoff c1 dealii options call the deal.ii functions called cutoffW1 and cutoffC1 respectively. "
+                               "These are functions whose return values decrease with distance. A more detailed explanation on these two "
+                               "function are available in the deal.ii documentation.");
             prm.declare_entry ("Minimum particles per cell", "0",
                                Patterns::Integer (0),
                                "Lower limit for particle number per cell. This limit is "
@@ -1048,6 +1048,8 @@ namespace aspect
 
         if (kernel_function_string == "cutoff w1 dealii")
           kernel_function = ParticlePDF<dim>::KernelFunction::cutoff_function_w1_dealii;
+        else if (kernel_function_string == "cutoff c1 dealii")
+          kernel_function = ParticlePDF<dim>::KernelFunction::cutoff_function_c1_dealii;
         else if (kernel_function_string == "uniform")
           kernel_function = ParticlePDF<dim>::KernelFunction::uniform;
         else if (kernel_function_string == "triangular")

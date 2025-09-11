@@ -405,6 +405,11 @@ namespace aspect
           Functions::CutOffFunctionW1<1> cutoff_function(bandwidth);
           return cutoff_function.value(Point<1>(distance));
         }
+      else if (kernel_function == KernelFunction::cutoff_function_c1_dealii)
+        {
+          Functions::CutOffFunctionC1<1> cutoff_function(bandwidth);
+          return cutoff_function.value(Point<1>(distance));
+        }
       else
         {
           Assert(false, ExcMessage("Unknown kernel function used in insert_kernel_sum_into_pdf."));
