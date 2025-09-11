@@ -265,6 +265,7 @@ namespace aspect
       // If any load balancing technique is selected that creates/destroys particles
       if (particle_load_balancing & ParticleLoadBalancing::remove_and_add_particles)
         {
+          GridTools::Cache<dim>grid_cache(this->get_triangulation(), this->get_mapping());
           // First do some preparation for particle generation in poorly
           // populated areas. For this we need to know which particle ids to
           // generate so that they are globally unique.
@@ -369,15 +370,20 @@ namespace aspect
                             */
                             std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over;
 
-                            std::vector<typename Triangulation<dim>::active_cell_iterator> neighboring_cells;
-                            GridTools::get_active_neighbors<Triangulation<dim>>(cell, neighboring_cells);
-                            for (const auto &neighbor_cell: neighboring_cells)
-                            {
-                              particle_ranges_to_sum_over.push_back(particle_handler->particles_in_cell(neighbor_cell));
-                            }
+                            std::set<typename Triangulation<dim>::active_cell_iterator> neighboring_cells;
+                            const auto &vertex_to_cell_map = grid_cache.get_vertex_to_cell_map();
+                            for (const auto v : cell->vertex_indices())
+                              {
+                                const unsigned int vertex_index = cell->vertex_index(v);
+                                neighboring_cells.insert(vertex_to_cell_map[vertex_index].begin(),
+                                                         vertex_to_cell_map[vertex_index].end());
+                              }
 
-                            //std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over = {particle_handler->particles_in_cell(cell)};
-                                          
+                            for (const auto &neighbor_cell: neighboring_cells)
+                              {
+                                particle_ranges_to_sum_over.push_back(particle_handler->particles_in_cell(neighbor_cell));
+                              }
+
                             pdf.fill_from_particle_range(particle_handler->particles_in_cell(cell),
                                                          particle_ranges_to_sum_over,
                                                          current_n_particles_in_cell);
