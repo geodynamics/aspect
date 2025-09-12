@@ -123,7 +123,7 @@ namespace aspect
               */
               const double cell_diameter = surrounding_cell->diameter();
               const double cell_diameter_scaled_to_dimensions = cell_diameter / (std::sqrt(dim));
-              const auto &reference_coordinates = reference_particle.get_location();
+              const auto &particle_coordinates = reference_particle.get_location();
               double function_value = 0;
 
               for (const auto &particle_range_to_sum: particle_ranges_to_sum_over)
@@ -131,7 +131,7 @@ namespace aspect
                   for (const auto &kernel_position_particle: particle_range_to_sum)
                     {
                       const auto &kernel_coordinates = kernel_position_particle.get_location();
-                      const double distance = reference_coordinates.distance(kernel_coordinates);
+                      const double distance = particle_coordinates.distance(kernel_coordinates);
                       const double distance_normalized = distance/cell_diameter_scaled_to_dimensions;
                       function_value += apply_selected_kernel_function(distance_normalized,1.0/cell_diameter_scaled_to_dimensions);
                     }
