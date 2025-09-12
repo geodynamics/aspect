@@ -21,6 +21,7 @@
 #include <aspect/simulator/solver/matrix_free_operators.h>
 #include <aspect/simulator/solver/stokes_matrix_free.h>
 #include <aspect/simulator/solver/stokes_matrix_free_local_smoothing.h>
+#include <aspect/simulator/solver/block_stokes_preconditioner.h>
 #include <aspect/mesh_deformation/interface.h>
 
 #include <aspect/mesh_deformation/interface.h>
@@ -42,6 +43,7 @@
 
 namespace aspect
 {
+
 
   template <int dim, int velocity_degree>
   void
@@ -1204,7 +1206,6 @@ namespace aspect
     solver_control_cheap.enable_history_data();
     solver_control_expensive.enable_history_data();
 
-    // create a cheap preconditioner that consists of only a single V-cycle
     const internal::BlockSchurGMGPreconditioner<StokesMatrixType, ABlockMatrixType, BTBlockOperatorType,SchurComplementMatrixType, GMGPreconditioner, GMGPreconditioner>
     preconditioner_cheap (stokes_matrix, A_block_matrix, BT_block, Schur_complement_block_matrix,
                           prec_A, prec_Schur,
