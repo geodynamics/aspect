@@ -32,6 +32,7 @@
 #include <deal.II/lac/solver_bicgstab.h>
 #include <deal.II/lac/solver_cg.h>
 #include <deal.II/fe/fe_values.h>
+#include <deal.II/lac/trilinos_vector.h>
 
 namespace aspect
 {
@@ -175,7 +176,7 @@ namespace aspect
       * This operator can either just apply the preconditioner (AMG)
       * or perform an inner CG solve with the same preconditioner.
       */
-    template <class PreconditionerA>
+    template <class PreconditionerA, class VectorType, class StokesMatrixType>
     class InverseVelocityBlock
     {
       public:
@@ -189,20 +190,20 @@ namespace aspect
          * @param A_block_tolerance The tolerance for the CG solver which computes
          *     the inverse of the A block.
          */
-        InverseVelocityBlock(const TrilinosWrappers::SparseMatrix &matrix,
+        InverseVelocityBlock(const StokesMatrixType &matrix,
                              const PreconditionerA &preconditioner,
                              const bool do_solve_A,
                              const bool A_block_is_symmetric,
                              const double solver_tolerance);
 
-        void vmult(TrilinosWrappers::MPI::Vector &dst,
-                   const TrilinosWrappers::MPI::Vector &src) const;
+        void vmult(VectorType &dst,
+                   const VectorType &src) const;
 
         unsigned int n_iterations() const;
 
       private:
         mutable unsigned int n_iterations_;
-        const TrilinosWrappers::SparseMatrix &matrix;
+        const StokesMatrixType &matrix;
         const PreconditionerA &preconditioner;
         const bool do_solve_A;
         const bool A_block_is_symmetric;
@@ -211,9 +212,9 @@ namespace aspect
 
 
 
-    template <class PreconditionerA>
-    InverseVelocityBlock<PreconditionerA>::InverseVelocityBlock(
-      const TrilinosWrappers::SparseMatrix &matrix,
+    template <class PreconditionerA,class VectorType, class StokesMatrixType>
+    InverseVelocityBlock<PreconditionerA,VectorType,StokesMatrixType>::InverseVelocityBlock(
+      const StokesMatrixType &matrix,
       const PreconditionerA &preconditioner,
       const bool do_solve_A,
       const bool A_block_is_symmetric,
@@ -228,9 +229,9 @@ namespace aspect
 
 
 
-    template <class PreconditionerA>
-    void InverseVelocityBlock<PreconditionerA>::vmult(TrilinosWrappers::MPI::Vector &dst,
-                                                      const TrilinosWrappers::MPI::Vector &src) const
+    template <class PreconditionerA, class VectorType, class StokesMatrixType>
+    void InverseVelocityBlock<PreconditionerA,VectorType,StokesMatrixType>::vmult(VectorType &dst,
+                                                      const VectorType &src) const
     {
       // Either solve with the top left block
       // or just apply one preconditioner sweep (for the first few
@@ -284,8 +285,8 @@ namespace aspect
 
 
 
-    template <class PreconditionerA>
-    unsigned int InverseVelocityBlock<PreconditionerA>::n_iterations() const
+    template <class PreconditionerA,class VectorType, class StokesMatrixType>
+    unsigned int InverseVelocityBlock<PreconditionerA,VectorType,StokesMatrixType>::n_iterations() const
     {
       return n_iterations_;
     }
@@ -914,7 +915,7 @@ namespace aspect
           }
 
         // create a cheap preconditioner that consists of only a single V-cycle
-        internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG> inverse_velocity_block_cheap(
+        internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG,TrilinosWrappers::MPI::Vector,TrilinosWrappers::SparseMatrix> inverse_velocity_block_cheap(
           system_matrix.block(velocity_block_index,velocity_block_index),
           *Amg_preconditioner,
           /* do_solve_A = */ false,
@@ -928,7 +929,7 @@ namespace aspect
                 system_matrix.block(0,1));
 
         // create an expensive preconditioner that solves for the A block with CG
-        internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG> inverse_velocity_block_expensive(
+        internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG,TrilinosWrappers::MPI::Vector,dealii::TrilinosWrappers::SparseMatrix> inverse_velocity_block_expensive(
           system_matrix.block(velocity_block_index,velocity_block_index),
           *Amg_preconditioner,
           /* do_solve_A = */ true,
