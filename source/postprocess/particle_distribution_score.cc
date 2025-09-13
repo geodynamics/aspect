@@ -35,6 +35,8 @@ namespace aspect
       double local_max_score = 0;
       double global_score = 0;
       unsigned int cells_with_particles = 0;
+      std::vector<double> cell_scores;
+
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         {
@@ -121,14 +123,30 @@ namespace aspect
                   // error, resulting in a score from 0 to 1 for the cell.
                   const double distribution_score_current_cell = actual_error_squared/worst_case_error_squared;
 
+                  cell_scores.push_back(distribution_score_current_cell);
+
                   // summing to take average later
                   global_score += distribution_score_current_cell;
 
                   local_max_score = std::max(local_max_score, distribution_score_current_cell);
                   local_min_score = std::min(local_min_score, distribution_score_current_cell);
                 }
+              else
+                {
+                  // The score should be bad if there are no particles in a cell.
+                  cell_scores.push_back(0);
+                  //local_max_score = std::max(local_max_score, 0);
+                  //local_min_score = std::min(local_min_score, 0);
+                }
             }
         }
+
+
+      // Get the cell score vector from all of the processors.
+      std::vector<double> global_cell_scores =
+        Utilities::MPI::compute_set_union (cell_scores,this->get_mpi_communicator());
+      const double standard_deviation_of_cell_scores = compute_standard_deviation(global_cell_scores);
+
 
       // get final values from all processors
       const double global_max_score = Utilities::MPI::max (local_max_score, this->get_mpi_communicator());
@@ -141,11 +159,12 @@ namespace aspect
       statistics.add_value ("Minimal particle distribution score: ", global_min_score);
       statistics.add_value ("Average particle distribution score: ", average_score);
       statistics.add_value ("Maximal particle distribution score: ", global_max_score);
+      statistics.add_value ("Cell Score Standard Deviation: ", standard_deviation_of_cell_scores);
 
       std::ostringstream output;
-      output << global_min_score << '/' <<average_score << '/' << global_max_score;
+      output << global_min_score << '/' <<average_score << '/' << global_max_score << '/' << standard_deviation_of_cell_scores;
 
-      return std::pair<std::string, std::string> ("Particle distribution score min/avg/max:",
+      return std::pair<std::string, std::string> ("Particle distribution score min/avg/max/stdev:",
                                                   output.str());
     }
 
@@ -217,8 +236,33 @@ namespace aspect
 
 
     template <int dim>
+    double ParticleDistributionScore<dim>::compute_standard_deviation(std::vector<double> &cell_scores) const
+    {
+      double mean = 0;
+      // Loop through the vector and compute the sum.
+      for (const double this_value : cell_scores)
+        mean += this_value;
+
+      // Compute the mean
+      mean /= cell_scores.size();
+      double squared_deviation_sum = 0;
+
+      // Sum all the squared deviations for standard deviation
+      for (const double this_value : cell_scores)
+        {
+          const double deviation_squared = (this_value-mean)*(this_value-mean);
+          squared_deviation_sum += deviation_squared;
+        }
+      const double squared_deviation_mean = squared_deviation_sum / cell_scores.size();
+      double standard_deviation = std::sqrt(squared_deviation_mean);
+      return standard_deviation;
+    }
+
+
+
+    template <int dim>
     void
-    ParticleDistributionScore<dim>::declare_parameters (ParameterHandler &prm)
+    ParticleDistributionScore<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Postprocess");
       {
