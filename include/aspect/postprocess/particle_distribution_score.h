@@ -87,7 +87,7 @@ namespace aspect
                                          unsigned int> &buckets) const;
 
         /**
-         * Computes the standard devation of the numbers in the input vector. This is useful because
+         * Computes the standard deviation of the numbers in the input vector. This is useful because
          * it represents the difference between particle clustering among cells.
          * @param cell_scores a std::vector of doubles representing the scores of the cells over which to calculate the standard deviation.
          */
