@@ -22,6 +22,8 @@
 #include <aspect/postprocess/particle_distribution_score.h>
 #include <aspect/particle/manager.h>
 
+#include <deal.II/multigrid/mg_transfer_global_coarsening.templates.h>
+
 
 namespace aspect
 {
