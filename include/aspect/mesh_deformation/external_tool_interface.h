@@ -166,12 +166,15 @@ namespace aspect
         evaluate_aspect_variables_at_points () const;
 
         /**
-         * Given velocities (typically vertical, but not always) at
-         * all of the points this process has previously set via
-         * set_evaluation_points(), compute a (global) finite element
-         * field vector that in the velocity components of surface
-         * nodes corresponds to an interpolation of the velocities
-         * provided.
+         * Interpolate from velocities given in the evaluation points
+         * to ASPECT velocities on the surface in form of a finite
+         * element field.
+         *
+         * The @p velocities, which are typically vertical, were previously
+         * computed by the external tool and belong to the current process.
+         * The Output is a (global) finite element field vector that in
+         * the velocity components of surface nodes corresponds to an
+         * interpolation of the velocities provided.
          *
          * The output of this function can then be used as input for a
          * function that implements the
@@ -179,7 +182,7 @@ namespace aspect
          * base class.
          */
         LinearAlgebra::Vector
-        interpolate_velocities_to_surface_points (const std::vector<Tensor<1,dim>> &vertical_velocities) const;
+        interpolate_external_velocities_to_surface_support_points (const std::vector<Tensor<1,dim>> &velocities) const;
 
       protected:
 

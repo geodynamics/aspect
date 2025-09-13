@@ -37,7 +37,9 @@ namespace aspect
   {
 
 
-
+    /**
+     * Produce graphical output defined in points provided by the user.
+     */
     template <int dim, int spacedim = dim>
     class PointDataOut : public dealii::DataOutInterface<0, spacedim>
     {
@@ -72,14 +74,21 @@ namespace aspect
                       DataComponentInterpretation::DataComponentInterpretation>
                       &data_component_interpretations_ = {})
         {
-          Assert(
-            data_component_names.size() == data_component_interpretations_.size(),
-            ExcMessage(
-              "When calling Particles::DataOut::build_patches with data component "
-              "names and interpretations you need to provide as many data component "
-              "names as interpretations. Provide the same name for components that "
-              "belong to a single vector or tensor."));
+          Assert(data_component_names.size() == data_component_interpretations_.size(),
+                 ExcMessage(
+                   "When calling PointDataOut::build_patches() with data component "
+                   "names and interpretations you need to provide as many data component "
+                   "names as interpretations. Provide the same name for components that "
+                   "belong to a single vector or tensor."));
 
+          Assert(data.size() == 0 || locations.size(),
+                 ExcMessage("You need to either provide no data or data for each point."));
+          for (const auto &datum : data)
+            Assert(datum.size() == data_component_names.size(),
+                   ExcMessage("The data provided in each point needs to have the same number "
+                              "of components as names were provided."));
+
+          // Prepend the "id" to the data fields provided by the user:
           dataset_names.clear();
           dataset_names.emplace_back("id");
           dataset_names.insert(dataset_names.end(),
@@ -104,26 +113,17 @@ namespace aspect
               patches[i].vertices[0] = locations[i];
               patches[i].patch_index = i;
 
-              // We have one more data components than dataset_names (the particle id)
+              // Store id and properties given by the user:
               patches[i].data.reinit(n_data_components, 1);
-
-              patches[i].data(0, 0) = i; // id
-
-              if (n_data_components > 1)
-                {
-                  for (unsigned int property_index = 0;
-                       property_index < n_property_components;
-                       ++property_index)
-                    patches[i].data(property_index + 1, 0) =
-                      data[i][property_index];
-                }
+              patches[i].data(0, 0) = i; // store id
+              for (unsigned int property_index = 0; property_index < n_property_components; ++property_index)
+                patches[i].data(property_index + 1, 0) = data[i][property_index];
             }
         }
 
       protected:
         /**
-         * Returns the patches built by the data_out class which was previously
-         * built using a particle handler
+         * Returns the patches previously built by the build_patches() function.
          */
         virtual const std::vector<DataOutBase::Patch<0, spacedim>> &
         get_patches() const override
@@ -318,7 +318,7 @@ namespace aspect
         = compute_updated_velocities_at_points(aspect_surface_velocities);
 
       const LinearAlgebra::Vector v_interpolated
-        = interpolate_velocities_to_surface_points(external_surface_velocities);
+        = interpolate_external_velocities_to_surface_support_points(external_surface_velocities);
 
       // TODO: need ghost values of v_interpolated?
 
@@ -363,10 +363,12 @@ namespace aspect
       // for later function calls describe the same number of points.
       this->evaluation_points = evaluation_points;
 
-      // Set up RemotePointEvaluation with a Mapping of the undeformed mesh:
-      remote_point_evaluator = std::make_unique<Utilities::MPI::RemotePointEvaluation<dim, dim>>();
-      // TODO: does this need to be a higher order mapping for spherical problems?
+      // Set up RemotePointEvaluation. The evaluation points are given in reference coordinates,
+      // so we need to use a simple mapping instead of the one stored in the Simulator. The latter
+      // would produce the deformed mesh. We currently always use a Q1 mapping when mesh deformation
+      // is enabled, so a Q1 mapping is the right choice.
       static MappingQ<dim> mapping(1);
+      remote_point_evaluator = std::make_unique<Utilities::MPI::RemotePointEvaluation<dim, dim>>();
       remote_point_evaluator->reinit(this->evaluation_points, this->get_triangulation(), mapping);
 
       // Finally, also ensure that upon mesh refinement, all of the
@@ -401,13 +403,13 @@ namespace aspect
       // to put directly into deal.II...
       for (unsigned int c=0; c<n_components; ++c)
         {
-          std::vector<double> values = VectorTools::point_values<1>(*this->remote_point_evaluator,
-                                                                    this->get_dof_handler(),
-                                                                    this->get_solution(),
-                                                                    dealii::VectorTools::EvaluationFlags::avg,
-                                                                    c);
+          const std::vector<double> values = VectorTools::point_values<1>(*this->remote_point_evaluator,
+                                                                          this->get_dof_handler(),
+                                                                          this->get_solution(),
+                                                                          dealii::VectorTools::EvaluationFlags::avg,
+                                                                          c);
           for (unsigned int i=0; i<evaluation_points.size(); ++i)
-            solution_at_points[i][c]=values[i];
+            solution_at_points[i][c] = values[i];
         }
 
       return solution_at_points;
@@ -418,7 +420,7 @@ namespace aspect
     template <int dim>
     LinearAlgebra::Vector
     ExternalToolInterface<dim>::
-    interpolate_velocities_to_surface_points (const std::vector<Tensor<1,dim>> &velocities) const
+    interpolate_external_velocities_to_surface_support_points (const std::vector<Tensor<1,dim>> &velocities) const
     {
       Assert (remote_point_evaluator != nullptr,
               ExcMessage("You can only call this function if you have previously "
@@ -458,16 +460,24 @@ namespace aspect
       const DoFHandler<dim> &mesh_dof_handler = this->get_mesh_deformation_handler().get_mesh_deformation_dof_handler();
       LinearAlgebra::Vector vector_with_surface_velocities(mesh_dof_handler.locally_owned_dofs(),
                                                            this->get_mpi_communicator());
+
+      // The remote_point_evaluator will gives us the velocities in all evaluation points that are within one of our locally
+      // owned cells. The lambda defined below receives a list of points and their velocities for each cell. The coordinates
+      // are given in coordinates of the unit cell.
+      // For each support point of the velocity DoFHandler, we will set the velocity from the closest evaluation point. We
+      // do this by keeping track of 1/distance of the closest evaluation point checked so far. The initial value of 0.0
+      // denotes an infinite distance.
       LinearAlgebra::Vector one_over_distance_vec(mesh_dof_handler.locally_owned_dofs(),
                                                   this->get_mpi_communicator());
 
-
       const unsigned int dofs_per_cell = mesh_dof_handler.get_fe().dofs_per_cell;
-      std::vector<types::global_dof_index> cell_dof_indices (dofs_per_cell);
 
+      // Note: We assume that process_and_evaluate() does not call our lambda concurrently, otherwise we would have write
+      // conflicts when updating vector_with_surface_velocities and one_over_distance_vec.
       const auto eval_func = [&](const ArrayView< const Tensor<1,dim>> &values,
                                  const typename Utilities::MPI::RemotePointEvaluation<dim>::CellData &cell_data)
       {
+        std::vector<types::global_dof_index> cell_dof_indices (dofs_per_cell);
         for (const auto cell_index : cell_data.cell_indices())
           {
             const auto cell_dofs =
@@ -478,6 +488,9 @@ namespace aspect
             const auto local_values = cell_data.get_data_view(cell_index, values);
 
             cell_dofs->get_dof_indices(cell_dof_indices);
+
+            // Note: This search is a nested loop with the inner part executed #evaluation_point_in_this_cell * #dofs_per_cell
+            // times. We could precompute this information as the point locations and do not change (outside of mesh refinement).
             const std::vector< Point< dim >> &support_points = mesh_dof_handler.get_fe().get_unit_support_points();
             for (unsigned int i=0; i<unit_points.size(); ++i)
               {
@@ -486,9 +499,11 @@ namespace aspect
                     const double one_over_distance = 1.0/(unit_points[i].distance(support_points[j])+1e-10);
                     if (one_over_distance > one_over_distance_vec(cell_dof_indices[j]))
                       {
+                        // The point i is closer to support point j than anything we have seen so far. Keep track
+                        // of the distance and write the correct velocity component into the result:
                         one_over_distance_vec(cell_dof_indices[j]) = one_over_distance;
-                        const unsigned int c = mesh_dof_handler.get_fe().system_to_component_index(j).first;
-                        vector_with_surface_velocities(cell_dof_indices[j]) = local_values[i][c];
+                        const unsigned int component = mesh_dof_handler.get_fe().system_to_component_index(j).first;
+                        vector_with_surface_velocities(cell_dof_indices[j]) = local_values[i][component];
                       }
                   }
               }
@@ -496,8 +511,6 @@ namespace aspect
       };
 
       this->remote_point_evaluator->template process_and_evaluate<Tensor<1,dim>,1>(velocities, eval_func, /*sort_data*/ true);
-
-      one_over_distance_vec.compress(VectorOperation::insert);
       vector_with_surface_velocities.compress(VectorOperation::insert);
 
       return vector_with_surface_velocities;
