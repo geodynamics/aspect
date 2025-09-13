@@ -239,7 +239,7 @@ namespace aspect
       if (do_solve_A == true)
         {
           SolverControl solver_control(10000, src.l2_norm() * solver_tolerance);
-          PrimitiveVectorMemory<LinearAlgebra::Vector> mem;
+          PrimitiveVectorMemory<VectorType> mem;
 
           try
             {
@@ -247,7 +247,7 @@ namespace aspect
 
               if (A_block_is_symmetric)
                 {
-                  SolverCG<LinearAlgebra::Vector> solver(solver_control, mem);
+                  SolverCG<VectorType> solver(solver_control, mem);
                   solver.solve(matrix, dst, src, preconditioner);
                 }
               else
@@ -256,10 +256,10 @@ namespace aspect
                   // BiCGStab can also solve indefinite systems if necessary.
                   // Do not compute the exact residual, as this
                   // is more expensive, and we only need an approximate solution.
-                  SolverBicgstab<LinearAlgebra::Vector>
+                  SolverBicgstab<VectorType>
                   solver(solver_control,
                          mem,
-                         SolverBicgstab<LinearAlgebra::Vector>::AdditionalData(/*exact_residual=*/ false));
+                         SolverBicgstab<VectorType>::AdditionalData(/*exact_residual=*/ false));
                   solver.solve(matrix, dst, src, preconditioner);
                 }
               n_iterations_ += solver_control.last_step();
@@ -921,7 +921,7 @@ namespace aspect
           /* do_solve_A = */ false,
           stokes_A_block_is_symmetric(),
           parameters.linear_solver_A_block_tolerance);
-        const internal::BlockSchurPreconditioner<internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG>,
+        const internal::BlockSchurPreconditioner<internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG,TrilinosWrappers::MPI::Vector,TrilinosWrappers::SparseMatrix>,
               internal::SchurComplementOperator, LinearAlgebra::SparseMatrix, dealii::TrilinosWrappers::MPI::BlockVector>
               preconditioner_cheap (
                 inverse_velocity_block_cheap,
@@ -935,7 +935,7 @@ namespace aspect
           /* do_solve_A = */ true,
           stokes_A_block_is_symmetric(),
           parameters.linear_solver_A_block_tolerance);
-        const internal::BlockSchurPreconditioner<internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG>,
+        const internal::BlockSchurPreconditioner<internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG,TrilinosWrappers::MPI::Vector,TrilinosWrappers::SparseMatrix>,
               internal::SchurComplementOperator, LinearAlgebra::SparseMatrix, dealii::TrilinosWrappers::MPI::BlockVector>
               preconditioner_expensive (
                 inverse_velocity_block_expensive,
