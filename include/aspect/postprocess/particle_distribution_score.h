@@ -25,6 +25,7 @@
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
 #include <deal.II/base/table.h>
+#include <vector>
 
 namespace aspect
 {
@@ -84,6 +85,13 @@ namespace aspect
         void sort_particles_into_buckets(const typename Triangulation<dim>::active_cell_iterator &cell,
                                          const double bucket_width,Table<dim,
                                          unsigned int> &buckets) const;
+
+        /**
+         * Computes the standard deviation of the numbers in the input vector. This is useful because
+         * it represents the difference between particle clustering among cells.
+         * @param cell_scores a std::vector of doubles representing the scores of the cells over which to calculate the standard deviation.
+         */
+        double compute_standard_deviation(std::vector<double> &cell_scores) const;
 
     };
   }
