@@ -26,6 +26,75 @@ namespace aspect
   namespace internal
   {
     /**
+      * This class is used in the implementation of the right preconditioner
+      * as an approximation for the inverse of the velocity (A) block.
+      * This operator can either just apply the preconditioner (AMG)
+      * or perform an inner CG solve with the same preconditioner.
+      */
+    template <class PreconditionerA, class VectorType, class StokesMatrixType>
+    class InverseVelocityBlock
+    {
+      public:
+        /**
+         * Constructor.
+         * @param matrix The matrix that contains A (from the system matrix)
+         * @param preconditioner The preconditioner to be used
+         * @param do_solve_A A flag indicating whether we should actually solve with
+         *     the matrix $A$, or only apply one preconditioner step with it.
+         * @param A_block_is_symmetric A flag indicating whether the matrix $A$ is symmetric.
+         * @param A_block_tolerance The tolerance for the CG solver which computes
+         *     the inverse of the A block.
+         */
+        InverseVelocityBlock(const StokesMatrixType &matrix,
+                             const PreconditionerA &preconditioner,
+                             const bool do_solve_A,
+                             const bool A_block_is_symmetric,
+                             const double solver_tolerance);
+
+        void vmult(VectorType &dst,
+                   const VectorType &src) const;
+
+        unsigned int n_iterations() const;
+
+      private:
+        mutable unsigned int n_iterations_;
+        const StokesMatrixType &matrix;
+        const PreconditionerA &preconditioner;
+        const bool do_solve_A;
+        const bool A_block_is_symmetric;
+        const double solver_tolerance;
+    };
+
+
+
+    template <class PreconditionerA,class VectorType, class StokesMatrixType>
+    InverseVelocityBlock<PreconditionerA,VectorType,StokesMatrixType>::InverseVelocityBlock(
+      const StokesMatrixType &matrix,
+      const PreconditionerA &preconditioner,
+      const bool do_solve_A,
+      const bool A_block_is_symmetric,
+      const double solver_tolerance)
+      : n_iterations_ (0),
+        matrix (matrix),
+        preconditioner (preconditioner),
+        do_solve_A (do_solve_A),
+        A_block_is_symmetric (A_block_is_symmetric),
+        solver_tolerance (solver_tolerance)
+    {}
+
+
+
+   
+
+
+
+    template <class PreconditionerA,class VectorType, class StokesMatrixType>
+    unsigned int InverseVelocityBlock<PreconditionerA,VectorType,StokesMatrixType>::n_iterations() const
+    {
+      return n_iterations_;
+    }
+
+    /**
      * Implement the block Schur preconditioner
      * (A B^T; 0 S)^{-1}.
      */

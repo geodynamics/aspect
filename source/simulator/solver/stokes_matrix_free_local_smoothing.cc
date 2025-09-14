@@ -21,6 +21,7 @@
 #include <aspect/simulator/solver/matrix_free_operators.h>
 #include <aspect/simulator/solver/stokes_matrix_free.h>
 #include <aspect/simulator/solver/stokes_matrix_free_local_smoothing.h>
+#include <aspect/simulator/solver/block_stokes_preconditioner.h>
 #include <aspect/mesh_deformation/interface.h>
 
 #include <aspect/mesh_deformation/interface.h>
@@ -1206,26 +1207,26 @@ namespace aspect
     solver_control_expensive.enable_history_data();
 
     // create a cheap preconditioner that consists of only a single V-cycle
-        using VectorType = dealii::LinearAlgebra::distributed::Vector<GMGNumberType>;
+        // using VectorType = dealii::LinearAlgebra::distributed::Vector<GMGNumberType>;
         using GMGPreconditioner = PreconditionMG<dim, VectorType, MGTransferMF<dim,GMGNumberType>>;
         using StokesMatrixType = MatrixFreeStokesOperators::StokesOperator<dim,velocity_degree,double>;
         GMGPreconditioner prec_A(dof_handler_v, mg_A, mg_transfer_A_block);
 
 
 
-        aspect::internal::InverseVelocityBlock<GMGPreconditioner,VectorType,StokesMatrixType> inverse_velocity_block_cheap(
-          A_block_matrix,
-          prec_A,
-          /* do_solve_A = */ false,
-          sim.stokes_A_block_is_symmetric(),
-          this->get_parameters().linear_solver_A_block_tolerance);
-          // create an expensive preconditioner that solves for the A block with CG
-        aspect::internal::InverseVelocityBlock<GMGPreconditioner,VectorType,StokesMatrixType> inverse_velocity_block_expensive(
-          A_block_matrix,
-          prec_A,
-          /* do_solve_A = */ true,
-          sim.stokes_A_block_is_symmetric(),
-          this->get_parameters().linear_solver_A_block_tolerance);
+        // aspect::internal::InverseVelocityBlock<GMGPreconditioner,VectorType,StokesMatrixType> inverse_velocity_block_cheap(
+        //   A_block_matrix,
+        //   prec_A,
+        //   /* do_solve_A = */ false,
+        //   sim.stokes_A_block_is_symmetric(),
+        //   this->get_parameters().linear_solver_A_block_tolerance);
+        //   // create an expensive preconditioner that solves for the A block with CG
+        // aspect::internal::InverseVelocityBlock<GMGPreconditioner,VectorType,StokesMatrixType> inverse_velocity_block_expensive(
+        //   A_block_matrix,
+        //   prec_A,
+        //   /* do_solve_A = */ true,
+        //   sim.stokes_A_block_is_symmetric(),
+        //   this->get_parameters().linear_solver_A_block_tolerance);
         
     // create a cheap preconditioner that consists of only a single V-cycle
     const internal::BlockSchurGMGPreconditioner<StokesMatrixType, ABlockMatrixType, BTBlockOperatorType,SchurComplementMatrixType, GMGPreconditioner, GMGPreconditioner>
