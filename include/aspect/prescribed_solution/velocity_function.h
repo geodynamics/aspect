@@ -18,10 +18,10 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _aspect_prescribed_fields_velocity_function_h
-#define _aspect_prescribed_fields_velocity_function_h
+#ifndef _aspect_prescribed_solution_velocity_function_h
+#define _aspect_prescribed_solution_velocity_function_h
 
-#include <aspect/prescribed_fields/interface.h>
+#include <aspect/prescribed_solution/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
 
@@ -29,33 +29,32 @@
 
 namespace aspect
 {
-  namespace PrescribedFields
+  namespace PrescribedSolution
   {
 
     /**
      * A class that implements prescribed fields conditions based on a
      * functional description provided in the input file.
      *
-     * @ingroup PrescribedFieldss
+     * @ingroup PrescribedSolution
      */
     template <int dim>
-    class VelocityFunction : public Interface<dim>
+    class VelocityFunction : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
 
         /**
-        * Constructor.
-        */
+         * Constructor.
+         */
         VelocityFunction ();
 
         /**
          * A function that is called at the beginning of each time step to
-         * indicate what the model time is for which the boundary values will
-         * next be evaluated. For the current class, the function passes to
+         * indicate what the model time is for which the solution will
+         * next be prescribed. For the current class, the function passes to
          * the parsed function what the current time is.
          */
-        void update (const SimulatorAccess<dim> &simulator_access) override;
-
+        void update () override;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -72,15 +71,18 @@ namespace aspect
 
 
         /**
-         * A function that assigns new constrains
+         * TODO
          */
-        void constrain_internal_fields (const SimulatorAccess<dim> &simulator_access,
-                                        AffineConstraints<double> &current_constraints) override;
+        void constrain_solution (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                 const std::vector<Point<dim>> &positions,
+                                 const std::vector<unsigned int> component_indices,
+                                 std::vector<bool> &should_be_constrained,
+                                 std::vector<double> &solution) override;
 
       private:
-
-        // Because we do not initially know what dimension we're in, we need
-        // function parser objects for both 2d and 3d.
+        /**
+         * TODO
+         */
         Functions::ParsedFunction<dim> prescribed_velocity_indicator_function;
         Functions::ParsedFunction<dim> prescribed_velocity_function;
 
