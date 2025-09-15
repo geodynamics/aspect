@@ -26,6 +26,7 @@
 #include <aspect/geometry_model/box.h>
 
 #include <deal.II/base/utilities.h>
+#include <deal.II/base/mpi.templates.h>
 #include <deal.II/grid/tria.h>
 #include <deal.II/dofs/dof_handler.h>
 #include <deal.II/fe/fe.h>
