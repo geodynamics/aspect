@@ -166,66 +166,6 @@ namespace aspect
       return dst.l2_norm();
     }
 
-
-
-
-   /**
-    *Implements the vmult for InverseVelocityBlock.
-    */
-    template <class PreconditionerA, class VectorType, class StokesMatrixType>
-    void InverseVelocityBlock<PreconditionerA,VectorType,StokesMatrixType>::vmult(VectorType &dst,
-                                                      const VectorType &src) const
-    {
-      
-      // Either solve with the top left block
-      // or just apply one preconditioner sweep (for the first few
-      // iterations of our two-stage outer GMRES iteration)
-      if (do_solve_A == true)
-        {
-          SolverControl solver_control(10000, src.l2_norm() * solver_tolerance);
-          PrimitiveVectorMemory<VectorType> mem;
-
-          try
-            {
-              dst = 0.0;
-
-              if (A_block_is_symmetric)
-                {
-                  SolverCG<VectorType> solver(solver_control, mem);
-                  solver.solve(matrix, dst, src, preconditioner);
-                }
-              else
-                {
-                  // Use BiCGStab for non-symmetric matrices.
-                  // BiCGStab can also solve indefinite systems if necessary.
-                  // Do not compute the exact residual, as this
-                  // is more expensive, and we only need an approximate solution.
-                  SolverBicgstab<VectorType>
-                  solver(solver_control,
-                         mem,
-                         typename SolverBicgstab<VectorType>::AdditionalData(/*exact_residual=*/ false));
-                  solver.solve(matrix, dst, src, preconditioner);
-                }
-              n_iterations_ += solver_control.last_step();
-            }
-          catch (const std::exception &exc)
-            {
-              // if the solver fails, report the error from processor 0 with some additional
-              // information about its location, and throw a quiet exception on all other
-              // processors
-              Utilities::throw_linear_solver_failure_exception("iterative (top left) solver",
-                                                               "BlockSchurPreconditioner::vmult",
-                                                               std::vector<SolverControl> {solver_control},
-                                                               exc,
-                                                               src.get_mpi_communicator());
-            }
-        }
-      else
-        {
-          preconditioner.vmult (dst, src);
-          n_iterations_ += 1;
-        }
-    }
     /**
      * Base class for Schur Complement operators.
      */
