@@ -538,7 +538,7 @@ namespace aspect
                                                                    const unsigned int dir,
                                                                    const bool update_from_old)
   {
-    TimerOutput::Scope timer (sim.computing_timer, "Assemble volume of fluid system");
+    this->get_computing_timer().enter_subsection("Assemble volume of fluid system");
 
     const unsigned int block0_idx = field_struct_for_field_index(0).volume_fraction.block_index;
     const unsigned int block_idx = field.volume_fraction.block_index;
@@ -597,6 +597,8 @@ namespace aspect
 
     sim.system_matrix.compress(VectorOperation::add);
     sim.system_rhs.compress(VectorOperation::add);
+
+    this->get_computing_timer().leave_subsection("Assemble volume of fluid system");
   }
 
 

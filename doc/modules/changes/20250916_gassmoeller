@@ -1,0 +1,7 @@
+Fixed: ASPECT used several features that could fail in MPI
+communication in case an assert was triggered. The model
+would end up in a communication deadlock (a model that hangs
+without output) instead of correctly crashing and producing
+an error message. This was fixed.
+<br>
+(Rene Gassmoeller, 2025/09/16)
