@@ -13,7 +13,7 @@
 # Visualization 'gravity' shows gravity distribution.
 
 set Dimension                              = 3
-set Use years in output instead of seconds = true
+set Use years instead of seconds           = true
 set End time                               = 1e4
 
 set Output directory                       = gravity_tidal_potential
