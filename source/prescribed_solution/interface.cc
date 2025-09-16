@@ -125,6 +125,34 @@ namespace aspect
 
     template <int dim>
     void
+    Manager<dim>::declare_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection ("Prescribed solution");
+      {
+        const std::string pattern_of_names
+          = std::get<dim>(registered_plugins).get_pattern_of_names ();
+
+        prm.declare_entry("List of model names",
+                          "",
+                          Patterns::MultipleSelection(pattern_of_names),
+                          "A comma-separated list of prescribed solution models that "
+                          "will be used to compute the solution in certain regions. "
+                          "These plugins are loaded in the order given, and are combined "
+                          "via the operators listed "
+                          "in 'List of model operators'.\n\n"
+                          "The following prescribed solution models are available:\n\n"
+                          +
+                          std::get<dim>(registered_plugins).get_description_string());
+      }
+      prm.leave_subsection ();
+
+      std::get<dim>(registered_plugins).declare_parameters (prm);
+    }
+
+
+
+    template <int dim>
+    void
     Manager<dim>::parse_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection ("Prescribed solution");
@@ -154,32 +182,6 @@ namespace aspect
           this->plugin_objects.back()->parse_parameters (prm);
           this->plugin_objects.back()->initialize ();
         }
-    }
-
-    template <int dim>
-    void
-    Manager<dim>::declare_parameters (ParameterHandler &prm)
-    {
-      prm.enter_subsection ("Prescribed solution");
-      {
-        const std::string pattern_of_names
-          = std::get<dim>(registered_plugins).get_pattern_of_names ();
-
-        prm.declare_entry("List of model names",
-                          "",
-                          Patterns::MultipleSelection(pattern_of_names),
-                          "A comma-separated list of prescribed solution models that "
-                          "will be used to compute the solution in certain regions. "
-                          "These plugins are loaded in the order given, and are combined "
-                          "via the operators listed "
-                          "in 'List of model operators'.\n\n"
-                          "The following prescribed solution models are available:\n\n"
-                          +
-                          std::get<dim>(registered_plugins).get_description_string());
-      }
-      prm.leave_subsection ();
-
-      std::get<dim>(registered_plugins).declare_parameters (prm);
     }
 
 
