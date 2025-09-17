@@ -1055,7 +1055,7 @@ namespace aspect
 
     // GMG Preconditioner for ABlock and Schur complement
     using GMGPreconditioner = PreconditionMG<dim, VectorType, MGTransferMF<dim,GMGNumberType>>;
-    // GMGPreconditioner prec_A(dof_handler_v, mg_A, mg_transfer_A_block);
+    GMGPreconditioner prec_A(dof_handler_v, mg_A, mg_transfer_A_block);
     GMGPreconditioner prec_Schur(dof_handler_p, mg_Schur, mg_transfer_Schur_complement);
 
 
@@ -1206,29 +1206,6 @@ namespace aspect
     solver_control_cheap.enable_history_data();
     solver_control_expensive.enable_history_data();
 
-    // create a cheap preconditioner that consists of only a single V-cycle
-    // using VectorType = dealii::LinearAlgebra::distributed::Vector<GMGNumberType>;
-    using GMGPreconditioner = PreconditionMG<dim, VectorType, MGTransferMF<dim,GMGNumberType>>;
-    using StokesMatrixType = MatrixFreeStokesOperators::StokesOperator<dim,velocity_degree,double>;
-    GMGPreconditioner prec_A(dof_handler_v, mg_A, mg_transfer_A_block);
-
-
-
-    // aspect::internal::InverseVelocityBlock<GMGPreconditioner,VectorType,StokesMatrixType> inverse_velocity_block_cheap(
-    //   A_block_matrix,
-    //   prec_A,
-    //   /* do_solve_A = */ false,
-    //   sim.stokes_A_block_is_symmetric(),
-    //   this->get_parameters().linear_solver_A_block_tolerance);
-    //   // create an expensive preconditioner that solves for the A block with CG
-    // aspect::internal::InverseVelocityBlock<GMGPreconditioner,VectorType,StokesMatrixType> inverse_velocity_block_expensive(
-    //   A_block_matrix,
-    //   prec_A,
-    //   /* do_solve_A = */ true,
-    //   sim.stokes_A_block_is_symmetric(),
-    //   this->get_parameters().linear_solver_A_block_tolerance);
-
-    // create a cheap preconditioner that consists of only a single V-cycle
     const internal::BlockSchurGMGPreconditioner<StokesMatrixType, ABlockMatrixType, BTBlockOperatorType,SchurComplementMatrixType, GMGPreconditioner, GMGPreconditioner>
     preconditioner_cheap (stokes_matrix, A_block_matrix, BT_block, Schur_complement_block_matrix,
                           prec_A, prec_Schur,
