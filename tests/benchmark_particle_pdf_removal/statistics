@@ -1,0 +1,35 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: RMS velocity (m/s)
+# 9: Max. velocity (m/s)
+# 10: Minimal temperature (K)
+# 11: Average temperature (K)
+# 12: Maximal temperature (K)
+# 13: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 14: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 15: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 16: Outward heat flux through boundary with indicator 3 ("top") (W)
+# 17: Visualization file name
+# 18: Number of advected particles
+# 19: Particle file name
+# 20: Minimal particle distribution score: 
+# 21: Average particle distribution score: 
+# 22: Maximal particle distribution score: 
+# 23: Cell Score Standard Deviation: 
+# 24: Minimum PDF standard deviation: 
+# 25: Mean of PDF standard deviation: 
+# 26: Maximum PDF standard deviation: 
+# 27: Mean of PDF minimum values: 
+# 28: Mean PDF maximum values: 
+# 29: Minimum of PDF minimum values: 
+# 30: Maximum of PDF maximum values: 
+0 0.000000000000e+00 0.000000000000e+00 256 2595 1141 0 0.00000000e+00 0.00000000e+00 0.00000000e+00 9.24826389e-01 1.12500000e+00 1.11666667e-03 1.11666667e-03 0.00000000e+00  0.00000000e+00 output-benchmark_particle_pdf_removal/solution/solution-00000 4096 output-benchmark_particle_pdf_removal/particles/particles-00000 0.0000 0.0000 0.0000 0.0000 0.0681 0.0681 0.0681 0.0625 0.2500 0.0625 0.2500 
+1 3.000000000000e-02 3.000000000000e-02 256 2595 1141 8 4.70541567e-02 4.70541567e-02 0.00000000e+00 9.24794341e-01 1.12496653e+00 1.33107704e-03 1.33107704e-03 2.15661638e-02 -2.15661638e-02 output-benchmark_particle_pdf_removal/solution/solution-00001 4096 output-benchmark_particle_pdf_removal/particles/particles-00001 0.0000 0.0000 0.0000 0.0000 0.0681 0.0681 0.0681 0.0625 0.2500 0.0625 0.2500 
+2 6.000000000000e-02 3.000000000000e-02 256 2595 1141 9 9.36906573e-02 9.36906573e-02 0.00000000e+00 9.24761678e-01 1.12602061e+00 1.33950321e-03 1.33950321e-03 4.29067340e-02 -4.29067340e-02 output-benchmark_particle_pdf_removal/solution/solution-00002 4096 output-benchmark_particle_pdf_removal/particles/particles-00002 0.0000 0.0000 0.0000 0.0000 0.0681 0.0681 0.0681 0.0625 0.2500 0.0625 0.2500 
+3 9.000000000000e-02 3.000000000000e-02 256 2595 1141 9 1.39495553e-01 1.39495553e-01 0.00000000e+00 9.24726991e-01 1.12787772e+00 1.36522699e-03 1.36522699e-03 6.37947177e-02 -6.37947177e-02 output-benchmark_particle_pdf_removal/solution/solution-00003 4096 output-benchmark_particle_pdf_removal/particles/particles-00003 0.0000 0.0000 0.0000 0.0000 0.0681 0.0681 0.0681 0.0625 0.2500 0.0625 0.2500 
+4 1.000000000000e-01 1.000000000000e-02 256 2595 1141 8 1.54508497e-01 1.54508497e-01 0.00000000e+00 9.24714700e-01 1.12856144e+00 1.38300802e-03 1.38300802e-03 7.06177221e-02 -7.06177221e-02 output-benchmark_particle_pdf_removal/solution/solution-00004 4096 output-benchmark_particle_pdf_removal/particles/particles-00004 0.0000 0.0000 0.0000 0.0000 0.0681 0.0803 0.0924 0.0938 0.3125 0.0625 0.3750 

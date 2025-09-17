@@ -1,0 +1,5 @@
+# A benchmark of particle removal using a point density function.
+# See the benchmark folder for more information.
+include $ASPECT_SOURCE_DIR/benchmarks/particle_distribution/removal_algorithm_benchmarks.prm
+
+set End time = 0.1

@@ -370,6 +370,22 @@ namespace aspect
 
 
     template <int dim>
+    types::particle_index ParticlePDF<dim>::get_max_particle() const
+    {
+      return max_particle_index;
+    }
+
+
+
+    template <int dim>
+    types::particle_index ParticlePDF<dim>::get_min_particle() const
+    {
+      return min_particle_index;
+    }
+
+
+
+    template <int dim>
     double
     ParticlePDF<dim>::apply_selected_kernel_function(const double distance) const
     {
