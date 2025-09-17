@@ -31,7 +31,7 @@ namespace aspect
       * This operator can either just apply the preconditioner (AMG)
       * or perform an inner CG solve with the same preconditioner.
       */
-    template <class PreconditionerA, class VectorType, class StokesMatrixType>
+    template <class PreconditionerA, class VectorType, class ABlockType>
     class InverseVelocityBlock
     {
       public:
@@ -45,7 +45,7 @@ namespace aspect
          * @param A_block_tolerance The tolerance for the CG solver which computes
          *     the inverse of the A block.
          */
-        InverseVelocityBlock(const StokesMatrixType &matrix,
+        InverseVelocityBlock(const ABlockType &matrix,
                              const PreconditionerA &preconditioner,
                              const bool do_solve_A,
                              const bool A_block_is_symmetric,
@@ -58,7 +58,7 @@ namespace aspect
 
       private:
         mutable unsigned int n_iterations_;
-        const StokesMatrixType &matrix;
+        const ABlockType &matrix;
         const PreconditionerA &preconditioner;
         const bool do_solve_A;
         const bool A_block_is_symmetric;
@@ -67,9 +67,9 @@ namespace aspect
 
 
 
-    template <class PreconditionerA,class VectorType, class StokesMatrixType>
-    InverseVelocityBlock<PreconditionerA,VectorType,StokesMatrixType>::InverseVelocityBlock(
-      const StokesMatrixType &matrix,
+    template <class PreconditionerA,class VectorType, class ABlockType>
+    InverseVelocityBlock<PreconditionerA,VectorType,ABlockType>::InverseVelocityBlock(
+      const ABlockType &matrix,
       const PreconditionerA &preconditioner,
       const bool do_solve_A,
       const bool A_block_is_symmetric,
@@ -83,15 +83,15 @@ namespace aspect
     {}
 
 
-    
+
     /**
     *Implements the vmult for InverseVelocityBlock.
     */
-    template <class PreconditionerA, class VectorType, class StokesMatrixType>
-    void InverseVelocityBlock<PreconditionerA,VectorType,StokesMatrixType>::vmult(VectorType &dst,
-                                                      const VectorType &src) const
+    template <class PreconditionerA, class VectorType, class ABlockType>
+    void InverseVelocityBlock<PreconditionerA,VectorType,ABlockType>::vmult(VectorType &dst,
+                                                                            const VectorType &src) const
     {
-      
+
       // Either solve with the top left block
       // or just apply one preconditioner sweep (for the first few
       // iterations of our two-stage outer GMRES iteration)
@@ -144,12 +144,12 @@ namespace aspect
 
 
 
-   
 
 
 
-    template <class PreconditionerA,class VectorType, class StokesMatrixType>
-    unsigned int InverseVelocityBlock<PreconditionerA,VectorType,StokesMatrixType>::n_iterations() const
+
+    template <class PreconditionerA, class VectorType, class ABlockType>
+    unsigned int InverseVelocityBlock<PreconditionerA, VectorType, ABlockType>::n_iterations() const
     {
       return n_iterations_;
     }
