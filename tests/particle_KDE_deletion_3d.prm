@@ -24,8 +24,8 @@ subsection Geometry model
   subsection Box
     set X extent = 0.5
     set Y extent = 5
-    set Y periodic = true
     set Z extent = 0.5
+    set Y periodic = true
     set Y repetitions = 10
     set Box origin X coordinate = 0
     set Box origin Y coordinate = 0
@@ -107,6 +107,7 @@ subsection Particles
   set Particle generator name =  reference cell
   set Maximum particles per cell = 32
   set Load balancing strategy = remove and add particles
+  set Particle removal algorithm = point density function  
   subsection Generator
     subsection Reference cell
       set Number of particles per cell per direction = 4
@@ -116,7 +117,7 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, particles, particle distribution score
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, particles,  particle distribution score
 
   subsection Visualization
     set Time between graphical output = .001

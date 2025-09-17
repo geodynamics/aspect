@@ -62,8 +62,26 @@ namespace aspect
                         {
                           const auto &particle_handler = this->get_particle_manager(particle_manager_index).get_particle_handler();
 
+                          std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over;
+
+                          GridTools::Cache<dim>grid_cache(this->get_triangulation(), this->get_mapping());
+                          std::set<typename Triangulation<dim>::active_cell_iterator> neighboring_cells;
+                          const auto &vertex_to_cell_map = grid_cache.get_vertex_to_cell_map();
+                          for (const auto v : cell->vertex_indices())
+                            {
+                              const unsigned int vertex_index = cell->vertex_index(v);
+                              neighboring_cells.insert(vertex_to_cell_map[vertex_index].begin(),
+                                                       vertex_to_cell_map[vertex_index].end());
+                            }
+
+                          for (const auto &neighbor_cell: neighboring_cells)
+                            {
+                              particle_ranges_to_sum_over.push_back(particle_handler.particles_in_cell(neighbor_cell));
+                            }
+
                           Particle::ParticlePDF<dim> pdf(granularity,bandwidth,kernel_function);
                           pdf.fill_from_particle_range(particle_handler.particles_in_cell(cell),
+                                                       particle_ranges_to_sum_over,
                                                        particle_handler.n_particles_in_cell(cell));
                           pdf.compute_statistical_values();
 
@@ -84,7 +102,26 @@ namespace aspect
                           const auto &particle_handler = this->get_particle_manager(particle_manager_index).get_particle_handler();
 
                           Particle::ParticlePDF<dim> pdf(bandwidth,kernel_function);
+
+                          std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over;
+
+                          GridTools::Cache<dim>grid_cache(this->get_triangulation(), this->get_mapping());
+                          std::set<typename Triangulation<dim>::active_cell_iterator> neighboring_cells;
+                          const auto &vertex_to_cell_map = grid_cache.get_vertex_to_cell_map();
+                          for (const auto v : cell->vertex_indices())
+                            {
+                              const unsigned int vertex_index = cell->vertex_index(v);
+                              neighboring_cells.insert(vertex_to_cell_map[vertex_index].begin(),
+                                                       vertex_to_cell_map[vertex_index].end());
+                            }
+
+                          for (const auto &neighbor_cell: neighboring_cells)
+                            {
+                              particle_ranges_to_sum_over.push_back(particle_handler.particles_in_cell(neighbor_cell));
+                            }
+
                           pdf.fill_from_particle_range(particle_handler.particles_in_cell(cell),
+                                                       particle_ranges_to_sum_over,
                                                        particle_handler.n_particles_in_cell(cell));
                           pdf.compute_statistical_values();
 

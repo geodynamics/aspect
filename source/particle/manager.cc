@@ -860,7 +860,7 @@ namespace aspect
             prm.declare_entry ("Particle removal algorithm", "random",
                                Patterns::Selection ("random|point density function"),
                                "Algorithm used to delete excess particles from cells. If point density function "
-                               "is chosen, the particle manager as the removal algorithm, the particle manager "
+                               "is chosen, the particle manager "
                                "will generate a point density function from the locations of each particle and remove "
                                "the particle whose position is at the maximum of the point density function.");
             prm.declare_entry ("Point density kernel function", "cutoff c1 dealii",
