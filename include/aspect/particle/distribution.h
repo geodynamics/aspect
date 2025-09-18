@@ -29,6 +29,7 @@
 #include <deal.II/particles/property_pool.h>
 #include <deal.II/particles/particle_handler.h>
 #include <deal.II/base/function_lib.h>
+#include <vector>
 
 namespace aspect
 {
@@ -58,7 +59,8 @@ namespace aspect
           gaussian,
           triangular,
           uniform,
-          cutoff_function_w1_dealii
+          cutoff_function_w1_dealii,
+          cutoff_function_c1_dealii
         };
 
         /**
@@ -93,6 +95,7 @@ namespace aspect
          */
         void
         fill_from_particle_range(const typename Particles::ParticleHandler<dim>::particle_iterator_range particle_range,
+                                 const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over,
                                  const unsigned int n_particles_in_cell);
 
         /**
@@ -181,6 +184,22 @@ namespace aspect
         double
         get_standard_deviation() const;
 
+        /**
+         * Returns the index of the particle whose position has the highest
+         * point-density value. This function only works if the particle density
+         * function is defined per particle, instead of being defined on a grid.
+         */
+        types::particle_index
+        get_max_particle() const;
+
+        /**
+         * Returns the index of the particle whose position has the lowest
+         * point-density value. This function only works if the particle density
+         * function is defined per particle, instead of being defined on a grid.
+         */
+        types::particle_index
+        get_min_particle() const;
+
       private:
         /**
          * `function_output_table` holds the output of the point-density function
@@ -264,7 +283,7 @@ namespace aspect
          *
          * @param distance the distance to pass to the selected kernel function.
          */
-        double apply_selected_kernel_function(const double distance) const;
+        double apply_selected_kernel_function(const double distance, const double distance_max) const;
 
         /**
          * The Uniform kernel function returns a value of 1.0 as long as the
@@ -280,7 +299,7 @@ namespace aspect
          *
          * @param distance the output of the kernel function depends on the distance between the reference point and the center of the kernel function.
          */
-        double kernelfunction_triangular(const double distance) const;
+        double kernelfunction_triangular(const double distance, const double distance_max) const;
 
         /**
          * The gaussian function returns the value of a gaussian distribution
