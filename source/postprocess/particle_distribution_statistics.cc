@@ -63,7 +63,10 @@ namespace aspect
                           const auto &particle_handler = this->get_particle_manager(particle_manager_index).get_particle_handler();
 
                           Particle::ParticlePDF<dim> pdf(granularity,bandwidth,kernel_function);
+                          // This should be filled with this cell's particles and neighboring cells particles
+                          std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over = {particle_handler.particles_in_cell(cell)};
                           pdf.fill_from_particle_range(particle_handler.particles_in_cell(cell),
+                                                       particle_ranges_to_sum_over,
                                                        particle_handler.n_particles_in_cell(cell));
                           pdf.compute_statistical_values();
 
@@ -79,12 +82,32 @@ namespace aspect
                     }
                   else
                     {
+                      GridTools::Cache<dim>grid_cache(this->get_triangulation(), this->get_mapping());
                       for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
                         {
                           const auto &particle_handler = this->get_particle_manager(particle_manager_index).get_particle_handler();
 
                           Particle::ParticlePDF<dim> pdf(bandwidth,kernel_function);
+
+                          // This should be filled with this cell's particles and neighboring cells particles
+                          std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over = {particle_handler.particles_in_cell(cell)};
+
+                          std::set<typename Triangulation<dim>::active_cell_iterator> neighboring_cells;
+                          const auto &vertex_to_cell_map = grid_cache.get_vertex_to_cell_map();
+                          for (const auto v : cell->vertex_indices())
+                            {
+                              const unsigned int vertex_index = cell->vertex_index(v);
+                              neighboring_cells.insert(vertex_to_cell_map[vertex_index].begin(),
+                                                       vertex_to_cell_map[vertex_index].end());
+                            }
+
+                          for (const auto &neighbor_cell: neighboring_cells)
+                            {
+                              particle_ranges_to_sum_over.push_back(particle_handler.particles_in_cell(neighbor_cell));
+                            }
+
                           pdf.fill_from_particle_range(particle_handler.particles_in_cell(cell),
+                                                       particle_ranges_to_sum_over,
                                                        particle_handler.n_particles_in_cell(cell));
                           pdf.compute_statistical_values();
 
@@ -118,7 +141,7 @@ namespace aspect
       const double global_function_max_mean = global_function_max_sum/global_cells_with_particles;
 
       // Write to statistics file
-      statistics.add_value ("Minimum PDF standard deviation ", global_standard_deviation_min);
+      statistics.add_value ("Minimum PDF standard deviation: ", global_standard_deviation_min);
       statistics.add_value ("Mean of PDF standard deviation: ", global_standard_deviation_mean);
       statistics.add_value ("Maximum PDF standard deviation: ", global_standard_deviation_max);
       statistics.add_value ("Mean of PDF minimum values: ", global_function_min_mean);
