@@ -24,7 +24,10 @@
 
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
+
 #include <deal.II/base/table.h>
+
+#include <vector>
 
 namespace aspect
 {
