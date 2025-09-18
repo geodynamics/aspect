@@ -315,7 +315,15 @@ namespace aspect
           point_density_function,
         };
 
+        /**
+         * Keep track of which kernel function to use when managing particle populations.
+         */
         typename ParticlePDF<dim>::KernelFunction kernel_function;
+
+        /**
+         * The bandwidth to scale the kernel function by when managing particle populations.
+         */
+        double bandwidth;
 
         /**
          * Generation scheme for creating particles in this manager

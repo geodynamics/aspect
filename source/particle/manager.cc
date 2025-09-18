@@ -362,7 +362,7 @@ namespace aspect
 
                         if (deletion_algorithm == DeletionAlgorithm::point_density_function)
                           {
-                            ParticlePDF<dim> pdf(0.3,kernel_function);
+                            ParticlePDF<dim> pdf(bandwidth,kernel_function);
                             /*
                             'particle_ranges_to_sum_over' includes this cell's and neighboring cell's particles.
                             If neighboring cell's particles are not included in the KDE, particles at cell boundaries will
@@ -879,6 +879,9 @@ namespace aspect
                                "The cutoff w1 and cutoff c1 dealii options call the deal.ii functions called cutoffW1 and cutoffC1 respectively. "
                                "These are functions whose return values decrease with distance. A more detailed explanation on these two "
                                "function are available in the deal.ii documentation.");
+            prm.declare_entry ("Bandwidth", "0.3",
+                               Patterns::Double (0.3),"The bandwidth value is used to scale the kernel "
+                               "function when generating the point density function of particles.");
             prm.declare_entry ("Minimum particles per cell", "0",
                                Patterns::Integer (0),
                                "Lower limit for particle number per cell. This limit is "
@@ -1030,6 +1033,12 @@ namespace aspect
             // across all particle managers.
             return (particle_manager == 0) ? 1000 + this->cell_weight(cell, status) : this->cell_weight(cell, status);
           });
+
+        // The bandwidth to use with the kernel function
+        bandwidth = prm.get_double("Bandwidth");
+
+
+
 
         // The particle removal algorithm to use when there are too many particles in a cell
         std::string deletion_algorithm_string = prm.get("Particle removal algorithm");
