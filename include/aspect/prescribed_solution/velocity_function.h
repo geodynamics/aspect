@@ -71,7 +71,11 @@ namespace aspect
 
 
         /**
-         * TODO
+         * Decide and assign cell-wise constraints for velocity DoFs.
+         * This function inspects component indices of constraints at local
+         * DoFs in a cell. An indicator function is evaluated at every position
+         * to decide whether new contraints need to be added. If so, values of
+         * new constraints are computed and stored in the solution.
          */
         void constrain_solution (const typename DoFHandler<dim>::active_cell_iterator &cell,
                                  const std::vector<Point<dim>> &positions,
@@ -81,9 +85,13 @@ namespace aspect
 
       private:
         /**
-         * TODO
+         * A function object representing the indicator function for prescribed solution
          */
         Functions::ParsedFunction<dim> prescribed_velocity_indicator_function;
+
+        /**
+         * A function object representing the components of the velocity.
+         */
         Functions::ParsedFunction<dim> prescribed_velocity_function;
 
         /**
@@ -91,6 +99,12 @@ namespace aspect
          * choices are depth, cartesian and spherical.
          */
         Utilities::Coordinates::CoordinateSystem coordinate_system;
+
+        /**
+         * Whether to specify velocity in x, y, z components, or
+         * r, phi, theta components.
+         */
+        bool use_spherical_unit_vectors;
     };
   }
 }
