@@ -433,6 +433,13 @@ namespace aspect
                            "using material model averaging. The 'default solver' chooses "
                            "the geometric multigrid solver if supported, otherwise the AMG solver.");
 
+        prm.declare_entry ("Stokes GMG type", "local smoothing",
+                           Patterns::Selection(StokesGMGType::pattern()),
+                           "The choice of geometric multigrid, either 'local smoothing' (the default) "
+                           " or 'global coarsening'. Local smoothing (\\cite{clevenger:heister:2021}) "
+                           "has been extensively tested and works in many more situations, while "
+                           "global coarsening is shown to be up to 3x faster (\\cite{munch:globalcoarsening:2023}).");
+
         prm.declare_entry ("Use direct solver for Stokes system", "false",
                            Patterns::Bool(),
                            "If set to true the linear system for the Stokes equation will "
@@ -1113,7 +1120,7 @@ namespace aspect
         prm.declare_entry ("Stabilization method", "entropy viscosity",
                            Patterns::Selection("entropy viscosity|SUPG"),
                            "Select the method for stabilizing the advection equation. The original "
-                           "method implemented is 'entropy viscosity' as described in \\cite {kronbichler:etal:2012}. "
+                           "method implemented is 'entropy viscosity' as described in \\cite{kronbichler:etal:2012}. "
                            "SUPG is currently experimental.");
 
         prm.declare_entry ("List of compositional fields with disabled boundary entropy viscosity", "",
@@ -1620,6 +1627,8 @@ namespace aspect
         use_direct_stokes_solver        = stokes_solver_type==StokesSolverType::direct_solver;
         stokes_krylov_type = StokesKrylovType::parse(prm.get("Krylov method for cheap solver steps"));
         idr_s_parameter    = prm.get_integer("IDR(s) parameter");
+
+        stokes_gmg_type = StokesGMGType::parse(prm.get("Stokes GMG type"));
 
         linear_stokes_solver_tolerance  = prm.get_double ("Linear solver tolerance");
         n_cheap_stokes_solver_steps     = prm.get_integer ("Number of cheap Stokes solver steps");

@@ -358,6 +358,18 @@ namespace aspect
         void clear () override;
 
         /**
+         * Initialize the MatrixFree object given in @p mf_storage and use that to
+         * initialize this operator.
+         */
+        void reinit(const Mapping<dim>              &mapping,
+                    const DoFHandler<dim>           &dof_handler_v,
+                    const DoFHandler<dim>           &dof_handler_p,
+                    const AffineConstraints<number> &constraints_v,
+                    const AffineConstraints<number> &constraints_p,
+                    std::shared_ptr<MatrixFree<dim,double>> mf_storage,
+                    const unsigned int level = numbers::invalid_unsigned_int);
+
+        /**
          * Pass in a reference to the problem data.
          */
         void set_cell_data (const OperatorCellData<dim,number> &data);
@@ -421,6 +433,17 @@ namespace aspect
          */
         void clear () override;
 
+        /**
+         * Initialize the MatrixFree object given in @p mf_storage and use that to
+         * initialize this operator.
+         */
+        void reinit(const Mapping<dim>              &mapping,
+                    const DoFHandler<dim>           &dof_handler_v,
+                    const DoFHandler<dim>           &dof_handler_p,
+                    const AffineConstraints<number> &constraints_v,
+                    const AffineConstraints<number> &constraints_p,
+                    std::shared_ptr<MatrixFree<dim,double>> mf_storage,
+                    const unsigned int level = numbers::invalid_unsigned_int);
         /**
          * Pass in a reference to the problem data.
          */
