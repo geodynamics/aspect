@@ -28,6 +28,7 @@
 #include <deal.II/particles/particle_iterator.h>
 #include <deal.II/particles/particle_handler.h>
 #include <deal.II/particles/property_pool.h>
+#include <aspect/particle/distribution.h>
 
 #include <deal.II/matrix_free/fe_point_evaluation.h>
 
@@ -46,7 +47,7 @@
 #include <boost/serialization/unique_ptr.hpp>
 
 #include <random>
-
+#include <vector>
 
 namespace aspect
 {
@@ -306,6 +307,25 @@ namespace aspect
         };
 
         /**
+         * Enum class to keep track of which algorithm is used to delete excess particles.
+         */
+        enum class DeletionAlgorithm
+        {
+          random,
+          point_density_function,
+        };
+
+        /**
+         * Keep track of which kernel function to use when managing particle populations.
+         */
+        typename ParticlePDF<dim>::KernelFunction kernel_function;
+
+        /**
+         * The bandwidth to scale the kernel function by when managing particle populations.
+         */
+        double bandwidth;
+
+        /**
          * Generation scheme for creating particles in this manager
          */
         std::unique_ptr<Generator::Interface<dim>> generator;
@@ -350,6 +370,11 @@ namespace aspect
          * Strategy for particle load balancing.
          */
         typename ParticleLoadBalancing::Kind particle_load_balancing;
+
+        /**
+         * Algorithm for deletion of excess particles.
+         */
+        DeletionAlgorithm deletion_algorithm;
 
         /**
          * Lower limit for particle number per cell. This limit is
