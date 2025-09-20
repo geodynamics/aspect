@@ -106,7 +106,7 @@ namespace aspect
         // --- STEP 1: compute compressive stress components at quadrature points
         const unsigned int n_tensor_components = (dim==2 ? 3u : 6u);
         std::vector<Vector<double>> stress_components(n_quadrature_points,
-                                                      Vector<double>(n_tensor_components));
+                                                       Vector<double>(n_tensor_components));
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
