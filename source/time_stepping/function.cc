@@ -30,8 +30,8 @@ namespace aspect
     double
     Function<dim>::execute()
     {
-      const double time_scale = this->convert_output_to_years() ? constants::year_in_seconds : 1.0;
-      double new_time_step    = function.value(Point<1>(this->get_time()) / time_scale) * time_scale;
+      const double time_scale    = this->convert_output_to_years() ? constants::year_in_seconds : 1.0;
+      const double new_time_step = function.value(Point<1>(this->get_time()) / time_scale) * time_scale;
 
       AssertThrow (new_time_step > 0,
                    ExcMessage("The time step length for the each time step needs to be positive, "
