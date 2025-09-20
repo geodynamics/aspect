@@ -2,7 +2,7 @@
 # It sets up a 2D convection problem in a spherical chunk with 
 # prescribed velocity conditions. A prescribed velocity function is 
 # applied that varies with space and time to set the flow field.
-# The time unit "year" is being used intead of "second" to test
+# The time unit "year" is being used instead of "second" to test
 # the converting of units.
 
 # At the top, we define the number of space dimensions we would like to
