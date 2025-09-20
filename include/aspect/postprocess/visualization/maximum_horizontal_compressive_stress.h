@@ -24,6 +24,7 @@
 
 #include <aspect/postprocess/visualization.h>
 #include <aspect/simulator_access.h>
+#include <aspect/material_model/rheology/elasticity.h>
 
 #include <deal.II/numerics/data_postprocessor.h>
 
