@@ -51,29 +51,25 @@ namespace aspect
         Assert (input_data.solution_values[0].size() == this->introspection().n_components,   ExcInternalError());
         Assert (input_data.solution_gradients[0].size() == this->introspection().n_components,  ExcInternalError());
 
-        // Prepare material model inputs/outputs
         MaterialModel::MaterialModelInputs<dim> in(input_data,
                                                    this->introspection());
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
 
-        // Request viscosity always; request additional_outputs only if elasticity enabled.
         if (this->get_parameters().enable_elasticity)
           in.requested_properties = MaterialModel::MaterialProperties::viscosity
                                     | MaterialModel::MaterialProperties::additional_outputs;
         else
           in.requested_properties = MaterialModel::MaterialProperties::viscosity;
 
-        // If additional outputs requested, let model create storage for them.
         if (in.requested_properties & MaterialModel::MaterialProperties::additional_outputs)
           this->get_material_model().create_additional_named_outputs(out);
 
-        // Compute requested material model properties (viscosity and optionally additional outputs)
         this->get_material_model().evaluate(in, out);
 
         // helper maps + lambdas to pack/unpack symmetric tensor components
         std::vector<std::pair<unsigned,unsigned>> comp_map;
-        if constexpr (dim==2)
+        if (dim==2)
           comp_map = {{0u,0u},{1u,1u},{0u,1u}};
         else
           comp_map = {{0u,0u},{1u,1u},{2u,2u},{0u,1u},{0u,2u},{1u,2u}};
@@ -118,12 +114,10 @@ namespace aspect
 
             const double eta = out.viscosities[q];
 
-            // compressive stress (compressive = -stress). start with pressure contribution.
             SymmetricTensor<2,dim> compressive_stress = in.pressure[q] * unit_symmetric_tensor<dim>();
 
             if (this->get_parameters().enable_elasticity)
               {
-                // Try to get elastic additional outputs; if not available, fall back.
                 const auto elastic_additional_out =
                   out.template get_additional_output_object<MaterialModel::ElasticAdditionalOutputs<dim>>();
 
@@ -133,17 +127,14 @@ namespace aspect
                   }
                 else
                   {
-                    // fall back to viscous deviatoric stress
                     compressive_stress -= 2. * eta * deviatoric_strain_rate;
                   }
               }
             else
               {
-                // Purely viscous contribution
                 compressive_stress -= 2. * eta * deviatoric_strain_rate;
               }
 
-            // store independent components (packed)
             pack_tensor(compressive_stress, stress_components[q]);
           }
 
@@ -152,13 +143,12 @@ namespace aspect
         if (!viz.output_pointwise_stress_and_strain())
           average_quantities(stress_components);
 
-        // --- STEP 3: from averaged stress components compute final direction/magnitude (do NOT average angles)
+        // --- STEP 3: from averaged stress components compute final direction and magnitude
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             SymmetricTensor<2,dim> avg_compressive_stress;
             unpack_tensor(stress_components[q], avg_compressive_stress);
 
-            // horizontal basis
             const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector (in.position[q]);
             const Tensor<1,dim> vertical_direction = gravity / gravity.norm();
             std::array<Tensor<1,dim>,dim-1> orthogonal_directions = Utilities::orthogonal_vectors(vertical_direction);
@@ -315,7 +305,7 @@ namespace aspect
                                                   "direction of $\\mathbf n$, we only need to seek a solution "
                                                   "to this equation in the interval $\\alpha\\in[0,\\pi)$. "
                                                   "These are given by "
-                                                  "$\\alpha_1=\\frac 12 \\arctan \\frac{\\mathbf u^T \\sigma_c "
+                                                  "$\\alpha_1=\\frac 12 \\arctan \\frac{2\\mathbf u^T \\sigma_c "
                                                   "\\mathbf v}{\\mathbf u^T \\sigma_c \\mathbf u - "
                                                   "\\mathbf v^T \\sigma_c \\mathbf v}$ and "
                                                   "$\\alpha_2=\\alpha_1+\\frac{\\pi}{2}$, one of which will "
@@ -323,7 +313,7 @@ namespace aspect
                                                   "$f(\\alpha)$. One checks the sign of "
                                                   "$f^{\\prime\\prime}(\\alpha)=-2(\\mathbf u^T \\sigma_c \\mathbf u - "
                                                   "\\mathbf v^T \\sigma_c \\mathbf v)\\cos(2\\alpha) "
-                                                  "- 2 (\\mathbf u^T \\sigma_c \\mathbf v) \\sin(2\\alpha)$ for "
+                                                  "- 4 (\\mathbf u^T \\sigma_c \\mathbf v) \\sin(2\\alpha)$ for "
                                                   "each of these to determine the $\\alpha$ that maximizes "
                                                   "$f(\\alpha)$, and from this immediately arrives at the correct "
                                                   "form for the maximum horizontal stress $\\mathbf n$."
@@ -360,45 +350,6 @@ namespace aspect
                                                   "In other words, the length of the vector produced indicates "
                                                   "\\textit{how dominant} the direction of maximal horizontal "
                                                   "compressive strength is."
-                                                  "\n\n"
-                                                  "Fig.~\\ref{fig:max-horizontal-compressive-stress} shows a "
-                                                  "simple example for this kind of visualization in 3d."
-                                                  "\n\n"
-                                                  "\\begin{figure}"
-                                                  "  \\includegraphics[width=0.3\\textwidth]"
-                                                  "    {viz/plugins/maximum_horizontal_compressive_stress/temperature.png}"
-                                                  "  \\hfill"
-                                                  "  \\includegraphics[width=0.3\\textwidth]"
-                                                  "    {viz/plugins/maximum_horizontal_compressive_stress/velocity.png}"
-                                                  "  \\hfill"
-                                                  "  \\includegraphics[width=0.3\\textwidth]"
-                                                  "    {viz/plugins/maximum_horizontal_compressive_stress/horizontal-stress.png}"
-                                                  "  \\caption{\\it Illustration of the `maximum horizontal "
-                                                  "    compressive stress' visualization plugin. The left "
-                                                  "    figure shows a ridge-like temperature anomaly. Together "
-                                                  "    with no-slip boundary along all six boundaries, this "
-                                                  "    results in two convection rolls (center). The maximal "
-                                                  "    horizontal compressive strength at the bottom center "
-                                                  "    of the domain is perpendicular to the ridge because "
-                                                  "    the flow comes together there from the left and right, "
-                                                  "    yielding a compressive force in left-right direction. "
-                                                  "    At the top of the model, the flow separates outward, "
-                                                  "    leading to a \\textit{negative} compressive stress "
-                                                  "    in left-right direction; because there is no flow "
-                                                  "    in front-back direction, the compressive strength "
-                                                  "    in front-back direction is zero, making the along-ridge "
-                                                  "    direction the dominant one. At the center of the "
-                                                  "    convection rolls, both horizontal directions yield "
-                                                  "    the same stress; the plugin therefore chooses an "
-                                                  "    essentially arbitrary horizontal vector, but then "
-                                                  "    uses a zero magnitude given that the difference "
-                                                  "    between the maximal and minimal horizontal stress "
-                                                  "    is zero at these points.}"
-                                                  "  \\label{fig:max-horizontal-compressive-stress}"
-                                                  "\\end{figure}"
-                                                  "\n\n"
-                                                  "Note that this plugin does not take into account elastic stresses "
-                                                  "and therefore cannot be used when elasticity is switched on. "
                                                   "\n\n"
                                                   "Physical units: $\\text{Pa}$.")
     }
