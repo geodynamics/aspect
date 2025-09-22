@@ -30,8 +30,8 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      AnisoStress<dim>::
-      AnisoStress ()
+      AnisotropicStress<dim>::
+      AnisotropicStress ()
         :
         DataPostprocessorTensor<dim> ("anisotropic_stress",
                                       update_values | update_gradients | update_quadrature_points),
@@ -42,7 +42,7 @@ namespace aspect
 
       template <int dim>
       void
-      AnisoStress<dim>::
+      AnisotropicStress<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
                             std::vector<Vector<double>> &computed_quantities) const
       {
@@ -59,7 +59,7 @@ namespace aspect
         this->get_material_model().create_additional_named_outputs(out);
         this->get_material_model().evaluate(in, out);
 
-        const std::shared_ptr<MaterialModel::AV<dim>> anisotropic_viscosity = out.template get_additional_output_object<MaterialModel::AV<dim>>();
+        const std::shared_ptr<MaterialModel::AnisotropicViscosity<dim>> anisotropic_viscosity = out.template get_additional_output_object<MaterialModel::AnisotropicViscosity<dim>>();
         AssertThrow(anisotropic_viscosity != nullptr,
                     ExcMessage("Need anisotropic viscosity tensor from the anisotropic viscosity material model for computing the anisotropic stress."));
 
@@ -93,7 +93,7 @@ namespace aspect
 
       template <int dim>
       void
-      AnisoStress<dim>::
+      AnisotropicStress<dim>::
       create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const
       {
         this->get_material_model().create_additional_named_outputs(out);
@@ -110,7 +110,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(AnisoStress,
+      ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(AnisotropicStress,
                                                   "Anisotropic stress",
                                                   "A visualization output object that generates output "
                                                   "for the 6 (in 3d) components of the shear stress "

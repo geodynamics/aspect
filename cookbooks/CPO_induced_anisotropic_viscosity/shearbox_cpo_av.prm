@@ -8,7 +8,7 @@ set Surface pressure         = 0
 set Nonlinear solver scheme  = single Advection, single Stokes
 set End time                 = 0.1
 # set Resume computation       = true
-set Use years in output instead of seconds = false
+set Use years instead of seconds = false
 set Output directory  = output_Shearbox_CPO_AV_1ts
 
 subsection Initial composition model

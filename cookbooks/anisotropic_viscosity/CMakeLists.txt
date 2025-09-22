@@ -35,5 +35,5 @@ DEAL_II_INITIALIZE_CACHED_VARIABLES()
 set(TARGET "anisotropic_viscosity")
 project(${TARGET})
 
-add_library(${TARGET} SHARED  av_material.cc)
+add_library(${TARGET} SHARED  av_material.cc av_material.h)
 ASPECT_SETUP_PLUGIN(${TARGET})

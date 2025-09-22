@@ -18,6 +18,7 @@
  <http://www.gnu.org/licenses/>.
  */
 
+#include "av_material.h"
 #include <aspect/introspection.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/additional_outputs/anisotropic_viscosity.h>
