@@ -42,10 +42,10 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class AV : public NamedAdditionalMaterialOutputs<dim>
+    class AnisotropicViscosity : public NamedAdditionalMaterialOutputs<dim>
     {
       public:
-        AV(const unsigned int n_points);
+        AnisotropicViscosity(const unsigned int n_points);
 
         std::vector<double> get_nth_output(const unsigned int idx) const override;
 

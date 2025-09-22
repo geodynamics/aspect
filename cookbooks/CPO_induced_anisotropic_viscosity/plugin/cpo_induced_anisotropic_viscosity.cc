@@ -20,6 +20,7 @@
  */
 
 #include "cpo_induced_anisotropic_viscosity.h"
+#include "../../cookbooks/anisotropic_viscosity/av_material.h"
 #include <aspect/material_model/simple.h>
 #include <aspect/material_model/grain_size.h>
 #include <aspect/material_model/equation_of_state/interface.h>
@@ -48,6 +49,7 @@
 #include <deal.II/base/geometry_info.h>
 #include <deal.II/base/symmetric_tensor.h>
 #include <deal.II/base/signaling_nan.h>
+#include <deal.II/base/numbers.h>
 #include <deal.II/fe/fe.h>
 #include <deal.II/fe/fe_update_flags.h>
 #include <deal.II/fe/fe_values.h>
@@ -106,7 +108,7 @@ namespace aspect
 
 
     template <int dim>
-    AV<dim>::AV (const unsigned int n_points)
+    AnisotropicViscosity<dim>::AnisotropicViscosity (const unsigned int n_points)
       :
       NamedAdditionalMaterialOutputs<dim>(make_AV_additional_outputs_names<dim>()),
       stress_strain_directors(n_points, dealii::identity_tensor<dim> ())
@@ -116,7 +118,7 @@ namespace aspect
 
     template <int dim>
     std::vector<double>
-    AV<dim>::get_nth_output(const unsigned int idx) const
+    AnisotropicViscosity<dim>::get_nth_output(const unsigned int idx) const
     {
       std::vector<double> output(stress_strain_directors.size());
       for (unsigned int i = 0; i < stress_strain_directors.size() ; ++i)
@@ -132,56 +134,17 @@ namespace aspect
 {
   namespace Assemblers
   {
-    /**
-     * A class containing the functions to assemble the Stokes preconditioner.
-     */
-    template <int dim>
-    class StokesPreconditionerAV : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
-    {
-      public:
-        void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const override;
-
-        /**
-         * Create AnisotropicViscosities.
-         */
-        void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
-    };
-
-    /**
-     * This class assembles the terms for the matrix and right-hand-side of the incompressible
-     * Stokes equation for the current cell.
-     */
-    template <int dim>
-    class StokesIncompressibleTermsAV : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
-    {
-      public:
-        void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const override;
-
-        /**
-         * Create AdditionalMaterialOutputsStokesRHS if we need to do so.
-         */
-        void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
-    };
-
-
-
     template <int dim>
     void
-    StokesPreconditionerAV<dim>::
+    StokesPreconditionerAnisotropicViscosity<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesPreconditioner<dim>&> (scratch_base);
       internal::Assembly::CopyData::StokesPreconditioner<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesPreconditioner<dim>&> (data_base);
 
-      const std::shared_ptr<const MaterialModel::AV<dim>> anisotropic_viscosity
-        = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::AV<dim>>();
+      const std::shared_ptr<const MaterialModel::AnisotropicViscosity<dim>> anisotropic_viscosity
+        = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::AnisotropicViscosity<dim>>();
 
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
@@ -243,15 +206,15 @@ namespace aspect
 
     template <int dim>
     void
-    StokesPreconditionerAV<dim>::
+    StokesPreconditionerAnisotropicViscosity<dim>::
     create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
     {
       const unsigned int n_points = outputs.viscosities.size();
 
-      if (outputs.template has_additional_output_object<MaterialModel::AV<dim>>() == false)
+      if (outputs.template has_additional_output_object<MaterialModel::AnisotropicViscosity<dim>>() == false)
         {
           outputs.additional_outputs.push_back(
-            std::make_unique<MaterialModel::AV<dim>> (n_points));
+            std::make_unique<MaterialModel::AnisotropicViscosity<dim>> (n_points));
         }
     }
 
@@ -259,15 +222,15 @@ namespace aspect
 
     template <int dim>
     void
-    StokesIncompressibleTermsAV<dim>::
+    StokesIncompressibleTermsAnisotropicViscosity<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>&> (scratch_base);
       internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>&> (data_base);
 
-      const std::shared_ptr<const MaterialModel::AV<dim>> anisotropic_viscosity
-        = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::AV<dim>>();
+      const std::shared_ptr<const MaterialModel::AnisotropicViscosity<dim>> anisotropic_viscosity
+        = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::AnisotropicViscosity<dim>>();
 
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
@@ -342,15 +305,15 @@ namespace aspect
 
     template <int dim>
     void
-    StokesIncompressibleTermsAV<dim>::
+    StokesIncompressibleTermsAnisotropicViscosity<dim>::
     create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
     {
       const unsigned int n_points = outputs.viscosities.size();
 
-      if (outputs.template has_additional_output_object<MaterialModel::AV<dim>>() == false)
+      if (outputs.template has_additional_output_object<MaterialModel::AnisotropicViscosity<dim>>() == false)
         {
           outputs.additional_outputs.push_back(
-            std::make_unique<MaterialModel::AV<dim>> (n_points));
+            std::make_unique<MaterialModel::AnisotropicViscosity<dim>> (n_points));
         }
 
       if (this->get_parameters().enable_additional_stokes_rhs
@@ -369,29 +332,8 @@ namespace aspect
   namespace HeatingModel
   {
     template <int dim>
-    class ShearHeatingAV : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
-    {
-      public:
-        /**
-         * Compute the heating model outputs for this class.
-         */
-        void
-        evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-                  const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const override;
-
-        /**
-         * Allow the heating model to attach additional material model outputs.
-         */
-        void
-        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const override;
-    };
-
-
-
-    template <int dim>
     void
-    ShearHeatingAV<dim>::
+    ShearHeatingAnisotropicViscosity<dim>::
     evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
               const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
               HeatingModel::HeatingModelOutputs &heating_model_outputs) const
@@ -404,8 +346,8 @@ namespace aspect
       const std::shared_ptr<const ShearHeatingOutputs<dim>> shear_heating_out
         = material_model_outputs.template get_additional_output_object<ShearHeatingOutputs<dim>>();
 
-      const std::shared_ptr<const MaterialModel::AV<dim>> anisotropic_viscosity
-        = material_model_outputs.template get_additional_output_object<MaterialModel::AV<dim>>();
+      const std::shared_ptr<const MaterialModel::AnisotropicViscosity<dim>> anisotropic_viscosity
+        = material_model_outputs.template get_additional_output_object<MaterialModel::AnisotropicViscosity<dim>>();
 
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
         {
@@ -448,15 +390,15 @@ namespace aspect
 
     template <int dim>
     void
-    ShearHeatingAV<dim>::
+    ShearHeatingAnisotropicViscosity<dim>::
     create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const
     {
       const unsigned int n_points = material_model_outputs.viscosities.size();
 
-      if (material_model_outputs.template has_additional_output_object<MaterialModel::AV<dim>>() == false)
+      if (material_model_outputs.template has_additional_output_object<MaterialModel::AnisotropicViscosity<dim>>() == false)
         {
           material_model_outputs.additional_outputs.push_back(
-            std::make_unique<MaterialModel::AV<dim>> (n_points));
+            std::make_unique<MaterialModel::AnisotropicViscosity<dim>> (n_points));
         }
 
       this->get_material_model().create_additional_named_outputs(material_model_outputs);
@@ -480,13 +422,13 @@ namespace aspect
       for (unsigned int i=0; i<assemblers.stokes_preconditioner.size(); ++i)
         {
           if (Plugins::plugin_type_matches<Assemblers::StokesPreconditioner<dim>>(*(assemblers.stokes_preconditioner[i])))
-            assemblers.stokes_preconditioner[i] = std::make_unique<Assemblers::StokesPreconditionerAV<dim>> ();
+            assemblers.stokes_preconditioner[i] = std::make_unique<Assemblers::StokesPreconditionerAnisotropicViscosity<dim>> ();
         }
 
       for (unsigned int i=0; i<assemblers.stokes_system.size(); ++i)
         {
           if (Plugins::plugin_type_matches<Assemblers::StokesIncompressibleTerms<dim>>(*(assemblers.stokes_system[i])))
-            assemblers.stokes_system[i] = std::make_unique<Assemblers::StokesIncompressibleTermsAV<dim>> ();
+            assemblers.stokes_system[i] = std::make_unique<Assemblers::StokesIncompressibleTermsAnisotropicViscosity<dim>> ();
         }
     }
 
@@ -526,7 +468,7 @@ namespace aspect
 
     template<int dim>
     Tensor<2,3>
-    AV<dim>::euler_angles_to_rotation_matrix(double phi1, double theta, double phi2)
+    AnisotropicViscosity<dim>::euler_angles_to_rotation_matrix(double phi1, double theta, double phi2)
     {
       Tensor<2,3> rot_matrix;
       //R3*R2*R1 ZXZ rotation. Note it is not exactly the same as in utilities.cc
@@ -560,16 +502,13 @@ namespace aspect
                             MaterialModel::MaterialModelOutputs<3> &out) const
     {
       const int dim=3;
-      const double sqrt2 = sqrt(2);
-      const std::shared_ptr<MaterialModel::AV<dim>> anisotropic_viscosity =
-        out.template get_additional_output_object<MaterialModel::AV<dim>>();
+      const std::shared_ptr<MaterialModel::AnisotropicViscosity<dim>> anisotropic_viscosity =
+        out.template get_additional_output_object<MaterialModel::AnisotropicViscosity<dim>>();
       EquationOfStateOutputs<dim> eos_outputs (1);
-
-
 
       for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         {
-          //change these according to diffusion dislocation material model I guess
+          // Change these according to diffusion dislocation material model I guess
           equation_of_state.evaluate(in, q, eos_outputs);
 
           // Get parameters for compute the effective viscosity
@@ -586,7 +525,7 @@ namespace aspect
           out.entropy_derivative_pressure[q] = eos_outputs.entropy_derivative_pressure[0];
           out.entropy_derivative_temperature[q] = eos_outputs.entropy_derivative_temperature[0];
 
-          //Calculate effective viscosity
+          // Calculate effective viscosity
           const SymmetricTensor<2,dim> strain_rate = in.strain_rate[q];
           const SymmetricTensor<2,dim> deviatoric_strain_rate
             = (this->get_material_model().is_compressible()
@@ -601,12 +540,12 @@ namespace aspect
             {
               const unsigned int ind_vis = this->introspection().compositional_index_for_name("scalar_vis");
 
-              //Create constant value to use for AV
+              // Create constant value to use for AV
               const double A_o = 1.1e5*exp(-530000/(8.314*in.temperature[q]));
               const double n = 3.5;
               const double Gamma = (A_o/(std::pow(grain_size,0.73)));// 3.5322e-15[1/(s*Pa^n)] if T=1600K and d=1000 microns
 
-              //Get eigen values from compositional fields
+              // Get eigen values from compositional fields
               const double eigvalue_a1 = composition[cpo_bingham_avg_a[1]];
               const double eigvalue_b1 = composition[cpo_bingham_avg_b[1]];
               const double eigvalue_c1 = composition[cpo_bingham_avg_c[1]];
@@ -617,14 +556,14 @@ namespace aspect
               const double eigvalue_b3 = composition[cpo_bingham_avg_b[3]];
               const double eigvalue_c3 = composition[cpo_bingham_avg_c[3]];
 
-              //Calculate the rotation matrix from the euler angles
+              // Calculate the rotation matrix from the euler angles
               const double phi1 = composition[cpo_bingham_avg_a[0]];
               const double theta = composition[cpo_bingham_avg_b[0]];
               const double phi2 = composition[cpo_bingham_avg_c[0]];
 
-              Tensor<2,3> R = transpose(AV<dim>::euler_angles_to_rotation_matrix(phi1, theta, phi2));
+              Tensor<2,3> R = transpose(AnisotropicViscosity<dim>::euler_angles_to_rotation_matrix(phi1, theta, phi2));
 
-              //Compute Hill Parameters FGHLMN from the eigenvalues of a,b,c axis
+              // Compute Hill Parameters FGHLMN from the eigenvalues of a,b,c axis
               double F, G, H, L, M, N;
               // CPO2Hill v3 model (default coefficients are given for v5):
               // F = std::pow(eigvalue_a1,2)*CnI_F[0] + eigvalue_a1*CnI_F[1] + eigvalue_a2*CnI_F[2] + (1/eigvalue_a3)*CnI_F[3] + std::pow(eigvalue_b1,2)*CnI_F[4] + eigvalue_b1*CnI_F[5] + eigvalue_b2*CnI_F[6] + (1/eigvalue_b3)*CnI_F[7] + std::pow(eigvalue_c1,2)*CnI_F[8] + eigvalue_c1*CnI_F[9] + eigvalue_c2*CnI_F[10] + (1/eigvalue_c3)*CnI_F[11] + CnI_F[12];
@@ -646,41 +585,41 @@ namespace aspect
               R_CPO_K[0][0] = std::pow(R[0][0],2);
               R_CPO_K[0][1] = std::pow(R[0][1],2);
               R_CPO_K[0][2] = std::pow(R[0][2],2);
-              R_CPO_K[0][3] = sqrt2*R[0][1]*R[0][2];
-              R_CPO_K[0][4] = sqrt2*R[0][0]*R[0][2];
-              R_CPO_K[0][5] = sqrt2*R[0][0]*R[0][1];
+              R_CPO_K[0][3] = numbers::SQRT2*R[0][1]*R[0][2];
+              R_CPO_K[0][4] = numbers::SQRT2*R[0][0]*R[0][2];
+              R_CPO_K[0][5] = numbers::SQRT2*R[0][0]*R[0][1];
 
               R_CPO_K[1][0] = std::pow(R[1][0],2);
               R_CPO_K[1][1] = std::pow(R[1][1],2);
               R_CPO_K[1][2] = std::pow(R[1][2],2);
-              R_CPO_K[1][3] = sqrt2*R[1][1]*R[1][2];
-              R_CPO_K[1][4] = sqrt2*R[1][0]*R[1][2];
-              R_CPO_K[1][5] = sqrt2*R[1][0]*R[1][1];
+              R_CPO_K[1][3] = numbers::SQRT2*R[1][1]*R[1][2];
+              R_CPO_K[1][4] = numbers::SQRT2*R[1][0]*R[1][2];
+              R_CPO_K[1][5] = numbers::SQRT2*R[1][0]*R[1][1];
 
               R_CPO_K[2][0] = std::pow(R[2][0],2);
               R_CPO_K[2][1] = std::pow(R[2][1],2);
               R_CPO_K[2][2] = std::pow(R[2][2],2);
-              R_CPO_K[2][3] = sqrt2*R[2][1]*R[2][2];
-              R_CPO_K[2][4] = sqrt2*R[2][0]*R[2][2];
-              R_CPO_K[2][5] = sqrt2*R[2][0]*R[2][1];
+              R_CPO_K[2][3] = numbers::SQRT2*R[2][1]*R[2][2];
+              R_CPO_K[2][4] = numbers::SQRT2*R[2][0]*R[2][2];
+              R_CPO_K[2][5] = numbers::SQRT2*R[2][0]*R[2][1];
 
-              R_CPO_K[3][0] = sqrt2*R[1][0]*R[2][0];
-              R_CPO_K[3][1] = sqrt2*R[1][1]*R[2][1];
-              R_CPO_K[3][2] = sqrt2*R[1][2]*R[2][2];
+              R_CPO_K[3][0] = numbers::SQRT2*R[1][0]*R[2][0];
+              R_CPO_K[3][1] = numbers::SQRT2*R[1][1]*R[2][1];
+              R_CPO_K[3][2] = numbers::SQRT2*R[1][2]*R[2][2];
               R_CPO_K[3][3] = R[1][1]*R[2][2]+R[1][2]*R[2][1];
               R_CPO_K[3][4] = R[1][0]*R[2][2]+R[1][2]*R[2][0];
               R_CPO_K[3][5] = R[1][0]*R[2][1]+R[1][1]*R[2][0];
 
-              R_CPO_K[4][0] = sqrt2*R[0][0]*R[2][0];
-              R_CPO_K[4][1] = sqrt2*R[0][1]*R[2][1];
-              R_CPO_K[4][2] = sqrt2*R[0][2]*R[2][2];
+              R_CPO_K[4][0] = numbers::SQRT2*R[0][0]*R[2][0];
+              R_CPO_K[4][1] = numbers::SQRT2*R[0][1]*R[2][1];
+              R_CPO_K[4][2] = numbers::SQRT2*R[0][2]*R[2][2];
               R_CPO_K[4][3] = R[0][1]*R[2][2]+R[0][2]*R[2][1];
               R_CPO_K[4][4] = R[0][0]*R[2][2]+R[0][2]*R[2][0];
               R_CPO_K[4][5] = R[0][0]*R[2][1]+R[0][1]*R[2][0];
 
-              R_CPO_K[5][0] = sqrt2*R[0][0]*R[1][0];
-              R_CPO_K[5][1] = sqrt2*R[0][1]*R[1][1];
-              R_CPO_K[5][2] = sqrt2*R[0][2]*R[1][2];
+              R_CPO_K[5][0] = numbers::SQRT2*R[0][0]*R[1][0];
+              R_CPO_K[5][1] = numbers::SQRT2*R[0][1]*R[1][1];
+              R_CPO_K[5][2] = numbers::SQRT2*R[0][2]*R[1][2];
               R_CPO_K[5][3] = R[0][1]*R[1][2]+R[0][2]*R[1][1];
               R_CPO_K[5][4] = R[0][0]*R[1][2]+R[0][2]*R[1][0];
               R_CPO_K[5][5] = R[0][0]*R[1][1]+R[0][1]*R[1][0];
@@ -696,7 +635,7 @@ namespace aspect
               A[4][4] = 2.0/3.0*M;
               A[5][5] = 2.0/3.0*N;
 
-              //Invert using ScaLAPACK in dealii
+              // Invert using ScaLAPACK in dealii
               FullMatrix<double> A_mat(6, 6);
               for (unsigned int ai=0; ai<6; ++ai)
                 {
@@ -706,8 +645,8 @@ namespace aspect
                     }
                 }
 
-              //A is the anisotropic tensor for the fluidity. We need its inverse, but it's not invertible due to singularity.
-              //Thus we use a pseudo inverse function imported from the scalapack package from deal.ii
+              // A is the anisotropic tensor for the fluidity. We need its inverse, but it's not invertible due to singularity.
+              // Thus we use a pseudo inverse function imported from the scalapack package from deal.ii
               const double ratio = 1e-8;
               std::shared_ptr<Utilities::MPI::ProcessGrid> grid = std::make_shared<Utilities::MPI::ProcessGrid>(this->get_mpi_communicator(),6,6,4,4);
               ScaLAPACKMatrix<double> A_scalapack(6,6,grid,4,4);
@@ -725,10 +664,10 @@ namespace aspect
                     }
                 }
 
-              //Calculate the fluidity tensor in the CPO frame
+              // Calculate the fluidity tensor in the CPO frame
               Tensor<2,6> V = R_CPO_K * invA * transpose(R_CPO_K);//invA;//
 
-              //Convert rank 2 viscosity tensor to rank 4
+              // Convert rank 2 viscosity tensor to rank 4
               FullMatrix<double> V_mat(6,6);
               for (unsigned int vi=0; vi<6; ++vi)
                 {
@@ -747,8 +686,8 @@ namespace aspect
 
               double scalar_viscosity = composition[ind_vis];
 
-              //In first time step using input viscosity can lead to convergence issue if the strainrate varies significantly within the model domain.
-              //Thus for the first timestep we calculate an initial viscosity based on the strain rate. Why not later: seems to cause unstable solution(?)
+              // In first time step using input viscosity can lead to convergence issue if the strainrate varies significantly within the model domain.
+              // Thus for the first timestep we calculate an initial viscosity based on the strain rate. Why not later: seems to cause unstable solution(?)
               if (this->get_timestep_number() == 1)
                 {
                   const double edot_ii=std::max(std::sqrt(std::max(-second_invariant(deviator(strain_rate)), 0.)),
@@ -761,11 +700,11 @@ namespace aspect
               double residual = scalar_viscosity;
               double threshold = 0.0001*scalar_viscosity;
               SymmetricTensor<2,dim> stress;
-              stress = 2*scalar_viscosity * V_r4 * deviatoric_strain_rate / 1e6; // Use stress in MPa //Added *2 2025.06.18.
+              stress = 2*scalar_viscosity * V_r4 * deviatoric_strain_rate / 1e6; // Use stress in MPa
 
               while (std::abs(residual) > threshold && n_iterations < max_iteration)
                 {
-                  stress = (1./2.) * (stress + 2*scalar_viscosity * V_r4 * deviatoric_strain_rate / 1e6); //Added *2 2025.06.18.
+                  stress = (1./2.) * (stress + 2*scalar_viscosity * V_r4 * deviatoric_strain_rate / 1e6);
 
                   Tensor<2,dim> S_CPO=transpose(R)*stress*R;
 
@@ -787,7 +726,7 @@ namespace aspect
                   n_iterations += 1;
 
                 }
-              //Overwrite the scalar viscosity with an effective viscosity
+              // Overwrite the scalar viscosity with an effective viscosity
               out.viscosities[q] = scalar_viscosity;
 
               AssertThrow(out.viscosities[q] > 0,
@@ -812,7 +751,7 @@ namespace aspect
                   V[4][4] = 1;
                   V[5][5] = 1;
 
-                  //Convert rank 2 viscosity tensor to rank 4
+                  // Convert rank 2 viscosity tensor to rank 4
                   FullMatrix<double> V_mat(6,6);
                   for (unsigned int vi=0; vi<6; ++vi)
                     {
@@ -945,11 +884,11 @@ namespace aspect
     void
     CPO_AV_3D<dim>::create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output_object<AV<dim>>() == nullptr)
+      if (out.template get_additional_output_object<AnisotropicViscosity<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
-            std::make_unique<MaterialModel::AV<dim>> (n_points));
+            std::make_unique<MaterialModel::AnisotropicViscosity<dim>> (n_points));
         }
 
       if (out.template get_additional_output_object<PrescribedFieldOutputs<dim>>() == NULL)
@@ -970,15 +909,15 @@ namespace aspect
   namespace Assemblers
   {
 #define INSTANTIATE(dim) \
-  template class StokesPreconditionerAV<dim>; \
-  template class StokesIncompressibleTermsAV<dim>; \
+  template class StokesPreconditionerAnisotropicViscosity<dim>; \
+  template class StokesIncompressibleTermsAnisotropicViscosity<dim>; \
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }
 
   namespace HeatingModel
   {
-    ASPECT_REGISTER_HEATING_MODEL(ShearHeatingAV,
+    ASPECT_REGISTER_HEATING_MODEL(ShearHeatingAnisotropicViscosity,
                                   "anisotropic shear heating for cpo_induced_anisotropic_viscosity",
                                   "Implementation of a standard model for shear heating. "
                                   "Adds the term: "

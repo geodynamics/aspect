@@ -50,7 +50,7 @@ namespace aspect
        * base class. See there for their meaning.
        */
       template <int dim>
-      class AnisoStress
+      class AnisotropicStress
         : public DataPostprocessorTensor<dim>,
           public SimulatorAccess<dim>,
           public Interface<dim>
@@ -59,11 +59,12 @@ namespace aspect
           /**
            * Constructor.
            */
-          AnisoStress ();
+          AnisotropicStress ();
 
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
                                 std::vector<Vector<double>> &computed_quantities) const override;
+
           void
           create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const;
       };
