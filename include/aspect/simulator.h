@@ -2050,6 +2050,7 @@ namespace aspect
       friend class VolumeOfFluidHandler<dim>;
       friend class StokesMatrixFreeHandler<dim>;
       template <int dimension, int velocity_degree> friend class StokesMatrixFreeHandlerLocalSmoothingImplementation;
+      template <int dimension, int velocity_degree> friend class StokesMatrixFreeHandlerGlobalCoarseningImplementation;
       friend struct Parameters<dim>;
   };
 }

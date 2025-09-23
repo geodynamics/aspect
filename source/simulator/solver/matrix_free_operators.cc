@@ -478,6 +478,35 @@ namespace aspect
 
   template <int dim, int degree_p, typename number>
   void
+  MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>::reinit(const Mapping<dim>              &mapping,
+                                                                             const DoFHandler<dim>           &dof_handler_v,
+                                                                             const DoFHandler<dim>           &dof_handler_p,
+                                                                             const AffineConstraints<number> &constraints_v,
+                                                                             const AffineConstraints<number> &constraints_p,
+                                                                             std::shared_ptr<MatrixFree<dim,double>> mf_storage,
+                                                                             const unsigned int level)
+  {
+    typename MatrixFree<dim, number>::AdditionalData data;
+    data.mapping_update_flags =
+      update_quadrature_points /*| update_gradients*/ | update_values;
+    data.mg_level = level;
+
+    data.tasks_parallel_scheme =
+      MatrixFree<dim,double>::AdditionalData::none;
+    AffineConstraints<number> dummy;
+
+    mf_storage->reinit(mapping,
+    std::vector< const DoFHandler< dim > *> {&dof_handler_v, &dof_handler_p},
+    std::vector< const AffineConstraints< number > *> {&constraints_v, &constraints_p} ,
+    QGauss<1>(degree_p+2), data);
+
+    this->initialize(mf_storage, std::vector< unsigned int > {1}, std::vector< unsigned int > {1});
+  }
+
+
+
+  template <int dim, int degree_p, typename number>
+  void
   MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>::
   set_cell_data (const OperatorCellData<dim,number> &data)
   {
@@ -628,6 +657,37 @@ namespace aspect
   {
     this->cell_data = nullptr;
     MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::Vector<number>>::clear();
+  }
+
+
+
+  template <int dim, int degree_v, typename number>
+  void
+  MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>::reinit(const Mapping<dim>              &mapping,
+                                                                         const DoFHandler<dim>           &dof_handler_v,
+                                                                         const DoFHandler<dim>           &dof_handler_p,
+                                                                         const AffineConstraints<number> &constraints_v,
+                                                                         const AffineConstraints<number> &constraints_p,
+                                                                         std::shared_ptr<MatrixFree<dim,double>> mf_storage,
+                                                                         const unsigned int level)
+  {
+    typename MatrixFree<dim, number>::AdditionalData data;
+    data.mapping_update_flags = update_quadrature_points | update_gradients | update_values;
+    data.mg_level = level;
+
+    typename MatrixFree<dim,double>::AdditionalData additional_data;
+    additional_data.tasks_parallel_scheme =
+      MatrixFree<dim,double>::AdditionalData::none;
+    additional_data.mapping_update_flags = (update_values | update_gradients |
+                                            update_JxW_values | update_quadrature_points);
+
+    AffineConstraints<number> dummy;
+    mf_storage->reinit(mapping,
+    std::vector< const DoFHandler< dim > *> {&dof_handler_v, &dof_handler_p},
+    std::vector< const AffineConstraints< number > *> {&constraints_v, &constraints_p} ,
+    QGauss<1>(degree_v+1), additional_data);
+
+    this->initialize(mf_storage, std::vector< unsigned int > {0}, std::vector< unsigned int > {0});
   }
 
 
