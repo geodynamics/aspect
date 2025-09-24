@@ -373,7 +373,21 @@ namespace aspect
       this->get_pcout() << "   Solving mesh surface diffusion" << std::endl;
       SolverControl solver_control(5*system_rhs.size(), this->get_parameters().linear_stokes_solver_tolerance*system_rhs.l2_norm());
       SolverCG<LinearAlgebra::Vector> cg(solver_control);
-      cg.solve (matrix, solution, system_rhs, preconditioner_mass);
+      try
+        {
+          cg.solve (matrix, solution, system_rhs, preconditioner_mass);
+        }
+      catch (const std::exception &exc)
+        {
+          // if the solver fails, report the error from processor 0 with some additional
+          // information about its location, and throw a quiet exception on all other
+          // processors
+          Utilities::throw_linear_solver_failure_exception("iterative diffusion surface deformation solver",
+                                                           "MeshDeformation::Diffusion::diffuse_boundary()",
+                                                           std::vector<SolverControl> {solver_control},
+                                                           exc,
+                                                           this->get_mpi_communicator());
+        }
 
       // Distribute constraints on mass matrix
       matrix_constraints.distribute (solution);
