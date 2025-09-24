@@ -1,5 +1,7 @@
 # Nsinker benchmark using geometric multigrid preconditioner
 # with global coarsening GMG
+#
+# MPI: 2
 
 set Dimension = 3
 
@@ -18,7 +20,7 @@ subsection Solver parameters
 end
 
 subsection Mesh refinement
-  set Initial adaptive refinement        = 0
+  set Initial adaptive refinement        = 1
   set Initial global refinement          = 2
 end
 
