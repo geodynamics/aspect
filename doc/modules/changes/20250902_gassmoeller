@@ -1,0 +1,5 @@
+New: Added a new nonlinear solver scheme 'iterated Advection, no Stokes'
+that iterates the advection equation and uses a prescribed Stokes
+solution.
+<br>
+(Rene Gassmoeller, 2025/09/02)
