@@ -1006,13 +1006,13 @@ namespace aspect
     if (print_details)
       {
         this->get_pcout() << std::endl
-                          << "    GMG coarse size A: " << coarse_A_size << ", coarse size S: " << coarse_S_size << std::endl
-                          << "    GMG n_levels: " << this->get_triangulation().n_global_levels() << std::endl
-                          << "    Viscosity range: " << minimum_viscosity << " - " << maximum_viscosity << std::endl;
+                          << "     GMG coarse size A: " << coarse_A_size << ", coarse size S: " << coarse_S_size << std::endl
+                          << "     GMG n_levels: " << this->get_triangulation().n_global_levels() << std::endl
+                          << "     Viscosity range: " << minimum_viscosity << " - " << maximum_viscosity << std::endl;
 
         const double imbalance = MGTools::workload_imbalance(this->get_triangulation());
-        this->get_pcout() << "    GMG workload imbalance: " << imbalance << std::endl
-                          << "    Stokes solver: " << std::flush;
+        this->get_pcout() << "     GMG workload imbalance: " << imbalance << std::endl
+                          << "     Stokes solver: " << std::flush;
       }
 
     // Interface matrices
@@ -1247,7 +1247,7 @@ namespace aspect
           for (int i=0; i<n_timings; ++i)
             {
               prepare();
-              this->get_pcout() << "\t... " << std::flush;
+              this->get_pcout() << "\t..." << std::flush;
               timer.restart();
 
               for (int r=0; r<repeats; ++r)
@@ -1524,11 +1524,11 @@ namespace aspect
 
     if (print_details)
       {
-        this->get_pcout() << "    Schur complement preconditioner: " << preconditioner_cheap.n_iterations_Schur_complement()
+        this->get_pcout() << "     Schur complement preconditioner: " << preconditioner_cheap.n_iterations_Schur_complement()
                           << '+'
                           << preconditioner_expensive.n_iterations_Schur_complement()
                           << " iterations." << std::endl;
-        this->get_pcout() << "    A block preconditioner: " << preconditioner_cheap.n_iterations_A_block()
+        this->get_pcout() << "     A block preconditioner: " << preconditioner_cheap.n_iterations_A_block()
                           << '+'
                           << preconditioner_expensive.n_iterations_A_block()
                           << " iterations." << std::endl;
