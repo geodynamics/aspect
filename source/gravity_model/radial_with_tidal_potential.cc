@@ -196,6 +196,6 @@ namespace aspect
                                   "The magnitude of gravity for the radial constant part is read from the "
                                   "input file in a section `Gravity model/Radial constant'; the "
                                   "parameters that describe the tidal potential contribution are read "
-                                  "from a section ``Gravity model/Radial linear with tidal potential''.")
+                                  "from a section ``Gravity model/Radial with tidal potential''.")
   }
 }
