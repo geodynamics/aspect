@@ -201,7 +201,22 @@ namespace aspect
 
       SolverControl solver_control(5*rhs.size(), this->get_parameters().linear_stokes_solver_tolerance*rhs.l2_norm());
       SolverCG<LinearAlgebra::Vector> cg(solver_control);
-      cg.solve (mass_matrix, dist_solution, rhs, preconditioner_mass);
+
+      try
+        {
+          cg.solve (mass_matrix, dist_solution, rhs, preconditioner_mass);
+        }
+      catch (const std::exception &exc)
+        {
+          // if the solver fails, report the error from processor 0 with some additional
+          // information about its location, and throw a quiet exception on all other
+          // processors
+          Utilities::throw_linear_solver_failure_exception("iterative free surface solver",
+                                                           "MeshDeformation::FreeSurface::project_velocity_onto_boundary()",
+                                                           std::vector<SolverControl> {solver_control},
+                                                           exc,
+                                                           this->get_mpi_communicator());
+        }
 
       mass_matrix_constraints.distribute (dist_solution);
       output = dist_solution;

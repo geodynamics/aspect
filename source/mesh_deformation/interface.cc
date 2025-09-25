@@ -946,8 +946,22 @@ namespace aspect
       SolverControl solver_control(5*rhs.size(), tolerance * rhs.l2_norm());
       SolverCG<LinearAlgebra::Vector> cg(solver_control);
 
-      cg.solve (mesh_matrix, solution, rhs, preconditioner_stiffness);
-      this->get_pcout() << "   Solving mesh displacement system... " << solver_control.last_step() <<" iterations."<< std::endl;
+      try
+        {
+          cg.solve (mesh_matrix, solution, rhs, preconditioner_stiffness);
+          this->get_pcout() << "   Solving mesh displacement system... " << solver_control.last_step() <<" iterations."<< std::endl;
+        }
+      catch (const std::exception &exc)
+        {
+          // if the solver fails, report the error from processor 0 with some additional
+          // information about its location, and throw a quiet exception on all other
+          // processors
+          Utilities::throw_linear_solver_failure_exception("iterative mesh displacement solver",
+                                                           "MeshDeformationHandler::compute_mesh_displacements()",
+                                                           std::vector<SolverControl> {solver_control},
+                                                           exc,
+                                                           this->get_mpi_communicator());
+        }
 
       mesh_velocity_constraints.distribute (solution);
 
@@ -1222,8 +1236,23 @@ namespace aspect
       SolverCG<dealii::LinearAlgebra::distributed::Vector<double>> cg(solver_control_mf);
 
       mesh_velocity_constraints.set_zero(solution);
-      cg.solve(laplace_operator, solution, rhs, preconditioner);
-      this->get_pcout() << "   Solving mesh displacement system... " << solver_control_mf.last_step() <<" iterations."<< std::endl;
+
+      try
+        {
+          cg.solve(laplace_operator, solution, rhs, preconditioner);
+          this->get_pcout() << "   Solving mesh displacement system... " << solver_control_mf.last_step() <<" iterations."<< std::endl;
+        }
+      catch (const std::exception &exc)
+        {
+          // if the solver fails, report the error from processor 0 with some additional
+          // information about its location, and throw a quiet exception on all other
+          // processors
+          Utilities::throw_linear_solver_failure_exception("iterative mesh displacement solver",
+                                                           "MeshDeformationHandler::compute_mesh_displacements_gmg()",
+                                                           std::vector<SolverControl> {solver_control_mf},
+                                                           exc,
+                                                           this->get_mpi_communicator());
+        }
 
       mesh_velocity_constraints.distribute(solution);
       solution.update_ghost_values();
