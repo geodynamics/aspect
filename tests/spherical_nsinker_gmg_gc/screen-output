@@ -1,0 +1,39 @@
+
+Loading shared library <./libspherical_nsinker_gmg_gc.debug.so>
+
+Number of active cells: 6,144 (on 3 levels)
+Number of degrees of freedom: 215,962 (156,774+6,930+52,258)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving Stokes system (GMG-GC)... 
+    GMG coarse size A: 2910, coarse size S: 150
+    GMG n_levels: 3
+    Viscosity range: 0.1 - 1000
+    Stokes solver: 116+0 iterations.
+    Schur complement preconditioner: 117+0 iterations.
+    A block preconditioner: 117+0 iterations.
+
+   Postprocessing:
+     System matrix memory consumption:  2.48 MB
+     Writing graphical output:          output-spherical_nsinker_gmg_gc/solution/solution-00000
+
+Number of active cells: 12,465 (on 4 levels)
+Number of degrees of freedom: 469,146 (340,521+15,118+113,507)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving Stokes system (GMG-GC)... 
+    GMG coarse size A: 2910, coarse size S: 150
+    GMG n_levels: 4
+    Viscosity range: 0.1 - 1000
+    Stokes solver: 384+0 iterations.
+    Schur complement preconditioner: 386+0 iterations.
+    A block preconditioner: 386+0 iterations.
+
+   Postprocessing:
+     System matrix memory consumption:  5.38 MB
+     Writing graphical output:          output-spherical_nsinker_gmg_gc/solution/solution-00001
+
+Termination requested by criterion: end time
+
+
+
