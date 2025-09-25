@@ -19,9 +19,10 @@
 */
 
 
-#include <aspect/gravity_model/radial.h>
+#include <aspect/gravity_model/radial_linear.h>
+
 #include <aspect/geometry_model/interface.h>
-#include <aspect/utilities.h>
+#include <aspect/coordinate_systems.h>
 
 #include <deal.II/base/tensor.h>
 
@@ -29,89 +30,6 @@ namespace aspect
 {
   namespace GravityModel
   {
-// ------------------------------ RadialConstant -------------------
-    template <int dim>
-    Tensor<1,dim>
-    RadialConstant<dim>::gravity_vector (const Point<dim> &p) const
-    {
-      if (p.norm() == 0.0)
-        return Tensor<1,dim>();
-
-      const double r = p.norm();
-      return -magnitude * p/r;
-    }
-
-
-
-    template <int dim>
-    void
-    RadialConstant<dim>::declare_parameters (ParameterHandler &prm)
-    {
-      prm.enter_subsection("Gravity model");
-      {
-        prm.enter_subsection("Radial constant");
-        {
-          prm.declare_entry ("Magnitude", "9.81",
-                             Patterns::Double (),
-                             "Magnitude of the gravity vector in $m/s^2$. For positive values "
-                             "the direction is radially inward towards the center of the earth.");
-        }
-        prm.leave_subsection ();
-      }
-      prm.leave_subsection ();
-    }
-
-
-    template <int dim>
-    void
-    RadialConstant<dim>::parse_parameters (ParameterHandler &prm)
-    {
-      prm.enter_subsection("Gravity model");
-      {
-        prm.enter_subsection("Radial constant");
-        {
-          magnitude = prm.get_double ("Magnitude");
-        }
-        prm.leave_subsection ();
-      }
-      prm.leave_subsection ();
-
-      AssertThrow (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical ||
-                   this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::ellipsoidal,
-                   ExcMessage ("Gravity model 'radial constant' should not be used with geometry models that "
-                               "do not have either a spherical or ellipsoidal natural coordinate system."));
-    }
-
-// ------------------------------ RadialEarthLike -------------------
-
-    template <int dim>
-    void
-    RadialEarthLike<dim>::initialize ()
-    {
-      AssertThrow(false,
-                  ExcMessage("The 'radial earth-like' gravity model has been removed "
-                             "due to its misleading name. The available AsciiData gravity "
-                             "model (using default parameters) is much more earth-like, since "
-                             "it uses the gravity profile used in the construction of the "
-                             "Preliminary Reference Earth Model (PREM, Dziewonski and Anderson, "
-                             "1981). Use the 'ascii data' model instead of 'radial earth-like'."));
-    }
-
-
-
-    template <int dim>
-    Tensor<1,dim>
-    RadialEarthLike<dim>::gravity_vector (const Point<dim> &/*p*/) const
-    {
-      // We should never get here, because of the assertion in initialize().
-      AssertThrow(false,ExcInternalError());
-      return Tensor<1,dim>();
-    }
-
-
-// ----------------------------- RadialLinear ----------------------
-
-
     template <int dim>
     Tensor<1,dim>
     RadialLinear<dim>::gravity_vector (const Point<dim> &p) const
@@ -126,6 +44,7 @@ namespace aspect
                -magnitude_at_bottom  * (depth/maximal_depth))
               * p/p.norm();
     }
+
 
 
     template <int dim>
@@ -157,6 +76,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void
     RadialLinear<dim>::parse_parameters (ParameterHandler &prm)
@@ -186,21 +106,6 @@ namespace aspect
 {
   namespace GravityModel
   {
-    ASPECT_REGISTER_GRAVITY_MODEL(RadialConstant,
-                                  "radial constant",
-                                  "A gravity model in which the gravity has a constant magnitude "
-                                  "and the direction is radial (pointing inward if the value "
-                                  "is positive). The magnitude is read from the parameter "
-                                  "file in subsection 'Radial constant'.")
-
-    ASPECT_REGISTER_GRAVITY_MODEL(RadialEarthLike,
-                                  "radial earth-like",
-                                  "This plugin has been removed due to its misleading name. "
-                                  "The included profile was hard-coded and was less earth-like "
-                                  "than the `ascii data' plugin, which uses the profile "
-                                  "of the Preliminary Reference Earth Model (PREM). Use `ascii data' "
-                                  "instead of `radial earth-like'.")
-
     ASPECT_REGISTER_GRAVITY_MODEL(RadialLinear,
                                   "radial linear",
                                   "A gravity model which is radial (pointing inward if the gravity "
