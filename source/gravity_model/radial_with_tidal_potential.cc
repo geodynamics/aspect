@@ -89,19 +89,21 @@ namespace aspect
       {
         prm.enter_subsection("Radial with tidal potential");
         {
-          prm.declare_entry ("Mass of planet", "1.898e27",
+          prm.declare_entry ("Mass of perterbing body", "1.898e27",
                              Patterns::Double (),
-                             "Mass of satellte's host planet. "
-                             "Default value is for Europa, therefore, mass of Jupiter. "
+                             "Mass of body that perturbs gravity of modeled body. "
+                             "Default value is for modeling Europa, therefore, mass of Jupiter. "
                              "Units is $kg$.");
-          prm.declare_entry ("Semimajor axis of satellite", "670900000",
+          prm.declare_entry ("Semimajor axis of orbit", "670900000",
                              Patterns::Double (),
-                             "Length of semimajor axis of satellite. "
+                             "Length of semimajor axis of orbit between modeled body and perturbing body. "
                              "Default value is for Europa's semimajor axis"
                              "Units is $m$.");
           prm.declare_entry ("Rate of nonsynchronous rotation", "1000",
                              Patterns::Double (),
                              "Rate of nonsynchronous rotation (NSR). "
+                             "This works for the modeled body having decoupled rotation between interior layers. "
+                             "Default value is for Europa's icy shell. "
                              "This will be converted to angular rate. "
                              "Units is $m/year$");
         }
@@ -122,8 +124,8 @@ namespace aspect
       {
         prm.enter_subsection("Radial with tidal potential");
         {
-          M_p = prm.get_double ("Mass of planet");
-          a_s = prm.get_double ("Semimajor axis of satellite");
+          M_p = prm.get_double ("Mass of perturbing body");
+          a_s = prm.get_double ("Semimajor axis of orbit");
           b_NSR = prm.get_double ("Rate of nonsynchronous rotation");
         }
         prm.leave_subsection ();

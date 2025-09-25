@@ -34,7 +34,7 @@ namespace aspect
      * A class that describes gravity as a radial vector of linearly
      * changing magnitude by tidal potential from flattening and non-synchronnous rotation with respect to position and time.
      *
-     * The equation implemented in this heating model is from Tobie et al. (2025) (https://doi.org/10.1007/s11214-025-01136-y),
+     * The equation implemented in this gravity model is from Tobie et al. (2025) (https://doi.org/10.1007/s11214-025-01136-y),
      * which is defined as:
      * g = -magnitude - gradient (-(tidal potential)).
      * Tidal potential is positive because it is from geodesy research, where potential is taken as positive.
