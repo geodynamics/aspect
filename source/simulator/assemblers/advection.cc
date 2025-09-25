@@ -551,12 +551,20 @@ namespace aspect
                 scratch.face_material_model_inputs,
                 scratch.face_material_model_outputs,
                 scratch.face_finite_element_values->get_normal_vectors());
+          Assert (heat_flux.size() == n_face_q_points,
+                  ExcMessage("The boundary heat flux plugins have not returned information "
+                             "for the correct number of quadrature points. Did you forget to "
+                             "select any heat flux models altogether?"));
 
           const std::vector<double> heat_transfer_coefficients
             = this->get_boundary_convective_heating_manager().heat_transfer_coefficient(
                 face->boundary_id(),
                 scratch.face_material_model_inputs,
                 scratch.face_material_model_outputs);
+          Assert (heat_transfer_coefficients.size() == n_face_q_points,
+                  ExcMessage("The boundary heat transfer coefficient plugins have not returned information "
+                             "for the correct number of quadrature points. Did you forget to "
+                             "select any heat flux models altogether?"));
 
           for (unsigned int q=0; q<n_face_q_points; ++q)
             {
