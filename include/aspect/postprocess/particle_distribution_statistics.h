@@ -44,6 +44,11 @@ namespace aspect
     {
       public:
         /**
+         * Initialize function. Called once at the beginning of the model.
+         */
+        void initialize() override;
+
+        /**
          * Evaluate the solution for some particle statistics.
          */
         std::pair<std::string,std::string>
@@ -101,6 +106,17 @@ namespace aspect
          * kernel function was read from the .prm file.
          */
         typename Particle::ParticlePDF<dim>::KernelFunction kernel_function;
+
+        /**
+         * This function returns a vector containing the particle_iterator_ranges of
+         * the cells neighboring the supplied cell. This is used to sum the
+         * kernel function using particles across cell boundaries.
+         * @param cell The cell to find neighboring cell's particles for.
+         * @param particle_handler The particle handler of the current particle manager
+         */
+        std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
+        get_neighboring_particle_ranges(const typename Triangulation<dim>::active_cell_iterator &cell,
+                                        const typename Particles::ParticleHandler<dim> &particle_handler);
 
         /**
          * Fills the supplied PDF instance with values from the particles in the given cell.
@@ -164,6 +180,12 @@ namespace aspect
          */
         double
         kernelfunction_gaussian(const double distance) const;
+
+        /**
+         * Cached information that stores information about the grid so that we
+         * do not need to recompute it every time properties_at_points() is called.
+         */
+        std::unique_ptr<GridTools::Cache<dim>> grid_cache;
     };
   }
 }
