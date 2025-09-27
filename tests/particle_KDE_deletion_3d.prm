@@ -1,5 +1,11 @@
-# This .prm file is intended to test the particle_distribution_score postprocessor in 
-# 3 dimensions. 
+# This .prm file is intended to test the kernel density estimation
+# based algorithm for deleting excess particles in 3D. The KDE-based algorithm
+# generates a point-density function from the location of the particles 
+# and removes the particles whose location represents the maximum of the 
+# point density function first. This method is intended to avoid some of the 
+# problems with particle clustering which are caused by randomly deleting
+# excess particles. This test is the same as particle_KDE_deletion except in 
+# 3 dimensions instead of 2.
 
 set Dimension                              = 3
 set Use years instead of seconds           = false
@@ -25,8 +31,8 @@ subsection Geometry model
   subsection Box
     set X extent = 0.5
     set Y extent = 5
-    set Y periodic = true
     set Z extent = 0.5
+    set Y periodic = true
     set Y repetitions = 10
     set Box origin X coordinate = 0
     set Box origin Y coordinate = 0
@@ -108,6 +114,7 @@ subsection Particles
   set Particle generator name =  reference cell
   set Maximum particles per cell = 32
   set Load balancing strategy = remove and add particles
+  set Particle removal algorithm = point density function  
   subsection Generator
     subsection Reference cell
       set Number of particles per cell per direction = 4
@@ -117,7 +124,7 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, particles, particle distribution score
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, particles,  particle distribution score
 
   subsection Visualization
     set Time between graphical output = .001
