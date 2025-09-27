@@ -1,0 +1,5 @@
+Changed: Improved the maximum horizontal compressive stress
+postprocessor by adding stress averaging to ensure accurate
+angle calculations and support for elastic rheology.
+<br>
+(Ninghui Tian, Rene Gassmoeller, 2025/09/27)

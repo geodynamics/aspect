@@ -1,0 +1,33 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for composition solver 3
+# 13: Iterations for composition solver 4
+# 14: Iterations for composition solver 5
+# 15: Iterations for composition solver 6
+# 16: Iterations for composition solver 7
+# 17: Iterations for composition solver 8
+# 18: Iterations for composition solver 9
+# 19: Iterations for composition solver 10
+# 20: Iterations for composition solver 11
+# 21: Iterations for composition solver 12
+# 22: Iterations for Stokes solver
+# 23: Velocity iterations in Stokes preconditioner
+# 24: Schur complement iterations in Stokes preconditioner
+# 25: Visualization file name
+# 26: RMS velocity (m/year)
+# 27: Max. velocity (m/year)
+# 28: Minimum topography (m)
+# 29: Maximum topography (m)
+# 30: Minimal pressure (Pa)
+# 31: Average pressure (Pa)
+# 32: Maximal pressure (Pa)
+0 0.000000000000e+00 0.000000000000e+00 1000 29114 1331 324000 2 0 0 0 0 0 0 0 0 0 0 0 0 0 27 29 29 output-maximum_horizontal_compressive_stress_case_elasticity/solution/solution-00000 3.64314519e-01 3.65416696e+00 0.00000000e+00 0.00000000e+00 -1.14681249e+06 8.08527957e+09 1.61703999e+10 
