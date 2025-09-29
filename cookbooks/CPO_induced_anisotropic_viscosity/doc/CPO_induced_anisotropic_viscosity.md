@@ -124,5 +124,10 @@ Note: These settings are similar to those used for simulations involving CPO alo
 
 In the `CPO induced Anisotropic Viscosity` material model subsection, all parameters have reasonable default values and do not need to be manually specified unless customization is needed.
 
-The output includes a particle property, anisotropic stress, which is a 3-by-3 matrix that can be visualized as a tensor, showing the components of the stress tensor. As a result of using the anisotropic viscosity material model, the components will be different in different directions.
+This shear box model uses an additional postprocessor, anisotropic stress, which is also implemented in this cookbook. It outputs a 3-by-3 matrix that can be visualized as a tensor, similar to the standard stress postprocessor. With the anisotropic viscosity material model, applying simple shear produces deformation in multiple directions. As a result, the anisotropic stress tensor appears as elongated and slightly tilted glyphs (indicating the principal stress directions), in contrast to the isotropic stress tensor (see figure below).
 
+```{figure-md} fig:anisotropic_stress_shearbox
+<img src="anisotropic_stress.png" style="width:100.0%" />
+
+Expected output of the shear box model using anisotropic viscosity material model, showing the anisotropic stress and stress postprocessor as tensor glyphs (blue disks) in Paraview. The arrows indicate the direction and magnitude of velocity.
+```
