@@ -25,6 +25,15 @@ namespace aspect
   namespace Postprocess
   {
     template <int dim>
+    void
+    ParticleDistributionStatistics<dim>::initialize()
+    {
+      grid_cache = std::make_unique<GridTools::Cache<dim>>(this->get_triangulation(), this->get_mapping());
+    }
+
+
+
+    template <int dim>
     std::pair<std::string,std::string>
     ParticleDistributionStatistics<dim>::execute (TableHandler &statistics)
     {
@@ -61,9 +70,11 @@ namespace aspect
                       for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
                         {
                           const auto &particle_handler = this->get_particle_manager(particle_manager_index).get_particle_handler();
-
                           Particle::ParticlePDF<dim> pdf(granularity,bandwidth,kernel_function);
+                          const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over = get_neighboring_particle_ranges(cell,particle_handler);
+
                           pdf.fill_from_particle_range(particle_handler.particles_in_cell(cell),
+                                                       particle_ranges_to_sum_over,
                                                        particle_handler.n_particles_in_cell(cell));
                           pdf.compute_statistical_values();
 
@@ -82,9 +93,11 @@ namespace aspect
                       for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
                         {
                           const auto &particle_handler = this->get_particle_manager(particle_manager_index).get_particle_handler();
-
                           Particle::ParticlePDF<dim> pdf(bandwidth,kernel_function);
+                          const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over = get_neighboring_particle_ranges(cell,particle_handler);
+
                           pdf.fill_from_particle_range(particle_handler.particles_in_cell(cell),
+                                                       particle_ranges_to_sum_over,
                                                        particle_handler.n_particles_in_cell(cell));
                           pdf.compute_statistical_values();
 
@@ -118,7 +131,7 @@ namespace aspect
       const double global_function_max_mean = global_function_max_sum/global_cells_with_particles;
 
       // Write to statistics file
-      statistics.add_value ("Minimum PDF standard deviation ", global_standard_deviation_min);
+      statistics.add_value ("Minimum PDF standard deviation: ", global_standard_deviation_min);
       statistics.add_value ("Mean of PDF standard deviation: ", global_standard_deviation_mean);
       statistics.add_value ("Maximum PDF standard deviation: ", global_standard_deviation_max);
       statistics.add_value ("Mean of PDF minimum values: ", global_function_min_mean);
@@ -221,6 +234,36 @@ namespace aspect
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
+    }
+
+
+
+    template <int dim>
+    std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
+    Postprocess::ParticleDistributionStatistics<dim>::get_neighboring_particle_ranges(
+      const typename Triangulation<dim>::active_cell_iterator &cell,
+      const typename Particles::ParticleHandler<dim> &particle_handler)
+    {
+      // First populate the result vector with particles from the given cell
+      std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over = {particle_handler.particles_in_cell(cell)};
+
+      // Find the cells neighboring the given cell
+      std::set<typename Triangulation<dim>::active_cell_iterator> neighboring_cells;
+      const auto &vertex_to_cell_map = grid_cache->get_vertex_to_cell_map();
+      for (const auto v : cell->vertex_indices())
+        {
+          const unsigned int vertex_index = cell->vertex_index(v);
+          neighboring_cells.insert(vertex_to_cell_map[vertex_index].begin(),
+                                   vertex_to_cell_map[vertex_index].end());
+        }
+
+      // Add the particles from neighboring cells to the vector of particles ranges being returned
+      for (const auto &neighbor_cell: neighboring_cells)
+        {
+          particle_ranges_to_sum_over.push_back(particle_handler.particles_in_cell(neighbor_cell));
+        }
+
+      return particle_ranges_to_sum_over;
     }
   }
 }
