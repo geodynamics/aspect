@@ -68,10 +68,6 @@ namespace aspect
 
         this->get_material_model().evaluate(in, out);
 
-        // use Utilities::Tensors helpers to pack/unpack symmetric tensors
-        using Utilities::Tensors::unroll_symmetric_tensor_into_array;
-        using Utilities::Tensors::to_symmetric_tensor;
-
         // compute compressive stress components at quadrature points
         const unsigned int n_tensor_components = SymmetricTensor<2,dim>::n_independent_components;
         std::vector<Vector<double>> stress_components(n_quadrature_points,
@@ -105,9 +101,9 @@ namespace aspect
               }
 
             // serialize symmetric tensor into the vector using Utilities helper
-            unroll_symmetric_tensor_into_array<dim>(compressive_stress,
-                                                    stress_components[q].begin(),
-                                                    stress_components[q].end());
+            Utilities::Tensors::unroll_symmetric_tensor_into_array<dim>(compressive_stress,
+                                                                        stress_components[q].begin(),
+                                                                        stress_components[q].end());
           }
 
         // average stress components if requested (use existing visualization setting)
@@ -120,8 +116,8 @@ namespace aspect
           {
             // deserialize vector back into a symmetric tensor
             SymmetricTensor<2,dim> avg_compressive_stress =
-              to_symmetric_tensor<dim>(stress_components[q].begin(),
-                                       stress_components[q].end());
+              Utilities::Tensors::to_symmetric_tensor<dim>(stress_components[q].begin(),
+                                                           stress_components[q].end());
 
             const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector (in.position[q]);
             const Tensor<1,dim> vertical_direction = gravity/gravity.norm();

@@ -9,6 +9,7 @@ set Start time                   = 0
 set End time                     = 0
 set Use years instead of seconds = true
 set Nonlinear solver scheme      = iterated Advection and Stokes
+set Max nonlinear iterations     = 1
 set CFL number                   = 0.5
 set Maximum time step            = 10
 set Timing output frequency      = 1
@@ -31,8 +32,7 @@ end
 # Mesh refinement specifications
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
-  set Initial global refinement          = 1
-  set Time steps between mesh refinement = 1
+  set Initial global refinement          = 0
 end
 
 # One operator splitting step to update the stresses
