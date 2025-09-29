@@ -220,6 +220,12 @@ namespace aspect
                                              const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
                                              const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const
     {
+      // This manager class is written to accommodate multiple plugins at least
+      // in principle. However, at the moment it only works for exactly
+      // one plugin because it does not yet know how to combine results
+      // from multiple plugins. So assert that this is the case:
+      Assert (this->plugin_objects.size() == 1, ExcNotImplemented());
+
       std::vector<double> coefficients;
 
       for (const auto &p: this->plugin_objects)
@@ -236,6 +242,12 @@ namespace aspect
     Manager<dim>::boundary_temperature (const types::boundary_id boundary_indicator,
                                         const Point<dim> &position) const
     {
+      // This manager class is written to accommodate multiple plugins at least
+      // in principle. However, at the moment it only works for exactly
+      // one plugin because it does not yet know how to combine results
+      // from multiple plugins. So assert that this is the case:
+      Assert (temperature_plugin_objects.size() == 1, ExcNotImplemented());
+
       double temperature = 0.0;
 
       for (const auto &p: temperature_plugin_objects)
@@ -254,6 +266,12 @@ namespace aspect
                              const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
                              const std::vector<Tensor<1,dim>> &normal_vectors) const
     {
+      // This manager class is written to accommodate multiple plugins at least
+      // in principle. However, at the moment it only works for exactly
+      // one plugin because it does not yet know how to combine results
+      // from multiple plugins. So assert that this is the case:
+      Assert (heat_flux_plugin_objects.size() == 1, ExcNotImplemented());
+
       std::vector<Tensor<1,dim>> heat_fluxes;
 
       for (const auto &p: heat_flux_plugin_objects)
