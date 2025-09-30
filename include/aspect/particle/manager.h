@@ -316,6 +316,15 @@ namespace aspect
         };
 
         /**
+         * Enum class to keep track of which algorithm is used to add particles.
+         */
+        enum class AdditionAlgorithm
+        {
+          random,
+          lowest_density_particle,
+        };
+
+        /**
          * Keep track of which kernel function to use when managing particle populations.
          */
         typename ParticlePDF<dim>::KernelFunction kernel_function;
@@ -375,6 +384,11 @@ namespace aspect
          * Algorithm for deletion of excess particles.
          */
         DeletionAlgorithm deletion_algorithm;
+
+        /**
+         * Algorithm for adding particles to cell.
+         */
+        AdditionAlgorithm addition_algorithm;
 
         /**
          * Lower limit for particle number per cell. This limit is

@@ -892,6 +892,9 @@ namespace aspect
                                "is chosen, the particle manager "
                                "will generate a point density function from the locations of each particle and remove "
                                "the particle whose position is at the maximum of the point density function.");
+            prm.declare_entry ("Particle addition algorithm", "random",
+                               Patterns::Selection ("random|lowest density particle"),
+                               "Algorithm used to add particles to cells. ");
             prm.declare_entry ("Point density kernel function", "cutoff c1 dealii",
                                Patterns::Selection ("cutoff c1 dealii|cutoff w1 dealii|uniform|triangular|gaussian"),
                                "The kernel function is summed at each particle location to generate a point "
@@ -1098,6 +1101,19 @@ namespace aspect
           {
             AssertThrow(false, ExcNotImplemented());
           }
+
+        // The particle addition algorithm to use when there are not enough particles in a cell
+        std::string addition_algorithm_string = prm.get("Particle addition algorithm");
+
+        if (addition_algorithm_string == "lowest density particle")
+          addition_algorithm = AdditionAlgorithm::lowest_density_particle;
+        else if (addition_algorithm_string == "random")
+          addition_algorithm = AdditionAlgorithm::random;
+        else
+          {
+            AssertThrow(false, ExcNotImplemented());
+          }
+
 
         this->get_computing_timer().enter_subsection("Particles: Initialization");
 
