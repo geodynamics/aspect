@@ -581,7 +581,7 @@ namespace aspect
        *
        * The `iterated Advection, no Stokes' scheme iterates the temperature and other
        * advection systems and instead of solving for the Stokes system,
-       * a prescribed velocity and pressure is used."
+       * a prescribed velocity and pressure are used."
        *
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.

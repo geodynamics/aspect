@@ -1272,19 +1272,7 @@ namespace aspect
         // Find the maximum residual of the individual equations
         relative_residual = relative_temperature_residual;
         for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-          {
-            // in models with melt migration the melt advection equation includes the divergence of the velocity
-            // and can not be expected to converge to a smaller value than the residual of the Stokes equation.
-            // thus, we set a threshold for the initial composition residual.
-            // this only plays a role if the right-hand side of the advection equation is very small.
-            const double threshold = (parameters.include_melt_transport && c == introspection.compositional_index_for_name("porosity")
-                                      ?
-                                      parameters.linear_stokes_solver_tolerance * time_step
-                                      :
-                                      0.0);
-            if (initial_composition_residual[c]>threshold)
-              relative_residual = std::max(relative_composition_residual[c],relative_residual);
-          }
+          relative_residual = std::max(relative_composition_residual[c],relative_residual);
 
         pcout << "      Relative nonlinear residual (total system) after nonlinear iteration " << nonlinear_iteration+1
               << ": " << relative_residual

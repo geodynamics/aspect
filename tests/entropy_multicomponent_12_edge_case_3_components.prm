@@ -18,13 +18,6 @@ subsection Solver parameters
   end
 end
 
-set Surface pressure                       = 1.2e9
-set Pressure normalization                 = volume
-
-subsection Formulation
-  set Mass conservation = projected density field
-end
-
 subsection Geometry model
   set Model name = box
 
@@ -37,14 +30,12 @@ end
 
 subsection Adiabatic conditions model
  subsection Compute profile
- 
   set Use surface condition function = true
 
   	subsection Surface condition function
-    set Variable names = x,t 
-    set Function expression = 1.2e9+4e2*t;0
+      set Variable names = x,t
+      set Function expression = 1.2e9+4e2*t;0
     end
-
  end
 end
 
@@ -74,7 +65,7 @@ subsection Initial composition model
 
   subsection Function
     set Function expression = 0.3; 0.35; 1600; 2006; 1620; 0.0
-    end
+  end
 end
 
 subsection Material model
@@ -106,6 +97,10 @@ subsection Prescribed Stokes solution
   # The same function as we use for the adiabatic pressure
   subsection Pressure function
     set Function expression = 1.2e9+4e2*t
+  end
+
+  subsection Velocity function
+    set Function expression = 0.0; 0.0
   end
 end
 
