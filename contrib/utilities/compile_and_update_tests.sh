@@ -6,7 +6,7 @@
 # folder (the one containing include/, cmake/, source/, and tests/).
 # Navigate to that folder and run the following command in a terminal:
 #
-# docker run -v $PWD:/home/dealii/aspect --name=aspect-tester --rm -it geodynamics/aspect-tester:focal-dealii-9.4-v3 bash /home/dealii/aspect/contrib/utilities/compile_and_update_tests.sh
+# docker run -v $PWD:/home/dealii/aspect --name=aspect-tester --rm -it geodynamics/aspect-tester:jammy-dealii-9.6-v1 bash /home/dealii/aspect/contrib/utilities/compile_and_update_tests.sh
 
 # This command executes the following shell script *inside* the docker container
 # that contains the official ASPECT test system. Note that by mounting your
