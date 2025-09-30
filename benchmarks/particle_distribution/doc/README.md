@@ -35,7 +35,7 @@ After testing each kernel function and evaluating their performance using the pa
 
 
 ```{figure-md} fig:plot
-<img src="../ave-score-oscillate.png" alt="Plot of average cell score over time."  width="100%"/>
+<img src="ave-score-oscillate.png" alt="Plot of average cell score over time."  width="100%"/>
 
 Figure shows a plot of the average cell score over time. The score of each cell is a measure of how clustered particles are within that cell. The score is calculated using the Particle Distribution Score postprocessor, which uses a histogram based method. A score of 0 represents a cell with a perfectly even distribution of internal particles, while a score of 1 represents a cell with the highest clustering of particles. Lower scores signal a more uniform distribution of particles, which is desirable. In the figure, the random deletion algorithm consistently shows the highest (worst) average score while the PDF algorithm using deal.II kernel functions generally show the lowest (best) score.
 ```

@@ -85,8 +85,8 @@ namespace aspect
          * @param buckets The table to fill with the particle information.
         */
         void sort_particles_into_buckets(const typename Triangulation<dim>::active_cell_iterator &cell,
-                                         const double bucket_width,Table<dim,
-                                         unsigned int> &buckets) const;
+                                         const double bucket_width,
+                                         Table<dim,unsigned int> &buckets) const;
 
     };
   }

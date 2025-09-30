@@ -1,0 +1,5 @@
+# This parameter file is intended to test adding particles using kernel density estimation
+
+include $ASPECT_SOURCE_DIR/benchmarks/particle_distribution/addition_algorithm_benchmarks.prm
+
+set End time = 0.18

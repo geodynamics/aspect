@@ -91,29 +91,40 @@ namespace aspect
         /**
          * Fills the point-density function with values from the particles in the given cell.
          * @param particle_range The particle_iterator_range to operate on.
-         * @param particle_ranges_to_sum_over The ranges of the particles in neighboring cells.
+         * @param particle_ranges_to_sum_over The particle_iterator_range of the current and neighboring cells.
+         * The KDE uses both the particles in the given cell and those in neighboring cells when constructing the point density function.
          * @param n_particles_in_cell The number of particles belonging to the particle manager in question within the cell.
+         * @param mapping A reference to a mapping object to use to translate cell coordinates into
+         * real coordinates. `fill_from_particle_range` does not use this parameter directly but passes it to
+         * `insert_kernel_sum_from_particle_range.`
          */
         void
-        fill_from_particle_range(const typename Particles::ParticleHandler<dim>::particle_iterator_range particle_range,
-                                 const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over,
-                                 const unsigned int n_particles_in_cell);
+        fill_from_particle_range(const typename Particles::ParticleHandler<dim>::particle_iterator_range &particle_range,
+                                 const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
+                                 &particle_ranges_to_sum_over,
+                                 const unsigned int n_particles_in_cell,
+                                 const typename dealii::Mapping<dim> &mapping);
 
         /**
-         * This function is only called from `fill_from_cell`.
+         * This function is only called from `fill_from_particle_range`.
          * It iterates through every particle in the cell and
          * sums the value of the kernel function between the
          * reference point and the position of the cell.
          * @param reference_point The point from which to get the value of the kernel function.
          * @param table_index The index in the PDF to insert the data into.
          * @param n_particles_in_cell The number of particles in the cell.
-         * @param particle_range The particle_iterator_range to sum particles from.
+         * @param cell The cell in which to apply the kernel function
+         * @param particle_ranges_to_sum_over The particle_iterator_range to sum particles from.
+         * @param mapping A reference to a mapping object to use to translate cell coordinates into
+         * real coordinates
          */
         void
-        insert_kernel_sum_from_particle_range(const Point<dim> reference_point,
-                                              std::array<unsigned int,dim> table_index,
-                                              const unsigned int n_particles_in_cell,
-                                              const typename Particles::ParticleHandler<dim>::particle_iterator_range particle_range);
+        insert_kernel_sum_from_particle_range(const Point<dim> &reference_point,
+                                              const std::array<unsigned int,dim> &table_index,
+                                              const typename Triangulation<dim>::cell_iterator &cell,
+                                              const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
+                                              &particle_ranges_to_sum_over,
+                                              const typename dealii::Mapping<dim> &mapping);
 
         /**
          * Inserts a value into the point-density function.
@@ -180,6 +191,18 @@ namespace aspect
         get_min() const;
 
         /**
+         * Returns the location of the maximum of the point-density function.
+         */
+        Point<dim>
+        get_max_position() const;
+
+        /**
+         * Returns the location of the minimum of the point-density function.
+         */
+        Point<dim>
+        get_min_position() const;
+
+        /**
          * Returns the standard deviation of the point-density function.
          */
         double
@@ -242,6 +265,16 @@ namespace aspect
          * `min` holds the minimum value of the point-density function after it has been computed.
          */
         double min;
+
+        /**
+         * `max_position` holds position within the cell where the maximum point density was measured.
+         */
+        Point<dim> max_position;
+
+        /**
+         * `min_position` holds position within the cell where the minimum point density was measured.
+         */
+        Point<dim> min_position;
 
         /**
          * `standard_deviation` holds the standard_deviation of the point-density function after it has been computed.
