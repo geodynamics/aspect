@@ -86,14 +86,9 @@ namespace aspect
         double a_s;
 
         /**
-         * Rate of the non-synchronous rotation in m/year
+         * Angular rate of the non-synchronous rotation in m/year
          */
         double b_NSR;
-
-        /**
-         * Radius of the modeled body
-         */
-        double R1;
     };
   }
 }

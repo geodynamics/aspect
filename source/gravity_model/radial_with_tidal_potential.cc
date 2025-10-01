@@ -53,8 +53,8 @@ namespace aspect
       const double y = p[1];
       const double z = p[2];
 
-      const double C1 = std::cos( 2. * b_NSR / R1 / year_in_seconds * t);
-      const double C2 = std::sin( 2. * b_NSR / R1 / year_in_seconds * t);
+      const double C1 = std::cos( 2. * b_NSR * t);
+      const double C2 = std::sin( 2. * b_NSR * t);
 
       const double dTstar_over_dx = 1. / 6. * ( 2. * x );
       const double dT0_over_dx    = 1. / 2. * ( 2. * C1 * x - 2. * C2 * y );
@@ -99,13 +99,12 @@ namespace aspect
                              "Length of semimajor axis of orbit between modeled body and perturbing body. "
                              "Default value is for Europa's semimajor axis"
                              "Units is $m$.");
-          prm.declare_entry ("Rate of nonsynchronous rotation", "1000",
+          prm.declare_entry ("Angular rate of nonsynchronous rotation", "1000",
                              Patterns::Double (),
-                             "Rate of nonsynchronous rotation (NSR). "
+                             "Angular rate of nonsynchronous rotation (NSR). "
                              "This works for the modeled body having decoupled rotation between interior layers. "
                              "Default value is for Europa's icy shell. "
-                             "This will be converted to angular rate. "
-                             "Units is $m/year$");
+                             "Units is $degrees/year$");
         }
         prm.leave_subsection ();
       }
@@ -126,15 +125,14 @@ namespace aspect
         {
           M_p = prm.get_double ("Mass of perturbing body");
           a_s = prm.get_double ("Semimajor axis of orbit");
-          b_NSR = prm.get_double ("Rate of nonsynchronous rotation");
+          const double time_scale = this->get_parameters().convert_to_years ? constants::year_in_seconds : 1.0;
+          b_NSR = prm.get_double ("Angular rate of nonsynchronous rotation") * constants::degree_to_radians / time_scale;
         }
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
       
-      radialconstant.initialize_simulator (this->get_simulator());
       radialconstant.parse_parameters(prm);
-      radialconstant.initialize();
 
       // This effect of tidal potential only works if the geometry is derived from
       // a spherical model (i.e. a sphere, spherical shell or chunk)
