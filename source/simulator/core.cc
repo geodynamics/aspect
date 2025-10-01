@@ -378,17 +378,18 @@ namespace aspect
     boundary_velocity_manager.parse_parameters (prm);
 
     // Make sure we only have a prescribed Stokes plugin if needed
-    if (parameters.nonlinear_solver == NonlinearSolver::single_Advection_no_Stokes)
+    if (parameters.nonlinear_solver == NonlinearSolver::single_Advection_no_Stokes ||
+        parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_no_Stokes)
       {
         AssertThrow(prescribed_stokes_solution.get()!=nullptr,
-                    ExcMessage("For the 'single Advection, no Stokes' solver scheme you need to provide a Stokes plugin!")
+                    ExcMessage("For the selected nonlinear solver scheme you need to provide a prescribed Stokes plugin!")
                    );
       }
     else
       {
         AssertThrow(prescribed_stokes_solution.get()==nullptr,
                     ExcMessage("The prescribed stokes plugin you selected only works with the solver "
-                               "scheme 'single Advection, no Stokes'.")
+                               "scheme 'single Advection, no Stokes' or 'iterated Advection, no Stokes'.")
                    );
       }
 
@@ -872,6 +873,7 @@ namespace aspect
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_defect_correction_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Newton_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_no_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_defect_correction_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Newton_Stokes:
@@ -911,6 +913,7 @@ namespace aspect
 
           case Parameters<dim>::NonlinearSolver::Kind::no_Advection_no_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_no_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_no_Stokes:
             return false;
         }
       Assert(false, ExcNotImplemented());
@@ -1978,6 +1981,12 @@ namespace aspect
             case NonlinearSolver::single_Advection_iterated_Newton_Stokes:
             {
               solve_single_advection_iterated_newton_stokes(/*use_newton_iterations =*/ true);
+              break;
+            }
+
+            case NonlinearSolver::iterated_Advection_no_Stokes:
+            {
+              solve_iterated_advection_no_stokes();
               break;
             }
 

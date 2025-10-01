@@ -2577,14 +2577,15 @@ namespace aspect
                                  +
                                  "> is listed for a boundary condition, but is not used by the geometry model."));
 
-    if (parameters.nonlinear_solver == NonlinearSolver::single_Advection_no_Stokes)
+    if (parameters.nonlinear_solver == NonlinearSolver::single_Advection_no_Stokes ||
+        parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_no_Stokes)
       {
         // make sure that there are no listed velocity boundary conditions
         for (unsigned int i=0; i<4; ++i)
           AssertThrow (boundary_indicator_lists[i].empty(),
-                       ExcMessage ("With the solver scheme `single Advection, no Stokes', "
-                                   "one cannot set boundary conditions for velocity or traction, "
-                                   "but a boundary condition has been set."));
+                       ExcMessage ("With the solver schemes `single Advection, no Stokes' or "
+                                   "'iterated Advection, no Stokes' one cannot set boundary conditions "
+                                   "for velocity or traction, but a boundary condition has been set."));
       }
   }
 

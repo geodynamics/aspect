@@ -12,7 +12,7 @@ set Use years instead of seconds           = true
 set End time                               = 4e6
 set Maximum time step                      = 2e5
 
-set Nonlinear solver scheme                = iterated Advection and Stokes
+set Nonlinear solver scheme                = iterated Advection, no Stokes
 set Use operator splitting                 = true
 
 # The reaction should happen instantly within one advection step
@@ -24,23 +24,16 @@ subsection Solver parameters
   end
 end
 
-set Surface pressure                       = 0
-set Pressure normalization                 = volume
-
 subsection Adiabatic conditions model
  subsection Compute profile
   set Use surface condition function = true
 
     subsection Surface condition function
-    set Variable names = x,t
-    set Function expression = 1e4*t;0
+      set Variable names = x,t
+      set Function expression = 1e4*t;0
     end
 
  end
-end
-
-subsection Formulation
-  set Mass conservation = projected density field
 end
 
 subsection Geometry model
@@ -68,11 +61,7 @@ subsection Initial composition model
 
   subsection Function
     set Function expression = 0.3; 2700; 700; 0.0
-    end
-end
-
-subsection Boundary velocity model
-  set Tangential velocity boundary indicators =  left, right, top, bottom
+  end
 end
 
 subsection Gravity model
@@ -105,6 +94,19 @@ subsection Mesh refinement
   set Initial global refinement                = 0
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
+end
+
+subsection Prescribed Stokes solution
+  set Model name = function
+
+  # The same function as we use for the adiabatic pressure
+  subsection Pressure function
+    set Function expression = 1e-4*t
+  end
+
+  subsection Velocity function
+    set Function expression = 0.0; 0.0
+  end
 end
 
 subsection Postprocess
