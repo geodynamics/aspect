@@ -53,11 +53,11 @@ end
 
 
 subsection Gravity model
-  set Model name = radial linear with tidal potential
+  set Model name = radial with tidal potential
   subsection Radial constant
     set Magnitude = 1.3
   end
-  subsection Radial linear with tidal potnetial
+  subsection Radial with tidal potential
   end
 end
 

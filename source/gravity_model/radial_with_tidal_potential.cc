@@ -26,10 +26,6 @@
 #include <deal.II/base/tensor.h>
 
 #include <aspect/gravity_model/radial.h>
-#include <aspect/geometry_model/spherical_shell.h>
-#include <aspect/geometry_model/sphere.h>
-#include <aspect/geometry_model/chunk.h>
-#include <aspect/geometry_model/ellipsoidal_chunk.h>
 
 namespace aspect
 {
@@ -37,47 +33,40 @@ namespace aspect
   {
     template <int dim>
     Tensor<1,dim>
-    RadialWithTidalPotential<dim>::gravity_vector (const Point<dim> &p) const
+    RadialWithTidalPotential<dim>::gravity_vector (const Point<dim> &/*p*/) const
     {
+      // This plugin is not implemented for 2D models
+      AssertThrow(false, ExcNotImplemented());
+      return Tensor<1,dim>();
+    }
+
+    template <>
+    Tensor<1,3>
+    RadialWithTidalPotential<3>::gravity_vector (const Point<3> &p) const
+    {
+      const unsigned int dim = 3;
       /**
        * Notation of this potential equation is converted from spherical coordinates to cartesian coordinates.
        * Therefore, gradient of potential is (3 G M_p) / (2 a_s^3) * ( 1 / 6 * ( x^2 + y^2 - 2 * z^2) + 1 / 2 * (C1*(x^2 + y^2) - 2 * C2 * x * y)))
        * where C1 = cos(2*b*t) and C2 = sin(2*b*t)
        */
-      const Tensor<1,dim> e_x = Point<dim>::unit_vector(0);
-      const Tensor<1,dim> e_y = Point<dim>::unit_vector(1);
-      const Tensor<1,dim> e_z = Point<dim>::unit_vector(2);
-
       const double t = (this->simulator_is_past_initialization()) ? this->get_time() : 0.0;
-      const double x = p[0];
-      const double y = p[1];
-      const double z = p[2];
 
-      const double C1 = std::cos( 2. * b_NSR / R1 / year_in_seconds * t);
-      const double C2 = std::sin( 2. * b_NSR / R1 / year_in_seconds * t);
+      const double C1 = std::cos( 2. * b * t);
+      const double C2 = std::sin( 2. * b * t);
 
-      const double dTstar_over_dx = 1. / 6. * ( 2. * x );
-      const double dT0_over_dx    = 1. / 2. * ( 2. * C1 * x - 2. * C2 * y );
+      const Tensor<1,dim> dTstar_gradient ({1./3. * p[0], 1./3. * p[1], -2./3. * p[2]});
 
-      const double dTstar_over_dy = 1. / 6. * ( 2. * y );
-      const double dT0_over_dy    = 1. / 2. * ( -2. * C1 * y - 2. * C2 * x );
-
-      const double dTstar_over_dz = 1. / 6. * ( -4. * z );
-      const double dT0_over_dz    = 0;
+      const Tensor<1,dim> dT0_gradient ({C1 *p[0] - C2 *p[1], -C1 *p[1] - C2 *p[0], 0});
 
       const double G = aspect::constants::big_g;
-      const double T_factor = 3. * G * M_p / 2. / a_s / a_s / a_s;
+      const double T_factor = 3. * G * M_p / ( 2. * a_s * a_s * a_s );
 
       const Tensor<1,dim> tidal_gravity = T_factor *
-                                          ( (dTstar_over_dx + dT0_over_dx) * e_x
-                                            + (dTstar_over_dy + dT0_over_dy) * e_y
-                                            + (dTstar_over_dz + dT0_over_dz) * e_z);
+                                          (dTstar_gradient + dT0_gradient);
 
-      if (p.norm() == 0.0)
-        return Tensor<1,dim>();
-
-      const double r = p.norm();
-      return -radialconstant.magnitude * p/r + tidal_gravity;
+      RadialConstant<dim> radialconstant;
+      return radialconstant.gravity_vector(p) + tidal_gravity;
     }
 
 
@@ -85,27 +74,30 @@ namespace aspect
     void
     RadialWithTidalPotential<dim>::declare_parameters (ParameterHandler &prm)
     {
+      RadialLinear<dim>::declare_parameters(prm);
       prm.enter_subsection("Gravity model");
       {
         prm.enter_subsection("Radial with tidal potential");
         {
-          prm.declare_entry ("Mass of perterbing body", "1.898e27",
+          prm.declare_entry ("Mass of perturbing body", "1.898e27",
                              Patterns::Double (),
                              "Mass of body that perturbs gravity of modeled body. "
-                             "Default value is for modeling Europa, therefore, mass of Jupiter. "
+                             "The default value is chosen for modeling Europa, therefore, it is the mass of Jupiter. "
                              "Units is $kg$.");
           prm.declare_entry ("Semimajor axis of orbit", "670900000",
                              Patterns::Double (),
-                             "Length of semimajor axis of orbit between modeled body and perturbing body. "
-                             "Default value is for Europa's semimajor axis"
+                             "The length of the semimajor axis of the orbit that cause the tidal perturbation. "
+                             "For example, tidal perturbation on Europa happens by Europa orbiting Jupiter, "
+                             "and that on Earth, if Moon is in consideration, happens by Moon orbiting Earth. "
+                             "The default value is for the semimajor axis of Europa's orbit. "
                              "Units is $m$.");
-          prm.declare_entry ("Rate of nonsynchronous rotation", "1000",
+          prm.declare_entry ("Angular rate of nonsynchronous rotation", "0.036",
                              Patterns::Double (),
-                             "Rate of nonsynchronous rotation (NSR). "
+                             "Angular rate of nonsynchronous rotation (NSR). "
                              "This works for the modeled body having decoupled rotation between interior layers. "
-                             "Default value is for Europa's icy shell. "
-                             "This will be converted to angular rate. "
-                             "Units is $m/year$");
+                             "The default value is the angular rate of Europa's icy shell. "
+                             "Units is $degrees/year$ when 'Use years instead of seconds' is true, "
+                             "and $degress/second$ when 'Use years instead of seconds' is false. ");
         }
         prm.leave_subsection ();
       }
@@ -119,64 +111,19 @@ namespace aspect
     {
       AssertThrow (dim==3, ExcMessage ("The 'radial with tidal potential' gravity model "
                                        "can only be used in 3D."));
-      
+
       prm.enter_subsection("Gravity model");
       {
         prm.enter_subsection("Radial with tidal potential");
         {
           M_p = prm.get_double ("Mass of perturbing body");
           a_s = prm.get_double ("Semimajor axis of orbit");
-          b_NSR = prm.get_double ("Rate of nonsynchronous rotation");
+          const double time_scale = this->get_parameters().convert_to_years ? constants::year_in_seconds : 1.0;
+          b = prm.get_double ("Angular rate of nonsynchronous rotation") * constants::degree_to_radians / time_scale;
         }
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
-      
-      radialconstant.initialize_simulator (this->get_simulator());
-      radialconstant.parse_parameters(prm);
-      radialconstant.initialize();
-
-      // This effect of tidal potential only works if the geometry is derived from
-      // a spherical model (i.e. a sphere, spherical shell or chunk)
-      if (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>>(this->get_geometry_model()))
-        {
-          R1 = Plugins::get_plugin_as_type<const GeometryModel::Sphere<dim>>
-               (this->get_geometry_model()).radius();
-        }
-      else if (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model()))
-        {
-          R1 = Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>>
-               (this->get_geometry_model()).outer_radius();
-        }
-      else if (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>>(this->get_geometry_model()))
-        {
-          R1 = Plugins::get_plugin_as_type<const GeometryModel::Chunk<dim>>
-               (this->get_geometry_model()).outer_radius();
-        }
-      else if (Plugins::plugin_type_matches<const GeometryModel::EllipsoidalChunk<dim>>(this->get_geometry_model()))
-        {
-          const auto &gm = Plugins::get_plugin_as_type<const GeometryModel::EllipsoidalChunk<dim>>
-                           (this->get_geometry_model());
-          // TODO
-          // If the eccentricity of the EllipsoidalChunk is non-zero, the radius can vary along a boundary,
-          // but the maximal depth is the same everywhere and we could calculate a representative pressure
-          // profile. However, it requires some extra logic with ellipsoidal
-          // coordinates, so for now we only allow eccentricity zero.
-          // Using the EllipsoidalChunk with eccentricity zero can still be useful,
-          // because the domain can be non-coordinate parallel.
-
-          AssertThrow(gm.get_eccentricity() == 0.0,
-                      ExcNotImplemented("This plugin cannot be used with a non-zero eccentricity. "));
-
-          R1 = gm.get_semi_major_axis_a();
-        }
-      else
-        {
-          Assert (false, ExcMessage ("This initial condition can only be used if the geometry "
-                                     "is a sphere, a spherical shell, a chunk or an "
-                                     "ellipsoidal chunk."));
-          R1 = numbers::signaling_nan<double>();
-        }
     }
   }
 }
