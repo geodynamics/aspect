@@ -1071,7 +1071,7 @@ namespace aspect
           else if (prm.get ("Material file format") == "hefesto")
             {
               material_file_format = hefesto;
-              AssertThrow (material_file_names.size() == derivatives_file_names.size(),
+              AssertThrow (use_enthalpy == false || material_file_names.size() == derivatives_file_names.size(),
                            ExcMessage ("When using HeFESTO files, you need to provide as many file names "
                                        "for derivatives (via the `Derivatives file names' parameter "
                                        "as for the material files (via the `Material file names' parameter). "
