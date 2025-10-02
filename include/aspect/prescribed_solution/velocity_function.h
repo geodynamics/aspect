@@ -79,7 +79,7 @@ namespace aspect
          */
         void constrain_solution (const typename DoFHandler<dim>::active_cell_iterator &cell,
                                  const std::vector<Point<dim>> &positions,
-                                 const std::vector<unsigned int> component_indices,
+                                 const std::vector<unsigned int> &component_indices,
                                  std::vector<bool> &should_be_constrained,
                                  std::vector<double> &solution) override;
 

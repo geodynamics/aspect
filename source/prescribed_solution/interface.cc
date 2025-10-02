@@ -62,6 +62,10 @@ namespace aspect
     void
     Manager<dim>::constrain_solution (AffineConstraints<double> &current_constraints) const
     {
+      // If there are no active plugins, return without doing anything
+      if (this->plugin_objects.size() == 0)
+        return;
+
       this->get_computing_timer().enter_subsection("Prescribe Solution");
 
       // Create a quadrature at the support points of the finite element
@@ -104,7 +108,8 @@ namespace aspect
               {
                 // If it's okay to constrain this DOF
                 if (current_constraints.can_store_line(local_dof_indices[q]) &&
-                    !current_constraints.is_constrained(local_dof_indices[q]))
+                    !current_constraints.is_constrained(local_dof_indices[q]) &&
+                    should_be_constrained[q] == true)
                   {
 #if DEAL_II_VERSION_GTE(9,6,0)
                     // Add a constraint of the form dof[q] = u_i

@@ -4,7 +4,7 @@
 # applied that varies with space and time to set the flow field.
 # The time unit "year" is being used instead of "second" to test
 # the converting of units. In addition, the "Use spherical unit vectors" 
-# is set to true in this test so that the The first entry of the 
+# is set to true in this test so that the first entry of the 
 # velocity aligns with r direction and the second entry aligns with phi direction
 
 # At the top, we define the number of space dimensions we would like to

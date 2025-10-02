@@ -171,7 +171,7 @@ namespace aspect
     void
     VelocityFunction<dim>::constrain_solution (const typename DoFHandler<dim>::active_cell_iterator &/*cell*/,
                                                const std::vector<Point<dim>> &positions,
-                                               const std::vector<unsigned int> component_indices,
+                                               const std::vector<unsigned int> &component_indices,
                                                std::vector<bool> &should_be_constrained,
                                                std::vector<double> &solution)
     {
@@ -188,8 +188,8 @@ namespace aspect
               const unsigned int component_direction
                 = (c_idx - this->introspection().component_indices.velocities[0]);
 
-              // TODO: the position needs to be converted into the appropriate coordinate system see boundary_velocity/function.cc
 
+              // The position is converted into the appropriate coordinate system.
               const Utilities::NaturalCoordinate<dim> point =
                 this->get_geometry_model().cartesian_to_other_coordinates(positions[q], coordinate_system);
 
@@ -250,7 +250,7 @@ namespace aspect
     ASPECT_REGISTER_PRESCRIBED_SOLUTION(VelocityFunction,
                                         "velocity function",
                                         "Specify the prescribed fields in terms of an "
-                                        "explicit formula. The format of these "
+                                        "explicit formula in a region that is "
                                         "functions follows the syntax understood by the "
                                         "muparser library, see {ref}\\`sec:run-aspect:parameters-overview:muparser-format\\`.")
   }

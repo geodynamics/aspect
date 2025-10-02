@@ -61,7 +61,7 @@ namespace aspect
         virtual
         void constrain_solution (const typename DoFHandler<dim>::active_cell_iterator &cell,
                                  const std::vector<Point<dim>> &positions,
-                                 const std::vector<unsigned int> component_indices,
+                                 const std::vector<unsigned int> &component_indices,
                                  std::vector<bool> &should_be_constrained,
                                  std::vector<double> &solution) = 0;
     };
@@ -96,17 +96,17 @@ namespace aspect
          * a way that the Manager can deal with all of them without having to
          * know them by name. This allows the files in which individual
          * plugins are implemented to register these plugins, rather than also
-         * having to modify the Manager class by adding the new boundary
-         * temperature plugin class.
+         * having to modify the Manager class by adding the new prescribed
+         * solution plugin class.
          *
-         * @param name A string that identifies the boundary temperature model
+         * @param name A string that identifies the prescribed solution model
          * @param description A text description of what this model does and that
          * will be listed in the documentation of the parameter file.
          * @param declare_parameters_function A pointer to a function that can be
-         * used to declare the parameters that this boundary temperature model
+         * used to declare the parameters that this prescribed solution model
          * wants to read from input files.
          * @param factory_function A pointer to a function that can create an
-         * object of this boundary temperature model.
+         * object of this prescribed solution model.
          */
         static
         void
