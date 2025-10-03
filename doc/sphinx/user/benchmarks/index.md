@@ -51,6 +51,7 @@ benchmarks/inclusion/doc/inclusion.md
 benchmarks/burstedde/doc/burstedde.md
 benchmarks/slab_detachment/doc/slab_detachment.md
 benchmarks/hollow_sphere/doc/hollow_sphere.md
+benchmarks/particle_distribution/doc/README.md
 benchmarks/particle_integration_scheme/doc/particle_integration_scheme.md
 benchmarks/annulus/doc/annulus.md
 benchmarks/rigid_shear/doc/rigid_shear.md

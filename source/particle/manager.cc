@@ -33,6 +33,7 @@
 #include <boost/serialization/map.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
+#include <aspect/particle/distribution.h>
 
 namespace aspect
 {
@@ -264,6 +265,7 @@ namespace aspect
       // If any load balancing technique is selected that creates/destroys particles
       if (particle_load_balancing & ParticleLoadBalancing::remove_and_add_particles)
         {
+          GridTools::Cache<dim> grid_cache(this->get_triangulation(), this->get_mapping());
           // First do some preparation for particle generation in poorly
           // populated areas. For this we need to know which particle ids to
           // generate so that they are globally unique.
@@ -357,14 +359,44 @@ namespace aspect
                     for (unsigned int i=0; i < n_particles_to_remove; ++i)
                       {
                         const unsigned int current_n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
-                        const unsigned int index_to_remove = std::uniform_int_distribution<unsigned int>
-                                                             (0,current_n_particles_in_cell-1)(random_number_generator);
 
-                        auto particle_to_remove = particle_handler->particles_in_cell(cell).begin();
-                        std::advance(particle_to_remove, index_to_remove);
-                        particle_handler->remove_particle(particle_to_remove);
+                        if (deletion_algorithm == DeletionAlgorithm::point_density_function)
+                          {
+                            ParticlePDF<dim> pdf(bandwidth,kernel_function);
+                            /*
+                            'particle_ranges_to_sum_over' includes this cell's and neighboring cell's particles.
+                            If neighboring cell's particles are not included in the KDE, particles at cell boundaries will
+                            have artificially low point density values.
+                            */
+                            std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
+                            particle_ranges_to_sum_over = get_neighboring_particle_ranges(cell,get_particle_handler(),grid_cache);
+
+                            pdf.fill_from_particle_range(particle_handler->particles_in_cell(cell),
+                                                         particle_ranges_to_sum_over,
+                                                         current_n_particles_in_cell);
+                            pdf.compute_statistical_values();
+
+                            const types::particle_index index_max = pdf.get_max_particle();
+                            auto particle_to_remove = particle_handler->particles_in_cell(cell).begin();
+                            while (particle_to_remove->get_id() != index_max && particle_to_remove != particle_handler->particles_in_cell(cell).end())
+                              {
+                                ++particle_to_remove;
+                              }
+                            particle_handler->remove_particle(particle_to_remove);
+                          }
+                        else if (deletion_algorithm == DeletionAlgorithm::random)
+                          {
+                            const unsigned int current_n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
+                            const unsigned int index_to_remove = std::uniform_int_distribution<unsigned int>
+                                                                 (0,current_n_particles_in_cell-1)(random_number_generator);
+
+                            auto particle_to_remove = particle_handler->particles_in_cell(cell).begin();
+                            std::advance(particle_to_remove, index_to_remove);
+                            particle_handler->remove_particle(particle_to_remove);
+                          }
+                        else
+                          AssertThrow(false, ExcNotImplemented());
                       }
-
                   }
               }
 
@@ -783,6 +815,37 @@ namespace aspect
 
 
     template <int dim>
+    std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
+    Manager<dim>::get_neighboring_particle_ranges(
+      const typename Triangulation<dim>::active_cell_iterator &cell,
+      const typename Particles::ParticleHandler<dim> &particle_handler,
+      typename GridTools::Cache<dim> &grid_cache)
+    {
+      // First populate the result vector with particles from the given cell
+      std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over = {particle_handler.particles_in_cell(cell)};
+
+      // Find the cells neighboring the given cell
+      std::set<typename Triangulation<dim>::active_cell_iterator> neighboring_cells;
+      const auto &vertex_to_cell_map = grid_cache.get_vertex_to_cell_map();
+      for (const auto v : cell->vertex_indices())
+        {
+          const unsigned int vertex_index = cell->vertex_index(v);
+          neighboring_cells.insert(vertex_to_cell_map[vertex_index].begin(),
+                                   vertex_to_cell_map[vertex_index].end());
+        }
+
+      // Add the particles from neighboring cells to the vector of particles ranges being returned
+      for (const auto &neighbor_cell: neighboring_cells)
+        {
+          particle_ranges_to_sum_over.push_back(particle_handler.particles_in_cell(neighbor_cell));
+        }
+
+      return particle_ranges_to_sum_over;
+    }
+
+
+
+    template <int dim>
     void
     Manager<dim>::save (std::ostringstream &os) const
     {
@@ -823,6 +886,34 @@ namespace aspect
                                                             "remove and add particles|repartition"),
                                "Strategy that is used to balance the computational "
                                "load across processors for adaptive meshes.");
+            prm.declare_entry ("Particle removal algorithm", "random",
+                               Patterns::Selection ("random|point density function"),
+                               "Algorithm used to delete excess particles from cells. If point density function "
+                               "is chosen, the particle manager "
+                               "will generate a point density function from the locations of each particle and remove "
+                               "the particle whose position is at the maximum of the point density function.");
+            prm.declare_entry ("Point density kernel function", "cutoff c1 dealii",
+                               Patterns::Selection ("cutoff c1 dealii|cutoff w1 dealii|uniform|triangular|gaussian"),
+                               "The kernel function is summed at each particle location to generate a point "
+                               "density function of the particle locations according to a process known as "
+                               "kernel density estimation. Because kernel density estimation sums the value of "
+                               "a kernel function centered on each point of interest to every other point in the dataset, "
+                               "the only parameter of each kernel function is the distance between the particles, "
+                               "and each kernel function only returns a single value depending on this distance. "
+                               "The return value of each function is also scaled by the selected bandwidth value."
+                               "The gaussian function uses the gaussian distribution to generate an output from the "
+                               "input distance. The output of the triangular function decreases at a constant rate "
+                               "with increasing distance between the particles. The uniform function returns a constant "
+                               "value as long as the distance between particles is less than the selected bandwidth."
+                               "The cutoff w1 and cutoff c1 dealii options call the deal.II functions called cutoffW1 and cutoffC1 respectively. "
+                               "These are functions whose return values decrease with distance. A more detailed explanation on these two "
+                               "function are available in the deal.II documentation.");
+            prm.declare_entry ("Bandwidth", "0.3",
+                               Patterns::Double (0.3),"The bandwidth value is used to scale the kernel "
+                               "function when generating the point density function of particles. "
+                               "The bandwidth is measured as a fraction of the cells extent in one spatial "
+                               "dimension. For example, the default bandwidth of 0.3 represents a size "
+                               "equal to 30 percent of the cells size in one spatial dimension.");
             prm.declare_entry ("Minimum particles per cell", "0",
                                Patterns::Integer (0),
                                "Lower limit for particle number per cell. This limit is "
@@ -975,6 +1066,38 @@ namespace aspect
             return (particle_manager == 0) ? 1000 + this->cell_weight(cell, status) : this->cell_weight(cell, status);
           });
 
+        // The bandwidth to use with the kernel function
+        bandwidth = prm.get_double("Bandwidth");
+
+        // The particle removal algorithm to use when there are too many particles in a cell
+        std::string deletion_algorithm_string = prm.get("Particle removal algorithm");
+
+        if (deletion_algorithm_string == "point density function")
+          deletion_algorithm = DeletionAlgorithm::point_density_function;
+        else if (deletion_algorithm_string == "random")
+          deletion_algorithm = DeletionAlgorithm::random;
+        else
+          {
+            AssertThrow(false, ExcNotImplemented());
+          }
+
+        // The kernel function to use when using the point density function particle removal algorithm
+        std::string kernel_function_string = prm.get("Point density kernel function");
+
+        if (kernel_function_string == "cutoff w1 dealii")
+          kernel_function = ParticlePDF<dim>::KernelFunction::cutoff_function_w1_dealii;
+        else if (kernel_function_string == "cutoff c1 dealii")
+          kernel_function = ParticlePDF<dim>::KernelFunction::cutoff_function_c1_dealii;
+        else if (kernel_function_string == "uniform")
+          kernel_function = ParticlePDF<dim>::KernelFunction::uniform;
+        else if (kernel_function_string == "triangular")
+          kernel_function = ParticlePDF<dim>::KernelFunction::triangular;
+        else if (kernel_function_string == "gaussian")
+          kernel_function = ParticlePDF<dim>::KernelFunction::gaussian;
+        else
+          {
+            AssertThrow(false, ExcNotImplemented());
+          }
 
         this->get_computing_timer().enter_subsection("Particles: Initialization");
 

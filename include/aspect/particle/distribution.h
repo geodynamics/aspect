@@ -184,6 +184,22 @@ namespace aspect
         double
         get_standard_deviation() const;
 
+        /**
+         * Returns the index of the particle whose position has the highest
+         * point-density value. This function only works if the particle density
+         * function is defined per particle, instead of being defined on a grid.
+         */
+        types::particle_index
+        get_max_particle() const;
+
+        /**
+         * Returns the index of the particle whose position has the lowest
+         * point-density value. This function only works if the particle density
+         * function is defined per particle, instead of being defined on a grid.
+         */
+        types::particle_index
+        get_min_particle() const;
+
       private:
         /**
          * `function_output_table` holds the output of the point-density function
