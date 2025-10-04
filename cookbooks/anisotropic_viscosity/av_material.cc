@@ -18,6 +18,7 @@
  <http://www.gnu.org/licenses/>.
  */
 
+#include "av_material.h"
 #include <aspect/introspection.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/plugins.h>
@@ -137,45 +138,6 @@ namespace aspect
 {
   namespace Assemblers
   {
-    /**
-     * A class containing the functions to assemble the Stokes preconditioner.
-     */
-    template <int dim>
-    class StokesPreconditionerAnisotropicViscosity : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
-    {
-      public:
-        void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const override;
-
-        /**
-         * Create AnisotropicViscosities.
-         */
-        void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
-    };
-
-    /**
-     * This class assembles the terms for the matrix and right-hand-side of the incompressible
-     * Stokes equation for the current cell.
-     */
-    template <int dim>
-    class StokesIncompressibleTermsAnisotropicViscosity : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
-    {
-      public:
-        void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const override;
-
-        /**
-         * Create AdditionalMaterialOutputsStokesRHS if we need to do so.
-         */
-        void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
-    };
-
-
-
     template <int dim>
     void
     StokesPreconditionerAnisotropicViscosity<dim>::
@@ -373,27 +335,6 @@ namespace aspect
 
   namespace HeatingModel
   {
-    template <int dim>
-    class ShearHeatingAnisotropicViscosity : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
-    {
-      public:
-        /**
-         * Compute the heating model outputs for this class.
-         */
-        void
-        evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-                  const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const override;
-
-        /**
-         * Allow the heating model to attach additional material model outputs.
-         */
-        void
-        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const override;
-    };
-
-
-
     template <int dim>
     void
     ShearHeatingAnisotropicViscosity<dim>::

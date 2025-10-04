@@ -16,24 +16,24 @@
 # along with ASPECT; see the file LICENSE.  If not see
 # <http://www.gnu.org/licenses/>.
 
-cmake_minimum_required(VERSION 3.13.4)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.13.4)
 
-find_package(Aspect 2.4.0 QUIET HINTS ${Aspect_DIR} ../ ../../ $ENV{ASPECT_DIR})
+FIND_PACKAGE(Aspect 2.4.0 QUIET HINTS ${Aspect_DIR} ../ ../../ $ENV{ASPECT_DIR})
 
-if (NOT Aspect_FOUND)
-  message(FATAL_ERROR "\n"
+IF (NOT Aspect_FOUND)
+  MESSAGE(FATAL_ERROR "\n"
   "Could not find a valid ASPECT build/installation directory. "
   "Please specify the directory where you are building ASPECT by passing\n"
   "   -D Aspect_DIR=<path to ASPECT>\n"
   "to cmake or by setting the environment variable ASPECT_DIR in your shell "
   "before calling cmake. See the section 'How to write a plugin' in the "
         "manual for more information.")
-endif ()
+ENDIF ()
 
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
 
-set(TARGET "anisotropic_viscosity")
-project(${TARGET})
+SET(TARGET "CPO_induced_anisotropic_viscosity")
+PROJECT(${TARGET})
 
-add_library(${TARGET} SHARED  av_material.cc av_material.h)
+ADD_LIBRARY(${TARGET} SHARED  cpo_induced_anisotropic_viscosity.h cpo_induced_anisotropic_viscosity.cc anisotropic_stress.cc anisotropic_stress.h)
 ASPECT_SETUP_PLUGIN(${TARGET})
