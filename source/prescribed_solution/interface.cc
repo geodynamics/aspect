@@ -66,7 +66,7 @@ namespace aspect
       if (this->plugin_objects.size() == 0)
         return;
 
-      this->get_computing_timer().enter_subsection("Prescribe Solution");
+      this->get_computing_timer().enter_subsection("Prescribe solution");
 
       // Create a quadrature at the support points of the finite element
       // Each quadrature point therefore represent a location where a degree of freedom is defined
@@ -125,7 +125,7 @@ namespace aspect
                   }
               }
           }
-      this->get_computing_timer().leave_subsection("Prescribe Solution");
+      this->get_computing_timer().leave_subsection("Prescribe solution");
     }
 
 
@@ -206,7 +206,7 @@ namespace aspect
     void
     Manager<dim>::write_plugin_graph (std::ostream &out)
     {
-      std::get<dim>(registered_plugins).write_plugin_graph ("Prescribed fields interface",
+      std::get<dim>(registered_plugins).write_plugin_graph ("Prescribed solution interface",
                                                             out);
     }
   }

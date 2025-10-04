@@ -33,7 +33,7 @@ namespace aspect
   {
 
     /**
-     * A class that implements prescribed fields conditions based on a
+     * A class that prescribed the velocity in a specified region based on a
      * functional description provided in the input file.
      *
      * @ingroup PrescribedSolution

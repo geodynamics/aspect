@@ -3,24 +3,24 @@ Number of active cells: 128 (on 4 levels)
 Number of degrees of freedom: 1,836 (1,122+153+561)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 0+0 iterations.
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0 m/s, 0 m/s
-     Temperature min/avg/max:            0 K, 0 K, 0 K
-     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
+     RMS, max velocity:                  2.96e-12 m/s, 1.43e-11 m/s
+     Temperature min/avg/max:            273 K, 1555 K, 2014 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -6.428e+04 W, 1.809e+05 W
      Writing graphical output:           output-prescribed_solution_velocity_function_box/solution/solution-00000
      Writing heat flux map               output-prescribed_solution_velocity_function_box/heat_flux.00000
 
 *** Timestep 1:  t=1 seconds, dt=1 seconds
-   Skipping temperature solve because RHS is zero.
+   Solving temperature system... 0 iterations.
    Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  8.71e+05 m/s, 2.25e+06 m/s
-     Temperature min/avg/max:            0 K, 0 K, 0 K
-     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
+     Temperature min/avg/max:            273 K, 1555 K, 2014 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 6.261e+20 W, -2.798e+12 W
      Writing graphical output:           output-prescribed_solution_velocity_function_box/solution/solution-00001
      Writing heat flux map               output-prescribed_solution_velocity_function_box/heat_flux.00001
 

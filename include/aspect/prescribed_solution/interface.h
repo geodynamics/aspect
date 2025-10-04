@@ -43,8 +43,8 @@ namespace aspect
   namespace PrescribedSolution
   {
     /**
-    * This plugin allows the user to prescribe fields and can be
-    * thought of as temperature, velocities, etc. equivalent of the initial
+    * This plugin allows the user to prescribe solution and can be
+    * thought of as prescribing temperature, velocities, etc. during the model run, equivalent to the initial
     * conditions plugin.
     *
     * @ingroup PrescribedSolution

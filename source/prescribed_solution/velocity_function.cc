@@ -63,13 +63,6 @@ namespace aspect
       {
         prm.enter_subsection("Velocity function");
         {
-          /**
-           * Choose the coordinates to evaluate the velocity. The function can be
-           * declared in dependence of depth, cartesian coordinates or spherical
-           * coordinates. Note that the order of spherical coordinates is
-           * r,phi,theta and not r,theta,phi, since this allows for dimension
-           * independent expressions.
-           */
           prm.declare_entry ("Coordinate system", "cartesian",
                              Patterns::Selection ("cartesian|spherical|depth"),
                              "A selection that determines the assumed coordinate "
@@ -130,7 +123,7 @@ namespace aspect
             catch (...)
               {
                 std::cerr << "ERROR: FunctionParser failed to parse\n"
-                          << "\t'Prescribed fields model.Function'\n"
+                          << "\t'Prescribed solution model.Function'\n"
                           << "with expression\n"
                           << "\t'" << prm.get("Function expression") << "'"
                           << "More information about the cause of the parse error \n"
@@ -149,7 +142,7 @@ namespace aspect
             catch (...)
               {
                 std::cerr << "ERROR: FunctionParser failed to parse\n"
-                          << "\t'Prescribed fields model.Indicator function'\n"
+                          << "\t'Prescribed solution model.Indicator function'\n"
                           << "with expression\n"
                           << "\t'" << prm.get("Function expression") << "'"
                           << "More information about the cause of the parse error \n"
@@ -249,8 +242,8 @@ namespace aspect
   {
     ASPECT_REGISTER_PRESCRIBED_SOLUTION(VelocityFunction,
                                         "velocity function",
-                                        "Specify the prescribed fields in terms of an "
-                                        "explicit formula in a region that is "
+                                        "Prescribe the velocity in terms of an "
+                                        "explicit formula. The format of these "
                                         "functions follows the syntax understood by the "
                                         "muparser library, see {ref}\\`sec:run-aspect:parameters-overview:muparser-format\\`.")
   }
