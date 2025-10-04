@@ -57,6 +57,7 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 #include <aspect/boundary_composition/interface.h>
 #include <aspect/initial_temperature/interface.h>
 #include <aspect/initial_composition/interface.h>
+#include <aspect/prescribed_solution/interface.h>
 #include <aspect/prescribed_stokes_solution/interface.h>
 #include <aspect/boundary_velocity/interface.h>
 #include <aspect/boundary_fluid_pressure/interface.h>
@@ -1832,6 +1833,7 @@ namespace aspect
       BoundaryTemperature::Manager<dim>                                      boundary_temperature_manager;
       BoundaryConvectiveHeating::Manager<dim>                                boundary_convective_heating_manager;
       BoundaryComposition::Manager<dim>                                      boundary_composition_manager;
+      PrescribedSolution::Manager<dim>                                       prescribed_solution_manager;
       const std::unique_ptr<PrescribedStokesSolution::Interface<dim>>        prescribed_stokes_solution;
 
       /**

@@ -377,6 +377,9 @@ namespace aspect
     boundary_velocity_manager.initialize_simulator (*this);
     boundary_velocity_manager.parse_parameters (prm);
 
+    prescribed_solution_manager.initialize_simulator (*this);
+    prescribed_solution_manager.parse_parameters (prm);
+
     // Make sure we only have a prescribed Stokes plugin if needed
     if (parameters.nonlinear_solver == NonlinearSolver::single_Advection_no_Stokes ||
         parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_no_Stokes)
@@ -795,6 +798,10 @@ namespace aspect
 
     if (parameters.include_melt_transport)
       melt_handler->add_current_constraints (new_current_constraints);
+
+    // Finally update and let the prescribed solution plugins constrain parts of the solution
+    prescribed_solution_manager.update();
+    prescribed_solution_manager.constrain_solution(new_current_constraints);
 
     // let plugins add more constraints if they so choose, then close the
     // constraints object
