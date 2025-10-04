@@ -62,6 +62,8 @@ namespace aspect
          * Magnitude of the gravity vector.
          */
         double magnitude;
+
+        template <int dim2> friend class RadialWithTidalPotential;
     };
 
 
