@@ -30,8 +30,15 @@ namespace aspect
     std::pair<std::string,std::string>
     TimingStatistics<dim>::execute (TableHandler &statistics)
     {
-      const auto &timer = this->get_computing_timer();
+      auto &timer = this->get_computing_timer();
+
+      // The timer only allows access to its data outside of subsections
+      // Leaving and entering the subsection again here means there will be
+      // one additional call of this subsection per time step in the timing
+      // output.
+      timer.leave_subsection("Postprocessing");
       const std::map<std::string, double> &timing_map = timer.get_summary_data(TimerOutput::total_wall_time);
+      timer.enter_subsection("Postprocessing");
 
       for (const auto &section: timing_map)
         {
