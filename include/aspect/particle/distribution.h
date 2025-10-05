@@ -91,6 +91,7 @@ namespace aspect
         /**
          * Fills the point-density function with values from the particles in the given cell.
          * @param particle_range The particle_iterator_range to operate on.
+         * @param particle_ranges_to_sum_over The ranges of the particles in neighboring cells.
          * @param n_particles_in_cell The number of particles belonging to the particle manager in question within the cell.
          */
         void
