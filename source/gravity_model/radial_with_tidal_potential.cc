@@ -85,11 +85,12 @@ namespace aspect
     void
     RadialWithTidalPotential<dim>::declare_parameters (ParameterHandler &prm)
     {
+      RadialLinear<dim>::declare_parameters(prm);
       prm.enter_subsection("Gravity model");
       {
         prm.enter_subsection("Radial with tidal potential");
         {
-          prm.declare_entry ("Mass of perterbing body", "1.898e27",
+          prm.declare_entry ("Mass of perturbing body", "1.898e27",
                              Patterns::Double (),
                              "Mass of body that perturbs gravity of modeled body. "
                              "Default value is for modeling Europa, therefore, mass of Jupiter. "
@@ -99,7 +100,7 @@ namespace aspect
                              "Length of semimajor axis of orbit between modeled body and perturbing body. "
                              "Default value is for Europa's semimajor axis"
                              "Units is $m$.");
-          prm.declare_entry ("Angular rate of nonsynchronous rotation", "1000",
+          prm.declare_entry ("Angular rate of nonsynchronous rotation", "0.036",
                              Patterns::Double (),
                              "Angular rate of nonsynchronous rotation (NSR). "
                              "This works for the modeled body having decoupled rotation between interior layers. "
@@ -131,25 +132,17 @@ namespace aspect
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
-      
-      radialconstant.parse_parameters(prm);
 
       // This effect of tidal potential only works if the geometry is derived from
       // a spherical model (i.e. a sphere, spherical shell or chunk)
       if (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>>(this->get_geometry_model()))
         {
-          R1 = Plugins::get_plugin_as_type<const GeometryModel::Sphere<dim>>
-               (this->get_geometry_model()).radius();
         }
       else if (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model()))
         {
-          R1 = Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>>
-               (this->get_geometry_model()).outer_radius();
         }
       else if (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>>(this->get_geometry_model()))
         {
-          R1 = Plugins::get_plugin_as_type<const GeometryModel::Chunk<dim>>
-               (this->get_geometry_model()).outer_radius();
         }
       else if (Plugins::plugin_type_matches<const GeometryModel::EllipsoidalChunk<dim>>(this->get_geometry_model()))
         {
@@ -165,15 +158,12 @@ namespace aspect
 
           AssertThrow(gm.get_eccentricity() == 0.0,
                       ExcNotImplemented("This plugin cannot be used with a non-zero eccentricity. "));
-
-          R1 = gm.get_semi_major_axis_a();
         }
       else
         {
           Assert (false, ExcMessage ("This initial condition can only be used if the geometry "
                                      "is a sphere, a spherical shell, a chunk or an "
                                      "ellipsoidal chunk."));
-          R1 = numbers::signaling_nan<double>();
         }
     }
   }
