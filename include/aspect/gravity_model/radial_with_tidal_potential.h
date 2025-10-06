@@ -32,17 +32,16 @@ namespace aspect
   {
     /**
      * A class that describes gravity as a radial vector of linearly
-     * changing magnitude by tidal potential from flattening and non-synchronnous rotation with respect to position and time.
+     * changing magnitude, which is modified by a tidal potential from flattening and non-synchronous rotation.
      *
      * The equation implemented in this gravity model is from Tobie et al. (2025) (https://doi.org/10.1007/s11214-025-01136-y),
      * which is defined as:
      * g = -magnitude - gradient (-(tidal potential)).
-     * Tidal potential is positive because it is from geodesy research, where potential is taken as positive.
+     * Tidal potential is positive because the formula follows conventions from geodesy research, where potential is taken as positive.
      * (tidal potential) = (3 G M_p) / (2 a_s^3) * r^2 * (Tstar + T0)
      * Tstar = 1/6 *(1-3*cos(theta)^2) and T0=1/2sin(theta)^2*cos(2*lambda + 2*b*t)
-     * where G = gravitational constant, M_p = mass of planet, a_s = semimajor axis of satellite's orbit, b = angular rate of nonsynchronous rotation.
+     * where G = gravitational constant, M_p = mass of the perturbing body, a_s = semimajor axis of the orbit, b = angular rate of non-synchronous rotation.
      * r, theta and lambda are radial distance, polar angle and azimuthal angle, respectively.
-     * b [1/s] = b_NSR [m/yr] / (circumference of satellite [m]) / year_to_seconds [s/yr] * 2 * pi
      *
      * @ingroup GravityModels
      */
@@ -70,25 +69,19 @@ namespace aspect
 
       private:
         /**
-         * Declare a member variable of type RadialConstant that allows us to call
-         * functions from radial_constant.cc.
-         */
-        RadialConstant<dim> radialconstant;
-
-        /**
          * Mass of the perturbing body
          */
         double M_p;
 
         /**
-         * Semimajor axis of the modeled body
+         * Semimajor axis of the orbit
          */
         double a_s;
 
         /**
-         * Angular rate of the non-synchronous rotation in m/year
+         * Angular rate of the non-synchronous rotation in degrees/year
          */
-        double b_NSR;
+        double b;
     };
   }
 }

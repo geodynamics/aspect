@@ -53,8 +53,8 @@ namespace aspect
       const double y = p[1];
       const double z = p[2];
 
-      const double C1 = std::cos( 2. * b_NSR * t);
-      const double C2 = std::sin( 2. * b_NSR * t);
+      const double C1 = std::cos( 2. * b * t);
+      const double C2 = std::sin( 2. * b * t);
 
       const double dTstar_over_dx = 1. / 6. * ( 2. * x );
       const double dT0_over_dx    = 1. / 2. * ( 2. * C1 * x - 2. * C2 * y );
@@ -66,18 +66,15 @@ namespace aspect
       const double dT0_over_dz    = 0;
 
       const double G = aspect::constants::big_g;
-      const double T_factor = 3. * G * M_p / 2. / a_s / a_s / a_s;
+      const double T_factor = 3. * G * M_p / ( 2. * a_s * a_s * a_s );
 
       const Tensor<1,dim> tidal_gravity = T_factor *
                                           ( (dTstar_over_dx + dT0_over_dx) * e_x
                                             + (dTstar_over_dy + dT0_over_dy) * e_y
                                             + (dTstar_over_dz + dT0_over_dz) * e_z);
 
-      if (p.norm() == 0.0)
-        return Tensor<1,dim>();
-
-      const double r = p.norm();
-      return -radialconstant.magnitude * p/r + tidal_gravity;
+      RadialConstant<dim> radialconstant;
+      return radialconstant.gravity_vector(p) + tidal_gravity;
     }
 
 
@@ -93,19 +90,20 @@ namespace aspect
           prm.declare_entry ("Mass of perturbing body", "1.898e27",
                              Patterns::Double (),
                              "Mass of body that perturbs gravity of modeled body. "
-                             "Default value is for modeling Europa, therefore, mass of Jupiter. "
+                             "The default value is chosen for modeling Europa, therefore, it is the mass of Jupiter. "
                              "Units is $kg$.");
           prm.declare_entry ("Semimajor axis of orbit", "670900000",
                              Patterns::Double (),
-                             "Length of semimajor axis of orbit between modeled body and perturbing body. "
-                             "Default value is for Europa's semimajor axis"
+                             "The length of the semimajor axis of the orbit between the modeled body and the perturbing body. "
+                             "The default value is for Europa's semimajor axis. "
                              "Units is $m$.");
           prm.declare_entry ("Angular rate of nonsynchronous rotation", "0.036",
                              Patterns::Double (),
                              "Angular rate of nonsynchronous rotation (NSR). "
                              "This works for the modeled body having decoupled rotation between interior layers. "
-                             "Default value is for Europa's icy shell. "
-                             "Units is $degrees/year$");
+                             "Default value is the angular rate of Europa's icy shell. "
+                             "Units is $degrees/year$ when 'Use years instead of seconds' is true, "
+                             "and $degress/second$ when 'Use years instead of seconds' is false. ");
         }
         prm.leave_subsection ();
       }
@@ -127,7 +125,7 @@ namespace aspect
           M_p = prm.get_double ("Mass of perturbing body");
           a_s = prm.get_double ("Semimajor axis of orbit");
           const double time_scale = this->get_parameters().convert_to_years ? constants::year_in_seconds : 1.0;
-          b_NSR = prm.get_double ("Angular rate of nonsynchronous rotation") * constants::degree_to_radians / time_scale;
+          b = prm.get_double ("Angular rate of nonsynchronous rotation") * constants::degree_to_radians / time_scale;
         }
         prm.leave_subsection ();
       }
@@ -161,7 +159,7 @@ namespace aspect
         }
       else
         {
-          Assert (false, ExcMessage ("This initial condition can only be used if the geometry "
+          Assert (false, ExcMessage ("This gravity model can only be used if the geometry "
                                      "is a sphere, a spherical shell, a chunk or an "
                                      "ellipsoidal chunk."));
         }
