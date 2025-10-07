@@ -74,7 +74,7 @@ namespace aspect
         double M_p;
 
         /**
-         * Semimajor axis of the orbit in consideration for tidal perturbation
+         * Semimajor axis of the orbit that causes the tidal perturbation
          */
         double a_s;
 

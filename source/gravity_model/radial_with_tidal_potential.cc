@@ -86,8 +86,10 @@ namespace aspect
                              "Units is $kg$.");
           prm.declare_entry ("Semimajor axis of orbit", "670900000",
                              Patterns::Double (),
-                             "The length of the semimajor axis of the orbit between the modeled body and the perturbing body. "
-                             "The default value is for semimajor axis of Europa's orbit. "
+                             "The length of the semimajor axis of the orbit that cause the tidal perturbation. "
+                             "For example, tidal perturbation on Europa happens by Europa orbiting Jupiter, "
+                             "and that on Earth, if Moon is in consideration, happens by Moon orbiting Earth. "
+                             "The default value is for the semimajor axis of Europa's orbit. "
                              "Units is $m$.");
           prm.declare_entry ("Angular rate of nonsynchronous rotation", "0.036",
                              Patterns::Double (),
