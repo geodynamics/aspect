@@ -137,7 +137,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 **Pattern:** [Selection entropy viscosity|SUPG ]
 
-**Documentation:** Select the method for stabilizing the advection equation. The original method implemented is &rsquo;entropy viscosity&rsquo; as described in \cite {kronbichler:etal:2012}. SUPG is currently experimental.
+**Documentation:** Select the method for stabilizing the advection equation. The original method implemented is &rsquo;entropy viscosity&rsquo; as described in {cite}`kronbichler:etal:2012`. SUPG is currently experimental.
 
 (parameters:Discretization/Stabilization_20parameters/Use_20artificial_20viscosity_20smoothing)=
 ### __Parameter name:__ Use artificial viscosity smoothing
