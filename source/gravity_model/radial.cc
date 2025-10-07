@@ -25,11 +25,6 @@
 
 #include <deal.II/base/tensor.h>
 
-#include <aspect/geometry_model/spherical_shell.h>
-#include <aspect/geometry_model/sphere.h>
-#include <aspect/geometry_model/chunk.h>
-#include <aspect/geometry_model/ellipsoidal_chunk.h>
-
 namespace aspect
 {
   namespace GravityModel
