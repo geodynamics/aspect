@@ -321,8 +321,18 @@ namespace aspect
         enum class AdditionAlgorithm
         {
           random,
-          lowest_density_particle,
+          histogram,
+          point_density_function,
+          monte_carlo,
         };
+
+        /**
+         * The granularity to use for histogram or point density function techniques for 
+         * adding particles when cells fall below the minimum number of particles allowed.
+         * Granularity represents the number of subdivisions of the cell in each dimension
+         * when calculating a histogram of point density function.
+         */
+        int addition_granularity;
 
         /**
          * Keep track of which kernel function to use when managing particle populations.

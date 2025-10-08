@@ -335,20 +335,54 @@ namespace aspect
                   {
                     for (unsigned int i = n_particles_in_cell; i < min_particles_per_cell; ++i,++local_next_particle_index)
                       {
-                        std::pair<Particles::internal::LevelInd,Particles::Particle<dim>> new_particle = generator->generate_particle(cell,local_next_particle_index);
+                        const unsigned int current_n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
+                        if (addition_algorithm == AdditionAlgorithm::random)
+                        {
 
-                        const std::vector<double> particle_properties =
-                          property_manager->initialize_late_particle(new_particle.second.get_location(),
-                                                                     *particle_handler,
-                                                                     *interpolator,
-                                                                     cell);
+                              std::pair<Particles::internal::LevelInd,Particles::Particle<dim>> new_particle = generator->generate_particle(cell,local_next_particle_index);
 
-                        typename ParticleHandler<dim>::particle_iterator particle = particle_handler->insert_particle(new_particle.second,
-                                                                                    typename parallel::distributed::Triangulation<dim>::cell_iterator (&this->get_triangulation(),
-                                                                                        new_particle.first.first,
-                                                                                        new_particle.first.second));
-                        particle->set_properties(particle_properties);
-                      }
+                              const std::vector<double> particle_properties =
+                                property_manager->initialize_late_particle(new_particle.second.get_location(),
+                                                                          *particle_handler,
+                                                                          *interpolator,
+                                                                          cell);
+
+                              typename ParticleHandler<dim>::particle_iterator particle = particle_handler->insert_particle(new_particle.second,
+                                                                                          typename parallel::distributed::Triangulation<dim>::cell_iterator (&this->get_triangulation(),
+                                                                                              new_particle.first.first,
+                                                                                              new_particle.first.second));
+                              particle->set_properties(particle_properties);
+                            
+                        }
+                        else if (addition_algorithm == AdditionAlgorithm::point_density_function)
+                        {
+                          ParticlePDF<dim> pdf(addition_granularity,bandwidth,kernel_function);
+                          std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
+                          particle_ranges_to_sum_over = get_neighboring_particle_ranges(cell,get_particle_handler(),grid_cache);
+
+                          pdf.fill_from_particle_range(particle_handler->particles_in_cell(cell),
+                                                        particle_ranges_to_sum_over,
+                                                        current_n_particles_in_cell);
+                          pdf.compute_statistical_values();
+
+                          Point<dim> min_density_position = pdf.get_min_position();
+
+                          std::pair<Particles::internal::LevelInd,Particles::Particle<dim>> new_particle = 
+                                  generator->generate_particle(cell,local_next_particle_index,min_density_position);
+
+                                  const std::vector<double> particle_properties =
+                                    property_manager->initialize_late_particle(new_particle.second.get_location(),
+                                                                              *particle_handler,
+                                                                              *interpolator,
+                                                                              cell);
+
+                                  typename ParticleHandler<dim>::particle_iterator particle = particle_handler->insert_particle(new_particle.second,
+                                                                                              typename parallel::distributed::Triangulation<dim>::cell_iterator (&this->get_triangulation(),
+                                                                                                  new_particle.first.first,
+                                                                                                  new_particle.first.second));
+                                  particle->set_properties(particle_properties);
+                        }
+                    }
                   }
 
                 // Remove particles if necessary
@@ -893,7 +927,7 @@ namespace aspect
                                "will generate a point density function from the locations of each particle and remove "
                                "the particle whose position is at the maximum of the point density function.");
             prm.declare_entry ("Particle addition algorithm", "random",
-                               Patterns::Selection ("random|lowest density particle"),
+                               Patterns::Selection ("random|histogram|monte carlo|point density function"),
                                "Algorithm used to add particles to cells. ");
             prm.declare_entry ("Point density kernel function", "cutoff c1 dealii",
                                Patterns::Selection ("cutoff c1 dealii|cutoff w1 dealii|uniform|triangular|gaussian"),
@@ -917,6 +951,11 @@ namespace aspect
                                "The bandwidth is measured as a fraction of the cells extent in one spatial "
                                "dimension. For example, the default bandwidth of 0.3 represents a size "
                                "equal to 30 percent of the cells size in one spatial dimension.");
+            prm.declare_entry("Addition Granularity","6",
+                              Patterns::Integer(6),
+                              "The amount of times to subdivide each cell when adding particles using histogram "
+                              "or point density function based methods. Higher granularities tend to result in "
+                              "better particles distributions but will be slower.");
             prm.declare_entry ("Minimum particles per cell", "0",
                                Patterns::Integer (0),
                                "Lower limit for particle number per cell. This limit is "
@@ -1102,13 +1141,20 @@ namespace aspect
             AssertThrow(false, ExcNotImplemented());
           }
 
+        // The bandwidth to use with the kernel function
+        addition_granularity = prm.get_integer("Addition Granularity");
+
         // The particle addition algorithm to use when there are not enough particles in a cell
         std::string addition_algorithm_string = prm.get("Particle addition algorithm");
 
-        if (addition_algorithm_string == "lowest density particle")
-          addition_algorithm = AdditionAlgorithm::lowest_density_particle;
-        else if (addition_algorithm_string == "random")
+        if (addition_algorithm_string == "random")
           addition_algorithm = AdditionAlgorithm::random;
+        else if (addition_algorithm_string == "monte carlo")
+          addition_algorithm = AdditionAlgorithm::monte_carlo;
+        else if (addition_algorithm_string == "histogram")
+          addition_algorithm = AdditionAlgorithm::histogram;
+        else if (addition_algorithm_string == "point density function")
+          addition_algorithm = AdditionAlgorithm::point_density_function;
         else
           {
             AssertThrow(false, ExcNotImplemented());

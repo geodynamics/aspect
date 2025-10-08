@@ -89,6 +89,33 @@ namespace aspect
       template <int dim>
       std::pair<Particles::internal::LevelInd,Particle<dim>>
       Interface<dim>::generate_particle (const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
+                                         const types::particle_index id,
+                                         const Point<dim> &reference_position)
+      {
+
+        // Check that the reference position is actually within the given cell
+        for (unsigned int d=0; d<dim; ++d)
+        {
+          double coordinate = reference_position[d];
+          if (coordinate < 0.0 || coordinate > 1.0)
+          {
+            AssertThrow(false, ExcMessage("The reference position: given is not within the specified cell. Dimension " + std::to_string(d) + " is of value: " + std::to_string(reference_position[d]) +". Should be between 0.0 and 1.0."));
+          }
+        }
+
+        // This version of generate_particle only needs to generate a particle within the given cell at the reference position
+        const Point<dim> position_real = this->get_mapping().transform_unit_to_real_cell(cell,reference_position);
+        const Particle<dim> new_particle(position_real, reference_position, id);
+        const Particles::internal::LevelInd cellid(cell->level(), cell->index());
+
+        return std::make_pair(cellid, new_particle);
+      }
+
+
+
+      template <int dim>
+      std::pair<Particles::internal::LevelInd,Particle<dim>>
+      Interface<dim>::generate_particle (const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
                                          const types::particle_index id)
       {
         // Uniform distribution on the interval [0,1]. This
