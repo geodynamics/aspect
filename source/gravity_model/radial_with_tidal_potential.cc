@@ -57,7 +57,7 @@ namespace aspect
 
       const Tensor<1,dim> dTstar_gradient ({1./3. * p[0], 1./3. * p[1], -2./3. * p[2]});
 
-      const Tensor<1,dim> dT0_gradient ({C1*p[0] - C2*p[1], -C1*p[1] - C2*p[0], 0});
+      const Tensor<1,dim> dT0_gradient ({C1 *p[0] - C2 *p[1], -C1 *p[1] - C2 *p[0], 0});
 
       const double G = aspect::constants::big_g;
       const double T_factor = 3. * G * M_p / ( 2. * a_s * a_s * a_s );
@@ -111,7 +111,7 @@ namespace aspect
     {
       AssertThrow (dim==3, ExcMessage ("The 'radial with tidal potential' gravity model "
                                        "can only be used in 3D."));
-      
+
       prm.enter_subsection("Gravity model");
       {
         prm.enter_subsection("Radial with tidal potential");
