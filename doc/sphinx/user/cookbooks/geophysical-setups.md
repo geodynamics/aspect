@@ -121,5 +121,6 @@ cookbooks/2d_annulus_visualization/doc/2d_annulus_visualization.md
 cookbooks/tomography_based_plate_motions/doc/tomography_based_plate_motions.md
 cookbooks/crystal_preferred_orientation_olivine_fraters_billen_2021/doc/crystal_preferred_orientation_olivine_fraters_billen_2021.md
 cookbooks/sinking_of_anhydrite_block_in_salt_diapir/doc/sinking_of_anhydrite_block_in_salt_diapir.md
+cookbooks/anisotropic_viscosity/doc/anisotropic_viscosity.md
 cookbooks/future/README.md
 :::
