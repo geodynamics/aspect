@@ -33,11 +33,11 @@ namespace aspect
   {
     template <int dim>
     Tensor<1,dim>
-    RadialWithTidalPotential<dim>::gravity_vector (const Point<dim> &p) const
+    RadialWithTidalPotential<dim>::gravity_vector (const Point<dim> &/*p*/) const
     {
-    // This plugin is not implemented for 2D models
-    AssertThrow(false, ExcNotImplemented());
-    return Tensor<1,dim>();
+      // This plugin is not implemented for 2D models
+      AssertThrow(false, ExcNotImplemented());
+      return Tensor<1,dim>();
     }
 
     template <>
