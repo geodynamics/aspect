@@ -1,21 +1,16 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 96 (on 1 levels)
 Number of degrees of freedom: 4,030 (2,910+150+970)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 61+0 iterations.
+   Solving Stokes system (GMG)... 38+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                 2.04e-05 m/year, 7.18e-05 m/year
      Temperature min/avg/max:                           100 K, 100 K, 100 K
      Writing graphical output:                          output-gravity_tidal_potential/solution/solution-00000
-     Pressure min/avg/max:                              -5.226e+05 Pa, 0.002525 Pa, 1.045e+06 Pa
+     Pressure min/avg/max:                              -5.226e+05 Pa, 0.00209 Pa, 1.045e+06 Pa
      Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+20 Pa s, 2.631e+21 kg
 
 *** Timestep 1:  t=1000 years, dt=1000 years
@@ -26,7 +21,7 @@ Number of degrees of freedom: 4,030 (2,910+150+970)
      RMS, max velocity:                                 2.53e-05 m/year, 8.53e-05 m/year
      Temperature min/avg/max:                           100 K, 100 K, 100 K
      Writing graphical output:                          output-gravity_tidal_potential/solution/solution-00001
-     Pressure min/avg/max:                              -5.226e+05 Pa, 0.002249 Pa, 1.018e+06 Pa
+     Pressure min/avg/max:                              -5.226e+05 Pa, 0.00225 Pa, 1.018e+06 Pa
      Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+20 Pa s, 2.631e+21 kg
 
 *** Timestep 2:  t=2000 years, dt=1000 years
@@ -37,7 +32,7 @@ Number of degrees of freedom: 4,030 (2,910+150+970)
      RMS, max velocity:                                 2.24e-05 m/year, 8.31e-05 m/year
      Temperature min/avg/max:                           100 K, 100 K, 100 K
      Writing graphical output:                          output-gravity_tidal_potential/solution/solution-00002
-     Pressure min/avg/max:                              -5.226e+05 Pa, 0.002251 Pa, 8.955e+05 Pa
+     Pressure min/avg/max:                              -5.226e+05 Pa, 0.00225 Pa, 8.955e+05 Pa
      Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+20 Pa s, 2.631e+21 kg
 
 *** Timestep 3:  t=3000 years, dt=1000 years
@@ -48,7 +43,7 @@ Number of degrees of freedom: 4,030 (2,910+150+970)
      RMS, max velocity:                                 2.24e-05 m/year, 8.31e-05 m/year
      Temperature min/avg/max:                           100 K, 100 K, 100 K
      Writing graphical output:                          output-gravity_tidal_potential/solution/solution-00003
-     Pressure min/avg/max:                              -5.226e+05 Pa, 0.002249 Pa, 8.955e+05 Pa
+     Pressure min/avg/max:                              -5.226e+05 Pa, 0.00225 Pa, 8.955e+05 Pa
      Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+20 Pa s, 2.631e+21 kg
 
 *** Timestep 4:  t=4000 years, dt=1000 years
@@ -59,7 +54,7 @@ Number of degrees of freedom: 4,030 (2,910+150+970)
      RMS, max velocity:                                 2.53e-05 m/year, 8.53e-05 m/year
      Temperature min/avg/max:                           100 K, 100 K, 100 K
      Writing graphical output:                          output-gravity_tidal_potential/solution/solution-00004
-     Pressure min/avg/max:                              -5.226e+05 Pa, 0.002248 Pa, 1.018e+06 Pa
+     Pressure min/avg/max:                              -5.226e+05 Pa, 0.00225 Pa, 1.018e+06 Pa
      Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+20 Pa s, 2.631e+21 kg
 
 *** Timestep 5:  t=5000 years, dt=1000 years
@@ -70,7 +65,7 @@ Number of degrees of freedom: 4,030 (2,910+150+970)
      RMS, max velocity:                                 2.04e-05 m/year, 7.18e-05 m/year
      Temperature min/avg/max:                           100 K, 100 K, 100 K
      Writing graphical output:                          output-gravity_tidal_potential/solution/solution-00005
-     Pressure min/avg/max:                              -5.226e+05 Pa, 0.002247 Pa, 1.045e+06 Pa
+     Pressure min/avg/max:                              -5.226e+05 Pa, 0.00225 Pa, 1.045e+06 Pa
      Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+20 Pa s, 2.631e+21 kg
 
 *** Timestep 6:  t=6000 years, dt=1000 years
@@ -81,12 +76,12 @@ Number of degrees of freedom: 4,030 (2,910+150+970)
      RMS, max velocity:                                 2.53e-05 m/year, 8.53e-05 m/year
      Temperature min/avg/max:                           100 K, 100 K, 100 K
      Writing graphical output:                          output-gravity_tidal_potential/solution/solution-00006
-     Pressure min/avg/max:                              -5.226e+05 Pa, 0.002249 Pa, 1.018e+06 Pa
+     Pressure min/avg/max:                              -5.226e+05 Pa, 0.00225 Pa, 1.018e+06 Pa
      Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+20 Pa s, 2.631e+21 kg
 
 *** Timestep 7:  t=7000 years, dt=1000 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 49+0 iterations.
+   Solving Stokes system (GMG)... 50+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                 2.24e-05 m/year, 8.31e-05 m/year
@@ -103,7 +98,7 @@ Number of degrees of freedom: 4,030 (2,910+150+970)
      RMS, max velocity:                                 2.24e-05 m/year, 8.31e-05 m/year
      Temperature min/avg/max:                           100 K, 100 K, 100 K
      Writing graphical output:                          output-gravity_tidal_potential/solution/solution-00008
-     Pressure min/avg/max:                              -5.226e+05 Pa, 0.002251 Pa, 8.955e+05 Pa
+     Pressure min/avg/max:                              -5.226e+05 Pa, 0.00225 Pa, 8.955e+05 Pa
      Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+20 Pa s, 2.631e+21 kg
 
 *** Timestep 9:  t=9000 years, dt=1000 years
@@ -114,7 +109,7 @@ Number of degrees of freedom: 4,030 (2,910+150+970)
      RMS, max velocity:                                 2.53e-05 m/year, 8.53e-05 m/year
      Temperature min/avg/max:                           100 K, 100 K, 100 K
      Writing graphical output:                          output-gravity_tidal_potential/solution/solution-00009
-     Pressure min/avg/max:                              -5.226e+05 Pa, 0.002251 Pa, 1.018e+06 Pa
+     Pressure min/avg/max:                              -5.226e+05 Pa, 0.00225 Pa, 1.018e+06 Pa
      Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+20 Pa s, 2.631e+21 kg
 
 *** Timestep 10:  t=10000 years, dt=1000 years
@@ -125,15 +120,10 @@ Number of degrees of freedom: 4,030 (2,910+150+970)
      RMS, max velocity:                                 2.04e-05 m/year, 7.18e-05 m/year
      Temperature min/avg/max:                           100 K, 100 K, 100 K
      Writing graphical output:                          output-gravity_tidal_potential/solution/solution-00010
-     Pressure min/avg/max:                              -5.226e+05 Pa, 0.002252 Pa, 1.045e+06 Pa
+     Pressure min/avg/max:                              -5.226e+05 Pa, 0.00225 Pa, 1.045e+06 Pa
      Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+20 Pa s, 2.631e+21 kg
 
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
