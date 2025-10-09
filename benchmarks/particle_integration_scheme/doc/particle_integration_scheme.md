@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 # Particle integration scheme benchmark
 
 *This section was contributed by Gabriel Johnston and Rene Gassmöller*

@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:finite_strain)=
 # Tracking finite strain
 

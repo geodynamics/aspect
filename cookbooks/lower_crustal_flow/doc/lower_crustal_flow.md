@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:lower-crustal-flow)=
 # Lower crust flow with an obstacle
 

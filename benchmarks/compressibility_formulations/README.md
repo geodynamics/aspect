@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 (sec:benchmarks:compressibility_formulations)=
 # Compressibility formulation benchmarks
 

@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 # The sinking block benchmark
 
 This benchmark is based on the benchmark presented in {cite:t}`gerya:2010` and

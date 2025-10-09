@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:free-surface-with-crust)=
 # Using a free surface in a model with a crust
 

@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 # The viscoelastplastic shear bands benchmark
 
 This benchmark is described in the paper

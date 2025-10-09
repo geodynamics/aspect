@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:christensen-yuen-phase-function)=
 # Convection in a 2d box with a phase transition
 

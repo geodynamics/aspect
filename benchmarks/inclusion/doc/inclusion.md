@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 (sec:benchmarks:inclusion)=
 # The &ldquo;inclusion&rdquo; Stokes benchmark
 

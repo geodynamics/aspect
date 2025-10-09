@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:latent-heat)=
 # Latent heat benchmark
 

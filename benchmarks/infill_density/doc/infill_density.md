@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 (sec:benchmarks:infill-density)=
 # 2D Lithosphere flexure benchmark with infill
 

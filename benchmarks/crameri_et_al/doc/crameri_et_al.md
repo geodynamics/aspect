@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 # The Crameri et al. benchmarks
 
 *This section was contributed by Ian Rose.*

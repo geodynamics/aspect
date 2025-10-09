@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:crustal-deformation)=
 # Crustal deformation
 

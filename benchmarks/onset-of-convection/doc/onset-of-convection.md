@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 (sec:benchmarks:onset_of_convection)=
 # Onset of convection benchmark
 

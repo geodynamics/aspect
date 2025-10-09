@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:transform-fault-world-builder)=
 # Using the World Builder to model the thermal structure of oceanic transform faults
 

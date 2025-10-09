@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:inclusions)=
 # Viscous inclusions under simple and pure shear
 

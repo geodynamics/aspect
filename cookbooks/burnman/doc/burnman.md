@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:burnman)=
 # 2D compressible convection with a reference profile and material properties from BurnMan
 

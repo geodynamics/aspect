@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 # Particle distribution benchmark
 *This section was contributed by Jarett Baker-Dunn and Rene Gassmöller*
 

@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:onset_of_convection)=
 # Onset of convection
 

@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:mantle-conv-annulus)=
 # Mantle convection with continents in an annulus
 

@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 # Newton Solver Benchmark Set - Tosi et at. (2015)
 
 The files in [this directory](https://github.com/geodynamics/aspect/tree/main/benchmarks/newton_solver_benchmark_set/tosi_et_al_2015)

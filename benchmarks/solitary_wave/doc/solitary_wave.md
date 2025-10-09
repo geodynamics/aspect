@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 (sec:benchmarks:solitary_wave)=
 # The solitary wave benchmark
 

@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:shell-3d-postprocess)=
 # Postprocessing spherical 3D convection
 

@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 # Newton Solver Benchmark Set - Nonlinear Channel Flow
 
 The files in [this directory](https://github.com/geodynamics/aspect/tree/main/benchmarks/newton_solver_benchmark_set/nonlinear_channel_flow)

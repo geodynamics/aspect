@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 # Grain Size Pinned State
 
 This folder contains information about benchmarks that test the implementation of

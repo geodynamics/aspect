@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:platelike-boundary)=
 # Convection in a box with prescribed, variable velocity boundary conditions
 

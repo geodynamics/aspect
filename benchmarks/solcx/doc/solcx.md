@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 (sec:benchmarks:solcx)=
 # The SolCx Stokes benchmark
 

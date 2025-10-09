@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 # The viscoelastic plastic shear bands benchmarks
 
 The folders in [this directory](https://github.com/geodynamics/aspect/tree/main/benchmarks/viscoelastic_plastic_shear_bands)

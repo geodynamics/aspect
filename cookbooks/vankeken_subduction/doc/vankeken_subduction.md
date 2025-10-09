@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:vankeken-2008-benchmark)=
 # Van Keken 2008 corner flow recreation
 

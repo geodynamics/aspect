@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 (sec:benchmark:operator-splitting)=
 # Benchmarks for operator splitting
 

@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:subd-init)=
 # Subduction initiation from Matsumoto and Tomoda (1983)
 

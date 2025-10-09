@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 # Yamauchi & Takei anelastic shear wave velocity-temperature conversion benchmark
 
 *This section was contributed by Fred Richards.*

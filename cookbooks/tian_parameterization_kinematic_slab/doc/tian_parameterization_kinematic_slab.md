@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:tian_parameterization_kinematic_slab)=
 # Simplified Subduction Model with Parameterized Solid-Fluid Reactions
 

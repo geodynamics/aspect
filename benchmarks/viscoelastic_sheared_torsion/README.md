@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 # The viscoelastic sheared torsion benchmark
 
 This benchmark is described in the paper

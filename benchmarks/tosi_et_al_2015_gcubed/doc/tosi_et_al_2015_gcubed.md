@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 # The Tosi et al.&nbsp;benchmarks
 
 *This section was contributed by Anne Glerum.*

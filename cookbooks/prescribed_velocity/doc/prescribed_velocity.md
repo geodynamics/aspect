@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:prescribed_velocity)=
 # Prescribed internal velocity constraints
 

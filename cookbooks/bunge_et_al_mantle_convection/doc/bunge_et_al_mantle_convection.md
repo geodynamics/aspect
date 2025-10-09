@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:bunke-mantle-convection)=
 # The Bunge et al. mantle convection experiments
 

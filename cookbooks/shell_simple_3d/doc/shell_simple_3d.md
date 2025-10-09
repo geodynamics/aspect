@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:shell_simple_3d)=
 # Simple convection in a spherical 3d shell
 

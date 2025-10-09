@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:geomio)=
 # Reading in compositional initial composition files generated with geomIO
 
