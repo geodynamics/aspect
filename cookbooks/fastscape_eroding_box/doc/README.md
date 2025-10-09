@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:fastscape_eroding_box)=
 # Fastscape Eroding Box
 

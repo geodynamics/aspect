@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:composition-active-particles)=
 # Using active particles.
 

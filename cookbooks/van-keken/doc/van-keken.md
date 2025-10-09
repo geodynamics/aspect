@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:benchmarks:vankeken)=
 # The van Keken thermochemical composition benchmark
 

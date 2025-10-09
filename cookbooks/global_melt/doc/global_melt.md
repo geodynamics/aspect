@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:global-melt)=
 # Melt migration in a 2D mantle convection model
 

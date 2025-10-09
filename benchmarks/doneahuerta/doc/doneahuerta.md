@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 # Donea & Huerta 2D box geometry benchmark
 
 *This section was contributed by Cedric Thieulot.*

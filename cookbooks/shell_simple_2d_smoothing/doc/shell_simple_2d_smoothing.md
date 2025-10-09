@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:artificial-viscosity-smoothing)=
 # Artificial viscosity smoothing
 

@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:sink-anydr)=
 # Sinking of anhydrite blocks within a Newtonian salt diapir
 

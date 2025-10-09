@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 # The King compressible convection benchmark
 
 This folder contains input files for the benchmark from {cite:t}`king:etal:2010`

@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 # Polydiapirism
 
 *This section was contributed by Cedric Thieulot.*

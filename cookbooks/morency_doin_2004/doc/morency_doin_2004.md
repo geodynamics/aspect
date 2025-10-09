@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 # Reproducing rheology of Morency and Doin, 2004
 
 *This section was contributed by Jonathan Perry-Houts.*

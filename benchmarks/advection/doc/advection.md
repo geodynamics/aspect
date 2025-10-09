@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 (sec:benchmarks:advection)=
 # Advection stabilization benchmarks
 

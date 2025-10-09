@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 (sec:benchmarks:entropy_adiabat)=
 # Entropy adiabat benchmark
 

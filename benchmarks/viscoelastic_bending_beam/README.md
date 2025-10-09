@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 # The bending beam benchmark
 
 This benchmark is described in the paper

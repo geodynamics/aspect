@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:gplates)=
 # Using reconstructed surface velocities by GPlates
 

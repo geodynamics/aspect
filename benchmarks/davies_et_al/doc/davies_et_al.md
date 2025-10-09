@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 # The 2D cylindrical shell benchmarks by Davies et al.
 
 *This section was contributed by William Durkin and Wolfgang Bangerth.*

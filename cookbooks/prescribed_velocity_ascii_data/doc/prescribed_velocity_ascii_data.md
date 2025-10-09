@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:prescribed_velocity_ascii)=
 # Prescribing internal velocity constraints with ASCII files
 

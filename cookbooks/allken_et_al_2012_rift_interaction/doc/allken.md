@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:allken)=
 # Rift interaction in brittle-ductile coupled systems
 

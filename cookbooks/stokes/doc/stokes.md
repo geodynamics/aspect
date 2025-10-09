@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:stokes-benchmark)=
 # The "Stokes' law" benchmark
 

@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:multicom_steinberger)=
 #  Thermochemical plume model using multiple P--T look-up tables
 

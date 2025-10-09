@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:inner_core_convection)=
 # Inner core convection
 

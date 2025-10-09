@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 (sec:benchmarks:solkz)=
 # The SolKz Stokes benchmark
 

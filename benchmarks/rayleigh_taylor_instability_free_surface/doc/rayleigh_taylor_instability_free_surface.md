@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 # The Rayleigh-Taylor instability with a free surface
 
 *This section was contributed by Anne Glerum, Ian Rose and Timo Heister.*

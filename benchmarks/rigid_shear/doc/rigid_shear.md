@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 # The rigid shear benchmark
 
 *This section was contributed by R. Gassmoeller.*

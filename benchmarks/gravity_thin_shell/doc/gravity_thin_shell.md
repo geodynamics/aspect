@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 (sec:benchmarks:thin-shell-gravity)=
 # Thin shell gravity benchmark
 

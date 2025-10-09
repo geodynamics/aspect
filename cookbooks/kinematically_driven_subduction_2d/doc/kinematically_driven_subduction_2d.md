@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:kinematic-2d-oceanic-subduction)=
 # Kinematically-driven 2d oceanic subduction
 

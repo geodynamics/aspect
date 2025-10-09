@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:composition-reaction)=
 # The active case with reactions.
 

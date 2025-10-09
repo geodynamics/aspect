@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 (sec:benchmarks:geoid-spectral-comparison)=
 Geoid Spectral Comparison
 =========================

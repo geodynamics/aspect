@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 # The sinking block benchmark files
 
 [This folder](https://github.com/geodynamics/aspect/tree/main/benchmarks/sinking_block)

@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:visualizing-phase-diagrams)=
 # Visualizing phase diagrams
 

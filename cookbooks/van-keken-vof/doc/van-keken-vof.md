@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:vankeken-vof)=
 # Computation of the van Keken Problem with the Volume-of-Fluid Interface Tracking Method
 

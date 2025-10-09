@@ -34,4 +34,5 @@ parameters/index.md
 user/developer_documentation.md
 user/authors.md
 references.md
+_tags/tagsindex.md
 ```

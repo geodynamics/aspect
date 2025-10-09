@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 # Newton Solver Benchmark Set - Spiegelman et at. (2016)
 
 The files in [this directory](https://github.com/geodynamics/aspect/tree/main/benchmarks/newton_solver_benchmark_set/spiegelman_et_al_2016)

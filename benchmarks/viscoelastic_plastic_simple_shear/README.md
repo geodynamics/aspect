@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 # The viscoelastoplastic simple shear benchmark
 
 This benchmark is described in the paper

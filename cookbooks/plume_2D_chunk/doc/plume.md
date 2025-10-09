@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:plume-2d-chunk)=
 # Plume in a 2D chunk
 

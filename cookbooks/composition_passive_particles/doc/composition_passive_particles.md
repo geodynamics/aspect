@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:composition-passive-particles)=
 # The passive case with particles
 

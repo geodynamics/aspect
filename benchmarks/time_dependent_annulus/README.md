@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 # Time dependent annulus benchmark
 
 [This folder](https://github.com/geodynamics/aspect/tree/main/benchmarks/time_dependent_annulus)

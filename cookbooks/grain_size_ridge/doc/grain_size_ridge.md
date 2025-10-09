@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:grain-size-ridge)=
 # Sublithospheric convection beneath an oceanic plate with a grain size dependent rheology
 

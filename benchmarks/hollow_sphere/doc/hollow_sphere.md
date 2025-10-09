@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 # The hollow sphere benchmark
 
 This benchmark is based on {cite:t}`thieulot:2017` in which an analytical

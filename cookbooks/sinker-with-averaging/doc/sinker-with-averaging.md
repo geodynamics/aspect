@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:sinker-with-averaging)=
 # Averaging material properties
 

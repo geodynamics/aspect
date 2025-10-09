@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 # The Rayleigh-Taylor instability
 
 *This section was contributed by Cedric Thieulot.*

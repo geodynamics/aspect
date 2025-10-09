@@ -1,3 +1,7 @@
+```{tags}
+category:cookbook
+```
+
 (sec:cookbooks:phase-transition-kinetics)=
 
 # Using Non-Equilibrium Thermodynamics to Drive Phase Transformations
