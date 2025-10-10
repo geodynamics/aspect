@@ -351,6 +351,14 @@ namespace aspect
                                                                                      output_parameters.drucker_prager_parameters[j].angle_internal_friction,
                                                                                      in.position[i]);
 
+            // Step 4c: Calculate weakening factors for the cohesion and friction angles based on mechanisms
+            // other than the strain.
+            std::pair<double, double> plasticity_prefactors = compositional_plasticity_prefactors.compute_weakening_factor(in, j, i,
+                                                              output_parameters.drucker_prager_parameters[j].cohesion,
+                                                              output_parameters.drucker_prager_parameters[j].angle_internal_friction,
+                                                              in.position[i]);
+            output_parameters.drucker_prager_parameters[j].cohesion = plasticity_prefactors.first;
+            output_parameters.drucker_prager_parameters[j].angle_internal_friction = plasticity_prefactors.second;
             // Step 5: plastic yielding
 
             // Determine if the pressure used in Drucker Prager plasticity will be capped at 0 (default).
@@ -737,6 +745,9 @@ namespace aspect
         // Variable viscosity prefactor parameters
         Rheology::CompositionalViscosityPrefactors<dim>::declare_parameters(prm);
 
+        // Variable plasticity prefactor parameters
+        Rheology::CompositionalPlasticityPrefactors<dim>::declare_parameters(prm);
+
         // Drucker Prager plasticity parameters
         Rheology::DruckerPrager<dim>::declare_parameters(prm);
 
@@ -769,6 +780,9 @@ namespace aspect
       {
         strain_rheology.initialize_simulator (this->get_simulator());
         strain_rheology.parse_parameters(prm);
+
+        compositional_plasticity_prefactors.initialize_simulator (this->get_simulator());
+        compositional_plasticity_prefactors.parse_parameters(prm);
 
         friction_models.initialize_simulator (this->get_simulator());
         friction_models.parse_parameters(prm);
