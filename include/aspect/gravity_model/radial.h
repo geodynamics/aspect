@@ -30,6 +30,5 @@
 
 #include <aspect/gravity_model/radial_constant.h>
 #include <aspect/gravity_model/radial_linear.h>
-#include <aspect/gravity_model/radial_earth_like.h>
 
 #endif
