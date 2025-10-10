@@ -47,6 +47,7 @@ benchmarks/polydiapirs/doc/polydiapirs.md
 benchmarks/sinking_block/doc/sinking_block.md
 benchmarks/solcx/doc/solcx.md
 benchmarks/solkz/doc/solkz.md
+benchmarks/tangurnis/README.md
 benchmarks/inclusion/doc/inclusion.md
 benchmarks/burstedde/doc/burstedde.md
 benchmarks/slab_detachment/doc/slab_detachment.md
@@ -54,6 +55,7 @@ benchmarks/hollow_sphere/doc/hollow_sphere.md
 benchmarks/particle_distribution/doc/README.md
 benchmarks/particle_integration_scheme/doc/particle_integration_scheme.md
 benchmarks/annulus/doc/annulus.md
+benchmarks/finite_strain/README.md
 benchmarks/rigid_shear/doc/rigid_shear.md
 ../cookbooks/cookbooks/stokes/doc/stokes.md
 benchmarks/viscosity_grooves/doc/viscosity_grooves.md
@@ -67,11 +69,14 @@ benchmarks/tosi_et_al_2015_gcubed/doc/tosi_et_al_2015_gcubed.md
 benchmarks/layeredflow/doc/layeredflow.md
 benchmarks/doneahuerta/doc/doneahuerta.md
 benchmarks/advection/doc/advection.md
+benchmarks/advection_in_annulus/doc/advection_in_annulus.md
+benchmarks/diffusion_of_hill/README.md
 benchmarks/yamauchi_takei_2016_anelasticity/doc/yamauchi_takei_2016_anelasticity.md
 benchmarks/gravity_thin_shell/doc/gravity_thin_shell.md
 benchmarks/gravity_thick_shell/doc/gravity_thick_shell.md
 benchmarks/infill_density/doc/infill_density.md
 benchmarks/gravity_mantle/doc/gravity_mantle.md
+benchmarks/buiter_et_al_2008_jgr/README.md
 benchmarks/buiter_et_al_2016_jsg/doc/buiter_et_al_2016_jsg.md
 benchmarks/compressibility_formulations/README.md
 benchmarks/entropy_adiabat/README.md
@@ -82,6 +87,7 @@ benchmarks/newton_solver_benchmark_set/tosi_et_al_2015/README.md
 benchmarks/nsinker/README.md
 benchmarks/nsinker_spherical_shell/README.md
 benchmarks/time_dependent_annulus/README.md
+benchmarks/shear_bands/README.md
 benchmarks/viscoelastic_plastic_shear_bands/README.md
 benchmarks/grain_size_pinned_state/README.md
 benchmarks/viscoelastic_stress_build_up/README.md
@@ -89,4 +95,8 @@ benchmarks/viscoelastic_sheared_torsion/README.md
 benchmarks/viscoelastic_relaxation/README.md
 benchmarks/viscoelastic_plastic_simple_shear/README.md
 benchmarks/viscoelastic_bending_beam/README.md
+benchmarks/viscoelastic_plate_flexure/doc/README.md
+benchmarks/free_surface_tractions/viscoelastic/README.md
+benchmarks/free_surface_tractions/viscous/README.md
+benchmarks/zhong_et_al_93/README.md
 :::

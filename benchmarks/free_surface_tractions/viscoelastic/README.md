@@ -1,4 +1,10 @@
-Benchmark of infinite viscoelastic half-space loaded/unloaded by 
+```{tags}
+category:benchmark
+```
+
+(sec:benchmarks:viscoelastic_half_space_loading)=
+# Viscoelastic half-space loading
+Benchmark of infinite viscoelastic half-space loaded/unloaded by
  an axisymmetric cylinder, using the solution of: Nakiboglu, S.M. and
  Lambeck, K., A study of the Earth's response to surface loading with
  application to Lake Bonneville. Geophys. J. R. astr. Soc. (1982) 70,
@@ -18,13 +24,13 @@ A surface pressure of rho_l*g*H0 (where rho_l is the load density,
  (by symmetry the load is centered on the left boundary or left/front
  corner). The input files are:
    'free_surface_VE_cylinder_2D_loading.prm' (instantaneous loading)
-   'free_surface_VE_cylinder_3D_loading.prm' (	"	"	"  )
+   'free_surface_VE_cylinder_3D_loading.prm' (  "  "  "  )
    'free_surface_VE_cylinder_2D_loading_unloading.prm' (linear unloading)
    'free_surface_VE_cylinder_3D_loading_unloading.prm' (  "       "     )
 
 Changing the stress instantaneously as the load is applied/removed
  leads to oscillations in the elastic response. This can be addressed
- by setting a fixed elastic timestep which is several times longer than 
+ by setting a fixed elastic timestep which is several times longer than
  the numerical ("Maximum") timestep and turning on stress averaging:
    'free_surface_VE_cylinder_2D_loading_fixed_elastic_dt.prm'
    'free_surface_VE_cylinder_3D_loading_fixed_elastic_dt.prm'
@@ -38,7 +44,7 @@ The 'topography' output files may be compared against the analytical
  deflection through time, 'compare_viscous_def_profile.gnuplot' for
  deflection  of profile through time). Equivalent scripts for the
  unloading case are also provided.
- 
+
 Note that while the analytical and numerical results for the deflection
  of the surface agree well near the center of the load (left boundary),
  the solutions do not match as well on the right (free-slip) boundary.
@@ -54,12 +60,11 @@ The solutions match well in 3-D. In 2-D, the geometries of the loading
  function are different (Cartesian in ASPECT vs cylindrical analytically).
  As such, the agreement in 2-D breaks down for small r0 (load width) or
  if the right boundary is placed further away.
- 
+
 The fit between the numerical and the analytical solution can be improved
  by choosing short elastic (and therewith even shorter numerical) time
- steps. The shorter the elastic time step is, the more instantaneous is 
- the surface response to loading and unloading. When using a very small 
- time step in the analytical solution it can be seen that the response 
+ steps. The shorter the elastic time step is, the more instantaneous is
+ the surface response to loading and unloading. When using a very small
+ time step in the analytical solution it can be seen that the response
  is indeed instantaneous, favoring small elastic and computational time
- steps for an accurate numerical solution as well. 
-
+ steps for an accurate numerical solution as well.

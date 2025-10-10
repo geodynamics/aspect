@@ -1,3 +1,9 @@
+```{tags}
+category:benchmark
+```
+
+(sec:benchmarks:viscous_half_space_loading)=
+# Viscous half-space loading
 Benchmark of infinite viscous half-space loaded/unloaded by an
  axisymmetric cylinder, using the solution of: Haskell, N.A.,
  The Motion of a Viscous Fluid Under a Surface Load (1935), Physics
@@ -15,7 +21,7 @@ A surface pressure of rho_l*g*H0 (where rho_l is the load density,
  H0 is the load height) is applied instantaneously on the surface
  for r<r0 (where r0 is the load radius), for t>0. This is done both
  in a 2-D and 3-D geometry (by symmetry the load is centered on the
- left boundary or left/front corner). The input files are: 
+ left boundary or left/front corner). The input files are:
    'free_surface_viscous_cylinder_2D_loading.prm'
    'free_surface_viscous_cylinder_3D_loading.prm'
 
@@ -36,7 +42,7 @@ The 'topography' output files may be compared against an analytical
  ('compare_viscous_def.gnuplot' for maximum surface deflection
  through time, 'compare_viscous_def_profile.gnuplot' for deflection
  of profile through time).
- 
+
 Note that while the analytical and numerical results for the deflection
  of the surface agree well near the center of the load (left boundary),
  the solutions do not match as well on the right (free-slip) boundary.

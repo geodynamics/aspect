@@ -1,5 +1,6 @@
 ```{tags}
 category:cookbook
+category:benchmark
 ```
 
 (sec:cookbooks:latent-heat)=
