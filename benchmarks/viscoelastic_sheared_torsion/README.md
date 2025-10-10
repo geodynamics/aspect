@@ -1,7 +1,15 @@
 ```{tags}
 category:benchmark
+feature:3d
+feature:cartesian
+feature:nonlinear-solver
+feature:elasticity
+feature:compositional-fields
+feature:modular-equations
+feature:analytical-solution
 ```
 
+(sec:benchmarks:viscoelastic_sheared_torsion)=
 # The viscoelastic sheared torsion benchmark
 
 This benchmark is described in the paper

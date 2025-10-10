@@ -89,9 +89,11 @@ feature:solver-comparison
 feature:variable-timestep
 feature:nonlinear-solver
 feature:analytical-solution
+feature:community-benchmark
 
 feature:compressibility
 feature:elasticity
+feature:plasticity
 feature:two-phase-flow
 feature:melt
 feature:grain-size-evolution

@@ -1,7 +1,17 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:cartesian
+feature:nonlinear-solver
+feature:elasticity
+feature:plasticity
+feature:particles
+feature:compositional-fields
+feature:modular-equations
+feature:analytical-solution
 ```
 
+(sec:benchmarks:viscoelastic_stress_build_up)=
 # The viscoelastic stress build-up benchmark
 
 This benchmark is described in the paper

@@ -1,5 +1,10 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:cartesian
+feature:compressible
+feature:modular-equations
+feature:data-integration
 ```
 
 (sec:benchmarks:entropy_adiabat)=

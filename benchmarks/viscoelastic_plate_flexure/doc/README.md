@@ -1,7 +1,15 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:cartesian
+feature:nonlinear-solver
+feature:elasticity
+feature:compositional-fields
+feature:modular-equations
+feature:mesh-deformation
 ```
 
+(sec:benchmarks:viscoelastic_plate_flexure)=
 # Viscoelastic plate flexure
 
 This benchmark examines flexure of a finite-length elastic plate based

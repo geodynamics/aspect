@@ -1,5 +1,11 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:cartesian
+feature:analytical-solution
+feature:nonlinear-solver
+feature:two-phase-flow
+feature:modular-equations
 ```
 
 (sec:benchmarks:solubility)=

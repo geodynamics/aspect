@@ -1,7 +1,13 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:cartesian
+feature:nonlinear-solver
+feature:community-benchmark
+feature:solver-comparison
 ```
 
+(sec:benchmarks:newton_solver:tosi)=
 # Newton Solver Benchmark Set - Tosi et at. (2015)
 
 The files in [this directory](https://github.com/geodynamics/aspect/tree/main/benchmarks/newton_solver_benchmark_set/tosi_et_al_2015)

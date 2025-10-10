@@ -1,7 +1,11 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:cartesian
+feature:nonlinear-solver
 ```
 
+(sec:benchmarks:newton_solver:spiegelman)=
 # Newton Solver Benchmark Set - Spiegelman et at. (2016)
 
 The files in [this directory](https://github.com/geodynamics/aspect/tree/main/benchmarks/newton_solver_benchmark_set/spiegelman_et_al_2016)

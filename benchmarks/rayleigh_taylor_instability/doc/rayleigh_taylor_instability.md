@@ -1,7 +1,12 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:cartesian
+feature:community-benchmark
+feature:analytical-solution
 ```
 
+(sec:benchmarks:rayleigh_taylor_instability)=`
 # The Rayleigh-Taylor instability
 
 *This section was contributed by Cedric Thieulot.*

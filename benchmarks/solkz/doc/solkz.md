@@ -1,5 +1,10 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:cartesian
+feature:community-benchmark
+feature:analytical-solution
+feature:compositional-fields
 ```
 
 (sec:benchmarks:solkz)=

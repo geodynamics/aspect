@@ -1,7 +1,11 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:cartesian
+feature:analytical-solution
 ```
 
+(sec:benchmarks:burstedde)=
 # The Burstedde variable viscosity benchmark
 
 *This section was contributed by Iris van Zelst.*

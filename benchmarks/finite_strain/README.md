@@ -1,5 +1,9 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:cartesian
+feature:modular-equations
+feature:analytical-solution
 ```
 
 (sec:benchmarks:finite_strain)=

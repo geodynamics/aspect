@@ -1,7 +1,13 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:cartesian
+feature:analytical-solution
+feature:nonlinear-solver
+feature:solver-comparison
 ```
 
+(sec:benchmarks:newton_solver:nonlinear_channel_flow)=
 # Newton Solver Benchmark Set - Nonlinear Channel Flow
 
 The files in [this directory](https://github.com/geodynamics/aspect/tree/main/benchmarks/newton_solver_benchmark_set/nonlinear_channel_flow)

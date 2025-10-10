@@ -1,7 +1,16 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:cartesian
+feature:nonlinear-solver
+feature:elasticity
+feature:compositional-fields
+feature:particles
+feature:community-benchmark
+feature:mesh-deformation
 ```
 
+(sec:benchmarks:viscoelastic_plastic_shear_bands:kaus_2010)=
 # The viscoelastplastic shear bands benchmark
 
 This benchmark is described in the paper
