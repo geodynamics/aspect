@@ -190,13 +190,12 @@ namespace aspect
       Assert(is_defined_per_particle == true,
              ExcMessage("This function can only be called if the ParticlePDF is computed per particle location."));
 
-      if (input_value > max)
+      if (input_value >= max)
         {
           max = input_value;
           max_particle_index = reference_particle_id;
         }
-
-      if (input_value < min)
+      if (input_value <= min)
         {
           min = input_value;
           min_particle_index = reference_particle_id;
@@ -265,6 +264,22 @@ namespace aspect
                       for (unsigned int z=0; z<granularity; ++z)
                         {
                           const double this_value = evaluate_function_at_index(x,y,z);
+                          double granularity_double = static_cast<double>(this->granularity);
+                          double x_double = static_cast<double>(x);
+                          double y_double = static_cast<double>(y);
+                          double z_double = static_cast<double>(z);
+                          Point<dim> position_in_cell = Point<dim>(x_double/granularity_double,y_double/granularity_double,z_double/granularity_double);
+
+                          //record the positions of max and min values as well. These are useful for adding particles.
+                          if (this_value >= max)
+                            {
+                              max_position = position_in_cell;
+                            }
+                          if (this_value <= min)
+                            {
+                              min_position = position_in_cell;
+                            }
+
                           max = std::max(max, this_value);
                           min = std::min(min, this_value);
                           // Sum in mean, then divide after this loop
@@ -274,8 +289,26 @@ namespace aspect
                   else
                     {
                       const double this_value = evaluate_function_at_index(x,y,0);
+                      double granularity_double = static_cast<double>(this->granularity);
+                      double x_double = static_cast<double>(x);
+                      double y_double = static_cast<double>(y);
+                      Point<dim> position_in_cell = Point<dim>(x_double/granularity_double,y_double/granularity_double);
+
+                      //record the positions of max and min values as well. These are useful for adding particles.
+                      if (this_value >= max)
+                        {
+                          max_position = position_in_cell;
+                        }
+                      if (this_value <= min)
+                        {
+                          min_position = position_in_cell;
+                        }
+
                       max = std::max(max, this_value);
                       min = std::min(min, this_value);
+
+
+
                       // Sum in mean, then divide after this loop
                       mean += this_value;
                     }
@@ -347,6 +380,24 @@ namespace aspect
     ParticlePDF<dim>::get_max() const
     {
       return max;
+    }
+
+
+
+    template <int dim>
+    Point<dim>
+    ParticlePDF<dim>::get_max_position() const
+    {
+      return max_position;
+    }
+
+
+
+    template <int dim>
+    Point<dim>
+    ParticlePDF<dim>::get_min_position() const
+    {
+      return min_position;
     }
 
 
