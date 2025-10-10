@@ -95,13 +95,14 @@ namespace aspect
 
         // Check that the reference position is actually within the given cell
         for (unsigned int d=0; d<dim; ++d)
-        {
-          double coordinate = reference_position[d];
-          if (coordinate < 0.0 || coordinate > 1.0)
           {
-            AssertThrow(false, ExcMessage("The reference position: given is not within the specified cell. Dimension " + std::to_string(d) + " is of value: " + std::to_string(reference_position[d]) +". Should be between 0.0 and 1.0."));
+            double coordinate = reference_position[d];
+            if (coordinate < 0.0 || coordinate > 1.0)
+              {
+                std::string error_string = "The given reference position is not within the specified cell. Dimension " + std::to_string(d) + " is of value: " + std::to_string(reference_position[d]) +". Should be between 0.0 and 1.0.";
+                AssertThrow(false, ExcMessage(error_string));
+              }
           }
-        }
 
         // This version of generate_particle only needs to generate a particle within the given cell at the reference position
         const Point<dim> position_real = this->get_mapping().transform_unit_to_real_cell(cell,reference_position);

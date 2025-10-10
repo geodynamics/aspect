@@ -337,52 +337,199 @@ namespace aspect
                       {
                         const unsigned int current_n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
                         if (addition_algorithm == AdditionAlgorithm::random)
-                        {
+                          {
 
-                              std::pair<Particles::internal::LevelInd,Particles::Particle<dim>> new_particle = generator->generate_particle(cell,local_next_particle_index);
+                            std::pair<Particles::internal::LevelInd,Particles::Particle<dim>> new_particle = generator->generate_particle(cell,local_next_particle_index);
 
-                              const std::vector<double> particle_properties =
-                                property_manager->initialize_late_particle(new_particle.second.get_location(),
-                                                                          *particle_handler,
-                                                                          *interpolator,
-                                                                          cell);
+                            const std::vector<double> particle_properties =
+                              property_manager->initialize_late_particle(new_particle.second.get_location(),
+                                                                         *particle_handler,
+                                                                         *interpolator,
+                                                                         cell);
 
-                              typename ParticleHandler<dim>::particle_iterator particle = particle_handler->insert_particle(new_particle.second,
-                                                                                          typename parallel::distributed::Triangulation<dim>::cell_iterator (&this->get_triangulation(),
-                                                                                              new_particle.first.first,
-                                                                                              new_particle.first.second));
-                              particle->set_properties(particle_properties);
-                            
-                        }
+                            typename ParticleHandler<dim>::particle_iterator particle = particle_handler->insert_particle(new_particle.second,
+                                                                                        typename parallel::distributed::Triangulation<dim>::cell_iterator (&this->get_triangulation(),
+                                                                                            new_particle.first.first,
+                                                                                            new_particle.first.second));
+                            particle->set_properties(particle_properties);
+
+                          }
                         else if (addition_algorithm == AdditionAlgorithm::point_density_function)
-                        {
-                          ParticlePDF<dim> pdf(addition_granularity,bandwidth,kernel_function);
-                          std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
-                          particle_ranges_to_sum_over = get_neighboring_particle_ranges(cell,get_particle_handler(),grid_cache);
+                          {
+                            ParticlePDF<dim> pdf(addition_granularity,bandwidth,kernel_function);
+                            std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
+                            particle_ranges_to_sum_over = get_neighboring_particle_ranges(cell,get_particle_handler(),grid_cache);
 
-                          pdf.fill_from_particle_range(particle_handler->particles_in_cell(cell),
-                                                        particle_ranges_to_sum_over,
-                                                        current_n_particles_in_cell);
-                          pdf.compute_statistical_values();
+                            pdf.fill_from_particle_range(particle_handler->particles_in_cell(cell),
+                                                         particle_ranges_to_sum_over,
+                                                         current_n_particles_in_cell);
+                            pdf.compute_statistical_values();
 
-                          Point<dim> min_density_position = pdf.get_min_position();
+                            Point<dim> min_density_position = pdf.get_min_position();
 
-                          std::pair<Particles::internal::LevelInd,Particles::Particle<dim>> new_particle = 
-                                  generator->generate_particle(cell,local_next_particle_index,min_density_position);
+                            std::pair<Particles::internal::LevelInd,Particles::Particle<dim>> new_particle =
+                              generator->generate_particle(cell,local_next_particle_index,min_density_position);
 
-                                  const std::vector<double> particle_properties =
-                                    property_manager->initialize_late_particle(new_particle.second.get_location(),
-                                                                              *particle_handler,
-                                                                              *interpolator,
-                                                                              cell);
+                            const std::vector<double> particle_properties =
+                              property_manager->initialize_late_particle(new_particle.second.get_location(),
+                                                                         *particle_handler,
+                                                                         *interpolator,
+                                                                         cell);
 
-                                  typename ParticleHandler<dim>::particle_iterator particle = particle_handler->insert_particle(new_particle.second,
-                                                                                              typename parallel::distributed::Triangulation<dim>::cell_iterator (&this->get_triangulation(),
-                                                                                                  new_particle.first.first,
-                                                                                                  new_particle.first.second));
-                                  particle->set_properties(particle_properties);
-                        }
-                    }
+                            typename ParticleHandler<dim>::particle_iterator particle = particle_handler->insert_particle(new_particle.second,
+                                                                                        typename parallel::distributed::Triangulation<dim>::cell_iterator (&this->get_triangulation(),
+                                                                                            new_particle.first.first,
+                                                                                            new_particle.first.second));
+                            particle->set_properties(particle_properties);
+                          }
+                        else if (addition_algorithm == AdditionAlgorithm::histogram)
+                          {
+                            Table<dim,unsigned int> buckets;
+                            TableIndices<dim> bucket_sizes;
+                            const double granularity_double = static_cast<double>(addition_granularity);
+
+                            for (unsigned int i=0; i<dim; ++i)
+                              bucket_sizes[i] = addition_granularity;
+
+                            buckets.reinit(bucket_sizes);
+                            const double bucket_width = 1.0/granularity_double;
+                            unsigned int min_particles_in_bucket = std::numeric_limits<unsigned int>::max();
+
+
+                            for (const auto &particle: particle_handler->particles_in_cell(cell))
+                              {
+                                const double particle_x = particle.get_reference_location()[0];
+                                const double particle_y = particle.get_reference_location()[1];
+
+                                const double x_ratio = (particle_x) / (bucket_width);
+                                const double y_ratio = (particle_y) / (bucket_width);
+
+                                unsigned int x_index = static_cast<unsigned int>(std::floor(x_ratio));
+                                unsigned int y_index = static_cast<unsigned int>(std::floor(y_ratio));
+
+                                /*
+                                If a particle is exactly on the boundary of two cells its
+                                reference location will equal 1, and if this is the case,
+                                the "x/y/z_index" will be outside of the range of the table without
+                                these checks. The table has a number of entries equal to "granularity" in each dimension,
+                                and the table is indexed at 0, so if the "x/y/z_indez" equals "granularity" it
+                                will be out of range.
+                                */
+                                if (x_index == addition_granularity)
+                                  x_index = addition_granularity-1;
+                                if (y_index == addition_granularity)
+                                  y_index = addition_granularity-1;
+
+                                TableIndices<dim> entry_index;
+                                entry_index[0] = x_index;
+                                entry_index[1] = y_index;
+                                if (dim == 3)
+                                  {
+                                    const double particle_z = particle.get_reference_location()[2];
+                                    const double z_ratio = (particle_z) / (bucket_width);
+                                    unsigned int z_index = static_cast<unsigned int>(std::floor(z_ratio));
+                                    if (z_index == addition_granularity)
+                                      z_index = addition_granularity-1;
+                                    entry_index[2] = z_index;
+                                  }
+                              ++buckets(entry_index);
+                              }
+                            
+                            // Find the bucket with the least particles
+
+                            /*
+                            Remember which bucket has the fewest particles so we can add particles to that bucket.
+                            In the case that multiple buckets have the fewest particles, (which is commonly zero particles)
+                            we need to keep track of all buckets with the same amount of particles so that we can randomly
+                            choose a bucket to add particles to. If this isn't done, particles will always be added to the 
+                            last bucket in the nested loop with 0 particles (or whatever the lowest count is), defeating the 
+                            purpose of this algorithm by causing unphysical clustering.
+                            */
+                            std::vector<TableIndices<dim>> min_bucket_indexes;
+                            TableIndices<dim> entry_index_min_particles;
+ 
+                            for (unsigned int x=0; x<addition_granularity; ++x)
+                              {
+                                for (unsigned int y=0; y<addition_granularity; ++y)
+                                  {
+                                    TableIndices<dim> entry_index;
+                                    entry_index[0] = x;
+                                    entry_index[1] = y;
+                                    // do another loop if in 3d
+                                    if (dim == 3)
+                                      {
+                                        for (unsigned int z=0; z<addition_granularity; ++z)
+                                          {
+                                            entry_index[2] = z;
+                                            const unsigned int particles_in_bucket = buckets(entry_index);
+                                            if (particles_in_bucket < min_particles_in_bucket)
+                                            {
+                                              min_particles_in_bucket = particles_in_bucket;
+                                              min_bucket_indexes.push_back(entry_index);
+                                            }
+                                          }
+                                      }
+                                    else
+                                      {
+                                        const unsigned int particles_in_bucket = buckets(entry_index);                                   
+                                        if (particles_in_bucket <= min_particles_in_bucket)
+                                        {
+                                          min_particles_in_bucket = particles_in_bucket;
+                                          min_bucket_indexes.push_back(entry_index);
+                                        }
+                                      }
+                                  }
+                              }
+                        
+                            // Select from the buckest with the minimum number of particles
+                            TableIndices<dim> lowest_bucket = min_bucket_indexes[std::uniform_int_distribution<unsigned int>
+                                                                 (0,min_bucket_indexes.size()-1)(random_number_generator)];
+
+
+                            
+                            //generate a particle in the bucket with the least particles
+                            const double min_x = lowest_bucket[0]/granularity_double;
+                            const double min_y = lowest_bucket[1]/granularity_double;
+
+                            std::uniform_real_distribution<double> uniform_distribution_01(0.0, 1.0/granularity_double);
+                            const double new_particle_x = min_x + uniform_distribution_01(random_number_generator);
+                            const double new_particle_y = min_y + uniform_distribution_01(random_number_generator);
+
+
+                            Point<dim> new_particle_location;
+                            if (dim == 3)
+                            {
+                              const double min_z = entry_index_min_particles[0]/granularity_double;
+                              const double max_z = min_z + 1.0/granularity_double;
+                              const double new_particle_z = std::uniform_real_distribution<double>
+                                      (min_z,max_z)(random_number_generator);
+                              new_particle_location[0] = new_particle_x;
+                              new_particle_location[1] = new_particle_y;
+                              new_particle_location[2] = new_particle_z;
+                            }
+                            else
+                            {
+                              new_particle_location[0] = new_particle_x;
+                              new_particle_location[1] = new_particle_y;
+                            }
+
+                            std::pair<Particles::internal::LevelInd,Particles::Particle<dim>> new_particle =
+                              generator->generate_particle(cell,local_next_particle_index,new_particle_location);
+
+                            const std::vector<double> particle_properties =
+                              property_manager->initialize_late_particle(new_particle.second.get_location(),
+                                                                         *particle_handler,
+                                                                         *interpolator,
+                                                                         cell);
+
+                            typename ParticleHandler<dim>::particle_iterator particle = particle_handler->insert_particle(new_particle.second,
+                                                                                        typename parallel::distributed::Triangulation<dim>::cell_iterator (&this->get_triangulation(),
+                                                                                            new_particle.first.first,
+                                                                                            new_particle.first.second));
+                            particle->set_properties(particle_properties);
+
+                          }
+                      }
                   }
 
                 // Remove particles if necessary
