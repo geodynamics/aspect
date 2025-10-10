@@ -534,7 +534,7 @@ namespace aspect
                                    "\n\n"
                                    "The first plasticity mechanism limits viscous stress through a "
                                    "Drucker Prager yield criterion, where the yield stress in 3d is  "
-                                   "$\\sigma_y = \\frac{6C\\cos(\\phi) + 2P\\sin(\\phi)} "
+                                   "$\\sigma_y = \\frac{6C\\cos(\\phi) + 6P\\sin(\\phi)} "
                                    "{\\sqrt{3}(3+\\sin(\\phi))}$ "
                                    "and "
                                    "$\\sigma_y = C\\cos(\\phi) + P\\sin(\\phi)$ "
