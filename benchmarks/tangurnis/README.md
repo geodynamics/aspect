@@ -1,6 +1,10 @@
-This directory contains benchmarks defined in 
-Tan, E., & Gurnis, M. (2007). Compressible thermochemical convection 
-and application to lower mantle structures. Journal of Geophysical 
+```{tags}
+category:benchmark
+```
+
+# Tan & Gurnis, 2007
+Tan, E., & Gurnis, M. (2007). Compressible thermochemical convection
+and application to lower mantle structures. Journal of Geophysical
 Research: Solid Earth, 112(B6) to check compressible convection.
 
 Comparison of the heating terms for TALA, Di=0.5, gamma=1, a=0:
