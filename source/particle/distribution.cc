@@ -264,13 +264,13 @@ namespace aspect
                       for (unsigned int z=0; z<granularity; ++z)
                         {
                           const double this_value = evaluate_function_at_index(x,y,z);
-                          double granularity_double = static_cast<double>(this->granularity);
-                          double x_double = static_cast<double>(x);
-                          double y_double = static_cast<double>(y);
-                          double z_double = static_cast<double>(z);
+                          const double granularity_double = static_cast<double>(this->granularity);
+                          const double x_double = static_cast<double>(x);
+                          const double y_double = static_cast<double>(y);
+                          const double z_double = static_cast<double>(z);
                           Point<dim> position_in_cell = Point<dim>(x_double/granularity_double,y_double/granularity_double,z_double/granularity_double);
 
-                          //record the positions of max and min values as well. These are useful for adding particles.
+                          // Record the positions of max and min values as well. These are useful for adding particles.
                           if (this_value >= max)
                             {
                               max_position = position_in_cell;
@@ -306,8 +306,6 @@ namespace aspect
 
                       max = std::max(max, this_value);
                       min = std::min(min, this_value);
-
-
 
                       // Sum in mean, then divide after this loop
                       mean += this_value;

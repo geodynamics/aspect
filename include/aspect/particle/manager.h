@@ -330,7 +330,7 @@ namespace aspect
          * The granularity to use for histogram or point density function techniques for
          * adding particles when cells fall below the minimum number of particles allowed.
          * Granularity represents the number of subdivisions of the cell in each dimension
-         * when calculating a histogram of point density function.
+         * when calculating a histogram of the point density function.
          */
         unsigned int addition_granularity;
 

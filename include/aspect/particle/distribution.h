@@ -180,13 +180,13 @@ namespace aspect
         get_min() const;
 
         /**
-         * Returns the maximum of the point-density function.
+         * Returns the location of the maximum of the point-density function.
          */
         Point<dim>
         get_max_position() const;
 
         /**
-         * Returns the minimum of the point-density function.
+         * Returns the location of the minimum of the point-density function.
          */
         Point<dim>
         get_min_position() const;
@@ -261,7 +261,7 @@ namespace aspect
         Point<dim> max_position;
 
         /**
-         * `min_position` holds position within the cell where the maximum point density was measured.
+         * `min_position` holds position within the cell where the minimum point density was measured.
          */
         Point<dim> min_position;
 

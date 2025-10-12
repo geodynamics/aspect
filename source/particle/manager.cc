@@ -357,7 +357,7 @@ namespace aspect
                         else if (addition_algorithm == AdditionAlgorithm::point_density_function)
                           {
                             ParticlePDF<dim> pdf(addition_granularity,bandwidth,kernel_function);
-                            std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
+                            const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
                             particle_ranges_to_sum_over = get_neighboring_particle_ranges(cell,get_particle_handler(),grid_cache);
 
                             pdf.fill_from_particle_range(particle_handler->particles_in_cell(cell),
@@ -487,7 +487,7 @@ namespace aspect
 
 
                             
-                            //generate a particle in the bucket with the least particles
+                            // Generate a particle in the bucket with the least particles
                             const double min_x = lowest_bucket[0]/granularity_double;
                             const double min_y = lowest_bucket[1]/granularity_double;
 
