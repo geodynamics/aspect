@@ -15,12 +15,12 @@ random_oscillating_data = [
 ]
 
 # Histogram, oscillating velocity
-random_df = read_statistics('output_addition/output-histogram/statistics')
-random_oscillating_data = [
+histogram_df = read_statistics('output_addition/output-histogram/statistics')
+histogram_oscillating_data = [
     'Histogram, oscillating V',
-    random_df['Cell Score Standard Deviation: '].mean(),
-    random_df['Average particle distribution score: '].mean(),
-    random_df['Maximal particle distribution score: '].mean()
+    histogram_df['Cell Score Standard Deviation: '].mean(),
+    histogram_df['Average particle distribution score: '].mean(),
+    histogram_df['Maximal particle distribution score: '].mean()
 ]
 
 # Gaussian kernel function, oscillating velocity
@@ -77,13 +77,13 @@ random_constant_data = [
     random_constant_df['Maximal particle distribution score: '].mean()
 ]
 
-# Histogram, oscillating velocity
-random_df = read_statistics('output_addition/output-histogram-constant-velocity/statistics')
-random_oscillating_data = [
+# Histogram, constant velocity
+histogram_constant_df = read_statistics('output_addition/output-histogram-constant-velocity/statistics')
+histogram_constant_data = [
     'Histogram, constant V',
-    random_df['Cell Score Standard Deviation: '].mean(),
-    random_df['Average particle distribution score: '].mean(),
-    random_df['Maximal particle distribution score: '].mean()
+    histogram_constant_df['Cell Score Standard Deviation: '].mean(),
+    histogram_constant_df['Average particle distribution score: '].mean(),
+    histogram_constant_df['Maximal particle distribution score: '].mean()
 ]
 
 
@@ -134,6 +134,7 @@ triangular_constant_data = [
 
 output_data_array_oscillating = [
     random_oscillating_data,
+    histogram_oscillating_data,
     gaussian_oscillating_data,
     cutoffw1_oscillating_data,
     cutoffc1_oscillating_data,
@@ -143,6 +144,7 @@ output_data_array_oscillating = [
 
 output_data_array_constant = [
     random_constant_data,
+    histogram_constant_data,
     gaussian_constant_data,
     cutoffw1_constant_data,
     cutoffc1_constant_data,
