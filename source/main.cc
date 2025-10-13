@@ -75,7 +75,16 @@ namespace
   {
     std::string return_value;
 
-    const std::regex regex ("set[ \t]+" + parameter_name + "[ \t]*=[ \t]*(.*)");
+    // Declare the regex we would like to match against each line of the
+    // input file. Make sure we have a \r at the very end because the '.'
+    // operator matches every printable character but not special ones
+    // like \r. As a consequence, a line that ends in a Windows-style
+    // \r would not match this regex even if it sets the correct parameter.
+    //
+    // We will deal with the presence of Windows line endings on Unix systems
+    // in the places where we call this function, and so include the \r
+    // in the second match group.
+    const std::regex regex ("set[ \t]+" + parameter_name + "[ \t]*=[ \t]*(.*\r?)");
 
     std::istringstream x_file(parameters);
     while (x_file)
