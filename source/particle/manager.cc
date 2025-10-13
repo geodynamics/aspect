@@ -362,7 +362,8 @@ namespace aspect
 
                             pdf.fill_from_particle_range(particle_handler->particles_in_cell(cell),
                                                          particle_ranges_to_sum_over,
-                                                         current_n_particles_in_cell);
+                                                         current_n_particles_in_cell,
+                                                         this->get_mapping());
                             pdf.compute_statistical_values();
 
                             Point<dim> min_density_position = pdf.get_min_position();
@@ -465,6 +466,13 @@ namespace aspect
                                             if (particles_in_bucket < min_particles_in_bucket)
                                             {
                                               min_particles_in_bucket = particles_in_bucket;
+                                              // We found a new minimum bucket, clear the list
+                                              min_bucket_indexes.clear();
+                                              min_bucket_indexes.push_back(entry_index);
+                                            }
+                                            else if (particles_in_bucket == min_particles_in_bucket)
+                                            {
+                                              // Add this bucket to the list of buckets with identically small particle numbers
                                               min_bucket_indexes.push_back(entry_index);
                                             }
                                           }
@@ -472,9 +480,16 @@ namespace aspect
                                     else
                                       {
                                         const unsigned int particles_in_bucket = buckets(entry_index);                                   
-                                        if (particles_in_bucket <= min_particles_in_bucket)
+                                        if (particles_in_bucket < min_particles_in_bucket)
                                         {
                                           min_particles_in_bucket = particles_in_bucket;
+                                          // We found a new minimum bucket, clear the list
+                                          min_bucket_indexes.clear();
+                                          min_bucket_indexes.push_back(entry_index);
+                                        }
+                                        else if (particles_in_bucket == min_particles_in_bucket)
+                                        {
+                                          // Add this bucket to the list of buckets with identically small particle numbers
                                           min_bucket_indexes.push_back(entry_index);
                                         }
                                       }
@@ -554,7 +569,8 @@ namespace aspect
 
                             pdf.fill_from_particle_range(particle_handler->particles_in_cell(cell),
                                                          particle_ranges_to_sum_over,
-                                                         current_n_particles_in_cell);
+                                                         current_n_particles_in_cell,
+                                                         this->get_mapping());
                             pdf.compute_statistical_values();
 
                             const types::particle_index index_max = pdf.get_max_particle();

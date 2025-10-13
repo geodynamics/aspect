@@ -96,11 +96,13 @@ namespace aspect
          */
         void
         fill_from_particle_range(const typename Particles::ParticleHandler<dim>::particle_iterator_range particle_range,
-                                 const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over,
-                                 const unsigned int n_particles_in_cell);
+                                 const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> 
+                                 particle_ranges_to_sum_over,
+                                 const unsigned int n_particles_in_cell,
+                                 const typename dealii::Mapping<dim> &mapping);
 
         /**
-         * This function is only called from `fill_from_cell`.
+         * This function is only called from `fill_from_particle_range`.
          * It iterates through every particle in the cell and
          * sums the value of the kernel function between the
          * reference point and the position of the cell.
@@ -113,7 +115,10 @@ namespace aspect
         insert_kernel_sum_from_particle_range(const Point<dim> reference_point,
                                               std::array<unsigned int,dim> table_index,
                                               const unsigned int n_particles_in_cell,
-                                              const typename Particles::ParticleHandler<dim>::particle_iterator_range particle_range);
+                                              typename Particles::ParticleHandler<dim>::particle_iterator_range particle_range,
+                                              std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> 
+                                              particle_ranges_to_sum_over,
+                                              const typename dealii::Mapping<dim> &mapping);
 
         /**
          * Inserts a value into the point-density function.
