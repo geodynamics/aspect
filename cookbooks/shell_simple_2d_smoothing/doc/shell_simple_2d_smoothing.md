@@ -1,5 +1,8 @@
 ```{tags}
 category:cookbook
+feature:2d
+feature:spherical
+feature:compositional-fields
 ```
 
 (sec:cookbooks:artificial-viscosity-smoothing)=

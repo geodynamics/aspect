@@ -1,5 +1,11 @@
 ```{tags}
 category:cookbook
+feature:2d
+feature:cartesian
+feature:compositional-fields
+feature:nonlinear-solver
+feature:melt
+feature:two-phase-flow
 ```
 
 (sec:cookbooks:mid-ocean-ridge)=

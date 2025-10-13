@@ -1,5 +1,12 @@
 ```{tags}
 category:cookbook
+feature:2d
+feature:cartesian
+feature:data-integration
+feature:nonlinear-solver
+feature:grain-size-evolution
+feature:particles
+feature:modular-equations
 ```
 
 (sec:cookbooks:grain-size-ridge)=

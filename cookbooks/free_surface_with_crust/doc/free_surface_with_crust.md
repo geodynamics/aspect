@@ -1,5 +1,8 @@
 ```{tags}
 category:cookbook
+feature:2d
+feature:cartesian
+feature:mesh-deformation
 ```
 
 (sec:cookbooks:free-surface-with-crust)=

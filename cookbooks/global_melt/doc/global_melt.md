@@ -1,5 +1,12 @@
 ```{tags}
 category:cookbook
+feature:2d
+feature:cartesian
+feature:nonlinear-solver
+feature:compositional-fields
+feature:two-phase-flow
+feature:melt
+feature:compressibility
 ```
 
 (sec:cookbooks:global-melt)=

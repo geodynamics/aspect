@@ -1,5 +1,11 @@
 ```{tags}
 category:cookbook
+feature:2d
+feature:spherical
+feature:particles
+feature:compressibility
+feature:plasticity
+feature:nonlinear-solver
 ```
 
 (sec:cookbooks:mantle-conv-annulus)=

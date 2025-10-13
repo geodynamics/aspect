@@ -1,13 +1,13 @@
 ```{tags}
 category:benchmark
 feature:2d
-feature:spherical
+feature:cartesian
 feature:community-benchmark
 feature:nonlinear-solver
 feature:plasticity
 ```
 
-(sec:benchmarks:time_dependent_annulus)=
+(sec:benchmarks:tosi_et_al_2015_gcubed)=
 # The Tosi et al.&nbsp;benchmarks
 
 *This section was contributed by Anne Glerum.*

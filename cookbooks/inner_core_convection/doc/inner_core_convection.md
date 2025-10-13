@@ -1,5 +1,8 @@
 ```{tags}
 category:cookbook
+feature:3d
+feature:spherical
+feature:modular-equations
 ```
 
 (sec:cookbooks:inner_core_convection)=

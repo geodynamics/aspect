@@ -2,7 +2,7 @@
 category:benchmark
 feature:2d
 feature:spherical
-feature:compressible
+feature:compressibility
 ```
 
 (sec:benchmarks:davies-et-al)=

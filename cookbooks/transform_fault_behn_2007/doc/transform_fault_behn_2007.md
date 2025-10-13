@@ -1,5 +1,9 @@
 ```{tags}
 category:cookbook
+feature:3d
+feature:cartesian
+feature:data-integration
+feature:nonlinear-solver
 ```
 
 (sec:cookbooks:transform-fault-world-builder)=

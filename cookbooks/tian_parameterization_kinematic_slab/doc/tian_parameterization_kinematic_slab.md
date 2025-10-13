@@ -1,5 +1,12 @@
 ```{tags}
 category:cookbook
+feature:2d
+feature:cartesian
+feature:compositional-fields
+feature:nonlinear-solver
+feature:two-phase-flow
+feature:modular-equations
+feature:data-integration
 ```
 
 (sec:cookbooks:tian_parameterization_kinematic_slab)=

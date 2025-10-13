@@ -4,6 +4,7 @@ feature:2d
 feature:cartesian
 feature:analytical-solution
 feature:modular-equations
+feature:grain-size-evolution
 ```
 
 (sec:benchmarks:grain_size_pinned_state)=

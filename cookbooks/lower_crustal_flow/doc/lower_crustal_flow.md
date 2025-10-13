@@ -1,5 +1,8 @@
 ```{tags}
 category:cookbook
+feature:3d
+feature:cartesian
+feature:compositional-fields
 ```
 
 (sec:cookbooks:lower-crustal-flow)=

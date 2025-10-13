@@ -1,6 +1,9 @@
 ```{tags}
 category:cookbook
 category:benchmark
+feature:2d
+feature:cartesian
+feature:modular-equations
 ```
 
 (sec:cookbooks:latent-heat)=

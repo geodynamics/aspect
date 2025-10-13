@@ -1,5 +1,9 @@
 ```{tags}
 category:cookbook
+feature:2d
+feature:spherical
+feature:compressibility
+feature:data-integration
 ```
 
 (sec:cookbooks:burnman)=

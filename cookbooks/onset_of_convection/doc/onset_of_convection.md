@@ -1,5 +1,7 @@
 ```{tags}
 category:cookbook
+feature:2d
+feature:cartesian
 ```
 
 (sec:cookbooks:onset_of_convection)=

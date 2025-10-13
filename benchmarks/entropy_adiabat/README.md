@@ -2,7 +2,7 @@
 category:benchmark
 feature:2d
 feature:cartesian
-feature:compressible
+feature:compressibility
 feature:modular-equations
 feature:data-integration
 ```

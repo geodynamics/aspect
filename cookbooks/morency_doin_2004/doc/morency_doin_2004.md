@@ -1,5 +1,10 @@
 ```{tags}
 category:cookbook
+feature:2d
+feature:cartesian
+feature:nonlinear-solver
+feature:plasticity
+feature:compositional-fields
 ```
 
 # Reproducing rheology of Morency and Doin, 2004
