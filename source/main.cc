@@ -75,6 +75,8 @@ namespace
   {
     std::string return_value;
 
+    const std::regex regex ("set[ \t]+" + parameter_name + "[ \t]*=[ \t]*(.*)");
+
     std::istringstream x_file(parameters);
     while (x_file)
       {
@@ -91,7 +93,6 @@ namespace
           line.erase(line.size() - 1, std::string::npos);
 
         std::match_results<std::string::const_iterator> matches;
-        const std::regex regex ("set[ \t]+" + parameter_name + "[ \t]*=[ \t]*(.*)");
         if (std::regex_match(line, matches, regex))
           {
             // Since the line as a whole matched, the 'matches' variable needs to
