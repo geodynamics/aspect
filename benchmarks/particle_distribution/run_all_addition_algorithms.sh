@@ -36,6 +36,7 @@ echo " end" >> current.prm
 echo "end" >> current.prm
 echo "subsection Particles" >> current.prm
 echo "  set Particle addition algorithm = histogram" >> current.prm
+echo "  set Addition granularity = 8" >> current.prm
 echo "end" >> current.prm
 echo "set Output directory = output_addition/output-histogram" >> current.prm
 cat addition_algorithm_benchmarks.prm current.prm | mpirun -np $processes $ASPECT_EXEC --
@@ -134,7 +135,7 @@ echo "subsection Particles" >> current.prm
 echo "  set Particle addition algorithm = random" >> current.prm
 echo "end" >> current.prm
 echo "set Output directory = output_addition/output-random-constant-velocity" >> current.prm
-cat removal_algorithm_benchmarks.prm current.prm | mpirun -np $processes $ASPECT_EXEC --
+cat addition_algorithm_benchmarks.prm current.prm | mpirun -np $processes $ASPECT_EXEC --
 
 # Histogram addition with default granularity
 echo "subsection Prescribed Stokes solution" > current.prm
@@ -147,9 +148,10 @@ echo " end" >> current.prm
 echo "end" >> current.prm
 echo "subsection Particles" >> current.prm
 echo "  set Particle addition algorithm = histogram" >> current.prm
+echo "  set Addition granularity = 8" >> current.prm
 echo "end" >> current.prm
 echo "set Output directory = output_addition/output-histogram-constant-velocity" >> current.prm
-cat removal_algorithm_benchmarks.prm current.prm | mpirun -np $processes $ASPECT_EXEC --
+cat addition_algorithm_benchmarks.prm current.prm | mpirun -np $processes $ASPECT_EXEC --
 
 # Point density function, Cutoff_c1 (the default kernel function)
 echo "subsection Prescribed Stokes solution" > current.prm
@@ -164,7 +166,7 @@ echo "subsection Particles" >> current.prm
 echo "  set Particle addition algorithm = point density function" >> current.prm
 echo "end" >> current.prm
 echo "set Output directory = output_addition/output-cutoff-c1-constant-velocity" >> current.prm
-cat removal_algorithm_benchmarks.prm current.prm | mpirun -np $processes $ASPECT_EXEC --
+cat addition_algorithm_benchmarks.prm current.prm | mpirun -np $processes $ASPECT_EXEC --
 
 # Point density function, Cutoff_w1 (the default kernel function)
 echo "subsection Prescribed Stokes solution" > current.prm
@@ -180,7 +182,7 @@ echo "  set Particle addition algorithm = point density function" >> current.prm
 echo "  set Point density kernel function = cutoff w1 dealii" >> current.prm
 echo "end" >> current.prm
 echo "set Output directory = output_addition/output-cutoff-w1-constant-velocity" >> current.prm
-cat removal_algorithm_benchmarks.prm current.prm | mpirun -np $processes $ASPECT_EXEC --
+cat addition_algorithm_benchmarks.prm current.prm | mpirun -np $processes $ASPECT_EXEC --
 
 # Point density function, uniform
 echo "subsection Prescribed Stokes solution" > current.prm
@@ -196,7 +198,7 @@ echo "  set Particle addition algorithm = point density function" >> current.prm
 echo "  set Point density kernel function = uniform" >> current.prm
 echo "end" >> current.prm
 echo "set Output directory = output_addition/output-uniform-constant-velocity" >> current.prm
-cat removal_algorithm_benchmarks.prm current.prm | mpirun -np $processes $ASPECT_EXEC --
+cat addition_algorithm_benchmarks.prm current.prm | mpirun -np $processes $ASPECT_EXEC --
 
 # Point density function, gaussian
 echo "subsection Prescribed Stokes solution" > current.prm
@@ -212,7 +214,7 @@ echo "  set Particle addition algorithm = point density function" >> current.prm
 echo "  set Point density kernel function = gaussian" >> current.prm
 echo "end" >> current.prm
 echo "set Output directory = output_addition/output-gaussian-constant-velocity" >> current.prm
-cat removal_algorithm_benchmarks.prm current.prm | mpirun -np $processes $ASPECT_EXEC --
+cat addition_algorithm_benchmarks.prm current.prm | mpirun -np $processes $ASPECT_EXEC --
 
 # Point density function, triangular
 echo "subsection Prescribed Stokes solution" > current.prm
@@ -228,7 +230,7 @@ echo "  set Particle addition algorithm = point density function" >> current.prm
 echo "  set Point density kernel function = triangular" >> current.prm
 echo "end" >> current.prm
 echo "set Output directory = output_addition/output-triangular-constant-velocity" >> current.prm
-cat removal_algorithm_benchmarks.prm current.prm | mpirun -np $processes $ASPECT_EXEC --
+cat addition_algorithm_benchmarks.prm current.prm | mpirun -np $processes $ASPECT_EXEC --
 
 # Remove the temporary .prm file
 rm current.prm

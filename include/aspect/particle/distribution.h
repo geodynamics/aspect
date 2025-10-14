@@ -93,10 +93,13 @@ namespace aspect
          * @param particle_range The particle_iterator_range to operate on.
          * @param particle_ranges_to_sum_over The ranges of the particles in neighboring cells.
          * @param n_particles_in_cell The number of particles belonging to the particle manager in question within the cell.
+         * @param mapping A reference to a mapping object to use to translate cell coordinates into
+         * real coordinates. `fill_from_particle_range` does not use this parameter directly but passes it to
+         * `insert_kernel_sum_from_particle_range.`
          */
         void
         fill_from_particle_range(const typename Particles::ParticleHandler<dim>::particle_iterator_range particle_range,
-                                 const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> 
+                                 const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
                                  particle_ranges_to_sum_over,
                                  const unsigned int n_particles_in_cell,
                                  const typename dealii::Mapping<dim> &mapping);
@@ -109,14 +112,17 @@ namespace aspect
          * @param reference_point The point from which to get the value of the kernel function.
          * @param table_index The index in the PDF to insert the data into.
          * @param n_particles_in_cell The number of particles in the cell.
-         * @param particle_range The particle_iterator_range to sum particles from.
+         * @param cell The cell in which to apply the kernel function
+         * @param particle_ranges_to_sum_over The particle_iterator_range to sum particles from.
+         * @param mapping A reference to a mapping object to use to translate cell coordinates into
+         * real coordinates
          */
         void
         insert_kernel_sum_from_particle_range(const Point<dim> reference_point,
                                               std::array<unsigned int,dim> table_index,
                                               const unsigned int n_particles_in_cell,
-                                              typename Particles::ParticleHandler<dim>::particle_iterator_range particle_range,
-                                              std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> 
+                                              const typename Triangulation<dim>::cell_iterator cell,
+                                              std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
                                               particle_ranges_to_sum_over,
                                               const typename dealii::Mapping<dim> &mapping);
 

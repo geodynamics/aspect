@@ -5,6 +5,8 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 from contrib.python.scripts.aspect_data import read_statistics
 
+# ------------------------------------Oscillating velocity------------------------------------ #
+
 # Random, oscillating velocity
 random_df = read_statistics('output_addition/output-random/statistics')
 random_oscillating_data = [
@@ -67,6 +69,8 @@ triangular_oscillating_data = [
     triangular_df['Average particle distribution score: '].mean(),
     triangular_df['Maximal particle distribution score: '].mean()
 ]
+
+# ------------------------------------Constant velocity------------------------------------ #
 
 # Random, constant velocity
 random_constant_df = read_statistics('output_addition/output-random-constant-velocity/statistics')
@@ -159,8 +163,8 @@ column_names_output = [
     'Time Averaged Maximum Score',
 ]
 
-output_dataframe = pd.DataFrame(output_data_array_oscillating,columns=column_names_output)
-output_dataframe.to_csv('addition_algorithm_comparison_oscillatingV_data.csv',index=False)
+output_dataframe_oscillating = pd.DataFrame(output_data_array_oscillating,columns=column_names_output)
+output_dataframe_oscillating.to_csv('addition_algorithm_comparison_oscillatingV_data.csv',index=False)
 
-output_dataframe = pd.DataFrame(output_data_array_constant,columns=column_names_output)
-output_dataframe.to_csv('addition_algorithm_comparison_constantV_data.csv',index=False)
+output_dataframe_constant = pd.DataFrame(output_data_array_constant,columns=column_names_output)
+output_dataframe_constant.to_csv('addition_algorithm_comparison_constantV_data.csv',index=False)

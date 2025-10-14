@@ -75,6 +75,10 @@ namespace aspect
     {
       if (is_defined_per_particle == false)
         {
+          // Particle_range will always be the particles in the cell the function is being called on, so
+          // finding surrounding cell of the first particle in particle_range works
+          const typename Triangulation<dim>::cell_iterator active_cell = particle_range.begin()->get_surrounding_cell();
+
           for (unsigned int x=0; x<granularity; ++x)
             {
               for (unsigned int y=0; y<granularity; ++y)
@@ -90,7 +94,7 @@ namespace aspect
                           table_index[0] = x;
                           table_index[1] = y;
                           table_index[2] = z;
-                          insert_kernel_sum_from_particle_range(reference_point,table_index,n_particles_in_cell,particle_range,particle_ranges_to_sum_over,mapping);
+                          insert_kernel_sum_from_particle_range(reference_point,table_index,n_particles_in_cell,active_cell,particle_ranges_to_sum_over,mapping);
                         }
                     }
                   else
@@ -99,12 +103,12 @@ namespace aspect
                       std::array<unsigned int,dim> table_index;
                       table_index[0] = x;
                       table_index[1] = y;
-                      insert_kernel_sum_from_particle_range(reference_point,table_index,n_particles_in_cell,particle_range,particle_ranges_to_sum_over,mapping);
+                      insert_kernel_sum_from_particle_range(reference_point,table_index,n_particles_in_cell,active_cell,particle_ranges_to_sum_over,mapping);
                     }
                 }
             }
         }
-      else
+      else if (is_defined_per_particle == true)
         {
           // Sum the value of the kernel function on that position from every other particle.
           for (const auto &reference_particle: particle_range)
@@ -139,55 +143,42 @@ namespace aspect
 
     }
 
+
+
     template <int dim>
     void
     ParticlePDF<dim>::insert_kernel_sum_from_particle_range(const Point<dim> reference_point,
                                                             const std::array<unsigned int, dim> table_index,
                                                             const unsigned int n_particles_in_cell,
-                                                            const typename Particles::ParticleHandler<dim>::particle_iterator_range particle_range,
+                                                            const typename Triangulation<dim>::cell_iterator cell,
                                                             const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over,
                                                             const typename dealii::Mapping<dim> &mapping)
     {
-      /*
-      We need to convert the reference point from local coordinates into global coordinates
-      in order to sum the KDE across cell boundaries. We know that all particles within particle_range
-      are contained in the cell which is currently being examined, so we can get the surrounding cell of a
-      particle from particle_range and use that cell to convert reference_point from reference coordinates to
-      global coordinates.
-      */
+      // This function should only ever be called when computing the point density function on a regular grid,
+      // not per particle location.
+      Assert(is_defined_per_particle == false,
+             ExcMessage("This function can only be called if the ParticlePDF is computed on a regular grid."));
 
-      const typename Triangulation<dim>::cell_iterator active_cell = particle_range.begin()->get_surrounding_cell();
+      // The reference point is in coordinates relative to the cell, we need it in real coordinates.
+      const Point<dim> reference_point_real_coordinates = mapping.transform_unit_to_real_cell(cell,reference_point);
 
-
-      const Point<dim> position_real = mapping.transform_unit_to_real_cell(active_cell,reference_point);
-
-      particle_ranges_to_sum_over.push_back(particle_range);
       for (const auto &particle_range_to_sum: particle_ranges_to_sum_over)
         {
           for (const auto &kernel_position_particle: particle_range_to_sum)
             {
               const typename Triangulation<dim>::cell_iterator surrounding_cell = kernel_position_particle.get_surrounding_cell();
               const double cell_diameter = surrounding_cell->diameter();
-              const double cell_diameter_scaled_to_dimensions = cell_diameter / (std::sqrt(dim));              
+              const double cell_diameter_scaled_to_dimensions = cell_diameter / (std::sqrt(dim));
               const auto &kernel_coordinates = kernel_position_particle.get_location();
-              const double distance = position_real.distance(kernel_coordinates);
+              const double distance = reference_point_real_coordinates.distance(kernel_coordinates);
               const double distance_normalized = distance/cell_diameter_scaled_to_dimensions;
               const double kernel_function_value = apply_selected_kernel_function(distance_normalized);
               add_value_to_function_table(table_index,kernel_function_value/n_particles_in_cell);
             }
         }
-
-
-      /*
-      for (const auto &particle: particle_range)
-        {
-          const auto coordinates = particle.get_reference_location();
-          const double distance = coordinates.distance(reference_point);
-          const double kernel_function_value = apply_selected_kernel_function(distance);
-          add_value_to_function_table(table_index,kernel_function_value/n_particles_in_cell);
-        }
-        */
     }
+
+
 
     template <int dim>
     void

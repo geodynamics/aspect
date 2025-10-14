@@ -95,13 +95,13 @@ namespace aspect
 
         // Check that the reference position is actually within the given cell
         if (cell->reference_cell().contains_point(reference_position) == false)
-        {
-          std::stringstream error_stream;
-          error_stream << "The given reference position p=" << reference_position << " is not within the specified cell. All reference coordinates should be between 0.0 and 1.0.";
-          AssertThrow(cell->reference_cell().contains_point(reference_position),
-        ExcMessage(error_stream.str()));
-        }
-        
+          {
+            std::stringstream error_stream;
+            error_stream << "The given reference position p=" << reference_position << " is not within the specified cell. All reference coordinates should be between 0.0 and 1.0.";
+            AssertThrow(cell->reference_cell().contains_point(reference_position),
+                        ExcMessage(error_stream.str()));
+          }
+
         // This version of generate_particle only needs to generate a particle within the given cell at the reference position
         const Point<dim> position_real = this->get_mapping().transform_unit_to_real_cell(cell,reference_position);
         const Particle<dim> new_particle(position_real, reference_position, id);

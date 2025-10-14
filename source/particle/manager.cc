@@ -433,22 +433,21 @@ namespace aspect
                                       z_index = addition_granularity-1;
                                     entry_index[2] = z_index;
                                   }
-                              ++buckets(entry_index);
+                                ++buckets(entry_index);
                               }
-                            
+
                             // Find the bucket with the least particles
 
                             /*
                             Remember which bucket has the fewest particles so we can add particles to that bucket.
                             In the case that multiple buckets have the fewest particles, (which is commonly zero particles)
                             we need to keep track of all buckets with the same amount of particles so that we can randomly
-                            choose a bucket to add particles to. If this isn't done, particles will always be added to the 
-                            last bucket in the nested loop with 0 particles (or whatever the lowest count is), defeating the 
+                            choose a bucket to add particles to. If this isn't done, particles will always be added to the
+                            last bucket in the nested loop with 0 particles (or whatever the lowest count is), defeating the
                             purpose of this algorithm by causing unphysical clustering.
                             */
                             std::vector<TableIndices<dim>> min_bucket_indexes;
-                            TableIndices<dim> entry_index_min_particles;
- 
+
                             for (unsigned int x=0; x<addition_granularity; ++x)
                               {
                                 for (unsigned int y=0; y<addition_granularity; ++y)
@@ -464,69 +463,67 @@ namespace aspect
                                             entry_index[2] = z;
                                             const unsigned int particles_in_bucket = buckets(entry_index);
                                             if (particles_in_bucket < min_particles_in_bucket)
-                                            {
-                                              min_particles_in_bucket = particles_in_bucket;
-                                              // We found a new minimum bucket, clear the list
-                                              min_bucket_indexes.clear();
-                                              min_bucket_indexes.push_back(entry_index);
-                                            }
+                                              {
+                                                min_particles_in_bucket = particles_in_bucket;
+                                                // We found a new minimum bucket, clear the list
+                                                min_bucket_indexes.clear();
+                                                min_bucket_indexes.push_back(entry_index);
+                                              }
                                             else if (particles_in_bucket == min_particles_in_bucket)
-                                            {
-                                              // Add this bucket to the list of buckets with identically small particle numbers
-                                              min_bucket_indexes.push_back(entry_index);
-                                            }
+                                              {
+                                                // Add this bucket to the list of buckets with identically small particle numbers
+                                                min_bucket_indexes.push_back(entry_index);
+                                              }
                                           }
                                       }
                                     else
                                       {
-                                        const unsigned int particles_in_bucket = buckets(entry_index);                                   
+                                        const unsigned int particles_in_bucket = buckets(entry_index);
                                         if (particles_in_bucket < min_particles_in_bucket)
-                                        {
-                                          min_particles_in_bucket = particles_in_bucket;
-                                          // We found a new minimum bucket, clear the list
-                                          min_bucket_indexes.clear();
-                                          min_bucket_indexes.push_back(entry_index);
-                                        }
+                                          {
+                                            min_particles_in_bucket = particles_in_bucket;
+                                            // We found a new minimum bucket, clear the list
+                                            min_bucket_indexes.clear();
+                                            min_bucket_indexes.push_back(entry_index);
+                                          }
                                         else if (particles_in_bucket == min_particles_in_bucket)
-                                        {
-                                          // Add this bucket to the list of buckets with identically small particle numbers
-                                          min_bucket_indexes.push_back(entry_index);
-                                        }
+                                          {
+                                            // Add this bucket to the list of buckets with identically small particle numbers
+                                            min_bucket_indexes.push_back(entry_index);
+                                          }
                                       }
                                   }
                               }
-                        
+
                             // Select from the buckest with the minimum number of particles
                             TableIndices<dim> lowest_bucket = min_bucket_indexes[std::uniform_int_distribution<unsigned int>
-                                                                 (0,min_bucket_indexes.size()-1)(random_number_generator)];
+                                                                                 (0,min_bucket_indexes.size()-1)(random_number_generator)];
 
 
-                            
+
                             // Generate a particle in the bucket with the least particles
                             const double min_x = lowest_bucket[0]/granularity_double;
                             const double min_y = lowest_bucket[1]/granularity_double;
-
-                            std::uniform_real_distribution<double> uniform_distribution_01(0.0, 1.0/granularity_double);
-                            const double new_particle_x = min_x + uniform_distribution_01(random_number_generator);
-                            const double new_particle_y = min_y + uniform_distribution_01(random_number_generator);
+                            const double half_spacing = ((1./granularity_double)/2.);
+                            std::uniform_real_distribution<double> uniform_distribution_01(-half_spacing, half_spacing);
+                            const double new_particle_x = min_x + half_spacing + uniform_distribution_01(random_number_generator);
+                            const double new_particle_y = min_y + half_spacing + uniform_distribution_01(random_number_generator);
 
 
                             Point<dim> new_particle_location;
                             if (dim == 3)
-                            {
-                              const double min_z = entry_index_min_particles[0]/granularity_double;
-                              const double max_z = min_z + 1.0/granularity_double;
-                              const double new_particle_z = std::uniform_real_distribution<double>
-                                      (min_z,max_z)(random_number_generator);
-                              new_particle_location[0] = new_particle_x;
-                              new_particle_location[1] = new_particle_y;
-                              new_particle_location[2] = new_particle_z;
-                            }
+                              {
+                                const double min_z = lowest_bucket[2]/granularity_double;
+                                const double new_particle_z = min_z + half_spacing + uniform_distribution_01(random_number_generator);
+                                new_particle_location[0] = new_particle_x;
+                                new_particle_location[1] = new_particle_y;
+                                new_particle_location[2] = new_particle_z;
+                              }
                             else
-                            {
-                              new_particle_location[0] = new_particle_x;
-                              new_particle_location[1] = new_particle_y;
-                            }
+                              {
+                                new_particle_location[0] = new_particle_x;
+                                new_particle_location[1] = new_particle_y;
+                              }
 
                             std::pair<Particles::internal::LevelInd,Particles::Particle<dim>> new_particle =
                               generator->generate_particle(cell,local_next_particle_index,new_particle_location);
@@ -1114,8 +1111,8 @@ namespace aspect
                                "The bandwidth is measured as a fraction of the cells extent in one spatial "
                                "dimension. For example, the default bandwidth of 0.3 represents a size "
                                "equal to 30 percent of the cells size in one spatial dimension.");
-            prm.declare_entry("Addition Granularity","6",
-                              Patterns::Integer(6),
+            prm.declare_entry("Addition granularity","6",
+                              Patterns::Integer(2),
                               "The amount of times to subdivide each cell when adding particles using histogram "
                               "or point density function based methods. Higher granularities tend to result in "
                               "better particles distributions but will be slower.");
@@ -1305,7 +1302,7 @@ namespace aspect
           }
 
         // The bandwidth to use with the kernel function
-        addition_granularity = prm.get_integer("Addition Granularity");
+        addition_granularity = prm.get_integer("Addition granularity");
 
         // The particle addition algorithm to use when there are not enough particles in a cell
         std::string addition_algorithm_string = prm.get("Particle addition algorithm");
