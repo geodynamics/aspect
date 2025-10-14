@@ -1,0 +1,69 @@
+-----------------------------------------------------------------------------
+--                             This is ASPECT                              --
+-- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
+-----------------------------------------------------------------------------
+--     . version 3.1.0-pre (particle_addition_update, 3596c1d95)
+--     . using deal.II 9.6.1
+--     .       with 32 bit indices
+--     .       with vectorization level 1 (SSE2, 2 doubles, 128 bits)
+--     . using Trilinos 14.4.0
+--     . using p4est 2.3.6
+--     . using Geodynamic World Builder 1.0.0
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&cbfheatflux=1&mf=1&particles=1&sha=3596c1d95&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 40 (18+4+9+9)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving C_1 system ... 0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                                                 0 m/s, 0 m/s
+     Temperature min/avg/max:                                                           0 K, 0.4444 K, 1 K
+     Heat fluxes through boundary parts:                                                1.422e-05 W, 1.422e-05 W, 1.422e-05 W, 1.422e-05 W
+     Writing graphical output:                                                          output/solution/solution-00000
+     Writing particle output:                                                           output/particles/particles-00000
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0.176777/0.176777/0.176777, 0.25/0.75, 0.25/0.75
+     Particle count per cell min/avg/max:                                               8, 8, 8
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |     0.416s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble composition system      |         1 |   0.00144s |      0.35% |
+| Assemble temperature system      |         1 |   0.00316s |      0.76% |
+| Build composition preconditioner |         1 |   5.5e-05s |         0% |
+| Build temperature preconditioner |         1 |   0.00326s |      0.78% |
+| Initialization                   |         1 |     0.366s |        88% |
+| Interpolate Stokes solution      |         1 |  0.000275s |         0% |
+| Particles: Advect                |         2 |  0.000972s |      0.23% |
+| Particles: Copy                  |         1 |  2.95e-05s |         0% |
+| Particles: Generate              |         1 |  0.000755s |      0.18% |
+| Particles: Initialization        |         1 |  0.000106s |         0% |
+| Particles: Initialize properties |         1 |  8.08e-06s |         0% |
+| Particles: Sort                  |         2 |  0.000528s |      0.13% |
+| Postprocessing                   |         1 |   0.00847s |         2% |
+| Setup dof systems                |         1 |    0.0161s |       3.9% |
+| Setup initial conditions         |         1 |   0.00453s |       1.1% |
+| Setup matrices                   |         1 |   0.00114s |      0.27% |
+| Solve composition system         |         1 |  0.000201s |         0% |
+| Solve temperature system         |         1 |  0.000738s |      0.18% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 0s
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&cbfheatflux=1&mf=1&particles=1&sha=3596c1d95&src=code
+-----------------------------------------------------------------------------

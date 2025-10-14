@@ -1,0 +1,162 @@
+-----------------------------------------------------------------------------
+--                             This is ASPECT                              --
+-- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
+-----------------------------------------------------------------------------
+--     . version 3.1.0-pre (particle_addition_update, 3596c1d95)
+--     . using deal.II 9.6.1
+--     .       with 32 bit indices
+--     .       with vectorization level 1 (SSE2, 2 doubles, 128 bits)
+--     . using Trilinos 14.4.0
+--     . using p4est 2.3.6
+--     . using Geodynamic World Builder 1.0.0
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&cbfheatflux=1&particles=1&sha=3596c1d95&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 80 (on 2 levels)
+Number of degrees of freedom: 5,314 (3,075+189+1,025+1,025)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+
+Number of active cells: 640 (on 3 levels)
+Number of degrees of freedom: 33,830 (19,683+1,025+6,561+6,561)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+
+Number of active cells: 1,536 (on 4 levels)
+Number of degrees of freedom: 76,062 (44,331+2,177+14,777+14,777)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving C_1 system ... 0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                             0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                       0 K, 0.9248 K, 1.125 K
+     Heat fluxes through boundary parts:            0.0005583 W, 0.0005583 W, 0.02292 W, -0.02292 W, 0 W, 0 W
+     Writing graphical output:                      output/solution/solution-00000
+     Writing particle output:                       output/particles/particles-00000
+     Particle distribution score min/avg/max/stdev: 0/0/0/0
+
+*** Timestep 1:  t=0.03 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Solving C_1 system ... 0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                             0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                       0 K, 0.9248 K, 1.125 K
+     Heat fluxes through boundary parts:            0.0006771 W, 0.0006771 W, 0.02287 W, -0.02287 W, 0 W, 0 W
+     Writing graphical output:                      output/solution/solution-00001
+     Writing particle output:                       output/particles/particles-00001
+     Particle distribution score min/avg/max/stdev: 0/0/0/0
+
+*** Timestep 2:  t=0.06 seconds, dt=0.03 seconds
+   Solving temperature system... 6 iterations.
+   Advecting particles...  done.
+   Solving C_1 system ... 0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                             0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                       0 K, 0.9248 K, 1.126 K
+     Heat fluxes through boundary parts:            0.0006835 W, 0.0006835 W, 0.02284 W, -0.02284 W, 0 W, 0 W
+     Writing graphical output:                      output/solution/solution-00002
+     Writing particle output:                       output/particles/particles-00002
+     Particle distribution score min/avg/max/stdev: 0/0/0/0
+
+*** Timestep 3:  t=0.09 seconds, dt=0.03 seconds
+   Solving temperature system... 6 iterations.
+   Advecting particles...  done.
+   Solving C_1 system ... 0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                             0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                       0 K, 0.9247 K, 1.127 K
+     Heat fluxes through boundary parts:            0.0006891 W, 0.0006891 W, 0.02281 W, -0.02281 W, 0 W, 0 W
+     Writing graphical output:                      output/solution/solution-00003
+     Writing particle output:                       output/particles/particles-00003
+     Particle distribution score min/avg/max/stdev: 0/0.0010334/0.0357143/0.00476775
+
+*** Timestep 4:  t=0.12 seconds, dt=0.03 seconds
+   Solving temperature system... 6 iterations.
+   Advecting particles...  done.
+   Solving C_1 system ... 0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                             0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                       0 K, 0.9247 K, 1.129 K
+     Heat fluxes through boundary parts:            0.0006946 W, 0.0006946 W, 0.02278 W, -0.02278 W, 0 W, 0 W
+     Writing graphical output:                      output/solution/solution-00004
+     Writing particle output:                       output/particles/particles-00004
+     Particle distribution score min/avg/max/stdev: 0/0.0010334/0.0357143/0.00476775
+
+*** Timestep 5:  t=0.15 seconds, dt=0.03 seconds
+   Solving temperature system... 6 iterations.
+   Advecting particles...  done.
+   Solving C_1 system ... 0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                             0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                       0 K, 0.9246 K, 1.131 K
+     Heat fluxes through boundary parts:            0.0006998 W, 0.0006998 W, 0.02276 W, -0.02276 W, 0 W, 0 W
+     Writing graphical output:                      output/solution/solution-00005
+     Writing particle output:                       output/particles/particles-00005
+     Particle distribution score min/avg/max/stdev: 0/0.0010334/0.0357143/0.00476775
+
+*** Timestep 6:  t=0.18 seconds, dt=0.03 seconds
+   Solving temperature system... 6 iterations.
+   Advecting particles...  done.
+   Solving C_1 system ... 0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                             0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                       0 K, 0.9246 K, 1.133 K
+     Heat fluxes through boundary parts:            0.0007048 W, 0.0007048 W, 0.02275 W, -0.02275 W, 0 W, 0 W
+     Writing graphical output:                      output/solution/solution-00006
+     Writing particle output:                       output/particles/particles-00006
+     Particle distribution score min/avg/max/stdev: 0/0.000590314/0.0262391/0.00303988
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      84.8s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble composition system      |         9 |      18.3s |        22% |
+| Assemble temperature system      |         9 |      17.2s |        20% |
+| Build composition preconditioner |         9 |     0.337s |       0.4% |
+| Build temperature preconditioner |         9 |     0.258s |       0.3% |
+| Initialization                   |         1 |     0.348s |      0.41% |
+| Interpolate Stokes solution      |         9 |      1.33s |       1.6% |
+| Particles: Advect                |        14 |      2.61s |       3.1% |
+| Particles: Copy                  |         9 |    0.0187s |         0% |
+| Particles: Generate              |         3 |     0.247s |      0.29% |
+| Particles: Initialization        |         1 |  0.000799s |         0% |
+| Particles: Initialize properties |         3 |    0.0332s |         0% |
+| Particles: Sort                  |        14 |     0.396s |      0.47% |
+| Postprocessing                   |         7 |      35.9s |        42% |
+| Refine mesh structure, part 1    |         2 |     0.358s |      0.42% |
+| Refine mesh structure, part 2    |         2 |      1.64s |       1.9% |
+| Setup dof systems                |         3 |     0.179s |      0.21% |
+| Setup initial conditions         |         3 |      1.34s |       1.6% |
+| Setup matrices                   |         3 |      2.12s |       2.5% |
+| Solve composition system         |         9 |    0.0336s |         0% |
+| Solve temperature system         |         9 |    0.0798s |         0% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 85s
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&cbfheatflux=1&particles=1&sha=3596c1d95&src=code
+-----------------------------------------------------------------------------
