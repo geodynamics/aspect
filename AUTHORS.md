@@ -7,7 +7,7 @@ following *Maintainers*:
 
 * Wolfgang Bangerth (Colorado State University, USA)
 * Juliane Dannberg (GEOMAR Helmholtz Centre for Ocean Research, Germany)
-* Menno Fraters (University of California, Davis, USA)
+* Menno Fraters (University of Graz, Austria)
 * Rene Gassmoeller (GEOMAR Helmholtz Centre for Ocean Research, Germany)
 * Anne Glerum (Geoforschungszentrum Potsdam, Germany)
 * Timo Heister (Clemson University, USA)
@@ -22,7 +22,7 @@ who have and are providing substantial technical contributions to ASPECT:
 * Jacky Austermann (Columbia University and Lamont-Doherty Earth Observatory, USA)
 * Wolfgang Bangerth (Colorado State University, USA)
 * Juliane Dannberg (GEOMAR Helmholtz Centre for Ocean Research, Germany)
-* Menno Fraters (University of California, Davis, USA)
+* Menno Fraters (University of Graz, Austria)
 * Rene Gassmoeller (GEOMAR Helmholtz Centre for Ocean Research, Germany)
 * Anne Glerum (Geoforschungszentrum Potsdam, Germany)
 * Timo Heister (Clemson University, USA)
