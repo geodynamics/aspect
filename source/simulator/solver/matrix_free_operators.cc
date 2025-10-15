@@ -59,7 +59,7 @@ namespace aspect
      */
     namespace ChangeVectorTypes
     {
-      void copy(TrilinosWrappers::MPI::Vector &out,
+      void copy(aspect::LinearAlgebra::Vector &out,
                 const dealii::LinearAlgebra::distributed::Vector<double> &in)
       {
         dealii::LinearAlgebra::ReadWriteVector<double> rwv(out.locally_owned_elements());
@@ -68,14 +68,14 @@ namespace aspect
       }
 
       void copy(dealii::LinearAlgebra::distributed::Vector<double> &out,
-                const TrilinosWrappers::MPI::Vector &in)
+                const aspect::LinearAlgebra::Vector &in)
       {
         dealii::LinearAlgebra::ReadWriteVector<double> rwv;
         rwv.reinit(in);
         out.import_elements(rwv, VectorOperation::insert);
       }
 
-      void copy(TrilinosWrappers::MPI::BlockVector &out,
+      void copy(aspect::LinearAlgebra::BlockVector &out,
                 const dealii::LinearAlgebra::distributed::BlockVector<double> &in)
       {
         const unsigned int n_blocks = in.n_blocks();
@@ -84,7 +84,7 @@ namespace aspect
       }
 
       void copy(dealii::LinearAlgebra::distributed::BlockVector<double> &out,
-                const TrilinosWrappers::MPI::BlockVector &in)
+                const aspect::LinearAlgebra::BlockVector &in)
       {
         const unsigned int n_blocks = in.n_blocks();
         for (unsigned int b=0; b<n_blocks; ++b)

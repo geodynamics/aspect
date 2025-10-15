@@ -869,10 +869,10 @@ namespace aspect
         coupling[c][c] = DoFTools::always;
 
       LinearAlgebra::SparseMatrix mesh_matrix;
-      TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,
-                                            mesh_locally_owned,
-                                            mesh_locally_relevant,
-                                            sim.mpi_communicator);
+      LinearAlgebra::DynamicSparsityPattern sp (mesh_locally_owned,
+                                                mesh_locally_owned,
+                                                mesh_locally_relevant,
+                                                sim.mpi_communicator);
       DoFTools::make_sparsity_pattern (mesh_deformation_dof_handler,
                                        coupling, sp,
                                        mesh_velocity_constraints, false,
