@@ -189,20 +189,20 @@ namespace aspect
          * @param A_block_tolerance The tolerance for the CG solver which computes
          *     the inverse of the A block.
          */
-        InverseVelocityBlock(const TrilinosWrappers::SparseMatrix &matrix,
+        InverseVelocityBlock(const LinearAlgebra::SparseMatrix &matrix,
                              const PreconditionerA &preconditioner,
                              const bool do_solve_A,
                              const bool A_block_is_symmetric,
                              const double solver_tolerance);
 
-        void vmult(TrilinosWrappers::MPI::Vector &dst,
-                   const TrilinosWrappers::MPI::Vector &src) const;
+        void vmult(LinearAlgebra::Vector &dst,
+                   const LinearAlgebra::Vector &src) const;
 
         unsigned int n_iterations() const;
 
       private:
         mutable unsigned int n_iterations_;
-        const TrilinosWrappers::SparseMatrix &matrix;
+        const LinearAlgebra::SparseMatrix &matrix;
         const PreconditionerA &preconditioner;
         const bool do_solve_A;
         const bool A_block_is_symmetric;
@@ -213,7 +213,7 @@ namespace aspect
 
     template <class PreconditionerA>
     InverseVelocityBlock<PreconditionerA>::InverseVelocityBlock(
-      const TrilinosWrappers::SparseMatrix &matrix,
+      const LinearAlgebra::SparseMatrix &matrix,
       const PreconditionerA &preconditioner,
       const bool do_solve_A,
       const bool A_block_is_symmetric,
@@ -229,8 +229,8 @@ namespace aspect
 
 
     template <class PreconditionerA>
-    void InverseVelocityBlock<PreconditionerA>::vmult(TrilinosWrappers::MPI::Vector &dst,
-                                                      const TrilinosWrappers::MPI::Vector &src) const
+    void InverseVelocityBlock<PreconditionerA>::vmult(LinearAlgebra::Vector &dst,
+                                                      const LinearAlgebra::Vector &src) const
     {
       // Either solve with the top left block
       // or just apply one preconditioner sweep (for the first few
@@ -298,8 +298,8 @@ namespace aspect
       public:
         virtual ~SchurComplementOperator() = default;
 
-        virtual void vmult(TrilinosWrappers::MPI::Vector &dst,
-                           const TrilinosWrappers::MPI::Vector &src) const=0;
+        virtual void vmult(LinearAlgebra::Vector &dst,
+                           const LinearAlgebra::Vector &src) const=0;
         virtual unsigned int n_iterations() const=0;
 
     };
@@ -325,33 +325,33 @@ namespace aspect
          * [A B^T
          *  B 0].
          */
-        WeightedBFBT(const TrilinosWrappers::SparseMatrix &mp_matrix,
+        WeightedBFBT(const LinearAlgebra::SparseMatrix &mp_matrix,
                      const PreconditionerMp &mp_preconditioner,
                      const double solver_tolerance,
-                     const TrilinosWrappers::MPI::Vector &inverse_lumped_mass_matrix,
-                     const TrilinosWrappers::BlockSparseMatrix &system_matrix);
+                     const LinearAlgebra::Vector &inverse_lumped_mass_matrix,
+                     const LinearAlgebra::BlockSparseMatrix &system_matrix);
 
-        void vmult(TrilinosWrappers::MPI::Vector &dst,
-                   const TrilinosWrappers::MPI::Vector &src) const override;
+        void vmult(LinearAlgebra::Vector &dst,
+                   const LinearAlgebra::Vector &src) const override;
 
         unsigned int n_iterations() const override;
 
       private:
         mutable unsigned int n_iterations_;
-        const TrilinosWrappers::SparseMatrix &mp_matrix;
+        const LinearAlgebra::SparseMatrix &mp_matrix;
         const PreconditionerMp &mp_preconditioner;
         const double solver_tolerance;
-        const TrilinosWrappers::MPI::Vector  &inverse_lumped_mass_matrix;
-        const TrilinosWrappers::BlockSparseMatrix &system_matrix;
+        const LinearAlgebra::Vector &inverse_lumped_mass_matrix;
+        const LinearAlgebra::BlockSparseMatrix &system_matrix;
     };
 
     template <class PreconditionerMp>
     WeightedBFBT<PreconditionerMp>::WeightedBFBT(
-      const TrilinosWrappers::SparseMatrix &mp_matrix,
+      const LinearAlgebra::SparseMatrix &mp_matrix,
       const PreconditionerMp &mp_preconditioner,
       const double solver_tolerance,
-      const TrilinosWrappers::MPI::Vector &inverse_lumped_mass_matrix,
-      const TrilinosWrappers::BlockSparseMatrix &system_matrix)
+      const LinearAlgebra::Vector &inverse_lumped_mass_matrix,
+      const LinearAlgebra::BlockSparseMatrix &system_matrix)
       : n_iterations_ (0),
         mp_matrix (mp_matrix),
         mp_preconditioner (mp_preconditioner),
@@ -362,8 +362,8 @@ namespace aspect
 
 
     template <class PreconditionerMp>
-    void WeightedBFBT<PreconditionerMp>::vmult(TrilinosWrappers::MPI::Vector &dst,
-                                               const TrilinosWrappers::MPI::Vector &src) const
+    void WeightedBFBT<PreconditionerMp>::vmult(LinearAlgebra::Vector &dst,
+                                               const LinearAlgebra::Vector &src) const
     {
       SolverControl solver_control(1000, src.l2_norm() * solver_tolerance);
       PrimitiveVectorMemory<LinearAlgebra::Vector> mem;
@@ -371,15 +371,15 @@ namespace aspect
 
       try
         {
-          TrilinosWrappers::MPI::Vector utmp;
+          LinearAlgebra::Vector utmp;
           utmp.reinit(inverse_lumped_mass_matrix);
-          TrilinosWrappers::MPI::Vector ptmp;
+          LinearAlgebra::Vector ptmp;
           ptmp.reinit(src);
-          TrilinosWrappers::MPI::Vector wtmp;
+          LinearAlgebra::Vector wtmp;
           wtmp.reinit(inverse_lumped_mass_matrix);
           {
             SolverControl solver_control(5000, 1e-6 * src.l2_norm(), false, true);
-            SolverCG<TrilinosWrappers::MPI::Vector> solver(solver_control);
+            SolverCG<LinearAlgebra::Vector> solver(solver_control);
             //Solve with Schur Complement approximation
             solver.solve(mp_matrix,
                          ptmp,
@@ -441,18 +441,18 @@ namespace aspect
          * @param mp_preconditioner The preconditioner for @p mp_matrix
          * @param solver_tolerance The relative solver tolerance for the inner solve
          */
-        InverseWeightedMassMatrix(const TrilinosWrappers::SparseMatrix &mp_matrix,
+        InverseWeightedMassMatrix(const LinearAlgebra::SparseMatrix &mp_matrix,
                                   const PreconditionerMp &mp_preconditioner,
                                   const double solver_tolerance);
 
-        void vmult(TrilinosWrappers::MPI::Vector &dst,
-                   const TrilinosWrappers::MPI::Vector &src) const override;
+        void vmult(LinearAlgebra::Vector &dst,
+                   const LinearAlgebra::Vector &src) const override;
 
         unsigned int n_iterations() const override;
 
       private:
         mutable unsigned int n_iterations_;
-        const TrilinosWrappers::SparseMatrix &mp_matrix;
+        const LinearAlgebra::SparseMatrix &mp_matrix;
         const PreconditionerMp &mp_preconditioner;
         const double solver_tolerance;
     };
@@ -461,7 +461,7 @@ namespace aspect
 
     template <class PreconditionerMp>
     InverseWeightedMassMatrix<PreconditionerMp>::InverseWeightedMassMatrix(
-      const TrilinosWrappers::SparseMatrix &mp_matrix,
+      const LinearAlgebra::SparseMatrix &mp_matrix,
       const PreconditionerMp &mp_preconditioner,
       const double solver_tolerance)
       : n_iterations_ (0),
@@ -473,8 +473,8 @@ namespace aspect
 
 
     template <class PreconditionerMp>
-    void InverseWeightedMassMatrix<PreconditionerMp>::vmult(TrilinosWrappers::MPI::Vector &dst,
-                                                            const TrilinosWrappers::MPI::Vector &src) const
+    void InverseWeightedMassMatrix<PreconditionerMp>::vmult(LinearAlgebra::Vector &dst,
+                                                            const LinearAlgebra::Vector &src) const
     {
       // Trilinos reports a breakdown in case src=dst=0, even though it should return
       // convergence without iterating. We simply skip solving in this case.
@@ -538,8 +538,8 @@ namespace aspect
 
     solver_control.enable_history_data();
 
-    SolverGMRES<LinearAlgebra::Vector>   solver (solver_control,
-                                                 SolverGMRES<LinearAlgebra::Vector>::AdditionalData(parameters.advection_gmres_restart_length,true));
+    SolverGMRES<LinearAlgebra::Vector> solver (solver_control,
+                                               SolverGMRES<LinearAlgebra::Vector>::AdditionalData(parameters.advection_gmres_restart_length,true));
 
     // check if matrix and/or RHS are zero
     // note: to avoid a warning, we compare against numeric_limits<double>::min() instead of 0 here
@@ -897,7 +897,7 @@ namespace aspect
         std::unique_ptr<internal::SchurComplementOperator> schur;
         if (parameters.use_bfbt)
           {
-            schur = std::make_unique<internal::WeightedBFBT<TrilinosWrappers::PreconditionBase>>(
+            schur = std::make_unique<internal::WeightedBFBT<LinearAlgebra::PreconditionBase>>(
                       system_preconditioner_matrix.block(pressure_block_index,pressure_block_index),
                       *Mp_preconditioner,
                       parameters.linear_solver_S_block_tolerance,
@@ -906,7 +906,7 @@ namespace aspect
           }
         else
           {
-            schur = std::make_unique<internal::InverseWeightedMassMatrix<TrilinosWrappers::PreconditionBase>>(
+            schur = std::make_unique<internal::InverseWeightedMassMatrix<LinearAlgebra::PreconditionBase>>(
                       system_preconditioner_matrix.block(pressure_block_index,pressure_block_index),
                       *Mp_preconditioner,
                       parameters.linear_solver_S_block_tolerance);
@@ -921,7 +921,7 @@ namespace aspect
           stokes_A_block_is_symmetric(),
           parameters.linear_solver_A_block_tolerance);
         const internal::BlockSchurPreconditioner<internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG>,
-              internal::SchurComplementOperator, LinearAlgebra::SparseMatrix, dealii::TrilinosWrappers::MPI::BlockVector>
+              internal::SchurComplementOperator, LinearAlgebra::SparseMatrix, aspect::LinearAlgebra::BlockVector>
               preconditioner_cheap (
                 inverse_velocity_block_cheap,
                 *schur,
@@ -935,7 +935,7 @@ namespace aspect
           stokes_A_block_is_symmetric(),
           parameters.linear_solver_A_block_tolerance);
         const internal::BlockSchurPreconditioner<internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG>,
-              internal::SchurComplementOperator, LinearAlgebra::SparseMatrix, dealii::TrilinosWrappers::MPI::BlockVector>
+              internal::SchurComplementOperator, LinearAlgebra::SparseMatrix, aspect::LinearAlgebra::BlockVector>
               preconditioner_expensive (
                 inverse_velocity_block_expensive,
                 *schur,

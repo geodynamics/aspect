@@ -109,10 +109,10 @@ namespace aspect
 
       // set up the matrix
       LinearAlgebra::SparseMatrix mass_matrix;
-      TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,
-                                            mesh_locally_owned,
-                                            mesh_locally_relevant,
-                                            this->get_mpi_communicator());
+      LinearAlgebra::DynamicSparsityPattern sp (mesh_locally_owned,
+                                                mesh_locally_owned,
+                                                mesh_locally_relevant,
+                                                this->get_mpi_communicator());
       DoFTools::make_sparsity_pattern (mesh_deformation_dof_handler, sp, mass_matrix_constraints, false,
                                        Utilities::MPI::this_mpi_process(this->get_mpi_communicator()));
       sp.compress();
