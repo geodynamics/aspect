@@ -1,6 +1,8 @@
 ```{tags}
 category:cookbook
 category:benchmark
+feature:2d
+feature:spherical
 ```
 
 (sec:cookbooks:bunke-mantle-convection)=

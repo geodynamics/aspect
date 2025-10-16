@@ -1,5 +1,8 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:cartesian
+feature:solver-comparison
 ```
 
 (sec:benchmarks:advection)=

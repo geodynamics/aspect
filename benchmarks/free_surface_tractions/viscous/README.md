@@ -1,5 +1,10 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:3d
+feature:cartesian
+feature:mesh-deformation
+feature:analytical-solution
 ```
 
 (sec:benchmarks:viscous_half_space_loading)=

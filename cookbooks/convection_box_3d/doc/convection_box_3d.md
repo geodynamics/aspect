@@ -1,5 +1,7 @@
 ```{tags}
 category:cookbook
+feature:3d
+feature:cartesian
 ```
 
 (sec:cookbooks:convection_box_3d)=

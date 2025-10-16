@@ -1,7 +1,12 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:spherical
+feature:analytical-solution
+feature:particles
 ```
 
+(sec:benchmarks:time_dependent_annulus)=
 # Time dependent annulus benchmark
 
 [This folder](https://github.com/geodynamics/aspect/tree/main/benchmarks/time_dependent_annulus)

@@ -1,7 +1,11 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:cartesian
+feature:analytical-solution
 ```
 
+(sec:benchmarks:viscosity_grooves)=
 # Viscosity grooves benchmark
 
 *This benchmark was designed by Dave May and this section was contributed by

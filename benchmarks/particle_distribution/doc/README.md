@@ -1,7 +1,11 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:cartesian
+feature:particles
 ```
 
+(sec:benchmarks:particle_distribution)=
 # Particle distribution benchmark
 *This section was contributed by Jarett Baker-Dunn and Rene Gassmöller*
 

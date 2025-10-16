@@ -1,5 +1,11 @@
 ```{tags}
 category:cookbook
+feature:2d
+feature:spherical
+feature:compositional-fields
+feature:compressibility
+feature:modular-equations
+feature:nonlinear-solver
 ```
 
 (sec:cookbooks:steinberger)=

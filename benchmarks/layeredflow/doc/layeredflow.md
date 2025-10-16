@@ -1,7 +1,11 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:cartesian
+feature:analytical-solution
 ```
 
+(sec:benchmarks:layeredflow)=
 # Layered flow with viscosity contrast
 
 *This section was contributed by Cedric Thieulot.*

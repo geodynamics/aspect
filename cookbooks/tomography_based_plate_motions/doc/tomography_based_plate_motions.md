@@ -1,5 +1,11 @@
 ﻿```{tags}
 category:cookbook
+feature:2d
+feature:spherical
+feature:compositional-fields
+feature:data-integration
+feature:compressibility
+feature:nonlinear-solver
 ```
 
 (sec:cookbooks:tomography-plate-motions)=

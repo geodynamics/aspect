@@ -1,5 +1,14 @@
-The NSinker benchmark
-=====================
+```{tags}
+category:benchmark
+feature:2d
+feature:3d
+feature:cartesian
+feature:community-benchmark
+feature:solver-comparison
+```
+
+(sec:benchmarks:nsinker)=
+# The NSinker benchmark
 
 This is the "NSinker" benchmark defined in
 

@@ -1,7 +1,11 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:spherical
+feature:compressibility
 ```
 
+(sec:benchmarks:davies-et-al)=
 # The 2D cylindrical shell benchmarks by Davies et al.
 
 *This section was contributed by William Durkin and Wolfgang Bangerth.*

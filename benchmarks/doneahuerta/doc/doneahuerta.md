@@ -1,7 +1,11 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:cartesian
+feature:analytical-solution
 ```
 
+(sec:benchmarks:donea-huerta-2d-box)=
 # Donea & Huerta 2D box geometry benchmark
 
 *This section was contributed by Cedric Thieulot.*

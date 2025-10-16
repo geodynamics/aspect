@@ -1,5 +1,11 @@
 ```{tags}
 category:cookbook
+feature:2d
+feature:cartesian
+feature:particles
+feature:nonlinear-solver
+feature:mesh-deformation
+feature:plasticity
 ```
 
 (sec:cookbooks:continental-extension)=

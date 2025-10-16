@@ -1,7 +1,12 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:cartesian
+feature:community-benchmark
+feature:data-integration
 ```
 
+(sec:benchmarks:yamauchi_takei_2016_anelasticity)=
 # Yamauchi & Takei anelastic shear wave velocity-temperature conversion benchmark
 
 *This section was contributed by Fred Richards.*

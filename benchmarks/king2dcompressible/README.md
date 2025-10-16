@@ -1,7 +1,11 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:cartesian
+feature:compressibility
 ```
 
+(sec:benchmarks:king2dcompressible)=
 # The King compressible convection benchmark
 
 This folder contains input files for the benchmark from {cite:t}`king:etal:2010`

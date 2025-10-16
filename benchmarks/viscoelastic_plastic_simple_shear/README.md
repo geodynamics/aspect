@@ -1,7 +1,15 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:cartesian
+feature:nonlinear-solver
+feature:elasticity
+feature:plasticity
+feature:compositional-fields
+feature:modular-equations
 ```
 
+(sec:benchmarks:viscoelastic_plastic_simple_shear)=
 # The viscoelastoplastic simple shear benchmark
 
 This benchmark is described in the paper

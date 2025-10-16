@@ -1,5 +1,7 @@
 ```{tags}
 category:cookbook
+feature:2d
+feature:spherical
 ```
 
 (sec:cookbooks:shell_simple_2d)=

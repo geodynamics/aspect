@@ -1,5 +1,10 @@
 ```{tags}
 category:cookbook
+feature:3d
+feature:cartesian
+feature:compositional-fields
+feature:particles
+feature:community-benchmark
 ```
 
 (sec:cookbooks:subd-init)=

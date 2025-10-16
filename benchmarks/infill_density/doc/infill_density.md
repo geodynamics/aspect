@@ -1,5 +1,9 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:cartesian
+feature:analytical-solution
+feature:mesh-deformation
 ```
 
 (sec:benchmarks:infill-density)=

@@ -1,5 +1,8 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:spherical
+feature:analytical-solution
 ```
 
 (sec:benchmarks:advection-in-annulus)=

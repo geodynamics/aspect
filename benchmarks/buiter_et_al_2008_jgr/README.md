@@ -1,5 +1,9 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:cartesian
+feature:mesh-deformation
+feature:nonlinear-solver
 ```
 
 (sec:benchmarks:buiter-et-al-2008-jgr)=

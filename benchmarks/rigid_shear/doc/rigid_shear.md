@@ -1,7 +1,12 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:cartesian
+feature:analytical-solution
+feature:particles
 ```
 
+(sec:benchmarks:rigid_shear)=`
 # The rigid shear benchmark
 
 *This section was contributed by R. Gassmoeller.*

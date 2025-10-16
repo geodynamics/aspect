@@ -1,5 +1,8 @@
 ```{tags}
 category:benchmark
+feature:3d
+feature:spherical
+feature:analytical-solution
 ```
 
 (sec:benchmarks:thick-shell-gravity)=

@@ -1,7 +1,12 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:cartesian
+feature:mesh-deformation
+feature:nonlinear-solver
 ```
 
+(sec:benchmarks:brittle-thrust-wedge)=
 # Brittle thrust wedges benchmark
 
 *This section was contributed by Sibiao Liu, Stephanie Sparks, John Naliboff,

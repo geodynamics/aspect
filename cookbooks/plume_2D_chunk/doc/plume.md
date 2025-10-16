@@ -1,5 +1,8 @@
 ```{tags}
 category:cookbook
+feature:2d
+feature:spherical
+feature:nonlinear-solver
 ```
 
 (sec:cookbooks:plume-2d-chunk)=

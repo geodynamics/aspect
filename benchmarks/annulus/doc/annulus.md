@@ -1,5 +1,8 @@
 ```{tags}
 category:benchmark
+feature:2d
+feature:spherical
+feature:analytical-solution
 ```
 
 # The 2D annulus benchmark
