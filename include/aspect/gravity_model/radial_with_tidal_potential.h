@@ -41,6 +41,7 @@ namespace aspect
      * (tidal potential) = (3 G M_p) / (2 a_s^3) * r^2 * (Tstar + T0)
      * Tstar = 1/6 *(1-3*cos(theta)^2) and T0=1/2sin(theta)^2*cos(2*lambda + 2*b*t)
      * where G = gravitational constant, M_p = mass of the perturbing body, a_s = semimajor axis of the orbit, b = angular rate of non-synchronous rotation.
+     * b = 2 * pi / P where P is period of NSR. 
      * r, theta and lambda are radial distance, polar angle and azimuthal angle, respectively.
      *
      * @ingroup GravityModels
@@ -79,9 +80,9 @@ namespace aspect
         double a_s;
 
         /**
-         * Angular rate of the non-synchronous rotation in degrees/year
+         * Period of the non-synchronous rotation in year or second
          */
-        double b;
+        double P;
     };
   }
 }

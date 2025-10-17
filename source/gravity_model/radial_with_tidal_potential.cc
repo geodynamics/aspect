@@ -49,11 +49,13 @@ namespace aspect
        * Notation of this potential equation is converted from spherical coordinates to cartesian coordinates.
        * Therefore, gradient of potential is (3 G M_p) / (2 a_s^3) * ( 1 / 6 * ( x^2 + y^2 - 2 * z^2) + 1 / 2 * (C1*(x^2 + y^2) - 2 * C2 * x * y)))
        * where C1 = cos(2*b*t) and C2 = sin(2*b*t)
+       * b = 2 * pi / P
        */
       const double t = (this->simulator_is_past_initialization()) ? this->get_time() : 0.0;
 
-      const double C1 = std::cos( 2. * b * t);
-      const double C2 = std::sin( 2. * b * t);
+      const double angular_frequency = 2. * dealii::numbers::PI / P;
+      const double C1 = std::cos( 2. * angular_frequency * t);
+      const double C2 = std::sin( 2. * angular_frequency * t);
 
       const Tensor<1,dim> dTstar_gradient ({1./3. * p[0], 1./3. * p[1], -2./3. * p[2]});
 
@@ -91,13 +93,13 @@ namespace aspect
                              "and that on Earth, if Moon is in consideration, happens by Moon orbiting Earth. "
                              "The default value is for the semimajor axis of Europa's orbit. "
                              "Units is $m$.");
-          prm.declare_entry ("Angular rate of nonsynchronous rotation", "0.036",
+          prm.declare_entry ("Period of nonsynchronous rotation", "10000",
                              Patterns::Double (),
-                             "Angular rate of nonsynchronous rotation (NSR). "
+                             "Period of nonsynchronous rotation (NSR). "
                              "This works for the modeled body having decoupled rotation between interior layers. "
-                             "The default value is the angular rate of Europa's icy shell. "
-                             "Units is $degrees/year$ when 'Use years instead of seconds' is true, "
-                             "and $degress/second$ when 'Use years instead of seconds' is false. ");
+                             "The default value is the period of NSR on Europa's icy shell. "
+                             "Units is $year$ when 'Use years instead of seconds' is true, "
+                             "and $second$ when 'Use years instead of seconds' is false. ");
         }
         prm.leave_subsection ();
       }
@@ -119,7 +121,7 @@ namespace aspect
           M_p = prm.get_double ("Mass of perturbing body");
           a_s = prm.get_double ("Semimajor axis of orbit");
           const double time_scale = this->get_parameters().convert_to_years ? constants::year_in_seconds : 1.0;
-          b = prm.get_double ("Angular rate of nonsynchronous rotation") * constants::degree_to_radians / time_scale;
+          P = prm.get_double ("Period of nonsynchronous rotation") * time_scale;
         }
         prm.leave_subsection ();
       }
@@ -143,6 +145,6 @@ namespace aspect
                                   "The magnitude of gravity for the radial constant part is read from the "
                                   "input file in a section `Gravity model/Radial constant'; the "
                                   "parameters that describe the tidal potential contribution are read "
-                                  "from a section ``Gravity model/Radial with tidal potential''.")
+                                  "from a section `Gravity model/Radial with tidal potential'.")
   }
 }
