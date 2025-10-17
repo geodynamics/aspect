@@ -559,7 +559,7 @@ endif()
 
 # binary:
 install(CODE "message(Installing...)")
-install(TARGETS ${WB_TARGET} EXPORT WorldBuilder DESTINATION bin)
+install(TARGETS ${WB_TARGET} EXPORT WorldBuilder DESTINATION lib)
 install(EXPORT WorldBuilder  DESTINATION bin)
 
 if(WB_MAKE_FORTRAN_WRAPPER)
