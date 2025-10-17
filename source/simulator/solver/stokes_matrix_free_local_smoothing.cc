@@ -44,7 +44,6 @@
 namespace aspect
 {
 
-
   template <int dim, int velocity_degree>
   void
   StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::declare_parameters(ParameterHandler &prm)
@@ -1206,6 +1205,7 @@ namespace aspect
     solver_control_cheap.enable_history_data();
     solver_control_expensive.enable_history_data();
 
+    // create a cheap preconditioner that consists of only a single V-cycle
     const internal::BlockSchurGMGPreconditioner<StokesMatrixType, ABlockMatrixType, BTBlockOperatorType,SchurComplementMatrixType, GMGPreconditioner, GMGPreconditioner>
     preconditioner_cheap (stokes_matrix, A_block_matrix, BT_block, Schur_complement_block_matrix,
                           prec_A, prec_Schur,
