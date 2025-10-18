@@ -2,22 +2,10 @@
 # Authors
 
 ASPECT is being developed by a large, collaborative, and inclusive
-community. The code and its community are currently maintained by the
-following *Maintainers*:
-
-* Wolfgang Bangerth (Colorado State University, USA)
-* Juliane Dannberg (GEOMAR Helmholtz Centre for Ocean Research, Germany)
-* Menno Fraters (University of Graz, Austria)
-* Rene Gassmoeller (GEOMAR Helmholtz Centre for Ocean Research, Germany)
-* Anne Glerum (Geoforschungszentrum Potsdam, Germany)
-* Timo Heister (Clemson University, USA)
-* Bob Myhill (University of Bristol, UK)
-* John Naliboff (New Mexico Tech, USA)
-
-## Principal developers
-
-The following people currently serve as *Principal Developers* -- people
-who have and are providing substantial technical contributions to ASPECT:
+community. This community is led by a group of *Principal Developers*
+who are active in developing code, reviewing code, contributing to
+the documentation, helping users on the online forums and in person, and
+in many other visible and invisible ways:
 
 * Wolfgang Bangerth (Colorado State University, USA)
 * Juliane Dannberg (GEOMAR Helmholtz Centre for Ocean Research, Germany)
