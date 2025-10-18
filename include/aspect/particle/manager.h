@@ -316,6 +316,25 @@ namespace aspect
         };
 
         /**
+         * Enum class to keep track of which algorithm is used to add particles.
+         */
+        enum class AdditionAlgorithm
+        {
+          random,
+          histogram,
+          point_density_function,
+          monte_carlo,
+        };
+
+        /**
+         * The granularity to use for histogram or point density function techniques for
+         * adding particles when cells fall below the minimum number of particles allowed.
+         * Granularity represents the number of subdivisions of the cell in each dimension
+         * when calculating a histogram of the point density function.
+         */
+        unsigned int addition_granularity;
+
+        /**
          * Keep track of which kernel function to use when managing particle populations.
          */
         typename ParticlePDF<dim>::KernelFunction kernel_function;
@@ -375,6 +394,11 @@ namespace aspect
          * Algorithm for deletion of excess particles.
          */
         DeletionAlgorithm deletion_algorithm;
+
+        /**
+         * Algorithm for adding particles to cell.
+         */
+        AdditionAlgorithm addition_algorithm;
 
         /**
          * Lower limit for particle number per cell. This limit is
