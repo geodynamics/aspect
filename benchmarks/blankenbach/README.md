@@ -1,3 +1,10 @@
+```{tags}
+category:benchmark
+feature:2d
+feature:cartesian
+```
+
+(sec:benchmarks:blankenbach)=
 # The Blankenbach convection benchmark
 
 This folder allows running the benchmark cases 1a, 1b, 1c, 2a, and 2b from {cite:t}`BBC89`:

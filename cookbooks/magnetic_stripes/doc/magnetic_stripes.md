@@ -1,3 +1,10 @@
+```{tags}
+category:cookbook
+feature:2d
+feature:cartesian
+feature:compositional-fields
+```
+
 (sec:cookbooks:magnetic_stripes)=
 # Magnetic lineations on the sea floor
 

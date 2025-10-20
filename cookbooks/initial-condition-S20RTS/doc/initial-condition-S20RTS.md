@@ -1,3 +1,10 @@
+```{tags}
+category:cookbook
+feature:3d
+feature:spherical
+feature:data-integration
+```
+
 (sec:cookbooks-S20RTS)=
 # 3D convection with an Earth-like initial condition
 

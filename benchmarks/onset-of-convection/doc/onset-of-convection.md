@@ -1,3 +1,10 @@
+```{tags}
+category:benchmark
+feature:2d
+feature:cartesian
+feature:analytical-solution
+```
+
 (sec:benchmarks:onset_of_convection)=
 # Onset of convection benchmark
 

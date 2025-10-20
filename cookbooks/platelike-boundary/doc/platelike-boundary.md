@@ -1,3 +1,9 @@
+```{tags}
+category:cookbook
+feature:2d
+feature:cartesian
+```
+
 (sec:cookbooks:platelike-boundary)=
 # Convection in a box with prescribed, variable velocity boundary conditions
 

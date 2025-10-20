@@ -44,6 +44,74 @@ Include a section reference to {ref}`sec:myst-quickref` in a sentence like so.
 
 Include a section reference to {ref}`sec:myst-quickref` in a sentence like so.
 
+(sec:myst-quickref:tags)=
+## Tags
+
+We use the Sphinx extension [sphinx-tags](https://sphinx-tags.readthedocs.io/en/latest/) to
+mark certain pages, in particular cookbooks and benchmarks with tags. These tags make
+it easier to find cookbooks and benchmarks that discuss particular topics on an
+tag index page. You can mark a page in the documentation with a tag like this:
+
+```md
+:::{tags}
+category:cookbook
+:::
+```
+
+Which leads to the page being marked at the
+top like this: {ref}`sec:cookbooks:convection-box`.
+
+We currently use the following tags
+(also shown here: {ref}`tagoverview`)
+
+```
+Categories:
+
+category:benchmark
+category:cookbook
+
+
+Features:
+
+feature:2d
+feature:3d
+
+feature:spherical
+feature:cartesian
+
+feature:particles
+feature:compositional-fields
+
+feature:modular-equations
+feature:mesh-deformation
+feature:data-integration
+feature:solver-comparison
+feature:variable-timestep
+feature:nonlinear-solver
+feature:analytical-solution
+feature:community-benchmark
+
+feature:compressibility
+feature:elasticity
+feature:plasticity
+feature:two-phase-flow
+feature:melt
+feature:grain-size-evolution
+
+Settings
+
+setting:rifting
+setting:mantle-convection
+setting:subduction
+setting:crustal-deformation
+setting:transform-fault
+setting:mid-ocean-ridge
+setting:core
+```
+
+Tags are free form, so this is just a list of suggestions.
+If new tags are introduced, please include them in this list.
+
 ## Admonitions
 
 ```md

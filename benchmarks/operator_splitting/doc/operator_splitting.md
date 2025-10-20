@@ -1,3 +1,11 @@
+```{tags}
+category:benchmark
+feature:2d
+feature:cartesian
+feature:analytical-solution
+feature:modular-equations
+```
+
 (sec:benchmark:operator-splitting)=
 # Benchmarks for operator splitting
 

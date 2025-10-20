@@ -1,3 +1,11 @@
+```{tags}
+category:benchmark
+feature:3d
+feature:spherical
+feature:analytical-solution
+```
+
+=(sec:benchmarks:hollow_sphere)=
 # The hollow sphere benchmark
 
 This benchmark is based on {cite:t}`thieulot:2017` in which an analytical

@@ -19,7 +19,7 @@
 */
 
 #include <aspect/particle/distribution.h>
-
+#include <aspect/particle/manager.h>
 
 namespace aspect
 {
@@ -68,6 +68,7 @@ namespace aspect
     template <int dim>
     void
     ParticlePDF<dim>::fill_from_particle_range(const typename Particles::ParticleHandler<dim>::particle_iterator_range particle_range,
+                                               const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over,
                                                const unsigned int n_particles_in_cell)
     {
       if (is_defined_per_particle == false)
@@ -114,14 +115,26 @@ namespace aspect
           // Sum the value of the kernel function on that position from every other particle.
           for (const auto &reference_particle: particle_range)
             {
-              const auto &reference_coordinates = reference_particle.get_reference_location();
+              // Cell surrounding the particle whose PDF value is being calculated.
+              const typename Triangulation<dim>::cell_iterator surrounding_cell = reference_particle.get_surrounding_cell();
+              /*
+              Cell diameter is used to normalize the distance value by the size of the cell containing the
+              particle whose PDF value is being calculated.
+              */
+              const double cell_diameter = surrounding_cell->diameter();
+              const double cell_diameter_scaled_to_dimensions = cell_diameter / (std::sqrt(dim));
+              const auto &particle_coordinates = reference_particle.get_location();
               double function_value = 0;
 
-              for (const auto &kernel_position_particle: particle_range)
+              for (const auto &particle_range_to_sum: particle_ranges_to_sum_over)
                 {
-                  const auto &kernel_coordinates = kernel_position_particle.get_reference_location();
-                  const double distance = reference_coordinates.distance(kernel_coordinates);
-                  function_value += apply_selected_kernel_function(distance);
+                  for (const auto &kernel_position_particle: particle_range_to_sum)
+                    {
+                      const auto &kernel_coordinates = kernel_position_particle.get_location();
+                      const double distance = particle_coordinates.distance(kernel_coordinates);
+                      const double distance_normalized = distance/cell_diameter_scaled_to_dimensions;
+                      function_value += apply_selected_kernel_function(distance_normalized);
+                    }
                 }
 
               add_value_to_function_table(function_value/n_particles_in_cell,reference_particle.get_id());
@@ -180,7 +193,7 @@ namespace aspect
       if (input_value > max)
         {
           max = input_value;
-          min_particle_index = reference_particle_id;
+          max_particle_index = reference_particle_id;
         }
 
       if (input_value < min)
@@ -357,6 +370,22 @@ namespace aspect
 
 
     template <int dim>
+    types::particle_index ParticlePDF<dim>::get_max_particle() const
+    {
+      return max_particle_index;
+    }
+
+
+
+    template <int dim>
+    types::particle_index ParticlePDF<dim>::get_min_particle() const
+    {
+      return min_particle_index;
+    }
+
+
+
+    template <int dim>
     double
     ParticlePDF<dim>::apply_selected_kernel_function(const double distance) const
     {
@@ -375,6 +404,11 @@ namespace aspect
       else if (kernel_function == KernelFunction::cutoff_function_w1_dealii)
         {
           Functions::CutOffFunctionW1<1> cutoff_function(bandwidth);
+          return cutoff_function.value(Point<1>(distance));
+        }
+      else if (kernel_function == KernelFunction::cutoff_function_c1_dealii)
+        {
+          Functions::CutOffFunctionC1<1> cutoff_function(bandwidth);
           return cutoff_function.value(Point<1>(distance));
         }
       else
@@ -408,7 +442,7 @@ namespace aspect
     {
       if (distance < bandwidth)
         {
-          return (1.0-distance)*bandwidth;
+          return (bandwidth-distance)/bandwidth;
         }
       else
         {

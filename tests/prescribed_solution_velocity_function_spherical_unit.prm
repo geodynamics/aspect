@@ -1,0 +1,177 @@
+# This test verifies implementation of prescribed solutions interface.
+# It sets up a 2D convection problem in a spherical chunk with 
+# prescribed velocity conditions. A prescribed velocity function is 
+# applied that varies with space and time to set the flow field.
+# The time unit "year" is being used instead of "second" to test
+# the converting of units. In addition, the "Use spherical unit vectors" 
+# is set to true in this test so that the first entry of the 
+# velocity aligns with r direction and the second entry aligns with phi direction
+
+# At the top, we define the number of space dimensions we would like to
+# work in:
+set Dimension                              = 2
+
+# There are several global variables that have to do with what
+# time system we want to work in and what the end time is. We
+# also designate an output directory.
+set Use years instead of seconds           = true
+set End time                               = 1
+set Output directory                       = output
+set Resume computation = false
+
+
+# Then there are variables that describe how the pressure should
+# be normalized. Here, we choose a zero average pressure
+# at the surface of the domain (for the current geometry, the
+# surface is defined as the top boundary).
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Adiabatic surface temperature = 1573.0
+
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-10
+end
+
+# Then come a number of sections that deal with the setup
+# of the problem to solve. The first one deals with the
+# geometry of the domain within which we want to solve.
+# The sections that follow all have the same basic setup
+# where we select the name of a particular model (here,
+# the box geometry) and then, in a further subsection,
+# set the parameters that are specific to this particular
+# model.
+subsection Geometry model
+    set Model name = chunk
+    subsection Chunk
+        set Chunk inner radius = 5.3710e+06
+        set Chunk outer radius = 6.3710e+06
+        set Chunk minimum longitude = 80.0
+        set Chunk maximum longitude = 100.0 
+        set Longitude repetitions = 2
+    end
+end
+
+subsection Mesh refinement
+    set Initial global refinement = 3
+end
+
+# The next section deals with the initial conditions for the
+# temperature. Note that there are no initial conditions for the
+# velocity variable since the velocity is assumed to always
+# be in a static equilibrium with the temperature field.
+# There are a number of models with the 'function' model
+# a generic one that allows us to enter the actual initial
+# conditions in the form of a formula that can contain
+# constants. We choose a linear temperature profile that
+# matches the boundary conditions defined below plus
+# a small perturbation. The variables in this equation are
+# described below, and it is important to note that in many
+# cases the values correspond to other model parameters
+# defined elsewhere. As such, if these model parameters are
+# changed, the values below will also need to be adjusted.
+#   L - Model length/width
+#   p, k - values related to the small temperature perturbation
+
+subsection Initial temperature model
+  set Model name = adiabatic
+end
+
+# Then follows a section that describes the boundary conditions
+# for the temperature. The model we choose is called 'box' and
+# allows to set a constant temperature on each of the four sides
+# of the box geometry. In our case, we choose something that is
+# heated from below and cooled from above, whereas all other
+# parts of the boundary are insulated (i.e., no heat flux through
+# these boundaries; this is also often used to specify symmetry
+# boundaries).
+subsection Boundary temperature model
+    set Fixed temperature boundary indicators = bottom, top
+    set List of model names = spherical constant
+    subsection Spherical constant
+        set Inner temperature = 2.0136e+03
+        set Outer temperature = 273
+    end
+end
+
+subsection Prescribed solution
+    set List of model names = velocity function
+    subsection Velocity function
+        set Coordinate system = spherical
+        set Use spherical unit vectors = true
+        subsection Indicator function
+            set Variable names = r, phi, t
+            # 1.3962634016 - 80 deg
+            set Function constants = Ro=6371e3, Ri=5371e3, phi_min = 1.3962634016 
+            set Function expression = ((phi-phi_min)*Ro<2e6*0.5*t) ? 1:0; (r-Ri<1e6*0.5*t) ? 1:0
+        end
+        subsection Function
+            # The first entry aligns with r direction
+            # And the second entry aligns phi direction
+            set Variable names = r, phi, t
+            set Function constants = Ro=6371e3, Ri=5371e3, phi_min = 1.3962634016
+            set Function expression = (r-Ri)*t;((phi-phi_min)*Ro)*t
+        end
+    end
+end
+
+# The next parameters then describe on which parts of the
+# boundary we prescribe a zero or nonzero velocity and
+# on which parts the flow is allowed to be tangential.
+# Here, all four sides of the box allow tangential
+# unrestricted flow but with a zero normal component:
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0, 1, 2, 3
+end
+
+# The following two sections describe first the
+# direction (vertical) and magnitude of gravity and the
+# material model (i.e., density, viscosity, etc). We have
+# discussed the settings used here in the introduction to
+# this cookbook in the manual already.
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 10.0   # = Ra
+  end
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 3400.0
+    set Reference specific heat       = 1250.0
+    set Reference temperature         = 1673.0
+    set Thermal conductivity          = 4
+    set Thermal expansion coefficient = 3.1e-5
+    set Viscosity                     = 5e21
+  end
+end
+
+# We also have to specify that we want to use the Boussinesq
+# approximation (assuming the density in the temperature
+# equation to be constant, and incompressibility).
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+# The final part is to specify what ASPECT should do with the
+# solution once computed at the end of every time step. The
+# process of evaluating the solution is called `postprocessing'
+# and we choose to compute velocity and temperature statistics,
+# statistics about the heat flux through the boundaries of the
+# domain, and to generate graphical output files for later
+# visualization. These output files are created every time
+# a time step crosses time points separated by 0.01. Given
+# our start time (zero) and final time (0.5) this means that
+# we will obtain 50 output files.
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, heat flux map
+
+  subsection Visualization
+    set List of output variables = material properties, nonadiabatic pressure, strain rate, stress
+    set Time between graphical output = 1
+    set Output format = gnuplot
+  end
+end

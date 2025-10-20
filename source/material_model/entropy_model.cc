@@ -45,6 +45,7 @@ namespace aspect
         // models splits temperature diffusion from entropy advection.
         switch (parameters.nonlinear_solver)
           {
+            case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_no_Stokes:
             case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Stokes:
             case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_defect_correction_Stokes:
             case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Newton_Stokes:
@@ -76,7 +77,9 @@ namespace aspect
       CitationInfo::add("entropy");
 
       AssertThrow (this->get_parameters().formulation_mass_conservation ==
-                   Parameters<dim>::Formulation::MassConservation::projected_density_field,
+                   Parameters<dim>::Formulation::MassConservation::projected_density_field ||
+                   this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::single_Advection_no_Stokes ||
+                   this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::iterated_Advection_no_Stokes,
                    ExcMessage("The 'entropy model' material model was only tested with the "
                               "'projected density field' approximation "
                               "for the mass conservation equation, which is not selected."));

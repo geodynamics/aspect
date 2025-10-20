@@ -1,3 +1,12 @@
+```{tags}
+category:cookbook
+category:benchmark
+feature:2d
+feature:cartesian
+feature:compositional-fields
+feature:community-benchmark
+```
+
 (sec:benchmarks:vankeken)=
 # The van Keken thermochemical composition benchmark
 

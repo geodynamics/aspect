@@ -1,3 +1,11 @@
+```{tags}
+category:benchmark
+feature:2d
+feature:cartesian
+feature:community-benchmark
+```
+
+(sec:benchmarks:polydiapirs)=
 # Polydiapirism
 
 *This section was contributed by Cedric Thieulot.*

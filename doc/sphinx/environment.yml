@@ -5,6 +5,8 @@ channels:
 dependencies:
   - myst-parser
   - sphinx-book-theme
+  - sphinx-tags
+  - sphinx-design
   - sphinxcontrib-bibtex
   - cairosvg
   - pip>=20.1

@@ -29,6 +29,7 @@
 #include <deal.II/particles/property_pool.h>
 #include <deal.II/particles/particle_handler.h>
 #include <deal.II/base/function_lib.h>
+#include <vector>
 
 namespace aspect
 {
@@ -58,7 +59,8 @@ namespace aspect
           gaussian,
           triangular,
           uniform,
-          cutoff_function_w1_dealii
+          cutoff_function_w1_dealii,
+          cutoff_function_c1_dealii
         };
 
         /**
@@ -89,10 +91,12 @@ namespace aspect
         /**
          * Fills the point-density function with values from the particles in the given cell.
          * @param particle_range The particle_iterator_range to operate on.
+         * @param particle_ranges_to_sum_over The ranges of the particles in neighboring cells.
          * @param n_particles_in_cell The number of particles belonging to the particle manager in question within the cell.
          */
         void
         fill_from_particle_range(const typename Particles::ParticleHandler<dim>::particle_iterator_range particle_range,
+                                 const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over,
                                  const unsigned int n_particles_in_cell);
 
         /**
@@ -180,6 +184,22 @@ namespace aspect
          */
         double
         get_standard_deviation() const;
+
+        /**
+         * Returns the index of the particle whose position has the highest
+         * point-density value. This function only works if the particle density
+         * function is defined per particle, instead of being defined on a grid.
+         */
+        types::particle_index
+        get_max_particle() const;
+
+        /**
+         * Returns the index of the particle whose position has the lowest
+         * point-density value. This function only works if the particle density
+         * function is defined per particle, instead of being defined on a grid.
+         */
+        types::particle_index
+        get_min_particle() const;
 
       private:
         /**

@@ -1,3 +1,9 @@
+```{tags}
+category:cookbook
+feature:3d
+feature:cartesian
+```
+
 (sec:cookbooks:convection_box_3d)=
 # Convection in a 3d box
 

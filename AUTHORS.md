@@ -7,7 +7,7 @@ following *Maintainers*:
 
 * Wolfgang Bangerth (Colorado State University, USA)
 * Juliane Dannberg (GEOMAR Helmholtz Centre for Ocean Research, Germany)
-* Menno Fraters (University of California, Davis, USA)
+* Menno Fraters (University of Graz, Austria)
 * Rene Gassmoeller (GEOMAR Helmholtz Centre for Ocean Research, Germany)
 * Anne Glerum (Geoforschungszentrum Potsdam, Germany)
 * Timo Heister (Clemson University, USA)
@@ -19,16 +19,24 @@ following *Maintainers*:
 The following people currently serve as *Principal Developers* -- people
 who have and are providing substantial technical contributions to ASPECT:
 
-* Jacky Austermann (Columbia University and Lamont-Doherty Earth Observatory, USA)
 * Wolfgang Bangerth (Colorado State University, USA)
 * Juliane Dannberg (GEOMAR Helmholtz Centre for Ocean Research, Germany)
-* Menno Fraters (University of California, Davis, USA)
+* Menno Fraters (University of Graz, Austria)
 * Rene Gassmoeller (GEOMAR Helmholtz Centre for Ocean Research, Germany)
 * Anne Glerum (Geoforschungszentrum Potsdam, Germany)
 * Timo Heister (Clemson University, USA)
 * Bob Myhill (University of Bristol, UK)
 * John Naliboff (New Mexico Tech, USA)
 * Cedric Thieulot (Utrecht University, Netherlands)
+
+## Principal developers emeriti
+
+We are grateful to those that have served as Principal Developers of
+ASPECT in the past, contributing to the project's code and documentation,
+and offering their time to help others:
+
+* Jacky Austermann (Columbia University and Lamont-Doherty Earth Observatory, USA; principal developer 2015-2025)
+
 
 ## Community
 

@@ -1,3 +1,9 @@
+```{tags}
+category:cookbook
+feature:2d
+feature:cartesian
+```
+
 (sec:cookbooks:muparser_temperature_example)=
 # Using lazy expression syntax for if-else-statements in function expressions
 

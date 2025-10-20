@@ -125,12 +125,15 @@ namespace aspect
 
     template <int dim>
     typename Triangulation<dim>::MeshSmoothing
-    smoothing_flags()
+    smoothing_flags(const bool global_coarsening)
     {
-      return static_cast<typename Triangulation<dim>::MeshSmoothing>(
-               Triangulation<dim>::limit_level_difference_at_vertices |
-               Triangulation<dim>::smoothing_on_refinement | Triangulation<dim>::smoothing_on_coarsening
-             );
+      if (global_coarsening)
+        return Triangulation<dim>::limit_level_difference_at_vertices;
+      else
+        return static_cast<typename Triangulation<dim>::MeshSmoothing>(
+                 Triangulation<dim>::limit_level_difference_at_vertices |
+                 Triangulation<dim>::smoothing_on_refinement | Triangulation<dim>::smoothing_on_coarsening
+               );
     }
 
 
@@ -139,14 +142,15 @@ namespace aspect
     typename parallel::distributed::Triangulation<dim>::Settings
     settings(const Parameters<dim> &parameters)
     {
-      return (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg ||
-              parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::default_solver)
-             ?
-             static_cast<typename parallel::distributed::Triangulation<dim>::Settings>
-             (parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning |
-              parallel::distributed::Triangulation<dim>::construct_multigrid_hierarchy)
-             :
-             parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning;
+      // Only local smoothing GMG needs a mesh hierarchy to be constructed:
+      if ((parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg ||
+           parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::default_solver)
+          && parameters.stokes_gmg_type == Parameters<dim>::StokesGMGType::local_smoothing)
+        return static_cast<typename parallel::distributed::Triangulation<dim>::Settings>
+               (parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning |
+                parallel::distributed::Triangulation<dim>::construct_multigrid_hierarchy);
+      else
+        return parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning;
     }
   }
 
@@ -231,7 +235,7 @@ namespace aspect
     nonlinear_iteration (numbers::invalid_unsigned_int),
     nonlinear_solver_failures (0),
 
-    triangulation (mpi_communicator, smoothing_flags<dim>(), settings(parameters)),
+    triangulation (mpi_communicator, smoothing_flags<dim>(parameters.stokes_gmg_type == Parameters<dim>::StokesGMGType::global_coarsening), settings(parameters)),
 
     mapping(construct_mapping<dim>(*geometry_model,*initial_topography_model)),
 
@@ -373,18 +377,22 @@ namespace aspect
     boundary_velocity_manager.initialize_simulator (*this);
     boundary_velocity_manager.parse_parameters (prm);
 
+    prescribed_solution_manager.initialize_simulator (*this);
+    prescribed_solution_manager.parse_parameters (prm);
+
     // Make sure we only have a prescribed Stokes plugin if needed
-    if (parameters.nonlinear_solver == NonlinearSolver::single_Advection_no_Stokes)
+    if (parameters.nonlinear_solver == NonlinearSolver::single_Advection_no_Stokes ||
+        parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_no_Stokes)
       {
         AssertThrow(prescribed_stokes_solution.get()!=nullptr,
-                    ExcMessage("For the 'single Advection, no Stokes' solver scheme you need to provide a Stokes plugin!")
+                    ExcMessage("For the selected nonlinear solver scheme you need to provide a prescribed Stokes plugin!")
                    );
       }
     else
       {
         AssertThrow(prescribed_stokes_solution.get()==nullptr,
                     ExcMessage("The prescribed stokes plugin you selected only works with the solver "
-                               "scheme 'single Advection, no Stokes'.")
+                               "scheme 'single Advection, no Stokes' or 'iterated Advection, no Stokes'.")
                    );
       }
 
@@ -791,6 +799,10 @@ namespace aspect
     if (parameters.include_melt_transport)
       melt_handler->add_current_constraints (new_current_constraints);
 
+    // Finally update and let the prescribed solution plugins constrain parts of the solution
+    prescribed_solution_manager.update();
+    prescribed_solution_manager.constrain_solution(new_current_constraints);
+
     // let plugins add more constraints if they so choose, then close the
     // constraints object
     signals.post_constraints_creation(*this, new_current_constraints);
@@ -868,6 +880,7 @@ namespace aspect
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_defect_correction_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Newton_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_no_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_defect_correction_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Newton_Stokes:
@@ -907,6 +920,7 @@ namespace aspect
 
           case Parameters<dim>::NonlinearSolver::Kind::no_Advection_no_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_no_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_no_Stokes:
             return false;
         }
       Assert(false, ExcNotImplemented());
@@ -1974,6 +1988,12 @@ namespace aspect
             case NonlinearSolver::single_Advection_iterated_Newton_Stokes:
             {
               solve_single_advection_iterated_newton_stokes(/*use_newton_iterations =*/ true);
+              break;
+            }
+
+            case NonlinearSolver::iterated_Advection_no_Stokes:
+            {
+              solve_iterated_advection_no_stokes();
               break;
             }
 

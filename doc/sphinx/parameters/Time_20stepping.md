@@ -52,7 +52,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** Expression for the time step size as a function of &rsquo;time&rsquo;.
+**Documentation:** Expression for the time step size as a function of &rsquo;time&rsquo;.Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
 
 (parameters:Time_20stepping/Function/Variable_20names)=
 ### __Parameter name:__ Variable names

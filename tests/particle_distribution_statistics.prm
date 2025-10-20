@@ -1,4 +1,6 @@
-# Adapted from the drop-supg.prm benchmark
+# This .prm file is intended to test the particle_distribution_statistics postprocessor in 
+# 3 dimensions and calculating the PDF at regular intervals throughout the cell,
+# as opposed to calculating the PDF at the location of each particle.
 
 set Dimension                              = 3
 set Use years instead of seconds           = false

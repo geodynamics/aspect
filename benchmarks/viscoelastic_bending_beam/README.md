@@ -1,3 +1,14 @@
+```{tags}
+category:benchmark
+feature:2d
+feature:cartesian
+feature:nonlinear-solver
+feature:elasticity
+feature:compositional-fields
+feature:particles
+```
+
+(sec:benchmarks:viscoelastic_bending_beam)=
 # The bending beam benchmark
 
 This benchmark is described in the paper

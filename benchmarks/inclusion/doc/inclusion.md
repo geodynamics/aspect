@@ -1,3 +1,10 @@
+```{tags}
+category:benchmark
+feature:2d
+feature:cartesian
+feature:analytical-solution
+```
+
 (sec:benchmarks:inclusion)=
 # The &ldquo;inclusion&rdquo; Stokes benchmark
 

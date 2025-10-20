@@ -1,5 +1,13 @@
-The Spherical Shell NSinker benchmark
-=====================================
+```{tags}
+category:benchmark
+feature:3d
+feature:spherical
+feature:community-benchmark
+feature:solver-comparison
+```
+
+(sec:benchmarks:nsinker_spherical_shell)=
+# The Spherical Shell NSinker benchmark
 
 [This folder](https://github.com/geodynamics/aspect/tree/main/benchmarks/nsinker_spherical_shell)
 contains the "Spherical Shell NSinker" benchmark, which is

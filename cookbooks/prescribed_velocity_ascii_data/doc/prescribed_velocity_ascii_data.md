@@ -1,3 +1,11 @@
+```{tags}
+category:cookbook
+feature:2d
+feature:cartesian
+feature:compositional-fields
+feature:data-integration
+```
+
 (sec:cookbooks:prescribed_velocity_ascii)=
 # Prescribing internal velocity constraints with ASCII files
 

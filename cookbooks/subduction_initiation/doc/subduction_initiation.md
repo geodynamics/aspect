@@ -1,3 +1,12 @@
+```{tags}
+category:cookbook
+feature:3d
+feature:cartesian
+feature:compositional-fields
+feature:particles
+feature:community-benchmark
+```
+
 (sec:cookbooks:subd-init)=
 # Subduction initiation from Matsumoto and Tomoda (1983)
 

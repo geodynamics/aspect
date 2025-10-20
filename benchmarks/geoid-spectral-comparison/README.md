@@ -1,3 +1,10 @@
+```{tags}
+category:benchmark
+feature:3d
+feature:spherical
+feature:data-integration
+```
+
 (sec:benchmarks:geoid-spectral-comparison)=
 Geoid Spectral Comparison
 =========================

@@ -1,3 +1,12 @@
+```{tags}
+category:cookbook
+feature:2d
+feature:cartesian
+feature:compositional-fields
+feature:compressibility
+feature:nonlinear-solver
+```
+
 (sec:cookbooks:phase-transition-kinetics)=
 
 # Using Non-Equilibrium Thermodynamics to Drive Phase Transformations

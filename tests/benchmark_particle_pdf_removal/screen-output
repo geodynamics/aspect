@@ -1,0 +1,85 @@
+
+Number of active cells: 40 (on 2 levels)
+Number of degrees of freedom: 678 (410+63+205)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+
+Number of active cells: 160 (on 3 levels)
+Number of degrees of freedom: 2,392 (1,458+205+729)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+
+Number of active cells: 256 (on 4 levels)
+Number of degrees of freedom: 3,736 (2,282+313+1,141)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                                 0 m/s, 0 m/s
+     Temperature min/avg/max:                                                           0 K, 0.9248 K, 1.125 K
+     Heat fluxes through boundary parts:                                                0.001117 W, 0.001117 W, 0 W, 0 W
+     Writing graphical output:                                                          output-benchmark_particle_pdf_removal/solution/solution-00000
+     Writing particle output:                                                           output-benchmark_particle_pdf_removal/particles/particles-00000
+     Particle distribution score min/avg/max/stdev:                                     0/0/0/0
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0.0681078/0.0681078/0.0681078, 0.0625/0.25, 0.0625/0.25
+
+*** Timestep 1:  t=0.03 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                                 0.0471 m/s, 0.0471 m/s
+     Temperature min/avg/max:                                                           0 K, 0.9248 K, 1.125 K
+     Heat fluxes through boundary parts:                                                0.001331 W, 0.001331 W, 0.02157 W, -0.02157 W
+     Writing graphical output:                                                          output-benchmark_particle_pdf_removal/solution/solution-00001
+     Writing particle output:                                                           output-benchmark_particle_pdf_removal/particles/particles-00001
+     Particle distribution score min/avg/max/stdev:                                     0/0/0/0
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0.0681078/0.0681078/0.0681078, 0.0625/0.25, 0.0625/0.25
+
+*** Timestep 2:  t=0.06 seconds, dt=0.03 seconds
+   Solving temperature system... 9 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                                 0.0937 m/s, 0.0937 m/s
+     Temperature min/avg/max:                                                           0 K, 0.9248 K, 1.126 K
+     Heat fluxes through boundary parts:                                                0.00134 W, 0.00134 W, 0.04291 W, -0.04291 W
+     Writing graphical output:                                                          output-benchmark_particle_pdf_removal/solution/solution-00002
+     Writing particle output:                                                           output-benchmark_particle_pdf_removal/particles/particles-00002
+     Particle distribution score min/avg/max/stdev:                                     0/0/0/0
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0.0681078/0.0681078/0.0681078, 0.0625/0.25, 0.0625/0.25
+
+*** Timestep 3:  t=0.09 seconds, dt=0.03 seconds
+   Solving temperature system... 9 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                                 0.139 m/s, 0.139 m/s
+     Temperature min/avg/max:                                                           0 K, 0.9247 K, 1.128 K
+     Heat fluxes through boundary parts:                                                0.001365 W, 0.001365 W, 0.06379 W, -0.06379 W
+     Writing graphical output:                                                          output-benchmark_particle_pdf_removal/solution/solution-00003
+     Writing particle output:                                                           output-benchmark_particle_pdf_removal/particles/particles-00003
+     Particle distribution score min/avg/max/stdev:                                     0/0/0/0
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0.0681078/0.0681078/0.0681078, 0.0625/0.25, 0.0625/0.25
+
+*** Timestep 4:  t=0.1 seconds, dt=0.01 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                                 0.155 m/s, 0.155 m/s
+     Temperature min/avg/max:                                                           0 K, 0.9247 K, 1.129 K
+     Heat fluxes through boundary parts:                                                0.001383 W, 0.001383 W, 0.07062 W, -0.07062 W
+     Writing graphical output:                                                          output-benchmark_particle_pdf_removal/solution/solution-00004
+     Writing particle output:                                                           output-benchmark_particle_pdf_removal/particles/particles-00004
+     Particle distribution score min/avg/max/stdev:                                     0/0/0/0
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0.0681078/0.0802733/0.0924387, 0.09375/0.3125, 0.0625/0.375
+
+Termination requested by criterion: end time
+
+
+

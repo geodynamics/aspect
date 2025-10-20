@@ -1,3 +1,10 @@
+```{tags}
+category:cookbook
+feature:3d
+feature:cartesian
+feature:mesh-deformation
+```
+
 (sec:cookbooks:fastscape_eroding_box)=
 # Fastscape Eroding Box
 

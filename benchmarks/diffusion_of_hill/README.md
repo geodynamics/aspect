@@ -1,12 +1,23 @@
+```{tags}
+category:benchmark
+feature:2d
+feature:cartesian
+feature:analytical-solution
+feature:mesh-deformation
+```
+
+(sec:benchmarks:diffusion-of-hill)=
+# Diffusion of Hill
+
 This directory contains two benchmarks of a 2D hill diffusing away
 over time. In the first benchmark, 1_sine_zero_flux.prm, the left
 and right boundary condition for diffusion is zero flux, so the
 topography of the left and right mesh corner point increases
 over time, while the maximum height of the hill decreases.
 The second benchmark, 2_sine_const_h.prm, fixes the topography
-at the left and right boundary. 
-Note that in both cases we do not solve for velocity or temperature 
-and only the mesh is deforming. 
+at the left and right boundary.
+Note that in both cases we do not solve for velocity or temperature
+and only the mesh is deforming.
 
 The postprocessor analytical_topography.cc should be compiled
 with `cmake` and `make` using the provided CMakeLists:
@@ -17,7 +28,7 @@ $make
 This postprocessor outputs the topography
 of the ASPECT mesh, as well as what the topography should be
 according to the analytical solution. To run the benchmarks:
-`$./aspect 1_sine_zero_flux.prm` 
+`$./aspect 1_sine_zero_flux.prm`
 
 The topography and analytical solution can be plotted with gnuplot
 using the provided scripts:

@@ -1,3 +1,16 @@
+```{tags}
+category:benchmark
+feature:2d
+feature:cartesian
+feature:nonlinear-solver
+feature:elasticity
+feature:particles
+feature:compositional-fields
+feature:modular-equations
+feature:analytical-solution
+```
+
+(sec:benchmarks:viscoelastic_relaxation)=
 # The viscoelastic relaxation benchmark
 
 This benchmark is described in the paper

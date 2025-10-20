@@ -1,0 +1,6 @@
+Added: An option to delete excess particles from cells using a point
+density function which selects the most clustered particles to delete first.
+The point of the new particle removal method is to avoid some issues which
+can result from randomly selecting excess particles to delete.
+<br>
+(Jarett Baker-Dunn, 2025/09/26)

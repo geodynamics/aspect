@@ -1,4 +1,5 @@
-# Adapted from the drop-supg.prm benchmark
+# This .prm file is intended to test the particle_distribution_score postprocessor in 
+# 3 dimensions. 
 
 set Dimension                              = 3
 set Use years instead of seconds           = false
@@ -24,6 +25,7 @@ subsection Geometry model
   subsection Box
     set X extent = 0.5
     set Y extent = 5
+    set Y periodic = true
     set Z extent = 0.5
     set Y repetitions = 10
     set Box origin X coordinate = 0
@@ -53,25 +55,11 @@ end
 
 subsection Boundary temperature model
   set List of model names = box
-  set Fixed temperature boundary indicators   = top, bottom, left, right
+  set Fixed temperature boundary indicators   = left, right
 
   subsection Box
-    set Bottom temperature = 0
     set Left temperature   = 0
     set Right temperature  = 0
-    set Top temperature    = 0
-  end
-end
-
-subsection Boundary composition model
-  set List of model names = box
-  set Fixed composition boundary indicators   = top, bottom, left, right
-
-  subsection Box
-    set Bottom composition = 0
-    set Left composition   = 0
-    set Right composition  = 0
-    set Top composition    = 0
   end
 end
 

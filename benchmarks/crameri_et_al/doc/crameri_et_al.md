@@ -1,3 +1,12 @@
+```{tags}
+category:benchmark
+feature:2d
+feature:cartesian
+feature:analytical-solution
+feature:mesh-deformation
+```
+
+(sec:benchmarks:crameri-et-al)=
 # The Crameri et al. benchmarks
 
 *This section was contributed by Ian Rose.*

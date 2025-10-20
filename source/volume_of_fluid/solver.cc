@@ -42,7 +42,7 @@ namespace aspect
     SolverControl solver_control (1000, tolerance);
 
     TrilinosWrappers::SolverCG solver(solver_control);
-    TrilinosWrappers::PreconditionJacobi precondition;
+    LinearAlgebra::PreconditionJacobi precondition;
     precondition.initialize(sim.system_matrix.block(block_idx, block_idx));
 
     // Create distributed vector (we need all blocks here even though we only

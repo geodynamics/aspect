@@ -1,3 +1,15 @@
+```{tags}
+category:benchmark
+feature:2d
+feature:cartesian
+feature:nonlinear-solver
+feature:elasticity
+feature:plasticity
+feature:compositional-fields
+feature:community-benchmark
+```
+
+(sec:benchmarks:viscoelastic_plastic_shear_bands:gerya_2019)=
 # Visco(elastic)-plastic shear bands after Gerya (2019)
 
 The files in [this directory](https://github.com/geodynamics/aspect/tree/main/benchmarks/viscoelastic_plastic_shear_bands/gerya_2019)

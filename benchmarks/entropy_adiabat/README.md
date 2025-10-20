@@ -1,3 +1,12 @@
+```{tags}
+category:benchmark
+feature:2d
+feature:cartesian
+feature:compressibility
+feature:modular-equations
+feature:data-integration
+```
+
 (sec:benchmarks:entropy_adiabat)=
 # Entropy adiabat benchmark
 

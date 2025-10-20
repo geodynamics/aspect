@@ -1,0 +1,30 @@
+
+Number of active cells: 128 (on 4 levels)
+Number of degrees of freedom: 1,836 (1,122+153+561)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 7+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  9.35e-05 m/year, 0.000453 m/year
+     Temperature min/avg/max:            273 K, 1555 K, 2014 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -6.428e+04 W, 1.809e+05 W
+     Writing graphical output:           output-prescribed_solution_velocity_function_box_year/solution/solution-00000
+     Writing heat flux map               output-prescribed_solution_velocity_function_box_year/heat_flux.00000
+
+*** Timestep 1:  t=100000 years, dt=100000 years
+   Solving temperature system... 6 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.871 m/year, 2.25 m/year
+     Temperature min/avg/max:            273 K, 1555 K, 2014 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 1.972e+07 W, 1.998e+05 W
+     Writing graphical output:           output-prescribed_solution_velocity_function_box_year/solution/solution-00001
+     Writing heat flux map               output-prescribed_solution_velocity_function_box_year/heat_flux.00001
+
+Termination requested by criterion: end time
+
+
+

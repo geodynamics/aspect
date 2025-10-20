@@ -1,3 +1,10 @@
+```{tags}
+category:cookbook
+feature:2d
+feature:cartesian
+feature:particles
+```
+
 (sec:cookbooks:convection-box-particles)=
 # Running a geodynamic model
 

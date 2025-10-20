@@ -1,3 +1,7 @@
+```{tags}
+category:benchmark
+```
+
 # The Rayleigh-Taylor instability benchmark
 
 The shell script `run_benchmark` loops over viscosity values and wavelength values and

@@ -54,21 +54,21 @@ namespace aspect
      */
     namespace ChangeVectorTypes
     {
-      void import(TrilinosWrappers::MPI::Vector &out,
+      void import(aspect::LinearAlgebra::Vector &out,
                   const dealii::LinearAlgebra::ReadWriteVector<double> &rwv,
                   const VectorOperation::values                 operation);
 
-      void copy(TrilinosWrappers::MPI::Vector &out,
+      void copy(aspect::LinearAlgebra::Vector &out,
                 const dealii::LinearAlgebra::distributed::Vector<double> &in);
 
       void copy(dealii::LinearAlgebra::distributed::Vector<double> &out,
-                const TrilinosWrappers::MPI::Vector &in);
+                const aspect::LinearAlgebra::Vector &in);
 
-      void copy(TrilinosWrappers::MPI::BlockVector &out,
+      void copy(aspect::LinearAlgebra::BlockVector &out,
                 const dealii::LinearAlgebra::distributed::BlockVector<double> &in);
 
       void copy(dealii::LinearAlgebra::distributed::BlockVector<double> &out,
-                const TrilinosWrappers::MPI::BlockVector &in);
+                const aspect::LinearAlgebra::BlockVector &in);
     }
   }
 
@@ -358,6 +358,18 @@ namespace aspect
         void clear () override;
 
         /**
+         * Initialize the MatrixFree object given in @p mf_storage and use that to
+         * initialize this operator.
+         */
+        void reinit(const Mapping<dim>              &mapping,
+                    const DoFHandler<dim>           &dof_handler_v,
+                    const DoFHandler<dim>           &dof_handler_p,
+                    const AffineConstraints<number> &constraints_v,
+                    const AffineConstraints<number> &constraints_p,
+                    std::shared_ptr<MatrixFree<dim,double>> mf_storage,
+                    const unsigned int level = numbers::invalid_unsigned_int);
+
+        /**
          * Pass in a reference to the problem data.
          */
         void set_cell_data (const OperatorCellData<dim,number> &data);
@@ -421,6 +433,17 @@ namespace aspect
          */
         void clear () override;
 
+        /**
+         * Initialize the MatrixFree object given in @p mf_storage and use that to
+         * initialize this operator.
+         */
+        void reinit(const Mapping<dim>              &mapping,
+                    const DoFHandler<dim>           &dof_handler_v,
+                    const DoFHandler<dim>           &dof_handler_p,
+                    const AffineConstraints<number> &constraints_v,
+                    const AffineConstraints<number> &constraints_p,
+                    std::shared_ptr<MatrixFree<dim,double>> mf_storage,
+                    const unsigned int level = numbers::invalid_unsigned_int);
         /**
          * Pass in a reference to the problem data.
          */

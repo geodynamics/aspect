@@ -1,3 +1,9 @@
+```{tags}
+category:cookbook
+feature:2d
+feature:spherical
+```
+
 (sec:cookbooks:2d_annulus_visualization)=
 # Two-dimensional cylindrical annulus visualization
 

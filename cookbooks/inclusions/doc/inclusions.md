@@ -1,3 +1,12 @@
+```{tags}
+category:cookbook
+feature:2d
+feature:cartesian
+feature:nonlinear-solver
+feature:compositional-fields
+feature:community-benchmark
+```
+
 (sec:cookbooks:inclusions)=
 # Viscous inclusions under simple and pure shear
 

@@ -1,4 +1,14 @@
-﻿(sec:cookbooks:tomography-plate-motions)=
+﻿```{tags}
+category:cookbook
+feature:2d
+feature:spherical
+feature:compositional-fields
+feature:data-integration
+feature:compressibility
+feature:nonlinear-solver
+```
+
+(sec:cookbooks:tomography-plate-motions)=
 # Mantle convection using tomography data
 
 *This section was contributed by Arushi Saxena, Juliane Dannberg and Ren&eacute; Gassm&ouml;ller.*
@@ -100,7 +110,7 @@ The user can change several parameters to investigate the mantle forces and how 
 - The prescribed viscosity of the plate boundaries, which controls friction between plates.
 - To use viscous and neutrally buoyant cratons in the model.
 
-# Added complexity—Slab2 and initial topography
+## Added complexity—Slab2 and initial topography
 For additional complexity, we use the Slab2 {cite}`hayes2018slab2` database that describes in detail the three dimensional geometries
 of all the seismically active subduction zones on Earth instead of the vertical slabs defined in the TM1 model. We also deform the outer
 shell by the initial topography. Incorporating these finer heterogeneities makes the simulations more physically realistic and may improve
