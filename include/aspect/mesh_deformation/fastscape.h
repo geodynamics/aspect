@@ -45,6 +45,11 @@ namespace aspect
     {
       public:
         /**
+         * Destructor for FastScape.
+         */
+        ~FastScape() override;
+
+        /**
          * Initialize variables for FastScape.
          */
         virtual void initialize () override;
@@ -53,11 +58,6 @@ namespace aspect
          * Update input variables for FastScape.
          */
         void update() override;
-
-        /**
-         * Destructor for FastScape.
-         */
-        ~FastScape() override;
 
         /**
          * A function that creates constraints for the velocity of certain mesh
