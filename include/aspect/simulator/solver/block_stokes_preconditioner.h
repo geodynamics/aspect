@@ -88,7 +88,7 @@ namespace aspect
 
     /**
     * Implements the vmult for InverseVelocityBlock. This applies the action of A^{-1} by either
-    * performing a solve with A or using a preconditioner sweet.
+    * performing a solve with A or using a preconditioner sweep.
     */
     template <class PreconditionerA, class VectorType, class ABlockType>
     void InverseVelocityBlock<PreconditionerA,VectorType,ABlockType>::vmult(VectorType &dst,
