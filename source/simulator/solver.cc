@@ -790,28 +790,28 @@ namespace aspect
           }
 
         // create a cheap preconditioner that consists of only a single V-cycle
-        internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG,TrilinosWrappers::MPI::Vector,TrilinosWrappers::SparseMatrix> inverse_velocity_block_cheap(
+        internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG, LinearAlgebra::Vector, LinearAlgebra::SparseMatrix> inverse_velocity_block_cheap(
           system_matrix.block(velocity_block_index,velocity_block_index),
           *Amg_preconditioner,
           /* do_solve_A = */ false,
           stokes_A_block_is_symmetric(),
           parameters.linear_solver_A_block_tolerance);
-        const internal::BlockSchurPreconditioner<internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG,TrilinosWrappers::MPI::Vector,TrilinosWrappers::SparseMatrix>,
-              internal::SchurComplementOperator, LinearAlgebra::SparseMatrix, dealii::TrilinosWrappers::MPI::BlockVector>
+        const internal::BlockSchurPreconditioner<internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG, LinearAlgebra::Vector, LinearAlgebra::SparseMatrix>,
+              internal::SchurComplementOperator, LinearAlgebra::SparseMatrix, LinearAlgebra::BlockVector>
               preconditioner_cheap (
                 inverse_velocity_block_cheap,
                 *schur,
                 system_matrix.block(0,1));
 
         // create an expensive preconditioner that solves for the A block with CG
-        internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG,TrilinosWrappers::MPI::Vector,dealii::TrilinosWrappers::SparseMatrix> inverse_velocity_block_expensive(
+        internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG, LinearAlgebra::Vector, LinearAlgebra::SparseMatrix> inverse_velocity_block_expensive(
           system_matrix.block(velocity_block_index,velocity_block_index),
           *Amg_preconditioner,
           /* do_solve_A = */ true,
           stokes_A_block_is_symmetric(),
           parameters.linear_solver_A_block_tolerance);
-        const internal::BlockSchurPreconditioner<internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG,TrilinosWrappers::MPI::Vector,TrilinosWrappers::SparseMatrix>,
-              internal::SchurComplementOperator, LinearAlgebra::SparseMatrix, dealii::TrilinosWrappers::MPI::BlockVector>
+        const internal::BlockSchurPreconditioner<internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG, LinearAlgebra::Vector, LinearAlgebra::SparseMatrix>,
+              internal::SchurComplementOperator, LinearAlgebra::SparseMatrix, LinearAlgebra::BlockVector>
               preconditioner_expensive (
                 inverse_velocity_block_expensive,
                 *schur,
