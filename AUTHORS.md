@@ -1,6 +1,8 @@
 (sec:authors)=
 # Authors
 
+## Principal developers
+
 ASPECT is being developed by a large, collaborative, and inclusive
 community. This community is led by a group of *Principal Developers*
 who are active in developing code, reviewing code, contributing to
