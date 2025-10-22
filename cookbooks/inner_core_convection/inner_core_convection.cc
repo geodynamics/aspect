@@ -20,7 +20,7 @@
 
 #include <aspect/material_model/simple.h>
 #include <aspect/heating_model/interface.h>
-#include <aspect/gravity_model/radial.h>
+#include <aspect/gravity_model/radial_linear.h>
 #include <deal.II/base/parsed_function.h>
 
 namespace aspect

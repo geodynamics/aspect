@@ -1,0 +1,9 @@
+Changed: ASPECT's radial gravity plugins used to live in the same
+header and source files contrary to most of our other plugins, which
+each have one file per plugin. These plugins have been split into
+separate files. The old header file 'gravity_model/radial.h' is
+now deprecated and will be removed in the future. In addition,
+the 'radial earth-like' plugin, which was disabled a long time ago,
+was finally removed from the code.
+<br>
+(Rene Gassmoeller, 2025/09/22)
