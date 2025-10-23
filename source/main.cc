@@ -591,8 +591,9 @@ namespace
     using namespace dealii;
 
     ParameterHandler prm;
-    const bool i_am_proc_0 = (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0);
-    aspect::Simulator<dim>::declare_parameters(prm);
+    const unsigned int mpi_rank = Utilities::MPI::this_mpi_process(MPI_COMM_WORLD);
+    const bool i_am_proc_0 = (mpi_rank == 0);
+    aspect::Simulator<dim>::declare_parameters(prm, mpi_rank);
 
     if (validate_only)
       {
