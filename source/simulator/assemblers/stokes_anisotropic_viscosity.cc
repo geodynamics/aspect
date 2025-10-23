@@ -20,6 +20,8 @@
 
 #include <aspect/simulator/assemblers/stokes_anisotropic_viscosity.h>
 
+#include <aspect/gravity_model/interface.h>
+
 #include <deal.II/base/signaling_nan.h>
 
 namespace aspect
