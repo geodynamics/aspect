@@ -27,7 +27,7 @@
 
 namespace aspect
 {
-    namespace MaterialModel
+  namespace MaterialModel
   {
     /**
       * Additional output fields for anisotropic viscosities to be added to
@@ -40,7 +40,7 @@ namespace aspect
       public:
         AnisotropicViscosity(const unsigned int n_points);
 
-        std::vector<double> 
+        std::vector<double>
         get_nth_output(const unsigned int idx) const override;
 
         /**
@@ -59,19 +59,19 @@ namespace aspect
 
     namespace
     {
-    template <int dim>
-    std::vector<std::string> make_AnisotropicViscosity_additional_outputs_names()
-    {
-      std::vector<std::string> names;
+      template <int dim>
+      std::vector<std::string> make_AnisotropicViscosity_additional_outputs_names()
+      {
+        std::vector<std::string> names;
 
-      for (unsigned int i = 0; i < Tensor<4,dim>::n_independent_components ; ++i)
-        {
-          TableIndices<4> indices(Tensor<4,dim>::unrolled_to_component_indices(i));
-          names.push_back("anisotropic_viscosity"+std::to_string(indices[0])+std::to_string(indices[1])+std::to_string(indices[2])+std::to_string(indices[3]));
-        }
-      return names;
+        for (unsigned int i = 0; i < Tensor<4,dim>::n_independent_components ; ++i)
+          {
+            TableIndices<4> indices(Tensor<4,dim>::unrolled_to_component_indices(i));
+            names.push_back("anisotropic_viscosity"+std::to_string(indices[0])+std::to_string(indices[1])+std::to_string(indices[2])+std::to_string(indices[3]));
+          }
+        return names;
+      }
     }
-  }
 
 
 
@@ -99,9 +99,9 @@ namespace aspect
 
   namespace Assemblers
   {
-     /**
-     * A class containing the functions to assemble the Stokes preconditioner.
-     */
+    /**
+    * A class containing the functions to assemble the Stokes preconditioner.
+    */
     template <int dim>
     class StokesPreconditionerAnisotropicViscosity : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
@@ -114,7 +114,7 @@ namespace aspect
         /**
          * Create AnisotropicViscosities.
          */
-        void 
+        void
         create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
     };
 
@@ -148,7 +148,7 @@ namespace aspect
         /**
          * Create AdditionalMaterialOutputsStokesRHS if we need to do so.
          */
-        void 
+        void
         create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
     };
 
