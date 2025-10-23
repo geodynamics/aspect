@@ -32,6 +32,7 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/newton.h>
+#include <aspect/utilities.h>
 
 namespace aspect
 {
@@ -318,7 +319,7 @@ namespace aspect
                             {
                               const double drucker_prager_viscosity = compute_viscosity(edot_ii,pressure,c,prefactor[c],false,min_visc[c],max_visc[c]);
                               const double regularization_adjustment = (ref_visc * ref_visc)
-                                                                       / Utilities::fixed_power<2,double>(ref_visc + drucker_prager_viscosity);
+                                                                       / ((ref_visc + drucker_prager_viscosity) * (ref_visc + drucker_prager_viscosity));
 
                               composition_viscosities_derivatives[c] = -regularization_adjustment *
                                                                        (drucker_prager_viscosity / (edot_ii * edot_ii)) * deviator_strain_rate;
@@ -351,8 +352,8 @@ namespace aspect
                                                                                    * Utilities::nth_basis_for_symmetric_tensors<dim>(component);
                               if (use_deviator_of_strain_rate)
                                 strain_rate_difference_plus = Utilities::Tensors::consistent_deviator(strain_rate_difference_plus);
-                              const double second_invariant_strain_rate_difference_plus = 
-                                std::sqrt(2.0 * std::abs(use_deviator_of_strain_rate ? 
+                              const double second_invariant_strain_rate_difference_plus =
+                                std::sqrt(2.0 * std::abs(use_deviator_of_strain_rate ?
                                                          Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(strain_rate_difference_plus) :
                                                          second_invariant(strain_rate_difference_plus)));
                               const double eta_component_plus = compute_viscosity(second_invariant_strain_rate_difference_plus,pressure,c,prefactor[c],true,min_visc[c],max_visc[c]);
