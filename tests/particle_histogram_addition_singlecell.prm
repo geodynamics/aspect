@@ -18,7 +18,7 @@ subsection Prescribed Stokes solution
 
   subsection Velocity function
     set Variable names      = x,y
-    set Function constants  = velSlow=-0.1
+    set Function constants  = velSlow=+0.1
     set Function expression = 0; 0
   end
 end

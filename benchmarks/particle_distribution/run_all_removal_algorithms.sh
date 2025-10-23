@@ -14,8 +14,7 @@ echo "subsection Prescribed Stokes solution" > current.prm
 echo "set Model name = function" >> current.prm
 echo "subsection Velocity function" >> current.prm
 echo "  set Variable names      = x,y,t" >> current.prm
-echo "  set Function constants  = velConstant=-0" >> current.prm
-echo "  set Function expression = 0; (-0.5*sin(pi*t)) +velConstant" >> current.prm
+echo "  set Function expression = 0; (-0.5*sin(pi*t))" >> current.prm
 echo " end" >> current.prm
 echo "end" >> current.prm
 echo "subsection Particles" >> current.prm
@@ -29,8 +28,7 @@ echo "subsection Prescribed Stokes solution" > current.prm
 echo "set Model name = function" >> current.prm
 echo "subsection Velocity function" >> current.prm
 echo "  set Variable names      = x,y,t" >> current.prm
-echo "  set Function constants  = velConstant=-0" >> current.prm
-echo "  set Function expression = 0; (-0.5*sin(pi*t)) +velConstant" >> current.prm
+echo "  set Function expression = 0; (-0.5*sin(pi*t))" >> current.prm
 echo " end" >> current.prm
 echo "end" >> current.prm
 echo "subsection Particles" >> current.prm
@@ -45,8 +43,7 @@ echo "subsection Prescribed Stokes solution" > current.prm
 echo "set Model name = function" >> current.prm
 echo "subsection Velocity function" >> current.prm
 echo "  set Variable names      = x,y,t" >> current.prm
-echo "  set Function constants  = velConstant=-0" >> current.prm
-echo "  set Function expression = 0; (-0.5*sin(pi*t)) +velConstant" >> current.prm
+echo "  set Function expression = 0; (-0.5*sin(pi*t))" >> current.prm
 echo " end" >> current.prm
 echo "end" >> current.prm
 echo "subsection Particles" >> current.prm
@@ -62,8 +59,7 @@ echo "subsection Prescribed Stokes solution" > current.prm
 echo "set Model name = function" >> current.prm
 echo "subsection Velocity function" >> current.prm
 echo "  set Variable names      = x,y,t" >> current.prm
-echo "  set Function constants  = velConstant=-0" >> current.prm
-echo "  set Function expression = 0; (-0.5*sin(pi*t)) +velConstant" >> current.prm
+echo "  set Function expression = 0; (-0.5*sin(pi*t))" >> current.prm
 echo " end" >> current.prm
 echo "end" >> current.prm
 echo "subsection Particles" >> current.prm
@@ -79,8 +75,7 @@ echo "subsection Prescribed Stokes solution" > current.prm
 echo "set Model name = function" >> current.prm
 echo "subsection Velocity function" >> current.prm
 echo "  set Variable names      = x,y,t" >> current.prm
-echo "  set Function constants  = velConstant=-0" >> current.prm
-echo "  set Function expression = 0; (-0.5*sin(pi*t)) +velConstant" >> current.prm
+echo "  set Function expression = 0; (-0.5*sin(pi*t))" >> current.prm
 echo " end" >> current.prm
 echo "end" >> current.prm
 echo "subsection Particles" >> current.prm
@@ -96,8 +91,7 @@ echo "subsection Prescribed Stokes solution" > current.prm
 echo "set Model name = function" >> current.prm
 echo "subsection Velocity function" >> current.prm
 echo "  set Variable names      = x,y,t" >> current.prm
-echo "  set Function constants  = velConstant=-0" >> current.prm
-echo "  set Function expression = 0; (-0.5*sin(pi*t)) +velConstant" >> current.prm
+echo "  set Function expression = 0; (-0.5*sin(pi*t))" >> current.prm
 echo " end" >> current.prm
 echo "end" >> current.prm
 echo "subsection Particles" >> current.prm

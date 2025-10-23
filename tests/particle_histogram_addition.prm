@@ -13,6 +13,7 @@ subsection Geometry model
   set Model name = box
 
   subsection Box
+    set Y periodic = true
     set X extent = 0.5
     set Y extent = 5
     set Y repetitions = 10
@@ -81,7 +82,6 @@ subsection Particles
   set Minimum particles per cell = 16
   set Load balancing strategy = add particles
   set Particle addition algorithm = histogram
-  set Addition granularity = 8
   subsection Generator
     subsection Reference cell
       set Number of particles per cell per direction = 4
@@ -109,7 +109,6 @@ subsection Prescribed Stokes solution
   set Model name = function
   subsection Velocity function
     set Variable names      = x,y,t
-    set Function constants  = velConstant=-0
-    set Function expression = 0; (-0.5*sin(pi*t)) +velConstant
+    set Function expression = 0; (0.5*sin(pi*t))
   end
 end

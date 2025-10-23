@@ -327,12 +327,20 @@ namespace aspect
         };
 
         /**
-         * The granularity to use for histogram or point density function techniques for
+         * The granularity to use when applying a point density function method for
          * adding particles when cells fall below the minimum number of particles allowed.
          * Granularity represents the number of subdivisions of the cell in each dimension
-         * when calculating a histogram of the point density function.
+         * when calculating the point density function.
          */
-        unsigned int addition_granularity;
+        unsigned int addition_granularity_pdf;
+
+        /**
+         * The granularity to use for histogram techniques for
+         * adding particles when cells fall below the minimum number of particles allowed.
+         * Granularity represents the number of subdivisions of the cell in each dimension
+         * when calculating a histogram.
+         */
+        unsigned int addition_granularity_histogram;
 
         /**
          * Keep track of which kernel function to use when managing particle populations.

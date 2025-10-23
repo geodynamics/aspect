@@ -14,6 +14,7 @@ subsection Geometry model
   set Model name = box
 
   subsection Box
+    set Y periodic = true
     set X extent = 0.5
     set Y extent = 5
     set Y repetitions = 10
@@ -110,7 +111,7 @@ subsection Prescribed Stokes solution
   set Model name = function
   subsection Velocity function
     set Variable names      = x,y,t
-    set Function constants  = velConstant=-0
-    set Function expression = 0; (-0.5*sin(pi*t)) +velConstant
+    set Function constants  = velConstant=0
+    set Function expression = 0; (+0.5*sin(pi*t)) +velConstant
   end
 end

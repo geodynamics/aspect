@@ -356,7 +356,7 @@ namespace aspect
                           }
                         else if (addition_algorithm == AdditionAlgorithm::point_density_function)
                           {
-                            ParticlePDF<dim> pdf(addition_granularity,bandwidth,kernel_function);
+                            ParticlePDF<dim> pdf(addition_granularity_pdf,bandwidth,kernel_function);
                             const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
                             particle_ranges_to_sum_over = get_neighboring_particle_ranges(cell,get_particle_handler(),grid_cache);
 
@@ -387,10 +387,10 @@ namespace aspect
                           {
                             Table<dim,unsigned int> buckets;
                             TableIndices<dim> bucket_sizes;
-                            const double granularity_double = static_cast<double>(addition_granularity);
+                            const double granularity_double = static_cast<double>(addition_granularity_histogram);
 
                             for (unsigned int i=0; i<dim; ++i)
-                              bucket_sizes[i] = addition_granularity;
+                              bucket_sizes[i] = addition_granularity_histogram;
 
                             buckets.reinit(bucket_sizes);
                             const double bucket_width = 1.0/granularity_double;
@@ -415,10 +415,10 @@ namespace aspect
                                 and the table is indexed at 0, so if the "x/y/z_indez" equals "granularity" it
                                 will be out of range.
                                 */
-                                if (x_index == addition_granularity)
-                                  x_index = addition_granularity-1;
-                                if (y_index == addition_granularity)
-                                  y_index = addition_granularity-1;
+                                if (x_index == addition_granularity_histogram)
+                                  x_index = addition_granularity_histogram-1;
+                                if (y_index == addition_granularity_histogram)
+                                  y_index = addition_granularity_histogram-1;
 
                                 TableIndices<dim> entry_index;
                                 entry_index[0] = x_index;
@@ -428,8 +428,8 @@ namespace aspect
                                     const double particle_z = particle.get_reference_location()[2];
                                     const double z_ratio = (particle_z) / (bucket_width);
                                     unsigned int z_index = static_cast<unsigned int>(std::floor(z_ratio));
-                                    if (z_index == addition_granularity)
-                                      z_index = addition_granularity-1;
+                                    if (z_index == addition_granularity_histogram)
+                                      z_index = addition_granularity_histogram-1;
                                     entry_index[2] = z_index;
                                   }
                                 ++buckets(entry_index);
@@ -447,9 +447,9 @@ namespace aspect
                             */
                             std::vector<TableIndices<dim>> min_bucket_indices;
 
-                            for (unsigned int x=0; x<addition_granularity; ++x)
+                            for (unsigned int x=0; x<addition_granularity_histogram; ++x)
                               {
-                                for (unsigned int y=0; y<addition_granularity; ++y)
+                                for (unsigned int y=0; y<addition_granularity_histogram; ++y)
                                   {
                                     TableIndices<dim> entry_index;
                                     entry_index[0] = x;
@@ -457,7 +457,7 @@ namespace aspect
                                     // Do another loop if in 3d
                                     if (dim == 3)
                                       {
-                                        for (unsigned int z=0; z<addition_granularity; ++z)
+                                        for (unsigned int z=0; z<addition_granularity_histogram; ++z)
                                           {
                                             entry_index[2] = z;
                                             const unsigned int particles_in_bucket = buckets(entry_index);
@@ -1082,7 +1082,7 @@ namespace aspect
                                "will generate a point density function from the locations of each particle and remove "
                                "the particle whose position is at the maximum of the point density function.");
             prm.declare_entry ("Particle addition algorithm", "random",
-                               Patterns::Selection ("random|histogram|monte carlo|point density function"),
+                               Patterns::Selection ("random|histogram|point density function"),
                                "Algorithm used to add particles to cells. ");
             prm.declare_entry ("Point density kernel function", "cutoff c1 dealii",
                                Patterns::Selection ("cutoff c1 dealii|cutoff w1 dealii|uniform|triangular|gaussian"),
@@ -1106,11 +1106,15 @@ namespace aspect
                                "The bandwidth is measured as a fraction of the cells extent in one spatial "
                                "dimension. For example, the default bandwidth of 0.3 represents a size "
                                "equal to 30 percent of the cells size in one spatial dimension.");
-            prm.declare_entry("Addition granularity","6",
+            prm.declare_entry("Addition histogram granularity","3",
                               Patterns::Integer(2),
                               "The amount of times to subdivide each cell when adding particles using histogram "
-                              "or point density function based methods. Higher granularities tend to result in "
-                              "better particles distributions but will be slower.");
+                              "based methods. Lower granularities are generally better for histogram methods.");
+            prm.declare_entry("Addition point density function granularity","6",
+                              Patterns::Integer(2),
+                              "The amount of times to subdivide each cell when adding particles using point "
+                              "density function based methods. Higher granularities are generally better for "
+                              "point density function based methods but might be slower.");
             prm.declare_entry ("Minimum particles per cell", "0",
                                Patterns::Integer (0),
                                "Lower limit for particle number per cell. This limit is "
@@ -1296,16 +1300,17 @@ namespace aspect
             AssertThrow(false, ExcNotImplemented());
           }
 
-        // The bandwidth to use with the kernel function
-        addition_granularity = prm.get_integer("Addition granularity");
+        // The granularity to use when adding new particles using histogram methods
+        addition_granularity_histogram = prm.get_integer("Addition histogram granularity");
+
+        // The granularity to use when adding new particles using PDF methods
+        addition_granularity_pdf = prm.get_integer("Addition point density function granularity");
 
         // The particle addition algorithm to use when there are not enough particles in a cell
         std::string addition_algorithm_string = prm.get("Particle addition algorithm");
 
         if (addition_algorithm_string == "random")
           addition_algorithm = AdditionAlgorithm::random;
-        else if (addition_algorithm_string == "monte carlo")
-          addition_algorithm = AdditionAlgorithm::monte_carlo;
         else if (addition_algorithm_string == "histogram")
           addition_algorithm = AdditionAlgorithm::histogram;
         else if (addition_algorithm_string == "point density function")

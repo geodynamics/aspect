@@ -217,12 +217,12 @@ namespace aspect
       Assert(is_defined_per_particle == true,
              ExcMessage("This function can only be called if the ParticlePDF is computed per particle location."));
 
-      if (input_value >= max)
+      if (input_value > max)
         {
           max = input_value;
           max_particle_index = reference_particle_id;
         }
-      if (input_value <= min)
+      if (input_value < min)
         {
           min = input_value;
           min_particle_index = reference_particle_id;
@@ -297,11 +297,11 @@ namespace aspect
                           const Point<dim> position_in_cell = Point<dim>(x*spacing + spacing/2., y*spacing + spacing/2., z*spacing +spacing/2);
 
                           // Record the positions of max and min values as well. These are useful for adding particles.
-                          if (this_value >= max)
+                          if (this_value > max)
                             {
                               max_position = position_in_cell;
                             }
-                          if (this_value <= min)
+                          if (this_value < min)
                             {
                               min_position = position_in_cell;
                             }
@@ -318,11 +318,11 @@ namespace aspect
                       const Point<dim> position_in_cell = Point<dim>(x*spacing + spacing/2., y*spacing + spacing/2.);
 
                       //record the positions of max and min values as well. These are useful for adding particles.
-                      if (this_value >= max)
+                      if (this_value > max)
                         {
                           max_position = position_in_cell;
                         }
-                      if (this_value <= min)
+                      if (this_value < min)
                         {
                           min_position = position_in_cell;
                         }

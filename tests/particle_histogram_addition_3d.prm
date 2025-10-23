@@ -14,7 +14,7 @@ subsection Prescribed Stokes solution
 
   subsection Velocity function
     set Variable names      = x,y,z
-    set Function constants  = velSlow=-0.1
+    set Function constants  = velSlow=+0.1
     set Function expression = 0; velSlow; 0
   end
 end
@@ -109,7 +109,6 @@ subsection Particles
   set Minimum particles per cell = 32
   set Load balancing strategy = add particles
   set Particle addition algorithm = histogram
-  set Addition granularity = 8
   subsection Generator
     subsection Reference cell
       set Number of particles per cell per direction = 4
