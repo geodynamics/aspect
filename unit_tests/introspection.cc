@@ -28,7 +28,7 @@ TEST_CASE("Introspection::basic")
 {
   using namespace aspect;
   dealii::ParameterHandler prm;
-  Simulator<2>::declare_parameters(prm);
+  Simulator<2>::declare_parameters(prm, 0 /* mpi rank */);
 
 
   prm.set("Output directory", "");
@@ -76,7 +76,7 @@ TEST_CASE("Introspection::different-composition-types")
 {
   using namespace aspect;
   dealii::ParameterHandler prm;
-  Simulator<2>::declare_parameters(prm);
+  Simulator<2>::declare_parameters(prm, 0 /* mpi rank */);
 
 
   prm.set("Output directory", "");
@@ -126,7 +126,7 @@ TEST_CASE("Introspection::different-composition-degrees")
 {
   using namespace aspect;
   dealii::ParameterHandler prm;
-  Simulator<2>::declare_parameters(prm);
+  Simulator<2>::declare_parameters(prm, 0 /* mpi rank */);
 
 
   prm.set("Output directory", "");

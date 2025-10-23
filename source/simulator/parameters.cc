@@ -48,7 +48,7 @@ namespace aspect
   template <int dim>
   void
   Parameters<dim>::
-  declare_parameters (ParameterHandler &prm)
+  declare_parameters (ParameterHandler &prm, const unsigned int mpi_rank)
   {
     prm.declare_entry ("Dimension", "2",
                        Patterns::Integer (2,3),
@@ -134,7 +134,7 @@ namespace aspect
 
     prm.declare_alias ("Use years instead of seconds",
                        "Use years in output instead of seconds",
-                       true);
+                       (mpi_rank == 0) ? true : false); // trigger deprecation warning
 
     prm.declare_entry ("CFL number", "1.0",
                        Patterns::Double (0.),
@@ -1522,8 +1522,6 @@ namespace aspect
     }
     prm.leave_subsection ();
 
-    VolumeOfFluidHandler<dim>::declare_parameters(prm);
-
     // then, finally, let user additions that do not go through the usual
     // plugin mechanism, declare their parameters if they have subscribed
     // to the relevant signals
@@ -2429,9 +2427,10 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::declare_parameters (ParameterHandler &prm)
+  void Simulator<dim>::declare_parameters (ParameterHandler &prm, const unsigned int mpi_rank)
   {
-    Parameters<dim>::declare_parameters (prm);
+    Parameters<dim>::declare_parameters (prm, mpi_rank);
+    VolumeOfFluidHandler<dim>::declare_parameters(prm);
     Melt::Parameters<dim>::declare_parameters (prm);
     Newton::Parameters::declare_parameters (prm);
     StokesMatrixFreeHandler<dim>::declare_parameters (prm);
@@ -2465,12 +2464,12 @@ namespace aspect
 #define INSTANTIATE(dim) \
   template Parameters<dim>::Parameters (ParameterHandler &prm, \
                                         const MPI_Comm mpi_communicator); \
-  template void Parameters<dim>::declare_parameters (ParameterHandler &prm); \
+  template void Parameters<dim>::declare_parameters (ParameterHandler &prm, const unsigned int mpi_rank); \
   template void Parameters<dim>::parse_parameters(ParameterHandler &prm, \
                                                   const MPI_Comm mpi_communicator); \
   template void Parameters<dim>::parse_geometry_dependent_parameters(ParameterHandler &prm, \
                                                                      const GeometryModel::Interface<dim> &geometry_model); \
-  template void Simulator<dim>::declare_parameters (ParameterHandler &prm);
+  template void Simulator<dim>::declare_parameters (ParameterHandler &prm, const unsigned int mpi_rank);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 

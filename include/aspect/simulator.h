@@ -233,7 +233,7 @@ namespace aspect
        * <code>source/simulator/parameters.cc</code>.
        */
       static
-      void declare_parameters (ParameterHandler &prm);
+      void declare_parameters (ParameterHandler &prm, const unsigned int mpi_rank);
 
       /**
        * The function that runs the overall algorithm. It contains the loop

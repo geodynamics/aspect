@@ -502,7 +502,7 @@ namespace aspect
      * declared.
      */
     static
-    void declare_parameters (ParameterHandler &prm);
+    void declare_parameters (ParameterHandler &prm, const unsigned int mpi_rank);
 
     /**
      * Read run-time parameters from an object that has previously parsed an
