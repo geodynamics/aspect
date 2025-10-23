@@ -841,7 +841,7 @@ namespace aspect
                                          const double viscosity_pre_yield,
                                          const double shear_modulus) const
       {
-        // The first term in the following expression is the deviator of the true strain rate
+        // The first term in the following expression is the overall strain rate
         // of one or more isostress rheological elements (in series).
         // One of these elements must be an elastic component (potentially damped).
         // The second term corresponds to a fictional strain rate arising from
