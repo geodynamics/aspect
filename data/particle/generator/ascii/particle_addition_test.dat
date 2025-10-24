@@ -1,0 +1,6 @@
+# This is testdata for adding particles to cells using
+# a point density function or a histogram
+# Columns: x_coordinate y_coordinate
+0.25 0.25
+0.25 0.75
+0.75 0.25

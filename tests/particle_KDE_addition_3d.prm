@@ -1,0 +1,141 @@
+# This parameter file is intended to test adding particles in 3d using kernel density estimation
+
+
+set Dimension                              = 3
+set Use years instead of seconds           = false
+set End time                               = 0.18
+set Nonlinear solver scheme                = single Advection, no Stokes
+set Resume computation                     = false
+set Maximum time step                      = 0.03
+
+
+subsection Prescribed Stokes solution
+  set Model name = function
+
+  subsection Velocity function
+    set Variable names      = x,y,z
+    set Function constants  = velSlow=+0.1
+    set Function expression = 0; velSlow; 0
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 0.5
+    set Y extent = 5
+    set Z extent = 0.5
+    set Y periodic = true
+    set Y repetitions = 10
+    set Box origin X coordinate = 0
+    set Box origin Y coordinate = 0
+    set Box origin Z coordinate = 0
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y,z
+    set Function constants  =
+    set Function expression = 1
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y,z
+    set Function expression = 1
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names = box
+  set Fixed temperature boundary indicators   = left, right
+
+  subsection Box
+    set Left temperature   = 0
+    set Right temperature  = 0
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1e-5
+    set Thermal expansion coefficient = 0
+    set Viscosity                     = 0
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Compositional field methods = field
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 2
+  set Initial global refinement                = 1
+  set Time steps between mesh refinement       = 0
+
+  set Strategy = minimum refinement function
+
+  subsection Minimum refinement function
+    set Coordinate system   = cartesian
+    set Variable names      = x,y,z
+    set Function expression = if ( y<=4, 2, 4)
+  end
+  
+end
+
+subsection Particles
+  set Particle generator name =  reference cell
+  set Minimum particles per cell = 32
+  set Load balancing strategy = add particles
+  set Particle removal algorithm = point density function  
+  subsection Generator
+    subsection Reference cell
+      set Number of particles per cell per direction = 4
+    end
+  end
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, particles,  particle distribution score
+
+  subsection Visualization
+    set Time between graphical output = .001
+    set List of output variables = artificial viscosity
+  end
+
+  subsection Particles
+    set Time between data output = 0.001
+    set Data output format       = vtu
+  end
+
+  subsection Particle distribution score
+    set Granularity = 2
+  end
+
+end
+
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-10
+end

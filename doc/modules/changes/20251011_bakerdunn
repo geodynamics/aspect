@@ -1,0 +1,8 @@
+Added: Options to add particles to cells during model runs using
+a point density function or histogram based method to add particles
+to regions of cells which are lacking in particles.
+The point of the new particle addition method is to reduce imbalances in
+the particle distribution which can result from randomly selecting locations
+in which to add particles to cells.
+<br>
+(Jarett Baker-Dunn, 2025/09/26)
