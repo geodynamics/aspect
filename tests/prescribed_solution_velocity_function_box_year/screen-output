@@ -18,9 +18,9 @@ Number of degrees of freedom: 1,836 (1,122+153+561)
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  126 m/year, 356 m/year
+     RMS, max velocity:                  7.39e+10 m/year, 4.87e+11 m/year
      Temperature min/avg/max:            273 K, 1555 K, 2014 K
-     Heat fluxes through boundary parts: 0 W, 0 W, 1.972e+07 W, 1.998e+05 W
+     Heat fluxes through boundary parts: 0 W, 0 W, 6.48e+09 W, -1.09e+10 W
      Writing graphical output:           output-prescribed_solution_velocity_function_box_year/solution/solution-00001
      Writing heat flux map               output-prescribed_solution_velocity_function_box_year/heat_flux.00001
 
