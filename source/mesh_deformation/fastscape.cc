@@ -515,7 +515,7 @@ namespace aspect
                 {
                   combined_kf[i] = sediment_river_incision_rate;
                   combined_kd[i] = sediment_transport_coefficient;
-                };
+                }
             }
 
           // select additional output for Fastscape vtu
@@ -558,11 +558,13 @@ namespace aspect
             mesh_velocity_z[i] = (elevation[i] - elevation_old[i])/aspect_timestep_in_years;
         }
       else
+        // For ranks other than the root:
         {
-          // add a declare for kd
-          std::vector<double> bedrock_transport_coefficient_array(fastscape_array_size);
           for (unsigned int i=0; i<local_aspect_values.size(); ++i)
-            MPI_Ssend(&local_aspect_values[i][0], local_aspect_values[1].size(), MPI_DOUBLE, 0, 42, this->get_mpi_communicator());
+            MPI_Ssend(&local_aspect_values[i][0], local_aspect_values[i].size(), MPI_DOUBLE,
+                      /* destination is root= */ 0,
+                      /* tag= */ 42,
+                      this->get_mpi_communicator());
 
           // Check whether the FastScape mesh was filled with data.
           const bool fastscape_mesh_filled = Utilities::MPI::broadcast (this->get_mpi_communicator(), true, 0);
@@ -570,6 +572,8 @@ namespace aspect
             throw aspect::QuietException();
 
           // This is called solely so we can set the timer and will return immediately.
+          // (The kd array is a dummy array.)
+          std::vector<double> bedrock_transport_coefficient_array(fastscape_array_size);
           execute_fastscape(mesh_velocity_z,
                             mesh_velocity_z,
                             mesh_velocity_z,
@@ -585,14 +589,15 @@ namespace aspect
       // that will be interpolated back to ASPECT. We need this table on all
       // processes, and can achieve this goal by first filling it on the root process,
       // and then replicating it on all processes (if possible using shared memory).
-      TableIndices<dim> size_idx;
-      for (unsigned int d=0; d<dim; ++d)
-        size_idx[d] = table_intervals[d]+1;
-
       Table<dim,double> velocity_table;
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-        velocity_table = fill_data_table(mesh_velocity_z, size_idx, fastscape_nx, fastscape_ny);
+        {
+          TableIndices<dim> size_idx;
+          for (unsigned int d=0; d<dim; ++d)
+            size_idx[d] = table_intervals[d]+1;
 
+          velocity_table = fill_data_table(mesh_velocity_z, size_idx, fastscape_nx, fastscape_ny);
+        }
       velocity_table.replicate_across_communicator (this->get_mpi_communicator(),
                                                     /*root_process=*/0);
 
@@ -608,9 +613,9 @@ namespace aspect
       // Then create a function that can be interpolated from the data table.
       // Use move semantics to ensure that we keep using the replicated
       // table:
-      Functions::InterpolatedUniformGridData<dim> velocities (std::move(interpolation_extent),
-                                                              std::move(table_intervals),
-                                                              std::move(velocity_table));
+      const Functions::InterpolatedUniformGridData<dim> velocities (std::move(interpolation_extent),
+                                                                    std::move(table_intervals),
+                                                                    std::move(velocity_table));
 
       VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
         [&](const Point<dim> &p) -> double
@@ -620,10 +625,11 @@ namespace aspect
       dim-1,
       dim);
 
-      VectorTools::interpolate_boundary_values (mesh_deformation_dof_handler,
-                                                *boundary_ids.begin(),
-                                                vector_function_object,
-                                                mesh_velocity_constraints);
+      for (const types::boundary_id boundary : boundary_ids)
+        VectorTools::interpolate_boundary_values (mesh_deformation_dof_handler,
+                                                  boundary,
+                                                  vector_function_object,
+                                                  mesh_velocity_constraints);
 
       this->get_computing_timer().leave_subsection("FastScape plugin");
     }
