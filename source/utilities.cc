@@ -3309,10 +3309,12 @@ namespace aspect
       double consistent_second_invariant_of_deviatoric_tensor(const SymmetricTensor<2,dim> &t)
       {
         if (dim == 2)
-          return -( Utilities::fixed_power<2,double>(t[0][0])             // t11^2
-                    + Utilities::fixed_power<2,double>(t[1][1])           // t22^2
-                    + Utilities::fixed_power<2,double>(t[0][0] + t[1][1]) // t33^2
-                    + Utilities::fixed_power<2,double>(t[0][1]) * 2.0     // 2*t12^2
+          // Under plane strain assumption, t is not a 2D tensor, but a "slice" of
+          // a 3D tensor. Therefore, t[2][2] is generally not zero, but equals to
+          // -(t[0][0] + t[1][1]).
+          return -( t[0][0] * t[0][0] + t[1][1] * t[1][1]
+                    + (t[0][0] + t[1][1]) * (t[0][0] + t[1][1])
+                    + t[0][1] * t[0][1] * 2.0
                   ) * 0.5;
         else
           return second_invariant(t);
