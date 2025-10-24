@@ -1,0 +1,9 @@
+# A test for the anisotropic viscosity cookbook
+
+include $ASPECT_SOURCE_DIR/cookbooks/anisotropic_viscosity/AV_Rayleigh_Taylor.prm
+
+set End time = 1
+
+subsection Mesh refinement
+  set Initial global refinement = 4
+end

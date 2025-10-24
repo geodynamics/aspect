@@ -1,0 +1,62 @@
+
+Loading shared library <./libanisotropic_viscosity_cookbook.debug.so>
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 6,823 (2,178+289+1,089+1,089+1,089+1,089)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving gamma system ... 0 iterations.
+   Solving ni system ... 11 iterations.
+   Solving nj system ... 11 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
+
+Number of active cells: 124 (on 6 levels)
+Number of degrees of freedom: 3,618 (1,154+156+577+577+577+577)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving gamma system ... 0 iterations.
+   Solving ni system ... 10 iterations.
+   Solving nj system ... 10 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
+
+Number of active cells: 112 (on 6 levels)
+Number of degrees of freedom: 3,416 (1,090+146+545+545+545+545)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving gamma system ... 0 iterations.
+   Solving ni system ... 10 iterations.
+   Solving nj system ... 10 iterations.
+   Solving Stokes system (GMG)... 16+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:                          output-anisotropic_viscosity_cookbook/solution/solution-00000
+     RMS, max velocity:                                 0.00115 m/s, 0.00323 m/s
+     Compositions min/max/mass:                         0/1/0.2988 // -0.09361/0.7853/0.192 // -0.09361/0.7853/0.192
+     Average density / Average viscosity / Total mass:  0.1329 kg/m^3, 1 Pa s, 0.2658 kg
+
+Number of active cells: 130 (on 6 levels)
+Number of degrees of freedom: 3,966 (1,266+168+633+633+633+633)
+
+*** Timestep 1:  t=1 seconds, dt=1 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving gamma system ... 9 iterations.
+   Solving ni system ... 10 iterations.
+   Solving nj system ... 9 iterations.
+   Solving Stokes system (GMG)... 16+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:                          output-anisotropic_viscosity_cookbook/solution/solution-00001
+     RMS, max velocity:                                 0.00119 m/s, 0.00324 m/s
+     Compositions min/max/mass:                         -0.0005129/1.014/0.2987 // -0.08678/0.787/0.1925 // -0.08677/0.7925/0.1922
+     Average density / Average viscosity / Total mass:  0.1329 kg/m^3, 1 Pa s, 0.2657 kg
+
+Number of active cells: 145 (on 6 levels)
+Number of degrees of freedom: 4,435 (1,416+187+708+708+708+708)
+
+Termination requested by criterion: end time
+
+
+
