@@ -799,12 +799,11 @@ namespace aspect
     if (parameters.include_melt_transport)
       melt_handler->add_current_constraints (new_current_constraints);
 
-    // Finally update and let the prescribed solution plugins constrain parts of the solution
+    // Update and let the prescribed solution plugins constrain parts of the solution:
     prescribed_solution_manager.update();
     prescribed_solution_manager.constrain_solution(new_current_constraints);
 
-    // let plugins add more constraints if they so choose, then close the
-    // constraints object
+    // Finally, let plugins add more constraints if they so choose:
     signals.post_constraints_creation(*this, new_current_constraints);
 
     new_current_constraints.close();
