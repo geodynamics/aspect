@@ -32,6 +32,7 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/newton.h>
+#include <aspect/utilities.h>
 
 namespace aspect
 {
