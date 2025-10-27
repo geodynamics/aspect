@@ -42,7 +42,7 @@ jobs:
       - name: Store typos diff file
         run:  git diff > changes-typos.diff
       - name: archive typos results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: changes-typos.diff
           path: changes-typos.diff
