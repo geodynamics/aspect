@@ -485,7 +485,7 @@ namespace aspect
         }
       else
         {
-          Assert(false, ExcMessage("Unknown kernel function used in insert_kernel_sum_into_pdf."));
+          Assert(false, ExcMessage("Unknown kernel function used in apply_selected_kernel_function."));
           return 0.0;
         }
     }
