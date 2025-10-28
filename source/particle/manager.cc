@@ -366,10 +366,12 @@ namespace aspect
                                                          this->get_mapping());
                             pdf.compute_statistical_values();
 
-                            const Point<dim> min_density_position = pdf.get_min_position();
+                            const std::vector<Point<dim>> min_density_positions = pdf.get_min_positions();
+                            const int min_density_position_index = std::uniform_int_distribution<unsigned int>(0,min_density_positions.size()-1)(random_number_generator);
+                            const Point<dim> selected_min_density_position = min_density_positions[min_density_position_index];
 
                             std::pair<Particles::internal::LevelInd,Particles::Particle<dim>> new_particle =
-                              generator->generate_particle(cell,local_next_particle_index,min_density_position);
+                              generator->generate_particle(cell,local_next_particle_index,selected_min_density_position);
 
                             const std::vector<double> particle_properties =
                               property_manager->initialize_late_particle(new_particle.second.get_location(),
@@ -1108,11 +1110,11 @@ namespace aspect
                                "equal to 30 percent of the cells size in one spatial dimension.");
             prm.declare_entry("Addition histogram granularity","3",
                               Patterns::Integer(2),
-                              "The amount of times to subdivide each cell when adding particles using histogram "
+                              "The number of subdivisions of each cell in each spatial dimension when adding particles using histogram "
                               "based methods. Lower granularities are generally better for histogram methods.");
             prm.declare_entry("Addition point density function granularity","6",
                               Patterns::Integer(2),
-                              "The amount of times to subdivide each cell when adding particles using point "
+                              "The number of subdivisions of each cell in each spatial dimension when adding particles using point "
                               "density function based methods. Higher granularities are generally better for "
                               "point density function based methods but might be slower.");
             prm.declare_entry ("Minimum particles per cell", "0",

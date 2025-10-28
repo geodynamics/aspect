@@ -120,7 +120,7 @@ subsection Particles
   set Addition histogram granularity = 8
   subsection Generator
     subsection Ascii file
-        set Data directory = ../data/particle/generator/ascii/
+        set Data directory = $ASPECT_SOURCE_DIR/data/particle/generator/ascii/
         set Data file name = particle_addition_test.dat
     end
   end

@@ -301,9 +301,17 @@ namespace aspect
                             {
                               max_position = position_in_cell;
                             }
+
+                          // if this value is less than the min, we found a new minimum value, clear the list
                           if (this_value < min)
                             {
-                              min_position = position_in_cell;
+                              min_positions.clear();
+                              min_positions.push_back(position_in_cell);
+                            }
+                          else if (this_value == min)
+                            {
+                              // Add this position to the vector of identical minimum values
+                              min_positions.push_back(position_in_cell);
                             }
 
                           max = std::max(max, this_value);
@@ -322,9 +330,16 @@ namespace aspect
                         {
                           max_position = position_in_cell;
                         }
+                      // if this value is less than the min, we found a new minimum value, clear the list
                       if (this_value < min)
                         {
-                          min_position = position_in_cell;
+                          min_positions.clear();
+                          min_positions.push_back(position_in_cell);
+                        }
+                      else if (this_value == min)
+                        {
+                          // Add this position to the vector of identical minimum values
+                          min_positions.push_back(position_in_cell);
                         }
 
                       max = std::max(max, this_value);
@@ -415,10 +430,10 @@ namespace aspect
 
 
     template <int dim>
-    Point<dim>
-    ParticlePDF<dim>::get_min_position() const
+    std::vector<Point<dim>>
+    ParticlePDF<dim>::get_min_positions() const
     {
-      return min_position;
+      return min_positions;
     }
 
 

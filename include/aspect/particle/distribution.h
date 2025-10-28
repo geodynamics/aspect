@@ -199,8 +199,8 @@ namespace aspect
         /**
          * Returns the location of the minimum of the point-density function.
          */
-        Point<dim>
-        get_min_position() const;
+        std::vector<Point<dim>>
+        get_min_positions() const;
 
         /**
          * Returns the standard deviation of the point-density function.
@@ -272,9 +272,11 @@ namespace aspect
         Point<dim> max_position;
 
         /**
-         * `min_position` holds position within the cell where the minimum point density was measured.
+         * `min_positions` holds positions within the cell where the minimum point density was measured.
+         * This is a std::vector because there is a chance that there will be multiple minimum positions
+         * with the same value, especially when particles are already arranged in a regular pattern.
          */
-        Point<dim> min_position;
+        std::vector<Point<dim>> min_positions;
 
         /**
          * `standard_deviation` holds the standard_deviation of the point-density function after it has been computed.
