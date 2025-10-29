@@ -139,7 +139,7 @@ namespace aspect
 
       Utilities::create_directory (this->get_output_directory() + "topography/",
                                    this->get_mpi_communicator(),
-                                   false);
+                                   /* silent=*/true);
 
       std::string filename = this->get_output_directory() +
                              "topography/topography." +
