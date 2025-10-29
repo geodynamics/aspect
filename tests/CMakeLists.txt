@@ -432,4 +432,4 @@ foreach(_test ${_tests})
   endif()
 endforeach()
 
-message("Found ${_n_tests} tests.")
+message(STATUS "Found ${_n_tests} tests.")
