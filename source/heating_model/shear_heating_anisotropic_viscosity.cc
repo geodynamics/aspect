@@ -21,6 +21,7 @@
 #include <aspect/heating_model/shear_heating_anisotropic_viscosity.h>
 
 #include <aspect/material_model/interface.h>
+#include <aspect/heating_model/shear_heating.h>
 #include <aspect/simulator/assemblers/stokes_anisotropic_viscosity.h>
 
 #include <deal.II/base/symmetric_tensor.h>
@@ -42,11 +43,11 @@ namespace aspect
 
       // Some material models provide dislocation viscosities and boundary area work fractions
       // as additional material outputs. If they are attached, use them.
-      const std::shared_ptr<const ShearHeatingOutputs<dim>> shear_heating_out
-        = material_model_outputs.template get_additional_output_object<ShearHeatingOutputs<dim>>();
+      const std::shared_ptr<const ShearHeatingOutputs<dim>> shear_heating_out =
+        material_model_outputs.template get_additional_output_object<ShearHeatingOutputs<dim>>();
 
-      const std::shared_ptr<const MaterialModel::AnisotropicViscosity<dim>> anisotropic_viscosity
-        = material_model_outputs.template get_additional_output_object<MaterialModel::AnisotropicViscosity<dim>>();
+      const std::shared_ptr<const MaterialModel::AnisotropicViscosity<dim>> anisotropic_viscosity =
+        material_model_outputs.template get_additional_output_object<MaterialModel::AnisotropicViscosity<dim>>();
 
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
         {
@@ -114,11 +115,9 @@ namespace aspect
   {
     ASPECT_REGISTER_HEATING_MODEL(ShearHeatingAnisotropicViscosity,
                                   "anisotropic shear heating",
-                                  "Implementation of a standard model for shear heating. "
-                                  "Adds the term: "
-                                  "$  2 \\eta \\left( \\varepsilon - \\frac{1}{3} \\text{tr} "
-                                  "\\varepsilon \\mathbf 1 \\right) : \\left( \\varepsilon - \\frac{1}{3} "
-                                  "\\text{tr} \\varepsilon \\mathbf 1 \\right)$ to the "
-                                  "right-hand side of the temperature equation.")
+                                  "Implementation of a standard model for shear heating extended for an "
+                                  "anisotropic viscosity tensor. If the material model provides a stress-"
+                                  "strain director tensor, then the strain-rate is multiplied with this "
+                                  "tensor to compute the stress that is used when computing the shear heating.")
   }
 }
