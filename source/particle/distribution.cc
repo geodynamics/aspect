@@ -20,6 +20,7 @@
 
 #include <aspect/particle/distribution.h>
 #include <aspect/particle/manager.h>
+#include <deal.II/fe/mapping.h>
 
 namespace aspect
 {
@@ -67,50 +68,47 @@ namespace aspect
 
     template <int dim>
     void
-    ParticlePDF<dim>::fill_from_particle_range(const typename Particles::ParticleHandler<dim>::particle_iterator_range particle_range,
-                                               const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over,
-                                               const unsigned int n_particles_in_cell)
+    ParticlePDF<dim>::fill_from_particle_range(const typename Particles::ParticleHandler<dim>::particle_iterator_range &particle_range,
+                                               const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> &particle_ranges_to_sum_over,
+                                               const unsigned int n_particles_in_cell,
+                                               const typename dealii::Mapping<dim> &mapping)
     {
       if (is_defined_per_particle == false)
         {
+          // Particle_range will always be the particles in the cell the function is being called on, so
+          // finding surrounding cell of the first particle in particle_range works
+          const typename Triangulation<dim>::cell_iterator active_cell = particle_range.begin()->get_surrounding_cell();
+
           for (unsigned int x=0; x<granularity; ++x)
             {
               for (unsigned int y=0; y<granularity; ++y)
                 {
-                  double granularity_double = static_cast<double>(this->granularity);
-                  double x_double = static_cast<double>(x);
-                  double y_double = static_cast<double>(y);
+                  const double spacing = 1./granularity;
 
                   if (dim == 3)
                     {
                       for (unsigned int z=0; z<granularity; ++z)
                         {
-                          const double z_double = static_cast<double>(z);
-                          Point<dim> reference_point;
-                          reference_point[0] = x_double/granularity_double;
-                          reference_point[1] = y_double/granularity_double;
-                          reference_point[2] = z_double/granularity_double;
+                          const Point<dim> reference_point = Point<dim>(x*spacing + spacing/2., y*spacing + spacing/2., z*spacing + spacing/2.);
                           std::array<unsigned int,dim> table_index;
                           table_index[0] = x;
                           table_index[1] = y;
                           table_index[2] = z;
-                          insert_kernel_sum_from_particle_range(reference_point,table_index,n_particles_in_cell,particle_range);
+                          insert_kernel_sum_from_particle_range(reference_point,table_index,active_cell,particle_ranges_to_sum_over,mapping);
                         }
                     }
                   else
                     {
-                      Point<dim> reference_point;
-                      reference_point[0] = x_double/granularity_double;
-                      reference_point[1] = y_double/granularity_double;
+                      const Point<dim> reference_point = Point<dim>(x*spacing + spacing/2., y*spacing + spacing/2.);
                       std::array<unsigned int,dim> table_index;
                       table_index[0] = x;
                       table_index[1] = y;
-                      insert_kernel_sum_from_particle_range(reference_point,table_index,n_particles_in_cell,particle_range);
+                      insert_kernel_sum_from_particle_range(reference_point,table_index,active_cell,particle_ranges_to_sum_over,mapping);
                     }
                 }
             }
         }
-      else
+      else if (is_defined_per_particle == true)
         {
           // Sum the value of the kernel function on that position from every other particle.
           for (const auto &reference_particle: particle_range)
@@ -145,21 +143,50 @@ namespace aspect
 
     }
 
+
+
     template <int dim>
     void
-    ParticlePDF<dim>::insert_kernel_sum_from_particle_range(const Point<dim> reference_point,
-                                                            const std::array<unsigned int, dim> table_index,
-                                                            const unsigned int n_particles_in_cell,
-                                                            const typename Particles::ParticleHandler<dim>::particle_iterator_range particle_range)
+    ParticlePDF<dim>::insert_kernel_sum_from_particle_range(const Point<dim> &reference_point,
+                                                            const std::array<unsigned int, dim> &table_index,
+                                                            const typename Triangulation<dim>::cell_iterator &cell,
+                                                            const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> &particle_ranges_to_sum_over,
+                                                            const typename dealii::Mapping<dim> &mapping)
     {
-      for (const auto &particle: particle_range)
+      // This function should only ever be called when computing the point density function on a regular grid,
+      // not per particle location.
+      Assert(is_defined_per_particle == false,
+             ExcMessage("This function can only be called if the ParticlePDF is computed on a regular grid."));
+
+      TableIndices<dim> entry_index;
+      entry_index[0] = table_index[0];
+      entry_index[1] = table_index[1];
+      if (dim == 3)
+        entry_index[2] = table_index[2];
+      function_output_table(entry_index) = 0.0;
+      unsigned int n_particles_in_ranges = 0;
+
+      // The reference point is in coordinates relative to the cell, we need it in real coordinates.
+      const Point<dim> reference_point_real_coordinates = mapping.transform_unit_to_real_cell(cell,reference_point);
+
+      for (const auto &particle_range_to_sum: particle_ranges_to_sum_over)
         {
-          const auto coordinates = particle.get_reference_location();
-          const double distance = coordinates.distance(reference_point);
-          const double kernel_function_value = apply_selected_kernel_function(distance);
-          add_value_to_function_table(table_index,kernel_function_value/n_particles_in_cell);
+          for (const auto &particle: particle_range_to_sum)
+            {
+              ++n_particles_in_ranges;
+              const double cell_diameter_scaled_to_dimensions = cell->diameter() / (std::sqrt(dim));
+              const double distance = reference_point_real_coordinates.distance(particle.get_location());
+              const double distance_normalized = distance/cell_diameter_scaled_to_dimensions;
+              const double kernel_function_value = apply_selected_kernel_function(distance_normalized);
+              add_value_to_function_table(table_index,kernel_function_value);
+            }
         }
+
+      // Scale KDE value by number of particle contributions
+      function_output_table(entry_index) /= static_cast<double>(n_particles_in_ranges);
     }
+
+
 
     template <int dim>
     void
@@ -195,7 +222,6 @@ namespace aspect
           max = input_value;
           max_particle_index = reference_particle_id;
         }
-
       if (input_value < min)
         {
           min = input_value;
@@ -255,6 +281,8 @@ namespace aspect
 
       if (!is_defined_per_particle)
         {
+          const double spacing = 1./granularity;
+
           // Loop through all values of the function to set initial stats
           for (unsigned int x=0; x<granularity; ++x)
             {
@@ -265,6 +293,27 @@ namespace aspect
                       for (unsigned int z=0; z<granularity; ++z)
                         {
                           const double this_value = evaluate_function_at_index(x,y,z);
+
+                          const Point<dim> position_in_cell = Point<dim>(x*spacing + spacing/2., y*spacing + spacing/2., z*spacing +spacing/2);
+
+                          // Record the positions of max and min values as well. These are useful for adding particles.
+                          if (this_value > max)
+                            {
+                              max_position = position_in_cell;
+                            }
+
+                          // if this value is less than the min, we found a new minimum value, clear the list
+                          if (this_value < min)
+                            {
+                              min_positions.clear();
+                              min_positions.push_back(position_in_cell);
+                            }
+                          else if (this_value == min)
+                            {
+                              // Add this position to the vector of identical minimum values
+                              min_positions.push_back(position_in_cell);
+                            }
+
                           max = std::max(max, this_value);
                           min = std::min(min, this_value);
                           // Sum in mean, then divide after this loop
@@ -274,8 +323,28 @@ namespace aspect
                   else
                     {
                       const double this_value = evaluate_function_at_index(x,y,0);
+                      const Point<dim> position_in_cell = Point<dim>(x*spacing + spacing/2., y*spacing + spacing/2.);
+
+                      //record the positions of max and min values as well. These are useful for adding particles.
+                      if (this_value > max)
+                        {
+                          max_position = position_in_cell;
+                        }
+                      // if this value is less than the min, we found a new minimum value, clear the list
+                      if (this_value < min)
+                        {
+                          min_positions.clear();
+                          min_positions.push_back(position_in_cell);
+                        }
+                      else if (this_value == min)
+                        {
+                          // Add this position to the vector of identical minimum values
+                          min_positions.push_back(position_in_cell);
+                        }
+
                       max = std::max(max, this_value);
                       min = std::min(min, this_value);
+
                       // Sum in mean, then divide after this loop
                       mean += this_value;
                     }
@@ -352,6 +421,24 @@ namespace aspect
 
 
     template <int dim>
+    Point<dim>
+    ParticlePDF<dim>::get_max_position() const
+    {
+      return max_position;
+    }
+
+
+
+    template <int dim>
+    std::vector<Point<dim>>
+    ParticlePDF<dim>::get_min_positions() const
+    {
+      return min_positions;
+    }
+
+
+
+    template <int dim>
     double
     ParticlePDF<dim>::get_min() const
     {
@@ -413,7 +500,7 @@ namespace aspect
         }
       else
         {
-          Assert(false, ExcMessage("Unknown kernel function used in insert_kernel_sum_into_pdf."));
+          Assert(false, ExcMessage("Unknown kernel function used in apply_selected_kernel_function."));
           return 0.0;
         }
     }

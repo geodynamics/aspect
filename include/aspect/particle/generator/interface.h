@@ -91,10 +91,27 @@ namespace aspect
            * is to provide functionality to fill up cells with too few particles
            * after refinement. Of course it can also be utilized by derived classes
            * to generate the initial particle distribution.
+           * @param cell the target cell in which to generate the particle.
+           * @param id the particle_index of the particle to generate in the cell.
            */
           std::pair<Particles::internal::LevelInd,Particle<dim>>
           generate_particle (const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
                              const types::particle_index id);
+
+          /**
+           * Generate one particle at a specific position in the given cell. This function's main purpose
+           * is to provide functionality to fill up cells with too few particles
+           * after refinement. This function is used to generate a particle at a
+           * specific reference position within a cell.
+           * @param cell the target cell in which to generate the particle.
+           * @param id the particle_index of the particle to generate in the cell.
+           * @param reference_position the position within the cell to generate the particle. This position is defined within
+           * the frame of reference of the cell.
+           */
+          std::pair<Particles::internal::LevelInd,Particle<dim>>
+          generate_particle (const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
+                             const types::particle_index id,
+                             const Point<dim> &reference_position);
 
         protected:
           /**

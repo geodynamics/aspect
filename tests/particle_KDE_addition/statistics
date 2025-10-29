@@ -1,0 +1,37 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: RMS velocity (m/s)
+# 9: Max. velocity (m/s)
+# 10: Minimal temperature (K)
+# 11: Average temperature (K)
+# 12: Maximal temperature (K)
+# 13: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 14: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 15: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 16: Outward heat flux through boundary with indicator 3 ("top") (W)
+# 17: Visualization file name
+# 18: Number of advected particles
+# 19: Particle file name
+# 20: Minimal particle distribution score: 
+# 21: Average particle distribution score: 
+# 22: Maximal particle distribution score: 
+# 23: Cell Score Standard Deviation: 
+# 24: Minimum PDF standard deviation: 
+# 25: Mean of PDF standard deviation: 
+# 26: Maximum PDF standard deviation: 
+# 27: Mean of PDF minimum values: 
+# 28: Mean PDF maximum values: 
+# 29: Minimum of PDF minimum values: 
+# 30: Maximum of PDF maximum values: 
+0 0.000000000000e+00 0.000000000000e+00 256 2595 1141  0 0.00000000e+00 0.00000000e+00 0.00000000e+00 9.24826389e-01 1.12500000e+00 1.11666667e-03 1.11666667e-03  0.00000000e+00 0.00000000e+00 output-particle_KDE_addition/solution/solution-00000 4096 output-particle_KDE_addition/particles/particles-00000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0593 0.0593 0.0455 0.1000 
+1 3.000000000000e-02 3.000000000000e-02 256 2595 1141  8 4.70541567e-02 4.70541567e-02 0.00000000e+00 9.24794341e-01 1.12496653e+00 1.33107704e-03 1.33107704e-03 -2.15661638e-02 2.15661638e-02 output-particle_KDE_addition/solution/solution-00001 4096 output-particle_KDE_addition/particles/particles-00001 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0593 0.0593 0.0455 0.1000 
+2 6.000000000000e-02 3.000000000000e-02 256 2595 1141  9 9.36906573e-02 9.36906573e-02 0.00000000e+00 9.24761678e-01 1.12602061e+00 1.33950321e-03 1.33950321e-03 -4.29700065e-02 4.29700065e-02 output-particle_KDE_addition/solution/solution-00002 4096 output-particle_KDE_addition/particles/particles-00002 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0593 0.0593 0.0455 0.1000 
+3 9.000000000000e-02 3.000000000000e-02 256 2595 1141  9 1.39495553e-01 1.39495553e-01 0.00000000e+00 9.24726991e-01 1.12787772e+00 1.36522699e-03 1.36522699e-03 -6.40552852e-02 6.40552852e-02 output-particle_KDE_addition/solution/solution-00003 4096 output-particle_KDE_addition/particles/particles-00003 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0593 0.0593 0.0455 0.1000 
+4 1.200000000000e-01 3.000000000000e-02 256 2595 1141 10 1.84062276e-01 1.84062276e-01 0.00000000e+00 9.24688385e-01 1.13085067e+00 1.41310936e-03 1.41310936e-03 -8.46776807e-02 8.46776807e-02 output-particle_KDE_addition/solution/solution-00004 4128 output-particle_KDE_addition/particles/particles-00004 0.0000 0.0006 0.0370 0.0046 0.0000 0.0006 0.0385 0.0588 0.0600 0.0435 0.1538 
+5 1.500000000000e-01 3.000000000000e-02 256 2595 1141 10 2.26995250e-01 2.26995250e-01 0.00000000e+00 9.24643665e-01 1.13550372e+00 1.48807091e-03 1.48807091e-03 -1.04716103e-01 1.04716103e-01 output-particle_KDE_addition/solution/solution-00005 4128 output-particle_KDE_addition/particles/particles-00005 0.0000 0.0003 0.0133 0.0018 0.0000 0.0043 0.0326 0.0664 0.0751 0.0482 0.1739 
+6 1.800000000000e-01 3.000000000000e-02 256 2595 1141 11 2.67913397e-01 2.67913397e-01 0.00000000e+00 9.24590818e-01 1.14224846e+00 1.58888768e-03 1.58888768e-03 -1.24062041e-01 1.24062041e-01 output-particle_KDE_addition/solution/solution-00006 4144 output-particle_KDE_addition/particles/particles-00006 0.0000 0.0010 0.0612 0.0077 0.0000 0.0044 0.0345 0.0652 0.0741 0.0408 0.1500 

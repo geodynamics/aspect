@@ -119,69 +119,6 @@ namespace aspect
                                         const typename Particles::ParticleHandler<dim> &particle_handler);
 
         /**
-         * Fills the supplied PDF instance with values from the particles in the given cell.
-         *
-         * @param cell The cell whose particles to populate the PDF with.
-         * @param pdf The instance of ParticlePDF to fill with data from the cell's particles.
-         */
-        void
-        fill_PDF_from_cell(const typename Triangulation<dim>::active_cell_iterator &cell,
-                           Particle::ParticlePDF<dim> &pdf);
-
-        /**
-         * This function is only called from `fill_PDF_from_cell`.
-         * It iterates through every particle in the cell and
-         * sums the value of the kernel function between the
-         * reference point and the position of the cell.
-         *
-         * @param cell The cell whose particles to populate the PDF with.
-         * @param reference_point The point from which to get the value of the kernel function.
-         * @param table_index The index in the PDF to insert the data into.
-         * @param particles_in_cell The number of particles in the cell.
-         * @param pdf The instance of ParticlePDF to fill with data from the cell's particles.
-         */
-        void insert_kernel_sum_into_pdf(const typename Triangulation<dim>::active_cell_iterator &cell,
-                                        const Point<dim> reference_point,
-                                        const std::array<unsigned int,dim> table_index,
-                                        const unsigned int particles_in_cell,
-                                        Particle::ParticlePDF<dim> &pdf);
-
-        /**
-         * Returns the value of the selected kernel function.
-         *
-         * @param distance the distance to pass to the selected kernel function.
-         */
-        double
-        apply_selected_kernel_function(const double distance) const;
-
-        /**
-         * The Uniform kernel function returns a value of 1.0 as long as the
-         * distance is less than the KDE's bandwidth.
-         *
-         * @param distance the output of the kernel function depends on the distance between the reference point and the center of the kernel function.
-         */
-        double
-        kernelfunction_uniform(const double distance) const;
-
-        /**
-         * The Triangular kernel function returns a value of 1.0 minus
-         * the distance variable.
-         *
-         * @param distance the output of the kernel function depends on the distance between the reference point and the center of the kernel function.
-         */
-        double
-        kernelfunction_triangular(const double distance) const;
-
-        /**
-         * The gaussian function returns the value of a gaussian distribution
-         * at the specified distance.
-         *
-         * @param distance the output of the kernel function depends on the distance between the reference point and the center of the kernel function.
-         */
-        double
-        kernelfunction_gaussian(const double distance) const;
-
-        /**
          * Cached information that stores information about the grid so that we
          * do not need to recompute it every time properties_at_points() is called.
          */
