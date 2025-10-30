@@ -105,7 +105,7 @@ subsection Prescribed solution
         subsection Function
             set Variable names = r, phi, t
             set Function constants = Ro=6371e3, Ri=5371e3, phi_min = 1.3962634016
-            set Function expression = (r-Ri)*t;((phi-phi_min)*Ro)*t
+            set Function expression = (r-Ri)*t;((phi-phi_min)*Ro)*(1+t)
         end
     end
 end
