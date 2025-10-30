@@ -122,6 +122,6 @@ namespace aspect
                                               "A mesh refinement criterion that computes "
                                               "refinement indicators from the excess temperature"
                                               "(difference between temperature and adiabatic "
-                                              "temperature.")
+                                              "temperature).")
   }
 }
