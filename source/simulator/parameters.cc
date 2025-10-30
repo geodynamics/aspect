@@ -1132,7 +1132,7 @@ namespace aspect
                            Patterns::List(Patterns::Anything()),
                            "Select for which compositional fields to skip the entropy viscosity "
                            "stabilization at dirichlet boundaries. This is "
-                           "only advisable for compositional fields"
+                           "only advisable for compositional fields "
                            "that have intrinsic physical diffusion terms, otherwise "
                            "oscillations may develop. The parameter should contain a list of "
                            "compositional field names.");
