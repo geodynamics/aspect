@@ -319,12 +319,28 @@ namespace aspect
                    const unsigned int version) const;
 
         /**
-         * Read the data of this object from a stream for the purpose of
-         * serialization.
+         * Manager classes are also plugins. The InterfaceBase class
+         * that is common to all plugins has another save() function
+         * that would be hidden by the one above. Make sure that both
+         * remain visible.
          */
+        using InterfaceBase::save;
+
+        /**
+           * Read the data of this object from a stream for the purpose of
+           * serialization.
+           */
         template <class Archive>
         void load (Archive &ar,
                    const unsigned int version);
+
+        /**
+         * Manager classes are also plugins. The InterfaceBase class
+         * that is common to all plugins has another load() function
+         * that would be hidden by the one above. Make sure that both
+         * remain visible.
+         */
+        using InterfaceBase::load;
 
         BOOST_SERIALIZATION_SPLIT_MEMBER()
 
