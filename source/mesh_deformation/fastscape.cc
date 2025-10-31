@@ -772,7 +772,10 @@ namespace aspect
             }
 
           for (unsigned int i=0; i<local_aspect_values.size(); ++i)
-            MPI_Recv(&local_aspect_values[i][0], incoming_size, MPI_DOUBLE, p, 42, this->get_mpi_communicator(), &status);
+            MPI_Recv(&local_aspect_values[i][0], incoming_size, MPI_DOUBLE,
+                     /* sender= */ p,
+                     /* tag = */ 42,
+                     this->get_mpi_communicator(), &status);
 
           // Now, place the numbers into the correct place based off the index.
           for (unsigned int i=0; i<local_aspect_values[1].size(); ++i)
