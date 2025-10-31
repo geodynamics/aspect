@@ -499,7 +499,7 @@ namespace aspect
                                              &sand_transport_coefficient,
                                              &silt_transport_coefficient);
 
-          // generate a combined array for kf kd both onshore and offshore
+          // generate a combined array for kf and kd both onshore and offshore
           std::vector<double> combined_kd(fastscape_array_size);
           std::vector<double> combined_kf(fastscape_array_size);
           for (unsigned int i = 0; i < fastscape_array_size; ++i)
@@ -572,14 +572,13 @@ namespace aspect
             throw aspect::QuietException();
 
           // This is called solely so we can set the timer and will return immediately.
-          // (The kd array is a dummy array.)
-          std::vector<double> bedrock_transport_coefficient_array(fastscape_array_size);
+          std::vector<double> dummy(fastscape_array_size);
           execute_fastscape(mesh_velocity_z,
                             mesh_velocity_z,
                             mesh_velocity_z,
                             mesh_velocity_z,
                             mesh_velocity_z,
-                            bedrock_transport_coefficient_array,
+                            dummy,
                             aspect_timestep_in_years,
                             fastscape_steps_per_aspect_step);
         }
