@@ -97,7 +97,7 @@ subsection Prescribed solution
         end
         subsection Function
             set Variable names = x,y,t
-            set Function expression = y*t/1e11;x*t/1e11
+            set Function expression = y*(3.154e7+t)/1e11;x*t/1e11
         end
     end
 end
