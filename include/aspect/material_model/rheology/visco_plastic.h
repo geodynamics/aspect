@@ -25,6 +25,7 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/utilities.h>
 #include <aspect/material_model/rheology/strain_dependent.h>
+#include <aspect/material_model/rheology/compositional_plasticity_prefactors.h>
 #include <aspect/material_model/rheology/friction_models.h>
 #include <aspect/material_model/rheology/diffusion_creep.h>
 #include <aspect/material_model/rheology/dislocation_creep.h>
@@ -351,6 +352,11 @@ namespace aspect
            * Object for computing the viscosity multiplied by a given prefactor term.
            */
           Rheology::CompositionalViscosityPrefactors<dim> compositional_viscosity_prefactors;
+
+          /**
+           * Object for computing the viscosity multiplied by a given prefactor term.
+           */
+          Rheology::CompositionalPlasticityPrefactors<dim> compositional_plasticity_prefactors;
 
           /*
            * Object for computing plastic stresses, viscosities, and additional outputs
