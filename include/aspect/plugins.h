@@ -272,6 +272,24 @@ namespace aspect
         const std::vector<std::string> &
         get_active_plugin_names () const;
 
+        /**
+         * Write the data of this object to a stream for the purpose of
+         * serialization.
+         */
+        template <class Archive>
+        void save (Archive &ar,
+                   const unsigned int version) const;
+
+        /**
+         * Read the data of this object from a stream for the purpose of
+         * serialization.
+         */
+        template <class Archive>
+        void load (Archive &ar,
+                   const unsigned int version);
+
+        BOOST_SERIALIZATION_SPLIT_MEMBER()
+
       protected:
         /**
          * A list of plugin objects that have been requested in the
@@ -359,6 +377,40 @@ namespace aspect
             }
         }
     }
+
+
+
+    template <typename InterfaceType>
+    template <class Archive>
+    void ManagerBase<InterfaceType>::save (Archive &ar,
+                                           const unsigned int) const
+    {
+      // let all the postprocessors save their data in a map and then
+      // serialize that
+      std::map<std::string,std::string> saved_text;
+      for (const auto &p : plugin_objects)
+        p->save (saved_text);
+
+      ar &saved_text;
+    }
+
+
+    template <typename InterfaceType>
+    template <class Archive>
+    void ManagerBase<InterfaceType>::load (Archive &ar,
+                                           const unsigned int)
+    {
+      // get the map back out of the stream; then let the postprocessors
+      // that we currently have get their data from there. note that this
+      // may not be the same set of postprocessors we had when we saved
+      // their data
+      std::map<std::string,std::string> saved_text;
+      ar &saved_text;
+
+      for (auto &p : plugin_objects)
+        p->load (saved_text);
+    }
+
 
 
     template <typename InterfaceType>
