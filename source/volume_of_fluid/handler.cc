@@ -256,7 +256,7 @@ namespace aspect
 
       prm.declare_entry ("Number initialization samples", "3",
                          Patterns::Integer (1),
-                         "Number of divisions per dimension when computing the initial volume fractions."
+                         "Number of divisions per dimension when computing the initial volume fractions. "
                          "If set to the default of 3 for a 2d model, then initialization will be based on "
                          "the initialization criterion at $3^2=9$ points within each cell. If the initialization "
                          "based on a composition style initial condition, a larger value may be desired for better "
