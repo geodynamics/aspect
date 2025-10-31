@@ -1443,7 +1443,7 @@ namespace aspect
                          "field as mentioned in Section~\\ref{sec:methods:compositional-fields}, except that it is "
                          "advected with the Darcy velocity instead of the solid velocity. This method "
                          "requires there to be a compositional field named porosity that is advected "
-                         "with the darcy field method. We calculate the fluid velocity $u_f$ using an "
+                         "with the Darcy field method. We calculate the fluid velocity $u_f$ using an "
                          "approximation of Darcy's Law: $u_f = u_s - K_D / \\phi * (\\rho_s * g - \\rho_f * g)$."
                          "\n"
                          "* ``prescribed field'': The value of these fields is determined "
@@ -2259,7 +2259,7 @@ namespace aspect
           AssertThrow (porosity_idx != n_compositional_fields,
                        ExcMessage ("The Darcy advection field method only works if there is a compositional field named 'porosity'"));
           AssertThrow (compositional_field_methods[porosity_idx] == AdvectionFieldMethod::fem_darcy_field,
-                       ExcMessage ("When using the Darcy advection field method, the porosity field must be advected with the darcy method."));
+                       ExcMessage ("When using the Darcy advection field method, the porosity field must be advected with the Darcy method."));
         }
 
       for (const auto &p : x_mapped_particle_properties)
