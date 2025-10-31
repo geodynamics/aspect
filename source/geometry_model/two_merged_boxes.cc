@@ -639,7 +639,7 @@ namespace aspect
                                    "The extent of the box in each coordinate direction "
                                    "is set in the parameter file. This geometry model labels its "
                                    "sides with 2*dim+2*(dim-1) boundary indicators: in 2d, boundary indicators 0 through 3 "
-                                   "denote the left, right, bottom and top boundaries, while indicators"
+                                   "denote the left, right, bottom and top boundaries, while indicators "
                                    "4 and 5 denote the upper part of the left and right vertical boundary, "
                                    "respectively. In 3d, boundary "
                                    "indicators 0 through 5 indicate left, right, front, back, bottom "
