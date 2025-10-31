@@ -373,7 +373,7 @@ namespace aspect
                            "use in your model."
                            "\n\n"
                            "This parameter only describes which boundaries have a fixed "
-                           "convective flux (i.e. Robin boundarry condictions), but not what "
+                           "convective flux (i.e. Robin boundary condictions), but not what "
                            "conditions should hold on these boundaries. "
                            "The latter piece of information needs to be "
                            "implemented in a plugin in the BoundaryConvectiveHeating "
