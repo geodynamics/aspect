@@ -571,16 +571,10 @@ namespace aspect
           if (fastscape_mesh_filled != true)
             throw aspect::QuietException();
 
-          // This is called solely so we can set the timer and will return immediately.
-          std::vector<double> dummy(fastscape_array_size);
-          execute_fastscape(mesh_velocity_z,
-                            mesh_velocity_z,
-                            mesh_velocity_z,
-                            mesh_velocity_z,
-                            mesh_velocity_z,
-                            dummy,
-                            aspect_timestep_in_years,
-                            fastscape_steps_per_aspect_step);
+          // We only execute FastScape on process 0, but we have to make sure we
+          // enter and leave the corresponding timer section on all processes:
+          this->get_computing_timer().enter_subsection("Execute FastScape");
+          this->get_computing_timer().leave_subsection("Execute FastScape");
         }
 
       // At this point, the root process will have filled the mesh_velocity_z array,
@@ -891,13 +885,12 @@ namespace aspect
                                            const double &fastscape_timestep_in_years,
                                            const unsigned int &fastscape_iterations) const
     {
-      this->get_computing_timer().enter_subsection("Execute FastScape");
+      // This function can only be called on the root process where we run
+      // Fastscape:
+      Assert (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0,
+              ExcInternalError());
 
-      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) != 0)
-        {
-          this->get_computing_timer().leave_subsection("Execute FastScape");
-          return;
-        }
+      this->get_computing_timer().enter_subsection("Execute FastScape");
 
       // Because on the first timestep we will create an initial VTK file before running FastScape
       // and a second after, we first set the visualization step to zero.
