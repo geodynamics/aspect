@@ -113,17 +113,14 @@ namespace aspect
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(AnisotropicStress,
                                                   "Anisotropic stress",
                                                   "A visualization output object that generates output "
-                                                  "for the 6 (in 3d) components of the shear stress "
-                                                  "tensor, i.e., for the components of the tensor "
-                                                  "$-2\\eta\\varepsilon(\\mathbf u)$ "
-                                                  "in the incompressible case and "
-                                                  "$-2\\eta\\left[\\varepsilon(\\mathbf u)-"
-                                                  "\\tfrac 13(\\textrm{tr}\\;\\varepsilon(\\mathbf u))\\mathbf I\\right]$ "
-                                                  "in the compressible case. If elasticity is used, the "
-                                                  "elastic contribution is being accounted for. The shear "
-                                                  "stress differs from the full stress tensor "
-                                                  "by the absence of the pressure. Note that the convention "
-                                                  "of positive compressive stress is followed. ")
+                                                  "for the 6 (in 3d) components of the anisotropic stress "
+                                                  "tensor. The anisotropic stress is defined as $2 \eta "
+                                                  "(\varepsilon(\mathbf u) - \tfrac 13 \textrm{trace}\ "
+                                                  "\varepsilon(\mathbf u) \mathbf 1) = 2\eta (\varepsilon(\mathbf u) - "
+                                                  "\frac 13 (\nabla \cdot \mathbf u) \mathbf I)$ * stress_strain_directors, and differs from the "
+                                                  "full stress by the absence of the pressure.  The second term in the "
+                                                  "difference is zero if the model is incompressible. "
+                                                  "If elasticity is used, the elastic contribution is being accounted for. ")
     }
   }
 }

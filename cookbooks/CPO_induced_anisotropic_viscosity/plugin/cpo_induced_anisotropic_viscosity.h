@@ -75,26 +75,56 @@ namespace aspect
     {
       public:
         void initialize() override;
+
         void evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                        MaterialModel::MaterialModelOutputs<dim> &out) const override;
-        static void declare_parameters (ParameterHandler &prm);
-        void parse_parameters (ParameterHandler &prm) override;
+
         bool is_compressible () const override;
+
+        static void declare_parameters (ParameterHandler &prm);
+
+        void parse_parameters (ParameterHandler &prm) override;
+        
         void create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const override;
+
       private:
-        double eta; //reference viscosity
+
+        /**
+         * Reference viscosity.
+         */
+        double eta;
+
         /**
          * Defining a minimum strain rate stabilizes the viscosity calculation,
          * which involves a division by the strain rate. Units: 1/s.
          */
         double min_strain_rate;
+        
+        /**
+         * These are arrays that store eigenvalues of the olivine textures in a, b, and c axis, and 
+         * the olivine texture represented by Euler angles. For more details, please refer to the
+         * cpo_bingham_average particle property. To use the anisotropic viscosity plugin in this 
+         * cookbook, the CPO Bingham Average particle property must be included and Use rotation matrix
+         * must be set to false. The resulting arrays are:
+         * cpo_bingham_avg_a = [phi, eigenvalue 1 for a-axis, eigenvalue 2 for a-axis, eigenvalue 3 for a-axis]
+         * cpo_bingham_avg_b = [phi, eigenvalue 1 for b-axis, eigenvalue 2 for b-axis, eigenvalue 3 for b-axis]
+         * cpo_bingham_avg_c = [phi, eigenvalue 1 for c-axis, eigenvalue 2 for c-axis, eigenvalue 3 for c-axis]
+         * They are used in computing rotation matrix with regards to the CPO reference frame, and 
+         * the anisotropic Hill coefficients FGHLMN.
+         */
         std::vector<double> cpo_bingham_avg_a, cpo_bingham_avg_b, cpo_bingham_avg_c;
-        double grain_size;
+        
+        /**
+         * These are arrays that store coefficients used to compute the anisotropic Hill coefficients FGHLMN from
+         * a certain olivine texture represented with the eigenvalues of its a-, b-, and c-axis. Each array therefore contatains
+         * 9 coefficients and 1 constant. This empirical relationship is found using linear regression.
+         */
         std::vector<double> CnI_F, CnI_G, CnI_H, CnI_L, CnI_M, CnI_N;
-        double compositional_delta_rho;
 
-        unsigned int n_grains;
+        double grain_size;
+
         EquationOfState::LinearizedIncompressible<dim> equation_of_state;
+
         void set_assemblers(const SimulatorAccess<dim> &,
                             Assemblers::Manager<dim> &assemblers) const;
 

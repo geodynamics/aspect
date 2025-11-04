@@ -787,42 +787,6 @@ namespace aspect
 
 
 
-
-
-
-    template <int dim>
-    void
-    CPO_AV_3D<dim>::parse_parameters (ParameterHandler &prm)
-    {
-      prm.enter_subsection("Material model");
-      {
-        prm.enter_subsection("CPO-induced Anisotropic Viscosity");
-        {
-
-          equation_of_state.parse_parameters (prm);
-          eta = prm.get_double("Reference viscosity");
-          min_strain_rate = prm.get_double("Minimum strain rate");
-          grain_size = prm.get_double("Grain size");
-          CnI_F = dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Coefficients and intercept for F")));
-          CnI_G = dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Coefficients and intercept for G")));
-          CnI_H = dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Coefficients and intercept for H")));
-          CnI_L = dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Coefficients and intercept for L")));
-          CnI_M = dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Coefficients and intercept for M")));
-          CnI_N = dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Coefficients and intercept for N")));
-          compositional_delta_rho    = prm.get_double ("Density differential for compositional field 1");
-        }
-        prm.leave_subsection();
-      }
-      prm.leave_subsection();
-
-
-
-      // Declare dependence
-      this->model_dependence.density = NonlinearDependence::compositional_fields;
-    }
-
-
-
     template <int dim>
     void
     CPO_AV_3D<dim>::declare_parameters (ParameterHandler &prm)
@@ -876,6 +840,38 @@ namespace aspect
       }
       prm.leave_subsection();
 
+    }
+
+
+
+    template <int dim>
+    void
+    CPO_AV_3D<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Material model");
+      {
+        prm.enter_subsection("CPO-induced Anisotropic Viscosity");
+        {
+
+          equation_of_state.parse_parameters (prm);
+          eta = prm.get_double("Reference viscosity");
+          min_strain_rate = prm.get_double("Minimum strain rate");
+          grain_size = prm.get_double("Grain size");
+          CnI_F = dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Coefficients and intercept for F")));
+          CnI_G = dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Coefficients and intercept for G")));
+          CnI_H = dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Coefficients and intercept for H")));
+          CnI_L = dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Coefficients and intercept for L")));
+          CnI_M = dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Coefficients and intercept for M")));
+          CnI_N = dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Coefficients and intercept for N")));
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection();
+
+
+
+      // Declare dependence
+      this->model_dependence.density = NonlinearDependence::compositional_fields;
     }
 
 
