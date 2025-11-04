@@ -530,6 +530,7 @@ namespace aspect
   }
 
 
+
   template <int dim>
   void Simulator<dim>::do_one_defect_correction_Stokes_step(DefectCorrectionResiduals &dcr,
                                                             const bool use_picard)
@@ -546,6 +547,49 @@ namespace aspect
     (void) pressure_block_index;
     Assert(!parameters.include_melt_transport
            || introspection.variable("compaction pressure").block_index == 1, ExcNotImplemented());
+
+    // Define some lambda functions here for readability
+    auto update_residuals = [&]()
+    {
+      dcr.velocity_residual = system_rhs.block(velocity_block_index).l2_norm();
+      dcr.pressure_residual = system_rhs.block(pressure_block_index).l2_norm();
+      dcr.residual = std::sqrt(dcr.velocity_residual * dcr.velocity_residual +
+                               dcr.pressure_residual * dcr.pressure_residual);
+    };
+
+    // Eisenstat Walker method for determining the linear solver tolerance
+    auto update_Eisenstat_Walker_tolerance = [&]()
+    {
+      const bool EisenstatWalkerChoiceOne = true;
+      parameters.linear_stokes_solver_tolerance = compute_Eisenstat_Walker_linear_tolerance(EisenstatWalkerChoiceOne,
+                                                  newton_handler->parameters.maximum_linear_stokes_solver_tolerance,
+                                                  parameters.linear_stokes_solver_tolerance,
+                                                  dcr.stokes_residuals.second,
+                                                  dcr.residual,
+                                                  dcr.residual_old);
+
+      pcout << "   The linear solver tolerance is set to "
+            << parameters.linear_stokes_solver_tolerance
+            << ". ";
+      if (!use_picard)
+        {
+          pcout << "Stabilization Preconditioner is "
+                << Newton::to_string(newton_handler->parameters.preconditioner_stabilization)
+                << " and A block is "
+                << Newton::to_string(newton_handler->parameters.velocity_block_stabilization)
+                << '.';
+        }
+      pcout << std::endl;
+    };
+
+    // build the preconditioner
+    auto build_preconditioner = [&]()
+    {
+      if (stokes_matrix_free)
+        stokes_matrix_free->build_preconditioner();
+      else
+        build_stokes_preconditioner();
+    };
 
     // Re-compute the pressure scaling factor for the Stokes assembly
     pressure_scaling = compute_pressure_scaling_factor();
@@ -588,10 +632,7 @@ namespace aspect
 
     assemble_stokes_system();
 
-    // recompute rhs
-    dcr.velocity_residual = system_rhs.block(velocity_block_index).l2_norm();
-    dcr.pressure_residual = system_rhs.block(pressure_block_index).l2_norm();
-    dcr.residual = std::sqrt(dcr.velocity_residual * dcr.velocity_residual + dcr.pressure_residual * dcr.pressure_residual);
+    update_residuals();
 
     // Test whether the rhs has dropped so much that we can assume that the iteration is done.
     if (dcr.residual < dcr.residual_old * 1e-8)
@@ -607,38 +648,15 @@ namespace aspect
       }
 
 
-    // Eisenstat Walker method for determining the linear solver tolerance
     if (nonlinear_iteration > 1)
       {
         if (!use_picard || newton_handler->parameters.use_Eisenstat_Walker_method_for_Picard_iterations)
           {
-            const bool EisenstatWalkerChoiceOne = true;
-            parameters.linear_stokes_solver_tolerance = compute_Eisenstat_Walker_linear_tolerance(EisenstatWalkerChoiceOne,
-                                                        newton_handler->parameters.maximum_linear_stokes_solver_tolerance,
-                                                        parameters.linear_stokes_solver_tolerance,
-                                                        dcr.stokes_residuals.second,
-                                                        dcr.residual,
-                                                        dcr.residual_old);
-
-            pcout << "   The linear solver tolerance is set to "
-                  << parameters.linear_stokes_solver_tolerance
-                  << ". ";
-            if (!use_picard)
-              {
-                pcout << "Stabilization Preconditioner is "
-                      << Newton::to_string(newton_handler->parameters.preconditioner_stabilization)
-                      << " and A block is "
-                      << Newton::to_string(newton_handler->parameters.velocity_block_stabilization)
-                      << '.';
-              }
-            pcout << std::endl;
+            update_Eisenstat_Walker_tolerance();
           }
       }
 
-    if (stokes_matrix_free)
-      stokes_matrix_free->build_preconditioner();
-    else
-      build_stokes_preconditioner();
+    build_preconditioner();
 
     // The solution of the defect correction solver is an update direction
     LinearAlgebra::BlockVector search_direction;
@@ -694,29 +712,16 @@ namespace aspect
          */
         if (nonlinear_iteration > 1)
           {
-            dcr.velocity_residual = system_rhs.block(velocity_block_index).l2_norm();
-            dcr.pressure_residual = system_rhs.block(pressure_block_index).l2_norm();
-            dcr.residual = std::sqrt(dcr.velocity_residual * dcr.velocity_residual + dcr.pressure_residual * dcr.pressure_residual);
+            update_residuals();
 
             // Eisenstat Walker method for determining the linear solver tolerance
             if (!use_picard)
               {
-                const bool EisenstatWalkerChoiceOne = true;
-                parameters.linear_stokes_solver_tolerance = compute_Eisenstat_Walker_linear_tolerance(EisenstatWalkerChoiceOne,
-                                                            newton_handler->parameters.maximum_linear_stokes_solver_tolerance,
-                                                            parameters.linear_stokes_solver_tolerance,
-                                                            dcr.stokes_residuals.second,
-                                                            dcr.residual,
-                                                            dcr.residual_old);
-
-                pcout << "   The linear solver tolerance is set to " << parameters.linear_stokes_solver_tolerance << std::endl;
+                update_Eisenstat_Walker_tolerance();
               }
           }
 
-        if (stokes_matrix_free)
-          stokes_matrix_free->build_preconditioner();
-        else
-          build_stokes_preconditioner();
+        build_preconditioner();
 
         // Give this another try:
         dcr.stokes_residuals = solve_stokes(search_direction);
@@ -744,79 +749,11 @@ namespace aspect
         dcr.residual_old = dcr.residual;
 
         // We have computed an update. Prepare for a line search.
-        LinearAlgebra::BlockVector backup_linearization_point(introspection.index_sets.stokes_partitioning, mpi_communicator);
-
-        double step_length_factor = 1.0;
-        unsigned int line_search_iteration = 0;
-
-        // Do the loop for the line search at least once with the full step length.
-        // If line search is disabled we will exit the loop in the first iteration.
-        do
-          {
-            if (line_search_iteration == 0)
-              {
-                // backup our starting point for the line search
-                backup_linearization_point.block(pressure_block_index) = current_linearization_point.block(pressure_block_index);
-                backup_linearization_point.block(velocity_block_index) = current_linearization_point.block(velocity_block_index);
-              }
-            else
-              {
-                // undo the last iteration and try again with smaller step length
-                current_linearization_point.block(pressure_block_index) = backup_linearization_point.block(pressure_block_index);
-                current_linearization_point.block(velocity_block_index) = backup_linearization_point.block(velocity_block_index);
-                search_direction.block(pressure_block_index) *= step_length_factor;
-                search_direction.block(velocity_block_index) *= step_length_factor;
-              }
-
-            // Update the current linearization point with the search direction
-            current_linearization_point.block(pressure_block_index) += search_direction.block(pressure_block_index);
-            current_linearization_point.block(velocity_block_index) += search_direction.block(velocity_block_index);
-
-            // Rebuild the rhs to determine the new residual.
-            assemble_newton_stokes_matrix = rebuild_stokes_preconditioner = false;
-            rebuild_stokes_matrix = !boundary_velocity_manager.get_prescribed_boundary_velocity_indicators().empty();
-
-            assemble_stokes_system();
-
-            const double test_velocity_residual = system_rhs.block(velocity_block_index).l2_norm();
-            const double test_pressure_residual = system_rhs.block(pressure_block_index).l2_norm();
-            const double test_residual = std::sqrt(test_velocity_residual * test_velocity_residual
-                                                   + test_pressure_residual * test_pressure_residual);
-
-            // Determine if the residual has decreased sufficiently.
-            const double alpha = 1e-4;
-            if (test_residual < (1.0 - alpha * step_length_factor) * dcr.residual
-                ||
-                line_search_iteration >= newton_handler->parameters.max_newton_line_search_iterations
-                ||
-                use_picard)
-              {
-                pcout << "      Newton system information: Norm of the rhs: " << test_residual
-                      << ", Derivative scaling factor: " << newton_handler->parameters.newton_derivative_scaling_factor << std::endl;
-                dcr.residual = test_residual;
-                break;
-              }
-            else
-              {
-                pcout << "   Line search iteration " << line_search_iteration << ", with norm of the rhs "
-                      << test_residual << " and going to " << (1.0 - alpha * step_length_factor) * dcr.residual
-                      << ", relative residual: " << test_residual/dcr.initial_residual << std::endl;
-
-                // The current search direction has not decreased the residual
-                // enough, so we take a smaller step and try again.
-                // TODO: make a parameter out of this.
-                step_length_factor = 2.0/3.0;
-              }
-
-            ++line_search_iteration;
-            Assert(line_search_iteration <= newton_handler->parameters.max_newton_line_search_iterations,
-                   ExcInternalError());
-          }
-        while (true);
+        dcr.residual = perform_line_search(dcr, use_picard, search_direction);
       }
 
 
-    if (use_picard == true)
+    if (use_picard)
       {
         // When we are using (defect corrected) Picard, keep the
         // newton_derivative_scaling_factor at zero. The newton_derivative_scaling_factor
