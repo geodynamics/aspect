@@ -1669,7 +1669,7 @@ namespace aspect
                             "the FastScape timestep is above the maximum FastScape timestep.");
           prm.declare_entry("Maximum timestep length", "10e3",
                             Patterns::Double(0),
-                            "Maximum timestep for FastScape. Units: $\\{yrs}$");
+                            "Maximum timestep for FastScape. Units: ${yrs}$");
           prm.declare_entry("Vertical exaggeration", "-1",
                             Patterns::Double(),
                             "Vertical exaggeration for FastScape's VTK file. -1 outputs topography, basement, and sealevel.");
@@ -1696,7 +1696,7 @@ namespace aspect
                              "Flag to use the marine component of FastScape.");
           prm.declare_entry("Y extent in 2d", "100000",
                             Patterns::Double(),
-                            "FastScape Y extent when using a 2D ASPECT model. Units: $\\{m}$");
+                            "FastScape Y extent when using a 2D ASPECT model. Units: ${m}$");
           prm.declare_entry ("Use ghost nodes", "true",
                              Patterns::Bool (),
                              "Flag to use ghost nodes.");
@@ -1710,13 +1710,13 @@ namespace aspect
                              Patterns::List (Patterns::Double(0)),
                              "Sediment rain rates given as a list 1 greater than the number of sediment rain time intervals. E.g, "
                              "If the time interval is given at 5 Myr, there will be one value for 0-5 Myr model time and a second value "
-                             "for 5+ Myr. Units: $\\{m/yr}$");
+                             "for 5+ Myr. Units: ${m/yr}$");
           prm.declare_entry ("Sediment rain time intervals", "0",
                              Patterns::List (Patterns::Double(0)),
-                             "A list of times to change the sediment rain rate. Units: $\\{yrs}$");
+                             "A list of times to change the sediment rain rate. Units: ${yrs}$");
           prm.declare_entry("Initial noise magnitude", "5",
                             Patterns::Double(),
-                            "Maximum topography change from the initial noise. Units: $\\{m}$");
+                            "Maximum topography change from the initial noise. Units: ${m}$");
           prm.declare_entry("Additional output variables", "river incision rate",
                             Patterns::Selection("river incision rate|deposition coefficient|uplift rate"),
                             "Select one additional Fastscape variable to output in the Fastcape vtk. "
@@ -1739,16 +1739,16 @@ namespace aspect
                                "Left boundary condition, where 1 is fixed and 0 is reflective.");
             prm.declare_entry("Left mass flux", "0",
                               Patterns::Double(),
-                              "Flux per unit length through the left boundary. Units: $\\{m^2/yr}$ ");
+                              "Flux per unit length through the left boundary. Units: ${m^2/yr}$ ");
             prm.declare_entry("Right mass flux", "0",
                               Patterns::Double(),
-                              "Flux per unit length through the right boundary. Units: $\\{m^2/yr}$ ");
+                              "Flux per unit length through the right boundary. Units: ${m^2/yr}$ ");
             prm.declare_entry("Back mass flux", "0",
                               Patterns::Double(),
-                              "Flux per unit length through the back boundary. Units: $\\{m^2/yr}$ ");
+                              "Flux per unit length through the back boundary. Units: ${m^2/yr}$ ");
             prm.declare_entry("Front mass flux", "0",
                               Patterns::Double(),
-                              "Flux per unit length through the front boundary. Units: $\\{m^2/yr}$ ");
+                              "Flux per unit length through the front boundary. Units: ${m^2/yr}$ ");
             prm.declare_entry ("Back front ghost nodes periodic", "false",
                                Patterns::Bool (),
                                "Whether to set the ghost nodes at the FastScape back and front boundary "
@@ -1819,10 +1819,10 @@ namespace aspect
                               "Transport coefficient (diffusivity) for sediment. -1 sets this to the bedrock diffusivity. Units: ${m^2/yr}$");
             prm.declare_entry("Orographic elevation control", "2000",
                               Patterns::Integer(),
-                              "Above this height, the elevation factor is applied. Units: $\\{m}$");
+                              "Above this height, the elevation factor is applied. Units: ${m}$");
             prm.declare_entry("Orographic wind barrier height", "500",
                               Patterns::Integer(),
-                              "When terrain reaches this height the wind barrier factor is applied. Units: $\\{m}$");
+                              "When terrain reaches this height the wind barrier factor is applied. Units: ${m}$");
             prm.declare_entry("Elevation factor", "1",
                               Patterns::Double(),
                               "Amount to multiply the bedrock river incision rate and transport coefficient by past the given orographic elevation control.");
@@ -1873,7 +1873,7 @@ namespace aspect
             prm.declare_entry("Sea level", "0.0",
                               Patterns::Double(),
                               "Constant sea level relative to the ASPECT surface, where the maximum Z or Y extent in ASPECT is a sea level of zero. "
-                              "Units: $\\{m}$ ");
+                              "Units: ${m}$ ");
 
             prm.enter_subsection ("Sea level function");
             {
@@ -1889,22 +1889,22 @@ namespace aspect
                               "Porosity of silt. ");
             prm.declare_entry("Sand e-folding depth", "1e3",
                               Patterns::Double(),
-                              "E-folding depth for the exponential of the sand porosity law. Units: $\\{m}$");
+                              "E-folding depth for the exponential of the sand porosity law. Units: ${m}$");
             prm.declare_entry("Silt e-folding depth", "1e3",
                               Patterns::Double(),
-                              "E-folding depth for the exponential of the silt porosity law. Units: $\\{m}$");
+                              "E-folding depth for the exponential of the silt porosity law. Units: ${m}$");
             prm.declare_entry("Sand-silt ratio", "0.5",
                               Patterns::Double(),
                               "Ratio of sand to silt for material leaving continent.");
             prm.declare_entry("Depth averaging thickness", "1e2",
                               Patterns::Double(),
-                              "Depth averaging for the sand-silt equation. Units: $\\{m}$");
+                              "Depth averaging for the sand-silt equation. Units: ${m}$");
             prm.declare_entry("Sand transport coefficient", "5e2",
                               Patterns::Double(),
-                              "Transport coefficient (diffusivity) for sand. Units: $\\{m^2/yr}$");
+                              "Transport coefficient (diffusivity) for sand. Units: ${m^2/yr}$");
             prm.declare_entry("Silt transport coefficient", "2.5e2",
                               Patterns::Double(),
-                              "Transport coefficient (diffusivity) for silt. Units: $\\{m^2/yr}$ ");
+                              "Transport coefficient (diffusivity) for silt. Units: ${m^2/yr}$ ");
           }
           prm.leave_subsection();
         }
