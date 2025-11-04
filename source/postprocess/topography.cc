@@ -136,8 +136,13 @@ namespace aspect
         return std::pair<std::string, std::string> ("Topography min/max:",
                                                     output_stats.str());
 
+
+      Utilities::create_directory (this->get_output_directory() + "topography/",
+                                   this->get_mpi_communicator(),
+                                   /* silent=*/true);
+
       std::string filename = this->get_output_directory() +
-                             "topography." +
+                             "topography/topography." +
                              Utilities::int_to_string(this->get_timestep_number(), 5);
       if (this->get_parameters().run_postprocessors_on_nonlinear_iterations)
         filename.append("." + Utilities::int_to_string (this->get_nonlinear_iteration(), 4));
