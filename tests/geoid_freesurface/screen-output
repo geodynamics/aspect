@@ -16,7 +16,7 @@ Number of mesh deformation degrees of freedom: 450
      Density at top/bottom of domain:  1 kg/m^3, 1 kg/m^3
      Pressure at top/bottom of domain: 0.0006808 Pa, 0.4774 Pa
      Computing dynamic topography      
-     Writing geoid anomaly:            output-geoid_freesurface/geoid_anomaly.00000
+     Writing geoid anomaly:            output-geoid_freesurface/geoid/geoid_anomaly.00000
 
 *** Timestep 1:  t=1e-06 seconds, dt=1e-06 seconds
    Solving mesh displacement system... 2 iterations.
@@ -30,7 +30,7 @@ Number of mesh deformation degrees of freedom: 450
      Density at top/bottom of domain:  1 kg/m^3, 1 kg/m^3
      Pressure at top/bottom of domain: 0.0006808 Pa, 0.4774 Pa
      Computing dynamic topography      
-     Writing geoid anomaly:            output-geoid_freesurface/geoid_anomaly.00001
+     Writing geoid anomaly:            output-geoid_freesurface/geoid/geoid_anomaly.00001
 
 Termination requested by criterion: end time
 
