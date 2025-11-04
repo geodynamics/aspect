@@ -319,7 +319,7 @@ namespace aspect
                             {
                               const double drucker_prager_viscosity = compute_viscosity(edot_ii,pressure,c,prefactor[c],false,min_visc[c],max_visc[c]);
                               const double regularization_adjustment = (ref_visc * ref_visc)
-                                                                       / Utilities::fixed_power<2,double>(ref_visc + drucker_prager_viscosity);
+                                                                       / ((ref_visc + drucker_prager_viscosity) * (ref_visc + drucker_prager_viscosity));
 
                               composition_viscosities_derivatives[c] = -regularization_adjustment *
                                                                        (drucker_prager_viscosity / (edot_ii * edot_ii)) * deviator_strain_rate;
