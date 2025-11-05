@@ -372,8 +372,11 @@ namespace aspect
       // and concatenate them into one file.
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
+          Utilities::create_directory (this->get_output_directory() + "sea_level/",
+                                       this->get_mpi_communicator(),
+                                       /* silent=*/true);
           std::string filename = this->get_output_directory() +
-                                 "nonuniform_sea_level_change." +
+                                 "sea_level/nonuniform_sea_level_change." +
                                  Utilities::int_to_string(this->get_timestep_number(), 5);
           if (this->get_parameters().run_postprocessors_on_nonlinear_iterations)
             filename.append("." + Utilities::int_to_string (this->get_nonlinear_iteration(), 4));
