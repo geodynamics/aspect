@@ -201,6 +201,8 @@ foreach(_test ${_tests})
     set(_use_test OFF)
   endif()
 
+  # Check whether the test satisfies its conditions. The following
+  # modifies _use_test as necessary:
   SHOULD_ENABLE_TEST(${CMAKE_CURRENT_SOURCE_DIR}/${_testname}.prm)
 
   if(_use_test)
@@ -235,18 +237,15 @@ foreach(_test ${_tests})
     # output directory of this test. MAKE_DIRECTORY then does a `mkdir -p`.
     file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname})
 
-    file(GLOB_RECURSE _outputs RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}/
-  ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}/[a-zA-Z0-9]*)
-    foreach(_output ${_outputs})
+    file(GLOB_RECURSE _outputs
+         RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}/
+         ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}/[a-zA-Z0-9]*)
 
-      # get the directory name we should work on; for cmake <2.8.11, the
-      # subcommand was PATH (legacy), for everything after we can use
-      # DIRECTORY
-      if (${CMAKE_VERSION} VERSION_LESS "2.8.12")
-        get_filename_component(_dir ${_output} PATH)
-      else()
-        get_filename_component(_dir ${_output} DIRECTORY)
-      endif()
+    # For each of the collected output files under tests/, see if
+    # they have a directory component and if so, create that directory
+    # also in the runtime directory under the current build directory:
+    foreach(_output ${_outputs})
+      get_filename_component(_dir ${_output} DIRECTORY)
       if(NOT  ${_dir} STREQUAL "" )
         file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_dir})
       endif()
