@@ -858,10 +858,10 @@ namespace aspect
         const double timestep_ratio = calculate_timestep_ratio();
 
         const SymmetricTensor<2, dim>
-        edot_deviator = strain_rate + 0.5 * stress_0_advected / elastic_viscosity
-                        + 0.5 * (1. - timestep_ratio) * (1.  - creep_viscosity/elastic_viscosity) * stress_old / creep_viscosity;
+        edot = strain_rate + 0.5 * stress_0_advected / elastic_viscosity
+               + 0.5 * (1. - timestep_ratio) * (1.  - creep_viscosity/elastic_viscosity) * stress_old / creep_viscosity;
 
-        return edot_deviator;
+        return edot;
       }
 
 

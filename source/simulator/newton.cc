@@ -57,7 +57,7 @@ namespace aspect
         // The compressible part of the preconditioner is only necessary if we use the simplified A block
         if (this->get_parameters().use_full_A_block_preconditioner == false)
           assemblers.stokes_preconditioner.push_back(
-            std::make_unique<aspect::Assemblers::StokesCompressiblePreconditioner<dim>>());
+            std::make_unique<aspect::Assemblers::NewtonStokesCompressiblePreconditioner<dim>>());
 
         assemblers.stokes_system.push_back(
           std::make_unique<aspect::Assemblers::NewtonStokesCompressibleStrainRateViscosityTerm<dim>>());
