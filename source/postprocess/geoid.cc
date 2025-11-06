@@ -402,6 +402,10 @@ namespace aspect
                    dim == 3,
                    ExcMessage("The geoid postprocessor is currently only implemented for the 3d spherical shell geometry model."));
 
+      Utilities::create_directory (this->get_output_directory() + "geoid/",
+                                   this->get_mpi_communicator(),
+                                   /* silent=*/true);
+
       const GeometryModel::SphericalShell<dim> &geometry_model =
         Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model());
 
@@ -596,7 +600,7 @@ namespace aspect
             }
 
           const std::string density_anomaly_contribution_SH_coes_filename = this->get_output_directory() +
-                                                                            "density_anomaly_contribution_SH_coefficients." +
+                                                                            "geoid/density_anomaly_contribution_SH_coefficients." +
                                                                             dealii::Utilities::int_to_string(this->get_timestep_number(), 5);
 
           // Because each processor already held all the SH coefficients from density anomaly contribution, we only need to stop by the processor 0 to get the data.
@@ -639,7 +643,7 @@ namespace aspect
             }
 
           const std::string surface_topo_contribution_SH_coes_filename = this->get_output_directory() +
-                                                                         "surface_topography_contribution_SH_coefficients." +
+                                                                         "geoid/surface_topography_contribution_SH_coefficients." +
                                                                          dealii::Utilities::int_to_string(this->get_timestep_number(), 5);
 
           // Because each processor already held all the SH coefficients from surface topography contribution,
@@ -687,7 +691,7 @@ namespace aspect
             }
 
           const std::string CMB_topo_contribution_SH_coes_filename = this->get_output_directory() +
-                                                                     "CMB_topography_contribution_SH_coefficients." +
+                                                                     "geoid/CMB_topography_contribution_SH_coefficients." +
                                                                      dealii::Utilities::int_to_string(this->get_timestep_number(), 5);
 
           // Because each processor already held all the SH coefficients from CMB topography contribution, we only need to stop by the processor 0
@@ -734,7 +738,7 @@ namespace aspect
             }
 
           const std::string geoid_anomaly_SH_coes_filename = this->get_output_directory() +
-                                                             "geoid_anomaly_SH_coefficients." +
+                                                             "geoid/geoid_anomaly_SH_coefficients." +
                                                              dealii::Utilities::int_to_string(this->get_timestep_number(), 5);
 
           // Because each processor already held all the geoid anomaly SH coefficients, we only need to stop by the processor 0 to get the data.
@@ -799,7 +803,7 @@ namespace aspect
         }
 
       const std::string filename = this->get_output_directory() +
-                                   "geoid_anomaly." +
+                                   "geoid/geoid_anomaly." +
                                    dealii::Utilities::int_to_string(this->get_timestep_number(), 5);
 
       Utilities::collect_and_write_file_content(filename, output.str(), this->get_mpi_communicator());
@@ -881,7 +885,7 @@ namespace aspect
             }
 
           const std::string filename = this->get_output_directory() +
-                                       "gravity_anomaly." +
+                                       "geoid/gravity_anomaly." +
                                        dealii::Utilities::int_to_string(this->get_timestep_number(), 5);
 
           Utilities::collect_and_write_file_content(filename, output_gravity_anomaly.str(), this->get_mpi_communicator());

@@ -32,7 +32,7 @@ Number of mesh deformation degrees of freedom: 20,790
      Pressure at top/bottom of domain: 2.789e+07 Pa, 9.513e+10 Pa
      Density at top/bottom of domain:  3359 kg/m^3, 3260 kg/m^3
      Computing dynamic topography      
-     Writing geoid anomaly:            output-ascii_data_boundary_traction_3d_shell_spherical/geoid_anomaly.00000
+     Writing geoid anomaly:            output-ascii_data_boundary_traction_3d_shell_spherical/geoid/geoid_anomaly.00000
      Writing graphical output:         output-ascii_data_boundary_traction_3d_shell_spherical/solution/solution-00000
 
 Termination requested by criterion: end time

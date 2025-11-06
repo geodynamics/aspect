@@ -29,7 +29,7 @@ Number of degrees of freedom: 28,690 (20,790+970+6,930)
      Density at top/bottom of domain:  1 kg/m^3, 1 kg/m^3
      Pressure at top/bottom of domain: 4.823e-10 Pa, 1.96e+06 Pa
      Computing dynamic topography      
-     Writing geoid anomaly:            output-geoid/geoid_anomaly.00000
+     Writing geoid anomaly:            output-geoid/geoid/geoid_anomaly.00000
 
 Termination requested by criterion: end time
 
