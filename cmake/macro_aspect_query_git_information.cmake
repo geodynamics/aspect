@@ -65,13 +65,13 @@ macro(ASPECT_QUERY_GIT_INFORMATION)
     if (EXISTS ${CMAKE_SOURCE_DIR}/.git/HEAD)
       # A normal git repository
       set(_head_location ${CMAKE_SOURCE_DIR}/.git/HEAD)
-     else()
-     # Likely a git worktree: Read .git file, which has the format "gitdir: <absolute path>"
-     file(STRINGS ${CMAKE_SOURCE_DIR}/.git _gitdir LIMIT_COUNT 1)
-     string(REGEX REPLACE "gitdir: " "" _gitdir ${_gitdir})
-     if(EXISTS ${_gitdir}/HEAD)
-       set(_head_location ${_gitdir}/HEAD)
-     endif()
+    else()
+      # Likely a git worktree: Read .git file, which has the format "gitdir: <absolute path>"
+      file(STRINGS ${CMAKE_SOURCE_DIR}/.git _gitdir LIMIT_COUNT 1)
+      string(REGEX REPLACE "gitdir: " "" _gitdir ${_gitdir})
+      if(EXISTS ${_gitdir}/HEAD)
+        set(_head_location ${_gitdir}/HEAD)
+      endif()
     endif()
   endif()
 
