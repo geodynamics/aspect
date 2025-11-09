@@ -2102,9 +2102,9 @@ namespace aspect
       AssertThrow (normalized_fields.size() <= n_compositional_fields,
                    ExcMessage("Invalid input parameter file: Too many entries in List of normalized fields"));
 
-      for (unsigned int i_field = 0; i_field < normalized_fields.size(); ++i_field)
+      for (unsigned int field : normalized_fields)
         {
-          AssertThrow(normalized_fields[i_field]<n_compositional_fields,
+          AssertThrow(field<n_compositional_fields,
                       ExcMessage("Invalid input parameter file: An entry in List of normalized fields is larger then the number of fields."));
         }
 

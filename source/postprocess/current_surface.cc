@@ -122,9 +122,9 @@ namespace aspect
 
       // Fill the coordinates with the x-values used for the data table.
       // This only works in 2D, and will need to be updated for 3D.
-      coordinates[0].clear();
+      coordinates[0].resize(temp_surface.size());
       for (unsigned int i=0; i<temp_surface.size(); ++i)
-        coordinates[0].push_back(temp_surface[i][0]);
+        coordinates[0][i] = temp_surface[i][0];
 
       // Create a surface function for the elevations.
       surface_function = std::make_unique<Functions::InterpolatedTensorProductGridData<dim-1>>(coordinates, data_table);
