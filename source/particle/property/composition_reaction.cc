@@ -242,8 +242,8 @@ namespace aspect
                            (Utilities::split_string_list(prm.get ("List of reaction times")));
 
           if (this->convert_output_to_years() == true)
-            for (unsigned int i=0; i<reaction_times.size(); ++i)
-              reaction_times[i] *= year_in_seconds;
+            for (double &time : reaction_times)
+              time *= year_in_seconds;
 
           AssertThrow ((reactants.size() == products.size()),
                        ExcMessage ("The list of reactants and products need to have the "

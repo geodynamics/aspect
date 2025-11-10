@@ -393,12 +393,12 @@ namespace aspect
           // we have to scale them here so that they are relative factors in comparison to the product
           // of the prefactors of all phases above the current one
           unsigned int index = 0;
-          for (unsigned int c=0; c<options.n_values_per_key.size(); ++c)
+          for (const auto &n_phases : options.n_values_per_key)
             {
               double product = 1.;
-              for (unsigned int phase=0; phase<options.n_values_per_key[c]; ++phase)
+              for (unsigned int phase = 0; phase < n_phases; ++phase)
                 {
-                  if (phase>0)
+                  if (phase > 0)
                     phase_prefactors[index] /= product;
                   product *= phase_prefactors[index];
                   index += 1;
