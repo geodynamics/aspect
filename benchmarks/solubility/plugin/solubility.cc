@@ -24,7 +24,6 @@
 #include <aspect/utilities.h>
 #include <aspect/geometry_model/interface.h>
 
-#include <array>
 #include <utility>
 #include <limits>
 
