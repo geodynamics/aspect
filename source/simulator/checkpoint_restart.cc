@@ -610,7 +610,27 @@ namespace aspect
 
     ar &statistics;
 
+    // Serialize various plugin systems. In many cases, plugins are stateless and
+    // serialization will not do anything. But some are stateful (for example the
+    // dynamic core boundary temperature plugin) and need to be serialized.
+    ar &mesh_refinement_manager;
+    ar &heating_model_manager;
     ar &postprocess_manager;
+    ar &boundary_temperature_manager;
+    ar &boundary_convective_heating_manager;
+    ar &boundary_composition_manager;
+    ar &prescribed_solution_manager;
+    ar &boundary_velocity_manager;
+    ar &boundary_traction_manager;
+
+// The following two are not manager classes but straight up plugins and so don't
+// currently have the ability to serialize themselves. We should add those later.
+//    ar &prescribed_stokes_solution;
+//    ar &boundary_heat_flux;
+
+    // By definition, a checkpoint is past the first time step. As a consequence,
+    // the Simulator object will not need the initial conditions objects, and
+    // we do not need to serialize those
 
     if (parameters.mesh_deformation_enabled)
       ar &(*mesh_deformation);
