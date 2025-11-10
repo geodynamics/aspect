@@ -944,7 +944,10 @@ namespace aspect
                            "text `$ASPECT_SOURCE_DIR' which will be interpreted as the path "
                            "in which the ASPECT source files were located when ASPECT was "
                            "compiled. This interpretation allows, for example, to reference "
-                           "files located in the `data/' subdirectory of ASPECT.");
+                           "files located in the `data/' subdirectory of ASPECT. A trailing "
+                           "slash at the end of the directory path is optional; the plugin "
+                           "will automatically append a '/' when the parameters are parsed if "
+                           "it is missing.");
         prm.declare_entry ("Data file name",
                            default_filename,
                            Patterns::Anything (),
@@ -972,6 +975,9 @@ namespace aspect
         // to $ASPECT_SOURCE_DIR, replace it by what CMake has given us
         // as a #define
         data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
+        // ensure directory ends with a slash so callers can safely do data_directory + filename
+        if (!data_directory.empty() && data_directory.back() != '/')
+          data_directory.push_back('/');
         data_file_name    = prm.get ("Data file name");
         scale_factor      = prm.get_double ("Scale factor");
       }
@@ -1680,7 +1686,10 @@ namespace aspect
                            "text `$ASPECT_SOURCE_DIR' which will be interpreted as the path "
                            "in which the ASPECT source files were located when ASPECT was "
                            "compiled. This interpretation allows, for example, to reference "
-                           "files located in the `data/' subdirectory of ASPECT. ");
+                           "files located in the `data/' subdirectory of ASPECT. A trailing "
+                           "slash at the end of the directory path is optional; the plugin "
+                           "will automatically append a '/' when the parameters are parsed if "
+                           "it is missing. ");
 
         prm.declare_entry ("Data file names",
                            default_filename,
@@ -1711,6 +1720,9 @@ namespace aspect
       prm.enter_subsection(subsection_name);
       {
         data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
+        // ensure directory ends with a slash so callers can safely do data_directory + filename
+        if (!data_directory.empty() && data_directory.back() != '/')
+          data_directory.push_back('/');
         data_file_names = Utilities::split_string_list(prm.get ("Data file names"), ',');
         interpolation_scheme = prm.get("Interpolation scheme");
       }
