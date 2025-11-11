@@ -27,7 +27,6 @@
 #include <aspect/material_model/grain_size.h>
 #include <aspect/simulator_access.h>
 #include <aspect/material_model/rheology/ascii_depth_profile.h>
-#include <array>
 
 namespace aspect
 {

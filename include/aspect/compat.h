@@ -25,7 +25,6 @@
 #include <deal.II/base/mpi.h>
 
 // C++11 related includes.
-#include <array>
 #include <functional>
 #include <memory>
 
