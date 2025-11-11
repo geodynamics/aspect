@@ -33,7 +33,6 @@ namespace aspect
     {
       double local_min_score = std::numeric_limits<double>::max();
       double local_max_score = 0;
-      unsigned int number_of_cells = 0;
       std::vector<double> cell_scores;
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
@@ -57,7 +56,6 @@ namespace aspect
                 }
               if (particles_in_cell > 0)
                 {
-                  ++number_of_cells;
                   const double particles_in_cell_double = static_cast<double>(particles_in_cell);
                   const double granularity_double = static_cast<double>(granularity);
                   const double ideal_n_particles_per_bucket = particles_in_cell_double/(Utilities::fixed_power<dim>(granularity_double));
@@ -128,7 +126,6 @@ namespace aspect
                 }
               else if (particles_in_cell == 0)
                 {
-                  ++number_of_cells;
                   // The score should be bad if there are no particles in a cell
                   const double distribution_score_current_cell = 1.0;
                   cell_scores.push_back(distribution_score_current_cell);
