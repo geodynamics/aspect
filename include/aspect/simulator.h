@@ -1337,6 +1337,14 @@ namespace aspect
       void interpolate_onto_velocity_system(const TensorFunction<1,dim> &func,
                                             LinearAlgebra::Vector &vec) const;
 
+	  /**
+	   * Perform a newton line search to determine the optimal step length 
+	   * along the search direction. 
+	   * 
+	   * This function is implemented in
+	   * <code>source/simulator/helper_functions.cc</code>
+	   */
+	  void perform_line_search(const DefectCorrectionResiduals &dcr, const bool use_picard, LinearAlgebra::BlockVector &search_direction);
 
       /**
        * Add constraints to the given @p constraints object that are required
