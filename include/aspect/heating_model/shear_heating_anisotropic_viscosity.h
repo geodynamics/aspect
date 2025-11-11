@@ -31,8 +31,8 @@ namespace aspect
   {
     /**
      * A class that implements a standard model for shear heating extended for an
-     * anisotropic viscosity tensor. If the material model provides a stress-
-     * strain director tensor, then the strain-rate is multiplied with this
+     * anisotropic viscosity tensor. If the material model provides a stress-strain
+     * director tensor, then the strain-rate is multiplied with this
      * tensor to compute the stress that is used when computing the shear heating.
      *
      * @ingroup HeatingModels

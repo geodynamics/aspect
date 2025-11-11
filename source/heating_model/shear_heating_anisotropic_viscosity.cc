@@ -21,8 +21,8 @@
 #include <aspect/heating_model/shear_heating_anisotropic_viscosity.h>
 
 #include <aspect/material_model/interface.h>
+#include <aspect/material_model/additional_outputs/anisotropic_viscosity.h>
 #include <aspect/heating_model/shear_heating.h>
-#include <aspect/simulator/assemblers/stokes_anisotropic_viscosity.h>
 
 #include <deal.II/base/symmetric_tensor.h>
 #include <deal.II/base/signaling_nan.h>
@@ -49,15 +49,15 @@ namespace aspect
       const std::shared_ptr<const MaterialModel::AnisotropicViscosity<dim>> anisotropic_viscosity =
         material_model_outputs.template get_additional_output_object<MaterialModel::AnisotropicViscosity<dim>>();
 
+      Assert(anisotropic_viscosity != nullptr,
+             ExcMessage("This heating plugin should only be used with material models that provide "
+                        "an anisotropic viscosity tensor, but none was provided."));
+
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
         {
           // If there is an anisotropic viscosity, use it to compute the correct stress
-          const SymmetricTensor<2,dim> &directed_strain_rate = ((anisotropic_viscosity != nullptr)
-                                                                ?
-                                                                anisotropic_viscosity->stress_strain_directors[q]
-                                                                * material_model_inputs.strain_rate[q]
-                                                                :
-                                                                material_model_inputs.strain_rate[q]);
+          const SymmetricTensor<2,dim> &directed_strain_rate = anisotropic_viscosity->stress_strain_directors[q]
+                                                               * material_model_inputs.strain_rate[q];
 
           const SymmetricTensor<2,dim> stress =
             2 * material_model_outputs.viscosities[q] *

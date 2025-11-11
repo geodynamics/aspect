@@ -20,7 +20,7 @@
 
 #include <aspect/introspection.h>
 #include <aspect/material_model/interface.h>
-#include <aspect/plugins.h>
+#include <aspect/material_model/additional_outputs/anisotropic_viscosity.h>
 #include <aspect/simulator/assemblers/stokes_anisotropic_viscosity.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/patterns.h>

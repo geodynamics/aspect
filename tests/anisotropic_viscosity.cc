@@ -21,6 +21,7 @@
 #include <aspect/simulator_access.h>
 
 #include <aspect/material_model/simple.h>
+#include <aspect/material_model/additional_outputs/anisotropic_viscosity.h>
 #include <aspect/heating_model/shear_heating.h>
 #include <aspect/heating_model/interface.h>
 #include <aspect/gravity_model/interface.h>

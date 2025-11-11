@@ -78,7 +78,7 @@ namespace aspect
     };
 
     /**
-     * This class assembles the term that arises in the viscosity term of Stokes matrix for
+     * This class assembles the term that arises in the viscosity term of the Stokes matrix for
      * compressible models, because the divergence of the velocity is not longer zero.
      */
     template <int dim>
