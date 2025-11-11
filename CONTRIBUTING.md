@@ -268,17 +268,20 @@ ways in which your contribution will be acknowledged by the ASPECT community:
 - If you contributed a significant part of the manual (such as a new cookbook,
   benchmark, or subsection), you will be listed as one of the contributing
   authors of the manual.
-- The Principal Developers of ASPECT come together on a regular basis and discuss
-  whether others should be invited to join the
-  group of *Principal Developers*. Criteria
-  for this decision include:
-
-  - A profound understanding of ASPECT's structure and vision;
-  - A proven willingness to further the project's goals and help other users;
-  - Significant contributions to ASPECT (not necessarily only source code,
-    also forum advice, documentation, benchmarks, tutorials);
-  - Regular and active contributions to ASPECT for more than one year,
-    not restricted to user meetings.
+- The Principal Developers of ASPECT meet regularly to discuss the direction
+  of the project and to consider inviting new members to join the group of
+  Principal Developers.
+  New members are typically invited based on the following criteria:
+  - A deep understanding of ASPECT's structure, design, and long-term vision;
+  - A demonstrated commitment to advancing the project's goals and supporting
+    the ASPECT community;
+  - Meaningful contributions to ASPECT. These contributions may of course be
+    to the source code, but can also include documentation, tutorials,
+    benchmarks, or active engagement on the forum;
+  - Consistent and active involvement in the project for over a year,
+    beyond participation in user meetings;
+  - A collaborative mindset and a constructive, solution-oriented approach
+    to discussions.
 
   The group of current Principal Developers is listed in the
   [AUTHORS.md](https://github.com/geodynamics/aspect/blob/main/AUTHORS.md)
