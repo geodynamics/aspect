@@ -120,7 +120,8 @@ namespace aspect
                                                   "\frac 13 (\nabla \cdot \mathbf u) \mathbf I)$ * stress_strain_directors, and differs from the "
                                                   "full stress by the absence of the pressure.  The second term in the "
                                                   "difference is zero if the model is incompressible. "
-                                                  "If elasticity is used, the elastic contribution is being accounted for. ")
+                                                  "This particle property plugin should only be activated when using the "
+                                                  "CPO induced anisotropic viscosity material model from the cookbook. ")
     }
   }
 }

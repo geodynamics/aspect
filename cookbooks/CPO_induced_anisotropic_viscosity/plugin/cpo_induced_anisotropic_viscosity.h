@@ -116,8 +116,8 @@ namespace aspect
         
         /**
          * These are arrays that store coefficients used to compute the anisotropic Hill coefficients FGHLMN from
-         * a certain olivine texture represented with the eigenvalues of its a-, b-, and c-axis. Each array therefore contatains
-         * 9 coefficients and 1 constant. This empirical relationship is found using linear regression.
+         * a certain olivine texture represented with the eigenvalues of its a-, b-, and c-axis. Each array contains
+         * 9 coefficients and 1 constant.
          */
         std::vector<double> CnI_F, CnI_G, CnI_H, CnI_L, CnI_M, CnI_N;
 
