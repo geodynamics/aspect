@@ -1589,7 +1589,7 @@ namespace aspect
       number_of_layer_boundaries = data_file_names.size();
       for (unsigned int i=0; i<number_of_layer_boundaries; ++i)
         {
-          const std::string filename = data_directory + data_file_names[i];
+          const std::string filename = this->data_directory + data_file_names[i];
           AssertThrow(Utilities::fexists(filename, this->get_mpi_communicator()) || filename_is_url(filename),
                       ExcMessage (std::string("Ascii data file <")
                                   +
@@ -1677,20 +1677,6 @@ namespace aspect
 
       prm.enter_subsection (subsection_name);
       {
-        prm.declare_entry ("Data directory",
-                           default_directory,
-                           Patterns::DirectoryName (),
-                           "The name of a directory that contains the model data. This path "
-                           "may either be absolute (if starting with a `/') or relative to "
-                           "the current directory. The path may also include the special "
-                           "text `$ASPECT_SOURCE_DIR' which will be interpreted as the path "
-                           "in which the ASPECT source files were located when ASPECT was "
-                           "compiled. This interpretation allows, for example, to reference "
-                           "files located in the `data/' subdirectory of ASPECT. A trailing "
-                           "slash at the end of the directory path is optional; the plugin "
-                           "will automatically append a '/' when the parameters are parsed if "
-                           "it is missing. ");
-
         prm.declare_entry ("Data file names",
                            default_filename,
                            Patterns::List (Patterns::Anything()),
@@ -1719,10 +1705,6 @@ namespace aspect
 
       prm.enter_subsection(subsection_name);
       {
-        data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
-        // ensure directory ends with a slash so callers can safely do data_directory + filename
-        if (!data_directory.empty() && data_directory.back() != '/')
-          data_directory.push_back('/');
         data_file_names = Utilities::split_string_list(prm.get ("Data file names"), ',');
         interpolation_scheme = prm.get("Interpolation scheme");
       }
