@@ -23,46 +23,6 @@
 
 namespace aspect
 {
-  namespace Assemblers
-  {
-    /**
-     * A class containing the functions to assemble the Stokes preconditioner.
-     */
-    template <int dim>
-    class StokesPreconditionerAnisotropicViscosity : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
-    {
-      public:
-        void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const override;
-
-        /**
-         * Create AnisotropicViscosities.
-         */
-        void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
-    };
-
-    /**
-     * This class assembles the terms for the matrix and right-hand-side of the incompressible
-     * Stokes equation for the current cell.
-     */
-    template <int dim>
-    class StokesIncompressibleTermsAnisotropicViscosity : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
-    {
-      public:
-        void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const override;
-
-        /**
-         * Create AdditionalMaterialOutputsStokesRHS if we need to do so.
-         */
-        void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
-    };
-  }
-
   namespace HeatingModel
   {
     template <int dim>

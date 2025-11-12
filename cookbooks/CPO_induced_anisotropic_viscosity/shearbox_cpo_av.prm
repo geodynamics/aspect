@@ -4,7 +4,7 @@
 # texture), which then evolves into a CPO aligned with the shear direction.
 
 set Additional shared libraries = ./plugin/libCPO_induced_anisotropic_viscosity.debug.so
-set CFL number = 0.
+set CFL number = 0.1
 set Timing output frequency  = 10000
 set Dimension                = 3
 set Pressure normalization   = surface
