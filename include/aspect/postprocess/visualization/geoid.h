@@ -73,9 +73,6 @@ namespace aspect
            */
           std::list<std::string>
           required_other_postprocessors() const override;
-
-        private:
-
       };
     }
   }

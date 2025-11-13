@@ -72,12 +72,7 @@ namespace aspect
            * Number of slices to use when computing depth average of temperature.
            */
           unsigned int n_slices;
-          /**
-           * Vector of temperature depth average values, padded to include two ghost values
-           * above and below the surface and bottom of the domain to allow interpolation at
-           * all depths.
-           */
-          std::vector<double> padded_temperature_depth_average;
+
           /**
            * Whether to extrapolate temperatures above/below the first/last depth-average slice
            * or, alternatively, interpolate above the center of the first slice using the surface
@@ -85,6 +80,16 @@ namespace aspect
            */
           bool extrapolate_surface;
           bool extrapolate_bottom;
+
+          /**
+           * Vector of temperature depth average values, padded to include two ghost values
+           * above and below the surface and bottom of the domain to allow interpolation at
+           * all depths.
+           *
+           * This object is computed in update() and then used on every cell
+           * where evaluate_vector_field() is called.
+           */
+          std::vector<double> padded_temperature_depth_average;
       };
     }
   }

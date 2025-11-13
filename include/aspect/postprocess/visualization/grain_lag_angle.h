@@ -70,7 +70,6 @@ namespace aspect
            */
           std::pair<std::string, std::unique_ptr<Vector<float>>>
           execute() const override;
-
       };
     }
   }
