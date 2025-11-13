@@ -7,7 +7,8 @@ ASPECT is being developed by a large, collaborative, and inclusive
 community. This community is led by a group of *Principal Developers*
 who are active in developing code, reviewing code, contributing to
 the documentation, helping users on the online forums and in person, and
-in many other visible and invisible ways:
+in many other visible and invisible ways. The current ASPECT principal
+developers are:
 
 * Wolfgang Bangerth (Colorado State University, USA)
 * Juliane Dannberg (GEOMAR Helmholtz Centre for Ocean Research, Germany)
