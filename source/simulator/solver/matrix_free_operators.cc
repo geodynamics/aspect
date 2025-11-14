@@ -196,7 +196,8 @@ namespace aspect
         VectorizedArray<number> deta_deps_times_sym_grad_u(0.);
         VectorizedArray<number> eps_times_sym_grad_u(0.);
         VectorizedArray<number> deta_dp_times_p(0.);
-        if (cell_data->enable_newton_derivatives)
+        if (cell_data->enable_newton_derivatives
+            && cell_data->average_newton_factors)
           {
             SymmetricTensor<2,dim,VectorizedArray<number>> sym_grad_u;
             VectorizedArray<number> val_p;
@@ -248,6 +249,15 @@ namespace aspect
             // Add the Newton derivatives if required.
             if (cell_data->enable_newton_derivatives)
               {
+                if(!cell_data->average_newton_factors)
+                  {
+                    deta_deps_times_sym_grad_u = cell_data->newton_factor_wrt_strain_rate_table(cell,q)
+                                                 * sym_grad_u;
+                    deta_dp_times_p = cell_data->newton_factor_wrt_pressure_table(cell,q) * val_p;
+                    if (cell_data->symmetrize_newton_system)
+                      eps_times_sym_grad_u = cell_data->strain_rate_table(cell,q) * sym_grad_u;
+                  }
+
                 velocity_terms +=
                   ( cell_data->symmetrize_newton_system ?
                     ( cell_data->strain_rate_table(cell,q) * deta_deps_times_sym_grad_u +
@@ -256,15 +266,32 @@ namespace aspect
                   +
                   2. * cell_data->strain_rate_table(cell,q) * deta_dp_times_p;
 
-                if (cell_data->enable_prescribed_dilation)
+                if (cell_data->is_compressible ||
+                    cell_data->enable_prescribed_dilation)
                   {
-                    pressure_terms += ( ( cell_data->dilation_derivative_wrt_strain_rate_table(cell,q)
-                                          * sym_grad_u )
-                                        +
-                                        ( cell_data->dilation_derivative_wrt_pressure_table(cell,q)
-                                          * cell_data->pressure_scaling * val_p )
-                                      )
-                                      * cell_data->pressure_scaling;
+                    const number one_third = 1.0 / 3.0;
+                    if (cell_data->symmetrize_newton_system)
+                      {
+                        velocity_terms -= one_third * cell_data->newton_factor_wrt_strain_rate_table(cell,q) * (div_u * div_u);
+                        for (unsigned int d = 0; d < dim; ++d)
+                          velocity_terms[d][d] -= one_third * div_u * deta_deps_times_sym_grad_u;
+                      }
+                    else
+                      {
+                        for (unsigned int d = 0; d < dim; ++d)
+                          velocity_terms[d][d] -= 2.0 * one_third * div_u * deta_deps_times_sym_grad_u;
+                      }
+
+                    if (cell_data->enable_prescribed_dilation)
+                      {
+                        pressure_terms += ( ( cell_data->dilation_derivative_wrt_strain_rate_table(cell,q)
+                                              * sym_grad_u )
+                                            +
+                                            ( cell_data->dilation_derivative_wrt_pressure_table(cell,q)
+                                              * cell_data->pressure_scaling * val_p )
+                                          )
+                                          * cell_data->pressure_scaling;
+                      }
                   }
               }
 
