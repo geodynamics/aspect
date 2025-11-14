@@ -1,4 +1,7 @@
 Changed: The deviator and second invariant of symmetric tensors are modified to
-be consistent with the plane strain assumption in 2D.
+be consistent with the plane strain assumption in 2D. This fixes the
+inconsistency between some material models and the Stokes assemblers when
+computing the deviatoric strain rate. It also results in better nonlinear solver
+convergence due to some fixes to the Newton solver.
 <br>
 (Yimin Jin, 2025/06/17)
