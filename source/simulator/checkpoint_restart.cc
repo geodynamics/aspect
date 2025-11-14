@@ -623,14 +623,22 @@ namespace aspect
     ar &boundary_velocity_manager;
     ar &boundary_traction_manager;
 
-// The following two are not manager classes but straight up plugins and so don't
+// The following are not manager classes but straight up plugins and so don't
 // currently have the ability to serialize themselves. We should add those later.
 //    ar &prescribed_stokes_solution;
 //    ar &boundary_heat_flux;
+//    ar &(*adiabatic_conditions);
+//    ar &(*initial_topography_model);
 
-    // By definition, a checkpoint is past the first time step. As a consequence,
-    // the Simulator object will not need the initial conditions objects, and
-    // we do not need to serialize those
+// Also, the following two are objects that are documented to be destroyed
+// after the first time step. One can argue that consequently they are
+// not needed any more anyway after we read a checkpoint (which is always
+// *after* a time step, i.e., not during the initial time step). But,
+// the documentation also says that *other* objects may keep a pointer
+// to them around -- we wouldn't know that here, and so we can't serialize
+// these objects here:
+//    ar &(*initial_temperature_manager);
+//    ar &(*initial_composition_manager);
 
     if (parameters.mesh_deformation_enabled)
       ar &(*mesh_deformation);
