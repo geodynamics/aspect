@@ -89,32 +89,37 @@ namespace aspect
       const std::shared_ptr<const MaterialModel::MaterialModelDerivatives<dim>> derivatives
         = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::MaterialModelDerivatives<dim>>();
 
-      std::vector<double> deta_deps_times_grads_phi_u(stokes_dofs_per_cell);
-      std::vector<double> eps_times_grads_phi_u(stokes_dofs_per_cell);
+      std::vector<double> deta_deps_times_grads_phi_u;
+      std::vector<double> eps_times_grads_phi_u;
 
-      // Calculate the weighted average of viscosity derivatives if
-      // material averaging is applied.
-      if (derivative_scaling_factor > 0 &&
-          material_averaging != MaterialModel::MaterialAveraging::none)
+      if (derivative_scaling_factor > 0)
         {
-          AssertThrow(derivatives != nullptr,
-                      ExcMessage ("Error: The newton method requires derivatives from the material model."));
+          deta_deps_times_grads_phi_u.resize(stokes_dofs_per_cell);
+          eps_times_grads_phi_u.resize(stokes_dofs_per_cell);
 
-          for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
+          // Calculate the weighted average of viscosity derivatives if
+          // material averaging is applied.
+          if (material_averaging != MaterialModel::MaterialAveraging::none)
             {
-              if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
+              AssertThrow(derivatives != nullptr,
+                          ExcMessage ("Error: The newton method requires derivatives from the material model."));
+
+              for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
                 {
-                  double avg = 0;
-                  for (unsigned int q = 0; q < n_q_points; ++q)
-                    avg += derivatives->viscosity_derivative_averaging_weights[q] *
-                           (derivatives->viscosity_derivative_wrt_strain_rate[q] *
-                            scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i, q));
+                  if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
+                    {
+                      double avg = 0;
+                      for (unsigned int q = 0; q < n_q_points; ++q)
+                        avg += derivatives->viscosity_derivative_averaging_weights[q] *
+                               (derivatives->viscosity_derivative_wrt_strain_rate[q] *
+                                scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i, q));
 
-                  deta_deps_times_grads_phi_u[i_stokes] = avg;
+                      deta_deps_times_grads_phi_u[i_stokes] = avg;
 
-                  ++i_stokes;
+                      ++i_stokes;
+                    }
+                  ++i;
                 }
-              ++i;
             }
         }
 
@@ -257,7 +262,7 @@ namespace aspect
             // regardless of whether we do or do not add the Newton
             // linearization terms, we ought to test whether the top-left
             // block of the matrix is Symmetric Positive Definite (SPD).
-          //
+            //
             // the reason why this is not entirely obvious is described in
             // the paper that discusses the Newton implementation
             Vector<double> tmp (stokes_dofs_per_cell);
@@ -350,34 +355,40 @@ namespace aspect
       const std::shared_ptr<const MaterialModel::MaterialModelDerivatives<dim>> derivatives
         = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::MaterialModelDerivatives<dim>>();
 
-      std::vector<double> deta_deps_times_grads_phi_u(stokes_dofs_per_cell);
-      std::vector<double> div_u_times_div_phi_u(stokes_dofs_per_cell);
+      std::vector<double> deta_deps_times_grads_phi_u;
+      std::vector<double> div_u_times_div_phi_u;
 
-      // Calculate the weighted average of viscosity derivatives if
-      // material averaging is applied.
-      if (derivative_scaling_factor > 0 &&
-          material_averaging != MaterialModel::MaterialAveraging::none)
+      if (derivative_scaling_factor > 0)
         {
-          Assert(derivatives != nullptr,
-                 ExcMessage ("Error: The newton method requires derivatives from the material model."));
+          deta_deps_times_grads_phi_u.resize(stokes_dofs_per_cell);
+          div_u_times_div_phi_u.resize(stokes_dofs_per_cell);
 
-          for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
+          // Calculate the weighted average of viscosity derivatives if
+          // material averaging is applied.
+          if (material_averaging != MaterialModel::MaterialAveraging::none)
             {
-              if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
+              Assert(derivatives != nullptr,
+                     ExcMessage ("Error: The newton method requires derivatives from the material model."));
+
+              for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
                 {
-                  double avg = 0;
-                  for (unsigned int q = 0; q < n_q_points; ++q)
-                    avg += derivatives->viscosity_derivative_averaging_weights[q] *
-                           (derivatives->viscosity_derivative_wrt_strain_rate[q] *
-                            scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i, q));
+                  if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
+                    {
+                      double avg = 0;
+                      for (unsigned int q = 0; q < n_q_points; ++q)
+                        avg += derivatives->viscosity_derivative_averaging_weights[q] *
+                               (derivatives->viscosity_derivative_wrt_strain_rate[q] *
+                                scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i, q));
 
-                  deta_deps_times_grads_phi_u[i_stokes] = avg;
+                      deta_deps_times_grads_phi_u[i_stokes] = avg;
 
-                  ++i_stokes;
+                      ++i_stokes;
+                    }
+                  ++i;
                 }
-              ++i;
             }
         }
+
 
       // Loop over all quadrature points and assemble their contributions to
       // the preconditioner matrix
@@ -448,9 +459,10 @@ namespace aspect
                       data.local_matrix(i,j) += (-eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
                                                  -
                                                  derivative_scaling_factor * alpha * two_thirds
-                                                 * ((symmetrize ? (div_u_times_div_phi_u[i] * deta_deps_times_grads_phi_u[j] +
-                                                                   div_u_times_div_phi_u[j] * deta_deps_times_grads_phi_u[i]) * 0.5
-                                                                : div_u_times_div_phi_u[i] * deta_deps_times_grads_phi_u[j]))
+                                                 * ((symmetrize ?
+                                                     (div_u_times_div_phi_u[i] * deta_deps_times_grads_phi_u[j] +
+                                                      div_u_times_div_phi_u[j] * deta_deps_times_grads_phi_u[i]) * 0.5 :
+                                                     div_u_times_div_phi_u[i] * deta_deps_times_grads_phi_u[j]))
                                                 )
                                                 * JxW;
                     }
@@ -503,43 +515,49 @@ namespace aspect
       const std::shared_ptr<const MaterialModel::MaterialModelDerivatives<dim>> derivatives
         = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::MaterialModelDerivatives<dim>>();
 
-      std::vector<double> deta_deps_times_grads_phi_u(stokes_dofs_per_cell);
-      std::vector<double> deta_dp_times_phi_p(stokes_dofs_per_cell);
-      std::vector<double> eps_times_grads_phi_u(stokes_dofs_per_cell);
+      std::vector<double> deta_deps_times_grads_phi_u;
+      std::vector<double> deta_dp_times_phi_p;
+      std::vector<double> eps_times_grads_phi_u;
 
-      // Calculate the weighted average of viscosity derivatives if
-      // material averaging is applied.
-      if (derivative_scaling_factor > 0 &&
-          material_averaging != MaterialModel::MaterialAveraging::none)
+      if (scratch.rebuild_newton_stokes_matrix && derivative_scaling_factor > 0)
         {
-          // This one is only available in debug mode, because normally
-          // the AssertThrow in the preconditioner should already have
-          // caught the problem.
-          Assert(derivatives != nullptr,
-                 ExcMessage ("Error: The Newton method requires the material model to "
-                             "compute derivatives."));
+          deta_deps_times_grads_phi_u.resize(stokes_dofs_per_cell);
+          deta_dp_times_phi_p.resize(stokes_dofs_per_cell);
+          eps_times_grads_phi_u.resize(stokes_dofs_per_cell);
 
-          for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
+          // Calculate the weighted average of viscosity derivatives if
+          // material averaging is applied.
+          if (material_averaging != MaterialModel::MaterialAveraging::none)
             {
-              if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
+              // This one is only available in debug mode, because normally
+              // the AssertThrow in the preconditioner should already have
+              // caught the problem.
+              Assert(derivatives != nullptr,
+                     ExcMessage ("Error: The Newton method requires the material model to "
+                                 "compute derivatives."));
+
+              for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
                 {
-                  double avg_wrt_eps = 0, avg_wrt_p = 0;
-                  for (unsigned int q = 0; q < n_q_points; ++q)
+                  if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
                     {
-                      avg_wrt_eps += derivatives->viscosity_derivative_averaging_weights[q] *
-                                     (derivatives->viscosity_derivative_wrt_strain_rate[q] *
-                                      scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i, q));
-                      avg_wrt_p   += derivatives->viscosity_derivative_averaging_weights[q] *
-                                     (derivatives->viscosity_derivative_wrt_pressure[q] *
-                                      scratch.finite_element_values[introspection.extractors.pressure].value(i, q));
+                      double avg_wrt_eps = 0, avg_wrt_p = 0;
+                      for (unsigned int q = 0; q < n_q_points; ++q)
+                        {
+                          avg_wrt_eps += derivatives->viscosity_derivative_averaging_weights[q] *
+                                         (derivatives->viscosity_derivative_wrt_strain_rate[q] *
+                                          scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i, q));
+                          avg_wrt_p   += derivatives->viscosity_derivative_averaging_weights[q] *
+                                         (derivatives->viscosity_derivative_wrt_pressure[q] *
+                                          scratch.finite_element_values[introspection.extractors.pressure].value(i, q));
+                        }
+
+                      deta_deps_times_grads_phi_u[i_stokes] = avg_wrt_eps;
+                      deta_dp_times_phi_p[i_stokes] = avg_wrt_p;
+
+                      ++i_stokes;
                     }
-
-                  deta_deps_times_grads_phi_u[i_stokes] = avg_wrt_eps;
-                  deta_dp_times_phi_p[i_stokes] = avg_wrt_p;
-
-                  ++i_stokes;
+                  ++i;
                 }
-              ++i;
             }
         }
 
@@ -688,7 +706,7 @@ namespace aspect
                                                       )
                                                       + pressure_scaling * 2.0 * eps_times_grads_phi_u[i] * deta_dp_times_phi_p[j]
                                                     )
-                     * derivative_scaling_factor
+                                                    * derivative_scaling_factor
                                                     * JxW;
 
                           Assert(dealii::numbers::is_finite(data.local_matrix(i,j)),
@@ -835,14 +853,13 @@ namespace aspect
       const std::shared_ptr<MaterialModel::MaterialModelDerivatives<dim>> derivatives
         = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::MaterialModelDerivatives<dim>>();
 
-      std::vector<double> deta_deps_times_grads_phi_u(stokes_dofs_per_cell);
-      std::vector<double> deta_dp_times_phi_p(stokes_dofs_per_cell);
-      std::vector<double> div_u_times_div_phi_u(stokes_dofs_per_cell);
+      std::vector<double> deta_deps_times_grads_phi_u;
+      std::vector<double> deta_dp_times_phi_p;
+      std::vector<double> div_u_times_div_phi_u;
 
       // Calculate the weighted average of viscosity derivatives if
       // material averaging is applied.
-      if (derivative_scaling_factor > 0 &&
-          material_averaging != MaterialModel::MaterialAveraging::none)
+      if (scratch.rebuild_stokes_matrix && derivative_scaling_factor > 0)
         {
           // This one is only available in debug mode, because normally
           // the AssertThrow in the preconditioner should already have
@@ -851,27 +868,34 @@ namespace aspect
                  ExcMessage ("Error: The Newton method requires the material model to "
                              "compute derivatives."));
 
-          for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
+          deta_deps_times_grads_phi_u.resize(stokes_dofs_per_cell);
+          deta_dp_times_phi_p.resize(stokes_dofs_per_cell);
+          div_u_times_div_phi_u.resize(stokes_dofs_per_cell);
+
+          if (material_averaging != MaterialModel::MaterialAveraging::none)
             {
-              if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
+              for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
                 {
-                  double avg_wrt_eps = 0, avg_wrt_p = 0;
-                  for (unsigned int q = 0; q < n_q_points; ++q)
+                  if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
                     {
-                      avg_wrt_eps += derivatives->viscosity_derivative_averaging_weights[q] *
-                                     (derivatives->viscosity_derivative_wrt_strain_rate[q] *
-                                      scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i, q));
-                      avg_wrt_p   += derivatives->viscosity_derivative_averaging_weights[q] *
-                                     (derivatives->viscosity_derivative_wrt_pressure[q] *
-                                      scratch.finite_element_values[introspection.extractors.pressure].value(i, q));
+                      double avg_wrt_eps = 0, avg_wrt_p = 0;
+                      for (unsigned int q = 0; q < n_q_points; ++q)
+                        {
+                          avg_wrt_eps += derivatives->viscosity_derivative_averaging_weights[q] *
+                                         (derivatives->viscosity_derivative_wrt_strain_rate[q] *
+                                          scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i, q));
+                          avg_wrt_p   += derivatives->viscosity_derivative_averaging_weights[q] *
+                                         (derivatives->viscosity_derivative_wrt_pressure[q] *
+                                          scratch.finite_element_values[introspection.extractors.pressure].value(i, q));
+                        }
+
+                      deta_deps_times_grads_phi_u[i_stokes] = avg_wrt_eps;
+                      deta_dp_times_phi_p[i_stokes] = avg_wrt_p;
+
+                      ++i_stokes;
                     }
-
-                  deta_deps_times_grads_phi_u[i_stokes] = avg_wrt_eps;
-                  deta_dp_times_phi_p[i_stokes] = avg_wrt_p;
-
-                  ++i_stokes;
+                  ++i;
                 }
-              ++i;
             }
         }
 
@@ -955,9 +979,10 @@ namespace aspect
                         data.local_matrix(i,j) += (-eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
                                                    -
                                                    derivative_scaling_factor * two_thirds * alpha
-                                                   * ((symmetrize ? (div_u_times_div_phi_u[i] * deta_deps_times_grads_phi_u[j] +
-                                                                     div_u_times_div_phi_u[j] * deta_deps_times_grads_phi_u[i]) * 0.5
-                                                                  : div_u_times_div_phi_u[i] * deta_deps_times_grads_phi_u[j])
+                                                   * ((symmetrize ?
+                                                       (div_u_times_div_phi_u[i] * deta_deps_times_grads_phi_u[j] +
+                                                        div_u_times_div_phi_u[j] * deta_deps_times_grads_phi_u[i]) * 0.5 :
+                                                       div_u_times_div_phi_u[i] * deta_deps_times_grads_phi_u[j])
                                                       +
                                                       div_u_times_div_phi_u[i] * deta_dp_times_phi_p[j] * pressure_scaling)
                                                   )

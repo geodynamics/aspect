@@ -12,498 +12,498 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 20+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.0133231
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0133231
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.0133229
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0133229
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 16+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 2.2508e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 2.2508e-07
+      Relative nonlinear residuals (temperature, Stokes system): 0, 3.46967e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 3.46967e-07
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 20+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 2.06471e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 2.06471e-07
+      Relative nonlinear residuals (temperature, Stokes system): 0, 3.22586e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 3.22586e-07
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 18+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 1.65733e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 5: 1.65733e-07
+      Relative nonlinear residuals (temperature, Stokes system): 0, 2.80818e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 2.80818e-07
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 17+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 1.09111e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 6: 1.09111e-07
+      Relative nonlinear residuals (temperature, Stokes system): 0, 1.74729e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 6: 1.74729e-07
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 12+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 9.00406e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 7: 9.00406e-08
+      Relative nonlinear residuals (temperature, Stokes system): 0, 1.40211e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 7: 1.40211e-07
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 13+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 1.27507e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 8: 1.27507e-07
+      Relative nonlinear residuals (temperature, Stokes system): 0, 2.00655e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 8: 2.00655e-07
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 18+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 4.06584e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 9: 4.06584e-07
+      Relative nonlinear residuals (temperature, Stokes system): 0, 5.83076e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 9: 5.83076e-07
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 18+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 1.74948e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 10: 1.74948e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 18+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 9.13873e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 11: 9.13873e-08
+      Relative nonlinear residuals (temperature, Stokes system): 0, 2.55513e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 10: 2.55513e-07
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 15+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.72289e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 12: 5.72289e-08
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 13+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 3.61037e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 13: 3.61037e-08
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 12+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 2.67495e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 14: 2.67495e-08
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 10+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 2.20586e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 15: 2.20586e-08
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 10+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 2.05502e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 16: 2.05502e-08
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 12+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 2.06209e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 17: 2.06209e-08
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 12+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 2.29302e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 18: 2.29302e-08
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 13+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 2.75549e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 19: 2.75549e-08
+      Relative nonlinear residuals (temperature, Stokes system): 0, 1.2655e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 11: 1.2655e-07
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 14+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 3.64299e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 20: 3.64299e-08
+      Relative nonlinear residuals (temperature, Stokes system): 0, 7.59802e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 12: 7.59802e-08
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 13+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 5.15207e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 13: 5.15207e-08
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 11+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 3.98691e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 14: 3.98691e-08
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 10+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 3.3973e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 15: 3.3973e-08
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 11+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 3.20571e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 16: 3.20571e-08
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 12+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 3.28313e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 17: 3.28313e-08
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 12+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 3.66968e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 18: 3.66968e-08
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 13+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 4.42287e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 19: 4.42287e-08
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 14+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.49643e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 21: 5.49643e-08
+      Relative nonlinear residuals (temperature, Stokes system): 0, 5.82869e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 20: 5.82869e-08
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 14+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 8.69e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 21: 8.69e-08
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 17+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 1.06565e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 22: 1.06565e-07
+      Relative nonlinear residuals (temperature, Stokes system): 0, 1.61823e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 22: 1.61823e-07
 
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 22+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 2.89601e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 23: 2.89601e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 26+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 8.96481e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 24: 8.96481e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 24+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 3.94583e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 25: 3.94583e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 25+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 4.76915e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 26: 4.76915e-07
+   Solving Stokes system (GMG)... 20+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 2.82255e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 23: 2.82255e-07
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 26+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.75752e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 27: 5.75752e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 24+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 4.70668e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 28: 4.70668e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 22+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.4077e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 29: 5.4077e-07
+      Relative nonlinear residuals (temperature, Stokes system): 0, 1.0635e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 24: 1.0635e-06
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 25+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.80093e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 30: 5.80093e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 25+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.57501e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 31: 5.57501e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 24+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.95534e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 32: 5.95534e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 25+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 6.22644e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 33: 6.22644e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 24+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.17365e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 34: 5.17365e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 24+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 4.31606e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 35: 4.31606e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 26+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 1.23627e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 36: 1.23627e-06
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 25+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 8.41842e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 37: 8.41842e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 24+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 4.74833e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 38: 4.74833e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 21+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 6.23465e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 39: 6.23465e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 25+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 1.09205e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 40: 1.09205e-06
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 26+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 7.43684e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 41: 7.43684e-07
+      Relative nonlinear residuals (temperature, Stokes system): 0, 6.46289e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 25: 6.46289e-07
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 23+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 4.90787e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 42: 4.90787e-07
+      Relative nonlinear residuals (temperature, Stokes system): 0, 6.58039e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 26: 6.58039e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 23+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 5.87251e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 27: 5.87251e-07
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 24+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.96625e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 43: 5.96625e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 7.04646e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 44: 7.04646e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 26+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.74027e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 45: 5.74027e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 6.81527e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 46: 6.81527e-07
+      Relative nonlinear residuals (temperature, Stokes system): 0, 6.98503e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 28: 6.98503e-07
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 24+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 4.87781e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 47: 4.87781e-07
+      Relative nonlinear residuals (temperature, Stokes system): 0, 5.37769e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 29: 5.37769e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 23+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 6.26641e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 30: 6.26641e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 23+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 5.48489e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 31: 5.48489e-07
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 25+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 6.11365e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 48: 6.11365e-07
+      Relative nonlinear residuals (temperature, Stokes system): 0, 8.53789e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 32: 8.53789e-07
 
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 26+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 9.33905e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 49: 9.33905e-07
+   Solving Stokes system (GMG)... 24+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 4.79056e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 33: 4.79056e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 24+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 6.72286e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 34: 6.72286e-07
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 25+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 4.43975e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 50: 4.43975e-07
+      Relative nonlinear residuals (temperature, Stokes system): 0, 6.064e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 35: 6.064e-07
 
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 26+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.81047e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 51: 5.81047e-07
+   Solving Stokes system (GMG)... 23+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 8.26055e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 36: 8.26055e-07
 
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 26+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 4.7379e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 52: 4.7379e-07
+   Solving Stokes system (GMG)... 22+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 6.40319e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 37: 6.40319e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 24+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 5.35594e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 38: 5.35594e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 22+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 5.12626e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 39: 5.12626e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 25+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 6.48408e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 40: 6.48408e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 25+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 1.58097e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 41: 1.58097e-06
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 24+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 5.25645e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 42: 5.25645e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 24+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 5.52639e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 43: 5.52639e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 23+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 8.77627e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 44: 8.77627e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 24+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 6.17693e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 45: 6.17693e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 25+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 8.12692e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 46: 8.12692e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 24+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 9.21081e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 47: 9.21081e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 23+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 6.84927e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 48: 6.84927e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 24+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 7.44997e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 49: 7.44997e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 24+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 6.75558e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 50: 6.75558e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 24+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 5.86413e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 51: 5.86413e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 22+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 6.34127e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 52: 6.34127e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 25+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 1.27961e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 53: 1.27961e-06
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 25+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 8.87585e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 54: 8.87585e-07
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 6.42397e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 53: 6.42397e-07
+      Relative nonlinear residuals (temperature, Stokes system): 0, 7.41021e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 55: 7.41021e-07
 
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 4.7961e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 54: 4.7961e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 7.2669e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 55: 7.2669e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.62296e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 56: 5.62296e-07
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 8.94726e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 56: 8.94726e-07
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.65565e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 57: 5.65565e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 1.1123e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 58: 1.1123e-06
+      Relative nonlinear residuals (temperature, Stokes system): 0, 1.06074e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 57: 1.06074e-06
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.74791e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 59: 5.74791e-07
+      Relative nonlinear residuals (temperature, Stokes system): 0, 8.00226e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 58: 8.00226e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 9.53553e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 59: 9.53553e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 30+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 8.59216e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 60: 8.59216e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 7.82455e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 61: 7.82455e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 8.78647e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 62: 8.78647e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 8.99934e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 63: 8.99934e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 29+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 7.92737e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 64: 7.92737e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 8.12571e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 65: 8.12571e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 7.46579e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 66: 7.46579e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 1.02388e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 67: 1.02388e-06
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 7.68254e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 68: 7.68254e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 9.37578e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 69: 9.37578e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 8.42296e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 70: 8.42296e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 30+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 9.18261e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 71: 9.18261e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 8.79661e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 72: 8.79661e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 32+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 9.86564e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 73: 9.86564e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 29+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 7.58875e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 74: 7.58875e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 29+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 8.23998e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 75: 8.23998e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 29+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 9.1033e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 76: 9.1033e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 29+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 8.32492e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 77: 8.32492e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 7.02627e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 78: 7.02627e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 9.61536e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 79: 9.61536e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 8.18505e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 80: 8.18505e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 30+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 7.03301e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 81: 7.03301e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 29+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 1.18886e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 82: 1.18886e-06
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 9.72388e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 83: 9.72388e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 31+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 7.74605e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 84: 7.74605e-07
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 34+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 6.41647e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 60: 6.41647e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 1.20207e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 61: 1.20207e-06
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.92341e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 62: 5.92341e-07
+      Relative nonlinear residuals (temperature, Stokes system): 0, 1.18197e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 85: 1.18197e-06
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.99161e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 63: 5.99161e-07
+      Relative nonlinear residuals (temperature, Stokes system): 0, 7.16498e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 86: 7.16498e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 30+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 6.79468e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 87: 6.79468e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 7.30364e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 88: 7.30364e-07
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 26+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.20052e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 64: 5.20052e-07
+      Relative nonlinear residuals (temperature, Stokes system): 0, 7.11283e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 89: 7.11283e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 25+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 9.10504e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 90: 9.10504e-07
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 7.80846e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 65: 7.80846e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.82142e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 66: 5.82142e-07
+      Relative nonlinear residuals (temperature, Stokes system): 0, 7.66763e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 91: 7.66763e-07
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 4.63682e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 67: 4.63682e-07
+      Relative nonlinear residuals (temperature, Stokes system): 0, 7.19102e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 92: 7.19102e-07
 
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.94912e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 68: 5.94912e-07
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 7.27516e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 93: 7.27516e-07
 
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 6.33674e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 69: 6.33674e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.19311e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 70: 5.19311e-07
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 8.13476e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 94: 8.13476e-07
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 1.07806e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 71: 1.07806e-06
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.09182e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 72: 5.09182e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.67115e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 73: 5.67115e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.70527e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 74: 5.70527e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.03627e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 75: 5.03627e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 6.6939e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 76: 6.6939e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.54417e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 77: 5.54417e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 7.72426e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 78: 7.72426e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 4.56966e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 79: 4.56966e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 32+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 6.88668e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 80: 6.88668e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.90386e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 81: 5.90386e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 6.2932e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 82: 6.2932e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 7.95508e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 83: 7.95508e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.01545e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 84: 5.01545e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.52821e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 85: 5.52821e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 6.60234e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 86: 6.60234e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 1.12027e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 87: 1.12027e-06
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 6.81255e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 88: 6.81255e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.49993e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 89: 5.49993e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.88837e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 90: 5.88837e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.83856e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 91: 5.83856e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 32+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 7.36996e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 92: 7.36996e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 6.56399e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 93: 6.56399e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 6.51351e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 94: 6.51351e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.08001e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 95: 5.08001e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.98762e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 96: 5.98762e-07
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 7.40605e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 97: 7.40605e-07
+      Relative nonlinear residuals (temperature, Stokes system): 0, 8.94958e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 95: 8.94958e-07
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 26+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.97255e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 98: 5.97255e-07
+      Relative nonlinear residuals (temperature, Stokes system): 0, 6.47883e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 96: 6.47883e-07
 
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 7.44785e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 99: 7.44785e-07
+   Solving Stokes system (GMG)... 29+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 8.38965e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 97: 8.38965e-07
 
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 6.40551e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 100: 6.40551e-07
+   Solving Stokes system (GMG)... 30+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 7.98559e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 98: 7.98559e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 29+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 7.91576e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 99: 7.91576e-07
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 9.23797e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 100: 9.23797e-07
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -512,510 +512,510 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Postprocessing:
      RMS, max velocity:                  2.57e-08 m/s, 3.05e-08 m/s
-     Pressure min/avg/max:               -1.038e+08 Pa, 5.037e+08 Pa, 1.084e+09 Pa
+     Pressure min/avg/max:               -1.622e+08 Pa, 7.994e+08 Pa, 1.729e+09 Pa
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.8139 kg/s, 0.8139 kg/s
      Writing graphical output:           output-nonlinear_channel_flow_velocities_iterated_IMPES/solution/solution-00000
 
 *** Timestep 1:  t=1 seconds, dt=1 seconds
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000442389
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000442389
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 32+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000399511
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000399511
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 32+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00076566
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00076566
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000537016
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.000537016
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00065474
-      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.00065474
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000412274
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000412274
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00040996
-      Relative nonlinear residual (total system) after nonlinear iteration 6: 0.00040996
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00066847
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00066847
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 29+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00032081
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00032081
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000412107
-      Relative nonlinear residual (total system) after nonlinear iteration 7: 0.000412107
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000354729
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.000354729
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000377853
-      Relative nonlinear residual (total system) after nonlinear iteration 8: 0.000377853
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000364613
-      Relative nonlinear residual (total system) after nonlinear iteration 9: 0.000364613
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000364256
-      Relative nonlinear residual (total system) after nonlinear iteration 10: 0.000364256
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000508469
-      Relative nonlinear residual (total system) after nonlinear iteration 11: 0.000508469
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000402697
-      Relative nonlinear residual (total system) after nonlinear iteration 12: 0.000402697
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 34+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000384313
-      Relative nonlinear residual (total system) after nonlinear iteration 13: 0.000384313
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000321779
-      Relative nonlinear residual (total system) after nonlinear iteration 14: 0.000321779
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000484823
-      Relative nonlinear residual (total system) after nonlinear iteration 15: 0.000484823
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000395066
-      Relative nonlinear residual (total system) after nonlinear iteration 16: 0.000395066
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000432928
-      Relative nonlinear residual (total system) after nonlinear iteration 17: 0.000432928
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000920538
-      Relative nonlinear residual (total system) after nonlinear iteration 18: 0.000920538
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000491707
-      Relative nonlinear residual (total system) after nonlinear iteration 19: 0.000491707
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 35+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000386731
-      Relative nonlinear residual (total system) after nonlinear iteration 20: 0.000386731
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000376705
-      Relative nonlinear residual (total system) after nonlinear iteration 21: 0.000376705
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000408653
-      Relative nonlinear residual (total system) after nonlinear iteration 22: 0.000408653
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000708147
-      Relative nonlinear residual (total system) after nonlinear iteration 23: 0.000708147
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000407055
-      Relative nonlinear residual (total system) after nonlinear iteration 24: 0.000407055
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000598018
-      Relative nonlinear residual (total system) after nonlinear iteration 25: 0.000598018
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000397423
-      Relative nonlinear residual (total system) after nonlinear iteration 26: 0.000397423
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000405999
-      Relative nonlinear residual (total system) after nonlinear iteration 27: 0.000405999
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000408434
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.000408434
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000500682
-      Relative nonlinear residual (total system) after nonlinear iteration 28: 0.000500682
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000446686
-      Relative nonlinear residual (total system) after nonlinear iteration 29: 0.000446686
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000366905
+      Relative nonlinear residual (total system) after nonlinear iteration 6: 0.000366905
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00045855
-      Relative nonlinear residual (total system) after nonlinear iteration 30: 0.00045855
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000242177
+      Relative nonlinear residual (total system) after nonlinear iteration 7: 0.000242177
 
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00042078
-      Relative nonlinear residual (total system) after nonlinear iteration 31: 0.00042078
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000386742
-      Relative nonlinear residual (total system) after nonlinear iteration 32: 0.000386742
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000443784
-      Relative nonlinear residual (total system) after nonlinear iteration 33: 0.000443784
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000478892
-      Relative nonlinear residual (total system) after nonlinear iteration 34: 0.000478892
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000313271
-      Relative nonlinear residual (total system) after nonlinear iteration 35: 0.000313271
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000354258
-      Relative nonlinear residual (total system) after nonlinear iteration 36: 0.000354258
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000585123
-      Relative nonlinear residual (total system) after nonlinear iteration 37: 0.000585123
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000679908
-      Relative nonlinear residual (total system) after nonlinear iteration 38: 0.000679908
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00043227
-      Relative nonlinear residual (total system) after nonlinear iteration 39: 0.00043227
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000659958
-      Relative nonlinear residual (total system) after nonlinear iteration 40: 0.000659958
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000455725
-      Relative nonlinear residual (total system) after nonlinear iteration 41: 0.000455725
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 33+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000534697
-      Relative nonlinear residual (total system) after nonlinear iteration 42: 0.000534697
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 33+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000671969
-      Relative nonlinear residual (total system) after nonlinear iteration 43: 0.000671969
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000432971
-      Relative nonlinear residual (total system) after nonlinear iteration 44: 0.000432971
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 32+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000431782
-      Relative nonlinear residual (total system) after nonlinear iteration 45: 0.000431782
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000439315
-      Relative nonlinear residual (total system) after nonlinear iteration 46: 0.000439315
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000430749
-      Relative nonlinear residual (total system) after nonlinear iteration 47: 0.000430749
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000337989
-      Relative nonlinear residual (total system) after nonlinear iteration 48: 0.000337989
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000579365
-      Relative nonlinear residual (total system) after nonlinear iteration 49: 0.000579365
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000448921
-      Relative nonlinear residual (total system) after nonlinear iteration 50: 0.000448921
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000392807
-      Relative nonlinear residual (total system) after nonlinear iteration 51: 0.000392807
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000524999
-      Relative nonlinear residual (total system) after nonlinear iteration 52: 0.000524999
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 33+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000694811
-      Relative nonlinear residual (total system) after nonlinear iteration 53: 0.000694811
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000470827
-      Relative nonlinear residual (total system) after nonlinear iteration 54: 0.000470827
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000433672
-      Relative nonlinear residual (total system) after nonlinear iteration 55: 0.000433672
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000633496
-      Relative nonlinear residual (total system) after nonlinear iteration 56: 0.000633496
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000396868
-      Relative nonlinear residual (total system) after nonlinear iteration 57: 0.000396868
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000318849
-      Relative nonlinear residual (total system) after nonlinear iteration 58: 0.000318849
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000572863
-      Relative nonlinear residual (total system) after nonlinear iteration 59: 0.000572863
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00040367
-      Relative nonlinear residual (total system) after nonlinear iteration 60: 0.00040367
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000406906
-      Relative nonlinear residual (total system) after nonlinear iteration 61: 0.000406906
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000502359
-      Relative nonlinear residual (total system) after nonlinear iteration 62: 0.000502359
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000490348
-      Relative nonlinear residual (total system) after nonlinear iteration 63: 0.000490348
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 32+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000530689
-      Relative nonlinear residual (total system) after nonlinear iteration 64: 0.000530689
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 34+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000408234
-      Relative nonlinear residual (total system) after nonlinear iteration 65: 0.000408234
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 38+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000433387
-      Relative nonlinear residual (total system) after nonlinear iteration 66: 0.000433387
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000689551
-      Relative nonlinear residual (total system) after nonlinear iteration 67: 0.000689551
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000399215
-      Relative nonlinear residual (total system) after nonlinear iteration 68: 0.000399215
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000342992
-      Relative nonlinear residual (total system) after nonlinear iteration 69: 0.000342992
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000550176
-      Relative nonlinear residual (total system) after nonlinear iteration 70: 0.000550176
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000381264
-      Relative nonlinear residual (total system) after nonlinear iteration 71: 0.000381264
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 32+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000443841
-      Relative nonlinear residual (total system) after nonlinear iteration 72: 0.000443841
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000378977
-      Relative nonlinear residual (total system) after nonlinear iteration 73: 0.000378977
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000406983
-      Relative nonlinear residual (total system) after nonlinear iteration 74: 0.000406983
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000372503
-      Relative nonlinear residual (total system) after nonlinear iteration 75: 0.000372503
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000500476
-      Relative nonlinear residual (total system) after nonlinear iteration 76: 0.000500476
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000459032
-      Relative nonlinear residual (total system) after nonlinear iteration 77: 0.000459032
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00041195
-      Relative nonlinear residual (total system) after nonlinear iteration 78: 0.00041195
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000308773
-      Relative nonlinear residual (total system) after nonlinear iteration 79: 0.000308773
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000429286
-      Relative nonlinear residual (total system) after nonlinear iteration 80: 0.000429286
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000546341
-      Relative nonlinear residual (total system) after nonlinear iteration 81: 0.000546341
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00044718
-      Relative nonlinear residual (total system) after nonlinear iteration 82: 0.00044718
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000477783
-      Relative nonlinear residual (total system) after nonlinear iteration 83: 0.000477783
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000387998
-      Relative nonlinear residual (total system) after nonlinear iteration 84: 0.000387998
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000404506
-      Relative nonlinear residual (total system) after nonlinear iteration 85: 0.000404506
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000573578
-      Relative nonlinear residual (total system) after nonlinear iteration 86: 0.000573578
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000324011
-      Relative nonlinear residual (total system) after nonlinear iteration 87: 0.000324011
+   Solving Stokes system (GMG)... 25+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000300009
+      Relative nonlinear residual (total system) after nonlinear iteration 8: 0.000300009
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 26+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000454401
-      Relative nonlinear residual (total system) after nonlinear iteration 88: 0.000454401
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000661563
-      Relative nonlinear residual (total system) after nonlinear iteration 89: 0.000661563
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000334811
-      Relative nonlinear residual (total system) after nonlinear iteration 90: 0.000334811
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000635115
-      Relative nonlinear residual (total system) after nonlinear iteration 91: 0.000635115
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000362311
+      Relative nonlinear residual (total system) after nonlinear iteration 9: 0.000362311
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000433248
-      Relative nonlinear residual (total system) after nonlinear iteration 92: 0.000433248
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000332359
+      Relative nonlinear residual (total system) after nonlinear iteration 10: 0.000332359
 
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000674902
-      Relative nonlinear residual (total system) after nonlinear iteration 93: 0.000674902
+   Solving Stokes system (GMG)... 29+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000278088
+      Relative nonlinear residual (total system) after nonlinear iteration 11: 0.000278088
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000406968
+      Relative nonlinear residual (total system) after nonlinear iteration 12: 0.000406968
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000384833
+      Relative nonlinear residual (total system) after nonlinear iteration 13: 0.000384833
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000465942
+      Relative nonlinear residual (total system) after nonlinear iteration 14: 0.000465942
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000336938
+      Relative nonlinear residual (total system) after nonlinear iteration 15: 0.000336938
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00040481
+      Relative nonlinear residual (total system) after nonlinear iteration 16: 0.00040481
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000319754
+      Relative nonlinear residual (total system) after nonlinear iteration 17: 0.000319754
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000336905
+      Relative nonlinear residual (total system) after nonlinear iteration 18: 0.000336905
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000462003
-      Relative nonlinear residual (total system) after nonlinear iteration 94: 0.000462003
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000511832
+      Relative nonlinear residual (total system) after nonlinear iteration 19: 0.000511832
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 32+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000388859
+      Relative nonlinear residual (total system) after nonlinear iteration 20: 0.000388859
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000359601
-      Relative nonlinear residual (total system) after nonlinear iteration 95: 0.000359601
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000390866
+      Relative nonlinear residual (total system) after nonlinear iteration 21: 0.000390866
 
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000398263
-      Relative nonlinear residual (total system) after nonlinear iteration 96: 0.000398263
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00039059
+      Relative nonlinear residual (total system) after nonlinear iteration 22: 0.00039059
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000386878
+      Relative nonlinear residual (total system) after nonlinear iteration 23: 0.000386878
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000393161
-      Relative nonlinear residual (total system) after nonlinear iteration 97: 0.000393161
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000341073
+      Relative nonlinear residual (total system) after nonlinear iteration 24: 0.000341073
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 25+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000317238
+      Relative nonlinear residual (total system) after nonlinear iteration 25: 0.000317238
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000383204
-      Relative nonlinear residual (total system) after nonlinear iteration 98: 0.000383204
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000396816
+      Relative nonlinear residual (total system) after nonlinear iteration 26: 0.000396816
 
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000441383
-      Relative nonlinear residual (total system) after nonlinear iteration 99: 0.000441383
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000398164
+      Relative nonlinear residual (total system) after nonlinear iteration 27: 0.000398164
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000387389
+      Relative nonlinear residual (total system) after nonlinear iteration 28: 0.000387389
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000323153
+      Relative nonlinear residual (total system) after nonlinear iteration 29: 0.000323153
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00034144
+      Relative nonlinear residual (total system) after nonlinear iteration 30: 0.00034144
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000418353
+      Relative nonlinear residual (total system) after nonlinear iteration 31: 0.000418353
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000343047
+      Relative nonlinear residual (total system) after nonlinear iteration 32: 0.000343047
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000316918
+      Relative nonlinear residual (total system) after nonlinear iteration 33: 0.000316918
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000380273
+      Relative nonlinear residual (total system) after nonlinear iteration 34: 0.000380273
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 25+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000367881
+      Relative nonlinear residual (total system) after nonlinear iteration 35: 0.000367881
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000303674
+      Relative nonlinear residual (total system) after nonlinear iteration 36: 0.000303674
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000597369
-      Relative nonlinear residual (total system) after nonlinear iteration 100: 0.000597369
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000336462
+      Relative nonlinear residual (total system) after nonlinear iteration 37: 0.000336462
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000318014
+      Relative nonlinear residual (total system) after nonlinear iteration 38: 0.000318014
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000346519
+      Relative nonlinear residual (total system) after nonlinear iteration 39: 0.000346519
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000341469
+      Relative nonlinear residual (total system) after nonlinear iteration 40: 0.000341469
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000374445
+      Relative nonlinear residual (total system) after nonlinear iteration 41: 0.000374445
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000383419
+      Relative nonlinear residual (total system) after nonlinear iteration 42: 0.000383419
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000325156
+      Relative nonlinear residual (total system) after nonlinear iteration 43: 0.000325156
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000312903
+      Relative nonlinear residual (total system) after nonlinear iteration 44: 0.000312903
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000357844
+      Relative nonlinear residual (total system) after nonlinear iteration 45: 0.000357844
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000302346
+      Relative nonlinear residual (total system) after nonlinear iteration 46: 0.000302346
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000403634
+      Relative nonlinear residual (total system) after nonlinear iteration 47: 0.000403634
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000349955
+      Relative nonlinear residual (total system) after nonlinear iteration 48: 0.000349955
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00037955
+      Relative nonlinear residual (total system) after nonlinear iteration 49: 0.00037955
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000369895
+      Relative nonlinear residual (total system) after nonlinear iteration 50: 0.000369895
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000436179
+      Relative nonlinear residual (total system) after nonlinear iteration 51: 0.000436179
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000318107
+      Relative nonlinear residual (total system) after nonlinear iteration 52: 0.000318107
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000529368
+      Relative nonlinear residual (total system) after nonlinear iteration 53: 0.000529368
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000361264
+      Relative nonlinear residual (total system) after nonlinear iteration 54: 0.000361264
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 30+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000373119
+      Relative nonlinear residual (total system) after nonlinear iteration 55: 0.000373119
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000429957
+      Relative nonlinear residual (total system) after nonlinear iteration 56: 0.000429957
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000431164
+      Relative nonlinear residual (total system) after nonlinear iteration 57: 0.000431164
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 30+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000348531
+      Relative nonlinear residual (total system) after nonlinear iteration 58: 0.000348531
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000404731
+      Relative nonlinear residual (total system) after nonlinear iteration 59: 0.000404731
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000399298
+      Relative nonlinear residual (total system) after nonlinear iteration 60: 0.000399298
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000366345
+      Relative nonlinear residual (total system) after nonlinear iteration 61: 0.000366345
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000403565
+      Relative nonlinear residual (total system) after nonlinear iteration 62: 0.000403565
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000387907
+      Relative nonlinear residual (total system) after nonlinear iteration 63: 0.000387907
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.0003623
+      Relative nonlinear residual (total system) after nonlinear iteration 64: 0.0003623
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000250755
+      Relative nonlinear residual (total system) after nonlinear iteration 65: 0.000250755
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000408615
+      Relative nonlinear residual (total system) after nonlinear iteration 66: 0.000408615
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000407122
+      Relative nonlinear residual (total system) after nonlinear iteration 67: 0.000407122
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000297598
+      Relative nonlinear residual (total system) after nonlinear iteration 68: 0.000297598
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 30+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000306634
+      Relative nonlinear residual (total system) after nonlinear iteration 69: 0.000306634
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.0003919
+      Relative nonlinear residual (total system) after nonlinear iteration 70: 0.0003919
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000352373
+      Relative nonlinear residual (total system) after nonlinear iteration 71: 0.000352373
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000355849
+      Relative nonlinear residual (total system) after nonlinear iteration 72: 0.000355849
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000360024
+      Relative nonlinear residual (total system) after nonlinear iteration 73: 0.000360024
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000405329
+      Relative nonlinear residual (total system) after nonlinear iteration 74: 0.000405329
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 29+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000387429
+      Relative nonlinear residual (total system) after nonlinear iteration 75: 0.000387429
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000315891
+      Relative nonlinear residual (total system) after nonlinear iteration 76: 0.000315891
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00040657
+      Relative nonlinear residual (total system) after nonlinear iteration 77: 0.00040657
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00035494
+      Relative nonlinear residual (total system) after nonlinear iteration 78: 0.00035494
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000295282
+      Relative nonlinear residual (total system) after nonlinear iteration 79: 0.000295282
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000315739
+      Relative nonlinear residual (total system) after nonlinear iteration 80: 0.000315739
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000429277
+      Relative nonlinear residual (total system) after nonlinear iteration 81: 0.000429277
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000335488
+      Relative nonlinear residual (total system) after nonlinear iteration 82: 0.000335488
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000281453
+      Relative nonlinear residual (total system) after nonlinear iteration 83: 0.000281453
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 25+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000324654
+      Relative nonlinear residual (total system) after nonlinear iteration 84: 0.000324654
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 25+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000332662
+      Relative nonlinear residual (total system) after nonlinear iteration 85: 0.000332662
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000387439
+      Relative nonlinear residual (total system) after nonlinear iteration 86: 0.000387439
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000317882
+      Relative nonlinear residual (total system) after nonlinear iteration 87: 0.000317882
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000378448
+      Relative nonlinear residual (total system) after nonlinear iteration 88: 0.000378448
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 25+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000341293
+      Relative nonlinear residual (total system) after nonlinear iteration 89: 0.000341293
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 25+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000358077
+      Relative nonlinear residual (total system) after nonlinear iteration 90: 0.000358077
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000484856
+      Relative nonlinear residual (total system) after nonlinear iteration 91: 0.000484856
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000335145
+      Relative nonlinear residual (total system) after nonlinear iteration 92: 0.000335145
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000360842
+      Relative nonlinear residual (total system) after nonlinear iteration 93: 0.000360842
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 29+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000405784
+      Relative nonlinear residual (total system) after nonlinear iteration 94: 0.000405784
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000358587
+      Relative nonlinear residual (total system) after nonlinear iteration 95: 0.000358587
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000345551
+      Relative nonlinear residual (total system) after nonlinear iteration 96: 0.000345551
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000450122
+      Relative nonlinear residual (total system) after nonlinear iteration 97: 0.000450122
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000332755
+      Relative nonlinear residual (total system) after nonlinear iteration 98: 0.000332755
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 29+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000291349
+      Relative nonlinear residual (total system) after nonlinear iteration 99: 0.000291349
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000330258
+      Relative nonlinear residual (total system) after nonlinear iteration 100: 0.000330258
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -1024,509 +1024,509 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Postprocessing:
      RMS, max velocity:                  2.57e-08 m/s, 3.05e-08 m/s
-     Pressure min/avg/max:               -1.144e+08 Pa, 5.027e+08 Pa, 1.083e+09 Pa
+     Pressure min/avg/max:               -1.813e+08 Pa, 7.997e+08 Pa, 1.752e+09 Pa
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.8139 kg/s, 0.8139 kg/s
 
 *** Timestep 2:  t=2 seconds, dt=1 seconds
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000728104
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000728104
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000466932
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000466932
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 34+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000668144
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000668144
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000456993
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000456993
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000470466
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.000470466
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000303413
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000303413
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00043961
-      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.00043961
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000372603
-      Relative nonlinear residual (total system) after nonlinear iteration 6: 0.000372603
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000479993
-      Relative nonlinear residual (total system) after nonlinear iteration 7: 0.000479993
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000484372
-      Relative nonlinear residual (total system) after nonlinear iteration 8: 0.000484372
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000322633
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000322633
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000463986
-      Relative nonlinear residual (total system) after nonlinear iteration 9: 0.000463986
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000451654
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.000451654
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000428355
-      Relative nonlinear residual (total system) after nonlinear iteration 10: 0.000428355
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000604521
-      Relative nonlinear residual (total system) after nonlinear iteration 11: 0.000604521
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000416451
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.000416451
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000411099
-      Relative nonlinear residual (total system) after nonlinear iteration 12: 0.000411099
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000297426
+      Relative nonlinear residual (total system) after nonlinear iteration 6: 0.000297426
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00040081
-      Relative nonlinear residual (total system) after nonlinear iteration 13: 0.00040081
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000595618
+      Relative nonlinear residual (total system) after nonlinear iteration 7: 0.000595618
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000334753
+      Relative nonlinear residual (total system) after nonlinear iteration 8: 0.000334753
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00061697
-      Relative nonlinear residual (total system) after nonlinear iteration 14: 0.00061697
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 34+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00137602
-      Relative nonlinear residual (total system) after nonlinear iteration 15: 0.00137602
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 32+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000698598
-      Relative nonlinear residual (total system) after nonlinear iteration 16: 0.000698598
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000435099
-      Relative nonlinear residual (total system) after nonlinear iteration 17: 0.000435099
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000338723
-      Relative nonlinear residual (total system) after nonlinear iteration 18: 0.000338723
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 32+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000527959
-      Relative nonlinear residual (total system) after nonlinear iteration 19: 0.000527959
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000373194
-      Relative nonlinear residual (total system) after nonlinear iteration 20: 0.000373194
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000515497
+      Relative nonlinear residual (total system) after nonlinear iteration 9: 0.000515497
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000477963
-      Relative nonlinear residual (total system) after nonlinear iteration 21: 0.000477963
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000327895
+      Relative nonlinear residual (total system) after nonlinear iteration 10: 0.000327895
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000328274
-      Relative nonlinear residual (total system) after nonlinear iteration 22: 0.000328274
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000450277
-      Relative nonlinear residual (total system) after nonlinear iteration 23: 0.000450277
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000442032
+      Relative nonlinear residual (total system) after nonlinear iteration 11: 0.000442032
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000462656
-      Relative nonlinear residual (total system) after nonlinear iteration 24: 0.000462656
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000431111
-      Relative nonlinear residual (total system) after nonlinear iteration 25: 0.000431111
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000451584
-      Relative nonlinear residual (total system) after nonlinear iteration 26: 0.000451584
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00042498
-      Relative nonlinear residual (total system) after nonlinear iteration 27: 0.00042498
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000371517
-      Relative nonlinear residual (total system) after nonlinear iteration 28: 0.000371517
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000376977
-      Relative nonlinear residual (total system) after nonlinear iteration 29: 0.000376977
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000408899
-      Relative nonlinear residual (total system) after nonlinear iteration 30: 0.000408899
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000435479
-      Relative nonlinear residual (total system) after nonlinear iteration 31: 0.000435479
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000410819
-      Relative nonlinear residual (total system) after nonlinear iteration 32: 0.000410819
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000461693
-      Relative nonlinear residual (total system) after nonlinear iteration 33: 0.000461693
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000420468
-      Relative nonlinear residual (total system) after nonlinear iteration 34: 0.000420468
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000525555
-      Relative nonlinear residual (total system) after nonlinear iteration 35: 0.000525555
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00052473
-      Relative nonlinear residual (total system) after nonlinear iteration 36: 0.00052473
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000660329
-      Relative nonlinear residual (total system) after nonlinear iteration 37: 0.000660329
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000334456
-      Relative nonlinear residual (total system) after nonlinear iteration 38: 0.000334456
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000576323
-      Relative nonlinear residual (total system) after nonlinear iteration 39: 0.000576323
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000406223
-      Relative nonlinear residual (total system) after nonlinear iteration 40: 0.000406223
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000410407
-      Relative nonlinear residual (total system) after nonlinear iteration 41: 0.000410407
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000408003
-      Relative nonlinear residual (total system) after nonlinear iteration 42: 0.000408003
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000288432
-      Relative nonlinear residual (total system) after nonlinear iteration 43: 0.000288432
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000531732
-      Relative nonlinear residual (total system) after nonlinear iteration 44: 0.000531732
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.0004457
-      Relative nonlinear residual (total system) after nonlinear iteration 45: 0.0004457
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000328624
-      Relative nonlinear residual (total system) after nonlinear iteration 46: 0.000328624
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 32+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000336609
-      Relative nonlinear residual (total system) after nonlinear iteration 47: 0.000336609
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00035406
-      Relative nonlinear residual (total system) after nonlinear iteration 48: 0.00035406
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000384709
+      Relative nonlinear residual (total system) after nonlinear iteration 12: 0.000384709
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 26+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000413941
-      Relative nonlinear residual (total system) after nonlinear iteration 49: 0.000413941
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00032988
+      Relative nonlinear residual (total system) after nonlinear iteration 13: 0.00032988
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 26+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000422672
-      Relative nonlinear residual (total system) after nonlinear iteration 50: 0.000422672
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00032852
-      Relative nonlinear residual (total system) after nonlinear iteration 51: 0.00032852
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000370925
-      Relative nonlinear residual (total system) after nonlinear iteration 52: 0.000370925
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000489477
-      Relative nonlinear residual (total system) after nonlinear iteration 53: 0.000489477
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000798954
-      Relative nonlinear residual (total system) after nonlinear iteration 54: 0.000798954
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000376874
-      Relative nonlinear residual (total system) after nonlinear iteration 55: 0.000376874
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000372072
-      Relative nonlinear residual (total system) after nonlinear iteration 56: 0.000372072
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000392081
-      Relative nonlinear residual (total system) after nonlinear iteration 57: 0.000392081
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000408078
-      Relative nonlinear residual (total system) after nonlinear iteration 58: 0.000408078
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000634772
-      Relative nonlinear residual (total system) after nonlinear iteration 59: 0.000634772
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000457152
-      Relative nonlinear residual (total system) after nonlinear iteration 60: 0.000457152
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000351406
-      Relative nonlinear residual (total system) after nonlinear iteration 61: 0.000351406
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.0004186
-      Relative nonlinear residual (total system) after nonlinear iteration 62: 0.0004186
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000440342
-      Relative nonlinear residual (total system) after nonlinear iteration 63: 0.000440342
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000468054
-      Relative nonlinear residual (total system) after nonlinear iteration 64: 0.000468054
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000384968
+      Relative nonlinear residual (total system) after nonlinear iteration 14: 0.000384968
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 26+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000428817
-      Relative nonlinear residual (total system) after nonlinear iteration 65: 0.000428817
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000303908
-      Relative nonlinear residual (total system) after nonlinear iteration 66: 0.000303908
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000368465
-      Relative nonlinear residual (total system) after nonlinear iteration 67: 0.000368465
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000439217
-      Relative nonlinear residual (total system) after nonlinear iteration 68: 0.000439217
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000296489
-      Relative nonlinear residual (total system) after nonlinear iteration 69: 0.000296489
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00049237
-      Relative nonlinear residual (total system) after nonlinear iteration 70: 0.00049237
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000401986
-      Relative nonlinear residual (total system) after nonlinear iteration 71: 0.000401986
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000376173
-      Relative nonlinear residual (total system) after nonlinear iteration 72: 0.000376173
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000440492
-      Relative nonlinear residual (total system) after nonlinear iteration 73: 0.000440492
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00049582
-      Relative nonlinear residual (total system) after nonlinear iteration 74: 0.00049582
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000344087
-      Relative nonlinear residual (total system) after nonlinear iteration 75: 0.000344087
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000732851
-      Relative nonlinear residual (total system) after nonlinear iteration 76: 0.000732851
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000539798
-      Relative nonlinear residual (total system) after nonlinear iteration 77: 0.000539798
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000391931
-      Relative nonlinear residual (total system) after nonlinear iteration 78: 0.000391931
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000417788
-      Relative nonlinear residual (total system) after nonlinear iteration 79: 0.000417788
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000517181
-      Relative nonlinear residual (total system) after nonlinear iteration 80: 0.000517181
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000934989
-      Relative nonlinear residual (total system) after nonlinear iteration 81: 0.000934989
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 36+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000435172
-      Relative nonlinear residual (total system) after nonlinear iteration 82: 0.000435172
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000384891
-      Relative nonlinear residual (total system) after nonlinear iteration 83: 0.000384891
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000382604
-      Relative nonlinear residual (total system) after nonlinear iteration 84: 0.000382604
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.0004204
-      Relative nonlinear residual (total system) after nonlinear iteration 85: 0.0004204
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000343169
-      Relative nonlinear residual (total system) after nonlinear iteration 86: 0.000343169
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000372598
-      Relative nonlinear residual (total system) after nonlinear iteration 87: 0.000372598
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000394396
-      Relative nonlinear residual (total system) after nonlinear iteration 88: 0.000394396
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000502525
+      Relative nonlinear residual (total system) after nonlinear iteration 15: 0.000502525
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 26+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000441189
-      Relative nonlinear residual (total system) after nonlinear iteration 89: 0.000441189
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000338516
+      Relative nonlinear residual (total system) after nonlinear iteration 16: 0.000338516
 
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000326561
-      Relative nonlinear residual (total system) after nonlinear iteration 90: 0.000326561
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000322544
-      Relative nonlinear residual (total system) after nonlinear iteration 91: 0.000322544
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000583458
-      Relative nonlinear residual (total system) after nonlinear iteration 92: 0.000583458
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000372269
+      Relative nonlinear residual (total system) after nonlinear iteration 17: 0.000372269
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 27+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000386987
-      Relative nonlinear residual (total system) after nonlinear iteration 93: 0.000386987
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000339801
+      Relative nonlinear residual (total system) after nonlinear iteration 18: 0.000339801
 
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000362177
-      Relative nonlinear residual (total system) after nonlinear iteration 94: 0.000362177
+   Solving Stokes system (GMG)... 25+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00029159
+      Relative nonlinear residual (total system) after nonlinear iteration 19: 0.00029159
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000381507
+      Relative nonlinear residual (total system) after nonlinear iteration 20: 0.000381507
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000327957
+      Relative nonlinear residual (total system) after nonlinear iteration 21: 0.000327957
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000364249
+      Relative nonlinear residual (total system) after nonlinear iteration 22: 0.000364249
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000466066
+      Relative nonlinear residual (total system) after nonlinear iteration 23: 0.000466066
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00034785
+      Relative nonlinear residual (total system) after nonlinear iteration 24: 0.00034785
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000431011
-      Relative nonlinear residual (total system) after nonlinear iteration 95: 0.000431011
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000271009
+      Relative nonlinear residual (total system) after nonlinear iteration 25: 0.000271009
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000353557
+      Relative nonlinear residual (total system) after nonlinear iteration 26: 0.000353557
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000370172
+      Relative nonlinear residual (total system) after nonlinear iteration 27: 0.000370172
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000414717
+      Relative nonlinear residual (total system) after nonlinear iteration 28: 0.000414717
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000349177
+      Relative nonlinear residual (total system) after nonlinear iteration 29: 0.000349177
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000386838
+      Relative nonlinear residual (total system) after nonlinear iteration 30: 0.000386838
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000354025
+      Relative nonlinear residual (total system) after nonlinear iteration 31: 0.000354025
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000411155
+      Relative nonlinear residual (total system) after nonlinear iteration 32: 0.000411155
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000473223
-      Relative nonlinear residual (total system) after nonlinear iteration 96: 0.000473223
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00030243
+      Relative nonlinear residual (total system) after nonlinear iteration 33: 0.00030243
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 30+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000459322
-      Relative nonlinear residual (total system) after nonlinear iteration 97: 0.000459322
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000417057
+      Relative nonlinear residual (total system) after nonlinear iteration 34: 0.000417057
 
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000430644
-      Relative nonlinear residual (total system) after nonlinear iteration 98: 0.000430644
-
-   Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 29+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000423891
-      Relative nonlinear residual (total system) after nonlinear iteration 99: 0.000423891
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000413449
+      Relative nonlinear residual (total system) after nonlinear iteration 35: 0.000413449
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000363929
-      Relative nonlinear residual (total system) after nonlinear iteration 100: 0.000363929
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000377261
+      Relative nonlinear residual (total system) after nonlinear iteration 36: 0.000377261
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000353001
+      Relative nonlinear residual (total system) after nonlinear iteration 37: 0.000353001
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 30+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000295298
+      Relative nonlinear residual (total system) after nonlinear iteration 38: 0.000295298
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000381812
+      Relative nonlinear residual (total system) after nonlinear iteration 39: 0.000381812
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000570495
+      Relative nonlinear residual (total system) after nonlinear iteration 40: 0.000570495
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000307227
+      Relative nonlinear residual (total system) after nonlinear iteration 41: 0.000307227
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000355058
+      Relative nonlinear residual (total system) after nonlinear iteration 42: 0.000355058
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000511135
+      Relative nonlinear residual (total system) after nonlinear iteration 43: 0.000511135
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 29+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00035134
+      Relative nonlinear residual (total system) after nonlinear iteration 44: 0.00035134
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000382842
+      Relative nonlinear residual (total system) after nonlinear iteration 45: 0.000382842
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 30+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00034702
+      Relative nonlinear residual (total system) after nonlinear iteration 46: 0.00034702
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 29+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000436902
+      Relative nonlinear residual (total system) after nonlinear iteration 47: 0.000436902
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000488782
+      Relative nonlinear residual (total system) after nonlinear iteration 48: 0.000488782
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 30+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000340252
+      Relative nonlinear residual (total system) after nonlinear iteration 49: 0.000340252
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 29+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000321854
+      Relative nonlinear residual (total system) after nonlinear iteration 50: 0.000321854
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000337904
+      Relative nonlinear residual (total system) after nonlinear iteration 51: 0.000337904
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000364694
+      Relative nonlinear residual (total system) after nonlinear iteration 52: 0.000364694
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000342719
+      Relative nonlinear residual (total system) after nonlinear iteration 53: 0.000342719
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000347641
+      Relative nonlinear residual (total system) after nonlinear iteration 54: 0.000347641
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 29+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000340893
+      Relative nonlinear residual (total system) after nonlinear iteration 55: 0.000340893
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000309779
+      Relative nonlinear residual (total system) after nonlinear iteration 56: 0.000309779
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000353199
+      Relative nonlinear residual (total system) after nonlinear iteration 57: 0.000353199
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000363268
+      Relative nonlinear residual (total system) after nonlinear iteration 58: 0.000363268
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 29+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000371344
+      Relative nonlinear residual (total system) after nonlinear iteration 59: 0.000371344
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000354895
+      Relative nonlinear residual (total system) after nonlinear iteration 60: 0.000354895
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000383413
+      Relative nonlinear residual (total system) after nonlinear iteration 61: 0.000383413
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00042909
+      Relative nonlinear residual (total system) after nonlinear iteration 62: 0.00042909
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000334338
+      Relative nonlinear residual (total system) after nonlinear iteration 63: 0.000334338
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000349389
+      Relative nonlinear residual (total system) after nonlinear iteration 64: 0.000349389
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000437972
+      Relative nonlinear residual (total system) after nonlinear iteration 65: 0.000437972
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000346338
+      Relative nonlinear residual (total system) after nonlinear iteration 66: 0.000346338
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000346065
+      Relative nonlinear residual (total system) after nonlinear iteration 67: 0.000346065
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00032718
+      Relative nonlinear residual (total system) after nonlinear iteration 68: 0.00032718
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000304342
+      Relative nonlinear residual (total system) after nonlinear iteration 69: 0.000304342
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000354391
+      Relative nonlinear residual (total system) after nonlinear iteration 70: 0.000354391
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000359516
+      Relative nonlinear residual (total system) after nonlinear iteration 71: 0.000359516
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 25+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000290275
+      Relative nonlinear residual (total system) after nonlinear iteration 72: 0.000290275
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000318255
+      Relative nonlinear residual (total system) after nonlinear iteration 73: 0.000318255
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000377258
+      Relative nonlinear residual (total system) after nonlinear iteration 74: 0.000377258
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000361933
+      Relative nonlinear residual (total system) after nonlinear iteration 75: 0.000361933
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000383511
+      Relative nonlinear residual (total system) after nonlinear iteration 76: 0.000383511
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 29+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000363961
+      Relative nonlinear residual (total system) after nonlinear iteration 77: 0.000363961
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 30+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000354285
+      Relative nonlinear residual (total system) after nonlinear iteration 78: 0.000354285
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000388523
+      Relative nonlinear residual (total system) after nonlinear iteration 79: 0.000388523
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000373155
+      Relative nonlinear residual (total system) after nonlinear iteration 80: 0.000373155
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000316929
+      Relative nonlinear residual (total system) after nonlinear iteration 81: 0.000316929
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000444947
+      Relative nonlinear residual (total system) after nonlinear iteration 82: 0.000444947
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00034354
+      Relative nonlinear residual (total system) after nonlinear iteration 83: 0.00034354
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000429409
+      Relative nonlinear residual (total system) after nonlinear iteration 84: 0.000429409
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 29+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000315469
+      Relative nonlinear residual (total system) after nonlinear iteration 85: 0.000315469
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000334669
+      Relative nonlinear residual (total system) after nonlinear iteration 86: 0.000334669
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000322441
+      Relative nonlinear residual (total system) after nonlinear iteration 87: 0.000322441
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000370972
+      Relative nonlinear residual (total system) after nonlinear iteration 88: 0.000370972
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 25+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000421668
+      Relative nonlinear residual (total system) after nonlinear iteration 89: 0.000421668
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 25+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.00031138
+      Relative nonlinear residual (total system) after nonlinear iteration 90: 0.00031138
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000476011
+      Relative nonlinear residual (total system) after nonlinear iteration 91: 0.000476011
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 30+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000344159
+      Relative nonlinear residual (total system) after nonlinear iteration 92: 0.000344159
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000300403
+      Relative nonlinear residual (total system) after nonlinear iteration 93: 0.000300403
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000337192
+      Relative nonlinear residual (total system) after nonlinear iteration 94: 0.000337192
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 28+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000399781
+      Relative nonlinear residual (total system) after nonlinear iteration 95: 0.000399781
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000350322
+      Relative nonlinear residual (total system) after nonlinear iteration 96: 0.000350322
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000409102
+      Relative nonlinear residual (total system) after nonlinear iteration 97: 0.000409102
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 26+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000391628
+      Relative nonlinear residual (total system) after nonlinear iteration 98: 0.000391628
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 29+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000333812
+      Relative nonlinear residual (total system) after nonlinear iteration 99: 0.000333812
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 27+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0, 0.000449687
+      Relative nonlinear residual (total system) after nonlinear iteration 100: 0.000449687
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -1535,7 +1535,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Postprocessing:
      RMS, max velocity:                  2.57e-08 m/s, 3.05e-08 m/s
-     Pressure min/avg/max:               -9.642e+07 Pa, 5.035e+08 Pa, 1.129e+09 Pa
+     Pressure min/avg/max:               -1.607e+08 Pa, 7.994e+08 Pa, 1.735e+09 Pa
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.8139 kg/s, 0.8139 kg/s
      Writing graphical output:           output-nonlinear_channel_flow_velocities_iterated_IMPES/solution/solution-00001
 
