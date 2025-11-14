@@ -175,9 +175,9 @@ namespace aspect
                   // to prevent a division-by-zero, and a floating point exception.
                   // Otherwise, calculate the square-root of the norm of the second invariant of the deviatoric-
                   // strain rate (often simplified as epsilondot_ii)
-                  const SymmetricTensor<2,dim> edot = use_deviator_of_strain_rate ? deviator(in.strain_rate[i]) : in.strain_rate[i];
-                  const double edot_ii_strict = std::sqrt(0.5*edot*edot);
-                  const double edot_ii = 2.0 * std::max(edot_ii_strict, min_strain_rate[c]);
+                  const SymmetricTensor<2,dim> edot = use_deviator_of_strain_rate ? Utilities::Tensors::consistent_deviator(in.strain_rate[i]) : in.strain_rate[i];
+                  const double edot_ii_strict = std::sqrt(use_deviator_of_strain_rate ? std::abs(Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(edot)) : 0.5*edot*edot);
+                  const double edot_ii = std::max(edot_ii_strict, min_strain_rate[c]);
 
                   const double stress_exponent_inv = 1/stress_exponent[c];
                   composition_viscosities[c] = std::max(std::min(std::pow(viscosity_prefactor[c],-stress_exponent_inv) * std::pow(edot_ii,stress_exponent_inv-1), max_viscosity[c]), min_viscosity[c]);

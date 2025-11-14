@@ -36,21 +36,21 @@ Number of mesh deformation degrees of freedom: 252
    Solving mesh displacement system... 1 iterations.
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Initial Newton Stokes residual = 1.09767e+12, v = 7.91246e+11, p = 7.60789e+11
+   Initial Newton Stokes residual = 1.09764e+12, v = 7.91217e+11, p = 7.60789e+11
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-      Newton system information: Norm of the rhs: 4.71419e+10
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.23589e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0.0429474
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0429474
+   Solving Stokes system (AMG)... 11+0 iterations.
+      Newton system information: Norm of the rhs: 4.65345e+10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.23589e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0.0423949
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0423949
 
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 13+0 iterations.
-      Newton system information: Norm of the rhs: 3295.86, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.32534e-16, 0, 0, 0, 0, 0, 0, 0, 0, 3.00261e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.00261e-09
+      Newton system information: Norm of the rhs: 3241.68, Derivative scaling factor: 0
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.28635e-16, 0, 0, 0, 0, 0, 0, 0, 0, 2.9533e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.9533e-09
 
 
    Postprocessing:
@@ -64,26 +64,26 @@ Number of mesh deformation degrees of freedom: 252
    Solving mesh displacement system... 1 iterations.
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Initial Newton Stokes residual = 1.09967e+12, v = 7.94065e+11, p = 7.60745e+11
+   Initial Newton Stokes residual = 1.0995e+12, v = 7.93828e+11, p = 7.60745e+11
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 9+0 iterations.
-      Newton system information: Norm of the rhs: 4.52714e+09
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.51746e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0.00411682
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00411682
+   Solving Stokes system (AMG)... 10+0 iterations.
+      Newton system information: Norm of the rhs: 4.69075e+09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.58688e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0.00426626
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00426626
 
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Switching from defect correction form of Picard to the Newton solver scheme.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 13+0 iterations.
-      Newton system information: Norm of the rhs: 3906.85, Derivative scaling factor: 1
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.36808e-16, 0, 0, 0, 0, 0, 0, 0, 0, 3.55275e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.55275e-09
+      Newton system information: Norm of the rhs: 3775.19, Derivative scaling factor: 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.34297e-16, 0, 0, 0, 0, 0, 0, 0, 0, 3.43356e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.43356e-09
 
 
    Postprocessing:
-     RMS, max velocity:            0.000844 m/year, 0.00139 m/year
+     RMS, max velocity:            0.000843 m/year, 0.00139 m/year
      Number of advected particles: 400
 
 
@@ -93,26 +93,26 @@ Number of mesh deformation degrees of freedom: 252
    Solving mesh displacement system... 1 iterations.
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Initial Newton Stokes residual = 1.10103e+12, v = 7.95992e+11, p = 7.60701e+11
+   Initial Newton Stokes residual = 1.10056e+12, v = 7.95337e+11, p = 7.60701e+11
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 9+0 iterations.
-      Newton system information: Norm of the rhs: 2.62831e+09
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.31747e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0.00238714
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00238714
+   Solving Stokes system (AMG)... 10+0 iterations.
+      Newton system information: Norm of the rhs: 2.66443e+09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.49496e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0.00242098
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00242098
 
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Switching from defect correction form of Picard to the Newton solver scheme.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 13+0 iterations.
-      Newton system information: Norm of the rhs: 4264.83, Derivative scaling factor: 1
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.5063e-16, 0, 0, 0, 0, 0, 0, 0, 0, 3.87349e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.87349e-09
+      Newton system information: Norm of the rhs: 4044.95, Derivative scaling factor: 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.42503e-16, 0, 0, 0, 0, 0, 0, 0, 0, 3.67537e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.67537e-09
 
 
    Postprocessing:
-     RMS, max velocity:            0.000848 m/year, 0.00138 m/year
+     RMS, max velocity:            0.000846 m/year, 0.00139 m/year
      Number of advected particles: 400
 
 
@@ -122,35 +122,26 @@ Number of mesh deformation degrees of freedom: 252
    Solving mesh displacement system... 1 iterations.
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Initial Newton Stokes residual = 1.10282e+12, v = 7.98505e+11, p = 7.60658e+11
+   Initial Newton Stokes residual = 1.10189e+12, v = 7.97227e+11, p = 7.60658e+11
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 9+0 iterations.
-      Newton system information: Norm of the rhs: 1.82953e+09
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.55823e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0.00165895
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00165895
+   Solving Stokes system (AMG)... 10+0 iterations.
+      Newton system information: Norm of the rhs: 1.83883e+09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.27822e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0.00166879
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00166879
 
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Switching from defect correction form of Picard to the Newton solver scheme.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 13+0 iterations.
-      Newton system information: Norm of the rhs: 141829, Derivative scaling factor: 1
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.37239e-16, 0, 0, 0, 0, 0, 0, 0, 0, 1.28606e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.28606e-07
-
-   Solving temperature system... 0 iterations.
-   Advecting particles...  done.
-   The linear solver tolerance is set to 1e-07. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 13+0 iterations.
-      Newton system information: Norm of the rhs: 14022.7, Derivative scaling factor: 1
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.37239e-16, 0, 0, 0, 0, 0, 0, 0, 0, 1.27153e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.27153e-08
+      Newton system information: Norm of the rhs: 4311.44, Derivative scaling factor: 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.53992e-16, 0, 0, 0, 0, 0, 0, 0, 0, 3.91276e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.91276e-09
 
 
    Postprocessing:
-     RMS, max velocity:            0.000852 m/year, 0.00138 m/year
+     RMS, max velocity:            0.000849 m/year, 0.00138 m/year
      Number of advected particles: 400
 
 
@@ -160,21 +151,21 @@ Number of mesh deformation degrees of freedom: 252
    Solving mesh displacement system... 1 iterations.
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Initial Newton Stokes residual = 1.09587e+12, v = 8.01589e+11, p = 7.47247e+11
+   Initial Newton Stokes residual = 1.09435e+12, v = 7.99468e+11, p = 7.47293e+11
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-      Newton system information: Norm of the rhs: 2.81121e+10
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.40516e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0.0256528
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0256528
+   Solving Stokes system (AMG)... 11+0 iterations.
+      Newton system information: Norm of the rhs: 2.75854e+10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.35165e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0.0252072
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0252072
 
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 12+0 iterations.
-      Newton system information: Norm of the rhs: 3.6048e+09, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.2783e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0.00328946
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00328946
+      Newton system information: Norm of the rhs: 3.47923e+09, Derivative scaling factor: 0
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.51025e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0.00317927
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00317927
 
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
@@ -182,18 +173,18 @@ Number of mesh deformation degrees of freedom: 252
    The linear solver tolerance is set to 1e-07. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 14+0 iterations.
-      Newton system information: Norm of the rhs: 9.77972e+08, Derivative scaling factor: 1
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.49515e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0.000892419
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000892419
+      Newton system information: Norm of the rhs: 8.46648e+08, Derivative scaling factor: 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.49894e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0.000773656
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000773656
 
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    The linear solver tolerance is set to 1e-07. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 14+0 iterations.
-      Newton system information: Norm of the rhs: 5.81618e+07, Derivative scaling factor: 1
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.339e-16, 0, 0, 0, 0, 0, 0, 0, 0, 5.30738e-05
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 5.30738e-05
+      Newton system information: Norm of the rhs: 6.11946e+07, Derivative scaling factor: 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.37248e-16, 0, 0, 0, 0, 0, 0, 0, 0, 5.59188e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 5.59188e-05
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -201,7 +192,7 @@ Number of mesh deformation degrees of freedom: 252
    Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
-     RMS, max velocity:            0.000864 m/year, 0.00137 m/year
+     RMS, max velocity:            0.00086 m/year, 0.00137 m/year
      Number of advected particles: 400
 
 

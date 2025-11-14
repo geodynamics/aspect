@@ -9,16 +9,16 @@ Number of degrees of freedom: 1,272 (480+72+240+240+240)
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0570421
 
    Solving Stokes system (GMG)... 12+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0124028
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0124027
 
    Solving Stokes system (GMG)... 10+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.00146411
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.00149698
 
    Solving Stokes system (GMG)... 9+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.00017388
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.000178767
 
    Solving Stokes system (GMG)... 7+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 2.75784e-05
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 2.81032e-05
 
 
    Postprocessing:
@@ -27,14 +27,14 @@ Number of degrees of freedom: 1,272 (480+72+240+240+240)
      that does not have any quadrature points in it.
      Consider reducing the number of depth layers for averaging.
 
-     RMS, max velocity:                  0.0139 m/year, 0.0376 m/year
+     RMS, max velocity:                  0.014 m/year, 0.0379 m/year
      Temperature min/avg/max:            300 K, 2067 K, 3700 K
      Writing graphical output:           output-cookbook_mantle_convection_annulus/solution/solution-00000
-     Heat fluxes through boundary parts: 1.168e+07 W, 2.059e+07 W
+     Heat fluxes through boundary parts: 1.175e+07 W, 2.071e+07 W
      Writing depth average:              output-cookbook_mantle_convection_annulus/depth_average
      Writing particle output:            output-cookbook_mantle_convection_annulus/particles/particles-00000
      Writing stokes residuals            output-cookbook_mantle_convection_annulus/stokes_residuals.txt
-     Mobility:                           2.99e-06
+     Mobility:                           2.96e-06
 
 Skipping mesh refinement, because the mesh did not change.
 

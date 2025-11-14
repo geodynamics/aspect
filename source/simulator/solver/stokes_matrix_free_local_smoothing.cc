@@ -454,12 +454,14 @@ namespace aspect
           active_cell_data.enable_newton_derivatives = (Parameters<dim>::is_defect_correction(this->get_parameters().nonlinear_solver)
                                                         && this->get_newton_handler().parameters.newton_derivative_scaling_factor != 0);
           active_cell_data.enable_prescribed_dilation = this->get_parameters().enable_prescribed_dilation;
+          active_cell_data.average_newton_factors = (this->get_parameters().material_averaging != MaterialModel::MaterialAveraging::none);
 
           // TODO: these are not implemented yet
           for (unsigned int level=0; level<n_levels; ++level)
             {
               level_cell_data[level].enable_newton_derivatives = false;
               level_cell_data[level].enable_prescribed_dilation = false;
+              level_cell_data[level].average_newton_factors = false;
             }
 
           FEValues<dim> fe_values (this->get_mapping(),
@@ -556,15 +558,8 @@ namespace aspect
 
                       for (unsigned int q=0; q<n_q_points; ++q)
                         {
-                          // use the correct strain rate for the Jacobian
-                          // when elasticity is enabled use viscoelastic strain rate
-                          // when stabilization is enabled, use the deviatoric strain rate because the SPD factor
-                          // that is computed is only safe for the deviatoric strain rate (see PR #5580 and issue #5555)
-                          SymmetricTensor<2,dim> effective_strain_rate = in.strain_rate[q];
-                          if (elastic_out != nullptr)
-                            effective_strain_rate = elastic_out->viscoelastic_strain_rate[q];
-                          else if ((this->get_newton_handler().parameters.velocity_block_stabilization & Newton::Parameters::Stabilization::PD) != Newton::Parameters::Stabilization::none)
-                            effective_strain_rate = Utilities::Tensors::consistent_deviator(effective_strain_rate);
+                          const SymmetricTensor<2,dim> effective_strain_rate
+                            = (elastic_out == nullptr ? in.strain_rate[q] : elastic_out->viscoelastic_strain_rate[q]);
 
                           // use the spd factor when the stabilization is PD or SPD.
                           const double alpha =  (this->get_newton_handler().parameters.velocity_block_stabilization
@@ -579,14 +574,19 @@ namespace aspect
                                                 1.0;
 
                           active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]
-                            = derivatives->viscosity_derivative_wrt_pressure[q] *
-                              derivatives->viscosity_derivative_averaging_weights[q] *
-                              newton_derivative_scaling_factor;
+                            = newton_derivative_scaling_factor * derivatives->viscosity_derivative_wrt_pressure[q]
+                              * (active_cell_data.average_newton_factors ? derivatives->viscosity_derivative_averaging_weights[q] : 1.0);
                           Assert(std::isfinite(active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]),
-                                 ExcMessage("active_cell_data.newton_factor_wrt_pressure_table is not finite: " + std::to_string(active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]) +
-                                            ". Relevant variables are derivatives->viscosity_derivative_wrt_pressure[q] = " + std::to_string(derivatives->viscosity_derivative_wrt_pressure[q]) +
-                                            ", derivatives->viscosity_derivative_averaging_weights[q] = " + std::to_string(derivatives->viscosity_derivative_averaging_weights[q]) +
-                                            ", and newton_derivative_scaling_factor = " + std::to_string(newton_derivative_scaling_factor)));
+                                 ExcMessage("active_cell_data.newton_factor_wrt_pressure_table is not finite: "
+                                            + std::to_string(active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i])
+                                            + ". Relevant variables are derivatives->viscosity_derivative_wrt_pressure[q] = "
+                                            + std::to_string(derivatives->viscosity_derivative_wrt_pressure[q])
+                                            + (active_cell_data.average_newton_factors ?
+                                               ", derivatives->viscosity_derivative_averaging_weights[q] = "
+                                               + std::to_string(derivatives->viscosity_derivative_averaging_weights[q])
+                                               + ", and newton_derivative_scaling_factor = "
+                                               + std::to_string(newton_derivative_scaling_factor) :
+                                               "")));
 
                           for (unsigned int m=0; m<dim; ++m)
                             for (unsigned int n=0; n<dim; ++n)
@@ -595,14 +595,15 @@ namespace aspect
                                   = effective_strain_rate[m][n];
 
                                 active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i]
-                                  = derivatives->viscosity_derivative_wrt_strain_rate[q][m][n] *
-                                    derivatives->viscosity_derivative_averaging_weights[q] *
-                                    newton_derivative_scaling_factor * alpha;
+                                  = newton_derivative_scaling_factor * alpha * derivatives->viscosity_derivative_wrt_strain_rate[q][m][n]
+                                    * (active_cell_data.average_newton_factors ? derivatives->viscosity_derivative_averaging_weights[q] : 1.0);
 
                                 Assert(std::isfinite(active_cell_data.strain_rate_table(cell, q)[m][n][i]),
-                                       ExcMessage("active_cell_data.strain_rate_table has an element which is not finite: " + std::to_string(active_cell_data.strain_rate_table(cell, q)[m][n][i])));
+                                       ExcMessage("active_cell_data.strain_rate_table has an element which is not finite: "
+                                                  + std::to_string(active_cell_data.strain_rate_table(cell, q)[m][n][i])));
                                 Assert(std::isfinite(active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i]),
-                                       ExcMessage("active_cell_data.newton_factor_wrt_strain_rate_table has an element which is not finite: " + std::to_string(active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i])));
+                                       ExcMessage("active_cell_data.newton_factor_wrt_strain_rate_table has an element which is not finite: "
+                                                  + std::to_string(active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i])));
                               }
 
                           if (active_cell_data.enable_prescribed_dilation)
@@ -610,9 +611,12 @@ namespace aspect
                               active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]
                                 = derivatives->dilation_derivative_wrt_pressure[q] * newton_derivative_scaling_factor;
                               Assert(std::isfinite(active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]),
-                                     ExcMessage("active_cell_data.dilation_derivative_wrt_pressure_table is not finite: " + std::to_string(active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]) +
-                                                ". Relevant variables are derivatives->dilation_derivative_wrt_pressure[q] = " + std::to_string(derivatives->dilation_derivative_wrt_pressure[q]) +
-                                                " and newton_derivative_scaling_factor = " + std::to_string(newton_derivative_scaling_factor)));
+                                     ExcMessage("active_cell_data.dilation_derivative_wrt_pressure_table is not finite: "
+                                                + std::to_string(active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i])
+                                                + ". Relevant variables are derivatives->dilation_derivative_wrt_pressure[q] = "
+                                                + std::to_string(derivatives->dilation_derivative_wrt_pressure[q])
+                                                + " and newton_derivative_scaling_factor = "
+                                                + std::to_string(newton_derivative_scaling_factor)));
 
                               for (unsigned int m=0; m<dim; ++m)
                                 for (unsigned int n=0; n<dim; ++n)
