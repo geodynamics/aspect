@@ -79,7 +79,6 @@ namespace aspect
             padded_temperature_depth_average[n_slices+1] = 2.*bottom_temperature - temperature_depth_average[n_slices-1];
           }
         std::copy ( temperature_depth_average.begin(), temperature_depth_average.end(), padded_temperature_depth_average.begin() + 1 );
-
       }
 
 

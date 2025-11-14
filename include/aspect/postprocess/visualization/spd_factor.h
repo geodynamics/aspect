@@ -62,7 +62,6 @@ namespace aspect
            */
           void
           parse_parameters (ParameterHandler &prm) override;
-
       };
     }
   }
