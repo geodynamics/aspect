@@ -650,16 +650,23 @@ namespace aspect
       }
     catch (const std::exception &exc)
       {
-        // Test that we are trying to handle exceptions and that
-        // the exception we got is one of the two documented by
-        // throw_linear_solver_failure_exception(). If not, we have a genuine
+        // We get here if the Stokes solve above failed. Let's see first
+        // why that happened:
+
+        // If the exception we got is not one of the two documented by
+        // throw_linear_solver_failure_exception(), then we have a genuine
         // problem here, and will need to get outta here right away:
-        if (newton_handler->parameters.use_Newton_failsafe == false ||
-            ((dynamic_cast<const ExcMessage *>(&exc)==nullptr) &&
-             (dynamic_cast<const QuietException *>(&exc)==nullptr)))
+        if ((dynamic_cast<const ExcMessage *>(&exc)==nullptr) &&
+            (dynamic_cast<const QuietException *>(&exc)==nullptr))
           throw;
 
-        // start the solve over again and try with a stabilized version
+        // Otherwise, the solver presumably failed because the Newton matrix
+        // is not symmetric or not definite. If we do not actually want to
+        // handle this case, then again leave:
+        if (newton_handler->parameters.use_Newton_failsafe == false)
+          throw;
+
+        // Otherwise, start the solve over again and try with a stabilized version:
         pcout << "failed, trying again with stabilization" << std::endl;
         newton_handler->parameters.preconditioner_stabilization = Newton::Parameters::Stabilization::SPD;
         newton_handler->parameters.velocity_block_stabilization = Newton::Parameters::Stabilization::SPD;
