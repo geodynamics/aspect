@@ -5,6 +5,7 @@ feature:cartesian
 feature:modular-equations
 feature:compositional-fields
 feature:particles
+```
 
 (sec:cookbooks:CPO_induced_anisotropic_viscosity)=
 # CPO induced anisotropic viscosity
