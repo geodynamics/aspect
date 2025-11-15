@@ -14,7 +14,7 @@ Number of degrees of freedom: 494 (81+8+27+27+27+27+27+27+27+27+27+27+27+27+27+2
    Advecting particles...  done.
    Copying properties into prescribed compositional field scalar_vis... done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 6+0 iterations.
+   Solving Stokes system (AMG)... 3+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                 0.289 m/s, 0.5 m/s

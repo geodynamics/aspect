@@ -1,6 +1,6 @@
-# This cookbook demonstrates how CPO induced anisotropic viscosity evolves during 
-# simple shearing. The model consists of 1 cell and one particle in the middle. 
-# The particle includes 500 grains with initially random orientations (isotropic 
+# This cookbook demonstrates how CPO induced anisotropic viscosity evolves during
+# simple shearing. The model consists of 1 cell and one particle in the middle.
+# The particle includes 500 grains with initially random orientations (isotropic
 # texture), which then evolves into a CPO aligned with the shear direction.
 
 set Additional shared libraries = ./plugin/libCPO_induced_anisotropic_viscosity.debug.so
@@ -16,7 +16,7 @@ set Output directory  = output_Shearbox_CPO_AV
 
 subsection Initial composition model
   set List of model names = function
-  
+
   subsection Function
     set Function expression = 0;\
                               0; 0; 0; 0;\
@@ -50,7 +50,7 @@ end
 
 subsection Gravity model
   set Model name = vertical
-  
+
   subsection Vertical
     set Magnitude = 0
   end
@@ -94,7 +94,7 @@ end
 
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators =  top:function, bottom:function, left:function, right:function, front:function, back:function
-  
+
   subsection Function
     set Variable names = x,y,z,t
     set Function expression = (z-0.5);0;0
@@ -108,6 +108,10 @@ subsection Material model
   subsection CPO-induced Anisotropic Viscosity
     set Reference viscosity = 1e9
   end
+end
+
+subsection Heating model
+  set List of model names = anisotropic shear heating
 end
 
 subsection Mesh refinement
