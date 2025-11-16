@@ -112,16 +112,17 @@ namespace aspect
     {
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(AnisotropicStress,
                                                   "Anisotropic stress",
-                                                  "A visualization output object that generates output "
-                                                  "for the 6 (in 3d) components of the anisotropic stress "
-                                                  "tensor. The anisotropic stress is defined as $2 \eta "
-                                                  "(\varepsilon(\mathbf u) - \tfrac 13 \textrm{trace}\ "
-                                                  "\varepsilon(\mathbf u) \mathbf 1) = 2\eta (\varepsilon(\mathbf u) - "
-                                                      "\frac 13 (\nabla \cdot \mathbf u) \mathbf I)$ * stress_strain_directors, and differs from the "
-                                                      "full stress by the absence of the pressure.  The second term in the "
-                                                      "difference is zero if the model is incompressible. "
-                                                      "This particle property plugin should only be activated when using the "
-                                                      "CPO induced anisotropic viscosity material model from the cookbook. ")
-                                                    }
-                                                    }
-                                                    }
+                                                  "A visualization output object that generates "
+                                                  "the 3 or 6 independent components (in 2d and 3d, respectively) "
+                                                  "of the anisotropic stress tensor. "
+                                                  "The anisotropic stress is defined as $2 \\eta "
+                                                  "(\\varepsilon(\\mathbf u) - \\tfrac 13 \\text{trace} "
+                                                  "\\varepsilon(\\mathbf u) \\mathbf 1) = 2\\eta (\\varepsilon(\\mathbf u) - "
+                                                  "\\frac 13 (\\nabla \\cdot \\mathbf u) \\mathbf I)$ * stress_strain_directors, "
+                                                  "and differs from the full stress by the absence of the pressure. "
+                                                  "The second term in the difference is zero if the model is incompressible. "
+                                                  "This particle property plugin should only be activated when using "
+                                                  "the CPO induced anisotropic viscosity material model from the cookbook.")
+    }
+  }
+}
