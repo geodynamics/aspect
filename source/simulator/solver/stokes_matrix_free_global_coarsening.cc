@@ -1574,7 +1574,6 @@ namespace aspect
 
             if (this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators().size() > 0)
               {
-                Assert(false, dealii::StandardExceptions::ExcNotImplemented("This is not tested."));
                 VectorTools::compute_no_normal_flux_constraints (dof_handler,
                                                                  0 /* first_vector_component */,
                                                                  this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators(),
