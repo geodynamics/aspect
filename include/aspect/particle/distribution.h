@@ -94,20 +94,19 @@ namespace aspect
          * @param particle_ranges_to_sum_over The particle_iterator_range of the current and neighboring cells.
          * The KDE uses both the particles in the given cell and those in neighboring cells when constructing the point density function.
          * @param n_particles_in_cell The number of particles belonging to the particle manager in question within the cell.
-         * @param mapping A reference to a mapping object to use to translate cell coordinates into
-         * real coordinates. `fill_from_particle_range` does not use this parameter directly but passes it to
-         * `insert_kernel_sum_from_particle_range.`
+         * @param mapping The mapping object used to translate cell coordinates into real coordinates.
+         * @param cell The cell for which the ParticlePDF is to be computed.
          */
         void
         fill_from_particle_range(const typename Particles::ParticleHandler<dim>::particle_iterator_range &particle_range,
                                  const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
                                  &particle_ranges_to_sum_over,
                                  const unsigned int n_particles_in_cell,
-                                 const typename dealii::Mapping<dim> &mapping);
+                                 const typename dealii::Mapping<dim> &mapping,
+                                 const typename Triangulation<dim>::active_cell_iterator &cell);
 
         /**
-         * This function is only called from `fill_from_particle_range`.
-         * It iterates through every particle in the cell and
+         * This function iterates through every particle in the cell and
          * sums the value of the kernel function between the
          * reference point and the position of the cell.
          * @param reference_point The point from which to get the value of the kernel function.
@@ -121,7 +120,7 @@ namespace aspect
         void
         insert_kernel_sum_from_particle_range(const Point<dim> &reference_point,
                                               const std::array<unsigned int,dim> &table_index,
-                                              const typename Triangulation<dim>::cell_iterator &cell,
+                                              const typename Triangulation<dim>::active_cell_iterator &cell,
                                               const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
                                               &particle_ranges_to_sum_over,
                                               const typename dealii::Mapping<dim> &mapping);
