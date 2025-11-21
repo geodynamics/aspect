@@ -126,9 +126,7 @@ namespace aspect
       // to the current time - output_interval. this makes sure we
       // always produce data during the first time step
       if (std::isnan(last_output_time))
-        {
-          last_output_time = this->get_time() - output_interval;
-        }
+        last_output_time = this->get_time() - output_interval;
 
       // Just return stats if text output is not required at all or not needed at this time
       if (!write_to_file || ((this->get_time() < last_output_time + output_interval)
@@ -162,12 +160,15 @@ namespace aspect
           // we did an output and std::floor sadly rounds to zero. This is done
           // by forcing std::floor to round 1.0-eps to 1.0.
           const double magic = 1.0+2.0*std::numeric_limits<double>::epsilon();
-          last_output_time = last_output_time + std::floor((this->get_time()-last_output_time)/output_interval*magic) * output_interval/magic;
+          last_output_time = last_output_time +
+                             std::floor((this->get_time()-last_output_time)/output_interval*magic) * output_interval/magic;
         }
 
       return std::pair<std::string, std::string> ("Topography min/max:",
                                                   output_stats.str());
     }
+
+
 
     template <int dim>
     void
@@ -197,6 +198,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void
     Topography<dim>::parse_parameters (ParameterHandler &prm)
@@ -205,7 +207,7 @@ namespace aspect
       {
         prm.enter_subsection("Topography");
         {
-          write_to_file        = prm.get_bool ("Output to file");
+          write_to_file   = prm.get_bool ("Output to file");
           output_interval = prm.get_double ("Time between text output");
           if (this->convert_output_to_years())
             output_interval *= year_in_seconds;

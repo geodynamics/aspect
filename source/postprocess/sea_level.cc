@@ -147,8 +147,8 @@ namespace aspect
         if (cell->is_locally_owned() && cell->at_boundary())
           {
             unsigned int face_idx = numbers::invalid_unsigned_int;
-            bool at_upper_surface = false;
             {
+              bool at_upper_surface = false;
               for (const unsigned int f : cell->face_indices())
                 {
                   if (cell->at_boundary(f) && cell->face(f)->boundary_id() == top_boundary_id)
@@ -167,7 +167,9 @@ namespace aspect
             // Focus on the boundary cell's upper face if on the top boundary.
             fe_face_values.reinit(cell,face_idx);
 
-            // If the cell is at the top boundary, add its contributions to the topography/geoid displacement/ocean mask/ice height storage vectors.
+            // If the cell is at the top boundary, add its
+            // contributions to the topography/geoid
+            // displacement/ocean mask/ice height storage vectors.
             for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
               {
                 const Point<dim> current_position = fe_face_values.quadrature_point(q);
@@ -200,9 +202,7 @@ namespace aspect
       integral_ice_height = Utilities::MPI::sum (integral_ice_height, this->get_mpi_communicator());
       integral_topo_geoid = Utilities::MPI::sum (integral_topo_geoid, this->get_mpi_communicator());
 
-      const double sea_level_offset = -1./integral_ocean_mask*(1./density_water*integral_ice_height+integral_topo_geoid);
-
-      return sea_level_offset;
+      return -1./integral_ocean_mask*(1./density_water*integral_ice_height+integral_topo_geoid);
     }
 
 
