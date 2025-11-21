@@ -12,6 +12,7 @@ developers are:
 
 * Wolfgang Bangerth (Colorado State University, USA)
 * Juliane Dannberg (GEOMAR Helmholtz Centre for Ocean Research, Germany)
+* Daniel Douglas (Boston College, USA)
 * Menno Fraters (University of Graz, Austria)
 * Rene Gassmoeller (GEOMAR Helmholtz Centre for Ocean Research, Germany)
 * Anne Glerum (Geoforschungszentrum Potsdam, Germany)
