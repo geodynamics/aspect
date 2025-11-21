@@ -18,6 +18,7 @@ developers are:
 * Timo Heister (Clemson University, USA)
 * Bob Myhill (University of Bristol, UK)
 * John Naliboff (New Mexico Tech, USA)
+* Arushi Saxena (University of California, Davis, USA)
 * Cedric Thieulot (Utrecht University, Netherlands)
 
 ## Principal developers emeriti
