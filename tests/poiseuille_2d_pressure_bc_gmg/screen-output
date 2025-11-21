@@ -5,17 +5,17 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 
-    GMG coarse size A: 18, coarse size S: 4
-    GMG n_levels: 5
-    Viscosity range: 1 - 1
-    GMG workload imbalance: 1
-    Stokes solver: 14+0 iterations.
-    Schur complement preconditioner: 15+0 iterations.
-    A block preconditioner: 15+0 iterations.
+     GMG coarse size A: 18, coarse size S: 4
+     GMG levels: 5
+     Viscosity range: 1 - 1
+     GMG workload imbalance: 1
+     Stokes solver (GMRES): 14+0 iterations.
+     Schur complement preconditioner: 15+0 iterations.
+     A block preconditioner: 15+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.193 m/s, 0.27 m/s
-     Pressure min/avg/max:               -2.413 Pa, -2.991e-16 Pa, 2.413 Pa
+     Pressure min/avg/max:               -2.413 Pa, -1.904e-16 Pa, 2.413 Pa
      Mass fluxes through boundary parts: -0.1752 kg/s, 0.1752 kg/s, 0 kg/s, 0 kg/s
 
 Termination requested by criterion: end time
