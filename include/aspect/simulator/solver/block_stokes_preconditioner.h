@@ -158,7 +158,13 @@ namespace aspect
      * (A B^T; 0 S)^{-1}.
      */
     template <class AInvOperator, class SInvOperator, class BTOperator,  class VectorType>
-    class BlockSchurPreconditioner : public Subscriptor
+    class BlockSchurPreconditioner : public
+#if DEAL_II_VERSION_GTE(9,7,0)
+      EnableObserverPointer
+#else
+      Subscriptor
+#endif
+
     {
       public:
         /**
