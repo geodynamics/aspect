@@ -1015,6 +1015,13 @@ namespace aspect
       }
 
 
+
+      // Add definition for plugins member:
+      template <typename InterfaceClass>
+      inline std::list<typename PluginList<InterfaceClass>::PluginInfo> *PluginList<InterfaceClass>::plugins = nullptr;
+
+
+
       /**
        * A placeholder class that is used wherever we need a PluginList object
        * for `dim==0` and `dim==1`, which of course are not dimensions we
