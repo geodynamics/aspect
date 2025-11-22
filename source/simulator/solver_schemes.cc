@@ -547,6 +547,49 @@ namespace aspect
     Assert(!parameters.include_melt_transport
            || introspection.variable("compaction pressure").block_index == 1, ExcNotImplemented());
 
+    // Define some lambda functions here for readability
+    auto update_residuals = [&]()
+    {
+      dcr.velocity_residual = system_rhs.block(velocity_block_index).l2_norm();
+      dcr.pressure_residual = system_rhs.block(pressure_block_index).l2_norm();
+      dcr.residual = std::sqrt(dcr.velocity_residual * dcr.velocity_residual +
+                               dcr.pressure_residual * dcr.pressure_residual);
+    };
+
+    // Eisenstat Walker method for determining the linear solver tolerance
+    auto update_Eisenstat_Walker_tolerance = [&]()
+    {
+      const bool EisenstatWalkerChoiceOne = true;
+      parameters.linear_stokes_solver_tolerance = compute_Eisenstat_Walker_linear_tolerance(EisenstatWalkerChoiceOne,
+                                                  newton_handler->parameters.maximum_linear_stokes_solver_tolerance,
+                                                  parameters.linear_stokes_solver_tolerance,
+                                                  dcr.stokes_residuals.second,
+                                                  dcr.residual,
+                                                  dcr.residual_old);
+
+      pcout << "   The linear solver tolerance is set to "
+            << parameters.linear_stokes_solver_tolerance
+            << ". ";
+      if (!use_picard)
+        {
+          pcout << "Stabilization Preconditioner is "
+                << Newton::to_string(newton_handler->parameters.preconditioner_stabilization)
+                << " and A block is "
+                << Newton::to_string(newton_handler->parameters.velocity_block_stabilization)
+                << '.';
+        }
+      pcout << std::endl;
+    };
+
+    // build the preconditioner
+    auto build_preconditioner = [&]()
+    {
+      if (stokes_matrix_free)
+        stokes_matrix_free->build_preconditioner();
+      else
+        build_stokes_preconditioner();
+    };
+
     // Re-compute the pressure scaling factor for the Stokes assembly
     pressure_scaling = compute_pressure_scaling_factor();
 
@@ -588,10 +631,7 @@ namespace aspect
 
     assemble_stokes_system();
 
-    // recompute rhs
-    dcr.velocity_residual = system_rhs.block(velocity_block_index).l2_norm();
-    dcr.pressure_residual = system_rhs.block(pressure_block_index).l2_norm();
-    dcr.residual = std::sqrt(dcr.velocity_residual * dcr.velocity_residual + dcr.pressure_residual * dcr.pressure_residual);
+    update_residuals();
 
     // Test whether the rhs has dropped so much that we can assume that the iteration is done.
     if (dcr.residual < dcr.residual_old * 1e-8)
@@ -607,38 +647,15 @@ namespace aspect
       }
 
 
-    // Eisenstat Walker method for determining the linear solver tolerance
     if (nonlinear_iteration > 1)
       {
         if (!use_picard || newton_handler->parameters.use_Eisenstat_Walker_method_for_Picard_iterations)
           {
-            const bool EisenstatWalkerChoiceOne = true;
-            parameters.linear_stokes_solver_tolerance = compute_Eisenstat_Walker_linear_tolerance(EisenstatWalkerChoiceOne,
-                                                        newton_handler->parameters.maximum_linear_stokes_solver_tolerance,
-                                                        parameters.linear_stokes_solver_tolerance,
-                                                        dcr.stokes_residuals.second,
-                                                        dcr.residual,
-                                                        dcr.residual_old);
-
-            pcout << "   The linear solver tolerance is set to "
-                  << parameters.linear_stokes_solver_tolerance
-                  << ". ";
-            if (!use_picard)
-              {
-                pcout << "Stabilization Preconditioner is "
-                      << Newton::to_string(newton_handler->parameters.preconditioner_stabilization)
-                      << " and A block is "
-                      << Newton::to_string(newton_handler->parameters.velocity_block_stabilization)
-                      << '.';
-              }
-            pcout << std::endl;
+            update_Eisenstat_Walker_tolerance();
           }
       }
 
-    if (stokes_matrix_free)
-      stokes_matrix_free->build_preconditioner();
-    else
-      build_stokes_preconditioner();
+    build_preconditioner();
 
     // The solution of the defect correction solver is an update direction
     LinearAlgebra::BlockVector search_direction;
@@ -694,29 +711,16 @@ namespace aspect
          */
         if (nonlinear_iteration > 1)
           {
-            dcr.velocity_residual = system_rhs.block(velocity_block_index).l2_norm();
-            dcr.pressure_residual = system_rhs.block(pressure_block_index).l2_norm();
-            dcr.residual = std::sqrt(dcr.velocity_residual * dcr.velocity_residual + dcr.pressure_residual * dcr.pressure_residual);
+            update_residuals();
 
             // Eisenstat Walker method for determining the linear solver tolerance
             if (!use_picard)
               {
-                const bool EisenstatWalkerChoiceOne = true;
-                parameters.linear_stokes_solver_tolerance = compute_Eisenstat_Walker_linear_tolerance(EisenstatWalkerChoiceOne,
-                                                            newton_handler->parameters.maximum_linear_stokes_solver_tolerance,
-                                                            parameters.linear_stokes_solver_tolerance,
-                                                            dcr.stokes_residuals.second,
-                                                            dcr.residual,
-                                                            dcr.residual_old);
-
-                pcout << "   The linear solver tolerance is set to " << parameters.linear_stokes_solver_tolerance << std::endl;
+                update_Eisenstat_Walker_tolerance();
               }
           }
 
-        if (stokes_matrix_free)
-          stokes_matrix_free->build_preconditioner();
-        else
-          build_stokes_preconditioner();
+        build_preconditioner();
 
         // Give this another try:
         dcr.stokes_residuals = solve_stokes(search_direction);
