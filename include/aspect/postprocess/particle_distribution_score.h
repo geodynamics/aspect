@@ -83,11 +83,10 @@ namespace aspect
          * @param cell The cell for which to compute the particle distribution.
          * @param bucket_width The size (relative to the size of the cell) of each bucket in the table.
          * @param buckets The table to fill with the particle information.
-        */
-        void sort_particles_into_buckets(const typename Triangulation<dim>::active_cell_iterator &cell,
-                                         const double bucket_width,
-                                         Table<dim,unsigned int> &buckets) const;
-
+         */
+        Table<dim,unsigned int>
+        sort_particles_into_buckets(const typename Triangulation<dim>::active_cell_iterator &cell,
+                                    const double bucket_width) const;
     };
   }
 }
