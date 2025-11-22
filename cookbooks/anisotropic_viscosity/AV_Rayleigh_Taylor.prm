@@ -57,6 +57,10 @@ subsection Material model
   end
 end
 
+subsection Heating model
+  set List of model names = anisotropic shear heating
+end
+
 subsection Initial composition model
   set Model name = function
 
