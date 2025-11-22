@@ -1,4 +1,3 @@
-
 /*
   Copyright (C) 2025 - by the authors of the ASPECT code.
 

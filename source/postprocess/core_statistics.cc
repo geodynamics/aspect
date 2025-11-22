@@ -38,6 +38,8 @@ namespace aspect
       core_data.is_initialized = false;
     }
 
+
+
     template <int dim>
     std::pair<std::string,std::string>
     CoreStatistics<dim>::execute (TableHandler &statistics)
@@ -144,6 +146,8 @@ namespace aspect
                                                   screen_text.str());
     }
 
+
+
     template <int dim>
     void
     CoreStatistics<dim>::declare_parameters (ParameterHandler &prm)
@@ -161,6 +165,8 @@ namespace aspect
       prm.leave_subsection();
     }
 
+
+
     template <int dim>
     void
     CoreStatistics<dim>::parse_parameters (ParameterHandler &prm)
@@ -176,12 +182,16 @@ namespace aspect
       prm.leave_subsection();
     }
 
+
+
     template <int dim>
     const BoundaryTemperature::internal::CoreData &
     CoreStatistics<dim>::get_core_data() const
     {
       return core_data;
     }
+
+
 
     template <int dim>
     template <class Archive>
@@ -196,6 +206,8 @@ namespace aspect
       ar &(core_data.dX_dt);
       ar &(core_data.is_initialized);
     }
+
+
 
     template <int dim>
     void CoreStatistics<dim>::save (std::map<std::string, std::string> &status_strings) const
@@ -212,6 +224,8 @@ namespace aspect
 
       status_strings["CoreStatistics"] = os.str();
     }
+
+
 
     template <int dim>
     void CoreStatistics<dim>::load (const std::map<std::string, std::string> &status_strings)
