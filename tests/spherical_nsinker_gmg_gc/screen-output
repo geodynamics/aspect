@@ -7,9 +7,9 @@ Number of degrees of freedom: 28,690 (20,790+970+6,930)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving Stokes system (GMG-GC)... 
      GMG coarse size A: 2910, coarse size S: 150
-     GMG n_levels: 2
+     GMG levels: 2
      Viscosity range: 0.1 - 433.496
-     Stokes solver: 106+0 iterations.
+     Stokes solver (GMRES): 106+0 iterations.
      Schur complement preconditioner: 107+0 iterations.
      A block preconditioner: 107+0 iterations.
 
@@ -23,9 +23,9 @@ Number of degrees of freedom: 62,010 (44,937+2,094+14,979)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving Stokes system (GMG-GC)... 
      GMG coarse size A: 2910, coarse size S: 150
-     GMG n_levels: 3
+     GMG levels: 3
      Viscosity range: 0.1 - 1000
-     Stokes solver: 385+0 iterations.
+     Stokes solver (GMRES): 385+0 iterations.
      Schur complement preconditioner: 387+0 iterations.
      A block preconditioner: 387+0 iterations.
 

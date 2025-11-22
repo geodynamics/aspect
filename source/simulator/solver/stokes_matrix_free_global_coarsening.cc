@@ -941,11 +941,14 @@ namespace aspect
 
     if (print_details)
       {
+        const unsigned int n_levels = max_level - min_level + 1;
+        const std::string solver = (this->get_parameters().stokes_krylov_type == Parameters<dim>::StokesKrylovType::idr_s) ? ("IDR(" + std::to_string(this->get_parameters().idr_s_parameter) + ")") : "GMRES";
+
         this->get_pcout() << std::endl
                           << "     GMG coarse size A: " << coarse_A_size << ", coarse size S: " << coarse_S_size << std::endl
-                          << "     GMG n_levels: " << this->get_triangulation().n_global_levels() << std::endl
+                          << "     GMG levels: " << n_levels << std::endl
                           << "     Viscosity range: " << minimum_viscosity << " - " << maximum_viscosity << std::endl
-                          << "     Stokes solver: " << std::flush;
+                          << "     Stokes solver (" << solver << "): " << std::flush;
       }
 
     // MG Matrix
