@@ -363,7 +363,8 @@ namespace aspect
                             pdf.fill_from_particle_range(particle_handler->particles_in_cell(cell),
                                                          particle_ranges_to_sum_over,
                                                          current_n_particles_in_cell,
-                                                         this->get_mapping());
+                                                         this->get_mapping(),
+                                                         cell);
                             pdf.compute_statistical_values();
 
                             const std::vector<Point<dim>> min_density_positions = pdf.get_min_positions();
@@ -564,7 +565,8 @@ namespace aspect
                             pdf.fill_from_particle_range(particle_handler->particles_in_cell(cell),
                                                          particle_ranges_to_sum_over,
                                                          current_n_particles_in_cell,
-                                                         this->get_mapping());
+                                                         this->get_mapping(),
+                                                         cell);
                             pdf.compute_statistical_values();
 
                             const types::particle_index index_max = pdf.get_max_particle();
