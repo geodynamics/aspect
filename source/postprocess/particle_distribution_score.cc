@@ -73,9 +73,8 @@ namespace aspect
                   const double bucket_width = 1.0/granularity_double;
                   buckets_ideal.fill(ideal_n_particles_per_bucket);
 
-                  Table<dim,unsigned int> buckets_actual;
-                  buckets_actual.reinit(bucket_sizes);
-                  sort_particles_into_buckets(cell,bucket_width,buckets_actual);
+                  const Table<dim,unsigned int> buckets_actual
+                    = sort_particles_into_buckets(cell, bucket_width);
 
                   /*
                   In the worst case, all particles are in one bucket.
@@ -170,11 +169,17 @@ namespace aspect
 
 
     template <int dim>
-    void ParticleDistributionScore<dim>::sort_particles_into_buckets(
+    Table<dim,unsigned int>
+    ParticleDistributionScore<dim>::sort_particles_into_buckets(
       const typename Triangulation<dim>::active_cell_iterator &cell,
-      const double bucket_width,
-      Table<dim,unsigned int> &buckets) const
+      const double bucket_width) const
     {
+      TableIndices<dim> bucket_sizes;
+      for (unsigned int i=0; i<dim; ++i)
+        bucket_sizes[i] = granularity;
+      Table<dim,unsigned int> buckets;
+      buckets.reinit(bucket_sizes);
+
       for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
         {
           // sort the particles within the current cell
@@ -221,6 +226,8 @@ namespace aspect
               ++buckets(entry_index);
             }
         }
+
+      return buckets;
     }
 
 
