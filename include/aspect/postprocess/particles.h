@@ -1,21 +1,21 @@
 /*
- Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
- This file is part of ASPECT.
+  This file is part of ASPECT.
 
- ASPECT is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2, or (at your option)
- any later version.
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
 
- ASPECT is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with ASPECT; see the file LICENSE.  If not see
- <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
  */
 
 #ifndef _aspect_postprocess_particle_h
@@ -244,7 +244,7 @@ namespace aspect
          * We store one list per particle manager, because each particle
          * manager will have its own output directory and description file.
          */
-        std::map<std::string,std::vector<XDMFEntry>>  xdmf_entries;
+        std::map<std::string,std::vector<XDMFEntry>> xdmf_entries;
 
         /**
          * VTU file output supports grouping files from several CPUs into one

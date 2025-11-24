@@ -97,7 +97,7 @@ namespace aspect
         /**
          * Stores the core data from boundary temperature.
          */
-        struct  BoundaryTemperature::internal::CoreData core_data;
+        BoundaryTemperature::internal::CoreData core_data;
     };
   }
 }
