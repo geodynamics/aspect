@@ -27,7 +27,7 @@ jobs:
     runs-on: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: setup
       run: |
         sudo apt-get update
@@ -49,7 +49,7 @@ jobs:
     runs-on: [ubuntu-24.04]
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: setup
       run: |
         sudo apt-get update
@@ -127,7 +127,7 @@ jobs:
       options: ${{ matrix.container-options }}
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: compile
       run: |
         mkdir build
