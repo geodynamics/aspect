@@ -76,7 +76,8 @@ namespace aspect
                           pdf.fill_from_particle_range(particle_handler.particles_in_cell(cell),
                                                        particle_ranges_to_sum_over,
                                                        particle_handler.n_particles_in_cell(cell),
-                                                       this->get_mapping());
+                                                       this->get_mapping(),
+                                                       cell);
                           pdf.compute_statistical_values();
 
                           standard_deviation_min = std::min(standard_deviation_min, pdf.get_standard_deviation());
@@ -100,7 +101,8 @@ namespace aspect
                           pdf.fill_from_particle_range(particle_handler.particles_in_cell(cell),
                                                        particle_ranges_to_sum_over,
                                                        particle_handler.n_particles_in_cell(cell),
-                                                       this->get_mapping());
+                                                       this->get_mapping(),
+                                                       cell);
                           pdf.compute_statistical_values();
 
                           standard_deviation_min = std::min(standard_deviation_min, pdf.get_standard_deviation());

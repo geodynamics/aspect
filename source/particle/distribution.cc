@@ -71,14 +71,11 @@ namespace aspect
     ParticlePDF<dim>::fill_from_particle_range(const typename Particles::ParticleHandler<dim>::particle_iterator_range &particle_range,
                                                const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> &particle_ranges_to_sum_over,
                                                const unsigned int n_particles_in_cell,
-                                               const typename dealii::Mapping<dim> &mapping)
+                                               const typename dealii::Mapping<dim> &mapping,
+                                               const typename Triangulation<dim>::active_cell_iterator &cell)
     {
       if (is_defined_per_particle == false)
         {
-          // Particle_range will always be the particles in the cell the function is being called on, so
-          // finding surrounding cell of the first particle in particle_range works
-          const typename Triangulation<dim>::cell_iterator active_cell = particle_range.begin()->get_surrounding_cell();
-
           for (unsigned int x=0; x<granularity; ++x)
             {
               for (unsigned int y=0; y<granularity; ++y)
@@ -94,7 +91,7 @@ namespace aspect
                           table_index[0] = x;
                           table_index[1] = y;
                           table_index[2] = z;
-                          insert_kernel_sum_from_particle_range(reference_point,table_index,active_cell,particle_ranges_to_sum_over,mapping);
+                          insert_kernel_sum_from_particle_range(reference_point,table_index,cell,particle_ranges_to_sum_over,mapping);
                         }
                     }
                   else
@@ -103,7 +100,7 @@ namespace aspect
                       std::array<unsigned int,dim> table_index;
                       table_index[0] = x;
                       table_index[1] = y;
-                      insert_kernel_sum_from_particle_range(reference_point,table_index,active_cell,particle_ranges_to_sum_over,mapping);
+                      insert_kernel_sum_from_particle_range(reference_point,table_index,cell,particle_ranges_to_sum_over,mapping);
                     }
                 }
             }
@@ -113,14 +110,9 @@ namespace aspect
           // Sum the value of the kernel function on that position from every other particle.
           for (const auto &reference_particle: particle_range)
             {
-              // Cell surrounding the particle whose PDF value is being calculated.
-              const typename Triangulation<dim>::cell_iterator surrounding_cell = reference_particle.get_surrounding_cell();
-              /*
-              Cell diameter is used to normalize the distance value by the size of the cell containing the
-              particle whose PDF value is being calculated.
-              */
-              const double cell_diameter = surrounding_cell->diameter();
-              const double cell_diameter_scaled_to_dimensions = cell_diameter / (std::sqrt(dim));
+              // Cell diameter is used to normalize the distance value by the size of the cell containing the
+              // particle whose PDF value is being calculated.
+              const double cell_diameter_scaled_to_dimensions = cell->diameter() / std::sqrt(dim);
               const auto &particle_coordinates = reference_particle.get_location();
               double function_value = 0;
 
@@ -149,12 +141,10 @@ namespace aspect
     void
     ParticlePDF<dim>::insert_kernel_sum_from_particle_range(const Point<dim> &reference_point,
                                                             const std::array<unsigned int, dim> &table_index,
-                                                            const typename Triangulation<dim>::cell_iterator &cell,
+                                                            const typename Triangulation<dim>::active_cell_iterator &cell,
                                                             const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> &particle_ranges_to_sum_over,
                                                             const typename dealii::Mapping<dim> &mapping)
     {
-      // This function should only ever be called when computing the point density function on a regular grid,
-      // not per particle location.
       Assert(is_defined_per_particle == false,
              ExcMessage("This function can only be called if the ParticlePDF is computed on a regular grid."));
 
@@ -174,7 +164,7 @@ namespace aspect
           for (const auto &particle: particle_range_to_sum)
             {
               ++n_particles_in_ranges;
-              const double cell_diameter_scaled_to_dimensions = cell->diameter() / (std::sqrt(dim));
+              const double cell_diameter_scaled_to_dimensions = cell->diameter() / std::sqrt(dim);
               const double distance = reference_point_real_coordinates.distance(particle.get_location());
               const double distance_normalized = distance/cell_diameter_scaled_to_dimensions;
               const double kernel_function_value = apply_selected_kernel_function(distance_normalized);
@@ -182,8 +172,13 @@ namespace aspect
             }
         }
 
-      // Scale KDE value by number of particle contributions
-      function_output_table(entry_index) /= static_cast<double>(n_particles_in_ranges);
+      if (n_particles_in_ranges>0)
+        {
+          // Scale KDE value by number of particle contributions
+          function_output_table(entry_index) /= static_cast<double>(n_particles_in_ranges);
+        }
+      // else: do nothing as the initial PDF value of 0.0 is correct
+
     }
 
 
