@@ -1006,14 +1006,16 @@ namespace aspect
 
     if (print_details)
       {
+        const unsigned int n_levels = this->get_triangulation().n_global_levels();
+        const double imbalance = MGTools::workload_imbalance(this->get_triangulation());
+        const std::string solver = (this->get_parameters().stokes_krylov_type == Parameters<dim>::StokesKrylovType::idr_s) ? ("IDR(" + std::to_string(this->get_parameters().idr_s_parameter) + ")") : "GMRES";
+
         this->get_pcout() << std::endl
                           << "     GMG coarse size A: " << coarse_A_size << ", coarse size S: " << coarse_S_size << std::endl
-                          << "     GMG n_levels: " << this->get_triangulation().n_global_levels() << std::endl
-                          << "     Viscosity range: " << minimum_viscosity << " - " << maximum_viscosity << std::endl;
-
-        const double imbalance = MGTools::workload_imbalance(this->get_triangulation());
-        this->get_pcout() << "     GMG workload imbalance: " << imbalance << std::endl
-                          << "     Stokes solver: " << std::flush;
+                          << "     GMG levels: " << n_levels << std::endl
+                          << "     Viscosity range: " << minimum_viscosity << " - " << maximum_viscosity << std::endl
+                          << "     GMG workload imbalance: " << imbalance << std::endl
+                          << "     Stokes solver (" << solver << "): " << std::flush;
       }
 
     // Interface matrices
