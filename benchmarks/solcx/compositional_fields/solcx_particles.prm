@@ -12,6 +12,8 @@ set Start time                             = 0
 set End time                               = 0
 set Output directory                       = output
 set Pressure normalization                 = volume
+set Adiabatic surface temperature          = 1.0
+set Surface pressure                       = 1.0
 
 ############### Parameters describing the model
 
