@@ -229,6 +229,9 @@ namespace aspect
        * @param prm The object in which the run-time parameters are to be
        * declared.
        *
+       * @param mpi_rank The MPI rank of the current process. This is needed
+       * to only print deprecation warnings from rank 0.
+       *
        * This function is implemented in
        * <code>source/simulator/parameters.cc</code>.
        */
