@@ -124,7 +124,7 @@ namespace aspect
         prm.declare_entry ("Allow cells without particles", "false",
                            Patterns::Bool (),
                            "By default, every cell needs to contain particles to use this interpolator "
-                           "plugin. If this parameter is set to true, cells are allowed to have no particles, "
+                           "plugin. If this parameter is set to true, cells are allowed to have no particles. "
                            "In case both the current cell and its neighbors are empty, "
                            "the interpolator will return 0 for the current cell's properties.");
       }
