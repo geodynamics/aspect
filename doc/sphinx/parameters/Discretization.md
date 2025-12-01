@@ -129,7 +129,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** Select for which compositional fields to skip the entropy viscosity stabilization at dirichlet boundaries. This is only advisable for compositional fieldsthat have intrinsic physical diffusion terms, otherwise oscillations may develop. The parameter should contain a list of compositional field names.
+**Documentation:** Select for which compositional fields to skip the entropy viscosity stabilization at dirichlet boundaries. This is only advisable for compositional fields that have intrinsic physical diffusion terms, otherwise oscillations may develop. The parameter should contain a list of compositional field names.
 
 (parameters:Discretization/Stabilization_20parameters/Stabilization_20method)=
 ### __Parameter name:__ Stabilization method

@@ -15,7 +15,7 @@
 
 The names of the boundaries listed here can either be numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
 
-This parameter only describes which boundaries have a fixed convective flux (i.e. Robin boundarry condictions), but not what conditions should hold on these boundaries. The latter piece of information needs to be implemented in a plugin in the BoundaryConvectiveHeating group, unless an existing implementation in this group already provides what you want.
+This parameter only describes which boundaries have a fixed convective flux (i.e. Robin boundary condictions), but not what conditions should hold on these boundaries. The latter piece of information needs to be implemented in a plugin in the BoundaryConvectiveHeating group, unless an existing implementation in this group already provides what you want.
 
 (parameters:Boundary_20convective_20heating_20model/List_20of_20boundary_20heat_20flux_20model_20names)=
 ### __Parameter name:__ List of boundary heat flux model names

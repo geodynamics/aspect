@@ -5,6 +5,22 @@
 ## **Subsection:** Particles
 
 
+(parameters:Particles/Addition_20histogram_20granularity)=
+### __Parameter name:__ Addition histogram granularity
+**Default value:** 3
+
+**Pattern:** [Integer range 2...2147483647 (inclusive)]
+
+**Documentation:** The number of subdivisions of each cell in each spatial dimension when adding particles using histogram based methods. Lower granularities are generally better for histogram methods.
+
+(parameters:Particles/Addition_20point_20density_20function_20granularity)=
+### __Parameter name:__ Addition point density function granularity
+**Default value:** 6
+
+**Pattern:** [Integer range 2...2147483647 (inclusive)]
+
+**Documentation:** The number of subdivisions of each cell in each spatial dimension when adding particles using point density function based methods. Higher granularities are generally better for point density function based methods but might be slower.
+
 (parameters:Particles/Allow_20cells_20without_20particles)=
 ### __Parameter name:__ Allow cells without particles
 **Default value:** false
@@ -146,6 +162,14 @@ The following properties are available:
 **Pattern:** [Integer range 0...2 (inclusive)]
 
 **Documentation:** The number of particle systems to be created. The maximum number of particle systems is set by the CMake variable &lsquo;ASPECT_MAX_NUM_PARTICLE_SYSTEMS&lsquo; and is by default 2.
+
+(parameters:Particles/Particle_20addition_20algorithm)=
+### __Parameter name:__ Particle addition algorithm
+**Default value:** random
+
+**Pattern:** [Selection random|histogram|point density function ]
+
+**Documentation:** Algorithm used to add particles to cells.
 
 (parameters:Particles/Particle_20generator_20name)=
 ### __Parameter name:__ Particle generator name
