@@ -178,7 +178,7 @@ The format of these functions follows the syntax understood by the muparser libr
 
 The format of these functions follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.
 
-&lsquo;nonadiabatic temperature&rsquo;: A mesh refinement criterion that computes refinement indicators from the excess temperature(difference between temperature and adiabatic temperature.
+&lsquo;nonadiabatic temperature&rsquo;: A mesh refinement criterion that computes refinement indicators from the excess temperature(difference between temperature and adiabatic temperature).
 
 &lsquo;nonadiabatic temperature threshold&rsquo;: A mesh refinement criterion that computes refinement indicators from the temperature difference between the actual temperature and the adiabatic conditions (the nonadiabatic temperature). If the temperature anomaly exceeds the threshold given in the input file, the cell is marked for refinement.
 
