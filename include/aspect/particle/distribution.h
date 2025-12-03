@@ -111,7 +111,6 @@ namespace aspect
          * reference point and the position of the cell.
          * @param reference_point The point from which to get the value of the kernel function.
          * @param table_index The index in the PDF to insert the data into.
-         * @param n_particles_in_cell The number of particles in the cell.
          * @param cell The cell in which to apply the kernel function
          * @param particle_ranges_to_sum_over The particle_iterator_range to sum particles from.
          * @param mapping A reference to a mapping object to use to translate cell coordinates into
