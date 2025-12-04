@@ -226,8 +226,8 @@ namespace aspect
                                           std::pow(roughness_to_grain_size, m);
 
               // grain size reduction in dislocation creep regime
-              const SymmetricTensor<2,dim> shear_strain_rate = in.strain_rate[i] - 1./dim * trace(in.strain_rate[i]) * unit_symmetric_tensor<dim>();
-              const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
+              const SymmetricTensor<2,dim> shear_strain_rate = Utilities::Tensors::consistent_deviator(in.strain_rate[i]);
+              const double second_strain_rate_invariant = std::sqrt(std::max(-Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(shear_strain_rate), 0.));
 
               const double current_diffusion_viscosity   = diffusion_viscosity(in.temperature[i], adiabatic_temperature, pressures[i], grain_size, second_strain_rate_invariant, phase_indices[i]);
               current_dislocation_viscosity = dislocation_viscosity(in.temperature[i], adiabatic_temperature, pressures[i], in.strain_rate[i], phase_indices[i], current_diffusion_viscosity, current_dislocation_viscosity);

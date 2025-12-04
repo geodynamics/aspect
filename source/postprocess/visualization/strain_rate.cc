@@ -20,6 +20,7 @@
 
 
 #include <aspect/postprocess/visualization/strain_rate.h>
+#include <aspect/utilities.h>
 
 
 
@@ -61,7 +62,7 @@ namespace aspect
               grad_u[d] = input_data.solution_gradients[q][d];
 
             const SymmetricTensor<2,dim> strain_rate = symmetrize (grad_u);
-            computed_quantities[q](0) = std::sqrt(std::max(-second_invariant(deviator(strain_rate)), 0.));
+            computed_quantities[q](0) = std::sqrt(std::max(-Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(Utilities::Tensors::consistent_deviator(strain_rate)), 0.));
           }
 
         // average the values if requested
