@@ -2632,6 +2632,93 @@ namespace aspect
 
 
   template <int dim>
+  double Simulator<dim>::perform_line_search(const DefectCorrectionResiduals &dcr,
+                                             const bool use_picard,
+                                             LinearAlgebra::BlockVector &search_direction)
+  {
+    LinearAlgebra::BlockVector backup_linearization_point(introspection.index_sets.stokes_partitioning, mpi_communicator);
+    double step_length_factor = 1.0;
+    unsigned int line_search_iteration = 0;
+
+    // Many parts of the solver depend on the block layout (velocity = 0,
+    // pressure = 1). For example the linearized_stokes_initial_guess vector or the StokesBlock matrix
+    // wrapper. Let us make sure that this holds (and shorten their names):
+    const unsigned int pressure_block_index = (parameters.include_melt_transport) ?
+                                              introspection.variable("fluid pressure").block_index
+                                              : introspection.block_indices.pressure;
+    const unsigned int velocity_block_index = introspection.block_indices.velocities;
+    Assert(velocity_block_index == 0, ExcNotImplemented());
+    Assert(pressure_block_index == 1, ExcNotImplemented());
+    (void) pressure_block_index;
+
+    // Do the loop for the line search at least once with the full step length.
+    // If line search is disabled we will exit the loop in the first iteration.
+    do
+      {
+        if (line_search_iteration == 0)
+          {
+            // backup our starting point for the line search
+            backup_linearization_point.block(pressure_block_index) = current_linearization_point.block(pressure_block_index);
+            backup_linearization_point.block(velocity_block_index) = current_linearization_point.block(velocity_block_index);
+          }
+        else
+          {
+            // undo the last iteration and try again with smaller step length
+            current_linearization_point.block(pressure_block_index) = backup_linearization_point.block(pressure_block_index);
+            current_linearization_point.block(velocity_block_index) = backup_linearization_point.block(velocity_block_index);
+            search_direction.block(pressure_block_index) *= step_length_factor;
+            search_direction.block(velocity_block_index) *= step_length_factor;
+          }
+
+        // Update the current linearization point with the search direction
+        current_linearization_point.block(pressure_block_index) += search_direction.block(pressure_block_index);
+        current_linearization_point.block(velocity_block_index) += search_direction.block(velocity_block_index);
+
+        // Rebuild the rhs to determine the new residual.
+        assemble_newton_stokes_matrix = rebuild_stokes_preconditioner = false;
+        rebuild_stokes_matrix = !boundary_velocity_manager.get_prescribed_boundary_velocity_indicators().empty();
+
+        assemble_stokes_system();
+
+        const double test_velocity_residual = system_rhs.block(velocity_block_index).l2_norm();
+        const double test_pressure_residual = system_rhs.block(pressure_block_index).l2_norm();
+        const double test_residual = std::sqrt(test_velocity_residual * test_velocity_residual
+                                               + test_pressure_residual * test_pressure_residual);
+
+        // Determine if the residual has decreased sufficiently.
+        const double alpha = 1e-4;
+        if (test_residual < (1.0 - alpha * step_length_factor) * dcr.residual
+            ||
+            line_search_iteration >= newton_handler->parameters.max_newton_line_search_iterations
+            ||
+            use_picard)
+          {
+            pcout << "      Newton system information: Norm of the rhs: " << test_residual
+                  << ", Derivative scaling factor: " << newton_handler->parameters.newton_derivative_scaling_factor << std::endl;
+            return test_residual;
+          }
+        else
+          {
+            pcout << "   Line search iteration " << line_search_iteration << ", with norm of the rhs "
+                  << test_residual << " and going to " << (1.0 - alpha * step_length_factor) * dcr.residual
+                  << ", relative residual: " << test_residual/dcr.initial_residual << std::endl;
+
+            // The current search direction has not decreased the residual
+            // enough, so we take a smaller step and try again.
+            // TODO: make a parameter out of this.
+            step_length_factor = 2.0/3.0;
+          }
+
+        ++line_search_iteration;
+        Assert(line_search_iteration <= newton_handler->parameters.max_newton_line_search_iterations,
+               ExcInternalError());
+      }
+    while (true);
+  }
+
+
+
+  template <int dim>
   double
   Simulator<dim>::compute_Eisenstat_Walker_linear_tolerance(const bool EisenstatWalkerChoiceOne,
                                                             const double maximum_linear_stokes_solver_tolerance,
@@ -2779,6 +2866,9 @@ namespace aspect
   template void Simulator<dim>::restore_outflow_boundary_ids(const unsigned int boundary_id_offset); \
   template void Simulator<dim>::check_consistency_of_boundary_conditions() const; \
   template double Simulator<dim>::compute_initial_newton_residual(); \
+  template double Simulator<dim>::perform_line_search(const DefectCorrectionResiduals &dcr, \
+                                                      const bool use_picard, \
+                                                      LinearAlgebra::BlockVector &search_direction); \
   template double Simulator<dim>::compute_Eisenstat_Walker_linear_tolerance(const bool EisenstatWalkerChoiceOne, \
                                                                             const double maximum_linear_stokes_solver_tolerance, \
                                                                             const double linear_stokes_solver_tolerance, \
