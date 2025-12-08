@@ -1359,7 +1359,7 @@ namespace aspect
        */
       double perform_line_search(const DefectCorrectionResiduals &dcr,
                                  const bool use_picard,
-                                 LinearAlgebra::BlockVector &search_direction);
+                                 const LinearAlgebra::BlockVector &search_direction);
 
       /**
        * Add constraints to the given @p constraints object that are required
