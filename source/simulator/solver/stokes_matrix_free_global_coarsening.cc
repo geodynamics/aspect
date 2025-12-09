@@ -449,20 +449,22 @@ namespace aspect
       }
 
     {
-      // create active mesh tables for derivatives needed in Newton method
-      // and the strain rate.
-      if (Parameters<dim>::is_defect_correction(this->get_parameters().nonlinear_solver)
-          && this->get_newton_handler().parameters.newton_derivative_scaling_factor != 0)
+      // create active mesh tables for stuff needed in Newton method
+      // and plastic dilation
+      if ((Parameters<dim>::is_defect_correction(this->get_parameters().nonlinear_solver)
+           && this->get_newton_handler().parameters.newton_derivative_scaling_factor != 0)
+          || this->get_parameters().enable_prescribed_dilation)
         {
-          const double newton_derivative_scaling_factor =
-            this->get_newton_handler().parameters.newton_derivative_scaling_factor;
-
-          active_cell_data.enable_newton_derivatives = true;
+          active_cell_data.enable_newton_derivatives = (Parameters<dim>::is_defect_correction(this->get_parameters().nonlinear_solver)
+                                                        && this->get_newton_handler().parameters.newton_derivative_scaling_factor != 0);
+          active_cell_data.enable_prescribed_dilation = this->get_parameters().enable_prescribed_dilation;
 
           // TODO: these are not implemented yet
           for (unsigned int level=0; level<n_levels; ++level)
-            level_cell_data[level].enable_newton_derivatives = false;
-
+            {
+              level_cell_data[level].enable_newton_derivatives = false;
+              level_cell_data[level].enable_prescribed_dilation = false;
+            }
 
           FEValues<dim> fe_values (this->get_mapping(),
                                    this->get_fe(),
@@ -472,19 +474,47 @@ namespace aspect
                                    update_quadrature_points |
                                    update_JxW_values);
 
-          MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, this->introspection().n_compositional_fields);
-          MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->introspection().n_compositional_fields);
-          this->get_newton_handler().create_material_model_outputs(out);
-          if (this->get_parameters().enable_elasticity &&
-              out.template get_additional_output_object<MaterialModel::ElasticOutputs<dim>>() == nullptr)
-            out.additional_outputs.push_back(std::make_unique<MaterialModel::ElasticOutputs<dim>>(out.n_evaluation_points()));
-
           const unsigned int n_cells = stokes_matrix.get_matrix_free()->n_cell_batches();
           const unsigned int n_q_points = quadrature_formula.size();
 
-          active_cell_data.strain_rate_table.reinit(TableIndices<2>(n_cells, n_q_points));
-          active_cell_data.newton_factor_wrt_pressure_table.reinit(TableIndices<2>(n_cells, n_q_points));
-          active_cell_data.newton_factor_wrt_strain_rate_table.reinit(TableIndices<2>(n_cells, n_q_points));
+          MaterialModel::MaterialModelInputs<dim> in(n_q_points, this->introspection().n_compositional_fields);
+          MaterialModel::MaterialModelOutputs<dim> out(n_q_points, this->introspection().n_compositional_fields);
+          if (this->get_parameters().enable_elasticity &&
+              out.template has_additional_output_object<MaterialModel::ElasticOutputs<dim>>() == false)
+            out.additional_outputs.push_back(std::make_unique<MaterialModel::ElasticOutputs<dim>>(out.n_evaluation_points()));
+
+          if (active_cell_data.enable_newton_derivatives)
+            {
+              this->get_newton_handler().create_material_model_outputs(out);
+
+              active_cell_data.strain_rate_table.reinit(TableIndices<2>(n_cells, n_q_points));
+              active_cell_data.newton_factor_wrt_pressure_table.reinit(TableIndices<2>(n_cells, n_q_points));
+              active_cell_data.newton_factor_wrt_strain_rate_table.reinit(TableIndices<2>(n_cells, n_q_points));
+
+              if (active_cell_data.enable_prescribed_dilation)
+                {
+                  active_cell_data.dilation_derivative_wrt_pressure_table.reinit(TableIndices<2>(n_cells, n_q_points));
+                  active_cell_data.dilation_derivative_wrt_strain_rate_table.reinit(TableIndices<2>(n_cells, n_q_points));
+                }
+
+              // symmetrize the Newton_system when the stabilization is symmetric or SPD
+              const bool symmetrize_newton_system =
+                (this->get_newton_handler().parameters.velocity_block_stabilization & Newton::Parameters::Stabilization::symmetric)
+                != Newton::Parameters::Stabilization::none;
+              active_cell_data.symmetrize_newton_system = symmetrize_newton_system;
+            }
+
+          if (active_cell_data.enable_prescribed_dilation)
+            {
+              if (out.template has_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>() == false)
+                out.additional_outputs.push_back(std::make_unique<MaterialModel::PrescribedPlasticDilation<dim>>(out.n_evaluation_points()));
+
+              active_cell_data.dilation_lhs_term_table.reinit(TableIndices<2>(n_cells, n_q_points));
+            }
+
+          const double newton_derivative_scaling_factor = active_cell_data.enable_newton_derivatives ?
+                                                          this->get_newton_handler().parameters.newton_derivative_scaling_factor :
+                                                          numbers::signaling_nan<double>();
 
           for (unsigned int cell=0; cell<n_cells; ++cell)
             {
@@ -516,87 +546,126 @@ namespace aspect
                          ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
                                     "not filled by the caller."));
 
-                  const std::shared_ptr<const MaterialModel::MaterialModelDerivatives<dim>> derivatives
-                    = out.template get_additional_output_object<MaterialModel::MaterialModelDerivatives<dim>>();
-
-                  Assert(derivatives != nullptr,
-                         ExcMessage ("Error: The Newton method requires the material to "
-                                     "compute derivatives."));
-
-                  const std::shared_ptr<const MaterialModel::ElasticOutputs<dim>> elastic_out
-                    = out.template get_additional_output_object<MaterialModel::ElasticOutputs<dim>>();
-
-                  for (unsigned int q=0; q<n_q_points; ++q)
+                  if (active_cell_data.enable_newton_derivatives)
                     {
-                      // use the correct strain rate for the Jacobian
-                      // when elasticity is enabled use viscoelastic strain rate
-                      // when stabilization is enabled, use the deviatoric strain rate because the SPD factor
-                      // that is computed is only safe for the deviatoric strain rate (see PR #5580 and issue #5555)
-                      SymmetricTensor<2,dim> effective_strain_rate = in.strain_rate[q];
-                      if (elastic_out != nullptr)
-                        effective_strain_rate = elastic_out->viscoelastic_strain_rate[q];
-                      else if ((this->get_newton_handler().parameters.velocity_block_stabilization & Newton::Parameters::Stabilization::PD) != Newton::Parameters::Stabilization::none)
-                        effective_strain_rate = deviator(effective_strain_rate);
+                      const std::shared_ptr<const MaterialModel::MaterialModelDerivatives<dim>> derivatives
+                        = out.template get_additional_output_object<MaterialModel::MaterialModelDerivatives<dim>>();
 
-                      // use the spd factor when the stabilization is PD or SPD.
-                      const double alpha =  (this->get_newton_handler().parameters.velocity_block_stabilization
-                                             & Newton::Parameters::Stabilization::PD)
-                                            != Newton::Parameters::Stabilization::none
-                                            ?
-                                            Utilities::compute_spd_factor<dim>(out.viscosities[q],
-                                                                               effective_strain_rate,
-                                                                               derivatives->viscosity_derivative_wrt_strain_rate[q],
-                                                                               this->get_newton_handler().parameters.SPD_safety_factor)
-                                            :
-                                            1.0;
+                      Assert(derivatives != nullptr,
+                             ExcMessage ("Error: The Newton method requires the material to "
+                                         "compute derivatives."));
 
-                      active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]
-                        = derivatives->viscosity_derivative_wrt_pressure[q] *
-                          derivatives->viscosity_derivative_averaging_weights[q] *
-                          newton_derivative_scaling_factor;
-                      Assert(std::isfinite(active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]),
-                             ExcMessage("active_cell_data.newton_factor_wrt_pressure_table is not finite: " + std::to_string(active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]) +
-                                        ". Relevant variables are derivatives->viscosity_derivative_wrt_pressure[q] = " + std::to_string(derivatives->viscosity_derivative_wrt_pressure[q]) +
-                                        ", derivatives->viscosity_derivative_averaging_weights[q] = " + std::to_string(derivatives->viscosity_derivative_averaging_weights[q]) +
-                                        ", and newton_derivative_scaling_factor = " + std::to_string(newton_derivative_scaling_factor)));
+                      const std::shared_ptr<const MaterialModel::ElasticOutputs<dim>> elastic_out
+                        = out.template get_additional_output_object<MaterialModel::ElasticOutputs<dim>>();
 
-                      for (unsigned int m=0; m<dim; ++m)
-                        for (unsigned int n=0; n<dim; ++n)
-                          {
-                            active_cell_data.strain_rate_table(cell, q)[m][n][i]
-                              = effective_strain_rate[m][n];
+                      for (unsigned int q=0; q<n_q_points; ++q)
+                        {
+                          // use the correct strain rate for the Jacobian
+                          // when elasticity is enabled use viscoelastic strain rate
+                          // when stabilization is enabled, use the deviatoric strain rate because the SPD factor
+                          // that is computed is only safe for the deviatoric strain rate (see PR #5580 and issue #5555)
+                          SymmetricTensor<2,dim> effective_strain_rate = in.strain_rate[q];
+                          if (elastic_out != nullptr)
+                            effective_strain_rate = elastic_out->viscoelastic_strain_rate[q];
+                          else if ((this->get_newton_handler().parameters.velocity_block_stabilization & Newton::Parameters::Stabilization::PD) != Newton::Parameters::Stabilization::none)
+                            effective_strain_rate = deviator(effective_strain_rate);
 
-                            active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i]
-                              = derivatives->viscosity_derivative_wrt_strain_rate[q][m][n] *
-                                derivatives->viscosity_derivative_averaging_weights[q] *
-                                newton_derivative_scaling_factor * alpha;
+                          // use the spd factor when the stabilization is PD or SPD.
+                          const double alpha =  (this->get_newton_handler().parameters.velocity_block_stabilization
+                                                 & Newton::Parameters::Stabilization::PD)
+                                                != Newton::Parameters::Stabilization::none
+                                                ?
+                                                Utilities::compute_spd_factor<dim>(out.viscosities[q],
+                                                                                   effective_strain_rate,
+                                                                                   derivatives->viscosity_derivative_wrt_strain_rate[q],
+                                                                                   this->get_newton_handler().parameters.SPD_safety_factor)
+                                                :
+                                                1.0;
 
-                            Assert(std::isfinite(active_cell_data.strain_rate_table(cell, q)[m][n][i]),
-                                   ExcMessage("active_cell_data.strain_rate_table has an element which is not finite: " + std::to_string(active_cell_data.strain_rate_table(cell, q)[m][n][i])));
-                            Assert(std::isfinite(active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i]),
-                                   ExcMessage("active_cell_data.newton_factor_wrt_strain_rate_table has an element which is not finite: " + std::to_string(active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i])));
-                          }
+                          active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]
+                            = derivatives->viscosity_derivative_wrt_pressure[q] *
+                              derivatives->viscosity_derivative_averaging_weights[q] *
+                              newton_derivative_scaling_factor;
+                          Assert(std::isfinite(active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]),
+                                 ExcMessage("active_cell_data.newton_factor_wrt_pressure_table is not finite: " + std::to_string(active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]) +
+                                            ". Relevant variables are derivatives->viscosity_derivative_wrt_pressure[q] = " + std::to_string(derivatives->viscosity_derivative_wrt_pressure[q]) +
+                                            ", derivatives->viscosity_derivative_averaging_weights[q] = " + std::to_string(derivatives->viscosity_derivative_averaging_weights[q]) +
+                                            ", and newton_derivative_scaling_factor = " + std::to_string(newton_derivative_scaling_factor)));
+
+                          for (unsigned int m=0; m<dim; ++m)
+                            for (unsigned int n=0; n<dim; ++n)
+                              {
+                                active_cell_data.strain_rate_table(cell, q)[m][n][i]
+                                  = effective_strain_rate[m][n];
+
+                                active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i]
+                                  = derivatives->viscosity_derivative_wrt_strain_rate[q][m][n] *
+                                    derivatives->viscosity_derivative_averaging_weights[q] *
+                                    newton_derivative_scaling_factor * alpha;
+
+                                Assert(std::isfinite(active_cell_data.strain_rate_table(cell, q)[m][n][i]),
+                                       ExcMessage("active_cell_data.strain_rate_table has an element which is not finite: " + std::to_string(active_cell_data.strain_rate_table(cell, q)[m][n][i])));
+                                Assert(std::isfinite(active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i]),
+                                       ExcMessage("active_cell_data.newton_factor_wrt_strain_rate_table has an element which is not finite: " + std::to_string(active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i])));
+                              }
+
+                          if (active_cell_data.enable_prescribed_dilation)
+                            {
+                              active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]
+                                = derivatives->dilation_derivative_wrt_pressure[q] * newton_derivative_scaling_factor;
+                              Assert(std::isfinite(active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]),
+                                     ExcMessage("active_cell_data.dilation_derivative_wrt_pressure_table is not finite: " + std::to_string(active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]) +
+                                                ". Relevant variables are derivatives->dilation_derivative_wrt_pressure[q] = " + std::to_string(derivatives->dilation_derivative_wrt_pressure[q]) +
+                                                " and newton_derivative_scaling_factor = " + std::to_string(newton_derivative_scaling_factor)));
+
+                              for (unsigned int m=0; m<dim; ++m)
+                                for (unsigned int n=0; n<dim; ++n)
+                                  {
+                                    active_cell_data.dilation_derivative_wrt_strain_rate_table(cell,q)[m][n][i]
+                                      = derivatives->dilation_derivative_wrt_strain_rate[q][m][n] *
+                                        newton_derivative_scaling_factor;
+                                    Assert(std::isfinite(active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]),
+                                           ExcMessage("active_cell_data.dilation_derivative_wrt_strain_rate_table is not finite: " + std::to_string(active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]) +
+                                                      ". Relevant variables are derivatives->dilation_derivative_wrt_strain_rate[q] = " + std::to_string(derivatives->dilation_derivative_wrt_pressure[q]) +
+                                                      " and newton_derivative_scaling_factor = " + std::to_string(newton_derivative_scaling_factor)));
+                                  }
+                            }
+                        }
+                    }
+
+                  if (active_cell_data.enable_prescribed_dilation)
+                    {
+                      const std::shared_ptr<const MaterialModel::PrescribedPlasticDilation<dim>> prescribed_dilation
+                        = out.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>();
+
+                      for (unsigned int q = 0; q < n_q_points; ++q)
+                        {
+                          active_cell_data.dilation_lhs_term_table(cell,q)[i] = prescribed_dilation->dilation_lhs_term[q];
+                          Assert(std::isfinite(active_cell_data.dilation_lhs_term_table(cell,q)[i]),
+                                 ExcMessage("active_cell_data.dilation_lhs_term_table is not finite: " + std::to_string(active_cell_data.dilation_lhs_term_table(cell,q)[i])));
+                        }
                     }
                 }
             }
-
-          // symmetrize the Newton_system when the stabilization is symmetric or SPD
-          const bool symmetrize_newton_system =
-            (this->get_newton_handler().parameters.velocity_block_stabilization & Newton::Parameters::Stabilization::symmetric)
-            != Newton::Parameters::Stabilization::none;
-          active_cell_data.symmetrize_newton_system = symmetrize_newton_system;
         }
       else
         {
-          // delete data used for Newton derivatives if necessary
+          // delete data used for Newton derivatives and prescribed dilation
           // TODO: use Table::clear() once implemented in 10.0.pre
           active_cell_data.enable_newton_derivatives = false;
+          active_cell_data.enable_prescribed_dilation = false;
           active_cell_data.newton_factor_wrt_pressure_table.reinit(TableIndices<2>(0,0));
           active_cell_data.strain_rate_table.reinit(TableIndices<2>(0,0));
           active_cell_data.newton_factor_wrt_strain_rate_table.reinit(TableIndices<2>(0,0));
+          active_cell_data.dilation_lhs_term_table.reinit(TableIndices<2>(0,0));
+          active_cell_data.dilation_derivative_wrt_pressure_table.reinit(TableIndices<2>(0,0));
+          active_cell_data.dilation_derivative_wrt_strain_rate_table.reinit(TableIndices<2>(0,0));
 
           for (unsigned int level=0; level<n_levels; ++level)
-            level_cell_data[level].enable_newton_derivatives = false;
+            {
+              level_cell_data[level].enable_newton_derivatives = false;
+              level_cell_data[level].enable_prescribed_dilation = false;
+            }
         }
     }
 

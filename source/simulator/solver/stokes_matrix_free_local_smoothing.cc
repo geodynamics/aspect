@@ -658,7 +658,10 @@ namespace aspect
           active_cell_data.dilation_derivative_wrt_strain_rate_table.reinit(TableIndices<2>(0,0));
 
           for (unsigned int level=0; level<n_levels; ++level)
-            level_cell_data[level].enable_newton_derivatives = false;
+            {
+              level_cell_data[level].enable_newton_derivatives = false;
+              level_cell_data[level].enable_prescribed_dilation = false;
+            }
         }
     }
 
