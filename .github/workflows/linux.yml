@@ -106,11 +106,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - image: "geodynamics/aspect-tester:focal-dealii-9.5-v3"
-            run-tests: "ON"
-            compare-tests: "OFF"
-            result-file: "changes-test-results-9.5.diff"
-            container-options: '--name container'
           - image: "geodynamics/aspect-tester:jammy-dealii-9.6-v1"
             run-tests: "ON"
             compare-tests: "ON"

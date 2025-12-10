@@ -135,7 +135,7 @@ use a set of
 equal to those used by [deal.II](http://www.dealii.org)
 upon which ASPECT is based, so as to keep the style of the source code
 consistent. This convention essentially consists of using
-[astyle](http://astyle.sourceforge.net/astyle.html) v.2.04 with a
+[astyle](http://astyle.sourceforge.net/astyle.html) version 2.04 with a
 [style file](https://github.com/geodynamics/aspect/blob/main/contrib/utilities/astyle.rc)
 for indentation, CamelCase for classes and
 namespaces, and lower_case_names_with_underscores for everything else. If you
