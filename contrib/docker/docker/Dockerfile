@@ -2,8 +2,8 @@ FROM ubuntu:22.04
 
 LABEL maintainer <rene.gassmoeller@mailbox.org>
 
-ARG VERSION=9.5.1
-ARG REPO=ppa:ginggs/deal.ii-9.5.1-backports
+ARG VERSION=9.6.0
+ARG REPO=ppa:ginggs/deal.ii-9.6.0-backports
 
 RUN DEBIAN_FRONTEND=noninteractive apt update && apt upgrade -yq && \
   apt install -yq --install-recommends sudo software-properties-common \
