@@ -110,7 +110,7 @@ list(APPEND CMAKE_MODULE_PATH
 
 
 # deal.II first
-find_package(deal.II 9.5.0 QUIET
+find_package(deal.II 9.6.0 QUIET
   HINTS ${deal.II_DIR} ${DEAL_II_DIR} $ENV{DEAL_II_DIR}
   )
 if(NOT ${deal.II_FOUND})
