@@ -35,7 +35,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./contrib/docker/tester/
-          cache-from: type=registry,ref=ubuntu:20.04
+          cache-from: type=registry,ref=ubuntu:22.04
           cache-to: type=inline
           push: true
-          tags: geodynamics/aspect-tester:focal-dealii-master
+          tags: geodynamics/aspect-tester:jammy-dealii-master

@@ -111,7 +111,7 @@ jobs:
             compare-tests: "ON"
             result-file: "changes-test-results-9.6.diff"
             container-options: '--user 0 --name container'
-          - image: "geodynamics/aspect-tester:focal-dealii-master"
+          - image: "geodynamics/aspect-tester:jammy-dealii-master"
             run-tests: "ON"
             compare-tests: "OFF"
             result-file: "changes-test-results-master.diff"
