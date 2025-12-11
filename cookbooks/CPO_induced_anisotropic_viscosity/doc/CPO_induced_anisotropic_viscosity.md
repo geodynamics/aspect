@@ -57,11 +57,11 @@ F+H & -F & -H & 0 & 0 & 0 \\
 $J(\sigma_{ij})$ and $A_{ij}$ are computed using Hill coefficients $H, J, K, L, M,$ and $N$ {cite}`hill:1948`, which describe the anisotropic viscous properties of an olivine aggregate and depend on its CPO. We determine the mean CPO orientation from the eigenvectors associated with the largest eigenvalues of the second-order orientation tensor (or covariance matrix) for all three symmetry axes. The corresponding eigenvalues quantify the dispersion of orientations around these mean orientation {cite}`bingham:1974`. The relationship between the 9 eigenvalues (3 for each axis) and Hill coefficients is derived using regression analysis on a texture database constructed with olivine textures from laboratory experiments, shear box models, and subduction models (Kiraly et al., in rev.). The 9 coefficients and 1 constant for each of the Hill coefficients are given as input in the parameter file. The default values and the equation to compute the Hill coefficients from the eigenvalues (e.g. $a_1, a_2, a_3$ are the eigenvalues of the orientation tensor for a-axis, where $a_1$ is the largest eigen value) are shown below:
 ```{math}
 :label: eqn:hill_coefficients
-F = 1.039 a_1^2 - 0.767 a_2 - \frac{0.003}{a_3} + 0.197 b_1^2 + 0.413 b_2 + \frac{0.015}{b_3} - 0.936 c_1^2 - 2.393 c_2 + \frac{0.052}{c_3} + 1.08
-G = -2.836 a_1^2 - 1.632 a_2 - \frac{0.001}{a_3} + 0.267 b_1^2 - 0.993 b_2 + \frac{0.003}{b_3} +1.969 c_1^2 + 2.314 c_2 - \frac{0.019}{c_3} + 0.69
-H = 1.669 a_1^2 + 0.58 a_2 + \frac{0.003}{a_3} + 0.702 b_1^2 + 0.251 b_2 + \frac{0.000}{b_3} - 2.003 c_1^2 - 2.570 c_2 + \frac{0.071}{c_3} + 0.75
-L = -0.325 a_1^2 + 0.728 a_2 + \frac{0.000}{a_3} - 0.665 b_1^2 + 0.515 b_2 + \frac{0.003}{b_3} - 1.027 c_1^2 - 1.263 c_2 + \frac{0.009}{c_3} + 1.60
-M = 1.643 a_1^2 - 0.878 a_2 + \frac{0.005}{a_3} + 2.489 b_1^2 + 0.816 b_2 - \frac{0.011}{b_3} - 2.494 c_1^2 - 0.511 c_2 + \frac{0.009}{c_3} + 0.89
+F = 1.039 a_1^2 - 0.767 a_2 - \frac{0.003}{a_3} + 0.197 b_1^2 + 0.413 b_2 + \frac{0.015}{b_3} - 0.936 c_1^2 - 2.393 c_2 + \frac{0.052}{c_3} + 1.08 \\
+G = -2.836 a_1^2 - 1.632 a_2 - \frac{0.001}{a_3} + 0.267 b_1^2 - 0.993 b_2 + \frac{0.003}{b_3} +1.969 c_1^2 + 2.314 c_2 - \frac{0.019}{c_3} + 0.69 \\
+H = 1.669 a_1^2 + 0.58 a_2 + \frac{0.003}{a_3} + 0.702 b_1^2 + 0.251 b_2 + \frac{0.000}{b_3} - 2.003 c_1^2 - 2.570 c_2 + \frac{0.071}{c_3} + 0.75 \\
+L = -0.325 a_1^2 + 0.728 a_2 + \frac{0.000}{a_3} - 0.665 b_1^2 + 0.515 b_2 + \frac{0.003}{b_3} - 1.027 c_1^2 - 1.263 c_2 + \frac{0.009}{c_3} + 1.60 \\
+M = 1.643 a_1^2 - 0.878 a_2 + \frac{0.005}{a_3} + 2.489 b_1^2 + 0.816 b_2 - \frac{0.011}{b_3} - 2.494 c_1^2 - 0.511 c_2 + \frac{0.009}{c_3} + 0.89 \\
 N = 0.812 a_1^2 - 0.157 a_2 + \frac{0.002}{a_3} - 1.649 b_1^2 + 0.194 b_2 - \frac{0.01}{b_3} + 1.68 c_1^2 - 0.104 c_2 + \frac{0.02}{c_3} + 1.21
 ```
 
