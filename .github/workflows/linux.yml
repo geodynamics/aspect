@@ -106,7 +106,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - image: "geodynamics/aspect-tester:jammy-dealii-9.6-v1"
+          - image: "geodynamics/aspect-tester:jammy-dealii-9.6-v2"
             run-tests: "ON"
             compare-tests: "ON"
             result-file: "changes-test-results-9.6.diff"
