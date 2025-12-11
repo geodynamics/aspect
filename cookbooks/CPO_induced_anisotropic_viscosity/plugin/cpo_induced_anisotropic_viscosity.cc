@@ -94,7 +94,7 @@ namespace aspect
     AnisotropicViscosity<dim>::euler_angles_to_rotation_matrix(double phi1, double theta, double phi2)
     {
       Tensor<2,3> rot_matrix;
-      // This conversion from euler angles to rotation matrix is different from the function with the same name 
+      // This conversion from euler angles to rotation matrix is different from the function with the same name
       // defined in utilities.cc. Both defines the conversion with R3*R2*R1, while our R3 and R1 are the transpose
       // of those defined in utilities.cc. This change is made to fit our negative euler angle values.
       rot_matrix[0][0] = std::cos(phi2)*std::cos(phi1) - std::cos(theta)*std::sin(phi1)*std::sin(phi2);
@@ -313,8 +313,8 @@ namespace aspect
               double threshold = 0.0001*scalar_viscosity;
               // Here we convert stress to MPa to be consistent with the constitutive equation defined in Signorelli et al. (2021),
               // in which the stress is in MPa.
-              SymmetricTensor<2,dim> stress =
-              2 * scalar_viscosity * V_r4 * deviatoric_strain_rate / 1e6;
+              SymmetricTensor<2,dim> stress = 
+                2 * scalar_viscosity * V_r4 * deviatoric_strain_rate / 1e6;
 
               const Tensor<2,dim> R_T = transpose(R);
               while (std::abs(residual) > threshold && n_iterations < max_iteration)

@@ -131,7 +131,7 @@ Since the AV material model computes viscosity based on the evolving CPO stored 
 - **CPO particle property**: The CPO particle property must be stored for use by the AV model. This requires enabling the particle and crystal preferred orientation postprocessors and the relevant subsuctions for them, including the CPO Bingham Average plugin, which calculates the Hill coefficients:
 
 ```{literalinclude} cpo_particle_property.part.prm
-```We define the mean CPO orientation using the eigenvectors related to the largest eigenvalues of the second order orientation tensor (or covariance matrix) for each symmetry axes. Because the three symmetry axes are handled independently, we additionally correct the b- and c-axes orientations to ensure that they form an orthogonal basis with the mean a-axis orientation (Supplementary material 1). The three eigenvalues for each axis contain information about the dispersion of orientations around the mean orientation {cite}`bingham:1974`.
+```
 
 Note: These settings are similar to those used for simulations involving CPO alone. However, for the AV model, it is essential to set `Use rotation matrix = false` in the CPO Bingham Average subsection, so that the CPO is represented using Euler angles, as required.
 
