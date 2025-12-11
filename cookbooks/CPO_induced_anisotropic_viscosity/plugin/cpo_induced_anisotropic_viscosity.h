@@ -33,43 +33,6 @@ namespace aspect
   {
     using namespace dealii;
 
-    /**
-     * A material model that implements the micromechanical behaviour of olivine grains to create anisotropic viscosity.
-     * Based on Hansen et al., 2016 (JGR) and Kiraly et al., 2020 (G3).
-     * The micromechanical model requires the euler angles of the olivine grains (now stored on 3 compositional field),
-     * the grainsize, temperature, and strain rate to calculate the stress that is needed to create the input strain rate.
-     * The material model otherwise is based on the Simple material model.
-     * @ingroup MaterialModels
-     */
-    template <int dim>
-    class AnisotropicViscosity : public NamedAdditionalMaterialOutputs<dim>
-    {
-      public:
-        AnisotropicViscosity(const unsigned int n_points);
-
-        std::vector<double> get_nth_output(const unsigned int idx) const override;
-
-        /**
-         * Stress-strain "director" tensors at the given positions. This
-         * variable is used to implement anisotropic viscosity.
-         *
-         * @note The strain rate term in equation (1) of the manual will be
-         * multiplied by this tensor *and* the viscosity scalar ($\eta$ /i.e. effective viscosity), as
-         * described in the manual section titled "Constitutive laws". This
-         * variable is assigned the rank-four identity tensor by default.
-         * This leaves the isotropic constitutive law unchanged if the material
-         * model does not explicitly assign a value.
-         */
-        std::vector<SymmetricTensor<4,dim>> stress_strain_directors;
-
-        static Tensor<2,3> euler_angles_to_rotation_matrix(double phi1, double theta, double phi2);
-
-
-
-    };
-
-
-
     template <int dim>
     class CPO_AV_3D : public MaterialModel::Simple<dim>
     {

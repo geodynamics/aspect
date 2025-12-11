@@ -16,7 +16,7 @@ This cookbook explains how to use the CPO-induced anisotropic viscosity material
 
 ## Introduction
 
-Individual crystals of the mineral olivine reorganize their orientations into the crystal-preferred orientations (CPO) under deformation. The viscous properties of olivine crystals are direction-dependent (anisotropic), which suggests that the effective viscosity for olivine rocks/aggregates is different when deformations occur in different directions relative to the CPO. This cookbook model computes an anisotropic viscosity based on the CPO evolution predicted by D-Rex ({cite}`fraters_billen_2021_cpo`; {cite}`kaminski2004`) and includes this information in the subsequent modeling process.
+Individual crystals of the mineral olivine reorganize their orientations into crystal-preferred orientations (CPO) under deformation. The viscous properties of olivine crystals are direction-dependent (anisotropic), which suggests that the effective viscosity for olivine rocks/aggregates is different when deformations occur in different directions relative to the CPO. This cookbook model computes an anisotropic viscosity based on the CPO evolution predicted by D-Rex ({cite}`fraters_billen_2021_cpo`; {cite}`kaminski2004`) and includes this information in the subsequent modeling process.
 
 Our constitutive equation for the relationship between the strain rate and stress using the anisotropic viscosity tensor is adapted from {cite:t}`signorelli:etal:2021`:
 
@@ -54,7 +54,16 @@ F+H & -F & -H & 0 & 0 & 0 \\
 \end{matrix} \right]
 ```
 
-$J(\sigma_{ij})$ and $A_{ij}$ are computed using Hill coefficients $H, J, K, L, M,$ and $N$ {cite}`hill:1948`, which are obtained from regression analysis of a texture database constructed with olivine textures from laboratory experiments, shear box models, and subduction models (Kiraly et al., in rev.).
+$J(\sigma_{ij})$ and $A_{ij}$ are computed using Hill coefficients $H, J, K, L, M,$ and $N$ {cite}`hill:1948`, which describe the anisotropic viscous properties of an olivine aggregate and depend on its CPO. We determine the mean CPO orientation from the eigenvectors associated with the largest eigenvalues of the second-order orientation tensor (or covariance matrix) for all three symmetry axes. The corresponding eigenvalues quantify the dispersion of orientations around these mean orientation {cite}`bingham:1974`. The relationship between the 9 eigenvalues (3 for each axis) and Hill coefficients is derived using regression analysis on a texture database constructed with olivine textures from laboratory experiments, shear box models, and subduction models (Kiraly et al., in rev.). The 9 coefficients and 1 constant for each of the Hill coefficients are given as input in the parameter file. The default values and the equation to compute the Hill coefficients from the eigenvalues (e.g. $a_1, a_2, a_3$ are the eigenvalues of the orientation tensor for a-axis, where $a_1$ is the largest eigen value) are shown below:
+```{math}
+:label: eqn:hill_coefficients
+F = 1.039 a_1^2 - 0.767 a_2 - \frac{0.003}{a_3} + 0.197 b_1^2 + 0.413 b_2 + \frac{0.015}{b_3} - 0.936 c_1^2 - 2.393 c_2 + \frac{0.052}{c_3} + 1.08
+G = -2.836 a_1^2 - 1.632 a_2 - \frac{0.001}{a_3} + 0.267 b_1^2 - 0.993 b_2 + \frac{0.003}{b_3} +1.969 c_1^2 + 2.314 c_2 - \frac{0.019}{c_3} + 0.69
+H = 1.669 a_1^2 + 0.58 a_2 + \frac{0.003}{a_3} + 0.702 b_1^2 + 0.251 b_2 + \frac{0.000}{b_3} - 2.003 c_1^2 - 2.570 c_2 + \frac{0.071}{c_3} + 0.75
+L = -0.325 a_1^2 + 0.728 a_2 + \frac{0.000}{a_3} - 0.665 b_1^2 + 0.515 b_2 + \frac{0.003}{b_3} - 1.027 c_1^2 - 1.263 c_2 + \frac{0.009}{c_3} + 1.60
+M = 1.643 a_1^2 - 0.878 a_2 + \frac{0.005}{a_3} + 2.489 b_1^2 + 0.816 b_2 - \frac{0.011}{b_3} - 2.494 c_1^2 - 0.511 c_2 + \frac{0.009}{c_3} + 0.89
+N = 0.812 a_1^2 - 0.157 a_2 + \frac{0.002}{a_3} - 1.649 b_1^2 + 0.194 b_2 - \frac{0.01}{b_3} + 1.68 c_1^2 - 0.104 c_2 + \frac{0.02}{c_3} + 1.21
+```
 
 In this material model plugin, strain rate, density, temperature, and other parameters are taken as input to compute the anisotropic viscosity, which is passed into the Stokes system to compute the stress. As a result, we adapt {math:numref}`eqn:anisotropic_general_stress` to be:
 
@@ -99,7 +108,7 @@ The final equation involving all reference frame conversions is:
 \sigma_{ij} = \frac{1}{\gamma J(R'*\sigma_{ij}* R)^{(n-1)}} * (R_K * A_{ij}^{-1} * R_K') * \dot\varepsilon_i
 ```
 
-$R'$ and $R_K'$ is the transpose of matrix $R$ and $R_K$ respectively. We save $\frac{1}{\gamma J(R'*\sigma_{ij}* R)^{(n-1)}}$ as the material model viscosity output, which we call the scalar viscosity. The tensorial part of anisotropic viscosity, $R_K * A_{ij}^{-1} * R_K'$ is called the stress-strain director and is stored in the additional outputs. Due to the dependence of the scalar viscosity on stress and the stress is determined by the scalar viscosity from the previous time step, the computation of the scalar viscosity is not stable and its value naturally oscillates. This fluctuation ultimately causes a numerical instability associated with the prediction of the anisotropic viscosity. Therefore, we damp the scalar viscosity using a non-linear Newton iteration, and in each iteration, only half of the change in the scalar viscosity is applied until the result is stable.
+$R'$ and $R_K'$ is the transpose of matrix $R$ and $R_K$ respectively. We save $\frac{1}{\gamma J(R'*\sigma_{ij}* R)^{(n-1)}}$ as the material model viscosity output, which we call the scalar viscosity. The scalar viscosity of the current step is also stored into the prescribed field, so that at the beginning of the next step, the anisotropic stress is computed with the scalar viscosity of the previous step using {math:numref}`eqn:anisotropic_stress`. The tensorial part of anisotropic viscosity, $R_K * A_{ij}^{-1} * R_K'$ is called the stress-strain director and is stored in the additional outputs. DBecause the scalar viscosity depends on stress and the stress is determined by the scalar viscosity from the previous time step, the computation of the scalar viscosity is potentially unstable and its value can oscillate across nonlinear iterations. This oscillation can ultimately cause a numerical instability associated with the prediction of the anisotropic viscosity. Therefore, we damp the scalar viscosity computation using a fixed-point iteration, by applying only half of the change in each iteration until the result converges.
 
 
 
@@ -122,7 +131,7 @@ Since the AV material model computes viscosity based on the evolving CPO stored 
 - **CPO particle property**: The CPO particle property must be stored for use by the AV model. This requires enabling the particle and crystal preferred orientation postprocessors and the relevant subsuctions for them, including the CPO Bingham Average plugin, which calculates the Hill coefficients:
 
 ```{literalinclude} cpo_particle_property.part.prm
-```
+```We define the mean CPO orientation using the eigenvectors related to the largest eigenvalues of the second order orientation tensor (or covariance matrix) for each symmetry axes. Because the three symmetry axes are handled independently, we additionally correct the b- and c-axes orientations to ensure that they form an orthogonal basis with the mean a-axis orientation (Supplementary material 1). The three eigenvalues for each axis contain information about the dispersion of orientations around the mean orientation {cite}`bingham:1974`.
 
 Note: These settings are similar to those used for simulations involving CPO alone. However, for the AV model, it is essential to set `Use rotation matrix = false` in the CPO Bingham Average subsection, so that the CPO is represented using Euler angles, as required.
 

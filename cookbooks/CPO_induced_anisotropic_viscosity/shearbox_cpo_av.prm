@@ -28,7 +28,7 @@ end
 
 subsection Compositional fields
   set Number of fields = 14
-  set Names of fields = scalar_vis, \
+  set Names of fields = scalar_viscosity, \
                         phi1, eigvalue_a1, eigvalue_a2, eigvalue_a3,\
                         theta, eigvalue_b1, eigvalue_b2, eigvalue_b3,\
                         phi2, eigvalue_c1, eigvalue_c2, eigvalue_c3,\
@@ -63,9 +63,6 @@ subsection Geometry model
     set X extent = 1
     set Y extent = 1
     set Z extent = 1
-    set Box origin X coordinate = 0
-    set Box origin Y coordinate = 0
-    set Box origin Z coordinate = 0
   end
 end
 
@@ -80,7 +77,7 @@ end
 
 subsection Boundary temperature model
   set List of model names = box
-  set Fixed temperature boundary indicators   = bottom, top, front, back, left, right
+  set Fixed temperature boundary indicators = bottom, top, front, back, left, right
 
   subsection Box
     set Bottom temperature = 1600
@@ -103,15 +100,11 @@ end
 
 
 subsection Material model
-  set Model name = CPO-induced Anisotropic Viscosity
+  set Model name = CPO-induced anisotropic viscosity
 
   subsection CPO-induced Anisotropic Viscosity
     set Reference viscosity = 1e9
   end
-end
-
-subsection Heating model
-  set List of model names = anisotropic shear heating
 end
 
 subsection Mesh refinement
@@ -128,10 +121,10 @@ subsection Postprocess
     set Time between graphical output = 0.1
     set List of output variables = material properties, strain rate, named additional outputs, shear stress, stress
 
-  subsection Material properties
-    set List of material properties = density, viscosity
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
   end
-end
 
   subsection Particles
     set Time between data output = 0.1
@@ -188,7 +181,6 @@ subsection Particles
 end
 
 subsection Solver parameters
-  # set Temperature solver tolerance = 1e-10
   subsection Stokes solver parameters
     set Stokes solver type = block AMG
   end

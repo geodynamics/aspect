@@ -21,6 +21,7 @@
 
 #include "anisotropic_stress.h"
 #include "cpo_induced_anisotropic_viscosity.h"
+#include <aspect/material_model/additional_outputs/anisotropic_viscosity.h>
 
 
 namespace aspect
