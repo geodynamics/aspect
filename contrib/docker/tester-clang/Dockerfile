@@ -9,7 +9,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt update && apt upgrade -yq && \
   lsb-release ninja-build numdiff openmpi-bin \
   openmpi-common wget zlib1g-dev \
   clang-tidy clang cmake libp4est-dev libsundials-dev \
-  mpi-default-dev trilinos-all-dev zlib1g-dev libhdf5-dev libhdf5-mpi-dev
+  mpi-default-dev trilinos-all-dev zlib1g-dev libhdf5-dev libhdf5-mpi-dev \
+  libscalapack-openmpi-dev
 
 COPY local.cfg /opt/
 
