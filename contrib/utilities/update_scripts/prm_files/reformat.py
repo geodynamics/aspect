@@ -112,12 +112,25 @@ def merge_deprecated_postprocessors_into_material_properties(parameters):
 
     return parameters
 
+def rename_linear_least_squares(parameters):
+    if "Particles" in parameters:
+        if "Interpolation scheme" in parameters["Particles"]["value"]:
+            if "bilinear least squares" in parameters["Particles"]["value"]["Interpolation scheme"]["value"]:
+                parameters["Particles"]["value"]["Interpolation scheme"]["value"] = "linear least squares"
+
+        if "Interpolator" in parameters["Particles"]["value"]:
+            if "Bilinear least squares" in parameters["Particles"]["value"]["Interpolator"]["value"]:
+                parameters["Particles"]["value"]["Interpolator"]["value"]["Linear least squares"] = parameters["Particles"]["value"]["Interpolator"]["value"]["Bilinear least squares"]
+                del parameters["Particles"]["value"]["Interpolator"]["value"]["Bilinear least squares"]
+
+    return parameters
 
 def main(input_file, output_file):
     """Echo the input arguments to standard output"""
     parameters = aspect.read_parameter_file(input_file)
     parameters = reformat(parameters)
     parameters = merge_deprecated_postprocessors_into_material_properties(parameters)
+    parameters = rename_linear_least_squares(parameters)
     aspect.write_parameter_file(parameters, output_file)
 
 
