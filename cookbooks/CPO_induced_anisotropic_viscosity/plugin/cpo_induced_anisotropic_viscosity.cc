@@ -118,14 +118,14 @@ namespace aspect
                                   LAPACKFullMatrix<double> &A_pinv) const
     {
       // We assume the matrix A is a square matrix and get the number of rows(=columns) m
-      const unsigned int m = A.m(); 
+      const unsigned int m = A.m();
 
       // Compute SVD: A = U * Sigma * V^T
       LAPACKFullMatrix<double> U(m,m), VT(m,m), UT(m,m);
       Vector<double> Sigma_pinv(m);
       A.compute_svd();
       U = A.get_svd_u();
-      VT = A.get_svd_vt(); 
+      VT = A.get_svd_vt();
       const double tol = 1e-12;
       for (unsigned int i=0; i<m; ++i)
         {
