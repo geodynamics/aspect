@@ -54,8 +54,6 @@ namespace aspect
          * model does not explicitly assign a value.
          */
         std::vector<SymmetricTensor<4,dim>> stress_strain_directors;
-
-        static Tensor<2,3> euler_angles_to_rotation_matrix(double phi1, double theta, double phi2);
     };
   }
 }

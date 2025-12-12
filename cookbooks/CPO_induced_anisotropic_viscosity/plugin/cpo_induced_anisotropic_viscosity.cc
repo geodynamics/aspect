@@ -25,13 +25,8 @@
 #include <aspect/simulator/assemblers/stokes_anisotropic_viscosity.h>
 #include <aspect/simulator_signals.h>
 
-#include <deal.II/lac/scalapack.h>
+#include <deal.II/lac/lapack_full_matrix.h>
 #include <deal.II/physics/notation.h>
-
-// DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
-// #include <boost/random.hpp>
-// DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
-
 
 namespace aspect
 {
@@ -50,11 +45,40 @@ namespace aspect
             assemblers.stokes_preconditioner[i] = std::make_unique<Assemblers::StokesPreconditionerAnisotropicViscosity<dim>> ();
         }
 
+      // Search for the regular Stokes assembler and preconditioner assembler
+      // and replace them with the versions for anisotropic viscosity
       for (unsigned int i=0; i<assemblers.stokes_system.size(); ++i)
         {
           if (Plugins::plugin_type_matches<Assemblers::StokesIncompressibleTerms<dim>>(*(assemblers.stokes_system[i])))
             assemblers.stokes_system[i] = std::make_unique<Assemblers::StokesIncompressibleTermsAnisotropicViscosity<dim>> ();
         }
+    }
+
+
+
+    template<int dim>
+    void
+    CPO_AV_3D<dim>::pseudoinverse(LAPACKFullMatrix<double> &A,
+                                  LAPACKFullMatrix<double> &A_pinv) const
+    {
+      // We assume the matrix A is a square matrix and get the number of rows(=columns) m
+      const unsigned int m = A.m();
+
+      // Compute SVD: A = U * Sigma * V^T
+      LAPACKFullMatrix<double> U(m,m), VT(m,m), UT(m,m);
+      Vector<double> Sigma_pinv(m);
+      A.compute_svd();
+      U = A.get_svd_u();
+      VT = A.get_svd_vt();
+      const double tol = 1e-12;
+      for (unsigned int i=0; i<m; ++i)
+        {
+          Sigma_pinv[i] = (std::abs(A.singular_value(i)) > tol ? 1.0/A.singular_value(i) : 0.0);
+        }
+
+      // A^+ = V * Sigma^+ * U^T
+      U.transpose(UT);
+      VT.Tmmult(A_pinv, UT, Sigma_pinv);
     }
 
 
@@ -68,7 +92,7 @@ namespace aspect
                                                             std::cref(*this),
                                                             std::placeholders::_1,
                                                             std::placeholders::_2));
-      AssertThrow((dim==3),
+      AssertThrow(dim==3,
                   ExcMessage("Olivine has 3 independent slip systems, allowing for deformation in 3 independent directions, hence these models only work in 3D"));
 
       cpo_bingham_avg_a.push_back (this->introspection().compositional_index_for_name("phi1"));
@@ -91,11 +115,11 @@ namespace aspect
 
     template<int dim>
     Tensor<2,3>
-    AnisotropicViscosity<dim>::euler_angles_to_rotation_matrix(double phi1, double theta, double phi2)
+    CPO_AV_3D<dim>::euler_angles_to_rotation_matrix(double phi1, double theta, double phi2)
     {
       Tensor<2,3> rot_matrix;
       // This conversion from euler angles to rotation matrix is different from the function with the same name
-      // defined in utilities.cc. Both defines the conversion with R3*R2*R1, while our R3 and R1 are the transpose
+      // defined in utilities.cc. Both define the conversion with R3*R2*R1, while our R3 and R1 are the transpose
       // of those defined in utilities.cc. This change is made to fit our negative euler angle values.
       rot_matrix[0][0] = std::cos(phi2)*std::cos(phi1) - std::cos(theta)*std::sin(phi1)*std::sin(phi2);
       rot_matrix[0][1] = -std::cos(phi2)*std::sin(phi1) - std::cos(theta)*std::cos(phi1)*std::sin(phi2);
@@ -106,7 +130,7 @@ namespace aspect
       rot_matrix[2][0] = std::sin(theta)*std::sin(phi1);
       rot_matrix[2][1] = std::sin(theta)*std::cos(phi1);
       rot_matrix[2][2] = std::cos(theta);
-      AssertThrow(rot_matrix[2][2] <= 1.0, ExcMessage("rot_matrix[2][2] > 1.0"));
+      AssertThrow(rot_matrix[2][2] <= 1.0, ExcMessage("Invalid rotation matrix: cos(theta) > 1"));
       return rot_matrix;
     }
 
@@ -159,8 +183,6 @@ namespace aspect
           // and when the condition allows dislocation creep
           if  ((this->simulator_is_past_initialization()) && (this->get_timestep_number() > 0) && (in.temperature[q]>1000) && (std::isfinite(determinant(deviatoric_strain_rate))) && (anisotropic_viscosity != nullptr))
             {
-              // const unsigned int viscosity_field_index = this->introspection().compositional_index_for_name("scalar_viscosity");
-
               // Create constant value to use for AV
               const double A_o = 1.1e5*std::exp(-530000/(8.314*in.temperature[q]));
               const double n = 3.5;
@@ -184,7 +206,7 @@ namespace aspect
               const double theta = composition[cpo_bingham_avg_b[0]];
               const double phi2 = composition[cpo_bingham_avg_c[0]];
 
-              const Tensor<2,3> R = transpose(AnisotropicViscosity<dim>::euler_angles_to_rotation_matrix(phi1, theta, phi2));
+              const Tensor<2,3> R = transpose(euler_angles_to_rotation_matrix(phi1, theta, phi2));
 
               // Compute Hill Parameters FGHLMN from the eigenvalues of a,b,c axis
               // CPO2Hill v5 model:
@@ -249,34 +271,24 @@ namespace aspect
               A[4][4] = 2.0/3.0*M;
               A[5][5] = 2.0/3.0*N;
 
-              // Invert using ScaLAPACK in dealii
-              FullMatrix<double> A_mat(6, 6);
+              // A is the anisotropic tensor for the fluidity. We need its inverse, but it's not invertible due to singularity.
+              // Thus we compute the Moore-Penrose pseudo inverse using SVD, with the compute_svd function from deal.ii (lapack)
+              LAPACKFullMatrix<double> A_mat_lapack(6, 6), pinvA_mat_lapack(6,6);
               for (unsigned int ai=0; ai<6; ++ai)
                 {
                   for (unsigned int aj=0; aj<6; ++aj)
                     {
-                      A_mat(ai,aj) = A[ai][aj];
+                      A_mat_lapack(ai,aj) = A[ai][aj];
                     }
                 }
-
-              // A is the anisotropic tensor for the fluidity. We need its inverse, but it's not invertible due to singularity.
-              // Thus we use a pseudo inverse function imported from the scalapack package from deal.ii
-              const double ratio = 1e-8;
-              std::shared_ptr<Utilities::MPI::ProcessGrid> grid = std::make_shared<Utilities::MPI::ProcessGrid>(MPI_COMM_SELF,6,6,6,6);
-              ScaLAPACKMatrix<double> A_scalapack(6,6,grid,4,4);
-              A_scalapack = A_mat;
-              A_scalapack.pseudoinverse(ratio);
-              FullMatrix<double> pinvA_mat(6,6);
-              A_scalapack.copy_to(pinvA_mat);
-              // Ensure that pinvA_mat is symmetric
-              pinvA_mat.symmetrize();
+              pseudoinverse(A_mat_lapack, pinvA_mat_lapack);
 
               SymmetricTensor<2,6> invA;
               for (unsigned int ai=0; ai<6; ++ai)
                 {
                   for (unsigned int aj=0; aj<6; ++aj)
                     {
-                      invA[ai][aj] = pinvA_mat(ai,aj);
+                      invA[ai][aj] = pinvA_mat_lapack(ai,aj);
                     }
                 }
 
@@ -308,13 +320,12 @@ namespace aspect
                 }
 
               unsigned int n_iterations = 0;
-              unsigned int max_iteration = 100;
+              const unsigned int max_iteration = 100;
               double residual = scalar_viscosity;
               double threshold = 0.0001*scalar_viscosity;
               // Here we convert stress to MPa to be consistent with the constitutive equation defined in Signorelli et al. (2021),
               // in which the stress is in MPa.
-              SymmetricTensor<2,dim> stress = 
-                2 * scalar_viscosity * V_r4 * deviatoric_strain_rate / 1e6;
+              SymmetricTensor<2,dim> stress = 2 * scalar_viscosity * V_r4 * deviatoric_strain_rate / 1e6;
 
               const Tensor<2,dim> R_T = transpose(R);
               while (std::abs(residual) > threshold && n_iterations < max_iteration)
@@ -334,7 +345,7 @@ namespace aspect
                   AssertThrow(Jhill >= 0,
                               ExcMessage("Jhill should not be negative"));
 
-                  double scalar_viscosity_new = (1 / (Gamma * std::pow(Jhill,(n-1)/2))); //
+                  const double scalar_viscosity_new = (1 / (Gamma * std::pow(Jhill,(n-1)/2)));
                   residual = std::abs(scalar_viscosity_new - scalar_viscosity);
                   scalar_viscosity = scalar_viscosity_new;
                   threshold = 0.001*scalar_viscosity;
@@ -445,17 +456,6 @@ namespace aspect
           prm.declare_entry ("Grain size", "1e-3",
                              Patterns::Double(),
                              "Olivine anisotropic viscosity is dependent of grain size. Value is given in meters");
-          prm.declare_entry ("Density differential for compositional field 1", "0.",
-                             Patterns::Double(),
-                             "If compositional fields are used, then one would frequently want "
-                             "to make the density depend on these fields. In this simple material "
-                             "model, we make the following assumptions: if no compositional fields "
-                             "are used in the current simulation, then the density is simply the usual "
-                             "one with its linear dependence on the temperature. If there are compositional "
-                             "fields, then the density only depends on the first one in such a way that "
-                             "the density has an additional term of the kind $+\\Delta \\rho \\; c_1(\\mathbf x)$. "
-                             "This parameter describes the value of $\\Delta \\rho$. "
-                             "Units: \\si{\\kilogram\\per\\meter\\cubed}/unit change in composition.");
         }
         prm.leave_subsection();
       }
@@ -518,7 +518,7 @@ namespace aspect
 
 
 
-// std::explicit instantiations
+// explicit instantiations
 namespace aspect
 {
   namespace MaterialModel

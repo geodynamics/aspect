@@ -39,6 +39,8 @@ namespace aspect
       public:
         void initialize() override;
 
+        static Tensor<2,3> euler_angles_to_rotation_matrix(double phi1, double theta, double phi2);
+
         void evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                        MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
@@ -90,6 +92,19 @@ namespace aspect
 
         void set_assemblers(const SimulatorAccess<dim> &,
                             Assemblers::Manager<dim> &assemblers) const;
+
+        /**
+         * This function computes the Moore-Penrose pseudoinverse of a matrix A
+         * using Singular Value Decomposition (SVD). It takes a LAPACKFullMatrix A
+         * to be inverted and outputs its pseudoinverse A_pinv.
+         * SVD Method:
+         *   A = U * Sigma * V^T
+         *   A_pinv = V * Sigma_pinv * U^T
+         * Singular values smaller than a fixed tolerance (1e-12) are treated as zero
+         * for numerical stability.
+         */
+        void pseudoinverse(LAPACKFullMatrix<double> &A,
+                           LAPACKFullMatrix<double> &A_pinv) const;
 
     };
   }

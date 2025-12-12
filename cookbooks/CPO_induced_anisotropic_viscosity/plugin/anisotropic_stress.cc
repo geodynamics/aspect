@@ -49,8 +49,7 @@ namespace aspect
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
-        Assert ((computed_quantities[0].size() == Tensor<2,dim>::n_independent_components),
-                ExcInternalError());
+        Assert (computed_quantities[0].size() == (Tensor<2,dim>::n_independent_components),    ExcInternalError());
         Assert (input_data.solution_values[0].size() == this->introspection().n_components,   ExcInternalError());
         Assert (input_data.solution_gradients[0].size() == this->introspection().n_components,  ExcInternalError());
 
@@ -77,8 +76,8 @@ namespace aspect
 
             const double eta = out.viscosities[q];
 
-            SymmetricTensor<2,dim> aniso_stress;
-            aniso_stress= 2.*eta*deviatoric_strain_rate*anisotropic_viscosity->stress_strain_directors[q];
+            SymmetricTensor<2,dim> aniso_stress =
+              2. * eta * deviatoric_strain_rate * anisotropic_viscosity->stress_strain_directors[q];
 
             for (unsigned int d=0; d<dim; ++d)
               for (unsigned int e=0; e<dim; ++e)
@@ -91,6 +90,8 @@ namespace aspect
         if (!viz.output_pointwise_stress_and_strain())
           average_quantities(computed_quantities);
       }
+
+
 
       template <int dim>
       void
