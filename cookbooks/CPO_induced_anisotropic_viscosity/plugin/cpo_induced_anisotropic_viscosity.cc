@@ -25,7 +25,7 @@
 #include <aspect/simulator/assemblers/stokes_anisotropic_viscosity.h>
 #include <aspect/simulator_signals.h>
 
-#include <deal.II/lac/scalapack.h>
+#include <deal.II/lac/lapack_full_matrix.h>
 #include <deal.II/physics/notation.h>
 
 // DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
@@ -108,6 +108,33 @@ namespace aspect
       rot_matrix[2][2] = std::cos(theta);
       AssertThrow(rot_matrix[2][2] <= 1.0, ExcMessage("rot_matrix[2][2] > 1.0"));
       return rot_matrix;
+    }
+
+
+
+    template<int dim>
+    void
+    CPO_AV_3D<dim>::pseudoinverse(LAPACKFullMatrix<double> &A,
+                                  LAPACKFullMatrix<double> &A_pinv) const
+    {
+      // We assume the matrix A is a square matrix and get the number of rows(=columns) m
+      const unsigned int m = A.m(); 
+
+      // Compute SVD: A = U * Sigma * V^T
+      LAPACKFullMatrix<double> U(m,m), VT(m,m), UT(m,m);
+      Vector<double> Sigma_pinv(m);
+      A.compute_svd();
+      U = A.get_svd_u();
+      VT = A.get_svd_vt(); 
+      const double tol = 1e-12;
+      for (unsigned int i=0; i<m; ++i)
+        {
+          Sigma_pinv[i] = (std::abs(A.singular_value(i)) > tol ? 1.0/A.singular_value(i) : 0.0);
+        }
+
+      // A^+ = V * Sigma^+ * U^T
+      U.transpose(UT);
+      VT.Tmmult(A_pinv, UT, Sigma_pinv);
     }
 
 
@@ -249,34 +276,24 @@ namespace aspect
               A[4][4] = 2.0/3.0*M;
               A[5][5] = 2.0/3.0*N;
 
-              // Invert using ScaLAPACK in dealii
-              FullMatrix<double> A_mat(6, 6);
+              // A is the anisotropic tensor for the fluidity. We need its inverse, but it's not invertible due to singularity.
+              // Thus we compute the Moore-Penrose pseudo inverse using SVD, with the compute_svd function from deal.ii (lapack)
+              LAPACKFullMatrix<double> A_mat_lapack(6, 6), pinvA_mat_lapack(6,6);
               for (unsigned int ai=0; ai<6; ++ai)
                 {
                   for (unsigned int aj=0; aj<6; ++aj)
                     {
-                      A_mat(ai,aj) = A[ai][aj];
+                      A_mat_lapack(ai,aj) = A[ai][aj];
                     }
                 }
-
-              // A is the anisotropic tensor for the fluidity. We need its inverse, but it's not invertible due to singularity.
-              // Thus we use a pseudo inverse function imported from the scalapack package from deal.ii
-              const double ratio = 1e-8;
-              std::shared_ptr<Utilities::MPI::ProcessGrid> grid = std::make_shared<Utilities::MPI::ProcessGrid>(MPI_COMM_SELF,6,6,6,6);
-              ScaLAPACKMatrix<double> A_scalapack(6,6,grid,4,4);
-              A_scalapack = A_mat;
-              A_scalapack.pseudoinverse(ratio);
-              FullMatrix<double> pinvA_mat(6,6);
-              A_scalapack.copy_to(pinvA_mat);
-              // Ensure that pinvA_mat is symmetric
-              pinvA_mat.symmetrize();
+              pseudoinverse(A_mat_lapack, pinvA_mat_lapack);
 
               SymmetricTensor<2,6> invA;
               for (unsigned int ai=0; ai<6; ++ai)
                 {
                   for (unsigned int aj=0; aj<6; ++aj)
                     {
-                      invA[ai][aj] = pinvA_mat(ai,aj);
+                      invA[ai][aj] = pinvA_mat_lapack(ai,aj);
                     }
                 }
 
@@ -313,8 +330,7 @@ namespace aspect
               double threshold = 0.0001*scalar_viscosity;
               // Here we convert stress to MPa to be consistent with the constitutive equation defined in Signorelli et al. (2021),
               // in which the stress is in MPa.
-              SymmetricTensor<2,dim> stress = 
-                2 * scalar_viscosity * V_r4 * deviatoric_strain_rate / 1e6;
+              SymmetricTensor<2,dim> stress = 2 * scalar_viscosity * V_r4 * deviatoric_strain_rate / 1e6;
 
               const Tensor<2,dim> R_T = transpose(R);
               while (std::abs(residual) > threshold && n_iterations < max_iteration)

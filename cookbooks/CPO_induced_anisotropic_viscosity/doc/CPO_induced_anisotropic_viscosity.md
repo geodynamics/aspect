@@ -110,12 +110,6 @@ The final equation involving all reference frame conversions is:
 
 $R'$ and $R_K'$ is the transpose of matrix $R$ and $R_K$ respectively. We save $\frac{1}{\gamma J(R'*\sigma_{ij}* R)^{(n-1)}}$ as the material model viscosity output, which we call the scalar viscosity. The scalar viscosity of the current step is also stored into the prescribed field, so that at the beginning of the next step, the anisotropic stress is computed with the scalar viscosity of the previous step using {math:numref}`eqn:anisotropic_stress`. The tensorial part of anisotropic viscosity, $R_K * A_{ij}^{-1} * R_K'$ is called the stress-strain director and is stored in the additional outputs. DBecause the scalar viscosity depends on stress and the stress is determined by the scalar viscosity from the previous time step, the computation of the scalar viscosity is potentially unstable and its value can oscillate across nonlinear iterations. This oscillation can ultimately cause a numerical instability associated with the prediction of the anisotropic viscosity. Therefore, we damp the scalar viscosity computation using a fixed-point iteration, by applying only half of the change in each iteration until the result converges.
 
-
-
-## Compiling requirement
-
-Since the determinant of $A_{ij}$ is 0, $A_{ij}$ is a singular, non-invertible matrix. We find the MoorePenrose pseudoinverse of the matrix $A_{ij}$ as an approximate of the inverse of $A_{ij}$, using the SCALAPACK package provided in deal.II. Thus it is required to link ASPECT with a deal.II version with the scalapack package included in order to run this cookbook. When using candi you can enable the scalapack package by including `scalapack` in the list of installed packages or uncommenting the line in `candi.cfg` that corresponds to the scalapack installation. Alternatively, you can install ScaLAPACK yourself and enable the configuration variable `DEAL_II_WITH_SCALAPACK` during the cmake configuration of deal.II.
-
 ## Model setup
 
 The usage of the AV material model is demonstrated with a 3d simple shear box model, where its dimension is $1 \times 1 \times 1 $ (non-dimensionalized). The shear strain rate is set to

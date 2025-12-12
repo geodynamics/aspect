@@ -50,6 +50,9 @@ namespace aspect
 
         void create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
+        void pseudoinverse(LAPACKFullMatrix<double> &A,
+                           LAPACKFullMatrix<double> &A_pinv) const;
+
       private:
 
         /**
