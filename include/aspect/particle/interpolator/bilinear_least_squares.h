@@ -34,12 +34,12 @@ namespace aspect
        * squares algorithm and was called BilinearLeastSquares. Since the
        * algorithm was changed the name had to change as well. The new algorithm
        * is marginally less accurate, but faster and less prone to
-       * oscillations. 
-       * 
+       * oscillations.
+       *
        * @deprecated This name is deprecated and will be removed.
        */
       DEAL_II_DEPRECATED_WITH_COMMENT("The class <BilinearLeastSquares> is now named "
-        "<LinearLeastSquares> and will be removed in the future.")
+                                      "<LinearLeastSquares> and will be removed in the future.")
       using BilinearLeastSquares = LinearLeastSquares;
     }
   }

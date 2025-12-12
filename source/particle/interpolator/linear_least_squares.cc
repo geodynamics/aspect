@@ -35,9 +35,9 @@ namespace aspect
       template <int dim>
       std::vector<std::vector<double>>
       LinearLeastSquares<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
-                                                      const std::vector<Point<dim>> &positions,
-                                                      const ComponentMask &selected_properties,
-                                                      const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
+                                                    const std::vector<Point<dim>> &positions,
+                                                    const ComponentMask &selected_properties,
+                                                    const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
       {
         const unsigned int n_particle_properties = particle_handler.n_properties_per_particle();
         const unsigned int property_index = selected_properties.first_selected_component(selected_properties.size());
