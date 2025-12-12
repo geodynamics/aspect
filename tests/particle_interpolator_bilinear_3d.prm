@@ -1,7 +1,7 @@
 # This is a variation of the particle_interpolator_cell_average_2
 # test that includes a time varying solution with active particles.
 # In particular this test was introduced to check for the accuracy
-# of the bilinear_least_squares interpolator in 3D
+# of the linear_least_squares interpolator in 3D
 
 
 set Dimension                              = 3
