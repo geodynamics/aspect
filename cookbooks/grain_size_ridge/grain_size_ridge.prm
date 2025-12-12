@@ -248,7 +248,7 @@ subsection Heating model
 end
 
 # We use a discontinuous discretization to interpolate from the particles
-# to the mesh because the bilinear least squares interpolator can lead to
+# to the mesh because the linear least squares interpolator can lead to
 # jumps of the composition at cell boundaries.
 subsection Discretization
   set Use discontinuous composition discretization = true
@@ -288,7 +288,7 @@ end
 
 # We use particles to advect the grain size.
 subsection Particles
-  set Interpolation scheme = bilinear least squares
+  set Interpolation scheme = linear least squares
   set List of particle properties = grain size
   set Load balancing strategy = remove and add particles
   set Minimum particles per cell = 40

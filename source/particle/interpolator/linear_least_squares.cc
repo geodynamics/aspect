@@ -18,7 +18,7 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#include <aspect/particle/interpolator/bilinear_least_squares.h>
+#include <aspect/particle/interpolator/linear_least_squares.h>
 #include <aspect/particle/manager.h>
 #include <aspect/utilities.h>
 
@@ -34,7 +34,7 @@ namespace aspect
     {
       template <int dim>
       std::vector<std::vector<double>>
-      BilinearLeastSquares<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
+      LinearLeastSquares<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
                                                       const std::vector<Point<dim>> &positions,
                                                       const ComponentMask &selected_properties,
                                                       const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
@@ -247,7 +247,7 @@ namespace aspect
 
       template <int dim>
       void
-      BilinearLeastSquares<dim>::declare_parameters (ParameterHandler &prm)
+      LinearLeastSquares<dim>::declare_parameters (ParameterHandler &prm)
       {
         prm.enter_subsection("Interpolator");
         {
@@ -277,7 +277,7 @@ namespace aspect
 
       template <int dim>
       void
-      BilinearLeastSquares<dim>::parse_parameters (ParameterHandler &prm)
+      LinearLeastSquares<dim>::parse_parameters (ParameterHandler &prm)
       {
         fallback_interpolator.parse_parameters(prm);
         prm.enter_subsection("Interpolator");
@@ -349,8 +349,8 @@ namespace aspect
   {
     namespace Interpolator
     {
-      ASPECT_REGISTER_PARTICLE_INTERPOLATOR(BilinearLeastSquares,
-                                            "bilinear least squares",
+      ASPECT_REGISTER_PARTICLE_INTERPOLATOR(LinearLeastSquares,
+                                            "linear least squares",
                                             "Uses linear least squares to obtain the slopes and center of a 2d or "
                                             "3d plane from the particle positions and a particular property value "
                                             "on those particles. "
