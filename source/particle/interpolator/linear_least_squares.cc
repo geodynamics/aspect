@@ -18,7 +18,7 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#include <aspect/particle/interpolator/bilinear_least_squares.h>
+#include <aspect/particle/interpolator/linear_least_squares.h>
 #include <aspect/particle/manager.h>
 #include <aspect/utilities.h>
 
@@ -34,10 +34,10 @@ namespace aspect
     {
       template <int dim>
       std::vector<std::vector<double>>
-      BilinearLeastSquares<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
-                                                      const std::vector<Point<dim>> &positions,
-                                                      const ComponentMask &selected_properties,
-                                                      const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
+      LinearLeastSquares<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
+                                                    const std::vector<Point<dim>> &positions,
+                                                    const ComponentMask &selected_properties,
+                                                    const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
       {
         const unsigned int n_particle_properties = particle_handler.n_properties_per_particle();
         const unsigned int property_index = selected_properties.first_selected_component(selected_properties.size());
@@ -247,11 +247,11 @@ namespace aspect
 
       template <int dim>
       void
-      BilinearLeastSquares<dim>::declare_parameters (ParameterHandler &prm)
+      LinearLeastSquares<dim>::declare_parameters (ParameterHandler &prm)
       {
         prm.enter_subsection("Interpolator");
         {
-          prm.enter_subsection("Bilinear least squares");
+          prm.enter_subsection("Linear least squares");
           {
             prm.declare_entry("Use linear least squares limiter", "true",
                               Patterns::List(Patterns::Bool()),
@@ -277,12 +277,12 @@ namespace aspect
 
       template <int dim>
       void
-      BilinearLeastSquares<dim>::parse_parameters (ParameterHandler &prm)
+      LinearLeastSquares<dim>::parse_parameters (ParameterHandler &prm)
       {
         fallback_interpolator.parse_parameters(prm);
         prm.enter_subsection("Interpolator");
         {
-          prm.enter_subsection("Bilinear least squares");
+          prm.enter_subsection("Linear least squares");
           {
             const auto &particle_property_information = this->get_particle_manager(this->get_particle_manager_index()).get_property_manager().get_data_info();
             const unsigned int n_property_components = particle_property_information.n_components();
@@ -349,8 +349,8 @@ namespace aspect
   {
     namespace Interpolator
     {
-      ASPECT_REGISTER_PARTICLE_INTERPOLATOR(BilinearLeastSquares,
-                                            "bilinear least squares",
+      ASPECT_REGISTER_PARTICLE_INTERPOLATOR(LinearLeastSquares,
+                                            "linear least squares",
                                             "Uses linear least squares to obtain the slopes and center of a 2d or "
                                             "3d plane from the particle positions and a particular property value "
                                             "on those particles. "

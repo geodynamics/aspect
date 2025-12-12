@@ -35,7 +35,7 @@ subsection Particles
   set Maximum particles per cell  = 35
   set Load balancing strategy     = remove and add particles
   set List of particle properties = initial composition, elastic stress
-  set Interpolation scheme        = bilinear least squares
+  set Interpolation scheme        = linear least squares
   set Particle generator name     = random uniform
 
   subsection Generator

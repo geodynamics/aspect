@@ -163,7 +163,7 @@ end
 
 subsection Particles
   set Integration scheme = rk2 # or rk4
-  set Interpolation scheme = bilinear least squares # or cell average
+  set Interpolation scheme = linear least squares # or cell average
   set List of particle properties = function
   set Particle generator name = reference cell
   set Load balancing strategy = none # not necessary for uniform mesh

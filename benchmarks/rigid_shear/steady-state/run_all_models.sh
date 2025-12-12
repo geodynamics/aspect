@@ -11,7 +11,7 @@ for stokes_degree in 2 3; do
     for refinement in 3 4 5 6; do
       for particles_per_direction in 4 5 6 7 10 15 20 32 45 64 80; do
         for generator in "reference cell"; do
-        for interpolator in "cell average" "bilinear least squares"; do
+        for interpolator in "cell average" "linear least squares"; do
         for integrator in "rk2" "rk4"; do
 
         echo "subsection Discretization" > current.prm
