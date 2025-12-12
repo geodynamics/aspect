@@ -109,8 +109,7 @@ subsection Particles
   end
 
   subsection Interpolator
-    subsection Bilinear least squares
-      set Use linear least squares limiter = true, true
+    subsection Linear least squares
       set Use boundary extrapolation = true, true
     end
   end

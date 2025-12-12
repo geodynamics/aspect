@@ -112,7 +112,7 @@ subsection Particles
   end
 
   subsection Interpolator
-    subsection Bilinear least squares
+    subsection Linear least squares
       set Use linear least squares limiter = true
     end
   end

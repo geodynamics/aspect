@@ -105,10 +105,4 @@ subsection Particles
       set Number of particles per cell per direction = 4
     end
   end
-
-  subsection Interpolator
-    subsection Bilinear least squares
-      set Use linear least squares limiter = true
-    end
-  end
 end

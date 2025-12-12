@@ -251,7 +251,7 @@ namespace aspect
       {
         prm.enter_subsection("Interpolator");
         {
-          prm.enter_subsection("Bilinear least squares");
+          prm.enter_subsection("Linear least squares");
           {
             prm.declare_entry("Use linear least squares limiter", "true",
                               Patterns::List(Patterns::Bool()),
@@ -282,7 +282,7 @@ namespace aspect
         fallback_interpolator.parse_parameters(prm);
         prm.enter_subsection("Interpolator");
         {
-          prm.enter_subsection("Bilinear least squares");
+          prm.enter_subsection("Linear least squares");
           {
             const auto &particle_property_information = this->get_particle_manager(this->get_particle_manager_index()).get_property_manager().get_data_info();
             const unsigned int n_property_components = particle_property_information.n_components();

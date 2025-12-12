@@ -295,12 +295,6 @@ subsection Particles
   set Maximum particles per cell = 640
   set Integration scheme = rk2
 
-  subsection Interpolator
-    subsection Bilinear least squares
-      set Use linear least squares limiter = true
-    end
-  end
-
   subsection Generator
     subsection Random uniform
       set Number of particles = 500000

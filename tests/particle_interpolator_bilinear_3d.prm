@@ -103,12 +103,6 @@ subsection Particles
   set Interpolation scheme = linear least squares
   set Particle generator name = reference cell
 
-  subsection Interpolator
-    subsection Bilinear least squares
-      set Use linear least squares limiter = true
-    end
-  end
-
   subsection Generator
     subsection Reference cell
       set Number of particles per cell per direction = 2
