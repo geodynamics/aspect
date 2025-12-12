@@ -8,7 +8,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system (GMG)... 297+0 iterations.
 
    Postprocessing:
-     Writing graphical output:                          output-particle_interpolator_bilinear_limiter/solution/solution-00000
+     Writing graphical output:                          output-particle_interpolator_linear_limiter/solution/solution-00000
      RMS, max velocity:                                 0.0023 m/s, 0.00418 m/s
      Compositions min/max/mass:                         0/1/0.04953 // 0/1/0.2604
      Pressure min/avg/max:                              -5.828e-05 Pa, 0.301 Pa, 0.7914 Pa

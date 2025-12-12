@@ -1,5 +1,5 @@
 
-Loading shared library <./libparticle_interpolator_bilinear_add_particles.debug.so>
+Loading shared library <./libparticle_interpolator_linear_add_particles.debug.so>
 
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 32,196 (8,450+1,089+4,225+9,216+9,216)
@@ -10,7 +10,7 @@ Number of degrees of freedom: 32,196 (8,450+1,089+4,225+9,216+9,216)
    Solving Stokes system (GMG)... 20+0 iterations.
 
    Postprocessing:
-     Writing particle output:       output-particle_interpolator_bilinear_add_particles/particles/particles-00000
+     Writing particle output:       output-particle_interpolator_linear_add_particles/particles/particles-00000
      Errors u_L1, p_L1, u_L2, p_L2: 1.403736e-08, 1.653961e-04, 3.620345e-08, 3.398946e-04
 
 Termination requested by criterion: end time
