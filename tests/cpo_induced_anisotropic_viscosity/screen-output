@@ -1,0 +1,35 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Loading shared library <./libcpo_induced_anisotropic_viscosity.debug.so>
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 494 (81+8+27+27+27+27+27+27+27+27+27+27+27+27+27+27+27)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Copying properties into prescribed compositional field scalar_vis... done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                 0.289 m/s, 0.5 m/s
+     Compositions min/max/mass:         1e+09/1e+09/1e+09 // 5.276/5.276/5.276 // 0.5203/0.5203/0.5203 // 0.3479/0.3479/0.3479 // 0.1318/0.1318/0.1318 // 1.736/1.736/1.736 // 0.5743/0.5743/0.5743 // 0.3808/0.3808/0.3808 // 0.04489/0.04489/0.04489 // 5.435/5.435/5.435 // 0.6079/0.6079/0.6079 // 0.3106/0.3106/0.3106 // 0.08157/0.08157/0.08157 // 0/0/0
+     System matrix memory consumption:  0.36 MB
+     Writing graphical output:          output-cpo_induced_anisotropic_viscosity/solution/solution-00000
+     Writing particle output:           output-cpo_induced_anisotropic_viscosity/particles/particles-00000
+     Writing particle cpo output:       output-cpo_induced_anisotropic_viscosity/particles_cpo/CPO-00000
+
+Termination requested by criterion: end time
+
+
++------------------------------------------------+------------+------------+
++------------------------------------+-----------+------------+------------+
++------------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
