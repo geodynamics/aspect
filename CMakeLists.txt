@@ -639,13 +639,15 @@ if(NOT ASPECT_ADDITIONAL_CXX_FLAGS STREQUAL "")
   message(STATUS "  DEAL_II_CXX_FLAGS_RELEASE: ${DEAL_II_CXX_FLAGS_RELEASE}")
 endif()
 
-
+# friendly names for all executables being built:
+set(TARGET_FRIENDLY_EXECUTABLES "")
 
 # Set up targets for ASPECT executables:
 if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
   add_executable(${TARGET_EXE_DEBUG} ${ASPECT_ALL_SOURCE_FILES})
   set_property(TARGET ${TARGET_EXE_DEBUG}
                PROPERTY OUTPUT_NAME aspect-debug)
+  list(APPEND TARGET_FRIENDLY_EXECUTABLES "aspect-debug")
 
   target_include_directories(${TARGET_EXE_DEBUG} PRIVATE ${ASPECT_INCLUDE_DIRS})
   target_compile_flags(${TARGET_EXE_DEBUG} PRIVATE "$<COMPILE_LANGUAGE:CXX>"
@@ -662,6 +664,7 @@ if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
   add_executable(${TARGET_EXE_RELEASE} ${ASPECT_ALL_SOURCE_FILES})
   set_property(TARGET ${TARGET_EXE_RELEASE}
                PROPERTY OUTPUT_NAME aspect-release)
+  list(APPEND TARGET_FRIENDLY_EXECUTABLES "aspect-release")
 
   target_include_directories(${TARGET_EXE_RELEASE} PRIVATE ${ASPECT_INCLUDE_DIRS})
   target_compile_flags(${TARGET_EXE_RELEASE} PRIVATE "$<COMPILE_LANGUAGE:CXX>"
@@ -1092,17 +1095,20 @@ add_custom_target(distclean
 
 # Provide an "info" target that outputs some summary information and something
 # like "make help".
+
+list(JOIN TARGET_FRIENDLY_EXECUTABLES ", " FRIENDLY_EXECUTABLE_STRING)
+
 file(WRITE ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/print_usage.cmake
 "message(
 \"###
 #
-#  Project ${TARGET_EXE} set up with  ${DEAL_II_PACKAGE_NAME}-${DEAL_II_PACKAGE_VERSION}  found at
-#      ${DEAL_II_PATH}
+#  ASPECT set up successfully with deal.II ${DEAL_II_PACKAGE_VERSION}
+#      found at ${DEAL_II_PATH}
 #
 #  CMAKE_BUILD_TYPE:          ${CMAKE_BUILD_TYPE}
 #
 #  You can now run
-#      ${_make_command}                - to compile and link ${TARGET_EXE}
+#      ${_make_command}                - to compile and link ${FRIENDLY_EXECUTABLE_STRING}
 #      ${_make_command} debug          - to switch the build type to 'Debug'
 #      ${_make_command} release        - to switch the build type to 'Release'
 #      ${_make_command} debugrelease   - to switch the build type to compile both
