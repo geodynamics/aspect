@@ -189,6 +189,22 @@ namespace aspect
         std::vector<Point<dim>> evaluation_points;
 
         std::unique_ptr<Utilities::MPI::RemotePointEvaluation<dim, dim>> remote_point_evaluator;
+
+        /**
+         * A struct to map between DoF indices and evaluation points
+         */
+        struct dof_to_eval_point_data
+        {
+          types::global_dof_index dof_index;
+          unsigned int evaluation_point_index;
+          unsigned int component;
+        };
+
+        /**
+         * A vector to store a map between Dof indices and evaluation points
+         */
+        std::vector<dof_to_eval_point_data> map_dof_to_eval_point;
+
     };
   }
 }

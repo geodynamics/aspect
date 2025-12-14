@@ -371,6 +371,91 @@ namespace aspect
       remote_point_evaluator = std::make_unique<Utilities::MPI::RemotePointEvaluation<dim, dim>>();
       remote_point_evaluator->reinit(this->evaluation_points, this->get_triangulation(), mapping);
 
+
+      // Create a mapping from evaluation points to support points. Note that one evaluation point can map to
+      // multiple support points.
+      {
+        // For now, we only support a single MPI rank for ASPECT and the external mesh deformation class. Because deciding
+        // which evaluation point is closest to a support point requires somewhat complex MPI communication.
+        Assert(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
+               ExcNotImplemented("This function is not implemented for parallel computations."));
+
+        const DoFHandler<dim> &mesh_dof_handler = this->get_mesh_deformation_handler().get_mesh_deformation_dof_handler();
+
+        std::vector<double> squared_distances(mesh_dof_handler.locally_owned_dofs().size(), std::numeric_limits<double>::max());
+        std::vector<dof_to_eval_point_data> closest_evaluation_point_and_component(mesh_dof_handler.locally_owned_dofs().size(),
+                                                                                   dof_to_eval_point_data {numbers::invalid_dof_index, numbers::invalid_unsigned_int, numbers::invalid_unsigned_int});
+
+        // TODO: do we need to support the case of more than one different mesh deformation plugin to be active?
+        const auto boundary_ids = this->get_mesh_deformation_boundary_indicators();
+
+        IndexSet boundary_dofs = DoFTools::extract_boundary_dofs(mesh_dof_handler, ComponentMask(dim, true), boundary_ids);
+
+        const unsigned int dofs_per_cell = mesh_dof_handler.get_fe().dofs_per_cell;
+        std::vector<types::global_dof_index> local_dof_indices (dofs_per_cell);
+
+        // The remote_point_evaluator will gives us the velocities in all evaluation points that are within one of our locally
+        // owned cells. The lambda defined below receives a list of points and their velocities for each cell. The coordinates
+        // are given in coordinates of the unit cell.
+        // For each support point of the velocity DoFHandler, we will try to find the closest evaluation point. We
+        // do this by keeping track of the squared distance of the closest evaluation point checked so far.
+
+
+        // Note: We assume that process_and_evaluate() does not call our lambda concurrently, otherwise we would have write
+        // conflicts when updating vector_with_surface_velocities and one_over_distance_vec.
+
+        const auto eval_func = [&](const ArrayView<const unsigned int> &values,
+                                   const typename Utilities::MPI::RemotePointEvaluation<dim>::CellData &cell_data)
+        {
+          std::vector<types::global_dof_index> cell_dof_indices (dofs_per_cell);
+          for (const auto cell_index : cell_data.cell_indices())
+            {
+              const auto cell_dofs =
+                cell_data.get_active_cell_iterator(cell_index)->as_dof_handler_iterator(
+                  mesh_dof_handler);
+              cell_dofs->get_dof_indices(cell_dof_indices);
+
+              const ArrayView<const Point<dim>> unit_points = cell_data.get_unit_points(cell_index);
+              const auto local_values = cell_data.get_data_view(cell_index, values);
+
+              const std::vector< Point< dim >> &support_points = mesh_dof_handler.get_fe().get_unit_support_points();
+              for (unsigned int i=0; i<unit_points.size(); ++i)
+                {
+                  for (unsigned int j=0; j<support_points.size(); ++j)
+                    {
+                      const double distance_sq = unit_points[i].distance_square(support_points[j]);
+                      if (distance_sq < squared_distances[cell_dof_indices[j]])
+                        {
+                          squared_distances[cell_dof_indices[j]] = distance_sq;
+                          const unsigned int component = mesh_dof_handler.get_fe().system_to_component_index(j).first;
+                          closest_evaluation_point_and_component[cell_dof_indices[j]] =
+                            dof_to_eval_point_data {cell_dof_indices[j], local_values[i], component};
+                        }
+                    }
+                }
+            }
+        };
+
+        std::vector<unsigned int> indices (evaluation_points.size());
+        std::iota(indices.begin(), indices.end(), 0);
+        this->remote_point_evaluator->template process_and_evaluate<unsigned int, 1>(indices, eval_func, /*sort_data*/ true);
+
+        map_dof_to_eval_point.clear();
+        for (unsigned int i=0; i<closest_evaluation_point_and_component.size(); ++i)
+          {
+            if (closest_evaluation_point_and_component[i].dof_index != numbers::invalid_dof_index)
+              map_dof_to_eval_point.push_back(closest_evaluation_point_and_component[i]);
+          }
+
+        // print all information:
+        std::cout << "map_dof_to_eval_point (dof, evaluation_point_index, component): " << std::endl;
+        for (const auto &dof_to_eval_point : map_dof_to_eval_point)
+          {
+            std::cout << dof_to_eval_point.dof_index << " " << dof_to_eval_point.evaluation_point_index << " " << dof_to_eval_point.component << std::endl;
+          }
+      }
+
+
       // Finally, also ensure that upon mesh refinement, all of the
       // information set herein is invalidated:
       this->get_signals().pre_refinement_store_user_data
@@ -434,7 +519,7 @@ namespace aspect
         static unsigned int output_no = 0;
 
         PointDataOut<dim, dim> out;
-        // const auto &mapping = this->get_mapping();
+        //const auto &mapping = this->get_mapping();
         std::vector<Point<dim>> real_evaluation_points(evaluation_points.size());
         std::vector<std::vector<double>> data(evaluation_points.size(), std::vector<double>(dim, 0.0));
         for (unsigned int i=0; i<evaluation_points.size(); ++i)
@@ -461,56 +546,9 @@ namespace aspect
       LinearAlgebra::Vector vector_with_surface_velocities(mesh_dof_handler.locally_owned_dofs(),
                                                            this->get_mpi_communicator());
 
-      // The remote_point_evaluator will gives us the velocities in all evaluation points that are within one of our locally
-      // owned cells. The lambda defined below receives a list of points and their velocities for each cell. The coordinates
-      // are given in coordinates of the unit cell.
-      // For each support point of the velocity DoFHandler, we will set the velocity from the closest evaluation point. We
-      // do this by keeping track of 1/distance of the closest evaluation point checked so far. The initial value of 0.0
-      // denotes an infinite distance.
-      LinearAlgebra::Vector one_over_distance_vec(mesh_dof_handler.locally_owned_dofs(),
-                                                  this->get_mpi_communicator());
+      for (const auto &entry : map_dof_to_eval_point)
+        vector_with_surface_velocities[entry.dof_index] = velocities[entry.evaluation_point_index][entry.component];
 
-      const unsigned int dofs_per_cell = mesh_dof_handler.get_fe().dofs_per_cell;
-
-      // Note: We assume that process_and_evaluate() does not call our lambda concurrently, otherwise we would have write
-      // conflicts when updating vector_with_surface_velocities and one_over_distance_vec.
-      const auto eval_func = [&](const ArrayView< const Tensor<1,dim>> &values,
-                                 const typename Utilities::MPI::RemotePointEvaluation<dim>::CellData &cell_data)
-      {
-        std::vector<types::global_dof_index> cell_dof_indices (dofs_per_cell);
-        for (const auto cell_index : cell_data.cell_indices())
-          {
-            const auto cell_dofs =
-              cell_data.get_active_cell_iterator(cell_index)->as_dof_handler_iterator(
-                mesh_dof_handler);
-
-            const ArrayView<const Point<dim>> unit_points = cell_data.get_unit_points(cell_index);
-            const auto local_values = cell_data.get_data_view(cell_index, values);
-
-            cell_dofs->get_dof_indices(cell_dof_indices);
-
-            // Note: This search is a nested loop with the inner part executed #evaluation_point_in_this_cell * #dofs_per_cell
-            // times. We could precompute this information as the point locations and do not change (outside of mesh refinement).
-            const std::vector< Point< dim >> &support_points = mesh_dof_handler.get_fe().get_unit_support_points();
-            for (unsigned int i=0; i<unit_points.size(); ++i)
-              {
-                for (unsigned int j=0; j<support_points.size(); ++j)
-                  {
-                    const double one_over_distance = 1.0/(unit_points[i].distance(support_points[j])+1e-10);
-                    if (one_over_distance > one_over_distance_vec(cell_dof_indices[j]))
-                      {
-                        // The point i is closer to support point j than anything we have seen so far. Keep track
-                        // of the distance and write the correct velocity component into the result:
-                        one_over_distance_vec(cell_dof_indices[j]) = one_over_distance;
-                        const unsigned int component = mesh_dof_handler.get_fe().system_to_component_index(j).first;
-                        vector_with_surface_velocities(cell_dof_indices[j]) = local_values[i][component];
-                      }
-                  }
-              }
-          }
-      };
-
-      this->remote_point_evaluator->template process_and_evaluate<Tensor<1,dim>,1>(velocities, eval_func, /*sort_data*/ true);
       vector_with_surface_velocities.compress(VectorOperation::insert);
 
       return vector_with_surface_velocities;

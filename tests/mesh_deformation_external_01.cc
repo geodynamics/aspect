@@ -60,28 +60,19 @@ namespace aspect
                 {
                   if constexpr (dim == 2)
                     {
-                      points.emplace_back(0.3, 1.0);
-                      points.emplace_back(0.5, 1.0);
+                      for (unsigned int x=0; x<11; ++x)
+                        points.emplace_back(0.05+x*1.0/11, 1.0);
                     }
                   else
                     {
-                      points.emplace_back(0.3, 0.7, 1.0);
-                      points.emplace_back(0.5, 0.5, 1.0);
-                      points.emplace_back(0.7, 0.2, 1.0);
-                      points.emplace_back(0.7, 0.91, 1.0);
+                      for (unsigned int x=0; x<5; ++x)
+                        for (unsigned int y=0; y<5; ++y)
+                          points.emplace_back(0.1+x*1.0/5, 0.1+y*1.0/5, 1.0);
                     }
                 }
               else
-                {
-                  if constexpr (dim == 2)
-                    {
-                      points.emplace_back(0.72, 1.0);
-                    }
-                  else
-                    {
-                      points.emplace_back(0.9, 0.9, 1.0);
-                    }
-                }
+                Assert(false, ExcNotImplemented());
+
               this->set_evaluation_points (points);
             }
         }
@@ -123,10 +114,11 @@ namespace aspect
 
           Assert(current_solution_at_points.size() == this->evaluation_points.size(), ExcInternalError());
           std::vector<Tensor<1,dim>> velocities(current_solution_at_points.size(), Tensor<1,dim>());
-          if (velocities.size()>1)
+          if (velocities.size()>6)
             {
-              velocities[0][dim-1]=30.0;
-              velocities[1][dim-1]=-3.5;
+              velocities[1][dim-1]=30.0;
+              velocities[4][dim-1]=-5.0;
+              velocities[6][dim-1]=10.0;
             }
           return velocities;
         }

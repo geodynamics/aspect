@@ -2,10 +2,10 @@
 # derived class written as a plugin, 2d box geometry, initial
 # topography coming from the plugin (and not initial topography)
 #
-# MPI: 2
+# MPI: 1
 
 set Dimension                              = 2
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set End time                               = 0.004
 set Maximum time step                      = 0.0005
 set Nonlinear solver scheme = no Advection, no Stokes
@@ -78,7 +78,7 @@ end
 # We here use a globally refined mesh without
 # adaptive mesh refinement.
 subsection Mesh refinement
-  set Initial global refinement                = 4
+  set Initial global refinement                = 3
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
 end
