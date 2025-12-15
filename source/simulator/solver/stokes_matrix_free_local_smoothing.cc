@@ -1211,9 +1211,6 @@ namespace aspect
     solver_control_expensive.enable_history_data();
 
     using GMGPreconditioner = PreconditionMG<dim, VectorType, MGTransferMF<dim,GMGNumberType>>;
-    // GMGPreconditioner prec_A(dof_handler_v, mg_A, mg_transfer_A_block);
-
-    // using VectorType = dealii::LinearAlgebra::distributed::Vector<GMGNumberType>
     internal::InverseVelocityBlock<GMGPreconditioner,VectorType,ABlockMatrixType> inverse_velocity_block_cheap(
       A_block_matrix,
       prec_A,

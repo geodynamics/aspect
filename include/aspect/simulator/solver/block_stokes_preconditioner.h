@@ -271,7 +271,7 @@ namespace aspect
         const SchurComplementMatrixType &Schur_complement_block;
         const bool do_solve_Schur_complement;
         const double Schur_complement_tolerance;
-        mutable unsigned int n_iterations_Schur_complement_=0;
+        mutable unsigned int n_iterations_Schur_complement_;
 
 
     };
@@ -281,13 +281,14 @@ namespace aspect
         const StokesMatrixType &stokes_matrix,
         const SchurComplementMatrixType &Schur_complement_block,
         const bool do_solve_Schur_complement,
-        const double Schur_complement_tolerance
-                                                                                                       ):
+        const double Schur_complement_tolerance)
+      :
       schur_preconditioner(schur_preconditioner),
       stokes_matrix(stokes_matrix),
       Schur_complement_block(Schur_complement_block),
       do_solve_Schur_complement(do_solve_Schur_complement),
-      Schur_complement_tolerance(Schur_complement_tolerance)
+      Schur_complement_tolerance(Schur_complement_tolerance),
+      n_iterations_Schur_complement_(0)
     {}
 
 
@@ -297,8 +298,7 @@ namespace aspect
     {
       if (do_solve_Schur_complement)
         {
-          // first solve with the bottom right block, which we have built
-          // as a mass matrix with the inverse of the viscosity
+
           SolverControl solver_control(100, src.l2_norm() * Schur_complement_tolerance,true);
 
           SolverCG<VectorType> solver(solver_control);
