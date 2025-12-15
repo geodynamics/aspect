@@ -12,7 +12,7 @@ Number of degrees of freedom: 494 (81+8+27+27+27+27+27+27+27+27+27+27+27+27+27+2
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Copying properties into prescribed compositional field scalar_vis... done.
+   Copying properties into prescribed compositional field scalar_viscosity... done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 3+0 iterations.
 
