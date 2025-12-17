@@ -71,7 +71,7 @@ jobs:
         ./contrib/utilities/indent
         git diff > changes-astyle.diff
     - name: archive indent results
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: changes-astyle.diff
         path: changes-astyle.diff
@@ -169,7 +169,7 @@ jobs:
         ninja generate_reference_output
         git diff ../tests > ${{ matrix.result-file }}
     - name: archive test results
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: ${{ matrix.result-file }}
         path: build/${{ matrix.result-file }}

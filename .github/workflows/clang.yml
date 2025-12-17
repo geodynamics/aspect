@@ -48,7 +48,7 @@ jobs:
         cd build
         ./aspect --test
     - name: archive test results
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: clang-tidy-results.txt
         path: build/clang-tidy-results.txt
