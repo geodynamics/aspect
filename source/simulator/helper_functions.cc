@@ -2662,7 +2662,9 @@ namespace aspect
         // Update the current linearization point with the appropriate step along the search direction
         LinearAlgebra::BlockVector scaled_search_direction(search_direction);
         scaled_search_direction *= step_length_factor;
-        current_linearization_point += scaled_search_direction;
+
+        current_linearization_point.block(pressure_block_index) += scaled_search_direction.block(pressure_block_index);
+        current_linearization_point.block(velocity_block_index) += scaled_search_direction.block(velocity_block_index);
 
         // Rebuild the rhs to determine the new residual.
         assemble_newton_stokes_matrix = rebuild_stokes_preconditioner = false;
