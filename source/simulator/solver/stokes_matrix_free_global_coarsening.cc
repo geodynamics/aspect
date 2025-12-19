@@ -1655,6 +1655,12 @@ namespace aspect
               }
 
             DoFTools::make_hanging_node_constraints(dof_handler, constraint);
+
+            sim.prescribed_solution_manager.constrain_solution(constraint);
+
+            // Let plugins add more constraints if they so choose:
+            sim.signals.post_constraints_creation(*this, constraint);
+
             constraint.close();
           }
 
