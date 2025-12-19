@@ -4,23 +4,23 @@ Number of degrees of freedom: 1,836 (1,122+153+561)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 9+0 iterations.
+   Solving Stokes system (GMG)... 68+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  9.66e-05 m/year, 0.000457 m/year
+     RMS, max velocity:                  6.84e+03 m/year, 2.29e+04 m/year
      Temperature min/avg/max:            273 K, 1552 K, 2014 K
-     Heat fluxes through boundary parts: -6.057e+04 W, 2.002e+05 W, 0 W, 0 W
+     Heat fluxes through boundary parts: -6.198e+04 W, 2.003e+05 W, 0 W, 0 W
      Writing graphical output:           output-prescribed_solution_velocity_function_chunk/solution/solution-00000
      Writing heat flux map               output-prescribed_solution_velocity_function_chunk/heat_flux.00000
 
 *** Timestep 1:  t=1 years, dt=1 years
-   Solving temperature system... 2 iterations.
-   Solving Stokes system (GMG)... 8+0 iterations.
+   Solving temperature system... 8 iterations.
+   Solving Stokes system (GMG)... 66+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  1.77e+06 m/year, 5.07e+06 m/year
+     RMS, max velocity:                  1.37e+04 m/year, 4.58e+04 m/year
      Temperature min/avg/max:            273 K, 1552 K, 2014 K
-     Heat fluxes through boundary parts: 4.139e+13 W, 2.542e+12 W, 0 W, 0 W
+     Heat fluxes through boundary parts: -5.316e+05 W, 9.125e+09 W, 0 W, 0 W
      Writing graphical output:           output-prescribed_solution_velocity_function_chunk/solution/solution-00001
      Writing heat flux map               output-prescribed_solution_velocity_function_chunk/heat_flux.00001
 

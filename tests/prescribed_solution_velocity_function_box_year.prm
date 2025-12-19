@@ -93,11 +93,11 @@ subsection Prescribed solution
     subsection Velocity function
         subsection Indicator function
             set Variable names = x, y, t
-            set Function expression = (x<2e6*0.5*t/1e5) ? 1:0; (y<1e6*0.5*t/1e5) ? 1:0
+            set Function expression = (x<2e6*0.5*t/1e5 && y<1e6*0.5*t/1e5) ? 1:0; 0
         end
         subsection Function
             set Variable names = x,y,t
-            set Function expression = y*(3.154e7+t)/1e11;x*t/1e11
+            set Function expression = x*y*t/1e5;0
         end
     end
 end
@@ -159,7 +159,7 @@ subsection Postprocess
 
   subsection Visualization
     set List of output variables = material properties, nonadiabatic pressure, strain rate, stress
-    set Time between graphical output = 1e5
-    set Output format =  gnuplot
+    set Time between graphical output = 1
+    set Output format =  vtu
   end
 end

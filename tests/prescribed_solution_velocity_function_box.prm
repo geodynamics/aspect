@@ -87,16 +87,26 @@ subsection Boundary temperature model
     end
 end
 
+subsection Solver parameters
+
+ subsection Stokes solver parameters
+#      set Number of cheap Stokes solver steps             = 0
+
+
+#set Stokes solver type = block AMG
+end
+end
+
 subsection Prescribed solution
     set List of model names = velocity function
     subsection Velocity function
         subsection Indicator function
             set Variable names = x, y, t
-            set Function expression = (x<2e6*0.5*t) ? 1:0; (y<1e6*0.5*t) ? 1:0
+            set Function expression = (x<2e6*0.75 && x>2e6*0.25 && y<1e6*0.4) ? 1:0; 0
         end
         subsection Function
             set Variable names = x,y,t
-            set Function expression = y*(1+t);x*t
+            set Function expression = y*t;0
         end
     end
 end
@@ -159,6 +169,6 @@ subsection Postprocess
   subsection Visualization
     set List of output variables = material properties, nonadiabatic pressure, strain rate, stress
     set Time between graphical output = 1
-    set Output format =  gnuplot
+    set Output format =  vtu
   end
 end
