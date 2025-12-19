@@ -262,7 +262,7 @@ namespace aspect
                            const SchurComplementMatrixType &Schur_complement_block,
                            const bool do_solve_Schur_complement,
                            const double Schur_complement_tolerance);
-        void vmult(typename VectorType::BlockType &dst, const typename VectorType::BlockType &src) const;
+        void vmult( VectorType &dst, const VectorType &src) const;
         unsigned int n_iterations() const;
 
       private:
@@ -293,8 +293,8 @@ namespace aspect
 
 
     template<class OP, class StokesMatrixType, class SchurComplementMatrixType, class VectorType>
-    void SchurApproximation<OP, StokesMatrixType, SchurComplementMatrixType, VectorType>::vmult(typename VectorType::BlockType &dst,
-        const typename VectorType::BlockType &src) const
+    void SchurApproximation<OP, StokesMatrixType, SchurComplementMatrixType, VectorType>::vmult(VectorType &dst,
+        const VectorType &src) const
     {
       if (do_solve_Schur_complement)
         {
@@ -323,10 +323,10 @@ namespace aspect
               catch (const std::exception &exc)
                 {
                   Utilities::throw_linear_solver_failure_exception("iterative (bottom right) solver",
-                                                                   "BlockSchurGMGPreconditioner::vmult",
+                                                                   "BlockSchurPreconditioner::vmult",
                                                                    std::vector<SolverControl> {solver_control},
                                                                    exc,
-                                                                   src.block(0).get_mpi_communicator());
+                                                                   src.get_mpi_communicator());
                 }
             }
         }
