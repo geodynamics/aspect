@@ -1384,7 +1384,6 @@ namespace aspect
     // addition, we may be computing constraints from boundary values for the
     // velocity that are different between time steps. these are then put
     // into current_constraints in start_timestep().
-    signals.pre_compute_no_normal_flux_constraints(triangulation);
     {
       // do the interpolation for zero velocity
       for (const auto p : boundary_velocity_manager.get_zero_boundary_velocity_indicators())
@@ -1394,18 +1393,7 @@ namespace aspect
                                                   Functions::ZeroFunction<dim>(introspection.n_components),
                                                   constraints,
                                                   introspection.component_masks.velocities);
-
-
-      // do the same for no-normal-flux boundaries
-      VectorTools::compute_no_normal_flux_constraints (dof_handler,
-                                                       /* first_vector_component= */
-                                                       introspection.component_indices.velocities[0],
-                                                       boundary_velocity_manager.get_tangential_boundary_velocity_indicators(),
-                                                       constraints,
-                                                       *mapping);
     }
-
-
   }
 
   template <int dim>
@@ -1416,7 +1404,20 @@ namespace aspect
     // for the prescribed velocity fields
     boundary_velocity_manager.update();
 
-    // put boundary conditions into constraints object for each boundary
+    signals.pre_compute_no_normal_flux_constraints(triangulation);
+
+    // Compute constraints for no-normal-flux boundaries.
+    // One may think that we could do this in compute_initial_velocity_boundary_constraints
+    // above, but we cannot because the no-normal-flux constraints may depend on the
+    // current mapping, which may change if mesh deformation is active.
+    VectorTools::compute_no_normal_flux_constraints (dof_handler,
+                                                     /* first_vector_component= */
+                                                     introspection.component_indices.velocities[0],
+                                                     boundary_velocity_manager.get_tangential_boundary_velocity_indicators(),
+                                                     constraints,
+                                                     *mapping);
+
+    // Compute constraints for prescribed velocity boundaries for each boundary
     for (const auto boundary_id: boundary_velocity_manager.get_prescribed_boundary_velocity_indicators())
       {
         Utilities::VectorFunctionFromVelocityFunctionObject<dim> vel
@@ -1920,6 +1921,22 @@ namespace aspect
 
         // calculate global volume after deforming mesh
         global_volume = GridTools::volume (triangulation, *mapping);
+
+        // since the mesh has changed, boundary conditions may have changed as well
+        // so we need to recompute the current constraints and if necessary the system
+        // matrix and preconditioner
+        compute_current_constraints ();
+        {
+          computing_timer.enter_subsection("Setup matrices");
+
+          rebuild_sparsity_and_matrices = false;
+          setup_system_matrix (introspection.index_sets.system_partitioning);
+          setup_system_preconditioner (introspection.index_sets.system_partitioning);
+          rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+
+          computing_timer.leave_subsection("Setup matrices");
+        }
+
         signals.post_mesh_deformation(*this);
       }
 
