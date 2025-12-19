@@ -1,0 +1,17 @@
+# Like prescribed_solution_velocity_function_box.prm but
+# for global coarsening GMG:
+
+include $ASPECT_SOURCE_DIR/tests/prescribed_solution_velocity_function_box.prm
+
+subsection Solver parameters
+
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+        set Stokes GMG type                                 = global coarsening
+
+  end
+end
+
+subsection Material model
+  set Material averaging = harmonic average only viscosity
+end
