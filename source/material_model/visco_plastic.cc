@@ -68,7 +68,7 @@ namespace aspect
           else
             {
               EquationOfStateOutputs<dim> eos_outputs_all_phases (n_phases);
-              equation_of_state.evaluate(in, 0, eos_outputs_all_phases);
+              equation_of_state_incompressible.evaluate(in, 0, eos_outputs_all_phases);
               reference_density = eos_outputs_all_phases.densities[0];
             }
 
@@ -121,7 +121,7 @@ namespace aspect
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           // First compute the equation of state variables and thermodynamic properties
-          equation_of_state.evaluate(in, i, eos_outputs_all_phases);
+          equation_of_state_incompressible.evaluate(in, i, eos_outputs_all_phases);
 
           const double gravity_norm = this->get_gravity_model().gravity_vector(in.position[i]).norm();
           const double reference_density = (this->get_adiabatic_conditions().is_initialized())
@@ -335,7 +335,7 @@ namespace aspect
     ViscoPlastic<dim>::
     is_compressible () const
     {
-      return equation_of_state.is_compressible();
+      return equation_of_state_incompressible.is_compressible();
     }
 
 
@@ -368,6 +368,13 @@ namespace aspect
           MaterialUtilities::PhaseFunctionDiscrete<dim>::declare_parameters(prm);
 
           EquationOfState::MulticomponentIncompressible<dim>::declare_parameters (prm);
+
+          EquationOfState::MulticomponentCompressible<dim>::declare_parameters (prm);
+
+          prm.declare_entry ("Equation of state", "multicomponent incompressible",
+                             Patterns::Selection("multicomponent incompressible|multicomponent compresssible"),
+                             "Select the equation of state model to use between the options "
+                             "multicomponent incompressible and multicomponent incompressible.");
 
           Rheology::ViscoPlastic<dim>::declare_parameters(prm);
 
@@ -416,9 +423,32 @@ namespace aspect
           n_phases = phase_function.n_phases_over_all_chemical_compositions();
 
           // Equation of state parameters
-          equation_of_state.initialize_simulator (this->get_simulator());
-          equation_of_state.parse_parameters (prm,
-                                              std::make_unique<std::vector<unsigned int>>(n_phases_for_each_chemical_composition));
+          if (prm.get ("Equation of state") == "multicomponent incompressible")
+            equation_of_state = multicomponent_incompressible;
+          else if (prm.get ("Equation of state") == "multicomponent compressible")
+            equation_of_state = multicomponent_compressible;
+          else
+            AssertThrow(false, ExcMessage("Not a valid equation of state model"));
+
+          if (equation_of_state == multicomponent_incompressible)
+            {
+              equation_of_state_incompressible.initialize_simulator (this->get_simulator());
+              equation_of_state_incompressible.parse_parameters (prm,
+                                                                 std::make_unique<std::vector<unsigned int>>(n_phases_for_each_chemical_composition));
+            }
+          else
+            {
+              prm.enter_subsection ("Equation of State");
+              {
+                prm.enter_subsection ("Multicomponent Compressible");
+                {
+                  equation_of_state_compressible.initialize_simulator (this->get_simulator());
+                  equation_of_state_compressible.parse_parameters (prm);
+                }
+                prm.leave_subsection();
+              }
+              prm.leave_subsection();
+            }
 
           // Make options file for parsing maps to double arrays
           std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
