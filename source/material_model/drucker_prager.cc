@@ -53,7 +53,7 @@ namespace aspect
               Assert(std::isfinite(in.strain_rate[i].norm()),
                      ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
                                 "not filled by the caller."));
-              const SymmetricTensor<2,dim> strain_rate_deviator = deviator(in.strain_rate[i]);
+              const SymmetricTensor<2,dim> strain_rate_deviator = Utilities::Tensors::consistent_deviator(in.strain_rate[i]);
 
               // For the very first time this function is called
               // (the first iteration of the first timestep), this function is called
@@ -64,8 +64,8 @@ namespace aspect
               // In later iterations and timesteps we calculate the second moment
               // invariant of the deviatoric strain rate tensor.
               // This is equal to the negative of the second principle
-              // invariant of the deviatoric strain rate (calculated with the function second_invariant),
-              // as shown in Appendix A of Zienkiewicz and Taylor (Solid Mechanics, 2000).
+              // invariant of the deviatoric strain rate, as shown in Appendix A of
+              // Zienkiewicz and Taylor (Solid Mechanics, 2000).
               //
               // The negative of the second principle invariant is equal to 0.5 e_dot_dev_ij e_dot_dev_ji,
               // where e_dot_dev is the deviatoric strain rate tensor. The square root of this quantity
@@ -78,7 +78,7 @@ namespace aspect
                                              // initialized. This might mean that we are
                                              // in a unit test, or at least that we can't
                                              // rely on any simulator information
-                                             std::fabs(second_invariant(strain_rate_deviator))
+                                             std::fabs(Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(strain_rate_deviator))
                                              :
                                              // simulator object is available, but we need to treat the
                                              // first time step separately
@@ -88,7 +88,7 @@ namespace aspect
                                               ?
                                               reference_strain_rate * reference_strain_rate
                                               :
-                                              std::fabs(second_invariant(strain_rate_deviator))));
+                                              std::fabs(Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(strain_rate_deviator))));
 
               const double strain_rate_effective = edot_ii_strict;
 
