@@ -1225,14 +1225,14 @@ namespace aspect
       /* do_solve_A = */ true,
       sim.stokes_A_block_is_symmetric(),
       this->get_parameters().linear_solver_A_block_tolerance);
-    
+
     using SchurApproximationType = internal::SchurApproximation<GMGPreconditioner,StokesMatrixType,SchurComplementMatrixType, VectorType>;
     internal::SchurApproximation<GMGPreconditioner, StokesMatrixType, SchurComplementMatrixType, VectorType> schur_approximation_cheap(prec_Schur,stokes_matrix,
         Schur_complement_block_matrix, /*do_solve_Schur*/ false, this->get_parameters().linear_solver_S_block_tolerance);
 
     internal::SchurApproximation<GMGPreconditioner, StokesMatrixType, SchurComplementMatrixType, VectorType> schur_approximation_expensive(prec_Schur,stokes_matrix,
         Schur_complement_block_matrix, /*do_solve_Schur*/ true, this->get_parameters().linear_solver_S_block_tolerance);
-        
+
     const internal::BlockSchurPreconditioner<internal::InverseVelocityBlock<GMGPreconditioner,VectorType,ABlockMatrixType>,
           SchurApproximationType,BTBlockOperatorType, dealii::LinearAlgebra::distributed::BlockVector<double>>
           preconditioner_cheap (
@@ -1247,7 +1247,7 @@ namespace aspect
             schur_approximation_expensive,
             BT_block);
 
-    
+
 
 
 
