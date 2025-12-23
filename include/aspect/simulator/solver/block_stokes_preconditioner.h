@@ -312,6 +312,8 @@ namespace aspect
             {
               try
                 {
+                  dst = 0.0; // explicitly zero out because GMRES does not guarantee that dst is zeroed out
+
                   solver.solve(Schur_complement_block,
                                dst, src,
                                schur_preconditioner);
