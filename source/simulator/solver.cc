@@ -193,15 +193,15 @@ namespace aspect
       public:
         /**
          * Constructor.
-         * @param mp_matrix Matrix approximating S to be used in the inner solve
-         * @param mp_preconditioner The preconditioner for @p mp_matrix
+         * @param pressure_laplace_matrix Laplace operator on the pressure space. This is how we choose to discretize (BC^{-1}B^T).
+         * @param laplace_preconditioner The preconditioner for @p pressure_laplace_matrix
          * @param solver_tolerance The relative solver tolerance for the inner solve
          * @param inverse_lumped_mass_matrix Lumped mass matrix associated with the velocity block
          * @param system_matrix Sparse block matrix storing the Stokes system of the form
          * [A B^T
          *  B 0].
          */
-        WeightedBFBT(const LinearAlgebra::SparseMatrix &mp_matrix,
+        WeightedBFBT(const LinearAlgebra::SparseMatrix &pressure_laplace_matrix,
                      const PreconditionerMp &mp_preconditioner,
                      const double solver_tolerance,
                      const LinearAlgebra::Vector &inverse_lumped_mass_matrix,
@@ -214,8 +214,8 @@ namespace aspect
 
       private:
         mutable unsigned int n_iterations_;
-        const LinearAlgebra::SparseMatrix &mp_matrix;
-        const PreconditionerMp &mp_preconditioner;
+        const LinearAlgebra::SparseMatrix &pressure_laplace_matrix;
+        const PreconditionerMp &laplace_preconditioner;
         const double solver_tolerance;
         const LinearAlgebra::Vector &inverse_lumped_mass_matrix;
         const LinearAlgebra::BlockSparseMatrix &system_matrix;
@@ -223,14 +223,14 @@ namespace aspect
 
     template <class PreconditionerMp>
     WeightedBFBT<PreconditionerMp>::WeightedBFBT(
-      const LinearAlgebra::SparseMatrix &mp_matrix,
-      const PreconditionerMp &mp_preconditioner,
+      const LinearAlgebra::SparseMatrix &pressure_laplace_matrix,
+      const PreconditionerMp &laplace_preconditioner,
       const double solver_tolerance,
       const LinearAlgebra::Vector &inverse_lumped_mass_matrix,
       const LinearAlgebra::BlockSparseMatrix &system_matrix)
       : n_iterations_ (0),
-        mp_matrix (mp_matrix),
-        mp_preconditioner (mp_preconditioner),
+        pressure_laplace_matrix(pressure_laplace_matrix),
+        laplace_preconditioner (laplace_preconditioner),
         solver_tolerance (solver_tolerance),
         inverse_lumped_mass_matrix(inverse_lumped_mass_matrix),
         system_matrix (system_matrix)
@@ -256,11 +256,11 @@ namespace aspect
           {
             SolverControl solver_control(5000, 1e-6 * src.l2_norm(), false, true);
             SolverCG<LinearAlgebra::Vector> solver(solver_control);
-            //Solve with Schur Complement approximation
-            solver.solve(mp_matrix,
+
+            solver.solve(pressure_laplace_matrix,
                          ptmp,
                          src,
-                         mp_preconditioner);
+                         laplace_preconditioner);
             n_iterations_ += solver_control.last_step();
             system_matrix.block(0,1).vmult(utmp,ptmp);
 
@@ -270,10 +270,10 @@ namespace aspect
             system_matrix.block(1,0).vmult(ptmp,wtmp);
 
             dst=0;
-            solver.solve(mp_matrix,
+            solver.solve(pressure_laplace_matrix,
                          dst,
                          ptmp,
-                         mp_preconditioner);
+                         laplace_preconditioner);
             n_iterations_ += solver_control.last_step();
           }
         }
