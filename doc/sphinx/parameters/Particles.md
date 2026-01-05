@@ -61,17 +61,17 @@ Select one of the following models:
 ### __Parameter name:__ Interpolation scheme
 **Default value:** cell average
 
-**Pattern:** [Selection bilinear least squares|cell average|distance weighted average|harmonic average|nearest neighbor|quadratic least squares ]
+**Pattern:** [Selection cell average|distance weighted average|harmonic average|linear least squares|nearest neighbor|quadratic least squares|bilinear least squares ]
 
 **Documentation:** Select one of the following models:
-
-&lsquo;bilinear least squares&rsquo;: Uses linear least squares to obtain the slopes and center of a 2d or 3d plane from the particle positions and a particular property value on those particles. Interpolate this property onto a vector of points. If the limiter is enabled then it will ensure the interpolated properties do not exceed the range of the minimum and maximum of the values of the property on the particles. Note that deal.II must be configured with BLAS and LAPACK to support this operation.
 
 &lsquo;cell average&rsquo;: Return the arithmetic average of all particle properties in the given cell, or in the neighboring cells if the given cell is empty. In case the neighboring cells are also empty, and &rsquo;Allow cells without particles&rsquo; is set to true, the interpolator returns 0. Otherwise, an exception is thrown.
 
 &lsquo;distance weighted average&rsquo;: Interpolates particle properties onto a vector of points using a distance weighed averaging method.
 
 &lsquo;harmonic average&rsquo;: Return the harmonic average of all particle properties in the given cell. If the cell contains no particles, return the harmonic average of the properties in the neighboring cells. In case the neighboring cells are also empty, and &rsquo;Allow cells without particles&rsquo; is set to true, the interpolator returns 0. Otherwise, an exception is thrown.
+
+&lsquo;linear least squares&rsquo;: Uses linear least squares to obtain the slopes and center of a 2d or 3d plane from the particle positions and a particular property value on those particles. Interpolate this property onto a vector of points. If the limiter is enabled then it will ensure the interpolated properties do not exceed the range of the minimum and maximum of the values of the property on the particles. Note that deal.II must be configured with BLAS and LAPACK to support this operation.
 
 &lsquo;nearest neighbor&rsquo;: Return the properties of the nearest neighboring particle in the current cell, or nearest particle in nearest neighboring cell if current cell is empty. In case the neighboring cells are also empty, and &rsquo;Allow cells without particles&rsquo; is set to true, the interpolator returns 0. Otherwise, an exception is thrown.
 
@@ -821,9 +821,9 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 (parameters:Particles/Interpolator)=
 ## **Subsection:** Particles / Interpolator
-(parameters:Particles/Interpolator/Bilinear_20least_20squares)=
-## **Subsection:** Particles / Interpolator / Bilinear least squares
-(parameters:Particles/Interpolator/Bilinear_20least_20squares/Use_20boundary_20extrapolation)=
+(parameters:Particles/Interpolator/Linear_20least_20squares)=
+## **Subsection:** Particles / Interpolator / Linear least squares
+(parameters:Particles/Interpolator/Linear_20least_20squares/Use_20boundary_20extrapolation)=
 ### __Parameter name:__ Use boundary extrapolation
 **Default value:** false
 
@@ -831,7 +831,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Documentation:** Extends the range used by &rsquo;Use linear least squares limiter&rsquo; by linearly interpolating values at cell boundaries from neighboring cells. If more than one value is given, it will be treated as a list with one component per particle property. Enabling &rsquo;Use boundary extrapolation&rsquo; requires enabling &rsquo;Use linear least squares limiter&rsquo;.
 
-(parameters:Particles/Interpolator/Bilinear_20least_20squares/Use_20linear_20least_20squares_20limiter)=
+(parameters:Particles/Interpolator/Linear_20least_20squares/Use_20linear_20least_20squares_20limiter)=
 ### __Parameter name:__ Use linear least squares limiter
 **Default value:** true
 
