@@ -1,11 +1,15 @@
 # This test is a modified version of
 # function_mesh_deformation_tangential_mesh_velocity.prm
+# It is designed to test tangential velocity
+# boundary conditions in simulations where the mesh is
+# deformed by a user-prescribed function on a boundary.
 
 # The simulation starts as a box of 200 km width and 50 km height.
 # A parabolic shear velocity boundary condition is applied at the
-# bottom boundary. The sides and top boundaries are intended to
-# be free slip. Gravity is set to zero, and the temperature
-# is constant throughout the domain.
+# bottom boundary. The side and top boundaries have tangential
+# velocity boundary conditions.
+# Gravity is set to zero. The temperature is constant
+# throughout the domain.
 
 # The mesh is deformed by prescribing a mesh velocity at the top
 # boundary that goes from +10 km per million year on the left side
@@ -14,13 +18,6 @@
 # The meshes at the left and right boundaries are allowed
 # to deform along their length.
 
-# Two unexpected things happen during this test.
-# First, there are very different solutions
-# for the first and second time step,
-# after which the evolution is more smooth. Secondly, the
-# velocity along the top boundary is not tangential
-# to the boundary. There is outflow at the right
-# side and inflow at the left side of the boundary.
 set Dimension                              = 2
 set End time                               = 1e6
 set Maximum time step                      = 2.5e5
@@ -130,6 +127,6 @@ end
 subsection Solver parameters
   subsection Stokes solver parameters
     set Linear solver tolerance = 1e-7
-    set Stokes solver type = block GMG
+    set Stokes solver type = block AMG
   end
 end
