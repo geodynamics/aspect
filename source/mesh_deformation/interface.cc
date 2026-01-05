@@ -607,7 +607,9 @@ namespace aspect
                                                        0,
                                                        tangential_mesh_deformation_boundary_indicators,
                                                        mesh_velocity_constraints,
-                                                       this->get_mapping());
+                                                       this->get_mapping(),
+                                                       /*use_manifold_for_normal=*/
+                                                       false);
 
       this->get_signals().post_compute_no_normal_flux_constraints(sim.triangulation);
 
@@ -732,7 +734,9 @@ namespace aspect
                                                        0,
                                                        tangential_mesh_deformation_boundary_indicators,
                                                        mesh_velocity_constraints,
-                                                       this->get_mapping());
+                                                       this->get_mapping(),
+                                                       /*use_manifold_for_normal=*/
+                                                       false);
       this->get_signals().post_compute_no_normal_flux_constraints(sim.triangulation);
 
       // Ask all plugins to add their constraints.
@@ -1123,7 +1127,9 @@ namespace aspect
                 user_level_constraints,
                 mapping,
                 refinement_edge_indices,
-                level);
+                level,
+                /*use_manifold_for_normal=*/
+                false);
 
               user_level_constraints.close();
               mg_constrained_dofs.add_user_constraints(level, user_level_constraints);

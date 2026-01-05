@@ -1401,7 +1401,9 @@ namespace aspect
                                                        introspection.component_indices.velocities[0],
                                                        boundary_velocity_manager.get_tangential_boundary_velocity_indicators(),
                                                        constraints,
-                                                       *mapping);
+                                                       *mapping,
+                                                       /*use_manifold_for_normal=*/
+                                                       false);
     }
 
 

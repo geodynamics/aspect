@@ -1620,7 +1620,9 @@ namespace aspect
                                                        0,
                                                        this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators(),
                                                        constraints_v,
-                                                       this->get_mapping());
+                                                       this->get_mapping(),
+                                                       /*use_manifold_for_normal=*/
+                                                       false);
 
       sim.prescribed_solution_manager.constrain_solution(constraints_v);
 

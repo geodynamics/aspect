@@ -1650,7 +1650,9 @@ namespace aspect
                                                                  0 /* first_vector_component */,
                                                                  this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators(),
                                                                  constraint,
-                                                                 mapping);
+                                                                 mapping,
+                                                                 /*use_manifold_for_normal=*/
+                                                                 false);
 
               }
 
