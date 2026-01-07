@@ -1615,21 +1615,20 @@ namespace aspect
       sim.compute_initial_velocity_boundary_constraints(constraints_v);
       sim.compute_current_velocity_boundary_constraints(constraints_v);
 
+      // Update the no-normal-flux constraints on the boundaries where
+      // tangential velocity is prescribed.
+      // If mesh deformation is enabled, we cannot use the manifold
+      // information to compute the normal vector, since the
+      // manifold may not represent the actual deformed shape
+      // of the boundary.
       VectorTools::compute_no_normal_flux_constraints(dof_handler_v,
                                                       /* first_vector_component= */
                                                       0,
                                                       this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators(),
                                                       constraints_v,
-                                                      this->get_mapping());
-
-
-      // Ideally, we would use the following argument to tell
-      // the function that we do not want to use manifold
-      // information when computing the no-normal-flux constraints.
-      // However, this currently breaks ~100 tests, so for now we
-      // leave it commented out.
-      /*use_manifold_for_normal=*/
-      // false
+                                                      this->get_mapping(),
+                                                      /*use_manifold_for_normal=*/
+                                                      !this->get_parameters().mesh_deformation_enabled);
 
       sim.prescribed_solution_manager.constrain_solution(constraints_v);
 
