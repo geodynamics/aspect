@@ -55,15 +55,8 @@
 # 55: Minimal value for composition water
 # 56: Maximal value for composition water
 # 57: Global mass for composition water
-# 58: System matrix memory consumption (MB) 
-# 59: Triangulation memory consumption (MB) 
-# 60: p4est memory consumption (MB) 
-# 61: DoFHandler memory consumption (MB) 
-# 62: AffineConstraints<double> memory consumption (MB) 
-# 63: Solution vector memory consumption (MB) 
-# 64: Peak virtual memory usage (VmPeak) (MB) 
-# 65: Visualization file name
-# 66: Number of advected particles
-# 67: Particle file name
-# 68: Particle CPO file name
-0 0.000000000000e+00 0.000000000000e+00 1 89 27 378 0 0 0 3 3 3 2.88675135e-01 5.00000000e-01 1.00000000e+09 1.00000000e+09 1.00000000e+09 5.27630079e+00 5.27630079e+00 5.27630079e+00 5.20309402e-01 5.20309402e-01 5.20309402e-01 3.47923711e-01 3.47923711e-01 3.47923711e-01 1.31766887e-01 1.31766887e-01 1.31766887e-01 1.73622715e+00 1.73622715e+00 1.73622715e+00 5.74325744e-01 5.74325744e-01 5.74325744e-01 3.80780388e-01 3.80780388e-01 3.80780388e-01 4.48938682e-02 4.48938682e-02 4.48938682e-02 5.43504380e+00 5.43504380e+00 5.43504380e+00 6.07858069e-01 6.07858069e-01 6.07858069e-01 3.10569263e-01 3.10569263e-01 3.10569263e-01 8.15726682e-02 8.15726682e-02 8.15726682e-02 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.3587 0.0082 0.0050 0.0032 0.0051 0.0092 561.1758 output-cpo_induced_anisotropic_viscosity/solution/solution-00000 1 output-cpo_induced_anisotropic_viscosity/particles/particles-00000 output-cpo_induced_anisotropic_viscosity/particles_cpo/CPO-00000 
+# 58: Visualization file name
+# 59: Number of advected particles
+# 60: Particle file name
+# 61: Particle CPO file name
+0 0.000000000000e+00 0.000000000000e+00 1 89 27 378 0 0 0 3 3 3 2.88675135e-01 5.00000000e-01 1.00000000e+09 1.00000000e+09 1.00000000e+09 5.27630079e+00 5.27630079e+00 5.27630079e+00 5.20309402e-01 5.20309402e-01 5.20309402e-01 3.47923711e-01 3.47923711e-01 3.47923711e-01 1.31766887e-01 1.31766887e-01 1.31766887e-01 1.73622715e+00 1.73622715e+00 1.73622715e+00 5.74325744e-01 5.74325744e-01 5.74325744e-01 3.80780388e-01 3.80780388e-01 3.80780388e-01 4.48938682e-02 4.48938682e-02 4.48938682e-02 5.43504380e+00 5.43504380e+00 5.43504380e+00 6.07858069e-01 6.07858069e-01 6.07858069e-01 3.10569263e-01 3.10569263e-01 3.10569263e-01 8.15726682e-02 8.15726682e-02 8.15726682e-02 0.00000000e+00 0.00000000e+00 0.00000000e+00 output-cpo_induced_anisotropic_viscosity/solution/solution-00000 1 output-cpo_induced_anisotropic_viscosity/particles/particles-00000 output-cpo_induced_anisotropic_viscosity/particles_cpo/CPO-00000 
