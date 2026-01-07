@@ -2658,12 +2658,17 @@ current_iterate = current_linearization_point;
     // If line search is disabled we will exit the loop in the first iteration.
     do
       {
-        // restore the iterate to its original point
-        current_linearization_point = original_iterate;
-
-        // Update the current linearization point with the appropriate step along the search direction
-        LinearAlgebra::BlockVector scaled_search_direction(search_direction);
-        scaled_search_direction *= step_length_factor;
+        // Compute a candidate solution based on the current search direction and step length
+        // and store it in a distributed vector.
+        current_iterate.block(pressure_block_index) = original_iterate.block(pressure_block_index);
+        current_iterate.block(velocity_block_index) = original_iterate.block(velocity_block_index);
+        
+        current_iterate.block(pressure_block_index).sadd(1.0,step_length_factor,search_direction.block(pressure_block_index));
+        current_iterate.block(velocity_block_index).sadd(1.0,step_length_factor,search_direction.block(velocity_block_index)); 
+        
+         // Update the ghosted vector current_linearization_point with the new candidate solution
+        current_linearization_point.block(pressure_block_index) = current_iterate.block(pressure_block_index);
+        current_linearization_point.block(velocity_block_index) = current_iterate.block(velocity_block_index);
 
         current_linearization_point.block(pressure_block_index) += scaled_search_direction.block(pressure_block_index);
         current_linearization_point.block(velocity_block_index) += scaled_search_direction.block(velocity_block_index);
