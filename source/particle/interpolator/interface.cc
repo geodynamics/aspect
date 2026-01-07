@@ -88,7 +88,12 @@ namespace aspect
                            Patterns::Selection (pattern_of_names + "|bilinear least squares"),
                            "Select one of the following models:\n\n"
                            +
-                           std::get<dim>(registered_plugins).get_description_string());
+                           std::get<dim>(registered_plugins).get_description_string()
+                           +
+                           "\n\n"
+                           "`bilinear least squares': "
+                           "Deprecated, now an alias for `linear least squares'. "
+                           "This alias will be removed in the future. ");
 
         std::get<dim>(registered_plugins).declare_parameters (prm);
       }
