@@ -39,14 +39,14 @@ namespace aspect
     CPO_AV_3D<dim>::set_assemblers(const SimulatorAccess<dim> &,
                                    Assemblers::Manager<dim> &assemblers) const
     {
+      // Search for the regular Stokes assembler and preconditioner assembler
+      // and replace them with the versions for anisotropic viscosity
       for (unsigned int i=0; i<assemblers.stokes_preconditioner.size(); ++i)
         {
           if (Plugins::plugin_type_matches<Assemblers::StokesPreconditioner<dim>>(*(assemblers.stokes_preconditioner[i])))
             assemblers.stokes_preconditioner[i] = std::make_unique<Assemblers::StokesPreconditionerAnisotropicViscosity<dim>> ();
         }
 
-      // Search for the regular Stokes assembler and preconditioner assembler
-      // and replace them with the versions for anisotropic viscosity
       for (unsigned int i=0; i<assemblers.stokes_system.size(); ++i)
         {
           if (Plugins::plugin_type_matches<Assemblers::StokesIncompressibleTerms<dim>>(*(assemblers.stokes_system[i])))
@@ -61,24 +61,52 @@ namespace aspect
     CPO_AV_3D<dim>::pseudoinverse(LAPACKFullMatrix<double> &A,
                                   LAPACKFullMatrix<double> &A_pinv) const
     {
-      // We assume the matrix A is a square matrix and get the number of rows(=columns) m
+      Assert(A.m() == A.n(),
+             ExcMessage("Pseudoinverse is only implemented for square matrices."));
+
+      // Get the number of matrix rows(=columns) m
       const unsigned int m = A.m();
 
       // Compute SVD: A = U * Sigma * V^T
-      LAPACKFullMatrix<double> U(m,m), VT(m,m), UT(m,m);
-      Vector<double> Sigma_pinv(m);
       A.compute_svd();
-      U = A.get_svd_u();
-      VT = A.get_svd_vt();
       const double tol = 1e-12;
+      Vector<double> Sigma_pinv(m);
       for (unsigned int i=0; i<m; ++i)
         {
           Sigma_pinv[i] = (std::abs(A.singular_value(i)) > tol ? 1.0/A.singular_value(i) : 0.0);
         }
 
       // A^+ = V * Sigma^+ * U^T
+      const LAPACKFullMatrix<double> U = A.get_svd_u();
+      const LAPACKFullMatrix<double> VT = A.get_svd_vt();
+      LAPACKFullMatrix<double> UT(m,m);
       U.transpose(UT);
       VT.Tmmult(A_pinv, UT, Sigma_pinv);
+    }
+
+
+
+    template<int dim>
+    Tensor<2,3>
+    CPO_AV_3D<dim>::euler_angles_to_rotation_matrix(const double phi1,
+                                                    const double theta,
+                                                    const double phi2) const
+    {
+      Tensor<2,3> rot_matrix;
+
+      rot_matrix[0][0] = std::cos(phi2)*std::cos(phi1) - std::cos(theta)*std::sin(phi1)*std::sin(phi2);
+      rot_matrix[0][1] = -std::cos(phi2)*std::sin(phi1) - std::cos(theta)*std::cos(phi1)*std::sin(phi2);
+      rot_matrix[0][2] = std::sin(phi2)*std::sin(theta);
+      rot_matrix[1][0] = std::sin(phi2)*std::cos(phi1) + std::cos(theta)*std::sin(phi1)*std::cos(phi2);
+      rot_matrix[1][1] = -std::sin(phi2)*std::sin(phi1) + std::cos(theta)*std::cos(phi1)*std::cos(phi2);
+      rot_matrix[1][2] = -std::cos(phi2)*std::sin(theta);
+      rot_matrix[2][0] = std::sin(theta)*std::sin(phi1);
+      rot_matrix[2][1] = std::sin(theta)*std::cos(phi1);
+      rot_matrix[2][2] = std::cos(theta);
+
+      AssertThrow(rot_matrix[2][2] <= 1.0, ExcMessage("Invalid rotation matrix: cos(theta) > 1"));
+
+      return rot_matrix;
     }
 
 
@@ -113,29 +141,6 @@ namespace aspect
 
 
 
-    template<int dim>
-    Tensor<2,3>
-    CPO_AV_3D<dim>::euler_angles_to_rotation_matrix(double phi1, double theta, double phi2)
-    {
-      Tensor<2,3> rot_matrix;
-      // This conversion from euler angles to rotation matrix is different from the function with the same name
-      // defined in utilities.cc. Both define the conversion with R3*R2*R1, while our R3 and R1 are the transpose
-      // of those defined in utilities.cc. This change is made to fit our negative euler angle values.
-      rot_matrix[0][0] = std::cos(phi2)*std::cos(phi1) - std::cos(theta)*std::sin(phi1)*std::sin(phi2);
-      rot_matrix[0][1] = -std::cos(phi2)*std::sin(phi1) - std::cos(theta)*std::cos(phi1)*std::sin(phi2);
-      rot_matrix[0][2] = std::sin(phi2)*std::sin(theta);
-      rot_matrix[1][0] = std::sin(phi2)*std::cos(phi1) + std::cos(theta)*std::sin(phi1)*std::cos(phi2);
-      rot_matrix[1][1] = -std::sin(phi2)*std::sin(phi1) + std::cos(theta)*std::cos(phi1)*std::cos(phi2);
-      rot_matrix[1][2] = -std::cos(phi2)*std::sin(theta);
-      rot_matrix[2][0] = std::sin(theta)*std::sin(phi1);
-      rot_matrix[2][1] = std::sin(theta)*std::cos(phi1);
-      rot_matrix[2][2] = std::cos(theta);
-      AssertThrow(rot_matrix[2][2] <= 1.0, ExcMessage("Invalid rotation matrix: cos(theta) > 1"));
-      return rot_matrix;
-    }
-
-
-
     template <>
     void
     CPO_AV_3D<2>::evaluate (const MaterialModel::MaterialModelInputs<2> &,
@@ -143,6 +148,7 @@ namespace aspect
     {
       Assert (false, ExcNotImplemented());
     }
+
 
 
     template <>
@@ -272,7 +278,7 @@ namespace aspect
               A[5][5] = 2.0/3.0*N;
 
               // A is the anisotropic tensor for the fluidity. We need its inverse, but it's not invertible due to singularity.
-              // Thus we compute the Moore-Penrose pseudo inverse using SVD, with the compute_svd function from deal.ii (lapack)
+              // Thus we compute the Moore-Penrose pseudo inverse using SVD
               LAPACKFullMatrix<double> A_mat_lapack(6, 6), pinvA_mat_lapack(6,6);
               for (unsigned int ai=0; ai<6; ++ai)
                 {
@@ -473,7 +479,6 @@ namespace aspect
       {
         prm.enter_subsection("CPO-induced Anisotropic Viscosity");
         {
-
           equation_of_state.parse_parameters (prm);
           eta = prm.get_double("Reference viscosity");
           min_strain_rate = prm.get_double("Minimum strain rate");

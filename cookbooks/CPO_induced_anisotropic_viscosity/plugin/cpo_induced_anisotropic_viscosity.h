@@ -39,8 +39,6 @@ namespace aspect
       public:
         void initialize() override;
 
-        static Tensor<2,3> euler_angles_to_rotation_matrix(double phi1, double theta, double phi2);
-
         void evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                        MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
@@ -105,6 +103,15 @@ namespace aspect
          */
         void pseudoinverse(LAPACKFullMatrix<double> &A,
                            LAPACKFullMatrix<double> &A_pinv) const;
+
+        /**
+         * This conversion from euler angles to rotation matrix is different from the function with the same name
+         * defined in utilities.cc. Both define the conversion with R3*R2*R1, while our R3 and R1 are the transpose
+         * of those defined in utilities.cc. This change is made to fit our negative euler angle values.
+         */
+        Tensor<2,3> euler_angles_to_rotation_matrix(const double phi1,
+                                                    const double theta,
+                                                    const double phi2) const;
 
     };
   }

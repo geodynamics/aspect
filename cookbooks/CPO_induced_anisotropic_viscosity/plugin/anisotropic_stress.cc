@@ -76,7 +76,7 @@ namespace aspect
 
             const double eta = out.viscosities[q];
 
-            SymmetricTensor<2,dim> aniso_stress =
+            const SymmetricTensor<2,dim> aniso_stress =
               2. * eta * deviatoric_strain_rate * anisotropic_viscosity->stress_strain_directors[q];
 
             for (unsigned int d=0; d<dim; ++d)
