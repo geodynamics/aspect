@@ -2648,7 +2648,9 @@ namespace aspect
 
     // Immutable copy of the original iterate for restoration
     const LinearAlgebra::BlockVector original_iterate(current_linearization_point);
-
+// Create a fully distributed copy of the current_linearization_point
+LinearAlgebra::BlockVector current_iterate(system_rhs);
+current_iterate = current_linearization_point;
     double step_length_factor = 1.0;
     unsigned int line_search_iteration = 0;
 
