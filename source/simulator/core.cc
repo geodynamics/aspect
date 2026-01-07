@@ -1396,14 +1396,20 @@ namespace aspect
 
 
       // do the same for no-normal-flux boundaries
-      VectorTools::compute_no_normal_flux_constraints (dof_handler,
-                                                       /* first_vector_component= */
-                                                       introspection.component_indices.velocities[0],
-                                                       boundary_velocity_manager.get_tangential_boundary_velocity_indicators(),
-                                                       constraints,
-                                                       *mapping,
-                                                       /*use_manifold_for_normal=*/
-                                                       false);
+      VectorTools::compute_no_normal_flux_constraints(dof_handler,
+                                                      /* first_vector_component= */
+                                                      introspection.component_indices.velocities[0],
+                                                      boundary_velocity_manager.get_tangential_boundary_velocity_indicators(),
+                                                      constraints,
+                                                      *mapping);
+
+      // Ideally, we would use the following argument to tell
+      // the function that we do not want to use manifold
+      // information when computing the no-normal-flux constraints.
+      // However, this currently breaks ~100 tests, so for now we
+      // leave it commented out.
+      /*use_manifold_for_normal=*/
+      // false
     }
 
 

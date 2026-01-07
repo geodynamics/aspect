@@ -1646,14 +1646,19 @@ namespace aspect
 
             if (this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators().size() > 0)
               {
-                VectorTools::compute_no_normal_flux_constraints (dof_handler,
-                                                                 0 /* first_vector_component */,
-                                                                 this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators(),
-                                                                 constraint,
-                                                                 mapping,
-                                                                 /*use_manifold_for_normal=*/
-                                                                 false);
+                VectorTools::compute_no_normal_flux_constraints(dof_handler,
+                                                                0 /* first_vector_component */,
+                                                                this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators(),
+                                                                constraint,
+                                                                mapping);
 
+                // Ideally, we would use the following argument to tell
+                // the function that we do not want to use manifold
+                // information when computing the no-normal-flux constraints.
+                // However, this currently breaks ~100 tests, so for now we
+                // leave it commented out.
+                /*use_manifold_for_normal=*/
+                // false
               }
 
             DoFTools::make_hanging_node_constraints(dof_handler, constraint);
