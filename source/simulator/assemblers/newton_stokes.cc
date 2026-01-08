@@ -459,9 +459,10 @@ namespace aspect
                       data.local_matrix(i,j) += (-eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
                                                  -
                                                  derivative_scaling_factor * alpha * two_thirds
-                                                 * ((symmetrize ? (div_u_times_div_phi_u[i] * deta_deps_times_grads_phi_u[j] +
-                                                                   div_u_times_div_phi_u[j] * deta_deps_times_grads_phi_u[i]) * 0.5
-                                                                : div_u_times_div_phi_u[i] * deta_deps_times_grads_phi_u[j]))
+                                                 * ((symmetrize ?
+                                                     (div_u_times_div_phi_u[i] * deta_deps_times_grads_phi_u[j] +
+                                                      div_u_times_div_phi_u[j] * deta_deps_times_grads_phi_u[i]) * 0.5 :
+                                                     div_u_times_div_phi_u[i] * deta_deps_times_grads_phi_u[j]))
                                                 )
                                                 * JxW;
                     }
@@ -978,9 +979,10 @@ namespace aspect
                         data.local_matrix(i,j) += (-eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
                                                    -
                                                    derivative_scaling_factor * two_thirds * alpha
-                                                   * ((symmetrize ? (div_u_times_div_phi_u[i] * deta_deps_times_grads_phi_u[j] +
-                                                                     div_u_times_div_phi_u[j] * deta_deps_times_grads_phi_u[i]) * 0.5
-                                                                  : div_u_times_div_phi_u[i] * deta_deps_times_grads_phi_u[j])
+                                                   * ((symmetrize ?
+                                                       (div_u_times_div_phi_u[i] * deta_deps_times_grads_phi_u[j] +
+                                                        div_u_times_div_phi_u[j] * deta_deps_times_grads_phi_u[i]) * 0.5 :
+                                                       div_u_times_div_phi_u[i] * deta_deps_times_grads_phi_u[j])
                                                       +
                                                       div_u_times_div_phi_u[i] * deta_dp_times_phi_p[j] * pressure_scaling)
                                                   )

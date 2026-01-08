@@ -215,14 +215,14 @@ namespace aspect
                 deta_dp_times_p += cell_data->newton_factor_wrt_pressure_table(cell,q) * val_p;
                 if (cell_data->symmetrize_newton_system)
                   {
-                    // The symmetrization is more complicated than it looks: 
+                    // The symmetrization is more complicated than it looks:
                     // The averaged Newton term is expressed as
                     // 2 (\sum_q JxW_q symgrad_phi_Iq : epsilon_q) (\sum_r w_r deta_depsilon_r : symgrad_phi_Jr)
                     // when symmetrized, it becomes
                     // (\sum_q JxW_q symgrad_phi_Iq : epsilon_q) (\sum_r w_r deta_depsilon_r : symgrad_phi_Jr) +
                     // (\sum_r w_r symgrad_phi_Ir : deta_depsilon_r) (\sum_q JxW_q epsilon_q : symgrad_phi_Jq)
-                    // Let us focus on the second term. In the matrix-free framework, we should submit a 
-                    // symmetric tensor for each quadrature point q to be multiplied by the test function 
+                    // Let us focus on the second term. In the matrix-free framework, we should submit a
+                    // symmetric tensor for each quadrature point q to be multiplied by the test function
                     // symgrad_phi_Iq and the quadrature weight JxW_q. In order to do so, we first rewrite the
                     // second term by swapping q and r:
                     // \sum_q\sum_r JxW_r w_q (symgrad_phi_Iq : deta_depsilon_q) (epsilon_r : symgrad_phi_Jr)

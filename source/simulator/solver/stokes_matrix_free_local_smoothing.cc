@@ -574,7 +574,7 @@ namespace aspect
                                                 1.0;
 
                           active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]
-                            = newton_derivative_scaling_factor * derivatives->viscosity_derivative_wrt_pressure[q] 
+                            = newton_derivative_scaling_factor * derivatives->viscosity_derivative_wrt_pressure[q]
                               * (active_cell_data.average_newton_factors ? derivatives->viscosity_derivative_averaging_weights[q] : 1.0);
                           Assert(std::isfinite(active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]),
                                  ExcMessage("active_cell_data.newton_factor_wrt_pressure_table is not finite: "
@@ -584,8 +584,8 @@ namespace aspect
                                             + (active_cell_data.average_newton_factors ?
                                                ", derivatives->viscosity_derivative_averaging_weights[q] = "
                                                + std::to_string(derivatives->viscosity_derivative_averaging_weights[q])
-                                               + ", and newton_derivative_scaling_factor = " 
-                                               + std::to_string(newton_derivative_scaling_factor) : 
+                                               + ", and newton_derivative_scaling_factor = "
+                                               + std::to_string(newton_derivative_scaling_factor) :
                                                "")));
 
                           for (unsigned int m=0; m<dim; ++m)
