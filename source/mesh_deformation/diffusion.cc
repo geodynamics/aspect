@@ -174,7 +174,9 @@ namespace aspect
                                                        /* first_vector_component= */
                                                        0,
                                                        all_tangential_boundaries,
-                                                       matrix_constraints, this->get_mapping());
+                                                       matrix_constraints, this->get_mapping(),
+                                                       /*use_manifold_for_normal=*/
+                                                       false);
 
       matrix_constraints.close();
 
