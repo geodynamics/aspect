@@ -106,6 +106,9 @@ namespace aspect
     class ExternalToolInterface : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
+        /**
+         * Main routine handling the mesh deformation
+         */
         virtual
         void
         compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
@@ -184,10 +187,15 @@ namespace aspect
         LinearAlgebra::Vector
         interpolate_external_velocities_to_surface_support_points (const std::vector<Tensor<1,dim>> &velocities) const;
 
-      protected:
-
+        /**
+         * The list of evaluation points owned by the current process. These are the points where the
+         * external tool will receive the ASPECT solution values and return the updated velocities.
+         */
         std::vector<Point<dim>> evaluation_points;
 
+        /**
+         * deal.II RemotePointEvaluation object used to do point evaluation in the evaluation points.
+         */
         std::unique_ptr<Utilities::MPI::RemotePointEvaluation<dim, dim>> remote_point_evaluator;
 
         /**
@@ -201,10 +209,19 @@ namespace aspect
         };
 
         /**
-         * A vector to store a map between Dof indices and evaluation points
+         * A vector to store a map between Dof indices and evaluation points.
+         *
+         * The map will contain an entry for each DoF on the surface of the ASPECT mesh and contains
+         * the index of the evaluation point that is closest to the DoF. As each support point has
+         * several components (x,y,z velocity), the map contains one entry for each component.
+         *
+         * In a parallel computation, this map only contains entries for evaluation points owned by the
+         * current process. Note that the DoF indices are not necessarily locally owned.
+         *
+         * This map is used in interpolate_external_velocities_to_surface_support_points() to copy
+         * external velocities to each surface DoF from the closest evaluation point.
          */
         std::vector<dof_to_eval_point_data> map_dof_to_eval_point;
-
     };
   }
 }
