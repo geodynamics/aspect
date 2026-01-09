@@ -1,0 +1,135 @@
+# This test is a modified version of
+# function_mesh_deformation_tangential_mesh_velocity.prm
+
+# The simulation starts as a box of 200 km width and 50 km height.
+# A parabolic shear velocity boundary condition is applied at the
+# bottom boundary. The sides and top boundaries are intended to
+# be free slip. Gravity is set to zero, and the temperature
+# is constant throughout the domain.
+
+# The mesh is deformed by prescribing a mesh velocity at the top
+# boundary that goes from +10 km per million year on the left side
+# to -10 km per million year on the right side, thus keeping the
+# overall area of the domain fixed.
+# The meshes at the left and right boundaries are allowed
+# to deform along their length.
+
+# Two unexpected things happen during this test.
+# First, there are very different solutions
+# for the first and second time step,
+# after which the evolution is more smooth. Secondly, the
+# velocity along the top boundary is not tangential
+# to the boundary. There is outflow at the right
+# side and inflow at the left side of the boundary.
+set Dimension                              = 2
+set End time                               = 1e6
+set Maximum time step                      = 2.5e5
+set Use years instead of seconds           = true
+set Adiabatic surface temperature          = 1613
+set CFL number                             = 1.0
+set Pressure normalization                 = surface
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 2e5
+    set X repetitions = 2
+    set Y extent = 5e4
+  end
+
+  subsection Initial topography model
+    set Model name = zero topography # use 'function' to check the result we would expect
+
+    subsection Function
+      set Variable names = x,y
+      set Function constants = m_per_Myr=10000., halfwidth=1e5, Myr_per_second=3.168808781e-14
+      set Function expression = -m_per_Myr*(x-halfwidth)/halfwidth
+    end
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top, right, left
+  set List of model names = initial temperature
+end
+
+subsection Initial temperature model
+  set Model name = adiabatic
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top, left, right
+  set Prescribed velocity boundary indicators = bottom: function
+
+  # Prescribe a bottom boundary velocity in m/s equal to 100000 m/My
+  subsection Function
+    set Variable names = x,z
+    set Function constants = m_per_Myr=1.e5, halfwidth=1e5, Myr_per_second=3.168808781e-14
+    set Function expression = m_per_Myr*(1 - (x/halfwidth - 1)^2)*Myr_per_second;0
+  end
+
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: boundary function # remove for the test with initial topography
+
+  # The mesh on the left and right boundary is allowed to move.
+  set Additional tangential mesh velocity boundary indicators = left,right # remove for the test with initial topography
+
+  # Prescribe a boundary velocity in m/s that changes linearly from
+  # +m_per_Myr on the left to -m_per_Myr on the right
+  subsection Boundary function
+    set Variable names      = x,y,t
+    set Function constants = m_per_Myr=10000., halfwidth=1e5, Myr_per_second=3.168808781e-14
+    set Function expression = 0;  -m_per_Myr*(x-halfwidth)/halfwidth*Myr_per_second
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0.
+  end
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density     = 3300
+    set Thermal conductivity  = 3.3
+    set Thermal expansion coefficient  = 3e-5
+    set Reference specific heat        = 1200
+    set Viscosity             = 1e23
+    set Reference temperature = 1613
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+  set Time steps between mesh refinement = 0
+  set Strategy                           = strain rate, topography
+end
+
+subsection Postprocess
+  set List of postprocessors = topography, visualization, velocity statistics, temperature statistics, heat flux statistics
+
+  subsection Visualization
+    set Output mesh displacement = true
+    set Output mesh velocity = true
+    set Output undeformed mesh = false
+    set Interpolate output = true
+    set Time between graphical output = 0
+    set List of output variables =  stress second invariant
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7
+    set Stokes solver type = block GMG
+  end
+end
