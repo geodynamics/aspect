@@ -184,6 +184,44 @@ namespace aspect
         virtual
         void
         parse_parameters (ParameterHandler &prm);
+
+        /**
+         * Save the state of this object to the argument given to this
+         * function. This function is in support of checkpoint/restart
+         * functionality.
+         *
+         * Derived classes can implement this function and should store their
+         * state in a string that is deposited under a key in the map through
+         * which the respective class can later find the status again when the
+         * program is restarted. A legitimate key to store data under is
+         * <code>typeid(*this).name()</code>. It is up to derived classes to
+         * decide how they want to encode their state.
+         *
+         * The default implementation of this function does nothing, i.e., it
+         * represents a stateless object for which nothing needs to be stored
+         * at checkpoint time and nothing needs to be restored at restart
+         * time.
+         *
+         * @param[in,out] status_strings The object into which implementations
+         * in derived classes can place their status under a key that they can
+         * use to retrieve the data.
+         */
+        virtual
+        void save (std::map<std::string, std::string> &status_strings) const;
+
+        /**
+         * Restore the state of the object by looking up a description of the
+         * state in the passed argument under the same key under which it was
+         * previously stored.
+         *
+         * The default implementation does nothing.
+         *
+         * @param[in] status_strings The object from which the status will be
+         * restored by looking up the value for a key specific to this derived
+         * class.
+         */
+        virtual
+        void load (const std::map<std::string, std::string> &status_strings);
     };
 
 
@@ -272,6 +310,40 @@ namespace aspect
         const std::vector<std::string> &
         get_active_plugin_names () const;
 
+        /**
+         * Write the data of this object to a stream for the purpose of
+         * serialization.
+         */
+        template <class Archive>
+        void save (Archive &ar,
+                   const unsigned int version) const;
+
+        /**
+         * Manager classes are also plugins. The InterfaceBase class
+         * that is common to all plugins has another save() function
+         * that would be hidden by the one above. Make sure that both
+         * remain visible.
+         */
+        using InterfaceBase::save;
+
+        /**
+           * Read the data of this object from a stream for the purpose of
+           * serialization.
+           */
+        template <class Archive>
+        void load (Archive &ar,
+                   const unsigned int version);
+
+        /**
+         * Manager classes are also plugins. The InterfaceBase class
+         * that is common to all plugins has another load() function
+         * that would be hidden by the one above. Make sure that both
+         * remain visible.
+         */
+        using InterfaceBase::load;
+
+        BOOST_SERIALIZATION_SPLIT_MEMBER()
+
       protected:
         /**
          * A list of plugin objects that have been requested in the
@@ -359,6 +431,40 @@ namespace aspect
             }
         }
     }
+
+
+
+    template <typename InterfaceType>
+    template <class Archive>
+    void ManagerBase<InterfaceType>::save (Archive &ar,
+                                           const unsigned int) const
+    {
+      // let all the postprocessors save their data in a map and then
+      // serialize that
+      std::map<std::string,std::string> saved_text;
+      for (const auto &p : plugin_objects)
+        p->save (saved_text);
+
+      ar &saved_text;
+    }
+
+
+    template <typename InterfaceType>
+    template <class Archive>
+    void ManagerBase<InterfaceType>::load (Archive &ar,
+                                           const unsigned int)
+    {
+      // get the map back out of the stream; then let the postprocessors
+      // that we currently have get their data from there. note that this
+      // may not be the same set of postprocessors we had when we saved
+      // their data
+      std::map<std::string,std::string> saved_text;
+      ar &saved_text;
+
+      for (auto &p : plugin_objects)
+        p->load (saved_text);
+    }
+
 
 
     template <typename InterfaceType>
@@ -907,6 +1013,13 @@ namespace aspect
         // read when looking over stuff visually
         output_stream << std::endl;
       }
+
+
+
+      // Add definition for plugins member:
+      template <typename InterfaceClass>
+      inline std::list<typename PluginList<InterfaceClass>::PluginInfo> *PluginList<InterfaceClass>::plugins = nullptr;
+
 
 
       /**

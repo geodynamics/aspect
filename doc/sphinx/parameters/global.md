@@ -110,7 +110,7 @@ Units: \%.
 ### __Parameter name:__ Nonlinear solver scheme
 **Default value:** single Advection, single Stokes
 
-**Pattern:** [Selection no Advection, no Stokes|no Advection, single Stokes|no Advection, single Stokes first timestep only|first timestep only, single Stokes|no Advection, iterated Stokes|no Advection, iterated defect correction Stokes|single Advection, no Stokes|single Advection, single Stokes|single Advection, iterated Stokes|single Advection, iterated defect correction Stokes|single Advection, iterated Newton Stokes|iterated Advection and Stokes|iterated Advection and defect correction Stokes|iterated Advection and Newton Stokes ]
+**Pattern:** [Selection no Advection, no Stokes|no Advection, single Stokes|no Advection, single Stokes first timestep only|first timestep only, single Stokes|no Advection, iterated Stokes|no Advection, iterated defect correction Stokes|single Advection, no Stokes|single Advection, single Stokes|single Advection, iterated Stokes|single Advection, iterated defect correction Stokes|single Advection, iterated Newton Stokes|iterated Advection, no Stokes|iterated Advection and Stokes|iterated Advection and defect correction Stokes|iterated Advection and Newton Stokes ]
 
 **Documentation:** The kind of scheme used to resolve the nonlinearity in the system of equations:
 
@@ -124,6 +124,7 @@ The &lsquo;single Advection, single Stokes&rsquo; solver scheme performs no nonl
 The &lsquo;single Advection, iterated Stokes&rsquo; scheme solves the temperature and composition equation once at the beginning of each time step and then iterates out the solution of the Stokes equation.
 The &lsquo;single Advection, iterated defect correction Stokes&rsquo; scheme solves the temperature and composition equations once at the beginning of each time step and then iterates out the solution of the Stokes equation, using defect correction Picard iterations for the Stokes system.
 The &lsquo;single Advection, iterated Newton Stokes&rsquo; scheme solves the temperature and composition equations once at the beginning of each time step and then iterates out the solution of the Stokes equation, using Newton iterations for the Stokes system.
+The &lsquo;iterated Advection, no Stokes&rsquo; scheme iterates the temperature and other advection equations, and instead of solving for the Stokes system, a prescribed velocity and pressure are used. This is useful for kinematic models and advection benchmarks with nonlinear processes in the advection equations.
 The &lsquo;iterated Advection and Stokes&rsquo; scheme iterates out the nonlinearity by alternating the solution of the temperature, composition and Stokes systems.
 The &lsquo;iterated Advection and defect correction Stokes&rsquo; scheme iterates by alternating the solution of the temperature, composition and Stokes equations, using Picard iterations for the temperature and composition, and defect correction Picard iterations for the Stokes system.
 The &lsquo;iterated Advection and Newton Stokes&rsquo; scheme iterates by alternating the solution of the temperature, composition and Stokes equations, using Picard iterations for the temperature and composition, and Newton iterations for the Stokes system.

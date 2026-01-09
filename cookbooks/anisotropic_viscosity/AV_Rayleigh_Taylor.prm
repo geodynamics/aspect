@@ -62,7 +62,7 @@ subsection Initial composition model
 
   subsection Function
     set Variable names      = x,z
-    set Function constants  = pi=3.1415926;
+    set Function constants  = pi=3.1415926
     set Function expression = 0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02)); \
                             (0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02))) > 0.8 ? sin(45*pi/180) : 0.0; \
                             (0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02))) > 0.8 ? cos(45*pi/180) : 0.0;

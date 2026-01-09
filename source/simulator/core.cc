@@ -125,12 +125,15 @@ namespace aspect
 
     template <int dim>
     typename Triangulation<dim>::MeshSmoothing
-    smoothing_flags()
+    smoothing_flags(const bool global_coarsening)
     {
-      return static_cast<typename Triangulation<dim>::MeshSmoothing>(
-               Triangulation<dim>::limit_level_difference_at_vertices |
-               Triangulation<dim>::smoothing_on_refinement | Triangulation<dim>::smoothing_on_coarsening
-             );
+      if (global_coarsening)
+        return Triangulation<dim>::limit_level_difference_at_vertices;
+      else
+        return static_cast<typename Triangulation<dim>::MeshSmoothing>(
+                 Triangulation<dim>::limit_level_difference_at_vertices |
+                 Triangulation<dim>::smoothing_on_refinement | Triangulation<dim>::smoothing_on_coarsening
+               );
     }
 
 
@@ -139,14 +142,15 @@ namespace aspect
     typename parallel::distributed::Triangulation<dim>::Settings
     settings(const Parameters<dim> &parameters)
     {
-      return (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg ||
-              parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::default_solver)
-             ?
-             static_cast<typename parallel::distributed::Triangulation<dim>::Settings>
-             (parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning |
-              parallel::distributed::Triangulation<dim>::construct_multigrid_hierarchy)
-             :
-             parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning;
+      // Only local smoothing GMG needs a mesh hierarchy to be constructed:
+      if ((parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg ||
+           parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::default_solver)
+          && parameters.stokes_gmg_type == Parameters<dim>::StokesGMGType::local_smoothing)
+        return static_cast<typename parallel::distributed::Triangulation<dim>::Settings>
+               (parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning |
+                parallel::distributed::Triangulation<dim>::construct_multigrid_hierarchy);
+      else
+        return parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning;
     }
   }
 
@@ -231,7 +235,7 @@ namespace aspect
     nonlinear_iteration (numbers::invalid_unsigned_int),
     nonlinear_solver_failures (0),
 
-    triangulation (mpi_communicator, smoothing_flags<dim>(), settings(parameters)),
+    triangulation (mpi_communicator, smoothing_flags<dim>(parameters.stokes_gmg_type == Parameters<dim>::StokesGMGType::global_coarsening), settings(parameters)),
 
     mapping(construct_mapping<dim>(*geometry_model,*initial_topography_model)),
 
@@ -266,7 +270,7 @@ namespace aspect
       }
 
     // now that we have output set up, we can start timer sections
-    TimerOutput::Scope timer (computing_timer, "Initialization");
+    computing_timer.enter_subsection("Initialization");
 
 
     // if any plugin wants access to the Simulator by deriving from SimulatorAccess, initialize it and
@@ -373,18 +377,22 @@ namespace aspect
     boundary_velocity_manager.initialize_simulator (*this);
     boundary_velocity_manager.parse_parameters (prm);
 
+    prescribed_solution_manager.initialize_simulator (*this);
+    prescribed_solution_manager.parse_parameters (prm);
+
     // Make sure we only have a prescribed Stokes plugin if needed
-    if (parameters.nonlinear_solver == NonlinearSolver::single_Advection_no_Stokes)
+    if (parameters.nonlinear_solver == NonlinearSolver::single_Advection_no_Stokes ||
+        parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_no_Stokes)
       {
         AssertThrow(prescribed_stokes_solution.get()!=nullptr,
-                    ExcMessage("For the 'single Advection, no Stokes' solver scheme you need to provide a Stokes plugin!")
+                    ExcMessage("For the selected nonlinear solver scheme you need to provide a prescribed Stokes plugin!")
                    );
       }
     else
       {
         AssertThrow(prescribed_stokes_solution.get()==nullptr,
                     ExcMessage("The prescribed stokes plugin you selected only works with the solver "
-                               "scheme 'single Advection, no Stokes'.")
+                               "scheme 'single Advection, no Stokes' or 'iterated Advection, no Stokes'.")
                    );
       }
 
@@ -582,6 +590,8 @@ namespace aspect
     // now that all member variables have been set up, also
     // connect the functions that will actually do the assembly
     set_assemblers();
+
+    computing_timer.leave_subsection("Initialization");
   }
 
 
@@ -647,12 +657,14 @@ namespace aspect
     // constraints. Of course we need to force assembly too.
     if (rebuild_sparsity_and_matrices)
       {
-        TimerOutput::Scope timer (computing_timer, "Setup matrices");
+        computing_timer.enter_subsection("Setup matrices");
 
         rebuild_sparsity_and_matrices = false;
         setup_system_matrix (introspection.index_sets.system_partitioning);
         setup_system_preconditioner (introspection.index_sets.system_partitioning);
         rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+
+        computing_timer.leave_subsection("Setup matrices");
       }
 
     // notify different system components that we started the next time step
@@ -787,8 +799,11 @@ namespace aspect
     if (parameters.include_melt_transport)
       melt_handler->add_current_constraints (new_current_constraints);
 
-    // let plugins add more constraints if they so choose, then close the
-    // constraints object
+    // Update and let the prescribed solution plugins constrain parts of the solution:
+    prescribed_solution_manager.update();
+    prescribed_solution_manager.constrain_solution(new_current_constraints);
+
+    // Finally, let plugins add more constraints if they so choose:
     signals.post_constraints_creation(*this, new_current_constraints);
 
     new_current_constraints.close();
@@ -864,6 +879,7 @@ namespace aspect
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_defect_correction_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Newton_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_no_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_defect_correction_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Newton_Stokes:
@@ -903,6 +919,7 @@ namespace aspect
 
           case Parameters<dim>::NonlinearSolver::Kind::no_Advection_no_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_no_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_no_Stokes:
             return false;
         }
       Assert(false, ExcNotImplemented());
@@ -1429,7 +1446,7 @@ namespace aspect
   {
     signals.edit_parameters_pre_setup_dofs(*this, parameters);
 
-    TimerOutput::Scope timer (computing_timer, "Setup dof systems");
+    computing_timer.enter_subsection("Setup dof systems");
 
     dof_handler.distribute_dofs(finite_element);
 
@@ -1538,6 +1555,8 @@ namespace aspect
     // Setup matrix-free dofs
     if (stokes_matrix_free)
       stokes_matrix_free->setup_dofs();
+
+    computing_timer.leave_subsection("Setup dof systems");
   }
 
 
@@ -1610,7 +1629,7 @@ namespace aspect
   void
   Simulator<dim>::postprocess ()
   {
-    TimerOutput::Scope timer (computing_timer, "Postprocessing");
+    computing_timer.enter_subsection("Postprocessing");
     pcout << "   Postprocessing:" << std::endl;
 
     // run all the postprocessing routines and then write
@@ -1644,6 +1663,8 @@ namespace aspect
 
     // finally, write the entire set of current results to disk
     output_statistics();
+
+    computing_timer.leave_subsection("Postprocessing");
   }
 
 
@@ -1668,7 +1689,7 @@ namespace aspect
 
 
     {
-      TimerOutput::Scope timer (computing_timer, "Refine mesh structure, part 1");
+      computing_timer.enter_subsection("Refine mesh structure, part 1");
 
       Vector<float> estimated_error_per_cell (triangulation.n_active_cells());
       mesh_refinement_manager.execute (estimated_error_per_cell);
@@ -1768,6 +1789,7 @@ namespace aspect
       if (!mesh_changed)
         {
           pcout << "Skipping mesh refinement, because the mesh did not change.\n" << std::endl;
+          computing_timer.leave_subsection("Refine mesh structure, part 1");
           return;
         }
 
@@ -1779,12 +1801,14 @@ namespace aspect
       triangulation.execute_coarsening_and_refinement ();
       if (MappingQCache<dim> *map = dynamic_cast<MappingQCache<dim>*>(&(*mapping)))
         map->initialize(MappingQGeneric<dim>(4), triangulation);
+
+      computing_timer.leave_subsection("Refine mesh structure, part 1");
     } // leave the timed section
 
     setup_dofs ();
 
     {
-      TimerOutput::Scope timer (computing_timer, "Refine mesh structure, part 2");
+      computing_timer.enter_subsection("Refine mesh structure, part 2");
 
       LinearAlgebra::BlockVector distributed_system;
       LinearAlgebra::BlockVector old_distributed_system;
@@ -1869,6 +1893,8 @@ namespace aspect
 
       // calculate global volume after refining mesh
       global_volume = GridTools::volume (triangulation, *mapping);
+
+      computing_timer.leave_subsection("Refine mesh structure, part 2");
     }
   }
 
@@ -1961,6 +1987,12 @@ namespace aspect
             case NonlinearSolver::single_Advection_iterated_Newton_Stokes:
             {
               solve_single_advection_iterated_newton_stokes(/*use_newton_iterations =*/ true);
+              break;
+            }
+
+            case NonlinearSolver::iterated_Advection_no_Stokes:
+            {
+              solve_iterated_advection_no_stokes();
               break;
             }
 
@@ -2112,7 +2144,7 @@ namespace aspect
 
     if (parameters.resume_computation == false)
       {
-        TimerOutput::Scope timer (computing_timer, "Setup initial conditions");
+        computing_timer.enter_subsection("Setup initial conditions");
 
         timestep_number           = 0;
         time_step = old_time_step = 0;
@@ -2131,6 +2163,8 @@ namespace aspect
 
             signals.post_set_initial_state (*this);
           }
+
+        computing_timer.leave_subsection("Setup initial conditions");
       }
 
     // Start the principal loop over time steps. At this point, everything

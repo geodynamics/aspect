@@ -112,6 +112,14 @@ indent_file() {
   file="${1}"
   tmpfile="$(mktemp "${TMPDIR}/$(basename "$1").tmp.XXXXXXXX")"
 
+  # Ensure exactly one trailing newline before astyle
+  perl -0pe 's/\n+$//' "${file}" > "${file}.tmp" && echo >> "${file}.tmp"
+  if ! diff -q "${file}" "${file}.tmp" >/dev/null; then
+    mv "${file}.tmp" "${file}"
+  else
+    rm "${file}.tmp"
+  fi
+
   perl -p -e 's/(?<=>)>/ >/g;' <"${file}" \
       | "${astyle}" --options=contrib/utilities/astyle.rc \
       | perl -p -e 's/(?<=>) >/>/g;' \

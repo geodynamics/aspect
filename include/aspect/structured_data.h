@@ -685,12 +685,6 @@ namespace aspect
         std::vector<std::unique_ptr<aspect::Utilities::StructuredDataLookup<dim-1>>> lookups;
 
       private:
-
-        /**
-         * Directory in which the data files are present.
-         */
-        std::string data_directory;
-
         /**
          * Filenames of data files.
          */

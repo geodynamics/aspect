@@ -1,3 +1,13 @@
+```{tags}
+category:benchmark
+feature:2d
+feature:cartesian
+feature:analytical-solution
+feature:modular-equations
+feature:grain-size-evolution
+```
+
+(sec:benchmarks:grain_size_pinned_state)=
 # Grain Size Pinned State
 
 This folder contains information about benchmarks that test the implementation of

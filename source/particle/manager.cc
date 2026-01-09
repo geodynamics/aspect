@@ -33,6 +33,7 @@
 #include <boost/serialization/map.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
+#include <aspect/particle/distribution.h>
 
 namespace aspect
 {
@@ -130,9 +131,9 @@ namespace aspect
                                          Particles::ParticleHandler<dim> &to_particle_handler) const
     {
       {
-        TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Copy");
-
+        this->get_computing_timer().enter_subsection("Particles: Copy");
         to_particle_handler.copy_from(from_particle_handler);
+        this->get_computing_timer().leave_subsection("Particles: Copy");
       }
     }
 
@@ -264,6 +265,7 @@ namespace aspect
       // If any load balancing technique is selected that creates/destroys particles
       if (particle_load_balancing & ParticleLoadBalancing::remove_and_add_particles)
         {
+          GridTools::Cache<dim> grid_cache(this->get_triangulation(), this->get_mapping());
           // First do some preparation for particle generation in poorly
           // populated areas. For this we need to know which particle ids to
           // generate so that they are globally unique.
@@ -333,19 +335,210 @@ namespace aspect
                   {
                     for (unsigned int i = n_particles_in_cell; i < min_particles_per_cell; ++i,++local_next_particle_index)
                       {
-                        std::pair<Particles::internal::LevelInd,Particles::Particle<dim>> new_particle = generator->generate_particle(cell,local_next_particle_index);
+                        const unsigned int current_n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
+                        if (addition_algorithm == AdditionAlgorithm::random)
+                          {
 
-                        const std::vector<double> particle_properties =
-                          property_manager->initialize_late_particle(new_particle.second.get_location(),
-                                                                     *particle_handler,
-                                                                     *interpolator,
-                                                                     cell);
+                            std::pair<Particles::internal::LevelInd,Particles::Particle<dim>> new_particle = generator->generate_particle(cell,local_next_particle_index);
 
-                        typename ParticleHandler<dim>::particle_iterator particle = particle_handler->insert_particle(new_particle.second,
-                                                                                    typename parallel::distributed::Triangulation<dim>::cell_iterator (&this->get_triangulation(),
-                                                                                        new_particle.first.first,
-                                                                                        new_particle.first.second));
-                        particle->set_properties(particle_properties);
+                            const std::vector<double> particle_properties =
+                              property_manager->initialize_late_particle(new_particle.second.get_location(),
+                                                                         *particle_handler,
+                                                                         *interpolator,
+                                                                         cell);
+
+                            typename ParticleHandler<dim>::particle_iterator particle = particle_handler->insert_particle(new_particle.second,
+                                                                                        typename parallel::distributed::Triangulation<dim>::cell_iterator (&this->get_triangulation(),
+                                                                                            new_particle.first.first,
+                                                                                            new_particle.first.second));
+                            particle->set_properties(particle_properties);
+
+                          }
+                        else if (addition_algorithm == AdditionAlgorithm::point_density_function)
+                          {
+                            ParticlePDF<dim> pdf(addition_granularity_pdf,bandwidth,kernel_function);
+                            const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
+                            particle_ranges_to_sum_over = get_neighboring_particle_ranges(cell,get_particle_handler(),grid_cache);
+
+                            pdf.fill_from_particle_range(particle_handler->particles_in_cell(cell),
+                                                         particle_ranges_to_sum_over,
+                                                         current_n_particles_in_cell,
+                                                         this->get_mapping(),
+                                                         cell);
+                            pdf.compute_statistical_values();
+
+                            const std::vector<Point<dim>> min_density_positions = pdf.get_min_positions();
+                            const int min_density_position_index = std::uniform_int_distribution<unsigned int>(0,min_density_positions.size()-1)(random_number_generator);
+                            const Point<dim> selected_min_density_position = min_density_positions[min_density_position_index];
+
+                            std::pair<Particles::internal::LevelInd,Particles::Particle<dim>> new_particle =
+                              generator->generate_particle(cell,local_next_particle_index,selected_min_density_position);
+
+                            const std::vector<double> particle_properties =
+                              property_manager->initialize_late_particle(new_particle.second.get_location(),
+                                                                         *particle_handler,
+                                                                         *interpolator,
+                                                                         cell);
+
+                            typename ParticleHandler<dim>::particle_iterator particle = particle_handler->insert_particle(new_particle.second,
+                                                                                        typename parallel::distributed::Triangulation<dim>::cell_iterator (&this->get_triangulation(),
+                                                                                            new_particle.first.first,
+                                                                                            new_particle.first.second));
+                            particle->set_properties(particle_properties);
+                          }
+                        else if (addition_algorithm == AdditionAlgorithm::histogram)
+                          {
+                            Table<dim,unsigned int> buckets;
+                            TableIndices<dim> bucket_sizes;
+                            const double granularity_double = static_cast<double>(addition_granularity_histogram);
+
+                            for (unsigned int i=0; i<dim; ++i)
+                              bucket_sizes[i] = addition_granularity_histogram;
+
+                            buckets.reinit(bucket_sizes);
+                            const double bucket_width = 1.0/granularity_double;
+                            unsigned int min_particles_in_bucket = std::numeric_limits<unsigned int>::max();
+
+                            for (const auto &particle: particle_handler->particles_in_cell(cell))
+                              {
+                                const double particle_x = particle.get_reference_location()[0];
+                                const double particle_y = particle.get_reference_location()[1];
+
+                                const double x_ratio = (particle_x) / (bucket_width);
+                                const double y_ratio = (particle_y) / (bucket_width);
+
+                                unsigned int x_index = static_cast<unsigned int>(std::floor(x_ratio));
+                                unsigned int y_index = static_cast<unsigned int>(std::floor(y_ratio));
+
+                                /*
+                                If a particle is exactly on the boundary of two cells its
+                                reference location will equal 1, and if this is the case,
+                                the "x/y/z_index" will be outside of the range of the table without
+                                these checks. The table has a number of entries equal to "granularity" in each dimension,
+                                and the table is indexed at 0, so if the "x/y/z_indez" equals "granularity" it
+                                will be out of range.
+                                */
+                                if (x_index == addition_granularity_histogram)
+                                  x_index = addition_granularity_histogram-1;
+                                if (y_index == addition_granularity_histogram)
+                                  y_index = addition_granularity_histogram-1;
+
+                                TableIndices<dim> entry_index;
+                                entry_index[0] = x_index;
+                                entry_index[1] = y_index;
+                                if (dim == 3)
+                                  {
+                                    const double particle_z = particle.get_reference_location()[2];
+                                    const double z_ratio = (particle_z) / (bucket_width);
+                                    unsigned int z_index = static_cast<unsigned int>(std::floor(z_ratio));
+                                    if (z_index == addition_granularity_histogram)
+                                      z_index = addition_granularity_histogram-1;
+                                    entry_index[2] = z_index;
+                                  }
+                                ++buckets(entry_index);
+                              }
+
+                            // Find the bucket with the least particles
+
+                            /*
+                            Remember which bucket has the fewest particles so we can add particles to that bucket.
+                            In the case that multiple buckets have the fewest particles, (which is commonly zero particles)
+                            we need to keep track of all buckets with the same amount of particles so that we can randomly
+                            choose a bucket to add particles to. If this isn't done, particles will always be added to the
+                            last bucket in the nested loop with 0 particles (or whatever the lowest count is), defeating the
+                            purpose of this algorithm by causing unphysical clustering.
+                            */
+                            std::vector<TableIndices<dim>> min_bucket_indices;
+
+                            for (unsigned int x=0; x<addition_granularity_histogram; ++x)
+                              {
+                                for (unsigned int y=0; y<addition_granularity_histogram; ++y)
+                                  {
+                                    TableIndices<dim> entry_index;
+                                    entry_index[0] = x;
+                                    entry_index[1] = y;
+                                    // Do another loop if in 3d
+                                    if (dim == 3)
+                                      {
+                                        for (unsigned int z=0; z<addition_granularity_histogram; ++z)
+                                          {
+                                            entry_index[2] = z;
+                                            const unsigned int particles_in_bucket = buckets(entry_index);
+                                            if (particles_in_bucket < min_particles_in_bucket)
+                                              {
+                                                min_particles_in_bucket = particles_in_bucket;
+                                                // We found a new minimum bucket, clear the list
+                                                min_bucket_indices.clear();
+                                                min_bucket_indices.push_back(entry_index);
+                                              }
+                                            else if (particles_in_bucket == min_particles_in_bucket)
+                                              {
+                                                // Add this bucket to the list of buckets with identically small particle numbers
+                                                min_bucket_indices.push_back(entry_index);
+                                              }
+                                          }
+                                      }
+                                    else
+                                      {
+                                        const unsigned int particles_in_bucket = buckets(entry_index);
+                                        if (particles_in_bucket < min_particles_in_bucket)
+                                          {
+                                            min_particles_in_bucket = particles_in_bucket;
+                                            // We found a new minimum bucket, clear the list
+                                            min_bucket_indices.clear();
+                                            min_bucket_indices.push_back(entry_index);
+                                          }
+                                        else if (particles_in_bucket == min_particles_in_bucket)
+                                          {
+                                            // Add this bucket to the list of buckets with identically small particle numbers
+                                            min_bucket_indices.push_back(entry_index);
+                                          }
+                                      }
+                                  }
+                              }
+
+                            // Select from the buckets with the minimum number of particles
+                            TableIndices<dim> lowest_bucket = min_bucket_indices[std::uniform_int_distribution<unsigned int>
+                                                                                 (0,min_bucket_indices.size()-1)(random_number_generator)];
+
+                            // Generate a particle in the bucket with the least particles
+                            const double min_x = lowest_bucket[0]/granularity_double;
+                            const double min_y = lowest_bucket[1]/granularity_double;
+                            std::uniform_real_distribution<double> uniform_distribution_01(0, 1./granularity_double);
+                            const double new_particle_x = min_x + uniform_distribution_01(random_number_generator);
+                            const double new_particle_y = min_y + uniform_distribution_01(random_number_generator);
+
+                            Point<dim> new_particle_location;
+                            if (dim == 3)
+                              {
+                                const double min_z = lowest_bucket[2]/granularity_double;
+                                const double new_particle_z = min_z + uniform_distribution_01(random_number_generator);
+                                new_particle_location[0] = new_particle_x;
+                                new_particle_location[1] = new_particle_y;
+                                new_particle_location[2] = new_particle_z;
+                              }
+                            else
+                              {
+                                new_particle_location[0] = new_particle_x;
+                                new_particle_location[1] = new_particle_y;
+                              }
+
+                            std::pair<Particles::internal::LevelInd,Particles::Particle<dim>> new_particle =
+                              generator->generate_particle(cell,local_next_particle_index,new_particle_location);
+
+                            const std::vector<double> particle_properties =
+                              property_manager->initialize_late_particle(new_particle.second.get_location(),
+                                                                         *particle_handler,
+                                                                         *interpolator,
+                                                                         cell);
+
+                            typename ParticleHandler<dim>::particle_iterator particle = particle_handler->insert_particle(new_particle.second,
+                                                                                        typename parallel::distributed::Triangulation<dim>::cell_iterator (&this->get_triangulation(),
+                                                                                            new_particle.first.first,
+                                                                                            new_particle.first.second));
+                            particle->set_properties(particle_properties);
+
+                          }
                       }
                   }
 
@@ -357,14 +550,46 @@ namespace aspect
                     for (unsigned int i=0; i < n_particles_to_remove; ++i)
                       {
                         const unsigned int current_n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
-                        const unsigned int index_to_remove = std::uniform_int_distribution<unsigned int>
-                                                             (0,current_n_particles_in_cell-1)(random_number_generator);
 
-                        auto particle_to_remove = particle_handler->particles_in_cell(cell).begin();
-                        std::advance(particle_to_remove, index_to_remove);
-                        particle_handler->remove_particle(particle_to_remove);
+                        if (deletion_algorithm == DeletionAlgorithm::point_density_function)
+                          {
+                            ParticlePDF<dim> pdf(bandwidth,kernel_function);
+                            /*
+                            'particle_ranges_to_sum_over' includes this cell's and neighboring cell's particles.
+                            If neighboring cell's particles are not included in the KDE, particles at cell boundaries will
+                            have artificially low point density values.
+                            */
+                            std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
+                            particle_ranges_to_sum_over = get_neighboring_particle_ranges(cell,get_particle_handler(),grid_cache);
+
+                            pdf.fill_from_particle_range(particle_handler->particles_in_cell(cell),
+                                                         particle_ranges_to_sum_over,
+                                                         current_n_particles_in_cell,
+                                                         this->get_mapping(),
+                                                         cell);
+                            pdf.compute_statistical_values();
+
+                            const types::particle_index index_max = pdf.get_max_particle();
+                            auto particle_to_remove = particle_handler->particles_in_cell(cell).begin();
+                            while (particle_to_remove->get_id() != index_max && particle_to_remove != particle_handler->particles_in_cell(cell).end())
+                              {
+                                ++particle_to_remove;
+                              }
+                            particle_handler->remove_particle(particle_to_remove);
+                          }
+                        else if (deletion_algorithm == DeletionAlgorithm::random)
+                          {
+                            const unsigned int current_n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
+                            const unsigned int index_to_remove = std::uniform_int_distribution<unsigned int>
+                                                                 (0,current_n_particles_in_cell-1)(random_number_generator);
+
+                            auto particle_to_remove = particle_handler->particles_in_cell(cell).begin();
+                            std::advance(particle_to_remove, index_to_remove);
+                            particle_handler->remove_particle(particle_to_remove);
+                          }
+                        else
+                          AssertThrow(false, ExcNotImplemented());
                       }
-
                   }
               }
 
@@ -604,8 +829,9 @@ namespace aspect
     void
     Manager<dim>::generate_particles()
     {
-      TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Generate");
+      this->get_computing_timer().enter_subsection("Particles: Generate");
       generator->generate_particles(*particle_handler);
+      this->get_computing_timer().leave_subsection("Particles: Generate");
     }
 
 
@@ -617,7 +843,7 @@ namespace aspect
       // TODO: Change this loop over all cells to use the WorkStream interface
       if (property_manager->get_n_property_components() > 0)
         {
-          TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Initialize properties");
+          this->get_computing_timer().enter_subsection("Particles: Initialize properties");
 
           particle_handler->get_property_pool().reserve(2 * particle_handler->n_locally_owned_particles());
 
@@ -628,9 +854,12 @@ namespace aspect
 
           if (dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
             {
-              TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Exchange ghosts");
+              this->get_computing_timer().enter_subsection("Particles: Exchange ghosts");
               particle_handler->exchange_ghost_particles();
+              this->get_computing_timer().leave_subsection("Particles: Exchange ghosts");
             }
+
+          this->get_computing_timer().leave_subsection("Particles: Initialize properties");
         }
     }
 
@@ -644,7 +873,7 @@ namespace aspect
 
       if (property_manager->get_n_property_components() > 0)
         {
-          TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Update properties");
+          this->get_computing_timer().enter_subsection("Particles: Update properties");
 
           Assert(dealii::internal::FEPointEvaluation::is_fast_path_supported(this->get_mapping()) == true,
                  ExcMessage("The particle system was optimized for deal.II mappings that support the fast evaluation path "
@@ -693,6 +922,8 @@ namespace aspect
                   }
 
               }
+
+          this->get_computing_timer().leave_subsection("Particles: Update properties");
         }
     }
 
@@ -704,7 +935,7 @@ namespace aspect
     {
       {
         // TODO: Change this loop over all cells to use the WorkStream interface
-        TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Advect");
+        this->get_computing_timer().enter_subsection("Particles: Advect");
 
         Assert(dealii::internal::FEPointEvaluation::is_fast_path_supported(this->get_mapping()) == true,
                ExcMessage("The particle system was optimized for deal.II mappings that support the fast evaluation path "
@@ -730,12 +961,16 @@ namespace aspect
                                          *evaluator);
                 }
             }
+
+        this->get_computing_timer().leave_subsection("Particles: Advect");
       }
 
       {
-        TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Sort");
+        this->get_computing_timer().enter_subsection("Particles: Sort");
         // Find the cells that the particles moved to
         particle_handler->sort_particles_into_subdomains_and_cells();
+
+        this->get_computing_timer().leave_subsection("Particles: Sort");
       }
     }
 
@@ -763,10 +998,42 @@ namespace aspect
       // ghost particles.
       if (dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
         {
-          TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Exchange ghosts");
+          this->get_computing_timer().enter_subsection("Particles: Exchange ghosts");
           particle_handler->exchange_ghost_particles();
+          this->get_computing_timer().leave_subsection("Particles: Exchange ghosts");
         }
       this->get_pcout() << " done." << std::endl;
+    }
+
+
+
+    template <int dim>
+    std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
+    Manager<dim>::get_neighboring_particle_ranges(
+      const typename Triangulation<dim>::active_cell_iterator &cell,
+      const typename Particles::ParticleHandler<dim> &particle_handler,
+      typename GridTools::Cache<dim> &grid_cache)
+    {
+      // First populate the result vector with particles from the given cell
+      std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over = {particle_handler.particles_in_cell(cell)};
+
+      // Find the cells neighboring the given cell
+      std::set<typename Triangulation<dim>::active_cell_iterator> neighboring_cells;
+      const auto &vertex_to_cell_map = grid_cache.get_vertex_to_cell_map();
+      for (const auto v : cell->vertex_indices())
+        {
+          const unsigned int vertex_index = cell->vertex_index(v);
+          neighboring_cells.insert(vertex_to_cell_map[vertex_index].begin(),
+                                   vertex_to_cell_map[vertex_index].end());
+        }
+
+      // Add the particles from neighboring cells to the vector of particles ranges being returned
+      for (const auto &neighbor_cell: neighboring_cells)
+        {
+          particle_ranges_to_sum_over.push_back(particle_handler.particles_in_cell(neighbor_cell));
+        }
+
+      return particle_ranges_to_sum_over;
     }
 
 
@@ -812,6 +1079,46 @@ namespace aspect
                                                             "remove and add particles|repartition"),
                                "Strategy that is used to balance the computational "
                                "load across processors for adaptive meshes.");
+            prm.declare_entry ("Particle removal algorithm", "random",
+                               Patterns::Selection ("random|point density function"),
+                               "Algorithm used to delete excess particles from cells. If point density function "
+                               "is chosen, the particle manager "
+                               "will generate a point density function from the locations of each particle and remove "
+                               "the particle whose position is at the maximum of the point density function.");
+            prm.declare_entry ("Particle addition algorithm", "random",
+                               Patterns::Selection ("random|histogram|point density function"),
+                               "Algorithm used to add particles to cells. ");
+            prm.declare_entry ("Point density kernel function", "cutoff c1 dealii",
+                               Patterns::Selection ("cutoff c1 dealii|cutoff w1 dealii|uniform|triangular|gaussian"),
+                               "The kernel function is summed at each particle location to generate a point "
+                               "density function of the particle locations according to a process known as "
+                               "kernel density estimation. Because kernel density estimation sums the value of "
+                               "a kernel function centered on each point of interest to every other point in the dataset, "
+                               "the only parameter of each kernel function is the distance between the particles, "
+                               "and each kernel function only returns a single value depending on this distance. "
+                               "The return value of each function is also scaled by the selected bandwidth value."
+                               "The gaussian function uses the gaussian distribution to generate an output from the "
+                               "input distance. The output of the triangular function decreases at a constant rate "
+                               "with increasing distance between the particles. The uniform function returns a constant "
+                               "value as long as the distance between particles is less than the selected bandwidth."
+                               "The cutoff w1 and cutoff c1 dealii options call the deal.II functions called cutoffW1 and cutoffC1 respectively. "
+                               "These are functions whose return values decrease with distance. A more detailed explanation on these two "
+                               "function are available in the deal.II documentation.");
+            prm.declare_entry ("Bandwidth", "0.3",
+                               Patterns::Double (0.3),"The bandwidth value is used to scale the kernel "
+                               "function when generating the point density function of particles. "
+                               "The bandwidth is measured as a fraction of the cells extent in one spatial "
+                               "dimension. For example, the default bandwidth of 0.3 represents a size "
+                               "equal to 30 percent of the cells size in one spatial dimension.");
+            prm.declare_entry("Addition histogram granularity","3",
+                              Patterns::Integer(2),
+                              "The number of subdivisions of each cell in each spatial dimension when adding particles using histogram "
+                              "based methods. Lower granularities are generally better for histogram methods.");
+            prm.declare_entry("Addition point density function granularity","6",
+                              Patterns::Integer(2),
+                              "The number of subdivisions of each cell in each spatial dimension when adding particles using point "
+                              "density function based methods. Higher granularities are generally better for "
+                              "point density function based methods but might be slower.");
             prm.declare_entry ("Minimum particles per cell", "0",
                                Patterns::Integer (0),
                                "Lower limit for particle number per cell. This limit is "
@@ -964,8 +1271,61 @@ namespace aspect
             return (particle_manager == 0) ? 1000 + this->cell_weight(cell, status) : this->cell_weight(cell, status);
           });
 
+        // The bandwidth to use with the kernel function
+        bandwidth = prm.get_double("Bandwidth");
 
-        TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Initialization");
+        // The particle removal algorithm to use when there are too many particles in a cell
+        std::string deletion_algorithm_string = prm.get("Particle removal algorithm");
+
+        if (deletion_algorithm_string == "point density function")
+          deletion_algorithm = DeletionAlgorithm::point_density_function;
+        else if (deletion_algorithm_string == "random")
+          deletion_algorithm = DeletionAlgorithm::random;
+        else
+          {
+            AssertThrow(false, ExcNotImplemented());
+          }
+
+        // The kernel function to use when using the point density function particle removal algorithm
+        std::string kernel_function_string = prm.get("Point density kernel function");
+
+        if (kernel_function_string == "cutoff w1 dealii")
+          kernel_function = ParticlePDF<dim>::KernelFunction::cutoff_function_w1_dealii;
+        else if (kernel_function_string == "cutoff c1 dealii")
+          kernel_function = ParticlePDF<dim>::KernelFunction::cutoff_function_c1_dealii;
+        else if (kernel_function_string == "uniform")
+          kernel_function = ParticlePDF<dim>::KernelFunction::uniform;
+        else if (kernel_function_string == "triangular")
+          kernel_function = ParticlePDF<dim>::KernelFunction::triangular;
+        else if (kernel_function_string == "gaussian")
+          kernel_function = ParticlePDF<dim>::KernelFunction::gaussian;
+        else
+          {
+            AssertThrow(false, ExcNotImplemented());
+          }
+
+        // The granularity to use when adding new particles using histogram methods
+        addition_granularity_histogram = prm.get_integer("Addition histogram granularity");
+
+        // The granularity to use when adding new particles using PDF methods
+        addition_granularity_pdf = prm.get_integer("Addition point density function granularity");
+
+        // The particle addition algorithm to use when there are not enough particles in a cell
+        std::string addition_algorithm_string = prm.get("Particle addition algorithm");
+
+        if (addition_algorithm_string == "random")
+          addition_algorithm = AdditionAlgorithm::random;
+        else if (addition_algorithm_string == "histogram")
+          addition_algorithm = AdditionAlgorithm::histogram;
+        else if (addition_algorithm_string == "point density function")
+          addition_algorithm = AdditionAlgorithm::point_density_function;
+        else
+          {
+            AssertThrow(false, ExcNotImplemented());
+          }
+
+
+        this->get_computing_timer().enter_subsection("Particles: Initialization");
 
         // Create a generator object depending on what the parameters specify
         generator = Generator::create_particle_generator<dim> (prm);
@@ -999,6 +1359,7 @@ namespace aspect
         interpolator->parse_parameters(prm);
         interpolator->initialize();
 
+        this->get_computing_timer().leave_subsection("Particles: Initialization");
       }
       prm.leave_subsection ();
     }

@@ -446,8 +446,12 @@ namespace aspect
                  << std::endl;
         }
 
+      Utilities::create_directory (this->get_output_directory() + "dynamic_topography/",
+                                   this->get_mpi_communicator(),
+                                   /* silent=*/true);
+
       std::string filename = this->get_output_directory() +
-                             "dynamic_topography_" + boundary_name + "." +
+                             "dynamic_topography/dynamic_topography_" + boundary_name + "." +
                              Utilities::int_to_string(this->get_timestep_number(), 5);
       if (this->get_parameters().run_postprocessors_on_nonlinear_iterations)
         filename.append("." + Utilities::int_to_string (this->get_nonlinear_iteration(), 4));

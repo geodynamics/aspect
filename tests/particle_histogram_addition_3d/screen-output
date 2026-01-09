@@ -1,0 +1,113 @@
+
+Number of active cells: 80 (on 2 levels)
+Number of degrees of freedom: 5,314 (3,075+189+1,025+1,025)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+
+Number of active cells: 640 (on 3 levels)
+Number of degrees of freedom: 33,830 (19,683+1,025+6,561+6,561)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+
+Number of active cells: 1,536 (on 4 levels)
+Number of degrees of freedom: 76,062 (44,331+2,177+14,777+14,777)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving C_1 system ... 0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                             0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                       0 K, 0.9248 K, 1.125 K
+     Heat fluxes through boundary parts:            0.0005583 W, 0.0005583 W, -0.02292 W, 0.02292 W, 0 W, 0 W
+     Writing graphical output:                      output-particle_histogram_addition_3d/solution/solution-00000
+     Writing particle output:                       output-particle_histogram_addition_3d/particles/particles-00000
+     Particle distribution score min/avg/max/stdev: 0/0/0/0
+
+*** Timestep 1:  t=0.03 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Solving C_1 system ... 0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                             0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                       0 K, 0.9248 K, 1.125 K
+     Heat fluxes through boundary parts:            0.0006771 W, 0.0006771 W, -0.02293 W, 0.02293 W, 0 W, 0 W
+     Writing graphical output:                      output-particle_histogram_addition_3d/solution/solution-00001
+     Writing particle output:                       output-particle_histogram_addition_3d/particles/particles-00001
+     Particle distribution score min/avg/max/stdev: 0/0/0/0
+
+*** Timestep 2:  t=0.06 seconds, dt=0.03 seconds
+   Solving temperature system... 6 iterations.
+   Advecting particles...  done.
+   Solving C_1 system ... 0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                             0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                       0 K, 0.9248 K, 1.126 K
+     Heat fluxes through boundary parts:            0.0006835 W, 0.0006835 W, -0.02294 W, 0.02294 W, 0 W, 0 W
+     Writing graphical output:                      output-particle_histogram_addition_3d/solution/solution-00002
+     Writing particle output:                       output-particle_histogram_addition_3d/particles/particles-00002
+     Particle distribution score min/avg/max/stdev: 0/0/0/0
+
+*** Timestep 3:  t=0.09 seconds, dt=0.03 seconds
+   Solving temperature system... 6 iterations.
+   Advecting particles...  done.
+   Solving C_1 system ... 0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                             0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                       0 K, 0.9247 K, 1.127 K
+     Heat fluxes through boundary parts:            0.0006891 W, 0.0006891 W, -0.02296 W, 0.02296 W, 0 W, 0 W
+     Writing graphical output:                      output-particle_histogram_addition_3d/solution/solution-00003
+     Writing particle output:                       output-particle_histogram_addition_3d/particles/particles-00003
+     Particle distribution score min/avg/max/stdev: 0/0.0010334/0.0357143/0.00476775
+
+*** Timestep 4:  t=0.12 seconds, dt=0.03 seconds
+   Solving temperature system... 6 iterations.
+   Advecting particles...  done.
+   Solving C_1 system ... 0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                             0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                       0 K, 0.9247 K, 1.129 K
+     Heat fluxes through boundary parts:            0.0006946 W, 0.0006946 W, -0.02298 W, 0.02298 W, 0 W, 0 W
+     Writing graphical output:                      output-particle_histogram_addition_3d/solution/solution-00004
+     Writing particle output:                       output-particle_histogram_addition_3d/particles/particles-00004
+     Particle distribution score min/avg/max/stdev: 0/0.0010334/0.0357143/0.00476775
+
+*** Timestep 5:  t=0.15 seconds, dt=0.03 seconds
+   Solving temperature system... 6 iterations.
+   Advecting particles...  done.
+   Solving C_1 system ... 0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                             0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                       0 K, 0.9246 K, 1.131 K
+     Heat fluxes through boundary parts:            0.0006998 W, 0.0006998 W, -0.02301 W, 0.02301 W, 0 W, 0 W
+     Writing graphical output:                      output-particle_histogram_addition_3d/solution/solution-00005
+     Writing particle output:                       output-particle_histogram_addition_3d/particles/particles-00005
+     Particle distribution score min/avg/max/stdev: 0/0.0010334/0.0357143/0.00476775
+
+*** Timestep 6:  t=0.18 seconds, dt=0.03 seconds
+   Solving temperature system... 6 iterations.
+   Advecting particles...  done.
+   Solving C_1 system ... 0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                             0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                       0 K, 0.9246 K, 1.133 K
+     Heat fluxes through boundary parts:            0.0007048 W, 0.0007048 W, -0.02304 W, 0.02304 W, 0 W, 0 W
+     Writing graphical output:                      output-particle_histogram_addition_3d/solution/solution-00006
+     Writing particle output:                       output-particle_histogram_addition_3d/particles/particles-00006
+     Particle distribution score min/avg/max/stdev: 0/0.000590314/0.0262391/0.00303988
+
+Termination requested by criterion: end time
+
+
+

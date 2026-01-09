@@ -262,19 +262,6 @@ namespace aspect
 
 
       template <int dim>
-      void
-      Interface<dim>::save (std::map<std::string,std::string> &) const
-      {}
-
-
-      template <int dim>
-      void
-      Interface<dim>::load (const std::map<std::string,std::string> &)
-      {}
-
-
-
-      template <int dim>
       CellDataVectorCreator<dim>::CellDataVectorCreator (const std::string &physical_units)
         :
         Interface<dim> (physical_units)
@@ -1481,6 +1468,13 @@ namespace aspect
     void
     Visualization<dim>::save (std::map<std::string, std::string> &status_strings) const
     {
+      // First let all the visualization postprocessors save their data in a
+      // map that we can then serialize:
+      std::map<std::string,std::string> saved_postprocessors;
+      for (const auto &p : postprocessors)
+        p->save (saved_postprocessors);
+
+
       // Serialize into a stringstream. Put the following into a code
       // block of its own to ensure the destruction of the 'oa'
       // archive triggers a flush() on the stringstream so we can
@@ -1489,11 +1483,10 @@ namespace aspect
       {
         aspect::oarchive oa (os);
         oa << (*this);
+        oa << saved_postprocessors;
       }
 
       status_strings["Visualization"] = os.str();
-
-//TODO: do something about the visualization postprocessor plugins
     }
 
 
@@ -1507,9 +1500,14 @@ namespace aspect
           std::istringstream is (status_strings.find("Visualization")->second);
           aspect::iarchive ia (is);
           ia >> (*this);
-        }
 
-//TODO: do something about the visualization postprocessor plugins
+          // Now also retrieve information about visualization postprocessors we
+          // may have serialized
+          std::map<std::string,std::string> saved_postprocessors;
+          ia >> saved_postprocessors;
+          for (auto &p : postprocessors)
+            p->load (saved_postprocessors);
+        }
     }
 
 

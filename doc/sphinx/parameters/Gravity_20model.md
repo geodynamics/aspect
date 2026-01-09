@@ -9,7 +9,7 @@
 ### __Parameter name:__ Model name
 **Default value:** unspecified
 
-**Pattern:** [Selection ascii data|function|radial constant|radial earth-like|radial linear|vertical|unspecified ]
+**Pattern:** [Selection ascii data|function|radial constant|radial linear|vertical|unspecified ]
 
 **Documentation:** Select one of the following models:
 
@@ -18,8 +18,6 @@
 &lsquo;function&rsquo;: Gravity is given in terms of an explicit formula that is elaborated in the parameters in section &ldquo;Gravity model|Function&rdquo;. The format of these functions follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.
 
 &lsquo;radial constant&rsquo;: A gravity model in which the gravity has a constant magnitude and the direction is radial (pointing inward if the value is positive). The magnitude is read from the parameter file in subsection &rsquo;Radial constant&rsquo;.
-
-&lsquo;radial earth-like&rsquo;: This plugin has been removed due to its misleading name. The included profile was hard-coded and was less earth-like than the &lsquo;ascii data&rsquo; plugin, which uses the profile of the Preliminary Reference Earth Model (PREM). Use &lsquo;ascii data&rsquo; instead of &lsquo;radial earth-like&rsquo;.
 
 &lsquo;radial linear&rsquo;: A gravity model which is radial (pointing inward if the gravity is positive) and the magnitude changes linearly with depth. The magnitude of gravity at the surface and bottom is read from the input file in a section &ldquo;Gravity model/Radial linear&rdquo;.
 
@@ -33,7 +31,7 @@
 
 **Pattern:** [DirectoryName]
 
-**Documentation:** The name of a directory that contains the model data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT.
+**Documentation:** The name of a directory that contains the model data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT. A trailing slash at the end of the directory path is optional; the plugin will automatically append a &rsquo;/&rsquo; when the parameters are parsed if it is missing.
 
 (parameters:Gravity_20model/Ascii_20data_20model/Data_20file_20name)=
 ### __Parameter name:__ Data file name

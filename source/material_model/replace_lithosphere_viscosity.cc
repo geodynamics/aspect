@@ -25,7 +25,6 @@
 
 #include <limits>
 
-#include <array>
 #include <utility>
 
 

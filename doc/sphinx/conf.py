@@ -32,6 +32,8 @@ with open('../../VERSION', 'r') as file:
 # ones.
 extensions = [
     "myst_parser",
+    "sphinx_design",
+    "sphinx_tags",
     "sphinxcontrib.bibtex",
     "sphinxcontrib.tikz",
     "sphinxcontrib.cairosvgconverter"
@@ -55,6 +57,28 @@ templates_path = ['_templates']
 exclude_patterns = [
     "_build",
 ]
+
+# -- Options for sphinx_tags -------------------------------------------------
+
+# turn it on
+tags_create_tags = True
+
+# you're using MyST, so scan md files
+tags_extension = ["md"]
+
+# (optional) put generated pages here; default is "_tags"
+tags_output_dir = "_tags"
+
+# (optional) nicer titles / badge styling (needs sphinx-design)
+tags_overview_title = "Page index"
+tags_intro_text = "Tags:"
+tags_page_title = "Tag"
+tags_page_header = "Pages"
+tags_index_head = "All page tags"
+tags_create_badges = True
+# See the color descriptions here: https://sphinx-tags.readthedocs.io/en/latest/configuration.html#badge-colors
+tags_badge_colors = {"category:*": "primary", "feature:*": "success", "*":"info"}
+
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -88,6 +112,8 @@ html_theme_options = {
     },
     "primary_sidebar_end": "navbar_end.html"
 }
+
+# -- Options for LaTex output -------------------------------------------------
 
 latex_engine = 'xelatex'
 

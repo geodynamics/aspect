@@ -1,0 +1,24 @@
+# MPI: 4
+
+set Dimension = 3
+
+include $ASPECT_SOURCE_DIR/benchmarks/nsinker_spherical_shell/gmg.prm
+
+subsection Solver parameters
+ subsection Stokes solver parameters
+ set Stokes solver type = block GMG
+ set Stokes GMG type = global coarsening
+ end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 1
+  set Initial adaptive refinement              = 1
+end
+
+subsection Postprocess
+  subsection Memory statistics
+    # disable as it is not deterministic:
+    set Output peak virtual memory (VmPeak) = false
+  end
+end

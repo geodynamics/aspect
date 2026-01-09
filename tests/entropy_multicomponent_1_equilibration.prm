@@ -14,7 +14,7 @@ set Use years instead of seconds           = true
 set End time                               = 1e5
 set Maximum time step                      = 5e4
 
-set Nonlinear solver scheme                = iterated Advection and Stokes
+set Nonlinear solver scheme                = iterated Advection, no Stokes
 set Use operator splitting                 = true
 
 set Surface pressure                       = 0
@@ -64,10 +64,6 @@ subsection Initial composition model
     end
 end
 
-subsection Boundary velocity model
-  set Tangential velocity boundary indicators = bottom, left, right, top
-end
-
 subsection Gravity model
   set Model name = vertical
 
@@ -94,6 +90,10 @@ subsection Mesh refinement
   set Initial global refinement                = 0
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
+end
+
+subsection Prescribed Stokes solution
+  set Model name = function
 end
 
 subsection Postprocess

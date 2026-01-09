@@ -18,7 +18,6 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <array>
 #include <aspect/material_model/averaging.h>
 #include <utility>
 #include <limits>

@@ -48,7 +48,7 @@ namespace aspect
       AssertThrow(dim==2,
                   ExcMessage("Depth with mesh deformation currently only works with a 2D model."));
 
-      TimerOutput::Scope timer_section(this->get_computing_timer(), "Geometry model surface update");
+      this->get_computing_timer().enter_subsection("Geometry model surface update");
 
       // loop over all of the surface cells and save the elevation to a stored value.
       // This needs to be sent to 1 processor, sorted, and broadcast so that every processor knows the entire surface.
@@ -122,12 +122,14 @@ namespace aspect
 
       // Fill the coordinates with the x-values used for the data table.
       // This only works in 2D, and will need to be updated for 3D.
-      coordinates[0].clear();
+      coordinates[0].resize(temp_surface.size());
       for (unsigned int i=0; i<temp_surface.size(); ++i)
-        coordinates[0].push_back(temp_surface[i][0]);
+        coordinates[0][i] = temp_surface[i][0];
 
       // Create a surface function for the elevations.
       surface_function = std::make_unique<Functions::InterpolatedTensorProductGridData<dim-1>>(coordinates, data_table);
+
+      this->get_computing_timer().leave_subsection("Geometry model surface update");
 
       return std::make_pair ("Storing deformed surface topography: ",
                              "Done");

@@ -113,7 +113,12 @@ namespace aspect
     template <class StokesMatrixType, class ABlockMatrixType, class BTBlockOperatorType,
               class SchurComplementMatrixType, class ABlockPreconditionerType,
               class SchurComplementPreconditionerType>
-    class BlockSchurGMGPreconditioner : public Subscriptor
+    class BlockSchurGMGPreconditioner : public
+#if DEAL_II_VERSION_GTE(9,7,0)
+      EnableObserverPointer
+#else
+      Subscriptor
+#endif
     {
       public:
         /**

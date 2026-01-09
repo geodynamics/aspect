@@ -1,3 +1,10 @@
+```{tags}
+category:cookbook
+feature:3d
+feature:spherical
+feature:data-integration
+```
+
 (sec:cookbooks:global_regional_coupling)=
 # Prescribing Velocities from Global Convection Models as Boundary Conditions in Regional Models
 

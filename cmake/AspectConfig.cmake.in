@@ -22,7 +22,7 @@
 # compiled into a run-time loadable plugin for Aspect.
 
 
-find_package(deal.II 9.5.0 QUIET REQUIRED HINTS @DEAL_II_PATH@ @deal.II_DIR@ NO_DEFAULT_PATH)
+find_package(deal.II 9.6.0 QUIET REQUIRED HINTS @DEAL_II_PATH@ @deal.II_DIR@ NO_DEFAULT_PATH)
 set(Aspect_INCLUDE_DIRS "@ASPECT_INCLUDE_DIRS@")
 set(Aspect_VERSION "@ASPECT_PACKAGE_VERSION@")
 set(Aspect_DIR "@CONFIG_DIR@")

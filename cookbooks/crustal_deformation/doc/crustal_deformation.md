@@ -1,3 +1,13 @@
+```{tags}
+category:cookbook
+feature:2d
+feature:3d
+feature:cartesian
+feature:nonlinear-solver
+feature:mesh-deformation
+feature:plasticity
+```
+
 (sec:cookbooks:crustal-deformation)=
 # Crustal deformation
 

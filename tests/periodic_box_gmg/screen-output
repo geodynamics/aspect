@@ -5,13 +5,13 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving Stokes system (GMG)... 
-    GMG coarse size A: 18, coarse size S: 4
-    GMG n_levels: 6
-    Viscosity range: 1e+20 - 1e+20
-    GMG workload imbalance: 1.00073
-    Stokes solver: 53+0 iterations.
-    Schur complement preconditioner: 54+0 iterations.
-    A block preconditioner: 54+0 iterations.
+     GMG coarse size A: 18, coarse size S: 4
+     GMG levels: 6
+     Viscosity range: 1e+20 - 1e+20
+     GMG workload imbalance: 1.00073
+     Stokes solver (GMRES): 53+0 iterations.
+     Schur complement preconditioner: 54+0 iterations.
+     A block preconditioner: 54+0 iterations.
 
 Number of active cells: 1,114 (on 7 levels)
 Number of degrees of freedom: 15,480 (9,506+1,221+4,753)
@@ -19,13 +19,13 @@ Number of degrees of freedom: 15,480 (9,506+1,221+4,753)
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving Stokes system (GMG)... 
-    GMG coarse size A: 18, coarse size S: 4
-    GMG n_levels: 7
-    Viscosity range: 1e+20 - 1e+20
-    GMG workload imbalance: 1.00067
-    Stokes solver: 64+0 iterations.
-    Schur complement preconditioner: 65+0 iterations.
-    A block preconditioner: 65+0 iterations.
+     GMG coarse size A: 18, coarse size S: 4
+     GMG levels: 7
+     Viscosity range: 1e+20 - 1e+20
+     GMG workload imbalance: 1.00067
+     Stokes solver (GMRES): 64+0 iterations.
+     Schur complement preconditioner: 65+0 iterations.
+     A block preconditioner: 65+0 iterations.
 
 Number of active cells: 1,183 (on 7 levels)
 Number of degrees of freedom: 16,481 (10,122+1,298+5,061)
@@ -33,13 +33,13 @@ Number of degrees of freedom: 16,481 (10,122+1,298+5,061)
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving Stokes system (GMG)... 
-    GMG coarse size A: 18, coarse size S: 4
-    GMG n_levels: 7
-    Viscosity range: 1e+20 - 1e+20
-    GMG workload imbalance: 1.0298
-    Stokes solver: 68+0 iterations.
-    Schur complement preconditioner: 69+0 iterations.
-    A block preconditioner: 69+0 iterations.
+     GMG coarse size A: 18, coarse size S: 4
+     GMG levels: 7
+     Viscosity range: 1e+20 - 1e+20
+     GMG workload imbalance: 1.0298
+     Stokes solver (GMRES): 68+0 iterations.
+     Schur complement preconditioner: 69+0 iterations.
+     A block preconditioner: 69+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-periodic_box_gmg/solution/solution-00000
@@ -47,13 +47,13 @@ Number of degrees of freedom: 16,481 (10,122+1,298+5,061)
 *** Timestep 1:  t=4926.45 years, dt=4926.45 years
    Solving temperature system... 15 iterations.
    Solving Stokes system (GMG)... 
-    GMG coarse size A: 18, coarse size S: 4
-    GMG n_levels: 7
-    Viscosity range: 1e+20 - 1e+20
-    GMG workload imbalance: 1.0298
-    Stokes solver: 65+0 iterations.
-    Schur complement preconditioner: 66+0 iterations.
-    A block preconditioner: 66+0 iterations.
+     GMG coarse size A: 18, coarse size S: 4
+     GMG levels: 7
+     Viscosity range: 1e+20 - 1e+20
+     GMG workload imbalance: 1.0298
+     Stokes solver (GMRES): 65+0 iterations.
+     Schur complement preconditioner: 66+0 iterations.
+     A block preconditioner: 66+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-periodic_box_gmg/solution/solution-00001
@@ -61,13 +61,13 @@ Number of degrees of freedom: 16,481 (10,122+1,298+5,061)
 *** Timestep 2:  t=9796.69 years, dt=4870.24 years
    Solving temperature system... 15 iterations.
    Solving Stokes system (GMG)... 
-    GMG coarse size A: 18, coarse size S: 4
-    GMG n_levels: 7
-    Viscosity range: 1e+20 - 1e+20
-    GMG workload imbalance: 1.0298
-    Stokes solver: 64+0 iterations.
-    Schur complement preconditioner: 65+0 iterations.
-    A block preconditioner: 65+0 iterations.
+     GMG coarse size A: 18, coarse size S: 4
+     GMG levels: 7
+     Viscosity range: 1e+20 - 1e+20
+     GMG workload imbalance: 1.0298
+     Stokes solver (GMRES): 64+0 iterations.
+     Schur complement preconditioner: 65+0 iterations.
+     A block preconditioner: 65+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-periodic_box_gmg/solution/solution-00002
@@ -75,13 +75,13 @@ Number of degrees of freedom: 16,481 (10,122+1,298+5,061)
 *** Timestep 3:  t=14611.9 years, dt=4815.25 years
    Solving temperature system... 15 iterations.
    Solving Stokes system (GMG)... 
-    GMG coarse size A: 18, coarse size S: 4
-    GMG n_levels: 7
-    Viscosity range: 1e+20 - 1e+20
-    GMG workload imbalance: 1.0298
-    Stokes solver: 64+0 iterations.
-    Schur complement preconditioner: 65+0 iterations.
-    A block preconditioner: 65+0 iterations.
+     GMG coarse size A: 18, coarse size S: 4
+     GMG levels: 7
+     Viscosity range: 1e+20 - 1e+20
+     GMG workload imbalance: 1.0298
+     Stokes solver (GMRES): 64+0 iterations.
+     Schur complement preconditioner: 65+0 iterations.
+     A block preconditioner: 65+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-periodic_box_gmg/solution/solution-00003
@@ -89,13 +89,13 @@ Number of degrees of freedom: 16,481 (10,122+1,298+5,061)
 *** Timestep 4:  t=19376.6 years, dt=4764.69 years
    Solving temperature system... 14 iterations.
    Solving Stokes system (GMG)... 
-    GMG coarse size A: 18, coarse size S: 4
-    GMG n_levels: 7
-    Viscosity range: 1e+20 - 1e+20
-    GMG workload imbalance: 1.0298
-    Stokes solver: 64+0 iterations.
-    Schur complement preconditioner: 65+0 iterations.
-    A block preconditioner: 65+0 iterations.
+     GMG coarse size A: 18, coarse size S: 4
+     GMG levels: 7
+     Viscosity range: 1e+20 - 1e+20
+     GMG workload imbalance: 1.0298
+     Stokes solver (GMRES): 64+0 iterations.
+     Schur complement preconditioner: 65+0 iterations.
+     A block preconditioner: 65+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-periodic_box_gmg/solution/solution-00004
@@ -103,13 +103,13 @@ Number of degrees of freedom: 16,481 (10,122+1,298+5,061)
 *** Timestep 5:  t=20000 years, dt=623.378 years
    Solving temperature system... 12 iterations.
    Solving Stokes system (GMG)... 
-    GMG coarse size A: 18, coarse size S: 4
-    GMG n_levels: 7
-    Viscosity range: 1e+20 - 1e+20
-    GMG workload imbalance: 1.0298
-    Stokes solver: 64+0 iterations.
-    Schur complement preconditioner: 65+0 iterations.
-    A block preconditioner: 65+0 iterations.
+     GMG coarse size A: 18, coarse size S: 4
+     GMG levels: 7
+     Viscosity range: 1e+20 - 1e+20
+     GMG workload imbalance: 1.0298
+     Stokes solver (GMRES): 64+0 iterations.
+     Schur complement preconditioner: 65+0 iterations.
+     A block preconditioner: 65+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-periodic_box_gmg/solution/solution-00005

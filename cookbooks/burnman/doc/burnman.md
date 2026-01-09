@@ -1,3 +1,11 @@
+```{tags}
+category:cookbook
+feature:2d
+feature:spherical
+feature:compressibility
+feature:data-integration
+```
+
 (sec:cookbooks:burnman)=
 # 2D compressible convection with a reference profile and material properties from BurnMan
 

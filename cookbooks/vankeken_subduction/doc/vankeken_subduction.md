@@ -1,3 +1,11 @@
+```{tags}
+category:cookbook
+category:benchmark
+feature:2d
+feature:cartesian
+feature:community-benchmark
+```
+
 (sec:cookbooks:vankeken-2008-benchmark)=
 # Van Keken 2008 corner flow recreation
 

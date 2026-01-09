@@ -1,3 +1,12 @@
+```{tags}
+category:cookbook
+feature:3d
+feature:cartesian
+feature:mesh-deformation
+feature:plasticity
+feature:nonlinear-solver
+```
+
 (sec:cookbooks:allken)=
 # Rift interaction in brittle-ductile coupled systems
 

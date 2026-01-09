@@ -1262,18 +1262,31 @@ namespace aspect
       Amg_data.aggregation_threshold = 0.02;
       preconditioner.initialize(system_matrix.block(block_idx, block_idx));
 
+      this->get_pcout() << "   Solving fluid velocity system... " << std::flush;
+
       SolverControl solver_control(system_rhs.block(block_idx).size(),
                                    1e-8*system_rhs.block(block_idx).l2_norm());
       SolverCG<LinearAlgebra::Vector> cg(solver_control);
 
-      this->get_pcout() << "   Solving fluid velocity system... " << std::flush;
-
-      cg.solve (system_matrix.block(block_idx, block_idx),
-                distributed_solution.block(block_idx),
-                system_rhs.block(block_idx),
-                preconditioner);
-
-      this->get_pcout() << solver_control.last_step() <<" iterations."<< std::endl;
+      try
+        {
+          cg.solve (system_matrix.block(block_idx, block_idx),
+                    distributed_solution.block(block_idx),
+                    system_rhs.block(block_idx),
+                    preconditioner);
+          this->get_pcout() << solver_control.last_step() <<" iterations."<< std::endl;
+        }
+      catch (const std::exception &exc)
+        {
+          // if the solver fails, report the error from processor 0 with some additional
+          // information about its location, and throw a quiet exception on all other
+          // processors
+          Utilities::throw_linear_solver_failure_exception("iterative melt solver",
+                                                           "MeltHandler::compute_melt_variables",
+                                                           std::vector<SolverControl> {solver_control},
+                                                           exc,
+                                                           this->get_mpi_communicator());
+        }
 
       this->get_current_constraints().distribute (distributed_solution);
       solution.block(block_idx) = distributed_solution.block(block_idx);

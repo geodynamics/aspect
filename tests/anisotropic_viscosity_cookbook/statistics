@@ -1,0 +1,31 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for composition solver 2
+# 11: Iterations for composition solver 3
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
+# 15: Visualization file name
+# 16: RMS velocity (m/s)
+# 17: Max. velocity (m/s)
+# 18: Minimal value for composition gamma
+# 19: Maximal value for composition gamma
+# 20: Global mass for composition gamma
+# 21: Minimal value for composition ni
+# 22: Maximal value for composition ni
+# 23: Global mass for composition ni
+# 24: Minimal value for composition nj
+# 25: Maximal value for composition nj
+# 26: Global mass for composition nj
+# 27: Average density (kg/m^3)
+# 28: Average viscosity (Pa s)
+# 29: Total mass (kg)
+0 0.000000000000e+00 0.000000000000e+00 112 1236 545 1635 0 0 10 10 16 17 17 output-anisotropic_viscosity_cookbook/solution/solution-00000 1.14927553e-03 3.23431850e-03  0.00000000e+00 9.99999959e-01 2.98754046e-01 -9.36092543e-02 7.85323275e-01 1.92049844e-01 -9.36092543e-02 7.85323275e-01 1.92049844e-01 1.32914979e-01 1.00000000e+00 2.65829958e-01 
+1 1.000000000000e+00 1.000000000000e+00 130 1434 633 1899 0 9 10  9 16 17 17 output-anisotropic_viscosity_cookbook/solution/solution-00001 1.18953522e-03 3.24176496e-03 -5.12893159e-04 1.01443242e+00 2.98668555e-01 -8.67764149e-02 7.86971956e-01 1.92470152e-01 -8.67669395e-02 7.92497164e-01 1.92244641e-01 1.32854697e-01 1.00000000e+00 2.65709394e-01 

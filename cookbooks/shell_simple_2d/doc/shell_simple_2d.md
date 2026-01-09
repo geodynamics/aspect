@@ -1,3 +1,9 @@
+```{tags}
+category:cookbook
+feature:2d
+feature:spherical
+```
+
 (sec:cookbooks:shell_simple_2d)=
 # Simple convection in a quarter of a 2d annulus
 

@@ -174,8 +174,8 @@ namespace aspect
                                        old_solution_values.end());
 
                   EvaluationFlags::EvaluationFlags evaluation_flags_union = EvaluationFlags::nothing;
-                  for (unsigned int i=0; i<evaluation_flags.size(); ++i)
-                    evaluation_flags_union |= evaluation_flags[i];
+                  for (const auto flag : evaluation_flags)
+                    evaluation_flags_union |= flag;
 
                   // Update evaluators to the current cell
                   if (evaluation_flags_union & (EvaluationFlags::values | EvaluationFlags::gradients))

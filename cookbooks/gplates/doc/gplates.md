@@ -1,3 +1,11 @@
+```{tags}
+category:cookbook
+feature:2d
+feature:3d
+feature:spherical
+feature:data-integration
+```
+
 (sec:cookbooks:gplates)=
 # Using reconstructed surface velocities by GPlates
 

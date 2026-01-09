@@ -256,7 +256,7 @@ namespace aspect
 
       prm.declare_entry ("Number initialization samples", "3",
                          Patterns::Integer (1),
-                         "Number of divisions per dimension when computing the initial volume fractions."
+                         "Number of divisions per dimension when computing the initial volume fractions. "
                          "If set to the default of 3 for a 2d model, then initialization will be based on "
                          "the initialization criterion at $3^2=9$ points within each cell. If the initialization "
                          "based on a composition style initial condition, a larger value may be desired for better "
@@ -538,7 +538,7 @@ namespace aspect
                                                                    const unsigned int dir,
                                                                    const bool update_from_old)
   {
-    TimerOutput::Scope timer (sim.computing_timer, "Assemble volume of fluid system");
+    this->get_computing_timer().enter_subsection("Assemble volume of fluid system");
 
     const unsigned int block0_idx = field_struct_for_field_index(0).volume_fraction.block_index;
     const unsigned int block_idx = field.volume_fraction.block_index;
@@ -597,6 +597,8 @@ namespace aspect
 
     sim.system_matrix.compress(VectorOperation::add);
     sim.system_rhs.compress(VectorOperation::add);
+
+    this->get_computing_timer().leave_subsection("Assemble volume of fluid system");
   }
 
 

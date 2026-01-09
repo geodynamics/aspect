@@ -1,7 +1,7 @@
 #!/bin/bash
 
 grid_resolution=('3' '4' '5' '6')
-interpolators=('cell_average' 'bilinear_least_squares')
+interpolators=('cell_average' 'linear_least_squares')
 integrators=('rk2' 'rk4')
 stokes_degrees=('2' '3')
 

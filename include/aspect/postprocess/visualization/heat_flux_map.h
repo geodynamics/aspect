@@ -96,6 +96,9 @@ namespace aspect
            * A temporary storage place for the point-wise heat flux
            * solution. Only initialized and used if output_point_wise_heat_flux
            * is set to true.
+           *
+           * This object is computed in update() and then used on every cell
+           * where evaluate_vector_field() is called.
            */
           LinearAlgebra::BlockVector heat_flux_density_solution;
 
@@ -103,6 +106,9 @@ namespace aspect
            * A temporary storage place for the cell-wise heat flux
            * solution. Only initialized and used if output_point_wise_heat_flux
            * is set to false.
+           *
+           * This object is computed in update() and then used on every cell
+           * where evaluate_vector_field() is called.
            */
           std::vector<std::vector<std::pair<double, double>>> heat_flux_and_area;
       };

@@ -1,3 +1,13 @@
+```{tags}
+category:cookbook
+feature:2d
+feature:spherical
+feature:compositional-fields
+feature:compressibility
+feature:modular-equations
+feature:nonlinear-solver
+```
+
 (sec:cookbooks:steinberger)=
 # Convection using a pressure--temperature look-up table and the rheology of Steinberger and Calderwood (2006)
 

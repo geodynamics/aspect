@@ -1,3 +1,10 @@
+```{tags}
+category:benchmark
+feature:3d
+feature:spherical
+feature:analytical-solution
+```
+
 (sec:benchmarks:thin-shell-gravity)=
 # Thin shell gravity benchmark
 

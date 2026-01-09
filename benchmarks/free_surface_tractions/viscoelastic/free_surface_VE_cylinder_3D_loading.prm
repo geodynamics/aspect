@@ -100,7 +100,7 @@ end
 # Number and name of compositional fields
 subsection Compositional fields
   set Number of fields = 12
-  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_zz, ve_stress_xy, ve_stress_xz, ve_stress_yz, \\
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_zz, ve_stress_xy, ve_stress_xz, ve_stress_yz, \
                          ve_stress_xx_old, ve_stress_yy_old, ve_stress_zz_old, ve_stress_xy_old, ve_stress_xz_old, ve_stress_yz_old
   set Types of fields  = stress, stress, stress, stress, stress, stress, stress, stress, stress, stress, stress, stress
 end

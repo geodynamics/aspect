@@ -63,6 +63,11 @@ namespace aspect
         std::string name;
         name = prm.get ("Interpolation scheme");
 
+        // 'bilinear least squares' is the deprecated old name of the 'linear least squares'
+        // interpolator. The old name will be removed in the future.
+        if (name == "bilinear least squares")
+          name = "linear least squares";
+
         return std::get<dim>(registered_plugins).create_plugin (name,
                                                                 "Particle::Interpolator name");
       }
@@ -77,11 +82,18 @@ namespace aspect
         const std::string pattern_of_names
           = std::get<dim>(registered_plugins).get_pattern_of_names ();
 
+        // 'bilinear least squares' is the deprecated old name of the 'linear least squares'
+        // interpolator. The old name will be removed in the future.
         prm.declare_entry ("Interpolation scheme", "cell average",
-                           Patterns::Selection (pattern_of_names),
+                           Patterns::Selection (pattern_of_names + "|bilinear least squares"),
                            "Select one of the following models:\n\n"
                            +
-                           std::get<dim>(registered_plugins).get_description_string());
+                           std::get<dim>(registered_plugins).get_description_string()
+                           +
+                           "\n\n"
+                           "`bilinear least squares': "
+                           "Deprecated, now an alias for `linear least squares'. "
+                           "This alias will be removed in the future. ");
 
         std::get<dim>(registered_plugins).declare_parameters (prm);
       }

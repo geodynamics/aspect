@@ -1,3 +1,11 @@
+```{tags}
+category:cookbook
+feature:2d
+feature:spherical
+feature:compositional-fields
+feature:compressibility
+```
+
 (sec:cookbooks:multicom_steinberger)=
 #  Thermochemical plume model using multiple P--T look-up tables
 

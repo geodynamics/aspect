@@ -1,0 +1,5 @@
+Added: a new prescribed solution plugin system that allows adding regional
+solutions as constraints to the model. Introduced a first example plugin,
+'velocity function', which prescribes the velocity based on user-defined functions.
+<br>
+(Haoyuan Li, 2025/09/20)

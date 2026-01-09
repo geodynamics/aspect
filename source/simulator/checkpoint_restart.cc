@@ -251,7 +251,7 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::create_snapshot()
   {
-    TimerOutput::Scope timer (computing_timer, "Create snapshot");
+    computing_timer.enter_subsection("Create snapshot");
 
     // Take elapsed time from timer so that we can serialize it:
     total_walltime_until_last_snapshot += wall_timer.wall_time();
@@ -387,6 +387,8 @@ namespace aspect
       }
 
     pcout << "*** Snapshot " << checkpoint_path << " created!" << std::endl << std::endl;
+
+    computing_timer.leave_subsection("Create snapshot");
   }
 
 
@@ -608,7 +610,35 @@ namespace aspect
 
     ar &statistics;
 
+    // Serialize various plugin systems. In many cases, plugins are stateless and
+    // serialization will not do anything. But some are stateful (for example the
+    // dynamic core boundary temperature plugin) and need to be serialized.
+    ar &mesh_refinement_manager;
+    ar &heating_model_manager;
     ar &postprocess_manager;
+    ar &boundary_temperature_manager;
+    ar &boundary_convective_heating_manager;
+    ar &boundary_composition_manager;
+    ar &prescribed_solution_manager;
+    ar &boundary_velocity_manager;
+    ar &boundary_traction_manager;
+
+// The following are not manager classes but straight up plugins and so don't
+// currently have the ability to serialize themselves. We should add those later.
+//    ar &prescribed_stokes_solution;
+//    ar &boundary_heat_flux;
+//    ar &(*adiabatic_conditions);
+//    ar &(*initial_topography_model);
+
+// Also, the following two are objects that are documented to be destroyed
+// after the first time step. One can argue that consequently they are
+// not needed any more anyway after we read a checkpoint (which is always
+// *after* a time step, i.e., not during the initial time step). But,
+// the documentation also says that *other* objects may keep a pointer
+// to them around -- we wouldn't know that here, and so we can't serialize
+// these objects here:
+//    ar &(*initial_temperature_manager);
+//    ar &(*initial_composition_manager);
 
     if (parameters.mesh_deformation_enabled)
       ar &(*mesh_deformation);

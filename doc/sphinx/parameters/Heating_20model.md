@@ -9,7 +9,7 @@
 ### __Parameter name:__ List of model names
 **Default value:**
 
-**Pattern:** [MultipleSelection adiabatic heating|adiabatic heating of melt|compositional heating|constant heating|function|latent heat|latent heat melt|radioactive decay|shear heating|shear heating with melt|tidal heating ]
+**Pattern:** [MultipleSelection adiabatic heating|adiabatic heating of melt|anisotropic shear heating|compositional heating|constant heating|function|latent heat|latent heat melt|radioactive decay|shear heating|shear heating with melt|tidal heating ]
 
 **Documentation:** A comma separated list of heating models that will be used to calculate the heating terms in the energy equation. The results of each of these criteria, i.e., the heating source terms and the latent heat terms for the left hand side will be added.
 
@@ -20,6 +20,8 @@ The following heating models are available:
 &lsquo;adiabatic heating of melt&rsquo;: Implementation of a standard and a simplified model of adiabatic heating of melt. The full model implements the heating term
 $\alpha T (-\phi \mathbf u_s \cdot \nabla p) + \alpha T (\phi \mathbf u_f \cdot \nabla p)$.
 For full adiabatic heating, this has to be used in combination with the heating model &lsquo;adiabatic heating&rsquo; to also include adiabatic heating for the solid part, and the full heating term is then $\alpha T ((1-\phi) \mathbf u_s \cdot \nabla p) + \alpha T (\phi \mathbf u_f \cdot \nabla p)$.
+
+&lsquo;anisotropic shear heating&rsquo;: Implementation of a standard model for shear heating extended for an anisotropic viscosity tensor. If the material model provides a stress-strain director tensor, then the strain-rate is multiplied with this tensor to compute the stress that is used when computing the shear heating.
 
 &lsquo;compositional heating&rsquo;: Implementation of a model in which magnitude of internal heat production is determined from fixed values assigned to each compositional field. These values are interpreted as having units \si{\watt\per\meter\cubed}.
 

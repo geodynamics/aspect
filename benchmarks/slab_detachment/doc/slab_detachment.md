@@ -1,3 +1,13 @@
+```{tags}
+category:benchmark
+feature:2d
+feature:cartesian
+feature:community-benchmark
+feature:nonlinear-solver
+feature:compositional-fields
+```
+
+(sec:benchmarks:slab_detachment)=`
 # The slab detachment benchmark
 
 *This section was contributed by Cedric Thieulot and Anne Glerum.*

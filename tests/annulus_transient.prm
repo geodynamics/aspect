@@ -85,7 +85,7 @@ end
 
 subsection Particles
   set Integration scheme = rk2
-  set Interpolation scheme = bilinear least squares
+  set Interpolation scheme = linear least squares
   set List of particle properties = particle density
   set Particle generator name = random uniform
   set Load balancing strategy = add particles
