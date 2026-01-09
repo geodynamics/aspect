@@ -1,0 +1,67 @@
+subsection Postprocess
+  set List of postprocessors = velocity statistics, composition statistics, memory statistics, visualization, particles, crystal preferred orientation
+
+  subsection Visualization
+    set Time between graphical output = 0.1
+    set List of output variables = material properties, strain rate, named additional outputs, shear stress, stress
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
+  end
+
+  subsection Particles
+    set Time between data output = 0.1
+    set Data output format       = gnuplot, vtu
+    set Exclude output properties = rotation_matrix, volume fraction
+  end
+
+  subsection Crystal Preferred Orientation
+    set Time between data output = 0.1
+    set Write in background thread = true
+    set Compress cpo data files = false
+    set Write out raw cpo data = mineral 0: volume fraction, mineral 0: Euler angles
+    set Write out draw volume weighted cpo data = mineral 0: volume fraction, mineral 0: Euler angles
+  end
+end
+
+subsection Particles
+  set List of particle properties = integrated strain, integrated strain invariant, velocity, pT path, strain rate, crystal preferred orientation, cpo bingham average, cpo elastic tensor
+  set Allow cells without particles = false
+  set Interpolation scheme = nearest neighbor
+  set Particle generator name = ascii file
+  set Minimum particles per cell  = 1
+  set Load balancing strategy     = add particles
+
+  subsection Generator
+    subsection Ascii file
+      set Data directory = ./
+      set Data file name = particle_one.dat
+    end
+  end
+
+  subsection Crystal Preferred Orientation
+
+    subsection Initial grains
+      set Minerals = Olivine: A-fabric
+      set Volume fractions minerals = 1.0
+    end
+
+    set Number of grains per particle = 1000
+    set Property advection method = Backward Euler
+    set Property advection tolerance = 1e-15
+    set CPO derivatives algorithm = D-Rex 2004
+
+    subsection D-Rex 2004
+      set Mobility = 10
+      set Stress exponents = 3.5
+      set Exponents p = 1.5
+      set Threshold GBS = 0.3
+    end
+  end
+
+  subsection CPO Bingham Average
+    set Random number seed = 200
+    set Use rotation matrix = false
+  end
+end
