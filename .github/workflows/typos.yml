@@ -19,7 +19,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout the Checkout Actions Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
       - name: Check spelling with typos
@@ -42,7 +42,7 @@ jobs:
       - name: Store typos diff file
         run:  git diff > changes-typos.diff
       - name: archive typos results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: changes-typos.diff
           path: changes-typos.diff

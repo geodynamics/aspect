@@ -40,20 +40,6 @@ namespace aspect
 
 
 
-    template <int dim>
-    void
-    Interface<dim>::save (std::map<std::string,std::string> &) const
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::load (const std::map<std::string,std::string> &)
-    {}
-
-
-
 // ------------------------------ Manager -----------------------------
 
 

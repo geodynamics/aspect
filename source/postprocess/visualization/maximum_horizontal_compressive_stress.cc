@@ -20,6 +20,7 @@
 
 
 #include <aspect/postprocess/visualization/maximum_horizontal_compressive_stress.h>
+#include <aspect/material_model/rheology/elasticity.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/utilities.h>
 
@@ -46,49 +47,78 @@ namespace aspect
                             std::vector<Vector<double>> &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
-        Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
-        Assert ((computed_quantities[0].size() == dim),
-                ExcInternalError());
-        Assert (input_data.solution_values[0].size() == this->introspection().n_components,   ExcInternalError());
-        Assert (input_data.solution_gradients[0].size() == this->introspection().n_components,  ExcInternalError());
-        AssertThrow (this->get_parameters().enable_elasticity == false, ExcMessage("The maximum horizontal compressive stress plugin currently does not work with elasticity."));
+        Assert (computed_quantities.size() == n_quadrature_points, ExcInternalError());
+        Assert (computed_quantities[0].size() == dim, ExcInternalError());
+        Assert (input_data.solution_values[0].size() == this->introspection().n_components, ExcInternalError());
+        Assert (input_data.solution_gradients[0].size() == this->introspection().n_components, ExcInternalError());
 
         MaterialModel::MaterialModelInputs<dim> in(input_data,
                                                    this->introspection());
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
 
-        // We do not need to compute anything but the viscosity
-        in.requested_properties = MaterialModel::MaterialProperties::viscosity;
+        if (this->get_parameters().enable_elasticity)
+          in.requested_properties = MaterialModel::MaterialProperties::viscosity
+                                    | MaterialModel::MaterialProperties::additional_outputs;
+        else
+          in.requested_properties = MaterialModel::MaterialProperties::viscosity;
 
-        // Compute the viscosity...
+        if (in.requested_properties & MaterialModel::MaterialProperties::additional_outputs)
+          this->get_material_model().create_additional_named_outputs(out);
+
         this->get_material_model().evaluate(in, out);
 
-        // ...and use it to compute the stresses and from that the
-        // maximum compressive stress direction
+        // compute compressive stress components at quadrature points
+        const unsigned int n_tensor_components = SymmetricTensor<2,dim>::n_independent_components;
+        std::vector<Vector<double>> stress_components(n_quadrature_points,
+                                                       Vector<double>(n_tensor_components));
+
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             const SymmetricTensor<2,dim> strain_rate = in.strain_rate[q];
             const SymmetricTensor<2,dim> deviatoric_strain_rate
               = (this->get_material_model().is_compressible()
-                 ?
-                 strain_rate - 1./3 * trace(strain_rate) * unit_symmetric_tensor<dim>()
-                 :
-                 strain_rate);
+                 ? strain_rate - 1./3 * trace(strain_rate) * unit_symmetric_tensor<dim>()
+                 : strain_rate);
 
             const double eta = out.viscosities[q];
 
-            // first compute the stress tensor, ignoring the pressure
-            // for the moment (the pressure has no effect on the
-            // direction since it just adds a multiple of the identity
-            // matrix to the stress, but because it is large, it may
-            // lead to numerical instabilities)
-            //
-            // note that the *compressive* stress is simply the
-            // negative stress
-            const SymmetricTensor<2,dim> compressive_stress = -2*eta*deviatoric_strain_rate;
+            SymmetricTensor<2,dim> compressive_stress = in.pressure[q] * unit_symmetric_tensor<dim>();
 
-            // then find a set of (dim-1) horizontal, unit-length, mutually orthogonal vectors
+            if (this->get_parameters().enable_elasticity)
+              {
+                const auto elastic_additional_out =
+                  out.template get_additional_output_object<MaterialModel::ElasticAdditionalOutputs<dim>>();
+
+                Assert(elastic_additional_out != nullptr,
+                       ExcMessage("Elastic Additional Outputs are needed for the 'maximum horizontal compressive stress' postprocessor, but they have not been created."));
+
+                compressive_stress -= elastic_additional_out->deviatoric_stress[q];
+              }
+            else
+              {
+                compressive_stress -= 2. * eta * deviatoric_strain_rate;
+              }
+
+            // serialize symmetric tensor into the vector using Utilities helper
+            Utilities::Tensors::unroll_symmetric_tensor_into_array<dim>(compressive_stress,
+                                                                        stress_components[q].begin(),
+                                                                        stress_components[q].end());
+          }
+
+        // average stress components if requested (use existing visualization setting)
+        const auto &viz = this->get_postprocess_manager().template get_matching_active_plugin<Postprocess::Visualization<dim>>();
+        if (!viz.output_pointwise_stress_and_strain())
+          average_quantities(stress_components);
+
+        // from averaged stress components compute final direction and magnitude
+        for (unsigned int q=0; q<n_quadrature_points; ++q)
+          {
+            // deserialize vector back into a symmetric tensor
+            SymmetricTensor<2,dim> avg_compressive_stress =
+              Utilities::Tensors::to_symmetric_tensor<dim>(stress_components[q].begin(),
+                                                           stress_components[q].end());
+
             const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector (in.position[q]);
             const Tensor<1,dim> vertical_direction = gravity/gravity.norm();
             std::array<Tensor<1,dim>,dim-1 > orthogonal_directions
@@ -107,9 +137,7 @@ namespace aspect
                 {
                   maximum_horizontal_compressive_stress = orthogonal_directions[0] *
                                                           (orthogonal_directions[0] *
-                                                           ((compressive_stress
-                                                             -
-                                                             in.pressure[q] * unit_symmetric_tensor<dim>()) *
+                                                           (avg_compressive_stress *
                                                             orthogonal_directions[0]));
                   break;
                 }
@@ -119,13 +147,13 @@ namespace aspect
                 case 3:
                 {
                   const double a = orthogonal_directions[0] *
-                                   (compressive_stress *
+                                   (avg_compressive_stress *
                                     orthogonal_directions[0]);
                   const double b = orthogonal_directions[1] *
-                                   (compressive_stress *
+                                   (avg_compressive_stress *
                                     orthogonal_directions[1]);
-                  const double c = 2.0*orthogonal_directions[0] *
-                                   (compressive_stress *
+                  const double c = 2.0 * orthogonal_directions[0] *
+                                   (avg_compressive_stress *
                                     orthogonal_directions[1]);
 
                   // compute the two stationary points of f(alpha)
@@ -153,28 +181,16 @@ namespace aspect
                   const Tensor<1,dim> n = std::cos(alpha) * orthogonal_directions[0] +
                                           std::sin(alpha) * orthogonal_directions[1];
 
-                  // finally compute the actual direction * magnitude,
-                  // now taking into account the pressure (with the
-                  // correct sign in front of the pressure for the
-                  // *compressive* stress)
-                  //
+                  // finally compute the actual direction * magnitude.
                   // the magnitude is computed as discussed in the
                   // description of the plugin below
-                  const double maximum_horizontal_compressive_stress_magnitude
-                    = (n * ((compressive_stress
-                             -
-                             in.pressure[q] * unit_symmetric_tensor<dim>()) * n));
                   const Tensor<1,dim> n_perp = std::sin(alpha) * orthogonal_directions[0] -
                                                std::cos(alpha) * orthogonal_directions[1];
 
-                  const double minimum_horizontal_compressive_stress_magnitude
-                    = (n_perp * ((compressive_stress
-                                  -
-                                  in.pressure[q] * unit_symmetric_tensor<dim>()) * n_perp));
+                  const double max_mag = (n * (avg_compressive_stress * n));
+                  const double min_mag = (n_perp * (avg_compressive_stress * n_perp));
 
-                  maximum_horizontal_compressive_stress
-                    = n * (maximum_horizontal_compressive_stress_magnitude -
-                           minimum_horizontal_compressive_stress_magnitude);
+                  maximum_horizontal_compressive_stress = n * (max_mag - min_mag);
 
                   break;
                 }
@@ -278,7 +294,7 @@ namespace aspect
                                                   "direction of $\\mathbf n$, we only need to seek a solution "
                                                   "to this equation in the interval $\\alpha\\in[0,\\pi)$. "
                                                   "These are given by "
-                                                  "$\\alpha_1=\\frac 12 \\arctan \\frac{\\mathbf u^T \\sigma_c "
+                                                  "$\\alpha_1=\\frac 12 \\arctan \\frac{2\\mathbf u^T \\sigma_c "
                                                   "\\mathbf v}{\\mathbf u^T \\sigma_c \\mathbf u - "
                                                   "\\mathbf v^T \\sigma_c \\mathbf v}$ and "
                                                   "$\\alpha_2=\\alpha_1+\\frac{\\pi}{2}$, one of which will "
@@ -286,7 +302,7 @@ namespace aspect
                                                   "$f(\\alpha)$. One checks the sign of "
                                                   "$f^{\\prime\\prime}(\\alpha)=-2(\\mathbf u^T \\sigma_c \\mathbf u - "
                                                   "\\mathbf v^T \\sigma_c \\mathbf v)\\cos(2\\alpha) "
-                                                  "- 2 (\\mathbf u^T \\sigma_c \\mathbf v) \\sin(2\\alpha)$ for "
+                                                  "- 4 (\\mathbf u^T \\sigma_c \\mathbf v) \\sin(2\\alpha)$ for "
                                                   "each of these to determine the $\\alpha$ that maximizes "
                                                   "$f(\\alpha)$, and from this immediately arrives at the correct "
                                                   "form for the maximum horizontal stress $\\mathbf n$."
@@ -359,9 +375,6 @@ namespace aspect
                                                   "    is zero at these points.}"
                                                   "  \\label{fig:max-horizontal-compressive-stress}"
                                                   "\\end{figure}"
-                                                  "\n\n"
-                                                  "Note that this plugin does not take into account elastic stresses "
-                                                  "and therefore cannot be used when elasticity is switched on. "
                                                   "\n\n"
                                                   "Physical units: $\\text{Pa}$.")
     }

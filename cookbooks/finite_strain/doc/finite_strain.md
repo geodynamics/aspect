@@ -1,3 +1,10 @@
+```{tags}
+category:cookbook
+feature:2d
+feature:cartesian
+feature:compositional-fields
+```
+
 (sec:cookbooks:finite_strain)=
 # Tracking finite strain
 

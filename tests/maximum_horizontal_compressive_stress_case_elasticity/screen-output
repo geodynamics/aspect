@@ -1,0 +1,108 @@
+-----------------------------------------------------------------------------
+--                             This is ASPECT                              --
+-- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
+-----------------------------------------------------------------------------
+--     . version 3.1.0-pre (fix_SHmax, 9f5a9b2b4)
+--     . using deal.II 9.6.1
+--     .       with 32 bit indices
+--     .       with vectorization level 1 (SSE2, 2 doubles, 128 bits)
+--     . using Trilinos 14.4.0
+--     . using p4est 2.3.6
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&dg=1&mf=1&sha=9f5a9b2b4&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 125 (on 1 levels)
+Number of degrees of freedom: 44,925 (3,993+216+216+3,375+3,375+3,375+3,375+3,375+3,375+3,375+3,375+3,375+3,375+3,375+3,375)
+
+Number of mesh deformation degrees of freedom: 648
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Skipping ve_stress_xx composition solve because RHS is zero.
+   Skipping ve_stress_yy composition solve because RHS is zero.
+   Skipping ve_stress_zz composition solve because RHS is zero.
+   Skipping ve_stress_xy composition solve because RHS is zero.
+   Skipping ve_stress_xz composition solve because RHS is zero.
+   Skipping ve_stress_yz composition solve because RHS is zero.
+   Skipping ve_stress_xx_old composition solve because RHS is zero.
+   Skipping ve_stress_yy_old composition solve because RHS is zero.
+   Skipping ve_stress_zz_old composition solve because RHS is zero.
+   Skipping ve_stress_xy_old composition solve because RHS is zero.
+   Skipping ve_stress_xz_old composition solve because RHS is zero.
+   Skipping ve_stress_yz_old composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 33+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.42767e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0102535
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0102535
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
+   Postprocessing:
+     Writing graphical output: output-maximum_horizontal_compressive_stress_case_elasticity/solution/solution-00000
+     RMS, max velocity:        0.317 m/year, 3.26 m/year
+     Topography min/max:       0 m, 0 m
+     Pressure min/avg/max:     -7.54e+05 Pa, 8.085e+09 Pa, 1.617e+10 Pa
+
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      8.45s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system rhs       |         1 |    0.0483s |      0.57% |
+| Assemble composition system      |        12 |      6.47s |        77% |
+| Assemble temperature system      |         1 |    0.0232s |      0.27% |
+| Build Stokes preconditioner      |         1 |   0.00656s |         0% |
+| Build temperature preconditioner |         1 |  0.000181s |         0% |
+| Initialization                   |         1 |     0.083s |      0.98% |
+| Mesh deformation                 |         1 |   0.00664s |         0% |
+| Mesh deformation initialize      |         1 |   0.00557s |         0% |
+| Postprocessing                   |         1 |    0.0217s |      0.26% |
+| Setup dof systems                |         1 |    0.0239s |      0.28% |
+| Setup initial conditions         |         1 |     0.082s |      0.97% |
+| Setup matrices                   |         1 |      1.59s |        19% |
+| Solve Stokes system              |         1 |    0.0673s |       0.8% |
+| Solve temperature system         |         1 |  0.000542s |         0% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 8s
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      8.45s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system rhs       |         1 |    0.0483s |      0.57% |
+| Assemble composition system      |        12 |      6.47s |        77% |
+| Assemble temperature system      |         1 |    0.0232s |      0.27% |
+| Build Stokes preconditioner      |         1 |   0.00656s |         0% |
+| Build temperature preconditioner |         1 |  0.000181s |         0% |
+| Initialization                   |         1 |     0.083s |      0.98% |
+| Mesh deformation                 |         1 |   0.00664s |         0% |
+| Mesh deformation initialize      |         1 |   0.00557s |         0% |
+| Postprocessing                   |         1 |    0.0217s |      0.26% |
+| Setup dof systems                |         1 |    0.0239s |      0.28% |
+| Setup initial conditions         |         1 |     0.082s |      0.97% |
+| Setup matrices                   |         1 |      1.59s |        19% |
+| Solve Stokes system              |         1 |    0.0673s |       0.8% |
+| Solve temperature system         |         1 |  0.000542s |         0% |
++----------------------------------+-----------+------------+------------+
+
+
+WARNING: During this computation 1 nonlinear solver failures occurred!
+-- Total wallclock time elapsed including restarts: 8s
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&dg=1&mf=1&sha=9f5a9b2b4&src=code
+-----------------------------------------------------------------------------

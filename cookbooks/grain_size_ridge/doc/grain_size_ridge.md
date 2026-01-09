@@ -1,3 +1,14 @@
+```{tags}
+category:cookbook
+feature:2d
+feature:cartesian
+feature:data-integration
+feature:nonlinear-solver
+feature:grain-size-evolution
+feature:particles
+feature:modular-equations
+```
+
 (sec:cookbooks:grain-size-ridge)=
 # Sublithospheric convection beneath an oceanic plate with a grain size dependent rheology
 
@@ -75,7 +86,7 @@ at least 40 and not more than 640 particles in each cell. This means that a
 cell with 160 particles can either be refined once (resulting in about 40
 particles in each new cell) or coarsened once (resulting in about 640 in the
 new bigger cell) without having to add or remove particles. We also use the
-bilinear least squares interpolation scheme to interpolate from the particles
+linear least squares interpolation scheme to interpolate from the particles
 to the grid, which is more accurate than schemes based on, for example, the
 cell average. To make sure this scheme does not generate any over- or under-
 shoots in the grain size, we switch on the linear least squares limiter. To

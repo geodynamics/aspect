@@ -1,3 +1,9 @@
+```{tags}
+category:cookbook
+feature:2d
+feature:cartesian
+```
+
 (sec:cookbooks:convection-box)=
 # Convection in a 2d box
 

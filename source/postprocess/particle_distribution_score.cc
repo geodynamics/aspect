@@ -33,8 +33,7 @@ namespace aspect
     {
       double local_min_score = std::numeric_limits<double>::max();
       double local_max_score = 0;
-      double global_score = 0;
-      unsigned int cells_with_particles = 0;
+      std::vector<double> cell_scores;
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         {
@@ -57,7 +56,6 @@ namespace aspect
                 }
               if (particles_in_cell > 0)
                 {
-                  ++cells_with_particles;
                   const double particles_in_cell_double = static_cast<double>(particles_in_cell);
                   const double granularity_double = static_cast<double>(granularity);
                   const double ideal_n_particles_per_bucket = particles_in_cell_double/(Utilities::fixed_power<dim>(granularity_double));
@@ -75,9 +73,8 @@ namespace aspect
                   const double bucket_width = 1.0/granularity_double;
                   buckets_ideal.fill(ideal_n_particles_per_bucket);
 
-                  Table<dim,unsigned int> buckets_actual;
-                  buckets_actual.reinit(bucket_sizes);
-                  sort_particles_into_buckets(cell,bucket_width,buckets_actual);
+                  const Table<dim,unsigned int> buckets_actual
+                    = sort_particles_into_buckets(cell, bucket_width);
 
                   /*
                   In the worst case, all particles are in one bucket.
@@ -121,31 +118,42 @@ namespace aspect
                   // error, resulting in a score from 0 to 1 for the cell.
                   const double distribution_score_current_cell = actual_error_squared/worst_case_error_squared;
 
-                  // summing to take average later
-                  global_score += distribution_score_current_cell;
+                  cell_scores.push_back(distribution_score_current_cell);
 
+                  local_max_score = std::max(local_max_score, distribution_score_current_cell);
+                  local_min_score = std::min(local_min_score, distribution_score_current_cell);
+                }
+              else if (particles_in_cell == 0)
+                {
+                  // The score should be bad if there are no particles in a cell
+                  const double distribution_score_current_cell = 1.0;
+                  cell_scores.push_back(distribution_score_current_cell);
                   local_max_score = std::max(local_max_score, distribution_score_current_cell);
                   local_min_score = std::min(local_min_score, distribution_score_current_cell);
                 }
             }
         }
 
-      // get final values from all processors
+      // Calculate the mean and standard deviation of cell scores across all processors
+      const std::pair<double, double> mean_and_standard_deviation =
+        Utilities::MPI::mean_and_standard_deviation(cell_scores.begin(),
+                                                    cell_scores.end(),
+                                                    this->get_mpi_communicator());
+
+      // get final values for min and max score from all processors
       const double global_max_score = Utilities::MPI::max (local_max_score, this->get_mpi_communicator());
       const double global_min_score = Utilities::MPI::min (local_min_score, this->get_mpi_communicator());
-      const double summed_score = Utilities::MPI::sum (global_score, this->get_mpi_communicator());
-      const double global_cells_with_particles = Utilities::MPI::sum (cells_with_particles, this->get_mpi_communicator());
-      const double average_score = summed_score / global_cells_with_particles;
 
       // write to statistics file
       statistics.add_value ("Minimal particle distribution score: ", global_min_score);
-      statistics.add_value ("Average particle distribution score: ", average_score);
+      statistics.add_value ("Average particle distribution score: ", mean_and_standard_deviation.first);
       statistics.add_value ("Maximal particle distribution score: ", global_max_score);
+      statistics.add_value ("Cell Score Standard Deviation: ", mean_and_standard_deviation.second);
 
       std::ostringstream output;
-      output << global_min_score << '/' <<average_score << '/' << global_max_score;
+      output << global_min_score << '/' << mean_and_standard_deviation.first << '/' << global_max_score << '/' << mean_and_standard_deviation.second;
 
-      return std::pair<std::string, std::string> ("Particle distribution score min/avg/max:",
+      return std::pair<std::string, std::string> ("Particle distribution score min/avg/max/stdev:",
                                                   output.str());
     }
 
@@ -161,11 +169,17 @@ namespace aspect
 
 
     template <int dim>
-    void ParticleDistributionScore<dim>::sort_particles_into_buckets(
+    Table<dim,unsigned int>
+    ParticleDistributionScore<dim>::sort_particles_into_buckets(
       const typename Triangulation<dim>::active_cell_iterator &cell,
-      const double bucket_width,
-      Table<dim,unsigned int> &buckets) const
+      const double bucket_width) const
     {
+      TableIndices<dim> bucket_sizes;
+      for (unsigned int i=0; i<dim; ++i)
+        bucket_sizes[i] = granularity;
+      Table<dim,unsigned int> buckets;
+      buckets.reinit(bucket_sizes);
+
       for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
         {
           // sort the particles within the current cell
@@ -212,13 +226,15 @@ namespace aspect
               ++buckets(entry_index);
             }
         }
+
+      return buckets;
     }
 
 
 
     template <int dim>
     void
-    ParticleDistributionScore<dim>::declare_parameters (ParameterHandler &prm)
+    ParticleDistributionScore<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Postprocess");
       {

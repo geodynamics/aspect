@@ -25,7 +25,7 @@ subsection Postprocess
 end
 
 subsection Particles
-  set Interpolation scheme = bilinear least squares
+  set Interpolation scheme = linear least squares
 
   subsection Generator
     subsection Random uniform

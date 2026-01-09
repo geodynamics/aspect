@@ -1,3 +1,12 @@
+```{tags}
+category:cookbook
+category:benchmark
+feature:2d
+feature:cartesian
+feature:compositional-fields
+feature:community-benchmark
+```
+
 (sec:cookbooks:vankeken-vof)=
 # Computation of the van Keken Problem with the Volume-of-Fluid Interface Tracking Method
 

@@ -5,6 +5,22 @@
 ## **Subsection:** Particles
 
 
+(parameters:Particles/Addition_20histogram_20granularity)=
+### __Parameter name:__ Addition histogram granularity
+**Default value:** 3
+
+**Pattern:** [Integer range 2...2147483647 (inclusive)]
+
+**Documentation:** The number of subdivisions of each cell in each spatial dimension when adding particles using histogram based methods. Lower granularities are generally better for histogram methods.
+
+(parameters:Particles/Addition_20point_20density_20function_20granularity)=
+### __Parameter name:__ Addition point density function granularity
+**Default value:** 6
+
+**Pattern:** [Integer range 2...2147483647 (inclusive)]
+
+**Documentation:** The number of subdivisions of each cell in each spatial dimension when adding particles using point density function based methods. Higher granularities are generally better for point density function based methods but might be slower.
+
 (parameters:Particles/Allow_20cells_20without_20particles)=
 ### __Parameter name:__ Allow cells without particles
 **Default value:** false
@@ -12,6 +28,14 @@
 **Pattern:** [Bool]
 
 **Documentation:** By default, every cell needs to contain particles to use this interpolator plugin. If this parameter is set to true, cells are allowed to have no particles. In case both the current cell and its neighbors are empty, the interpolator will return 0 for the current cell&rsquo;s properties.
+
+(parameters:Particles/Bandwidth)=
+### __Parameter name:__ Bandwidth
+**Default value:** 0.3
+
+**Pattern:** [Double 0.3...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The bandwidth value is used to scale the kernel function when generating the point density function of particles. The bandwidth is measured as a fraction of the cells extent in one spatial dimension. For example, the default bandwidth of 0.3 represents a size equal to 30 percent of the cells size in one spatial dimension.
 
 (parameters:Particles/Integration_20scheme)=
 ### __Parameter name:__ Integration scheme
@@ -37,17 +61,17 @@ Select one of the following models:
 ### __Parameter name:__ Interpolation scheme
 **Default value:** cell average
 
-**Pattern:** [Selection bilinear least squares|cell average|distance weighted average|harmonic average|nearest neighbor|quadratic least squares ]
+**Pattern:** [Selection cell average|distance weighted average|harmonic average|linear least squares|nearest neighbor|quadratic least squares|bilinear least squares ]
 
 **Documentation:** Select one of the following models:
-
-&lsquo;bilinear least squares&rsquo;: Uses linear least squares to obtain the slopes and center of a 2d or 3d plane from the particle positions and a particular property value on those particles. Interpolate this property onto a vector of points. If the limiter is enabled then it will ensure the interpolated properties do not exceed the range of the minimum and maximum of the values of the property on the particles. Note that deal.II must be configured with BLAS and LAPACK to support this operation.
 
 &lsquo;cell average&rsquo;: Return the arithmetic average of all particle properties in the given cell, or in the neighboring cells if the given cell is empty. In case the neighboring cells are also empty, and &rsquo;Allow cells without particles&rsquo; is set to true, the interpolator returns 0. Otherwise, an exception is thrown.
 
 &lsquo;distance weighted average&rsquo;: Interpolates particle properties onto a vector of points using a distance weighed averaging method.
 
 &lsquo;harmonic average&rsquo;: Return the harmonic average of all particle properties in the given cell. If the cell contains no particles, return the harmonic average of the properties in the neighboring cells. In case the neighboring cells are also empty, and &rsquo;Allow cells without particles&rsquo; is set to true, the interpolator returns 0. Otherwise, an exception is thrown.
+
+&lsquo;linear least squares&rsquo;: Uses linear least squares to obtain the slopes and center of a 2d or 3d plane from the particle positions and a particular property value on those particles. Interpolate this property onto a vector of points. If the limiter is enabled then it will ensure the interpolated properties do not exceed the range of the minimum and maximum of the values of the property on the particles. Note that deal.II must be configured with BLAS and LAPACK to support this operation.
 
 &lsquo;nearest neighbor&rsquo;: Return the properties of the nearest neighboring particle in the current cell, or nearest particle in nearest neighboring cell if current cell is empty. In case the neighboring cells are also empty, and &rsquo;Allow cells without particles&rsquo; is set to true, the interpolator returns 0. Otherwise, an exception is thrown.
 
@@ -139,6 +163,14 @@ The following properties are available:
 
 **Documentation:** The number of particle systems to be created. The maximum number of particle systems is set by the CMake variable &lsquo;ASPECT_MAX_NUM_PARTICLE_SYSTEMS&lsquo; and is by default 2.
 
+(parameters:Particles/Particle_20addition_20algorithm)=
+### __Parameter name:__ Particle addition algorithm
+**Default value:** random
+
+**Pattern:** [Selection random|histogram|point density function ]
+
+**Documentation:** Algorithm used to add particles to cells.
+
 (parameters:Particles/Particle_20generator_20name)=
 ### __Parameter name:__ Particle generator name
 **Default value:** random uniform
@@ -161,6 +193,14 @@ The following properties are available:
 
 &lsquo;uniform radial&rsquo;: Generate a uniform distribution of particles over a spherical domain in 2d or 3d. Uniform here means the particles will be generated with an equal spacing in each spherical spatial dimension, i.e., the particles are created at positions that increase linearly with equal spacing in radius, colatitude and longitude around a certain center point. Note that in order to produce a regular distribution the number of generated particles might not exactly match the one specified in the input file.
 
+(parameters:Particles/Particle_20removal_20algorithm)=
+### __Parameter name:__ Particle removal algorithm
+**Default value:** random
+
+**Pattern:** [Selection random|point density function ]
+
+**Documentation:** Algorithm used to delete excess particles from cells. If point density function is chosen, the particle manager will generate a point density function from the locations of each particle and remove the particle whose position is at the maximum of the point density function.
+
 (parameters:Particles/Particle_20weight)=
 ### __Parameter name:__ Particle weight
 **Default value:** 10
@@ -168,6 +208,14 @@ The following properties are available:
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** Weight that is associated with the computational load of a single particle. The sum of particle weights will be added to the sum of cell weights to determine the partitioning of the mesh if the &lsquo;repartition&rsquo; particle load balancing strategy is selected. The optimal weight depends on the used integrator and particle properties. In general for a more expensive integrator and more expensive properties a larger particle weight is recommended. Before adding the weights of particles, each cell already carries a weight of 1000 to account for the cost of field-based computations.
+
+(parameters:Particles/Point_20density_20kernel_20function)=
+### __Parameter name:__ Point density kernel function
+**Default value:** cutoff c1 dealii
+
+**Pattern:** [Selection cutoff c1 dealii|cutoff w1 dealii|uniform|triangular|gaussian ]
+
+**Documentation:** The kernel function is summed at each particle location to generate a point density function of the particle locations according to a process known as kernel density estimation. Because kernel density estimation sums the value of a kernel function centered on each point of interest to every other point in the dataset, the only parameter of each kernel function is the distance between the particles, and each kernel function only returns a single value depending on this distance. The return value of each function is also scaled by the selected bandwidth value.The gaussian function uses the gaussian distribution to generate an output from the input distance. The output of the triangular function decreases at a constant rate with increasing distance between the particles. The uniform function returns a constant value as long as the distance between particles is less than the selected bandwidth.The cutoff w1 and cutoff c1 dealii options call the deal.II functions called cutoffW1 and cutoffC1 respectively. These are functions whose return values decrease with distance. A more detailed explanation on these two function are available in the deal.II documentation.
 
 (parameters:Particles/Update_20ghost_20particles)=
 ### __Parameter name:__ Update ghost particles
@@ -773,9 +821,9 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 (parameters:Particles/Interpolator)=
 ## **Subsection:** Particles / Interpolator
-(parameters:Particles/Interpolator/Bilinear_20least_20squares)=
-## **Subsection:** Particles / Interpolator / Bilinear least squares
-(parameters:Particles/Interpolator/Bilinear_20least_20squares/Use_20boundary_20extrapolation)=
+(parameters:Particles/Interpolator/Linear_20least_20squares)=
+## **Subsection:** Particles / Interpolator / Linear least squares
+(parameters:Particles/Interpolator/Linear_20least_20squares/Use_20boundary_20extrapolation)=
 ### __Parameter name:__ Use boundary extrapolation
 **Default value:** false
 
@@ -783,7 +831,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Documentation:** Extends the range used by &rsquo;Use linear least squares limiter&rsquo; by linearly interpolating values at cell boundaries from neighboring cells. If more than one value is given, it will be treated as a list with one component per particle property. Enabling &rsquo;Use boundary extrapolation&rsquo; requires enabling &rsquo;Use linear least squares limiter&rsquo;.
 
-(parameters:Particles/Interpolator/Bilinear_20least_20squares/Use_20linear_20least_20squares_20limiter)=
+(parameters:Particles/Interpolator/Linear_20least_20squares/Use_20linear_20least_20squares_20limiter)=
 ### __Parameter name:__ Use linear least squares limiter
 **Default value:** true
 

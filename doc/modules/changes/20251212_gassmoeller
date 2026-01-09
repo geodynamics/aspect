@@ -1,0 +1,7 @@
+Changed: The particle interpolator 'bilinear least squares'
+was renamed to 'linear least squares' and all references in the
+repository have been renamed as well. This is to indicate that
+while the interpolator was implemented as a bi/trilinear function
+in the past, it had been changed since ASPECT 2.4.0.
+<br>
+(Rene Gassmoeller, 2025/12/12)

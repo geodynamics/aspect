@@ -287,6 +287,14 @@ In practice, you should choose the value of this parameter to be so that if you 
 
 **Documentation:** As explained in the paper that describes ASPECT (Kronbichler, Heister, and Bangerth, 2012, see {cite}`kronbichler:etal:2012`) we first try to solve the Stokes system in every time step using a GMRES iteration with a poor but cheap preconditioner. By default, we try whether we can converge the GMRES solver in 200 such iterations before deciding that we need a better preconditioner. This is sufficient for simple problems with variable viscosity and we never need the second phase with the more expensive preconditioner. On the other hand, for more complex problems, and in particular for problems with strongly nonlinear viscosity, the 200 cheap iterations don&rsquo;t actually do very much good and one might skip this part right away. In that case, this parameter can be set to zero, i.e., we immediately start with the better but more expensive preconditioner.
 
+(parameters:Solver_20parameters/Stokes_20solver_20parameters/Stokes_20GMG_20type)=
+### __Parameter name:__ Stokes GMG type
+**Default value:** local smoothing
+
+**Pattern:** [Selection local smoothing|global coarsening ]
+
+**Documentation:** The choice of geometric multigrid, either &rsquo;local smoothing&rsquo; (the default)  or &rsquo;global coarsening&rsquo;. Local smoothing ({cite}`clevenger:heister:2021`) has been extensively tested and works in many more situations, while global coarsening is shown to be up to 3x faster ({cite}`munch:globalcoarsening:2023`).
+
 (parameters:Solver_20parameters/Stokes_20solver_20parameters/Stokes_20solver_20type)=
 ### __Parameter name:__ Stokes solver type
 **Default value:** default solver

@@ -59,7 +59,7 @@ for refinement in 2 3 4 5 6 7; do
     number_of_particles=`echo "2 * 4^${refinement} * $particles_per_cell" | bc -l`
 
     for higher_order_time in 'true' 'false'; do
-      for interpolation_scheme in 'bilinear least squares'; do
+      for interpolation_scheme in 'linear least squares'; do
         echo "subsection Compositional fields" > particles.prm
         echo "  set Number of fields = 1" >> particles.prm
         echo "  set Compositional field methods = particles" >> particles.prm

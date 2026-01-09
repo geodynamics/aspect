@@ -57,6 +57,7 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 #include <aspect/boundary_composition/interface.h>
 #include <aspect/initial_temperature/interface.h>
 #include <aspect/initial_composition/interface.h>
+#include <aspect/prescribed_solution/interface.h>
 #include <aspect/prescribed_stokes_solution/interface.h>
 #include <aspect/boundary_velocity/interface.h>
 #include <aspect/boundary_fluid_pressure/interface.h>
@@ -228,11 +229,14 @@ namespace aspect
        * @param prm The object in which the run-time parameters are to be
        * declared.
        *
+       * @param mpi_rank The MPI rank of the current process. This is needed
+       * to only print deprecation warnings from rank 0.
+       *
        * This function is implemented in
        * <code>source/simulator/parameters.cc</code>.
        */
       static
-      void declare_parameters (ParameterHandler &prm);
+      void declare_parameters (ParameterHandler &prm, const unsigned int mpi_rank);
 
       /**
        * The function that runs the overall algorithm. It contains the loop
@@ -574,6 +578,19 @@ namespace aspect
        * <code>source/simulator/solver_schemes.cc</code>.
        */
       void solve_single_advection_iterated_newton_stokes (bool use_newton_iterations);
+
+      /**
+       * This function implements one scheme for the various
+       * steps necessary to assemble and solve the nonlinear problem.
+       *
+       * The `iterated Advection, no Stokes' scheme iterates the temperature and other
+       * advection systems and instead of solving for the Stokes system,
+       * a prescribed velocity and pressure are used."
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver_schemes.cc</code>.
+       */
+      void solve_iterated_advection_no_stokes ();
 
       /**
        * This function implements one scheme for the various
@@ -1323,6 +1340,26 @@ namespace aspect
       void interpolate_onto_velocity_system(const TensorFunction<1,dim> &func,
                                             LinearAlgebra::Vector &vec) const;
 
+      /**
+       * Perform a Newton line search to determine the optimal step length
+       * along the search direction. After the update, the current_linearization_point
+       * is set to the old current_linearlization_point plus a suitable update.
+       *
+       * @param dcr The defect correction residuals associated with the current nonlinear
+       * iteration.
+       * @param use_picard Whether a Picard iteration was used to update the nonlinear
+       * iteration (true) or a Newton update (false).
+       * @param search_direction The proposed update direction for the solution vector.
+       *
+       * @return This function returns the updated residual after the line
+       * search is performed.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>
+       */
+      double perform_line_search(const DefectCorrectionResiduals &dcr,
+                                 const bool use_picard,
+                                 LinearAlgebra::BlockVector &search_direction);
 
       /**
        * Add constraints to the given @p constraints object that are required
@@ -1819,6 +1856,7 @@ namespace aspect
       BoundaryTemperature::Manager<dim>                                      boundary_temperature_manager;
       BoundaryConvectiveHeating::Manager<dim>                                boundary_convective_heating_manager;
       BoundaryComposition::Manager<dim>                                      boundary_composition_manager;
+      PrescribedSolution::Manager<dim>                                       prescribed_solution_manager;
       const std::unique_ptr<PrescribedStokesSolution::Interface<dim>>        prescribed_stokes_solution;
 
       /**
@@ -2050,6 +2088,7 @@ namespace aspect
       friend class VolumeOfFluidHandler<dim>;
       friend class StokesMatrixFreeHandler<dim>;
       template <int dimension, int velocity_degree> friend class StokesMatrixFreeHandlerLocalSmoothingImplementation;
+      template <int dimension, int velocity_degree> friend class StokesMatrixFreeHandlerGlobalCoarseningImplementation;
       friend struct Parameters<dim>;
   };
 }

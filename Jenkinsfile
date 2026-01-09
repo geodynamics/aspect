@@ -1,26 +1,21 @@
 #!groovy
 
-// load library https://github.com/tjhei/jenkins-stuff to provide
-// killold.killOldBuilds() function:
-@Library('tjhei') _
-
 pipeline {
   agent none
 
   options {
     timeout(time: 3, unit: 'HOURS')
+    disableConcurrentBuilds(abortPrevious: true)
   }
 
   stages
   {
-    stage("abort old")
+    stage("init")
     {
       agent none
       steps
       {
         githubNotify context: 'Jenkins', description: 'initializing...',  status: 'PENDING'
-        // kill older builds in this PR:
-        script { killold.killOldBuilds() }
       }
     }
 

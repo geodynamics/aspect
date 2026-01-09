@@ -316,7 +316,7 @@ namespace aspect
       if (this->get_timestep_number() == 0)
         return;
 
-      TimerOutput::Scope timer_section(this->get_computing_timer(), "FastScape plugin");
+      this->get_computing_timer().enter_subsection("FastScape plugin");
 
       const unsigned int current_timestep = this->get_timestep_number ();
       const double aspect_timestep_in_years = this->get_timestep() / year_in_seconds;
@@ -499,7 +499,7 @@ namespace aspect
                                              &sand_transport_coefficient,
                                              &silt_transport_coefficient);
 
-          // generate a combined array for kf kd both onshore and offshore
+          // generate a combined array for kf and kd both onshore and offshore
           std::vector<double> combined_kd(fastscape_array_size);
           std::vector<double> combined_kf(fastscape_array_size);
           for (unsigned int i = 0; i < fastscape_array_size; ++i)
@@ -515,7 +515,7 @@ namespace aspect
                 {
                   combined_kf[i] = sediment_river_incision_rate;
                   combined_kd[i] = sediment_transport_coefficient;
-                };
+                }
             }
 
           // select additional output for Fastscape vtu
@@ -558,26 +558,23 @@ namespace aspect
             mesh_velocity_z[i] = (elevation[i] - elevation_old[i])/aspect_timestep_in_years;
         }
       else
+        // For ranks other than the root:
         {
-          // add a declare for kd
-          std::vector<double> bedrock_transport_coefficient_array(fastscape_array_size);
           for (unsigned int i=0; i<local_aspect_values.size(); ++i)
-            MPI_Ssend(&local_aspect_values[i][0], local_aspect_values[1].size(), MPI_DOUBLE, 0, 42, this->get_mpi_communicator());
+            MPI_Ssend(&local_aspect_values[i][0], local_aspect_values[i].size(), MPI_DOUBLE,
+                      /* destination is root= */ 0,
+                      /* tag= */ 42,
+                      this->get_mpi_communicator());
 
           // Check whether the FastScape mesh was filled with data.
           const bool fastscape_mesh_filled = Utilities::MPI::broadcast (this->get_mpi_communicator(), true, 0);
           if (fastscape_mesh_filled != true)
             throw aspect::QuietException();
 
-          // This is called solely so we can set the timer and will return immediately.
-          execute_fastscape(mesh_velocity_z,
-                            mesh_velocity_z,
-                            mesh_velocity_z,
-                            mesh_velocity_z,
-                            mesh_velocity_z,
-                            bedrock_transport_coefficient_array,
-                            aspect_timestep_in_years,
-                            fastscape_steps_per_aspect_step);
+          // We only execute FastScape on process 0, but we have to make sure we
+          // enter and leave the corresponding timer section on all processes:
+          this->get_computing_timer().enter_subsection("Execute FastScape");
+          this->get_computing_timer().leave_subsection("Execute FastScape");
         }
 
       // At this point, the root process will have filled the mesh_velocity_z array,
@@ -585,14 +582,15 @@ namespace aspect
       // that will be interpolated back to ASPECT. We need this table on all
       // processes, and can achieve this goal by first filling it on the root process,
       // and then replicating it on all processes (if possible using shared memory).
-      TableIndices<dim> size_idx;
-      for (unsigned int d=0; d<dim; ++d)
-        size_idx[d] = table_intervals[d]+1;
-
       Table<dim,double> velocity_table;
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-        velocity_table = fill_data_table(mesh_velocity_z, size_idx, fastscape_nx, fastscape_ny);
+        {
+          TableIndices<dim> size_idx;
+          for (unsigned int d=0; d<dim; ++d)
+            size_idx[d] = table_intervals[d]+1;
 
+          velocity_table = fill_data_table(mesh_velocity_z, size_idx, fastscape_nx, fastscape_ny);
+        }
       velocity_table.replicate_across_communicator (this->get_mpi_communicator(),
                                                     /*root_process=*/0);
 
@@ -608,9 +606,9 @@ namespace aspect
       // Then create a function that can be interpolated from the data table.
       // Use move semantics to ensure that we keep using the replicated
       // table:
-      Functions::InterpolatedUniformGridData<dim> velocities (std::move(interpolation_extent),
-                                                              std::move(table_intervals),
-                                                              std::move(velocity_table));
+      const Functions::InterpolatedUniformGridData<dim> velocities (std::move(interpolation_extent),
+                                                                    std::move(table_intervals),
+                                                                    std::move(velocity_table));
 
       VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
         [&](const Point<dim> &p) -> double
@@ -620,10 +618,13 @@ namespace aspect
       dim-1,
       dim);
 
-      VectorTools::interpolate_boundary_values (mesh_deformation_dof_handler,
-                                                *boundary_ids.begin(),
-                                                vector_function_object,
-                                                mesh_velocity_constraints);
+      for (const types::boundary_id boundary : boundary_ids)
+        VectorTools::interpolate_boundary_values (mesh_deformation_dof_handler,
+                                                  boundary,
+                                                  vector_function_object,
+                                                  mesh_velocity_constraints);
+
+      this->get_computing_timer().leave_subsection("FastScape plugin");
     }
 
 
@@ -770,7 +771,10 @@ namespace aspect
             }
 
           for (unsigned int i=0; i<local_aspect_values.size(); ++i)
-            MPI_Recv(&local_aspect_values[i][0], incoming_size, MPI_DOUBLE, p, 42, this->get_mpi_communicator(), &status);
+            MPI_Recv(&local_aspect_values[i][0], incoming_size, MPI_DOUBLE,
+                     /* sender= */ p,
+                     /* tag = */ 42,
+                     this->get_mpi_communicator(), &status);
 
           // Now, place the numbers into the correct place based off the index.
           for (unsigned int i=0; i<local_aspect_values[1].size(); ++i)
@@ -881,9 +885,12 @@ namespace aspect
                                            const double &fastscape_timestep_in_years,
                                            const unsigned int &fastscape_iterations) const
     {
-      TimerOutput::Scope timer_section(this->get_computing_timer(), "Execute FastScape");
-      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) != 0)
-        return;
+      // This function can only be called on the root process where we run
+      // Fastscape:
+      Assert (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0,
+              ExcInternalError());
+
+      this->get_computing_timer().enter_subsection("Execute FastScape");
 
       // Because on the first timestep we will create an initial VTK file before running FastScape
       // and a second after, we first set the visualization step to zero.
@@ -997,6 +1004,8 @@ namespace aspect
 #endif
           }
       }
+
+      this->get_computing_timer().leave_subsection("Execute FastScape");
     }
 
 
@@ -1501,7 +1510,7 @@ namespace aspect
                 data_table(x,y,z) = values[(fastscape_nx+1)*use_ghost_nodes+fastscape_nx*y+x] / year_in_seconds;
         }
 
-      return std::move(data_table);
+      return data_table;
     }
 
 
@@ -1656,21 +1665,21 @@ namespace aspect
         {
           prm.declare_entry("Number of fastscape timesteps per aspect timestep", "5",
                             Patterns::Integer(),
-                            "Initial number of fastscape time steps per ASPECT timestep, this value will double if"
+                            "Initial number of fastscape time steps per ASPECT timestep, this value will double if "
                             "the FastScape timestep is above the maximum FastScape timestep.");
           prm.declare_entry("Maximum timestep length", "10e3",
                             Patterns::Double(0),
-                            "Maximum timestep for FastScape. Units: $\\{yrs}$");
+                            "Maximum timestep for FastScape. Units: ${yrs}$");
           prm.declare_entry("Vertical exaggeration", "-1",
                             Patterns::Double(),
                             "Vertical exaggeration for FastScape's VTK file. -1 outputs topography, basement, and sealevel.");
           prm.declare_entry("Additional fastscape refinement", "0",
                             Patterns::Integer(),
-                            "How many levels above ASPECT FastScape should be refined.");
+                            "How many levels above the ASPECT mesh the FastScape mesh should be refined.");
           prm.declare_entry ("Average out of plane surface topography in 2d", "true",
                              Patterns::Bool (),
                              "If this is set to false, then a 2D model will only consider the "
-                             "center slice FastScape gives. If set to true, then ASPECT will"
+                             "center slice FastScape gives. If set to true, then ASPECT will "
                              "average the mesh along Y excluding the ghost nodes.");
           prm.declare_entry("Fastscape seed", "1000",
                             Patterns::Integer(),
@@ -1681,36 +1690,36 @@ namespace aspect
           prm.declare_entry("Surface refinement difference", "0",
                             Patterns::Integer(),
                             "The difference between the lowest and highest refinement level at the surface. E.g., if three resolution "
-                            "levels are expected, this would be set to 2.");
+                            "levels are expected, this would be set to two.");
           prm.declare_entry ("Use marine component", "false",
                              Patterns::Bool (),
                              "Flag to use the marine component of FastScape.");
           prm.declare_entry("Y extent in 2d", "100000",
                             Patterns::Double(),
-                            "FastScape Y extent when using a 2D ASPECT model. Units: $\\{m}$");
+                            "FastScape Y extent when using a 2D ASPECT model. Units: ${m}$");
           prm.declare_entry ("Use ghost nodes", "true",
                              Patterns::Bool (),
-                             "Flag to use ghost nodes");
+                             "Flag to use ghost nodes.");
           prm.declare_entry ("Uplift and advect with fastscape", "true",
                              Patterns::Bool (),
                              "Flag to use FastScape advection and uplift.");
           prm.declare_entry("Node tolerance", "0.001",
                             Patterns::Double(),
-                            "Node tolerance for how close an ASPECT node must be to the FastScape node for the value to be transferred.");
+                            "Node tolerance for how close an ASPECT node must be to a FastScape node for the value to be transferred.");
           prm.declare_entry ("Sediment rain rates", "0,0",
                              Patterns::List (Patterns::Double(0)),
                              "Sediment rain rates given as a list 1 greater than the number of sediment rain time intervals. E.g, "
-                             " If the time interval is given at 5 Myr, there will be one value for 0-5 Myr model time and a second value "
-                             " for 5+ Myr. Units: $\\{m/yr}$");
+                             "If the time interval is given at 5 Myr, there will be one value for 0-5 Myr model time and a second value "
+                             "for 5+ Myr. Units: ${m/yr}$");
           prm.declare_entry ("Sediment rain time intervals", "0",
                              Patterns::List (Patterns::Double(0)),
-                             "A list of times to change the sediment rain rate. Units: $\\{yrs}$");
+                             "A list of times to change the sediment rain rate. Units: ${yrs}$");
           prm.declare_entry("Initial noise magnitude", "5",
                             Patterns::Double(),
-                            "Maximum topography change from the initial noise. Units: $\\{m}$");
+                            "Maximum topography change from the initial noise. Units: ${m}$");
           prm.declare_entry("Additional output variables", "river incision rate",
                             Patterns::Selection("river incision rate|deposition coefficient|uplift rate"),
-                            "Select one type of Fastscape variable as output in Fastcape vtk."
+                            "Select one additional Fastscape variable to output in the Fastcape vtk. "
                             "Output are in units of per year. "
                            );
 
@@ -1730,16 +1739,16 @@ namespace aspect
                                "Left boundary condition, where 1 is fixed and 0 is reflective.");
             prm.declare_entry("Left mass flux", "0",
                               Patterns::Double(),
-                              "Flux per unit length through left boundary. Units: $\\{m^2/yr}$ ");
+                              "Flux per unit length through the left boundary. Units: ${m^2/yr}$ ");
             prm.declare_entry("Right mass flux", "0",
                               Patterns::Double(),
-                              "Flux per unit length through right boundary. Units: $\\{m^2/yr}$ ");
+                              "Flux per unit length through the right boundary. Units: ${m^2/yr}$ ");
             prm.declare_entry("Back mass flux", "0",
                               Patterns::Double(),
-                              "Flux per unit length through back boundary. Units: $\\{m^2/yr}$ ");
+                              "Flux per unit length through the back boundary. Units: ${m^2/yr}$ ");
             prm.declare_entry("Front mass flux", "0",
                               Patterns::Double(),
-                              "Flux per unit length through front boundary. Units: $\\{m^2/yr}$ ");
+                              "Flux per unit length through the front boundary. Units: ${m^2/yr}$ ");
             prm.declare_entry ("Back front ghost nodes periodic", "false",
                                Patterns::Bool (),
                                "Whether to set the ghost nodes at the FastScape back and front boundary "
@@ -1755,13 +1764,13 @@ namespace aspect
           {
             prm.declare_entry("Drainage area exponent", "0.4",
                               Patterns::Double(),
-                              "Exponent for drainage area.");
+                              "The drainage area exponent for the Stream Power Law (m).");
             prm.declare_entry("Slope exponent", "1",
                               Patterns::Double(),
-                              "The  slope  exponent  for  SPL (n).  Generally  m/n  should  equal  approximately 0.4");
+                              "The slope exponent for the Stream Power Law (n). Generally m/n should equal approximately 0.4");
             prm.declare_entry("Multi-direction slope exponent", "1",
                               Patterns::Double(),
-                              "Exponent to determine the distribution from the SPL to neighbor nodes, with"
+                              "Exponent to determine the distribution from the SPL to neighbor nodes, with "
                               "10 being steepest decent and 1 being more varied.");
             prm.declare_entry("Bedrock deposition coefficient", "1",
                               Patterns::Double(),
@@ -1776,7 +1785,9 @@ namespace aspect
                               "If false, a constant kf value will be used.");
             prm.declare_entry("Bedrock river incision rate", "1e-5",
                               Patterns::Double(),
-                              "River incision rate for bedrock in the Stream Power Law. Units: ${m^(1-2drainage_area_exponent)/yr}$ if ``Use years instead of seconds in output'' is true; otherwise, the units are ${m^(1-2drainage_area_exponent)/s}$");
+                              "River incision rate for bedrock in the Stream Power Law. "
+                              "Units: ${m^(1-2drainage_area_exponent)/yr}$ if ``Use years instead of seconds in output'' is true; "
+                              "otherwise, the units are ${m^(1-2drainage_area_exponent)/s}$");
             prm.enter_subsection ("kf distribution function");
             {
               Functions::ParsedFunction<2>::declare_parameters(prm, 2);
@@ -1784,7 +1795,9 @@ namespace aspect
             prm.leave_subsection();
             prm.declare_entry("Sediment river incision rate", "-1",
                               Patterns::Double(),
-                              "River incision rate for sediment in the Stream Power Law. -1 sets this to the bedrock river incision rate. Units: $m^(1-2drainage_area_exponent)/yr}$ if ``Use years instead of seconds in output'' is true; otherwise, the units are $m^(1-2drainage_area_exponent)/s}$");
+                              "River incision rate for sediment in the Stream Power Law. -1 sets this to the bedrock river incision rate. "
+                              "Units: $m^(1-2drainage_area_exponent)/yr}$ if ``Use years instead of seconds in output'' is true; "
+                              "otherwise, the units are $m^(1-2drainage_area_exponent)/s}$");
 
             // Define Bedrock transport coefficient (Kd) as a constant value of time dependent user-defined function
             prm.declare_entry("Use kd distribution function", "false",
@@ -1793,7 +1806,8 @@ namespace aspect
                               "If false, a constant kd value will be used.");
             prm.declare_entry("Bedrock diffusivity", "1e-2",
                               Patterns::Double(),
-                              "Transport coefficient (diffusivity) for bedrock. Units: ${m^2/yr}$ if ``Use years instead of seconds in output'' is true; otherwise, the units are ${m^2/s}$.");
+                              "Transport coefficient (diffusivity) for bedrock. Units: ${m^2/yr}$ if ``Use years instead of seconds in output'' "
+                              "is true; otherwise, the units are ${m^2/s}$.");
             prm.enter_subsection ("kd distribution function");
             {
               Functions::ParsedFunction<2>::declare_parameters(prm, 2);
@@ -1805,16 +1819,16 @@ namespace aspect
                               "Transport coefficient (diffusivity) for sediment. -1 sets this to the bedrock diffusivity. Units: ${m^2/yr}$");
             prm.declare_entry("Orographic elevation control", "2000",
                               Patterns::Integer(),
-                              "Above this height, the elevation factor is applied. Units: $\\{m}$");
+                              "Above this height, the elevation factor is applied. Units: ${m}$");
             prm.declare_entry("Orographic wind barrier height", "500",
                               Patterns::Integer(),
-                              "When terrain reaches this height the wind barrier factor is applied. Units: $\\{m}$");
+                              "When terrain reaches this height the wind barrier factor is applied. Units: ${m}$");
             prm.declare_entry("Elevation factor", "1",
                               Patterns::Double(),
-                              "Amount to multiply the bedrock river incision rate nad transport coefficient by past the given orographic elevation control.");
+                              "Amount to multiply the bedrock river incision rate and transport coefficient by past the given orographic elevation control.");
             prm.declare_entry("Wind barrier factor", "1",
                               Patterns::Double(),
-                              "Amount to multiply the bedrock river incision rate nad transport coefficient by past given wind barrier height.");
+                              "Amount to multiply the bedrock river incision rate and transport coefficient by past given wind barrier height.");
             prm.declare_entry ("Stack orographic controls", "true",
                                Patterns::Bool (),
                                "Whether or not to apply both controls to a point, or only a maximum of one set as the wind barrier.");
@@ -1858,7 +1872,8 @@ namespace aspect
 
             prm.declare_entry("Sea level", "0.0",
                               Patterns::Double(),
-                              "Constant sea level relative to the ASPECT surface, where the maximum Z or Y extent in ASPECT is a sea level of zero. Units: $\\{m}$ ");
+                              "Constant sea level relative to the ASPECT surface, where the maximum Z or Y extent in ASPECT is a sea level of zero. "
+                              "Units: ${m}$ ");
 
             prm.enter_subsection ("Sea level function");
             {
@@ -1874,22 +1889,22 @@ namespace aspect
                               "Porosity of silt. ");
             prm.declare_entry("Sand e-folding depth", "1e3",
                               Patterns::Double(),
-                              "E-folding depth for the exponential of the sand porosity law. Units: $\\{m}$");
+                              "E-folding depth for the exponential of the sand porosity law. Units: ${m}$");
             prm.declare_entry("Silt e-folding depth", "1e3",
                               Patterns::Double(),
-                              "E-folding depth for the exponential of the silt porosity law. Units: $\\{m}$");
+                              "E-folding depth for the exponential of the silt porosity law. Units: ${m}$");
             prm.declare_entry("Sand-silt ratio", "0.5",
                               Patterns::Double(),
                               "Ratio of sand to silt for material leaving continent.");
             prm.declare_entry("Depth averaging thickness", "1e2",
                               Patterns::Double(),
-                              "Depth averaging for the sand-silt equation. Units: $\\{m}$");
+                              "Depth averaging for the sand-silt equation. Units: ${m}$");
             prm.declare_entry("Sand transport coefficient", "5e2",
                               Patterns::Double(),
-                              "Transport coefficient (diffusivity) for sand. Units: $\\{m^2/yr}$");
+                              "Transport coefficient (diffusivity) for sand. Units: ${m^2/yr}$");
             prm.declare_entry("Silt transport coefficient", "2.5e2",
                               Patterns::Double(),
-                              "Transport coefficient (diffusivity) for silt. Units: $\\{m^2/yr}$ ");
+                              "Transport coefficient (diffusivity) for silt. Units: ${m^2/yr}$ ");
           }
           prm.leave_subsection();
         }

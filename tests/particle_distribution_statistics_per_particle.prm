@@ -1,4 +1,6 @@
-# Adapted from the drop-supg.prm benchmark
+# This .prm file is intended to test the particle_distribution_statistics postprocessor in 
+# 3 dimensions and calculating the PDF at the position of each particle in a cell (as opposed)
+# to sampling at regular intervals throughout the cell.
 
 set Dimension                              = 3
 set Use years instead of seconds           = false
@@ -26,6 +28,7 @@ subsection Geometry model
     set Y extent = 5
     set Z extent = 0.5
     set Y repetitions = 10
+    set Y periodic = true
     set Box origin X coordinate = 0
     set Box origin Y coordinate = 0
     set Box origin Z coordinate = 0
@@ -53,13 +56,11 @@ end
 
 subsection Boundary temperature model
   set List of model names = box
-  set Fixed temperature boundary indicators   = top, bottom, left, right
+  set Fixed temperature boundary indicators   = left, right
 
   subsection Box
-    set Bottom temperature = 0
     set Left temperature   = 0
     set Right temperature  = 0
-    set Top temperature    = 0
   end
 end
 

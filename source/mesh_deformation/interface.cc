@@ -177,20 +177,6 @@ namespace aspect
 
 
     template <int dim>
-    void
-    Interface<dim>::save (std::map<std::string,std::string> &) const
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::load (const std::map<std::string,std::string> &)
-    {}
-
-
-
-    template <int dim>
     Tensor<1,dim>
     Interface<dim>::
     compute_initial_deformation_on_boundary(const types::boundary_id /*boundary_indicator*/,
@@ -540,7 +526,7 @@ namespace aspect
     {
       AssertThrow(sim.parameters.mesh_deformation_enabled, ExcInternalError());
 
-      TimerOutput::Scope timer (sim.computing_timer, "Mesh deformation");
+      this->get_computing_timer().enter_subsection("Mesh deformation");
 
       old_mesh_displacements = mesh_displacements;
 
@@ -561,6 +547,8 @@ namespace aspect
 
       // After changing the mesh we need to rebuild things
       sim.rebuild_stokes_matrix = sim.rebuild_stokes_preconditioner = true;
+
+      this->get_computing_timer().leave_subsection("Mesh deformation");
     }
 
 
@@ -867,10 +855,10 @@ namespace aspect
         coupling[c][c] = DoFTools::always;
 
       LinearAlgebra::SparseMatrix mesh_matrix;
-      TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,
-                                            mesh_locally_owned,
-                                            mesh_locally_relevant,
-                                            sim.mpi_communicator);
+      LinearAlgebra::DynamicSparsityPattern sp (mesh_locally_owned,
+                                                mesh_locally_owned,
+                                                mesh_locally_relevant,
+                                                sim.mpi_communicator);
       DoFTools::make_sparsity_pattern (mesh_deformation_dof_handler,
                                        coupling, sp,
                                        mesh_velocity_constraints, false,
@@ -944,8 +932,22 @@ namespace aspect
       SolverControl solver_control(5*rhs.size(), tolerance * rhs.l2_norm());
       SolverCG<LinearAlgebra::Vector> cg(solver_control);
 
-      cg.solve (mesh_matrix, solution, rhs, preconditioner_stiffness);
-      this->get_pcout() << "   Solving mesh displacement system... " << solver_control.last_step() <<" iterations."<< std::endl;
+      try
+        {
+          cg.solve (mesh_matrix, solution, rhs, preconditioner_stiffness);
+          this->get_pcout() << "   Solving mesh displacement system... " << solver_control.last_step() <<" iterations."<< std::endl;
+        }
+      catch (const std::exception &exc)
+        {
+          // if the solver fails, report the error from processor 0 with some additional
+          // information about its location, and throw a quiet exception on all other
+          // processors
+          Utilities::throw_linear_solver_failure_exception("iterative mesh displacement solver",
+                                                           "MeshDeformationHandler::compute_mesh_displacements()",
+                                                           std::vector<SolverControl> {solver_control},
+                                                           exc,
+                                                           this->get_mpi_communicator());
+        }
 
       mesh_velocity_constraints.distribute (solution);
 
@@ -1220,8 +1222,23 @@ namespace aspect
       SolverCG<dealii::LinearAlgebra::distributed::Vector<double>> cg(solver_control_mf);
 
       mesh_velocity_constraints.set_zero(solution);
-      cg.solve(laplace_operator, solution, rhs, preconditioner);
-      this->get_pcout() << "   Solving mesh displacement system... " << solver_control_mf.last_step() <<" iterations."<< std::endl;
+
+      try
+        {
+          cg.solve(laplace_operator, solution, rhs, preconditioner);
+          this->get_pcout() << "   Solving mesh displacement system... " << solver_control_mf.last_step() <<" iterations."<< std::endl;
+        }
+      catch (const std::exception &exc)
+        {
+          // if the solver fails, report the error from processor 0 with some additional
+          // information about its location, and throw a quiet exception on all other
+          // processors
+          Utilities::throw_linear_solver_failure_exception("iterative mesh displacement solver",
+                                                           "MeshDeformationHandler::compute_mesh_displacements_gmg()",
+                                                           std::vector<SolverControl> {solver_control_mf},
+                                                           exc,
+                                                           this->get_mpi_communicator());
+        }
 
       mesh_velocity_constraints.distribute(solution);
       solution.update_ghost_values();
@@ -1496,13 +1513,15 @@ namespace aspect
       if (this->simulator_is_past_initialization() == false ||
           this->get_timestep_number() == 0)
         {
-          TimerOutput::Scope timer (sim.computing_timer, "Mesh deformation initialize");
+          this->get_computing_timer().enter_subsection("Mesh deformation initialize");
 
           make_initial_constraints();
           if (this->is_stokes_matrix_free())
             compute_mesh_displacements_gmg();
           else
             compute_mesh_displacements();
+
+          this->get_computing_timer().leave_subsection("Mesh deformation initialize");
         }
 
       if (this->is_stokes_matrix_free())

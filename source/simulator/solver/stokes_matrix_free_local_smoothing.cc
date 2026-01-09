@@ -21,6 +21,7 @@
 #include <aspect/simulator/solver/matrix_free_operators.h>
 #include <aspect/simulator/solver/stokes_matrix_free.h>
 #include <aspect/simulator/solver/stokes_matrix_free_local_smoothing.h>
+#include <aspect/simulator/solver/block_stokes_preconditioner.h>
 #include <aspect/mesh_deformation/interface.h>
 
 #include <aspect/mesh_deformation/interface.h>
@@ -657,7 +658,10 @@ namespace aspect
           active_cell_data.dilation_derivative_wrt_strain_rate_table.reinit(TableIndices<2>(0,0));
 
           for (unsigned int level=0; level<n_levels; ++level)
-            level_cell_data[level].enable_newton_derivatives = false;
+            {
+              level_cell_data[level].enable_newton_derivatives = false;
+              level_cell_data[level].enable_prescribed_dilation = false;
+            }
         }
     }
 
@@ -1005,14 +1009,16 @@ namespace aspect
 
     if (print_details)
       {
-        this->get_pcout() << std::endl
-                          << "    GMG coarse size A: " << coarse_A_size << ", coarse size S: " << coarse_S_size << std::endl
-                          << "    GMG n_levels: " << this->get_triangulation().n_global_levels() << std::endl
-                          << "    Viscosity range: " << minimum_viscosity << " - " << maximum_viscosity << std::endl;
-
+        const unsigned int n_levels = this->get_triangulation().n_global_levels();
         const double imbalance = MGTools::workload_imbalance(this->get_triangulation());
-        this->get_pcout() << "    GMG workload imbalance: " << imbalance << std::endl
-                          << "    Stokes solver: " << std::flush;
+        const std::string solver = (this->get_parameters().stokes_krylov_type == Parameters<dim>::StokesKrylovType::idr_s) ? ("IDR(" + std::to_string(this->get_parameters().idr_s_parameter) + ")") : "GMRES";
+
+        this->get_pcout() << std::endl
+                          << "     GMG coarse size A: " << coarse_A_size << ", coarse size S: " << coarse_S_size << std::endl
+                          << "     GMG levels: " << n_levels << std::endl
+                          << "     Viscosity range: " << minimum_viscosity << " - " << maximum_viscosity << std::endl
+                          << "     GMG workload imbalance: " << imbalance << std::endl
+                          << "     Stokes solver (" << solver << "): " << std::flush;
       }
 
     // Interface matrices
@@ -1247,7 +1253,7 @@ namespace aspect
           for (int i=0; i<n_timings; ++i)
             {
               prepare();
-              this->get_pcout() << "\t... " << std::flush;
+              this->get_pcout() << "\t..." << std::flush;
               timer.restart();
 
               for (int r=0; r<repeats; ++r)
@@ -1524,11 +1530,11 @@ namespace aspect
 
     if (print_details)
       {
-        this->get_pcout() << "    Schur complement preconditioner: " << preconditioner_cheap.n_iterations_Schur_complement()
+        this->get_pcout() << "     Schur complement preconditioner: " << preconditioner_cheap.n_iterations_Schur_complement()
                           << '+'
                           << preconditioner_expensive.n_iterations_Schur_complement()
                           << " iterations." << std::endl;
-        this->get_pcout() << "    A block preconditioner: " << preconditioner_cheap.n_iterations_A_block()
+        this->get_pcout() << "     A block preconditioner: " << preconditioner_cheap.n_iterations_A_block()
                           << '+'
                           << preconditioner_expensive.n_iterations_A_block()
                           << " iterations." << std::endl;
@@ -1609,13 +1615,18 @@ namespace aspect
       sim.compute_initial_velocity_boundary_constraints(constraints_v);
       sim.compute_current_velocity_boundary_constraints(constraints_v);
 
-
       VectorTools::compute_no_normal_flux_constraints (dof_handler_v,
                                                        /* first_vector_component= */
                                                        0,
                                                        this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators(),
                                                        constraints_v,
                                                        this->get_mapping());
+
+      sim.prescribed_solution_manager.constrain_solution(constraints_v);
+
+      // Let plugins add more constraints if they so choose:
+      sim.signals.post_constraints_creation(*this, constraints_v);
+
       constraints_v.close ();
     }
 
@@ -1881,13 +1892,15 @@ namespace aspect
   template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::build_preconditioner()
   {
-    TimerOutput::Scope timer (this->get_computing_timer(), "Build Stokes preconditioner");
+    this->get_computing_timer().enter_subsection("Build Stokes preconditioner");
 
     for (unsigned int level=0; level < this->get_triangulation().n_global_levels(); ++level)
       {
         mg_matrices_Schur_complement[level].compute_diagonal();
         mg_matrices_A_block[level].compute_diagonal();
       }
+
+    this->get_computing_timer().leave_subsection("Build Stokes preconditioner");
   }
 
 

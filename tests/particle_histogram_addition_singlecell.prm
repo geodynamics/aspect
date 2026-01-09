@@ -1,0 +1,153 @@
+# This is an extremely basic test case for particle addition using a histogram.
+# The test generates three particles from an ASCII file, each in a separate corner of the cell.
+# The result of this test should be to generate a new particle in the corner of the 
+# cell which did not already have a particle generated from the ASCII file. This is to make
+# sure that the histogram method is generating particles in the histogram "bucket" which
+# has the least particles.
+
+set Dimension                              = 2
+set Use years instead of seconds           = false
+set End time                               = 0
+set Nonlinear solver scheme                = single Advection, no Stokes
+set Resume computation                     = false
+set Maximum time step                      = 0.03
+
+
+subsection Prescribed Stokes solution
+  set Model name = function
+
+  subsection Velocity function
+    set Variable names      = x,y
+    set Function constants  = velSlow=+0.1
+    set Function expression = 0; 0
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+    set Box origin X coordinate = 0
+    set Box origin Y coordinate = 0
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  =
+    set Function expression = 1
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 1
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names = box
+  set Fixed temperature boundary indicators   = top, bottom, left, right
+
+  subsection Box
+    set Bottom temperature = 0
+    set Left temperature   = 0
+    set Right temperature  = 0
+    set Top temperature    = 0
+  end
+end
+
+subsection Boundary composition model
+  set List of model names = box
+  set Fixed composition boundary indicators   = top, bottom, left, right
+
+  subsection Box
+    set Bottom composition = 0
+    set Left composition   = 0
+    set Right composition  = 0
+    set Top composition    = 0
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1e-5
+    set Thermal expansion coefficient = 0
+    set Viscosity                     = 0
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Compositional field methods = field
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 0
+  set Time steps between mesh refinement       = 0
+
+  set Strategy = minimum refinement function
+
+end
+
+subsection Particles
+  set Particle generator name = ascii file
+  set Minimum particles per cell = 8
+  set Load balancing strategy = add particles
+  set Particle addition algorithm = histogram
+  set Addition histogram granularity = 8
+  subsection Generator
+    subsection Ascii file
+        set Data directory = $ASPECT_SOURCE_DIR/data/particle/generator/ascii/
+        set Data file name = particle_addition_test.dat
+    end
+  end
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, particles, particle distribution statistics, particle count statistics
+
+  subsection Visualization
+    set Time between graphical output = .001
+    set List of output variables = artificial viscosity
+  end
+
+  subsection Particles
+    set Time between data output = 0.001
+    set Data output format       = vtu
+  end
+
+  subsection Particle distribution statistics
+    set KDE granularity = 2
+    set Kernel bandwidth = 0.3
+    set Kernel function = CutOffFunctionW1
+  end
+
+end
+
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-10
+end

@@ -30,10 +30,21 @@ namespace aspect
     std::pair<std::string,std::string>
     TimingStatistics<dim>::execute (TableHandler &statistics)
     {
-      const auto &timer = this->get_computing_timer();
-      const std::map<std::string, double> &timing_map = timer.get_summary_data(TimerOutput::total_wall_time);
+      // The timer only allows access to its data outside of
+      // subsections, so we can't just ask for its summary data and
+      // output that -- we need to leave the current section, get
+      // access to the timing data, then re-enter the section. This is
+      // awkward because it means that it will look like we entered
+      // the section twice. Rather, just copy the whole timer object,
+      // and leave the section in the copy, leaving the original one
+      // untouched, and then output the information from the copied
+      // object:
+      TimerOutput copy_of_timer = this->get_computing_timer();
+      copy_of_timer.leave_subsection("Postprocessing");
+      const std::map<std::string, double> &timing_map
+        = copy_of_timer.get_summary_data(TimerOutput::total_wall_time);
 
-      for (const auto &section: timing_map)
+      for (const auto &section : timing_map)
         {
           const std::string section_name = "Total wall time: " + section.first;
           statistics.add_value(section_name,

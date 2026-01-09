@@ -1,3 +1,10 @@
+```{tags}
+category:cookbook
+feature:2d
+feature:cartesian
+feature:compositional-fields
+```
+
 (sec:cookbooks:geomio)=
 # Reading in compositional initial composition files generated with geomIO
 

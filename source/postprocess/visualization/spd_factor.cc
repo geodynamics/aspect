@@ -48,6 +48,10 @@ namespace aspect
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
                             std::vector<Vector<double>> &computed_quantities) const
       {
+        Assert(Parameters<dim>::is_defect_correction(this->get_parameters().nonlinear_solver),
+               ExcMessage("The SPD factor plugin can only be used with defect correction type Stokes or Newton Stokes "
+                          "solvers."));
+
         const unsigned int n_quadrature_points = input_data.solution_values.size();
         Assert (computed_quantities.size() == n_quadrature_points,                             ExcInternalError());
         Assert (computed_quantities[0].size() == 1,                                            ExcInternalError());
@@ -75,15 +79,6 @@ namespace aspect
                                                                            derivatives->viscosity_derivative_wrt_strain_rate[q],
                                                                            this->get_newton_handler().parameters.SPD_safety_factor);
           }
-      }
-
-      template <int dim>
-      void
-      SPD_Factor<dim>::parse_parameters (ParameterHandler &/*prm*/)
-      {
-        AssertThrow(Parameters<dim>::is_defect_correction(this->get_parameters().nonlinear_solver),
-                    ExcMessage("The SPD factor plugin can only be used with defect correction type Stokes or Newton Stokes "
-                               "solvers."));
       }
     }
   }

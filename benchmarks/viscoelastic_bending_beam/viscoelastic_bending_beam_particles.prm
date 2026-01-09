@@ -6,6 +6,7 @@ include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_bending_beam/viscoelastic_ben
 
 set Output directory = output_viscoelastic_bending_beam_particles
 
+set Nonlinear solver scheme                = iterated Advection and Newton Stokes
 # On particles, the operator splitting is handled by the particle property elastic stress.
 set Use operator splitting                 = false
 
@@ -20,7 +21,7 @@ end
 
 # Post processing
 subsection Postprocess
-  set List of postprocessors = velocity statistics, basic statistics, particles, temperature statistics, visualization
+  set List of postprocessors = velocity statistics, basic statistics, particles, temperature statistics, visualization, maximum depth of field
 
   subsection Particles
     set Time between data output    = 0
@@ -33,8 +34,11 @@ subsection Particles
   set Maximum particles per cell  = 105
   set Load balancing strategy     = remove and add particles
   set List of particle properties = initial composition, elastic stress
-  set Interpolation scheme        = nearest neighbor
+  set Interpolation scheme        = quadratic least squares
   set Particle generator name     = random uniform
+  subsection Elastic stress
+    set Particle stress value weight = 0
+  end
 
   subsection Generator
     subsection Random uniform

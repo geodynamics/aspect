@@ -1,3 +1,11 @@
+```{tags}
+category:cookbook
+feature:3d
+feature:cartesian
+feature:particles
+feature:compositional-fields
+```
+
 (sec:cookbooks:crystal-preferred-orientation-olivine)=
 # Olivine Fabric Developments Under Simple Shear
 

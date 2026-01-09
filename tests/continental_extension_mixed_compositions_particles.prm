@@ -324,7 +324,7 @@ subsection Particles
   set Maximum particles per cell  = 100
   set Load balancing strategy     = remove and add particles
   set List of particle properties = initial composition, viscoplastic strain invariants, pT path, position
-  set Interpolation scheme        = bilinear least squares
+  set Interpolation scheme        = linear least squares
   set Update ghost particles      = true
   set Particle generator name     = reference cell
   subsection Generator

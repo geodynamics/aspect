@@ -1,3 +1,15 @@
+```{tags}
+category:benchmark
+feature:2d
+feature:cartesian
+feature:community-benchmark
+feature:analytical-solution
+feature:nonlinear-solver
+feature:two-phase-flow
+feature:melt
+feature:modular-equations
+```
+
 (sec:benchmarks:solitary_wave)=
 # The solitary wave benchmark
 

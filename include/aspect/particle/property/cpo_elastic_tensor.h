@@ -24,7 +24,6 @@
 #include <aspect/particle/property/interface.h>
 #include <aspect/particle/property/crystal_preferred_orientation.h>
 #include <aspect/simulator_access.h>
-#include <array>
 
 namespace aspect
 {

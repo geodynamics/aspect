@@ -48,7 +48,7 @@ namespace aspect
   template <int dim>
   void
   Parameters<dim>::
-  declare_parameters (ParameterHandler &prm)
+  declare_parameters (ParameterHandler &prm, const unsigned int mpi_rank)
   {
     prm.declare_entry ("Dimension", "2",
                        Patterns::Integer (2,3),
@@ -134,7 +134,7 @@ namespace aspect
 
     prm.declare_alias ("Use years instead of seconds",
                        "Use years in output instead of seconds",
-                       true);
+                       (mpi_rank == 0) ? true : false); // trigger deprecation warning
 
     prm.declare_entry ("CFL number", "1.0",
                        Patterns::Double (0.),
@@ -216,6 +216,7 @@ namespace aspect
                                                "single Advection, iterated Stokes|"
                                                "single Advection, iterated defect correction Stokes|"
                                                "single Advection, iterated Newton Stokes|"
+                                               "iterated Advection, no Stokes|"
                                                "iterated Advection and Stokes|"
                                                "iterated Advection and defect correction Stokes|"
                                                "iterated Advection and Newton Stokes";
@@ -254,6 +255,10 @@ namespace aspect
                        "the temperature and composition equations once at the beginning of each time step and "
                        "then iterates out the solution of the Stokes equation, using Newton iterations for the "
                        "Stokes system.\n"
+                       "The `iterated Advection, no Stokes' scheme iterates the temperature and other advection "
+                       "equations, and instead of solving for the Stokes system, a prescribed "
+                       "velocity and pressure are used. This is useful for kinematic models and advection benchmarks "
+                       "with nonlinear processes in the advection equations.\n"
                        "The `iterated Advection and Stokes' scheme iterates out the nonlinearity "
                        "by alternating the solution of the temperature, composition and Stokes systems.\n"
                        "The `iterated Advection and defect correction Stokes' scheme iterates by alternating the "
@@ -432,6 +437,13 @@ namespace aspect
                            "please switch to 'block AMG'. Additionally, the block GMG solver requires "
                            "using material model averaging. The 'default solver' chooses "
                            "the geometric multigrid solver if supported, otherwise the AMG solver.");
+
+        prm.declare_entry ("Stokes GMG type", "local smoothing",
+                           Patterns::Selection(StokesGMGType::pattern()),
+                           "The choice of geometric multigrid, either 'local smoothing' (the default) "
+                           " or 'global coarsening'. Local smoothing (\\cite{clevenger:heister:2021}) "
+                           "has been extensively tested and works in many more situations, while "
+                           "global coarsening is shown to be up to 3x faster (\\cite{munch:globalcoarsening:2023}).");
 
         prm.declare_entry ("Use direct solver for Stokes system", "false",
                            Patterns::Bool(),
@@ -1113,14 +1125,14 @@ namespace aspect
         prm.declare_entry ("Stabilization method", "entropy viscosity",
                            Patterns::Selection("entropy viscosity|SUPG"),
                            "Select the method for stabilizing the advection equation. The original "
-                           "method implemented is 'entropy viscosity' as described in \\cite {kronbichler:etal:2012}. "
+                           "method implemented is 'entropy viscosity' as described in \\cite{kronbichler:etal:2012}. "
                            "SUPG is currently experimental.");
 
         prm.declare_entry ("List of compositional fields with disabled boundary entropy viscosity", "",
                            Patterns::List(Patterns::Anything()),
                            "Select for which compositional fields to skip the entropy viscosity "
                            "stabilization at dirichlet boundaries. This is "
-                           "only advisable for compositional fields"
+                           "only advisable for compositional fields "
                            "that have intrinsic physical diffusion terms, otherwise "
                            "oscillations may develop. The parameter should contain a list of "
                            "compositional field names.");
@@ -1510,8 +1522,6 @@ namespace aspect
     }
     prm.leave_subsection ();
 
-    VolumeOfFluidHandler<dim>::declare_parameters(prm);
-
     // then, finally, let user additions that do not go through the usual
     // plugin mechanism, declare their parameters if they have subscribed
     // to the relevant signals
@@ -1588,6 +1598,8 @@ namespace aspect
         nonlinear_solver = NonlinearSolver::single_Advection_iterated_defect_correction_Stokes;
       else if (solver_scheme == "single Advection, iterated Newton Stokes")
         nonlinear_solver = NonlinearSolver::single_Advection_iterated_Newton_Stokes;
+      else if (solver_scheme == "iterated Advection, no Stokes")
+        nonlinear_solver = NonlinearSolver::iterated_Advection_no_Stokes;
       else if (solver_scheme == "iterated Advection and Stokes")
         nonlinear_solver = NonlinearSolver::iterated_Advection_and_Stokes;
       else if (solver_scheme == "iterated Advection and defect correction Stokes")
@@ -1620,6 +1632,8 @@ namespace aspect
         use_direct_stokes_solver        = stokes_solver_type==StokesSolverType::direct_solver;
         stokes_krylov_type = StokesKrylovType::parse(prm.get("Krylov method for cheap solver steps"));
         idr_s_parameter    = prm.get_integer("IDR(s) parameter");
+
+        stokes_gmg_type = StokesGMGType::parse(prm.get("Stokes GMG type"));
 
         linear_stokes_solver_tolerance  = prm.get_double ("Linear solver tolerance");
         n_cheap_stokes_solver_steps     = prm.get_integer ("Number of cheap Stokes solver steps");
@@ -2088,9 +2102,9 @@ namespace aspect
       AssertThrow (normalized_fields.size() <= n_compositional_fields,
                    ExcMessage("Invalid input parameter file: Too many entries in List of normalized fields"));
 
-      for (unsigned int i_field = 0; i_field < normalized_fields.size(); ++i_field)
+      for (unsigned int field : normalized_fields)
         {
-          AssertThrow(normalized_fields[i_field]<n_compositional_fields,
+          AssertThrow(field<n_compositional_fields,
                       ExcMessage("Invalid input parameter file: An entry in List of normalized fields is larger then the number of fields."));
         }
 
@@ -2413,9 +2427,10 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::declare_parameters (ParameterHandler &prm)
+  void Simulator<dim>::declare_parameters (ParameterHandler &prm, const unsigned int mpi_rank)
   {
-    Parameters<dim>::declare_parameters (prm);
+    Parameters<dim>::declare_parameters (prm, mpi_rank);
+    VolumeOfFluidHandler<dim>::declare_parameters(prm);
     Melt::Parameters<dim>::declare_parameters (prm);
     Newton::Parameters::declare_parameters (prm);
     StokesMatrixFreeHandler<dim>::declare_parameters (prm);
@@ -2430,6 +2445,7 @@ namespace aspect
     GravityModel::declare_parameters<dim> (prm);
     InitialTemperature::Manager<dim>::declare_parameters (prm);
     InitialComposition::Manager<dim>::declare_parameters (prm);
+    PrescribedSolution::Manager<dim>::declare_parameters (prm);
     PrescribedStokesSolution::declare_parameters<dim> (prm);
     BoundaryTemperature::Manager<dim>::declare_parameters (prm);
     BoundaryConvectiveHeating::Manager<dim>::declare_parameters (prm);
@@ -2448,12 +2464,12 @@ namespace aspect
 #define INSTANTIATE(dim) \
   template Parameters<dim>::Parameters (ParameterHandler &prm, \
                                         const MPI_Comm mpi_communicator); \
-  template void Parameters<dim>::declare_parameters (ParameterHandler &prm); \
+  template void Parameters<dim>::declare_parameters (ParameterHandler &prm, const unsigned int mpi_rank); \
   template void Parameters<dim>::parse_parameters(ParameterHandler &prm, \
                                                   const MPI_Comm mpi_communicator); \
   template void Parameters<dim>::parse_geometry_dependent_parameters(ParameterHandler &prm, \
                                                                      const GeometryModel::Interface<dim> &geometry_model); \
-  template void Simulator<dim>::declare_parameters (ParameterHandler &prm);
+  template void Simulator<dim>::declare_parameters (ParameterHandler &prm, const unsigned int mpi_rank);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 

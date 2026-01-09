@@ -96,7 +96,7 @@ path to your ASPECT directory):
 
 ``` ksh
 docker run -v ASPECT_SOURCE_DIR:/home/dealii/aspect --rm -it\
-    geodynamics/aspect-tester:focal-dealii-9.5-v3 \
+    geodynamics/aspect-tester:jammy-dealii-9.6-v1 \
     bash /home/dealii/aspect/contrib/utilities/compile_and_update_tests.sh
 ```
 

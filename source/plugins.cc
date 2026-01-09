@@ -46,5 +46,16 @@ namespace aspect
     void
     InterfaceBase::parse_parameters (dealii::ParameterHandler &)
     {}
+
+
+    void
+    InterfaceBase::save (std::map<std::string,std::string> &) const
+    {}
+
+
+
+    void
+    InterfaceBase::load (const std::map<std::string,std::string> &)
+    {}
   }
 }

@@ -2812,9 +2812,9 @@ namespace aspect
           if (output_filename != "")
             {
               // output solver history
-              std::ofstream f((output_filename));
+              std::ofstream f(output_filename);
 
-              for (const auto &solver_control: solver_controls)
+              for (const auto &solver_control : solver_controls)
                 {
                   // Skip the output if no iterations were run for this solver
                   if (solver_control.last_step() == numbers::invalid_unsigned_int)
@@ -2825,7 +2825,7 @@ namespace aspect
                     f << std::endl;
 
                   unsigned int j=0;
-                  for (const auto &residual: solver_control.get_history_data())
+                  for (const auto &residual : solver_control.get_history_data())
                     f << j++ << ' ' << residual << std::endl;
                 }
 

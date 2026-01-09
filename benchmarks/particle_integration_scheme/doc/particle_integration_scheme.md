@@ -1,3 +1,11 @@
+```{tags}
+category:benchmark
+feature:2d
+feature:cartesian
+feature:particles
+```
+
+(sec:benchmarks:particle_integration_scheme)=
 # Particle integration scheme benchmark
 
 *This section was contributed by Gabriel Johnston and Rene Gassmöller*

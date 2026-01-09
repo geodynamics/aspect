@@ -1,3 +1,10 @@
+```{tags}
+category:cookbook
+feature:2d
+feature:cartesian
+feature:compositional-fields
+```
+
 (sec:cookbooks:composition-reaction)=
 # The active case with reactions.
 

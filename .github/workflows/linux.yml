@@ -28,7 +28,7 @@ jobs:
     runs-on: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: setup
       run: |
         sudo apt-get update
@@ -50,7 +50,7 @@ jobs:
     runs-on: [ubuntu-24.04]
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: setup
       run: |
         sudo apt-get update
@@ -72,7 +72,7 @@ jobs:
         ./contrib/utilities/indent
         git diff > changes-astyle.diff
     - name: archive indent results
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: changes-astyle.diff
         path: changes-astyle.diff
@@ -112,8 +112,13 @@ jobs:
             compare-tests: "ON"
             result-file: "changes-test-results-9.6.diff"
             container-options: '--user 0 --name container'
-          - image: "geodynamics/aspect-tester:focal-dealii-master"
-            run-tests: "OFF"
+          - image: "geodynamics/aspect-tester:jammy-dealii-9.7-v2"
+            run-tests: "ON"
+            compare-tests: "OFF"
+            result-file: "changes-test-results-9.7.diff"
+            container-options: '--user 0 --name container'
+          - image: "geodynamics/aspect-tester:jammy-dealii-master"
+            run-tests: "ON"
             compare-tests: "OFF"
             result-file: "changes-test-results-master.diff"
             container-options: '--user 0 --name container'
@@ -123,7 +128,7 @@ jobs:
       options: ${{ matrix.container-options }}
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
       with:
         submodules: recursive
     - uses: astral-sh/setup-uv@v6
@@ -178,7 +183,7 @@ jobs:
         ninja generate_reference_output
         git diff ../tests > ${{ matrix.result-file }}
     - name: archive test results
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: ${{ matrix.result-file }}
         path: build/${{ matrix.result-file }}

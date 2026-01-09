@@ -25,7 +25,6 @@
 #include <aspect/geometry_model/interface.h>
 
 #include <deal.II/base/parameter_handler.h>
-#include <array>
 
 
 namespace aspect

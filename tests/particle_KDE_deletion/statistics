@@ -1,0 +1,30 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: RMS velocity (m/s)
+# 9: Max. velocity (m/s)
+# 10: Minimal temperature (K)
+# 11: Average temperature (K)
+# 12: Maximal temperature (K)
+# 13: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 14: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 15: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 16: Outward heat flux through boundary with indicator 3 ("top") (W)
+# 17: Visualization file name
+# 18: Number of advected particles
+# 19: Particle file name
+# 20: Minimal particle distribution score: 
+# 21: Average particle distribution score: 
+# 22: Maximal particle distribution score: 
+# 23: Cell Score Standard Deviation: 
+0 0.000000000000e+00 0.000000000000e+00 256 2595 1141 0 1.00000000e-01 1.00000000e-01 0.00000000e+00 9.24826389e-01 1.12500000e+00 1.11666667e-03 1.11666667e-03 4.58333333e-02 -4.58333333e-02 output-particle_KDE_deletion/solution/solution-00000 4096 output-particle_KDE_deletion/particles/particles-00000 0.0000 0.0000 0.0000 0.0000 
+1 3.000000000000e-02 3.000000000000e-02 256 2595 1141 9 1.00000000e-01 1.00000000e-01 0.00000000e+00 9.24792145e-01 1.12572330e+00 1.35192359e-03 1.35192359e-03 4.57560176e-02 -4.57560176e-02 output-particle_KDE_deletion/solution/solution-00001 4096 output-particle_KDE_deletion/particles/particles-00001 0.0000 0.0000 0.0000 0.0000 
+2 6.000000000000e-02 3.000000000000e-02 256 2595 1141 8 1.00000000e-01 1.00000000e-01 0.00000000e+00 9.24757105e-01 1.12670193e+00 1.36432808e-03 1.36432808e-03 4.56866311e-02 -4.56866311e-02 output-particle_KDE_deletion/solution/solution-00002 4096 output-particle_KDE_deletion/particles/particles-00002 0.0000 0.0000 0.0000 0.0000 
+3 9.000000000000e-02 3.000000000000e-02 256 2595 1141 8 1.00000000e-01 1.00000000e-01 0.00000000e+00 9.24721036e-01 1.12804895e+00 1.37547548e-03 1.37547548e-03 4.56278878e-02 -4.56278878e-02 output-particle_KDE_deletion/solution/solution-00003 4096 output-particle_KDE_deletion/particles/particles-00003 0.0000 0.0017 0.0370 0.0078 
+4 1.200000000000e-01 3.000000000000e-02 256 2595 1141 8 1.00000000e-01 1.00000000e-01 0.00000000e+00 9.24683888e-01 1.12977031e+00 1.38633028e-03 1.38633028e-03 4.55807048e-02 -4.55807048e-02 output-particle_KDE_deletion/solution/solution-00004 4096 output-particle_KDE_deletion/particles/particles-00004 0.0000 0.0017 0.0370 0.0078 
+5 1.500000000000e-01 3.000000000000e-02 256 2595 1141 8 1.00000000e-01 1.00000000e-01 0.00000000e+00 9.24645683e-01 1.13184854e+00 1.39676750e-03 1.39676750e-03 4.55453009e-02 -4.55453009e-02 output-particle_KDE_deletion/solution/solution-00005 4096 output-particle_KDE_deletion/particles/particles-00005 0.0000 0.0017 0.0370 0.0078 
+6 1.800000000000e-01 3.000000000000e-02 256 2595 1141 8 1.00000000e-01 1.00000000e-01 0.00000000e+00 9.24606468e-01 1.13425844e+00 1.40681526e-03 1.40681526e-03 4.55213755e-02 -4.55213755e-02 output-particle_KDE_deletion/solution/solution-00006 4096 output-particle_KDE_deletion/particles/particles-00006 0.0000 0.0004 0.0133 0.0020 

@@ -1,0 +1,22 @@
+# This parameter file is intended to test adding particles using kernel density estimation.
+# It is identical to particle_KDE_addition.prm, but starts without pre-generated particles,
+# therefore testing that the KDE supports empty cells.
+
+include $ASPECT_SOURCE_DIR/benchmarks/particle_distribution/addition_algorithm_benchmarks.prm
+
+set End time = 0.18
+
+subsection Particles
+  set Particle generator name = random uniform
+  set Maximum particles per cell = 19
+  set Minimum particles per cell = 16
+  set Load balancing strategy = add particles
+  set Particle removal algorithm = random
+  set Particle addition algorithm = point density function
+  set Allow cells without particles = true
+  subsection Generator
+    subsection Random uniform
+      set Number of particles = 0
+    end
+  end
+end

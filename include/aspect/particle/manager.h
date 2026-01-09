@@ -28,6 +28,7 @@
 #include <deal.II/particles/particle_iterator.h>
 #include <deal.II/particles/particle_handler.h>
 #include <deal.II/particles/property_pool.h>
+#include <aspect/particle/distribution.h>
 
 #include <deal.II/matrix_free/fe_point_evaluation.h>
 
@@ -46,7 +47,7 @@
 #include <boost/serialization/unique_ptr.hpp>
 
 #include <random>
-
+#include <vector>
 
 namespace aspect
 {
@@ -306,6 +307,52 @@ namespace aspect
         };
 
         /**
+         * Enum class to keep track of which algorithm is used to delete excess particles.
+         */
+        enum class DeletionAlgorithm
+        {
+          random,
+          point_density_function,
+        };
+
+        /**
+         * Enum class to keep track of which algorithm is used to add particles.
+         */
+        enum class AdditionAlgorithm
+        {
+          random,
+          histogram,
+          point_density_function,
+          monte_carlo,
+        };
+
+        /**
+         * The granularity to use when applying a point density function method for
+         * adding particles when cells fall below the minimum number of particles allowed.
+         * Granularity represents the number of subdivisions of the cell in each dimension
+         * when calculating the point density function.
+         */
+        unsigned int addition_granularity_pdf;
+
+        /**
+         * The granularity to use for histogram techniques for
+         * adding particles when cells fall below the minimum number of particles allowed.
+         * Granularity represents the number of subdivisions of the cell in each dimension
+         * when calculating a histogram.
+         */
+        unsigned int addition_granularity_histogram;
+
+        /**
+         * Keep track of which kernel function to use when managing particle populations.
+         */
+        typename ParticlePDF<dim>::KernelFunction kernel_function;
+
+        /**
+         * The bandwidth to scale the kernel function by when managing particle populations.
+         */
+        double bandwidth;
+
+        /**
          * Generation scheme for creating particles in this manager
          */
         std::unique_ptr<Generator::Interface<dim>> generator;
@@ -350,6 +397,16 @@ namespace aspect
          * Strategy for particle load balancing.
          */
         typename ParticleLoadBalancing::Kind particle_load_balancing;
+
+        /**
+         * Algorithm for deletion of excess particles.
+         */
+        DeletionAlgorithm deletion_algorithm;
+
+        /**
+         * Algorithm for adding particles to cell.
+         */
+        AdditionAlgorithm addition_algorithm;
 
         /**
          * Lower limit for particle number per cell. This limit is
@@ -456,6 +513,19 @@ namespace aspect
         connect_particle_handler_signals(aspect::SimulatorSignals<dim> &signals,
                                          ParticleHandler<dim> &particle_handler,
                                          const bool connect_to_checkpoint_signals = true) const;
+
+        /**
+         * This function returns a vector containing the particle_iterator_ranges of
+         * the cells neighboring the supplied cell. This is used to sum the
+         * kernel function using particles across cell boundaries.
+         * @param cell The cell to find neighboring cell's particles for.
+         * @param particle_handler The particle handler of the current particle manager
+         * @param grid_cache The grid cache of the current particle manager
+         */
+        std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
+        get_neighboring_particle_ranges(const typename Triangulation<dim>::active_cell_iterator &cell,
+                                        const typename Particles::ParticleHandler<dim> &particle_handler,
+                                        typename GridTools::Cache<dim> &grid_cache);
     };
 
     /* -------------------------- inline and template functions ---------------------- */
