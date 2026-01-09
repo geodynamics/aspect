@@ -1,0 +1,66 @@
+{
+    "version":"1.0",
+    "cross section":[[0,4e5],[4.2e5,4e5]],
+    "features":
+    [
+    {
+            "model":"fault","name":"fault1","dip point":[0e5,2e5],    
+            "min depth":0, "max depth":1e5,
+            "coordinates":[[2.5e5,8e5],[2.5e5,0]],
+            "segments":
+            [
+                {"length":2e5,"thickness":[5000],"angle":[80]}
+            ],
+            "temperature models":[{"model":"uniform","temperature":273}],
+            "composition models":
+            [
+                {"model":"smooth", "compositions":[0,2], "operation":"add", "side distance fault center":2500, "center fractions":[1.5,1.5],"side fractions":[0.5,0.5]}
+            ]
+                
+        }, {
+            "model":"fault","name":"fault2","dip point":[0e5,2e5],    
+            "min depth":0, "max depth":1e5,
+            "coordinates":[[2.25e5,8e5],[2.25e5,0]],
+            "segments":
+            [
+                {"length":2e5,"thickness":[5000],"angle":[70]}
+            ],
+            "temperature models":[{"model":"uniform","temperature":273}],
+            "composition models":
+            [
+                {"model":"smooth", "compositions":[0,2], "operation":"add", "side distance fault center":2500, "center fractions":[1.5,1.5],"side fractions":[0.5,0.5]}
+            ]
+                
+        }, {
+            "model":"fault","name":"fault3","dip point":[0e5,2e5],    
+            "min depth":0, "max depth":1e5,
+            "coordinates":[[1.4e5,8e5],[1.4e5,0]],
+            "segments":
+            [
+                {"length":2e5,"thickness":[5000],"angle":[110]}
+            ],
+            "temperature models":[{"model":"uniform","temperature":273}],
+            "composition models":
+            [
+                {"model":"smooth", "compositions":[0,2], "operation":"add", "side distance fault center":2500, "center fractions":[1.5,1.5],"side fractions":[0.5,0.5]}
+            ]
+                
+        }, {
+            "model":"fault","name":"fault4","dip point":[0e5,2e5],    
+            "min depth":0, "max depth":1e5,
+            "coordinates":[[1.85e5,8e5],[1.85e5,0]],
+            "segments":
+            [
+                {"length":2e5,"thickness":[5000],"angle":[90]}
+            ],
+            "temperature models":[{"model":"uniform","temperature":273}],
+            "composition models":
+            [
+                {"model":"smooth", "compositions":[0,2], "operation":"add", "side distance fault center":2500, "center fractions":[1.5,1.5],"side fractions":[0.5,0.5]}
+            ]
+                
+        }
+
+    ]
+}
+

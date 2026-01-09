@@ -1,0 +1,38 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Minimal value for composition plastic_strain
+# 14: Maximal value for composition plastic_strain
+# 15: Global mass for composition plastic_strain
+# 16: Minimal value for composition noninitial_plastic_strain
+# 17: Maximal value for composition noninitial_plastic_strain
+# 18: Global mass for composition noninitial_plastic_strain
+# 19: Minimal value for composition viscous_strain
+# 20: Maximal value for composition viscous_strain
+# 21: Global mass for composition viscous_strain
+# 22: Minimal value for composition crust_upper
+# 23: Maximal value for composition crust_upper
+# 24: Global mass for composition crust_upper
+# 25: Minimal value for composition crust_lower
+# 26: Maximal value for composition crust_lower
+# 27: Global mass for composition crust_lower
+# 28: Minimal value for composition mantle_lithosphere
+# 29: Maximal value for composition mantle_lithosphere
+# 30: Global mass for composition mantle_lithosphere
+# 31: Minimal value for composition asthenosphere
+# 32: Maximal value for composition asthenosphere
+# 33: Global mass for composition asthenosphere
+# 34: RMS velocity (m/year)
+# 35: Max. velocity (m/year)
+# 36: Number of advected particles
+# 37: Particle file name
+0 0.000000000000e+00 0.000000000000e+00 400 3803 1681 25200 1 0 23 24 66 0.00000000e+00 1.53409020e+00 1.37942383e+10 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.49349236e+00 3.30589775e+10 0.00000000e+00 1.00000000e+00 8.00000000e+09 0.00000000e+00 1.00000000e+00 8.00000000e+09 0.00000000e+00 1.00000000e+00 1.60000000e+10 0.00000000e+00 1.00000000e+00 1.28000000e+11 1.31136528e-04 2.23606798e-04 19600 output-continental_compression_with_imposed_faults/particles/particles-00000 
