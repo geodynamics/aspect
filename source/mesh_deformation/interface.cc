@@ -417,6 +417,12 @@ namespace aspect
             // Store the boundary indicator. If the entry exists this does nothing.
             prescribed_mesh_deformation_boundary_indicators.insert(boundary_id);
 
+            // If the mesh deformation boundary also has a tangential velocity boundary condition,
+            // store it in the appropriate set.
+            const auto &indicators = this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators();
+            if (indicators.find(boundary_id) != indicators.end())
+              tangential_velocity_with_prescribed_mesh_deformation_boundary_indicators.insert(boundary_id);
+
             for (const auto &object_name : object_names)
               {
                 // Make sure there are no duplicated entries. If this boundary is not
@@ -456,13 +462,20 @@ namespace aspect
         // treated as tangential mesh boundaries, but only if they do not have
         // assigned mesh deformation objects.
         for (const auto &boundary_id : this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators())
-          tangential_mesh_deformation_boundary_indicators.insert(boundary_id);
+          {
+            tangential_mesh_deformation_boundary_indicators.insert(boundary_id);
+            tangential_velocity_without_prescribed_mesh_deformation_boundary_indicators.insert(boundary_id);
+          }
 
         // The tangential mesh boundaries can accidentally contain prescribed mesh
         // boundaries if they were in the list of tangential Stokes boundaries.
         // If so remove them.
         for (const auto &boundary_id : prescribed_mesh_deformation_boundary_indicators)
-          tangential_mesh_deformation_boundary_indicators.erase(boundary_id);
+            tangential_mesh_deformation_boundary_indicators.erase(boundary_id);
+
+        for (const auto &boundary_id : tangential_velocity_with_prescribed_mesh_deformation_boundary_indicators)
+            tangential_velocity_without_prescribed_mesh_deformation_boundary_indicators.erase(boundary_id);
+
 
         // All periodic boundaries are implicitly treated as tangential mesh deformation boundaries.
         using periodic_boundary_pair = std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>;
@@ -1595,10 +1608,25 @@ namespace aspect
     }
 
 
+    template <int dim>
+    const std::set<types::boundary_id> &
+    MeshDeformationHandler<dim>::get_tangential_velocity_with_active_mesh_deformation_boundary_indicators () const
+    {
+      return tangential_velocity_with_prescribed_mesh_deformation_boundary_indicators;
+    }
+
+
 
     template <int dim>
     const std::set<types::boundary_id> &
-    MeshDeformationHandler<dim>::get_boundary_indicators_requiring_stabilization () const
+    MeshDeformationHandler<dim>::get_tangential_velocity_without_active_mesh_deformation_boundary_indicators () const
+    {
+      return tangential_velocity_without_prescribed_mesh_deformation_boundary_indicators;
+    }
+
+    template <int dim>
+    const std::set<types::boundary_id> &
+    MeshDeformationHandler<dim>::get_boundary_indicators_requiring_stabilization() const
     {
       return boundary_indicators_requiring_stabilization;
     }
