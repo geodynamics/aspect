@@ -17,6 +17,8 @@ the vtu format, the output files are compressed, and can not be compared using
 Numdiff). An easy way to create all of the files you need is to copy the
 folder of an existing test and rename it to the name of your parameter file.
 
+## Running new tests on your system
+
 To actually run the test, you have to go to your
 ASPECT build directory and run
 
@@ -43,6 +45,8 @@ and replace `******* Check` by `cp` to copy the output you just created over
 the reference output. Of course, you should only do that after you have made
 sure that these output files show that the feature you want to test is working
 as expected.
+
+## Updating test results for pull requests
 
 When you make a new test part of a pull request on GitHub, then as explained
 above that will lead to a run of all tests &ndash; including your new one
