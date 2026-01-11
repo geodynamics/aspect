@@ -440,6 +440,14 @@ namespace aspect
               }
           }
 
+        // Create the list of indicators for tangential velocity boundaries on which mesh deformation does not occur
+        for (const auto &boundary_id : this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators())
+          {
+            if (prescribed_mesh_deformation_boundary_indicators.find(boundary_id)
+                == prescribed_mesh_deformation_boundary_indicators.end())
+              tangential_velocity_without_prescribed_mesh_deformation_boundary_indicators.insert(boundary_id);
+          }
+
         // Create the list of tangential mesh movement boundary indicators
         try
           {
@@ -462,20 +470,13 @@ namespace aspect
         // treated as tangential mesh boundaries, but only if they do not have
         // assigned mesh deformation objects.
         for (const auto &boundary_id : this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators())
-          {
-            tangential_mesh_deformation_boundary_indicators.insert(boundary_id);
-            tangential_velocity_without_prescribed_mesh_deformation_boundary_indicators.insert(boundary_id);
-          }
+          tangential_mesh_deformation_boundary_indicators.insert(boundary_id);
 
         // The tangential mesh boundaries can accidentally contain prescribed mesh
         // boundaries if they were in the list of tangential Stokes boundaries.
         // If so remove them.
         for (const auto &boundary_id : prescribed_mesh_deformation_boundary_indicators)
-            tangential_mesh_deformation_boundary_indicators.erase(boundary_id);
-
-        for (const auto &boundary_id : tangential_velocity_with_prescribed_mesh_deformation_boundary_indicators)
-            tangential_velocity_without_prescribed_mesh_deformation_boundary_indicators.erase(boundary_id);
-
+          tangential_mesh_deformation_boundary_indicators.erase(boundary_id);
 
         // All periodic boundaries are implicitly treated as tangential mesh deformation boundaries.
         using periodic_boundary_pair = std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>;
