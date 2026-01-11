@@ -21,14 +21,13 @@
 
 #ifndef aspect_block_stokes_preconditioner_h
 #define aspect_block_stokes_preconditioner_h
+
 #include <deal.II/lac/solver_bicgstab.h>
 #include <deal.II/lac/solver_cg.h>
 
 
 #include <deal.II/lac/la_parallel_vector.h>
 #include <deal.II/lac/la_parallel_block_vector.h>
-
-#include <deal.II/lac/solver_bicgstab.h>
 
 namespace aspect
 {
@@ -91,6 +90,8 @@ namespace aspect
         A_block_is_symmetric (A_block_is_symmetric),
         solver_tolerance (solver_tolerance)
     {}
+
+
 
     /**
     * Implements the vmult for InverseVelocityBlock. This applies the action of A^{-1} by either
@@ -236,7 +237,7 @@ namespace aspect
 
       // apply the top right block: B^T or J^{up}
       {
-        // Hack: for matrix-free usage, the BT operator needs to operate on the whole vector,
+        // For matrix-free usage, the BT operator needs to operate on the whole vector,
         // but the matrix-based version is a SparseMatrix::vmult() that requires passing the
         // individual blocks.
         if constexpr (std::is_same_v<VectorType, dealii::LinearAlgebra::distributed::BlockVector<double>>)
