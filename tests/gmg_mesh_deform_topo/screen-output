@@ -22,9 +22,9 @@ Number of mesh deformation degrees of freedom: 578
    Solving Stokes system (GMG)... 19+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  31.9 m/s, 150 m/s
+     RMS, max velocity:                  31.9 m/s, 160 m/s
      Temperature min/avg/max:            0 K, 0.5243 K, 1 K
-     Heat fluxes through boundary parts: 0 W, 0 W, -1.01 W, 3.679 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.01 W, 3.57 W
      Writing graphical output:           output-gmg_mesh_deform_topo/solution/solution-00001
      Topography min/max:                 -0.177 m, 0 m
 

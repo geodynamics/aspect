@@ -28,7 +28,7 @@ Number of mesh deformation degrees of freedom: 20,790
      Reference thermal diffusivity (m^2/s):         9.54198e-07
      Rayleigh number:                               2.62453e+07
 
-     RMS, max velocity:                2.12 m/year, 5.01 m/year
+     RMS, max velocity:                2.11 m/year, 4.76 m/year
      Pressure at top/bottom of domain: 2.789e+07 Pa, 9.513e+10 Pa
      Density at top/bottom of domain:  3359 kg/m^3, 3260 kg/m^3
      Computing dynamic topography      
