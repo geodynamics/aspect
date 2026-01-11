@@ -17,10 +17,17 @@
   along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
+
+
 #ifndef aspect_block_stokes_preconditioner_h
 #define aspect_block_stokes_preconditioner_h
 
 #include <deal.II/lac/solver_bicgstab.h>
+#include <deal.II/lac/solver_cg.h>
+
+
+#include <deal.II/lac/la_parallel_vector.h>
+#include <deal.II/lac/la_parallel_block_vector.h>
 
 namespace aspect
 {
@@ -192,6 +199,7 @@ namespace aspect
         const AInvOperator                     &A_inverse_operator;
         const SInvOperator                     &S_inverse_operator;
         const BTOperator                       &BT_operator;
+        mutable VectorType                      tmp;
     };
 
 
@@ -215,7 +223,10 @@ namespace aspect
     vmult (VectorType       &dst,
            const VectorType &src) const
     {
-      typename VectorType::BlockType utmp(src.block(0));
+      if (tmp.size() == 0)
+        {
+          tmp.reinit(src);
+        }
 
       // first apply the Schur Complement inverse operator.
       {
@@ -223,16 +234,121 @@ namespace aspect
         dst.block(1) *= -1.0;
       }
 
-      // apply the top right block
+
+      // apply the top right block: B^T or J^{up}
       {
-        BT_operator.vmult(utmp, dst.block(1)); // B^T or J^{up}
-        utmp *= -1.0;
-        utmp += src.block(0);
+        // For matrix-free usage, the BT operator needs to operate on the whole vector,
+        // but the matrix-based version is a SparseMatrix::vmult() that requires passing the
+        // individual blocks.
+        if constexpr (std::is_same_v<VectorType, dealii::LinearAlgebra::distributed::BlockVector<double>>)
+          BT_operator.vmult(tmp, dst);
+        else
+          BT_operator.vmult(tmp.block(0), dst.block(1));
+
+        tmp.block(0) *= -1.0;
+        tmp.block(0) += src.block(0);
       }
 
-      A_inverse_operator.vmult(dst.block(0), utmp);
+      A_inverse_operator.vmult(dst.block(0), tmp.block(0));
     }
+
+
+
+    template<class OP, class StokesMatrixType, class SchurComplementMatrixType, class VectorType>
+    class SchurApproximation
+    {
+      public:
+        SchurApproximation(const OP &schur_preconditioner,
+                           const StokesMatrixType &stokes_matrix,
+                           const SchurComplementMatrixType &Schur_complement_block,
+                           const bool do_solve_Schur_complement,
+                           const double Schur_complement_tolerance);
+        void vmult( VectorType &dst, const VectorType &src) const;
+        unsigned int n_iterations() const;
+
+      private:
+        const OP &schur_preconditioner;
+        const StokesMatrixType &stokes_matrix;
+        const SchurComplementMatrixType &Schur_complement_block;
+        const bool do_solve_Schur_complement;
+        const double Schur_complement_tolerance;
+        mutable unsigned int n_iterations_Schur_complement_;
+
+
+    };
+
+    template <class OP, class StokesMatrixType, class SchurComplementMatrixType, class VectorType>
+    SchurApproximation<OP, StokesMatrixType, SchurComplementMatrixType, VectorType>::SchurApproximation(const OP &schur_preconditioner,
+        const StokesMatrixType &stokes_matrix,
+        const SchurComplementMatrixType &Schur_complement_block,
+        const bool do_solve_Schur_complement,
+        const double Schur_complement_tolerance)
+      :
+      schur_preconditioner(schur_preconditioner),
+      stokes_matrix(stokes_matrix),
+      Schur_complement_block(Schur_complement_block),
+      do_solve_Schur_complement(do_solve_Schur_complement),
+      Schur_complement_tolerance(Schur_complement_tolerance),
+      n_iterations_Schur_complement_(0)
+    {}
+
+
+    template<class OP, class StokesMatrixType, class SchurComplementMatrixType, class VectorType>
+    void SchurApproximation<OP, StokesMatrixType, SchurComplementMatrixType, VectorType>::vmult(VectorType &dst,
+        const VectorType &src) const
+    {
+      if (do_solve_Schur_complement)
+        {
+
+          SolverControl solver_control(100, src.l2_norm() * Schur_complement_tolerance,true);
+
+          SolverCG<VectorType> solver(solver_control);
+          // Trilinos reports a breakdown
+          // in case src=dst=0, even
+          // though it should return
+          // convergence without
+          // iterating. We simply skip
+          // solving in this case.
+          if (src.l2_norm() > 1e-50)
+            {
+              try
+                {
+                  dst = 0.0; // explicitly zero out because GMRES does not guarantee that dst is zeroed out
+
+                  solver.solve(Schur_complement_block,
+                               dst, src,
+                               schur_preconditioner);
+                  n_iterations_Schur_complement_ += solver_control.last_step();
+                }
+              // if the solver fails, report the error from processor 0 with some additional
+              // information about its location, and throw a quiet exception on all other
+              // processors
+              catch (const std::exception &exc)
+                {
+                  Utilities::throw_linear_solver_failure_exception("iterative (bottom right) solver",
+                                                                   "BlockSchurPreconditioner::vmult",
+                                                                   std::vector<SolverControl> {solver_control},
+                                                                   exc,
+                                                                   src.get_mpi_communicator());
+                }
+            }
+        }
+      else
+        {
+          schur_preconditioner.vmult(dst,src);
+          n_iterations_Schur_complement_ += 1;
+        }
+    }
+    template<class OP, class StokesMatrixType, class SchurComplementMatrixType, class VectorType>
+    unsigned int SchurApproximation<OP, StokesMatrixType, SchurComplementMatrixType, VectorType>::n_iterations() const
+    {
+      return n_iterations_Schur_complement_;
+    }
+
+
   }
 }
+
+
 
 #endif
