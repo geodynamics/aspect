@@ -1411,43 +1411,50 @@ namespace aspect
 
   template <int dim>
   void
+  Simulator<dim>::compute_no_normal_flux_constraints_with_mesh_deformation (AffineConstraints<double> &constraints)
+  {
+    signals.pre_compute_no_normal_flux_constraints(triangulation);
+
+    // When the mesh can be deformed, we need to distinguish between non-deforming
+    // and deforming boundaries. When mesh deformation is not active, we can use the
+    // manifold to compute the normal vector, which is highly accurate.
+    VectorTools::compute_no_normal_flux_constraints(dof_handler,
+                                                    /* first_vector_component= */
+                                                    introspection.component_indices.velocities[0],
+                                                    mesh_deformation->get_tangential_velocity_without_active_mesh_deformation_boundary_indicators(),
+                                                    constraints,
+                                                    *mapping,
+                                                    /*use_manifold_for_normal=*/
+                                                    true);
+
+    // On boundaries where mesh deformation is active, the manifold
+    // may not represent the actual boundary shape, so we cannot
+    // use it to compute the normal vector. Instead, we compute
+    // the normal vector from the actual (deformed) geometry.
+    VectorTools::compute_no_normal_flux_constraints (dof_handler,
+                                                     /* first_vector_component= */
+                                                     introspection.component_indices.velocities[0],
+                                                     mesh_deformation->get_tangential_velocity_with_active_mesh_deformation_boundary_indicators(),
+                                                     constraints,
+                                                     *mapping,
+                                                     /*use_manifold_for_normal=*/
+                                                     false);
+  }
+
+  template <int dim>
+  void
   Simulator<dim>::compute_current_velocity_boundary_constraints (AffineConstraints<double> &constraints)
   {
     // set the current time and do the interpolation
     // for the prescribed velocity fields
     boundary_velocity_manager.update();
 
-    // If mesh deformation is enabled, no-normal-flux constraints
-    // on the boundaries where tangential velocity is prescribed
-    // must be computed here.
-    // This is because the no-normal-flux constraints depend on the
-    // mapping, which may change if mesh deformation is active.
+    // If mesh deformation is enabled, we need to
+    // recompute no-normal-flux constraints on the boundaries
+    // where tangential velocity is prescribed because the
+    // normal vector may have changed.
     if (parameters.mesh_deformation_enabled)
-      {
-
-        signals.pre_compute_no_normal_flux_constraints(triangulation);
-        // If mesh deformation is enabled, we cannot use the manifold
-        // information to compute the normal vector, since the
-        // manifold may not represent the actual deformed shape
-        // of the boundary.
-        VectorTools::compute_no_normal_flux_constraints(dof_handler,
-                                                        /* first_vector_component= */
-                                                        introspection.component_indices.velocities[0],
-                                                        mesh_deformation->get_tangential_velocity_without_active_mesh_deformation_boundary_indicators(),
-                                                        constraints,
-                                                        *mapping,
-                                                        /*use_manifold_for_normal=*/
-                                                        true);
-
-        VectorTools::compute_no_normal_flux_constraints (dof_handler,
-                                                         /* first_vector_component= */
-                                                         introspection.component_indices.velocities[0],
-                                                         mesh_deformation->get_tangential_velocity_with_active_mesh_deformation_boundary_indicators(),
-                                                         constraints,
-                                                         *mapping,
-                                                         /*use_manifold_for_normal=*/
-                                                         false);
-      }
+      compute_no_normal_flux_constraints_with_mesh_deformation(constraints);
 
     // Compute constraints for prescribed velocity boundaries for each boundary
     for (const auto boundary_id: boundary_velocity_manager.get_prescribed_boundary_velocity_indicators())

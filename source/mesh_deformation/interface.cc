@@ -615,14 +615,17 @@ namespace aspect
         }
 
       this->get_signals().pre_compute_no_normal_flux_constraints(sim.triangulation);
-      // Make the no flux boundary constraints
+
+      // Make the no flux boundary constraints for all boundaries on which the mesh
+      // is allowed to move tangential to that boundary. This is independent of any
+      // constraints on the movement of material on these boundaries.
       VectorTools::compute_no_normal_flux_constraints (mesh_deformation_dof_handler,
                                                        /* first_vector_component= */
                                                        0,
                                                        tangential_mesh_deformation_boundary_indicators,
                                                        mesh_velocity_constraints,
                                                        this->get_mapping(),
-                                                       /*use_manifold_for_normal=*/
+                                                       /* use_manifold_for_normal= */
                                                        false);
 
       this->get_signals().post_compute_no_normal_flux_constraints(sim.triangulation);
