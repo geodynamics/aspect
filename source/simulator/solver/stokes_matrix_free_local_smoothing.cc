@@ -1812,7 +1812,9 @@ namespace aspect
                   user_level_constraints,
                   mapping,
                   refinement_edge_indices,
-                  level);
+                  level,
+                  /*use_manifold_for_normal=*/
+                  !this->get_parameters().mesh_deformation_enabled);
 
                 user_level_constraints.close();
                 mg_constrained_dofs_A_block.add_user_constraints(level,user_level_constraints);
