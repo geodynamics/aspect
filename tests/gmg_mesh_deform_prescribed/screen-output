@@ -4,16 +4,16 @@ Loading shared library <./libgmg_mesh_deform_prescribed.debug.so>
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
-Number of mesh deformation degrees of freedom: 162
+Number of mesh deformation degrees of freedom: 578
    Solving mesh displacement system... 6 iterations.
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 17+0 iterations.
+   Solving Stokes system (GMG)... 18+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-gmg_mesh_deform_prescribed/solution/solution-00000
-     RMS, max velocity:        1.29e-10 m/year, 3.93e-10 m/year
+     RMS, max velocity:        3.18e-10 m/year, 1.28e-09 m/year
      Topography min/max:       -2e+04 m, 1.414e+04 m
 
 Termination requested by criterion: end time

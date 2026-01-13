@@ -1930,6 +1930,8 @@ namespace aspect
       composition_degrees    = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_unsigned_int(Utilities::split_string_list(prm.get("Composition polynomial degree"))),
                                                                        n_compositional_fields,
                                                                        "Composition polynomial degree");
+
+
       if (n_compositional_fields > 0)
         max_composition_degree = *std::max_element(composition_degrees.begin(), composition_degrees.end());
       else

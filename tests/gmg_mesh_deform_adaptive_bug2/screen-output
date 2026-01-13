@@ -2,7 +2,7 @@
 Number of active cells: 320 (on 4 levels)
 Number of degrees of freedom: 4,500 (2,754+369+1,377)
 
-Number of mesh deformation degrees of freedom: 738
+Number of mesh deformation degrees of freedom: 2,754
    Solving mesh displacement system... 0 iterations.
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 0 iterations.
@@ -23,7 +23,7 @@ Number of mesh deformation degrees of freedom: 738
 Number of active cells: 278 (on 4 levels)
 Number of degrees of freedom: 3,996 (2,446+327+1,223)
 
-Number of mesh deformation degrees of freedom: 654
+Number of mesh deformation degrees of freedom: 2,446
    Solving mesh displacement system... 0 iterations.
 
 
@@ -32,22 +32,22 @@ Number of mesh deformation degrees of freedom: 654
    Solving mesh displacement system... 4 iterations.
    Solving temperature system... 0 iterations.
    Solving Stokes system (GMG)... 11+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00522459
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00522432
 
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.03285e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.83354e-07
 
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00001
      RMS, max velocity:                                 0.00792 m/year, 0.0125 m/year
      Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 3.629e+12 kg
-     Topography min/max:                                0 m, 432 m
+     Topography min/max:                                0 m, 430.5 m
 
-Number of active cells: 290 (on 4 levels)
-Number of degrees of freedom: 4,137 (2,532+339+1,266)
+Number of active cells: 284 (on 4 levels)
+Number of degrees of freedom: 4,062 (2,486+333+1,243)
 
-Number of mesh deformation degrees of freedom: 678
+Number of mesh deformation degrees of freedom: 2,486
 
 
 
@@ -55,22 +55,22 @@ Number of mesh deformation degrees of freedom: 678
    Solving mesh displacement system... 4 iterations.
    Solving temperature system... 0 iterations.
    Solving Stokes system (GMG)... 10+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000935781
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00094271
 
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.17095e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.25722e-07
 
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00002
      RMS, max velocity:                                 0.00789 m/year, 0.0125 m/year
      Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 3.674e+12 kg
-     Topography min/max:                                0 m, 861.1 m
+     Topography min/max:                                0 m, 858.3 m
 
-Number of active cells: 275 (on 4 levels)
-Number of degrees of freedom: 3,957 (2,422+324+1,211)
+Number of active cells: 272 (on 4 levels)
+Number of degrees of freedom: 3,918 (2,398+321+1,199)
 
-Number of mesh deformation degrees of freedom: 648
+Number of mesh deformation degrees of freedom: 2,398
 
 
 
@@ -78,45 +78,45 @@ Number of mesh deformation degrees of freedom: 648
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 0 iterations.
    Solving Stokes system (GMG)... 8+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0011316
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00112203
 
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.99639e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.71107e-07
 
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00003
-     RMS, max velocity:                                 0.00787 m/year, 0.0125 m/year
-     Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 3.72e+12 kg
-     Topography min/max:                                0 m, 1288 m
+     RMS, max velocity:                                 0.00786 m/year, 0.0125 m/year
+     Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 3.719e+12 kg
+     Topography min/max:                                0 m, 1284 m
 
-Number of active cells: 290 (on 4 levels)
-Number of degrees of freedom: 4,137 (2,532+339+1,266)
+Number of active cells: 284 (on 4 levels)
+Number of degrees of freedom: 4,062 (2,486+333+1,243)
 
-Number of mesh deformation degrees of freedom: 678
+Number of mesh deformation degrees of freedom: 2,486
 
 
 
 *** Timestep 4:  t=199976 years, dt=50000 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 7+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000888661
+   Solving Stokes system (GMG)... 8+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000901851
 
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 9.51802e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.29447e-07
 
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00004
      RMS, max velocity:                                 0.00784 m/year, 0.0125 m/year
      Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 3.766e+12 kg
-     Topography min/max:                                0 m, 1713 m
+     Topography min/max:                                0 m, 1708 m
 
-Number of active cells: 275 (on 4 levels)
-Number of degrees of freedom: 3,957 (2,422+324+1,211)
+Number of active cells: 272 (on 4 levels)
+Number of degrees of freedom: 3,918 (2,398+321+1,199)
 
-Number of mesh deformation degrees of freedom: 648
+Number of mesh deformation degrees of freedom: 2,398
 
 
 
@@ -124,206 +124,206 @@ Number of mesh deformation degrees of freedom: 648
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 0 iterations.
    Solving Stokes system (GMG)... 8+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00124747
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00123573
 
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.31416e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.47313e-07
 
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00005
      RMS, max velocity:                                 0.00781 m/year, 0.0125 m/year
-     Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 3.813e+12 kg
-     Topography min/max:                                0 m, 2136 m
+     Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 3.812e+12 kg
+     Topography min/max:                                0 m, 2129 m
 
-Number of active cells: 290 (on 4 levels)
-Number of degrees of freedom: 4,137 (2,532+339+1,266)
+Number of active cells: 284 (on 4 levels)
+Number of degrees of freedom: 4,062 (2,486+333+1,243)
 
-Number of mesh deformation degrees of freedom: 678
+Number of mesh deformation degrees of freedom: 2,486
 
 
 
 *** Timestep 6:  t=299976 years, dt=50000 years
-   Solving mesh displacement system... 5 iterations.
+   Solving mesh displacement system... 6 iterations.
    Solving temperature system... 0 iterations.
    Solving Stokes system (GMG)... 8+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000970473
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000999727
 
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.71138e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 6.70141e-07
 
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00006
      RMS, max velocity:                                 0.00779 m/year, 0.0125 m/year
-     Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 3.86e+12 kg
-     Topography min/max:                                0 m, 2556 m
+     Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 3.859e+12 kg
+     Topography min/max:                                0 m, 2549 m
 
-Number of active cells: 278 (on 4 levels)
-Number of degrees of freedom: 3,993 (2,444+327+1,222)
+Number of active cells: 275 (on 4 levels)
+Number of degrees of freedom: 3,954 (2,420+324+1,210)
 
-Number of mesh deformation degrees of freedom: 654
+Number of mesh deformation degrees of freedom: 2,420
 
 
 
 *** Timestep 7:  t=349976 years, dt=50000 years
-   Solving mesh displacement system... 5 iterations.
+   Solving mesh displacement system... 6 iterations.
    Solving temperature system... 0 iterations.
    Solving Stokes system (GMG)... 8+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00112229
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00112702
 
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.7432e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 6.48456e-07
 
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00007
      RMS, max velocity:                                 0.00776 m/year, 0.0125 m/year
      Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 3.907e+12 kg
-     Topography min/max:                                0 m, 2974 m
+     Topography min/max:                                0 m, 2966 m
 
-Number of active cells: 287 (on 4 levels)
-Number of degrees of freedom: 4,101 (2,510+336+1,255)
+Number of active cells: 281 (on 4 levels)
+Number of degrees of freedom: 4,026 (2,464+330+1,232)
 
-Number of mesh deformation degrees of freedom: 672
+Number of mesh deformation degrees of freedom: 2,464
 
 
 
 *** Timestep 8:  t=399976 years, dt=50000 years
-   Solving mesh displacement system... 5 iterations.
+   Solving mesh displacement system... 6 iterations.
    Solving temperature system... 0 iterations.
    Solving Stokes system (GMG)... 8+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000919734
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000946477
 
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.73807e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 6.98801e-07
 
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00008
      RMS, max velocity:                                 0.00774 m/year, 0.0125 m/year
      Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 3.955e+12 kg
-     Topography min/max:                                0 m, 3389 m
+     Topography min/max:                                0 m, 3380 m
 
-Number of active cells: 281 (on 4 levels)
-Number of degrees of freedom: 4,029 (2,466+330+1,233)
+Number of active cells: 278 (on 4 levels)
+Number of degrees of freedom: 3,990 (2,442+327+1,221)
 
-Number of mesh deformation degrees of freedom: 660
+Number of mesh deformation degrees of freedom: 2,442
 
 
 
 *** Timestep 9:  t=449976 years, dt=50000 years
-   Solving mesh displacement system... 6 iterations.
+   Solving mesh displacement system... 7 iterations.
    Solving temperature system... 0 iterations.
    Solving Stokes system (GMG)... 8+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00102673
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00107594
 
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.43456e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 7.99849e-07
 
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00009
      RMS, max velocity:                                 0.00771 m/year, 0.0125 m/year
-     Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 4.004e+12 kg
-     Topography min/max:                                0 m, 3802 m
+     Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 4.003e+12 kg
+     Topography min/max:                                0 m, 3793 m
 
-Number of active cells: 284 (on 4 levels)
-Number of degrees of freedom: 4,078 (2,496+334+1,248)
+Number of active cells: 275 (on 4 levels)
+Number of degrees of freedom: 3,967 (2,428+325+1,214)
 
-Number of mesh deformation degrees of freedom: 668
+Number of mesh deformation degrees of freedom: 2,428
 
 
 
 *** Timestep 10:  t=499976 years, dt=50000 years
    Solving mesh displacement system... 7 iterations.
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 7+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000882599
+   Solving Stokes system (GMG)... 8+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00108628
 
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 8.10829e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 7.84866e-07
 
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00010
      RMS, max velocity:                                 0.00769 m/year, 0.0125 m/year
-     Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 4.052e+12 kg
-     Topography min/max:                                0 m, 4216 m
+     Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 4.051e+12 kg
+     Topography min/max:                                0 m, 4203 m
 
-Number of active cells: 281 (on 4 levels)
-Number of degrees of freedom: 4,029 (2,466+330+1,233)
+Number of active cells: 278 (on 4 levels)
+Number of degrees of freedom: 3,990 (2,442+327+1,221)
 
-Number of mesh deformation degrees of freedom: 660
+Number of mesh deformation degrees of freedom: 2,442
 
 
 
 *** Timestep 11:  t=549976 years, dt=50000 years
    Solving mesh displacement system... 7 iterations.
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 7+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000868347
+   Solving Stokes system (GMG)... 8+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00145607
 
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.19876e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 9.76929e-07
 
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00011
      RMS, max velocity:                                 0.00766 m/year, 0.0125 m/year
-     Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 4.102e+12 kg
-     Topography min/max:                                0 m, 4624 m
+     Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 4.101e+12 kg
+     Topography min/max:                                0 m, 4610 m
 
-Number of active cells: 284 (on 4 levels)
-Number of degrees of freedom: 4,078 (2,496+334+1,248)
+Number of active cells: 278 (on 4 levels)
+Number of degrees of freedom: 4,003 (2,450+328+1,225)
 
-Number of mesh deformation degrees of freedom: 668
+Number of mesh deformation degrees of freedom: 2,450
 
 
 
 *** Timestep 12:  t=599976 years, dt=50000 years
    Solving mesh displacement system... 7 iterations.
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 7+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000570364
+   Solving Stokes system (GMG)... 8+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00142133
 
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 6.78746e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 7.49537e-07
 
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00012
      RMS, max velocity:                                 0.00764 m/year, 0.0125 m/year
-     Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 4.151e+12 kg
-     Topography min/max:                                0 m, 5032 m
+     Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 4.15e+12 kg
+     Topography min/max:                                0 m, 5015 m
 
-Number of active cells: 281 (on 4 levels)
-Number of degrees of freedom: 4,029 (2,466+330+1,233)
+Number of active cells: 278 (on 4 levels)
+Number of degrees of freedom: 3,990 (2,442+327+1,221)
 
-Number of mesh deformation degrees of freedom: 660
+Number of mesh deformation degrees of freedom: 2,442
 
 
 
 *** Timestep 13:  t=600000 years, dt=24.3905 years
-   Solving mesh displacement system... 7 iterations.
+   Solving mesh displacement system... 8 iterations.
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 10+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000786179
+   Solving Stokes system (GMG)... 11+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000967264
 
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 6.01909e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.13538e-07
 
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00013
-     RMS, max velocity:                                 0.00765 m/year, 0.0125 m/year
+     RMS, max velocity:                                 0.00764 m/year, 0.0125 m/year
      Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 4.151e+12 kg
-     Topography min/max:                                0 m, 5032 m
+     Topography min/max:                                0 m, 5015 m
 
-Number of active cells: 284 (on 4 levels)
-Number of degrees of freedom: 4,078 (2,496+334+1,248)
+Number of active cells: 278 (on 4 levels)
+Number of degrees of freedom: 4,003 (2,450+328+1,225)
 
-Number of mesh deformation degrees of freedom: 668
+Number of mesh deformation degrees of freedom: 2,450
 
 
 

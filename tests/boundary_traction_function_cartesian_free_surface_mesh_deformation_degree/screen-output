@@ -1,0 +1,85 @@
+
+Number of active cells: 600 (on 1 levels)
+Number of degrees of freedom: 38,824 (5,082+671+671+5,400+5,400+5,400+5,400+5,400+5,400)
+
+Number of mesh deformation degrees of freedom: 5,082
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Skipping ve_stress_xx composition solve because RHS is zero.
+   Skipping ve_stress_yy composition solve because RHS is zero.
+   Skipping ve_stress_xy composition solve because RHS is zero.
+   Skipping ve_stress_xx_old composition solve because RHS is zero.
+   Skipping ve_stress_yy_old composition solve because RHS is zero.
+   Skipping ve_stress_xy_old composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 119+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.38627e-16, 0, 0, 0, 0, 0, 0, 0.010164
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.010164
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
+Number of active cells: 1,320 (on 2 levels)
+Number of degrees of freedom: 85,408 (11,218+1,455+1,455+11,880+11,880+11,880+11,880+11,880+11,880)
+
+Number of mesh deformation degrees of freedom: 11,218
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Skipping ve_stress_xx composition solve because RHS is zero.
+   Skipping ve_stress_yy composition solve because RHS is zero.
+   Skipping ve_stress_xy composition solve because RHS is zero.
+   Skipping ve_stress_xx_old composition solve because RHS is zero.
+   Skipping ve_stress_yy_old composition solve because RHS is zero.
+   Skipping ve_stress_xy_old composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 114+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.35499e-16, 0, 0, 0, 0, 0, 0, 0.0101195
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0101195
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
+Number of active cells: 4,380 (on 3 levels)
+Number of degrees of freedom: 282,262 (36,454+4,644+4,644+39,420+39,420+39,420+39,420+39,420+39,420)
+
+Number of mesh deformation degrees of freedom: 36,454
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Skipping ve_stress_xx composition solve because RHS is zero.
+   Skipping ve_stress_yy composition solve because RHS is zero.
+   Skipping ve_stress_xy composition solve because RHS is zero.
+   Skipping ve_stress_xx_old composition solve because RHS is zero.
+   Skipping ve_stress_yy_old composition solve because RHS is zero.
+   Skipping ve_stress_xy_old composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 113+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.37992e-16, 0, 0, 0, 0, 0, 0, 0.0100782
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0100782
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0
+     Temperature min/avg/max:   293 K, 293 K, 293 K
+     Topography min/max:        -9.313e-10 m, 4.657e-09 m
+     RMS, max velocity:         3.45e-05 m/year, 0.000528 m/year
+
+
+
+
+Termination requested by criterion: end time
+
+
+
+
+WARNING: During this computation 3 nonlinear solver failures occurred!
