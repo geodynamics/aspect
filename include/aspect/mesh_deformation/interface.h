@@ -403,6 +403,13 @@ namespace aspect
         void compute_mesh_displacements_gmg ();
 
         /**
+         * Implementation of compute_mesh_displacements_gmg() for a specific
+         * mesh deformation finite element degree.
+         */
+        template <unsigned int mesh_deformation_fe_degree>
+        void compute_mesh_displacements_gmg_impl();
+
+        /**
          * Set up the vector with initial displacements of the mesh
          * due to the initial topography, as supplied by the initial
          * topography plugin based on the surface coordinates of the

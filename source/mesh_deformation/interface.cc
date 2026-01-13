@@ -200,13 +200,10 @@ namespace aspect
     template <int dim>
     MeshDeformationHandler<dim>::MeshDeformationHandler (Simulator<dim> &simulator)
       : sim(simulator),  // reference to the simulator that owns the MeshDeformationHandler
-        mesh_deformation_fe (FE_Q<dim>(1),dim), // Q1 elements which describe the mesh geometry
+        mesh_deformation_fe (FE_Q<dim>(sim.parameters.mesh_deformation_polynomial_degree),dim),
         mesh_deformation_dof_handler (sim.triangulation),
         include_initial_topography(false)
     {
-      // Now reset the mapping of the simulator to be something that captures mesh deformation in time.
-      sim.mapping = std::make_unique<MappingQ1Eulerian<dim, LinearAlgebra::Vector>> (mesh_deformation_dof_handler,
-                                                                                      mesh_displacements);
     }
 
 
@@ -919,10 +916,10 @@ namespace aspect
                                                                   ComponentMask(dim, true));
 #endif
       Amg_data.elliptic = true;
-      Amg_data.higher_order_elements = false;
+      Amg_data.higher_order_elements = this->get_parameters().mesh_deformation_polynomial_degree > 1 ? true : false;
       Amg_data.smoother_sweeps = 2;
       Amg_data.aggregation_threshold = 0.02;
-      preconditioner_stiffness.initialize(mesh_matrix);
+      preconditioner_stiffness.initialize(mesh_matrix, Amg_data);
 
       // we solve with higher accuracy in the initial timestep:
       const double tolerance
@@ -976,6 +973,27 @@ namespace aspect
     template <int dim>
     void MeshDeformationHandler<dim>::compute_mesh_displacements_gmg()
     {
+      switch (this->get_parameters().mesh_deformation_polynomial_degree)
+        {
+          case 1:
+            compute_mesh_displacements_gmg_impl<1>();
+            break;
+          case 2:
+            compute_mesh_displacements_gmg_impl<2>();
+            break;
+          case 3:
+            compute_mesh_displacements_gmg_impl<3>();
+            break;
+          default:
+            throw std::runtime_error("Unsupported mesh deformation polynomial degree!");
+        }
+    }
+
+    template <int dim>
+    template <unsigned int mesh_deformation_fe_degree>
+    void MeshDeformationHandler<dim>::compute_mesh_displacements_gmg_impl()
+    {
+
       // Same as compute_mesh_displacements, but using matrix-free GMG
       // instead of matrix-based AMG.
 
@@ -988,10 +1006,8 @@ namespace aspect
       // 3. Although this gmg solver is much faster than the amg solver, it's only tested for
       //    limited free surface cases.
 
-      Assert(mesh_deformation_fe.degree == 1, ExcNotImplemented());
       // To be efficient, the operations performed in the matrix-free implementation require
       // knowledge of loop lengths at compile time, which are given by the degree of the finite element.
-      const unsigned int mesh_deformation_fe_degree = 1;
 
       using SystemOperatorType = dealii::MatrixFreeOperators::
                                  LaplaceOperator<dim, mesh_deformation_fe_degree, mesh_deformation_fe_degree + 1, dim>;
@@ -1398,6 +1414,22 @@ namespace aspect
       // cells are created.
       DoFRenumbering::hierarchical (mesh_deformation_dof_handler);
 
+      // If necessary reset the mapping of the simulator to something
+      // that captures mesh deformation in time. This has to
+      // happen after we distribute the mesh_deformation DoFs
+      // above.
+      if (dynamic_cast<const MappingQEulerian<dim, LinearAlgebra::Vector>*>(&(this->get_mapping())) == nullptr)
+        {
+          sim.mapping.reset (new MappingQEulerian<dim, LinearAlgebra::Vector> (this->get_geometry_model().has_curved_elements() ? (mesh_deformation_fe.degree+1) : 1,
+                                                                               mesh_deformation_dof_handler,
+                                                                               mesh_displacements));
+
+          for (auto &pm : sim.particle_managers)
+            pm.get_particle_handler().initialize(this->get_triangulation(),
+                                                 this->get_mapping(),
+                                                 pm.get_property_manager().get_n_property_components());
+        }
+
       if (this->is_stokes_matrix_free())
         {
           mesh_deformation_dof_handler.distribute_mg_dofs();
@@ -1434,7 +1466,7 @@ namespace aspect
           {
             object = std::make_unique<MappingQEulerian<dim,
             dealii::LinearAlgebra::distributed::Vector<double>>>(
-              /* degree = */ 1,
+              mesh_deformation_fe.degree,
               mesh_deformation_dof_handler,
               level_displacements[level],
               level);
