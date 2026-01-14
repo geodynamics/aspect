@@ -235,6 +235,13 @@ namespace aspect
     void
     MeshDeformationHandler<dim>::initialize ()
     {
+      // For geometries with curved elements, higher-order mesh deformation
+      // is required for accurate representation
+      if (this->get_geometry_model().has_curved_elements())
+        AssertThrow(this->get_parameters().mesh_deformation_polynomial_degree > 1,
+                    ExcMessage("For geometries with curved elements, the mesh deformation polynomial degree "
+                               "must be greater than 1 to ensure accurate mesh deformation."));
+
       // In case we prescribed initial topography, we should take this into
       // account. However, it is not included in the mesh displacements,
       // so we need to fetch it separately.
@@ -931,8 +938,9 @@ namespace aspect
 
       try
         {
+          this->get_pcout() << "   Solving mesh displacement system... " << std::endl;
           cg.solve (mesh_matrix, solution, rhs, preconditioner_stiffness);
-          this->get_pcout() << "   Solving mesh displacement system... " << solver_control.last_step() <<" iterations."<< std::endl;
+          this->get_pcout() << "   ... done. " << solver_control.last_step() <<" iterations."<< std::endl;
         }
       catch (const std::exception &exc)
         {
@@ -976,22 +984,22 @@ namespace aspect
       switch (this->get_parameters().mesh_deformation_polynomial_degree)
         {
           case 1:
-            compute_mesh_displacements_gmg_impl<1>();
+            compute_mesh_displacements_gmg_for_degree<1>();
             break;
           case 2:
-            compute_mesh_displacements_gmg_impl<2>();
+            compute_mesh_displacements_gmg_for_degree<2>();
             break;
           case 3:
-            compute_mesh_displacements_gmg_impl<3>();
+            compute_mesh_displacements_gmg_for_degree<3>();
             break;
           default:
-            throw std::runtime_error("Unsupported mesh deformation polynomial degree!");
+            AssertThrow(false, ExcMessage("Unsupported mesh deformation polynomial degree!"));
         }
     }
 
     template <int dim>
     template <unsigned int mesh_deformation_fe_degree>
-    void MeshDeformationHandler<dim>::compute_mesh_displacements_gmg_impl()
+    void MeshDeformationHandler<dim>::compute_mesh_displacements_gmg_for_degree()
     {
 
       // Same as compute_mesh_displacements, but using matrix-free GMG
@@ -1241,8 +1249,9 @@ namespace aspect
 
       try
         {
+          this->get_pcout() << "   Solving mesh displacement system... " << std::endl;
           cg.solve(laplace_operator, solution, rhs, preconditioner);
-          this->get_pcout() << "   Solving mesh displacement system... " << solver_control_mf.last_step() <<" iterations."<< std::endl;
+          this->get_pcout() << "   ... done. " << solver_control_mf.last_step() <<" iterations."<< std::endl;
         }
       catch (const std::exception &exc)
         {

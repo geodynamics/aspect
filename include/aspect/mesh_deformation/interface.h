@@ -403,11 +403,12 @@ namespace aspect
         void compute_mesh_displacements_gmg ();
 
         /**
-         * Implementation of compute_mesh_displacements_gmg() for a specific
-         * mesh deformation finite element degree.
+         * Compute mesh displacements using GMG solver
+         * for a specific mesh deformation finite element degree.
+         * This is the implementation called by compute_mesh_displacements_gmg().
          */
         template <unsigned int mesh_deformation_fe_degree>
-        void compute_mesh_displacements_gmg_impl();
+        void compute_mesh_displacements_gmg_for_degree();
 
         /**
          * Set up the vector with initial displacements of the mesh
