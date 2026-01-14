@@ -938,9 +938,9 @@ namespace aspect
 
       try
         {
-          this->get_pcout() << "   Solving mesh displacement system... " << std::endl;
+          this->get_pcout() << "   Solving mesh displacement system... ";
           cg.solve (mesh_matrix, solution, rhs, preconditioner_stiffness);
-          this->get_pcout() << "   ... done. " << solver_control.last_step() <<" iterations."<< std::endl;
+          this->get_pcout() << solver_control.last_step() <<" iterations."<< std::endl;
         }
       catch (const std::exception &exc)
         {
@@ -1249,9 +1249,9 @@ namespace aspect
 
       try
         {
-          this->get_pcout() << "   Solving mesh displacement system... " << std::endl;
+          this->get_pcout() << "   Solving mesh displacement system... ";
           cg.solve(laplace_operator, solution, rhs, preconditioner);
-          this->get_pcout() << "   ... done. " << solver_control_mf.last_step() <<" iterations."<< std::endl;
+          this->get_pcout() << solver_control_mf.last_step() <<" iterations."<< std::endl;
         }
       catch (const std::exception &exc)
         {
