@@ -23,38 +23,38 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Switching from defect correction form of Picard to the Newton solver scheme.
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Solving Stokes system (GMG)... 10+0 iterations.
-      Newton system information: Norm of the rhs: 2.06072e+11, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.111288
+      Newton system information: Norm of the rhs: 2.08956e+11, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.112845
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Solving Stokes system (GMG)... 11+0 iterations.
-      Newton system information: Norm of the rhs: 1.49892e+11, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.0809481
+   Solving Stokes system (GMG)... 13+0 iterations.
+      Newton system information: Norm of the rhs: 1.52641e+11, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.0824323
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Solving Stokes system (GMG)... 11+0 iterations.
-      Newton system information: Norm of the rhs: 7.7175e+10, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 0.0416777
+   Solving Stokes system (GMG)... 13+0 iterations.
+      Newton system information: Norm of the rhs: 7.83658e+10, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 0.0423208
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Solving Stokes system (GMG)... 12+0 iterations.
-      Newton system information: Norm of the rhs: 1.81602e+10, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 0.0098073
+   Solving Stokes system (GMG)... 13+0 iterations.
+      Newton system information: Norm of the rhs: 1.77713e+10, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 0.00959726
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Solving Stokes system (GMG)... 12+0 iterations.
-      Newton system information: Norm of the rhs: 4.88461e+09, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 0.0026379
+   Solving Stokes system (GMG)... 13+0 iterations.
+      Newton system information: Norm of the rhs: 4.02999e+09, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 0.00217637
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Solving Stokes system (GMG)... 5+0 iterations.
-      Newton system information: Norm of the rhs: 2.64743e+09, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 0.00142972
+      Newton system information: Norm of the rhs: 1.87262e+09, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 0.00101129
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Solving Stokes system (GMG)... 6+0 iterations.
-      Newton system information: Norm of the rhs: 2.4011e+09, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 0.00129669
+   Solving Stokes system (GMG)... 4+0 iterations.
+      Newton system information: Norm of the rhs: 1.67453e+09, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 0.000904318
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -63,8 +63,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Postprocessing:
      RMS, max velocity:                  2.55e-08 m/s, 3.02e-08 m/s
-     Pressure min/avg/max:               -418.7 Pa, 5e+08 Pa, 1e+09 Pa
-     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.8043 kg/s, 0.8043 kg/s
+     Pressure min/avg/max:               -4.579e+04 Pa, 5e+08 Pa, 1e+09 Pa
+     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.8044 kg/s, 0.8044 kg/s
      Writing graphical output:           output-nonlinear_channel_flow_tractions_Newton_Stokes_GMG/solution/solution-00000
 
 Termination requested by criterion: end time

@@ -8,17 +8,17 @@ Number of degrees of freedom: 1,272 (480+72+240+240+240)
    Solving Stokes system (GMG)... 13+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0570421
 
-   Solving Stokes system (GMG)... 14+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0124027
 
-   Solving Stokes system (GMG)... 12+0 iterations.
+   Solving Stokes system (GMG)... 10+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.00149698
 
-   Solving Stokes system (GMG)... 11+0 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.000178767
 
-   Solving Stokes system (GMG)... 8+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 2.81033e-05
+   Solving Stokes system (GMG)... 7+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 2.81032e-05
 
 
    Postprocessing:
@@ -34,7 +34,7 @@ Number of degrees of freedom: 1,272 (480+72+240+240+240)
      Writing depth average:              output-cookbook_mantle_convection_annulus/depth_average
      Writing particle output:            output-cookbook_mantle_convection_annulus/particles/particles-00000
      Writing stokes residuals            output-cookbook_mantle_convection_annulus/stokes_residuals.txt
-     Mobility:                           3.01e-06
+     Mobility:                           2.96e-06
 
 Skipping mesh refinement, because the mesh did not change.
 
