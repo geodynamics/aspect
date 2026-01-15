@@ -1,9 +1,4 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
@@ -15,22 +10,17 @@ Number of mesh deformation degrees of freedom: 2,178
    Solving Stokes system (GMG)... 17+0 iterations.
 
    Postprocessing:
-     Topography min/max: -9.313e-10 m, 4.657e-09 m
+     Topography min/max: -9.313e-10 m, 2.794e-09 m
 
-*** Timestep 1:  t=64.9179 years, dt=64.9179 years
+*** Timestep 1:  t=64.9983 years, dt=64.9983 years
    Solving mesh displacement system... 4 iterations.
    Solving temperature system... 11 iterations.
-   Solving Stokes system (GMG)... 15+0 iterations.
+   Solving Stokes system (GMG)... 16+0 iterations.
 
    Postprocessing:
-     Topography min/max: -7.125e+04 m, 3.725e-09 m
+     Topography min/max: -7.096e+04 m, 9.313e-10 m
 
 Termination requested by criterion: end step
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

@@ -1,22 +1,4 @@
------------------------------------------------------------------------------
---                             This is ASPECT                              --
--- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
------------------------------------------------------------------------------
---     . version 3.1.0-pre (pr/fix_mesh_deformation_gmg, a9f28e7ea)
---     . using deal.II 9.7.0
---     .       with 32 bit indices
---     .       with vectorization level 1 (SSE2, 2 doubles, 128 bits)
---     . using Trilinos 16.1.0
---     . using p4est 2.3.6
---     . using Geodynamic World Builder 1.0.0
---     . running in DEBUG mode
---     . running with 1 MPI process
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&dg=1&mf=1&sha=a9f28e7ea&src=code
------------------------------------------------------------------------------
 Number of active cells: 600 (on 1 levels)
 Number of degrees of freedom: 38,824 (5,082+671+671+5,400+5,400+5,400+5,400+5,400+5,400)
 
@@ -32,8 +14,8 @@ Number of mesh deformation degrees of freedom: 5,082
    Skipping ve_stress_yy_old composition solve because RHS is zero.
    Skipping ve_stress_xy_old composition solve because RHS is zero.
    Solving Stokes system (GMG)... 119+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.31994e-16, 0, 0, 0, 0, 0, 0, 0.0100562
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0100562
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.38627e-16, 0, 0, 0, 0, 0, 0, 0.010164
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.010164
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -55,8 +37,8 @@ Number of mesh deformation degrees of freedom: 11,218
    Skipping ve_stress_yy_old composition solve because RHS is zero.
    Skipping ve_stress_xy_old composition solve because RHS is zero.
    Solving Stokes system (GMG)... 114+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.27666e-16, 0, 0, 0, 0, 0, 0, 0.00996359
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00996359
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.35499e-16, 0, 0, 0, 0, 0, 0, 0.0101195
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0101195
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -77,9 +59,9 @@ Number of mesh deformation degrees of freedom: 36,454
    Skipping ve_stress_xx_old composition solve because RHS is zero.
    Skipping ve_stress_yy_old composition solve because RHS is zero.
    Skipping ve_stress_xy_old composition solve because RHS is zero.
-   Solving Stokes system (GMG)... 112+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.2983e-16, 0, 0, 0, 0, 0, 0, 0.00987612
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00987612
+   Solving Stokes system (GMG)... 113+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.37992e-16, 0, 0, 0, 0, 0, 0, 0.0100782
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0100782
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -89,65 +71,15 @@ Number of mesh deformation degrees of freedom: 36,454
    Postprocessing:
      Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0
      Temperature min/avg/max:   293 K, 293 K, 293 K
-     Topography min/max:        -9.313e-10 m, 6.519e-09 m
-     RMS, max velocity:         1.45e-06 m/year, 3.64e-06 m/year
+     Topography min/max:        -9.313e-10 m, 4.657e-09 m
+     RMS, max velocity:         3.45e-05 m/year, 0.000528 m/year
 
 
 
-+----------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start     |      26.2s |            |
-|                                              |            |            |
-| Section                          | no. calls |  wall time | % of total |
-+----------------------------------+-----------+------------+------------+
-| Assemble Stokes system rhs       |         3 |      0.44s |       1.7% |
-| Assemble composition system      |        18 |      16.9s |        65% |
-| Assemble temperature system      |         3 |     0.422s |       1.6% |
-| Build Stokes preconditioner      |         3 |    0.0231s |         0% |
-| Build temperature preconditioner |         3 |   0.00218s |         0% |
-| Initialization                   |         1 |     0.105s |       0.4% |
-| Mesh deformation                 |         3 |     0.181s |      0.69% |
-| Mesh deformation initialize      |         3 |    0.0962s |      0.37% |
-| Postprocessing                   |         1 |       0.1s |      0.38% |
-| Refine mesh structure, part 1    |         2 |    0.0981s |      0.38% |
-| Refine mesh structure, part 2    |         2 |     0.115s |      0.44% |
-| Setup dof systems                |         3 |     0.302s |       1.2% |
-| Setup initial conditions         |         3 |     0.636s |       2.4% |
-| Setup matrices                   |         3 |      2.72s |        10% |
-| Solve Stokes system              |         3 |      3.94s |        15% |
-| Solve temperature system         |         3 |   0.00359s |         0% |
-+----------------------------------+-----------+------------+------------+
 
--- Total wallclock time elapsed including restarts: 26s
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start     |      26.2s |            |
-|                                              |            |            |
-| Section                          | no. calls |  wall time | % of total |
-+----------------------------------+-----------+------------+------------+
-| Assemble Stokes system rhs       |         3 |      0.44s |       1.7% |
-| Assemble composition system      |        18 |      16.9s |        65% |
-| Assemble temperature system      |         3 |     0.422s |       1.6% |
-| Build Stokes preconditioner      |         3 |    0.0231s |         0% |
-| Build temperature preconditioner |         3 |   0.00218s |         0% |
-| Initialization                   |         1 |     0.105s |       0.4% |
-| Mesh deformation                 |         3 |     0.181s |      0.69% |
-| Mesh deformation initialize      |         3 |    0.0962s |      0.37% |
-| Postprocessing                   |         1 |       0.1s |      0.38% |
-| Refine mesh structure, part 1    |         2 |    0.0981s |      0.38% |
-| Refine mesh structure, part 2    |         2 |     0.115s |      0.44% |
-| Setup dof systems                |         3 |     0.302s |       1.2% |
-| Setup initial conditions         |         3 |     0.636s |       2.4% |
-| Setup matrices                   |         3 |      2.72s |        10% |
-| Solve Stokes system              |         3 |      3.94s |        15% |
-| Solve temperature system         |         3 |   0.00359s |         0% |
-+----------------------------------+-----------+------------+------------+
 
 
 WARNING: During this computation 3 nonlinear solver failures occurred!
--- Total wallclock time elapsed including restarts: 26s
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&dg=1&mf=1&sha=a9f28e7ea&src=code
------------------------------------------------------------------------------

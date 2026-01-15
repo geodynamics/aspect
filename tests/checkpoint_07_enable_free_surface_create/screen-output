@@ -1,9 +1,4 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 768 (on 4 levels)
 Number of degrees of freedom: 10,656 (6,528+864+3,264)
 
@@ -18,71 +13,101 @@ Number of mesh deformation degrees of freedom: 6,528
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00000
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
-     RMS, max velocity:        0.0103 m/year, 0.0245 m/year
+     RMS, max velocity:        0.0156 m/year, 0.0457 m/year
 
-*** Timestep 1:  t=6.8943e+06 years, dt=6.8943e+06 years
+*** Timestep 1:  t=4.00721e+06 years, dt=4.00721e+06 years
    Solving mesh displacement system... 0 iterations.
-   Solving temperature system... 9 iterations.
+   Solving temperature system... 7 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 46+0 iterations.
+   Solving Stokes system (AMG)... 32+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00001
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
-     RMS, max velocity:        0.0103 m/year, 0.0244 m/year
+     RMS, max velocity:        0.0156 m/year, 0.0456 m/year
 
-*** Timestep 2:  t=1.38234e+07 years, dt=6.92909e+06 years
+*** Timestep 2:  t=8.02685e+06 years, dt=4.01964e+06 years
    Solving mesh displacement system... 0 iterations.
-   Solving temperature system... 9 iterations.
+   Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 42+0 iterations.
+   Solving Stokes system (AMG)... 25+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00002
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
-     RMS, max velocity:        0.0103 m/year, 0.0243 m/year
+     RMS, max velocity:        0.0156 m/year, 0.0456 m/year
 
-*** Timestep 3:  t=2.07758e+07 years, dt=6.95237e+06 years
+*** Timestep 3:  t=1.20556e+07 years, dt=4.02875e+06 years
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 39+0 iterations.
+   Solving Stokes system (AMG)... 29+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00003
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
-     RMS, max velocity:        0.0103 m/year, 0.0242 m/year
+     RMS, max velocity:        0.0155 m/year, 0.0455 m/year
 
 *** Snapshot output-checkpoint_07_enable_free_surface_create/restart/01/ created!
 
-*** Timestep 4:  t=2.7753e+07 years, dt=6.97727e+06 years
+*** Timestep 4:  t=1.6094e+07 years, dt=4.03844e+06 years
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 41+0 iterations.
+   Solving Stokes system (AMG)... 29+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00004
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
-     RMS, max velocity:        0.0103 m/year, 0.0241 m/year
+     RMS, max velocity:        0.0155 m/year, 0.0454 m/year
 
-*** Timestep 5:  t=3e+07 years, dt=2.24697e+06 years
+*** Timestep 5:  t=2.01433e+07 years, dt=4.04928e+06 years
    Solving mesh displacement system... 0 iterations.
-   Solving temperature system... 5 iterations.
+   Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 37+0 iterations.
+   Solving Stokes system (AMG)... 28+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00005
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
-     RMS, max velocity:        0.0103 m/year, 0.0241 m/year
+     RMS, max velocity:        0.0154 m/year, 0.0452 m/year
+
+*** Timestep 6:  t=2.42024e+07 years, dt=4.05905e+06 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 26+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00006
+     Temperature min/avg/max:  1599 K, 1600 K, 1601 K
+     RMS, max velocity:        0.0154 m/year, 0.0451 m/year
+
+*** Timestep 7:  t=2.82696e+07 years, dt=4.06722e+06 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 24+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00007
+     Temperature min/avg/max:  1599 K, 1600 K, 1601 K
+     RMS, max velocity:        0.0153 m/year, 0.045 m/year
+
+*** Snapshot output-checkpoint_07_enable_free_surface_create/restart/02/ created!
+
+*** Timestep 8:  t=3e+07 years, dt=1.73041e+06 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 6 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 18+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00008
+     Temperature min/avg/max:  1599 K, 1600 K, 1601 K
+     RMS, max velocity:        0.0153 m/year, 0.0449 m/year
 
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

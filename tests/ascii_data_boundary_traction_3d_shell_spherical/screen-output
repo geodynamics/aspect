@@ -1,25 +1,7 @@
------------------------------------------------------------------------------
---                             This is ASPECT                              --
--- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
------------------------------------------------------------------------------
---     . version 3.1.0-pre (pr/fix_mesh_deformation_gmg, a9f28e7ea)
---     . using deal.II 9.7.0
---     .       with 32 bit indices
---     .       with vectorization level 1 (SSE2, 2 doubles, 128 bits)
---     . using Trilinos 16.1.0
---     . using p4est 2.3.6
---     . using Geodynamic World Builder 1.0.0
---     . running in DEBUG mode
---     . running with 1 MPI process
------------------------------------------------------------------------------
 
 
-   Loading Ascii data boundary file /Users/tiannh/work/00-aspect/pull-request/aspect/data/boundary-velocity/ascii-data/test/shell_3d_top.0.txt.
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_3d_top.0.txt.
 
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&geoid=1&mf=1&sha=a9f28e7ea&src=code
------------------------------------------------------------------------------
 Number of active cells: 6,144 (on 3 levels)
 Number of degrees of freedom: 215,962 (156,774+6,930+52,258)
 
@@ -46,8 +28,8 @@ Number of mesh deformation degrees of freedom: 156,774
      Reference thermal diffusivity (m^2/s):         9.54198e-07
      Rayleigh number:                               2.62453e+07
 
-     RMS, max velocity:                2.07 m/year, 4.25 m/year
-     Pressure at top/bottom of domain: 2.73e+07 Pa, 9.54e+10 Pa
+     RMS, max velocity:                2.11 m/year, 4.76 m/year
+     Pressure at top/bottom of domain: 2.789e+07 Pa, 9.513e+10 Pa
      Density at top/bottom of domain:  3359 kg/m^3, 3260 kg/m^3
      Computing dynamic topography      
      Writing geoid anomaly:            output-ascii_data_boundary_traction_3d_shell_spherical/geoid/geoid_anomaly.00000
@@ -56,28 +38,4 @@ Number of mesh deformation degrees of freedom: 156,774
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start     |      87.4s |            |
-|                                              |            |            |
-| Section                          | no. calls |  wall time | % of total |
-+----------------------------------+-----------+------------+------------+
-| Assemble Stokes system rhs       |         1 |      2.82s |       3.2% |
-| Assemble temperature system      |         1 |      3.08s |       3.5% |
-| Build Stokes preconditioner      |         1 |      0.43s |      0.49% |
-| Build temperature preconditioner |         1 |     0.112s |      0.13% |
-| Initialization                   |         1 |     0.109s |      0.13% |
-| Mesh deformation                 |         1 |      1.57s |       1.8% |
-| Mesh deformation initialize      |         1 |     0.551s |      0.63% |
-| Postprocessing                   |         1 |      73.1s |        84% |
-| Setup dof systems                |         1 |      1.31s |       1.5% |
-| Setup initial conditions         |         1 |     0.788s |       0.9% |
-| Setup matrices                   |         1 |     0.214s |      0.24% |
-| Solve Stokes system              |         1 |      2.51s |       2.9% |
-| Solve temperature system         |         1 |   0.00506s |         0% |
-+----------------------------------+-----------+------------+------------+
 
--- Total wallclock time elapsed including restarts: 87s
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&geoid=1&mf=1&sha=a9f28e7ea&src=code
------------------------------------------------------------------------------
