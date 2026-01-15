@@ -30,6 +30,10 @@ subsection Geometry model
   end
 end
 
+subsection Discretization
+  set Mesh deformation polynomial degree = 2
+end
+
 # This section specifies the temperature at the boundary of
 # the domain. Here we set the temperature to be constant at
 # bottom and top.

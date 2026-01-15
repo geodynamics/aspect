@@ -29,3 +29,7 @@ subsection Solver parameters
     set Linear solver A block tolerance = 1e-1
   end
 end
+
+subsection Discretization
+  set Mesh deformation polynomial degree = 2
+end

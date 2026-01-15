@@ -59,7 +59,6 @@ subsection Discretization
   set Stokes velocity polynomial degree  = 2
   set Temperature polynomial degree      = 1
   set Mesh deformation polynomial degree = 2
-  set Use stokes velocity polynomial degree for mesh deformation = false
   set Use discontinuous composition discretization = true
 end
 

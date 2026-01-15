@@ -38,6 +38,10 @@ subsection Geometry model
   end
 end
 
+subsection Discretization
+  set Mesh deformation polynomial degree = 2
+end
+
 subsection Mesh deformation
   set Mesh deformation boundary indicators = top: ascii data
 

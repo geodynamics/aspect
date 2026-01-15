@@ -29,6 +29,10 @@ subsection Geometry model
   end
 end
 
+subsection Discretization
+  set Mesh deformation polynomial degree = 2
+end
+
 subsection Initial temperature model
   set Model name = harmonic perturbation
 

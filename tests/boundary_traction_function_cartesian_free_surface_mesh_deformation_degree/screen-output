@@ -2,7 +2,7 @@
 --                             This is ASPECT                              --
 -- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
 -----------------------------------------------------------------------------
---     . version 3.1.0-pre (pr/fix_mesh_deformation_gmg, 9e4035d03)
+--     . version 3.1.0-pre (pr/fix_mesh_deformation_gmg, a9f28e7ea)
 --     . using deal.II 9.7.0
 --     .       with 32 bit indices
 --     .       with vectorization level 1 (SSE2, 2 doubles, 128 bits)
@@ -15,7 +15,7 @@
 
 -----------------------------------------------------------------------------
 -- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&dg=1&mf=1&sha=9e4035d03&src=code
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&dg=1&mf=1&sha=a9f28e7ea&src=code
 -----------------------------------------------------------------------------
 Number of active cells: 600 (on 1 levels)
 Number of degrees of freedom: 38,824 (5,082+671+671+5,400+5,400+5,400+5,400+5,400+5,400)
@@ -95,59 +95,59 @@ Number of mesh deformation degrees of freedom: 36,454
 
 
 +----------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start     |      25.3s |            |
+| Total wallclock time elapsed since start     |      26.2s |            |
 |                                              |            |            |
 | Section                          | no. calls |  wall time | % of total |
 +----------------------------------+-----------+------------+------------+
-| Assemble Stokes system rhs       |         3 |     0.423s |       1.7% |
-| Assemble composition system      |        18 |      16.3s |        64% |
-| Assemble temperature system      |         3 |     0.412s |       1.6% |
-| Build Stokes preconditioner      |         3 |    0.0224s |         0% |
-| Build temperature preconditioner |         3 |   0.00221s |         0% |
-| Initialization                   |         1 |    0.0892s |      0.35% |
-| Mesh deformation                 |         3 |     0.177s |       0.7% |
-| Mesh deformation initialize      |         3 |     0.105s |      0.42% |
-| Postprocessing                   |         1 |    0.0995s |      0.39% |
-| Refine mesh structure, part 1    |         2 |    0.0957s |      0.38% |
-| Refine mesh structure, part 2    |         2 |     0.103s |      0.41% |
-| Setup dof systems                |         3 |     0.281s |       1.1% |
-| Setup initial conditions         |         3 |     0.602s |       2.4% |
-| Setup matrices                   |         3 |      2.64s |        10% |
-| Solve Stokes system              |         3 |      3.85s |        15% |
-| Solve temperature system         |         3 |   0.00347s |         0% |
+| Assemble Stokes system rhs       |         3 |      0.44s |       1.7% |
+| Assemble composition system      |        18 |      16.9s |        65% |
+| Assemble temperature system      |         3 |     0.422s |       1.6% |
+| Build Stokes preconditioner      |         3 |    0.0231s |         0% |
+| Build temperature preconditioner |         3 |   0.00218s |         0% |
+| Initialization                   |         1 |     0.105s |       0.4% |
+| Mesh deformation                 |         3 |     0.181s |      0.69% |
+| Mesh deformation initialize      |         3 |    0.0962s |      0.37% |
+| Postprocessing                   |         1 |       0.1s |      0.38% |
+| Refine mesh structure, part 1    |         2 |    0.0981s |      0.38% |
+| Refine mesh structure, part 2    |         2 |     0.115s |      0.44% |
+| Setup dof systems                |         3 |     0.302s |       1.2% |
+| Setup initial conditions         |         3 |     0.636s |       2.4% |
+| Setup matrices                   |         3 |      2.72s |        10% |
+| Solve Stokes system              |         3 |      3.94s |        15% |
+| Solve temperature system         |         3 |   0.00359s |         0% |
 +----------------------------------+-----------+------------+------------+
 
--- Total wallclock time elapsed including restarts: 25s
+-- Total wallclock time elapsed including restarts: 26s
 Termination requested by criterion: end time
 
 
 +----------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start     |      25.3s |            |
+| Total wallclock time elapsed since start     |      26.2s |            |
 |                                              |            |            |
 | Section                          | no. calls |  wall time | % of total |
 +----------------------------------+-----------+------------+------------+
-| Assemble Stokes system rhs       |         3 |     0.423s |       1.7% |
-| Assemble composition system      |        18 |      16.3s |        64% |
-| Assemble temperature system      |         3 |     0.412s |       1.6% |
-| Build Stokes preconditioner      |         3 |    0.0224s |         0% |
-| Build temperature preconditioner |         3 |   0.00221s |         0% |
-| Initialization                   |         1 |    0.0892s |      0.35% |
-| Mesh deformation                 |         3 |     0.177s |       0.7% |
-| Mesh deformation initialize      |         3 |     0.105s |      0.42% |
-| Postprocessing                   |         1 |    0.0995s |      0.39% |
-| Refine mesh structure, part 1    |         2 |    0.0957s |      0.38% |
-| Refine mesh structure, part 2    |         2 |     0.103s |      0.41% |
-| Setup dof systems                |         3 |     0.281s |       1.1% |
-| Setup initial conditions         |         3 |     0.602s |       2.4% |
-| Setup matrices                   |         3 |      2.64s |        10% |
-| Solve Stokes system              |         3 |      3.85s |        15% |
-| Solve temperature system         |         3 |   0.00347s |         0% |
+| Assemble Stokes system rhs       |         3 |      0.44s |       1.7% |
+| Assemble composition system      |        18 |      16.9s |        65% |
+| Assemble temperature system      |         3 |     0.422s |       1.6% |
+| Build Stokes preconditioner      |         3 |    0.0231s |         0% |
+| Build temperature preconditioner |         3 |   0.00218s |         0% |
+| Initialization                   |         1 |     0.105s |       0.4% |
+| Mesh deformation                 |         3 |     0.181s |      0.69% |
+| Mesh deformation initialize      |         3 |    0.0962s |      0.37% |
+| Postprocessing                   |         1 |       0.1s |      0.38% |
+| Refine mesh structure, part 1    |         2 |    0.0981s |      0.38% |
+| Refine mesh structure, part 2    |         2 |     0.115s |      0.44% |
+| Setup dof systems                |         3 |     0.302s |       1.2% |
+| Setup initial conditions         |         3 |     0.636s |       2.4% |
+| Setup matrices                   |         3 |      2.72s |        10% |
+| Solve Stokes system              |         3 |      3.94s |        15% |
+| Solve temperature system         |         3 |   0.00359s |         0% |
 +----------------------------------+-----------+------------+------------+
 
 
 WARNING: During this computation 3 nonlinear solver failures occurred!
--- Total wallclock time elapsed including restarts: 25s
+-- Total wallclock time elapsed including restarts: 26s
 -----------------------------------------------------------------------------
 -- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&dg=1&mf=1&sha=9e4035d03&src=code
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&dg=1&mf=1&sha=a9f28e7ea&src=code
 -----------------------------------------------------------------------------

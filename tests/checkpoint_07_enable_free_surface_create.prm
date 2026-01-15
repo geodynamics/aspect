@@ -27,6 +27,10 @@ subsection Geometry model
   set Model name = spherical shell
 end
 
+subsection Discretization
+  set Mesh deformation polynomial degree = 2
+end
+
 subsection Initial temperature model
   set Model name = harmonic perturbation
 end

@@ -51,6 +51,7 @@ subsection Mesh refinement
 end
 
 subsection Discretization
+  set Mesh deformation polynomial degree = 2
   set Composition polynomial degree     = 2
   set Stokes velocity polynomial degree = 2
   set Temperature polynomial degree     = 1

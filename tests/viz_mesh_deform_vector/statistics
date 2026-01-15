@@ -1,0 +1,26 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Minimum topography (m)
+# 12: Maximum topography (m)
+# 13: RMS velocity (m/year)
+# 14: Max. velocity (m/year)
+# 15: Visualization file name
+ 0 0.000000000000e+00 0.000000000000e+00 664 6367 2817  0 11 13  66  0.00000000e+00 0.00000000e+00 7.13654325e-04 2.31880520e-03 output-viz_mesh_deform_vector/solution/solution-00000 
+ 1 6.753025849272e+05 6.753025849272e+05 664 6367 2817 18 42 42 244 -3.93543647e+02 8.71331744e+02 7.62600005e-04 2.17289001e-03 output-viz_mesh_deform_vector/solution/solution-00001 
+ 2 1.965130522138e+06 1.289827937211e+06 664 6367 2817 20 50 51 295 -1.93100182e+03 9.49614881e+02 1.20932474e-03 2.95980603e-03 output-viz_mesh_deform_vector/solution/solution-00002 
+ 3 2.519715669654e+06 5.545851475160e+05 664 6367 2817 14 37 37 214 -3.25253500e+02 1.53441196e+02 6.64190181e-04 1.95792375e-03 output-viz_mesh_deform_vector/solution/solution-00003 
+ 4 3.317754918650e+06 7.980392489955e+05 664 6367 2817 15 41 41 242 -2.89963948e+02 6.22688512e+02 5.18858728e-04 1.30607941e-03 output-viz_mesh_deform_vector/solution/solution-00004 
+ 5 4.842009884231e+06 1.524254965581e+06 664 6367 2817 20 52 54 306 -1.36788878e+03 6.95721022e+02 8.31999182e-04 2.04885460e-03 output-viz_mesh_deform_vector/solution/solution-00005 
+ 6 5.610759822673e+06 7.687499384422e+05 664 6367 2817 15 41 41 234 -9.67323566e+00 5.65462221e+00 3.92860216e-04 1.23255778e-03 output-viz_mesh_deform_vector/solution/solution-00006 
+ 7 6.884259989118e+06 1.273500166445e+06 664 6367 2817 18 47 48 273 -5.98696785e+01 1.62733933e+02 3.49834931e-04 1.02901942e-03 output-viz_mesh_deform_vector/solution/solution-00007 
+ 8 8.419762770220e+06 1.535502781102e+06 664 6367 2817 18 51 52 299 -9.59776366e+01 4.12715643e+01 3.72126032e-04 1.07984933e-03 output-viz_mesh_deform_vector/solution/solution-00008 
+ 9 9.867759541394e+06 1.447996771174e+06 664 6367 2817 18 50 51 283 -6.18942777e+01 1.62395801e+02 3.24365401e-04 8.82505925e-04 output-viz_mesh_deform_vector/solution/solution-00009 
+10 1.164736471426e+07 1.779605172866e+06 664 6367 2817 20 52 54 301 -1.04234955e+02 4.65708428e+01 3.44909017e-04 9.38776154e-04 output-viz_mesh_deform_vector/solution/solution-00010 
