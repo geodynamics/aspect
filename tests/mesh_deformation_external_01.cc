@@ -74,6 +74,14 @@ namespace aspect
                 Assert(false, ExcNotImplemented());
 
               this->set_evaluation_points (points);
+
+              // print all information:
+              this->get_pcout() << "map_dof_to_eval_point (dof, evaluation_point_index, component): " << std::endl;
+              for (const auto &dof_to_eval_point : this->map_dof_to_eval_point)
+                {
+                  this->get_pcout() << "\t" << dof_to_eval_point.dof_index << " " << dof_to_eval_point.evaluation_point_index << " " << dof_to_eval_point.component << std::endl;
+                }
+
             }
         }
 
