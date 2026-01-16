@@ -938,7 +938,7 @@ namespace aspect
 
       try
         {
-          this->get_pcout() << "   Solving mesh displacement system... ";
+          this->get_pcout() << "   Solving mesh displacement system... " << std::flush;
           cg.solve (mesh_matrix, solution, rhs, preconditioner_stiffness);
           this->get_pcout() << solver_control.last_step() <<" iterations."<< std::endl;
         }
@@ -1249,7 +1249,7 @@ namespace aspect
 
       try
         {
-          this->get_pcout() << "   Solving mesh displacement system... ";
+          this->get_pcout() << "   Solving mesh displacement system... " << std::flush;
           cg.solve(laplace_operator, solution, rhs, preconditioner);
           this->get_pcout() << solver_control_mf.last_step() <<" iterations."<< std::endl;
         }
@@ -1433,6 +1433,18 @@ namespace aspect
                                                                                mesh_deformation_dof_handler,
                                                                                mesh_displacements));
 
+          // Reset the simulator's mapping to a MappingQEulerian that captures mesh deformation over time.
+          // This must be done *after* distributing the mesh_deformation degrees of freedom (DoFs),
+          // because the mapping depends on those DoFs being set up correctly.
+          //
+          // Note that resetting the mapping changes the underlying pointer, which invalidates
+          // the ParticleHandler's internal non-owning pointer to the mapping. Therefore,
+          // we must reinitialize each particle handler here to ensure they use the updated mapping
+          // and avoid dangling references or errors.
+          //
+          // This design choice was made to correctly track mesh deformation in time,
+          // but it requires careful synchronization between the mesh deformation DoFs,
+          // the mapping, and the particle handlers.
           for (auto &pm : sim.particle_managers)
             pm.get_particle_handler().initialize(this->get_triangulation(),
                                                  this->get_mapping(),

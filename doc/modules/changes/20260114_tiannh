@@ -1,3 +1,3 @@
 Fixed: Support for higher-order mesh deformation degrees in GMG solver and improved free surface accuracy: changed default polynomial degree to 1 for backwards compatibility and added option to automatically use Stokes velocity degree for consistency.
 <br>
-(Ninghui Tian, Rene Gassmoeller, 2026/01/14)
+(Ninghui Tian, Rene Gassmoeller, Timo Heister, 2026/01/14)
