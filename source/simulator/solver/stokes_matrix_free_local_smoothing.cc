@@ -1614,14 +1614,6 @@ namespace aspect
       DoFTools::make_hanging_node_constraints (dof_handler_v, constraints_v);
       sim.compute_initial_velocity_boundary_constraints(constraints_v);
       sim.compute_current_velocity_boundary_constraints(constraints_v);
-
-      VectorTools::compute_no_normal_flux_constraints (dof_handler_v,
-                                                       /* first_vector_component= */
-                                                       0,
-                                                       this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators(),
-                                                       constraints_v,
-                                                       this->get_mapping());
-
       sim.prescribed_solution_manager.constrain_solution(constraints_v);
 
       // Let plugins add more constraints if they so choose:
@@ -1820,7 +1812,9 @@ namespace aspect
                   user_level_constraints,
                   mapping,
                   refinement_edge_indices,
-                  level);
+                  level,
+                  /*use_manifold_for_normal=*/
+                  !this->get_parameters().mesh_deformation_enabled);
 
                 user_level_constraints.close();
                 mg_constrained_dofs_A_block.add_user_constraints(level,user_level_constraints);
