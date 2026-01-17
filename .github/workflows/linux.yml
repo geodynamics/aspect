@@ -132,14 +132,21 @@ jobs:
       with:
         submodules: recursive
     - uses: astral-sh/setup-uv@v6
+    - name: Cache uv packages
+      uses: actions/cache@v4
+      with:
+        path: /__w/_temp/setup-uv-cache
+        key: uv-${{ runner.os }}-${{ hashFiles('uv.lock') }}
+        restore-keys: |
+          uv-${{ runner.os }}-
     - name: Python Setup
       run: |
-        uv python install 3.12
-        uv venv
-        uv sync
+        uv venv --python 3.12
+        echo "VIRTUAL_ENV=$PWD/.venv" >> $GITHUB_ENV
+        echo "$PWD/.venv/bin" >> $GITHUB_PATH
+        uv sync --frozen --no-editable --verbose
     - name: Python Tests
       run: |
-        . ./.venv/bin/activate
         cd cookbooks/landlab/
         ./test.sh
     - name: compile
