@@ -153,6 +153,7 @@ jobs:
         -D ASPECT_ADDITIONAL_CXX_FLAGS='-O3 -Wdeprecated-declarations' \
         -D ASPECT_TEST_GENERATOR='Ninja' \
         -D ASPECT_PRECOMPILE_HEADERS=ON \
+        -D ASPECT_WITH_PYTHON=ON \
         -D ASPECT_UNITY_BUILD=ON \
         -D ASPECT_RUN_ALL_TESTS='${{ matrix.run-tests }}' \
         -D ASPECT_COMPARE_TEST_RESULTS='${{ matrix.compare-tests }}' \
