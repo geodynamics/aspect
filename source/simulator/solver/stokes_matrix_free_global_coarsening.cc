@@ -1646,12 +1646,19 @@ namespace aspect
 
             if (this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators().size() > 0)
               {
-                VectorTools::compute_no_normal_flux_constraints (dof_handler,
-                                                                 0 /* first_vector_component */,
-                                                                 this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators(),
-                                                                 constraint,
-                                                                 mapping);
-
+                // Update the no-normal-flux constraints on the boundaries where
+                // tangential velocity is prescribed.
+                // If mesh deformation is enabled, we cannot use the manifold
+                // information to compute the normal vector, since the
+                // manifold may not represent the actual deformed shape
+                // of the boundary.
+                VectorTools::compute_no_normal_flux_constraints(dof_handler,
+                                                                0 /* first_vector_component */,
+                                                                this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators(),
+                                                                constraint,
+                                                                mapping,
+                                                                /*use_manifold_for_normal=*/
+                                                                !this->get_parameters().mesh_deformation_enabled);
               }
 
             DoFTools::make_hanging_node_constraints(dof_handler, constraint);
