@@ -201,7 +201,7 @@ namespace aspect
         /**
          * A struct to map between DoF indices and evaluation points
          */
-        struct dof_to_eval_point_data
+        struct DofToEvalPointData
         {
           types::global_dof_index dof_index;
           unsigned int evaluation_point_index;
@@ -221,7 +221,7 @@ namespace aspect
          * This map is used in interpolate_external_velocities_to_surface_support_points() to copy
          * external velocities to each surface DoF from the closest evaluation point.
          */
-        std::vector<dof_to_eval_point_data> map_dof_to_eval_point;
+        std::vector<DofToEvalPointData> map_dof_to_eval_point;
     };
   }
 }

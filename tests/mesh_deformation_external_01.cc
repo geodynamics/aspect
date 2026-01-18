@@ -120,6 +120,7 @@ namespace aspect
               }
           }
 
+          // Generate some velocities:
           Assert(current_solution_at_points.size() == this->evaluation_points.size(), ExcInternalError());
           std::vector<Tensor<1,dim>> velocities(current_solution_at_points.size(), Tensor<1,dim>());
           if (velocities.size()>6)

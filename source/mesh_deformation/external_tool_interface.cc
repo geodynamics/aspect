@@ -115,13 +115,13 @@ namespace aspect
         const DoFHandler<dim> &mesh_dof_handler = this->get_mesh_deformation_handler().get_mesh_deformation_dof_handler();
 
         std::vector<double> squared_distances(mesh_dof_handler.locally_owned_dofs().size(), std::numeric_limits<double>::max());
-        std::vector<dof_to_eval_point_data> closest_evaluation_point_and_component(mesh_dof_handler.locally_owned_dofs().size(),
-                                                                                   dof_to_eval_point_data {numbers::invalid_dof_index, numbers::invalid_unsigned_int, numbers::invalid_unsigned_int});
+        std::vector<DofToEvalPointData> closest_evaluation_point_and_component(mesh_dof_handler.locally_owned_dofs().size(),
+                                                                               DofToEvalPointData {numbers::invalid_dof_index, numbers::invalid_unsigned_int, numbers::invalid_unsigned_int});
 
         // TODO: do we need to support the case of more than one different mesh deformation plugin to be active?
         const auto boundary_ids = this->get_mesh_deformation_boundary_indicators();
 
-        IndexSet boundary_dofs = DoFTools::extract_boundary_dofs(mesh_dof_handler, ComponentMask(dim, true), boundary_ids);
+        const IndexSet boundary_dofs = DoFTools::extract_boundary_dofs(mesh_dof_handler, ComponentMask(dim, true), boundary_ids);
 
         const unsigned int dofs_per_cell = mesh_dof_handler.get_fe().dofs_per_cell;
         std::vector<types::global_dof_index> local_dof_indices (dofs_per_cell);
@@ -134,7 +134,7 @@ namespace aspect
 
 
         // Note: We assume that process_and_evaluate() does not call our lambda concurrently, otherwise we would have write
-        // conflicts when updating vector_with_surface_velocities and one_over_distance_vec.
+        // conflicts when updating closest_evaluation_point_and_component and squared_distances.
 
         const auto eval_func = [&](const ArrayView<const unsigned int> &values,
                                    const typename Utilities::MPI::RemotePointEvaluation<dim>::CellData &cell_data)
@@ -161,7 +161,7 @@ namespace aspect
                           squared_distances[cell_dof_indices[j]] = distance_sq;
                           const unsigned int component = mesh_dof_handler.get_fe().system_to_component_index(j).first;
                           closest_evaluation_point_and_component[cell_dof_indices[j]] =
-                            dof_to_eval_point_data {cell_dof_indices[j], local_values[i], component};
+                            DofToEvalPointData {cell_dof_indices[j], local_values[i], component};
                         }
                     }
                 }
