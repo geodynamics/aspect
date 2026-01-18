@@ -24,10 +24,6 @@ subsection Geometry model
   end
 end
 
-subsection Discretization
-  set Mesh deformation polynomial degree = 2
-end
-
 subsection Boundary velocity model
   set Zero velocity boundary indicators       = inner
   set Tangential velocity boundary indicators = left, right

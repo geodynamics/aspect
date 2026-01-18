@@ -752,7 +752,6 @@ namespace aspect
     unsigned int                   max_composition_degree;
     std::string                    pressure_normalization;
     MaterialModel::MaterialAveraging::AveragingOperation material_averaging;
-    unsigned int                   mesh_deformation_polynomial_degree;
 
     /**
      * @}

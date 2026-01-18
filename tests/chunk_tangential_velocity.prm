@@ -32,10 +32,6 @@ subsection Geometry model
   end
 end
 
-subsection Discretization
-  set Mesh deformation polynomial degree = 2
-end
-
 subsection Gravity model
   set Model name = radial constant
 

@@ -1030,18 +1030,6 @@ namespace aspect
                          "as $Q_1$ is the lowest order element, while $DGQ_0$ is a "
                          "valid choice. "
                          "Units: None.");
-      prm.declare_entry("Mesh deformation polynomial degree", "1",
-                        Patterns::Integer(1),
-                        "The polynomial degree used for the finite element discretization "
-                        "of the mesh deformation problem. This determines the accuracy of "
-                        "the mesh deformation solver. A higher degree provides better "
-                        "accuracy but increases computational cost. "
-                        "\n\n"
-                        "The recommended value is the same as the Stokes velocity polynomial "
-                        "degree (typically 2 for Q2 elements), as this ensures consistency "
-                        "between the velocity and mesh deformation discretizations. "
-                        "For backwards compatibility, the default is 1. "
-                        "Units: None.");
       prm.declare_entry ("Use locally conservative discretization", "false",
                          Patterns::Bool (),
                          "Whether to use a Stokes discretization that is locally "
@@ -1943,7 +1931,6 @@ namespace aspect
                                                                        n_compositional_fields,
                                                                        "Composition polynomial degree");
 
-      mesh_deformation_polynomial_degree = prm.get_integer("Mesh deformation polynomial degree");
 
       if (n_compositional_fields > 0)
         max_composition_degree = *std::max_element(composition_degrees.begin(), composition_degrees.end());

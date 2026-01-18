@@ -200,7 +200,7 @@ namespace aspect
     template <int dim>
     MeshDeformationHandler<dim>::MeshDeformationHandler (Simulator<dim> &simulator)
       : sim(simulator),  // reference to the simulator that owns the MeshDeformationHandler
-        mesh_deformation_fe (FE_Q<dim>(sim.parameters.mesh_deformation_polynomial_degree),dim),
+        mesh_deformation_fe (FE_Q<dim>(sim.parameters.stokes_velocity_degree),dim),
         mesh_deformation_dof_handler (sim.triangulation),
         include_initial_topography(false)
     {
@@ -238,8 +238,8 @@ namespace aspect
       // For geometries with curved elements, higher-order mesh deformation
       // is required for accurate representation
       if (this->get_geometry_model().has_curved_elements())
-        AssertThrow(this->get_parameters().mesh_deformation_polynomial_degree > 1,
-                    ExcMessage("For geometries with curved elements, the mesh deformation polynomial degree "
+        AssertThrow(this->get_parameters().stokes_velocity_degree > 1,
+                    ExcMessage("For geometries with curved elements, the Stokes velocity polynomial degree "
                                "must be greater than 1 to ensure accurate mesh deformation."));
 
       // In case we prescribed initial topography, we should take this into
@@ -923,7 +923,7 @@ namespace aspect
                                                                   ComponentMask(dim, true));
 #endif
       Amg_data.elliptic = true;
-      Amg_data.higher_order_elements = this->get_parameters().mesh_deformation_polynomial_degree > 1 ? true : false;
+      Amg_data.higher_order_elements = this->get_parameters().stokes_velocity_degree > 1 ? true : false;
       Amg_data.smoother_sweeps = 2;
       Amg_data.aggregation_threshold = 0.02;
       preconditioner_stiffness.initialize(mesh_matrix, Amg_data);
@@ -981,7 +981,10 @@ namespace aspect
     template <int dim>
     void MeshDeformationHandler<dim>::compute_mesh_displacements_gmg()
     {
-      switch (this->get_parameters().mesh_deformation_polynomial_degree)
+      // We use the same polynomial degree for the mesh deformation as for the
+      // Stokes velocity. This ensures that we have consistent accuracy between
+      // the two physics solvers.
+      switch (this->get_parameters().stokes_velocity_degree)
         {
           case 1:
             compute_mesh_displacements_gmg_for_degree<1>();
@@ -993,7 +996,7 @@ namespace aspect
             compute_mesh_displacements_gmg_for_degree<3>();
             break;
           default:
-            AssertThrow(false, ExcMessage("Unsupported mesh deformation polynomial degree!"));
+            AssertThrow(false, ExcMessage("Unsupported polynomial degree (determined from Stokes velocity degree)!"));
         }
     }
 

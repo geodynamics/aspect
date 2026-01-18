@@ -1,6 +1,6 @@
 ##### test for boundary traction function using cartesian coordinates
 # This test verifies the functionality of the mesh deformation polynomial degree parameters.
-# It sets Mesh deformation polynomial degree = 2 and disables automatic Stokes velocity
+# It sets Stokes velocity polynomial degree = 2 to ensure higher accuracy for mesh deformation calculations.
 # degree usage to ensure higher accuracy for mesh deformation calculations.
 
 
@@ -58,7 +58,6 @@ subsection Discretization
   set Composition polynomial degree      = 2
   set Stokes velocity polynomial degree  = 2
   set Temperature polynomial degree      = 1
-  set Mesh deformation polynomial degree = 2
   set Use discontinuous composition discretization = true
 end
 

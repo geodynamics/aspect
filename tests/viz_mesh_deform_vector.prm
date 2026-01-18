@@ -24,7 +24,6 @@ subsection Boundary temperature model
 end
 
 subsection Discretization
-  set Mesh deformation polynomial degree = 2
   set Stokes velocity polynomial degree       = 2
   set Temperature polynomial degree           = 2
   set Use locally conservative discretization = false
