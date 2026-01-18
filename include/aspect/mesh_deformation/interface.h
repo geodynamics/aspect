@@ -274,6 +274,22 @@ namespace aspect
         get_active_mesh_deformation_boundary_indicators () const;
 
         /**
+         * Return a set of all the indicators of boundaries with
+         * mesh deformation objects on them that also have tangential
+         * velocity boundary conditions.
+         */
+        const std::set<types::boundary_id> &
+        get_tangential_velocity_with_active_mesh_deformation_boundary_indicators () const;
+
+        /**
+         * Return a set of all the indicators of boundaries without
+         * mesh deformation objects on them that have tangential
+         * velocity boundary conditions.
+         */
+        const std::set<types::boundary_id> &
+        get_tangential_velocity_without_active_mesh_deformation_boundary_indicators () const;
+
+        /**
          * Return a set of all the indicators of boundaries that
          * require surface stabilization.
          */
@@ -544,6 +560,20 @@ namespace aspect
          * prescribed in the mesh_deformation_objects.
          */
         std::set<types::boundary_id> prescribed_mesh_deformation_boundary_indicators;
+
+        /**
+         * The set of boundary indicators for which mesh deformation
+         * objects are set and that also
+         * have tangential velocity boundary conditions.
+         */
+        std::set<types::boundary_id> tangential_velocity_with_prescribed_mesh_deformation_boundary_indicators;
+
+        /**
+         * The set of boundary indicators for which mesh deformation
+         * objects are not set and that
+         * have tangential velocity boundary conditions.
+         */
+        std::set<types::boundary_id> tangential_velocity_without_prescribed_mesh_deformation_boundary_indicators;
 
         /**
          * A set of boundary indicators that denote those boundaries that are

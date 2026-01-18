@@ -1,9 +1,4 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 6,823 (2,178+289+1,089+1,089+1,089+1,089)
 
@@ -42,7 +37,7 @@ Number of mesh deformation degrees of freedom: 578
    Solving mesh surface diffusion
    Solving mesh displacement system... 4 iterations.
    Skipping temperature solve because RHS is zero.
-   Solving layer_1 system ... 12 iterations.
+   Solving layer_1 system ... 11 iterations.
    Skipping layer_2 composition solve because RHS is zero.
    Solving layer_3 system ... 12 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
@@ -55,9 +50,4 @@ Number of mesh deformation degrees of freedom: 578
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
