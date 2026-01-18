@@ -2,7 +2,7 @@
 Number of active cells: 128 (on 3 levels)
 Number of degrees of freedom: 5,733 (4,131+225+1,377)
 
-Number of mesh deformation degrees of freedom: 675
+Number of mesh deformation degrees of freedom: 4,131
    Solving mesh displacement system... 0 iterations.
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving mesh displacement system... 0 iterations.
@@ -12,7 +12,7 @@ Number of mesh deformation degrees of freedom: 675
 Number of active cells: 16 (on 2 levels)
 Number of degrees of freedom: 945 (675+45+225)
 
-Number of mesh deformation degrees of freedom: 135
+Number of mesh deformation degrees of freedom: 675
    Solving mesh displacement system... 0 iterations.
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving mesh displacement system... 0 iterations.
@@ -23,9 +23,9 @@ Number of mesh deformation degrees of freedom: 135
      Writing graphical output: output-two_merged_boxes_free_surface/solution/solution-00000
 
 *** Timestep 1:  t=1 seconds, dt=1 seconds
-   Solving mesh displacement system... 4 iterations.
+   Solving mesh displacement system... 5 iterations.
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 20+0 iterations.
+   Solving Stokes system (GMG)... 19+0 iterations.
 
    Postprocessing:
 

@@ -2,7 +2,7 @@
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
 
-Number of mesh deformation degrees of freedom: 2,178
+Number of mesh deformation degrees of freedom: 8,450
    Solving mesh displacement system... 0 iterations.
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 0 iterations.
@@ -13,7 +13,7 @@ Number of mesh deformation degrees of freedom: 2,178
 Number of active cells: 1,204 (on 7 levels)
 Number of degrees of freedom: 21,360 (10,034+1,292+5,017+5,017)
 
-Number of mesh deformation degrees of freedom: 2,584
+Number of mesh deformation degrees of freedom: 10,034
    Solving mesh displacement system... 0 iterations.
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 0 iterations.
@@ -24,7 +24,7 @@ Number of mesh deformation degrees of freedom: 2,584
 Number of active cells: 1,948 (on 8 levels)
 Number of degrees of freedom: 34,621 (16,270+2,081+8,135+8,135)
 
-Number of mesh deformation degrees of freedom: 4,162
+Number of mesh deformation degrees of freedom: 16,270
    Solving mesh displacement system... 0 iterations.
    Added initial topography to grid
 
@@ -32,7 +32,7 @@ Number of mesh deformation degrees of freedom: 4,162
    Solving mesh displacement system... 0 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system (GMG)... 57+0 iterations.
+   Solving Stokes system (GMG)... 58+0 iterations.
 
    Postprocessing:
      RMS, max velocity:    9.03e+05 m/year, 1.18e+06 m/year

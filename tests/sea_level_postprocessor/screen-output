@@ -2,7 +2,7 @@
 Number of active cells: 96 (on 1 levels)
 Number of degrees of freedom: 14,850 (2,910+150+150+970+970+970+970+970+970+970+970+970+970+970+970)
 
-Number of mesh deformation degrees of freedom: 450
+Number of mesh deformation degrees of freedom: 2,910
    Solving mesh displacement system... 0 iterations.
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 0 iterations.
@@ -10,10 +10,10 @@ Number of mesh deformation degrees of freedom: 450
    Postprocessing:
      Temperature min/avg/max:              293 K, 293 K, 293 K
      RMS, max velocity:                    0 m/year, 0 m/year
-     Topography min/max:                   -2.794e-09 m, 0 m
+     Topography min/max:                   -4.657e-09 m, 5.588e-09 m
      Density at top/bottom of domain:      3300 kg/m^3, 3300 kg/m^3
      Writing geoid anomaly:                output-sea_level_postprocessor/geoid/geoid_anomaly.00000
-     Non-uniform sea level change min/max: -1.59e-10 m, 2.874e-09 m
+     Non-uniform sea level change min/max: -4.854e-09 m, 4.713e-09 m
 
 
 
