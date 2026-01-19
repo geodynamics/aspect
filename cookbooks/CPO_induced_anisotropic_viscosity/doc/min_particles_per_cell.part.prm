@@ -1,0 +1,2 @@
+set Minimum particles per cell  = 1
+set Load balancing strategy     = add particles
