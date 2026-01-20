@@ -156,9 +156,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 9+0 iterations.
    Line search iteration 0, with norm of the rhs 93.1651 and going to 64.5969, relative residual: 5.03131e-11
    Line search iteration 1, with norm of the rhs 97.3591 and going to 64.5991, relative residual: 5.2578e-11
-   Line search iteration 2, with norm of the rhs 105.356 and going to 64.5991, relative residual: 5.68969e-11
-   Line search iteration 3, with norm of the rhs 75.2592 and going to 64.5991, relative residual: 4.06431e-11
-   Line search iteration 4, with norm of the rhs 66.9781 and going to 64.5991, relative residual: 3.6171e-11
+   Line search iteration 2, with norm of the rhs 105.356 and going to 64.6005, relative residual: 5.68969e-11
+   Line search iteration 3, with norm of the rhs 75.2592 and going to 64.6015, relative residual: 4.06431e-11
+   Line search iteration 4, with norm of the rhs 66.9781 and going to 64.6021, relative residual: 3.6171e-11
       Newton system information: Norm of the rhs: 66.2324, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 24: 3.57683e-11
 
@@ -167,9 +167,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 10+0 iterations.
    Line search iteration 0, with norm of the rhs 81.1241 and going to 66.2261, relative residual: 4.38104e-11
    Line search iteration 1, with norm of the rhs 77.4601 and going to 66.2283, relative residual: 4.18317e-11
-   Line search iteration 2, with norm of the rhs 79.3045 and going to 66.2283, relative residual: 4.28278e-11
-   Line search iteration 3, with norm of the rhs 73.0246 and going to 66.2283, relative residual: 3.94364e-11
-   Line search iteration 4, with norm of the rhs 66.9186 and going to 66.2283, relative residual: 3.61389e-11
+   Line search iteration 2, with norm of the rhs 79.3045 and going to 66.2298, relative residual: 4.28278e-11
+   Line search iteration 3, with norm of the rhs 73.0246 and going to 66.2308, relative residual: 3.94364e-11
+   Line search iteration 4, with norm of the rhs 66.9186 and going to 66.2315, relative residual: 3.61389e-11
       Newton system information: Norm of the rhs: 67.7987, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 25: 3.66141e-11
 
@@ -178,9 +178,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 10+0 iterations.
    Line search iteration 0, with norm of the rhs 121.911 and going to 67.7923, relative residual: 6.58372e-11
    Line search iteration 1, with norm of the rhs 107.428 and going to 67.7946, relative residual: 5.80157e-11
-   Line search iteration 2, with norm of the rhs 106.251 and going to 67.7946, relative residual: 5.73803e-11
-   Line search iteration 3, with norm of the rhs 110.888 and going to 67.7946, relative residual: 5.9884e-11
-   Line search iteration 4, with norm of the rhs 103.982 and going to 67.7946, relative residual: 5.61545e-11
+   Line search iteration 2, with norm of the rhs 106.251 and going to 67.7961, relative residual: 5.73803e-11
+   Line search iteration 3, with norm of the rhs 110.888 and going to 67.7971, relative residual: 5.9884e-11
+   Line search iteration 4, with norm of the rhs 103.982 and going to 67.7978, relative residual: 5.61545e-11
       Newton system information: Norm of the rhs: 73.4617, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 26: 3.96724e-11
 
@@ -189,7 +189,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 9+0 iterations.
    Line search iteration 0, with norm of the rhs 116.757 and going to 73.4551, relative residual: 6.30538e-11
    Line search iteration 1, with norm of the rhs 124.416 and going to 73.4575, relative residual: 6.71898e-11
-   Line search iteration 2, with norm of the rhs 88.8558 and going to 73.4575, relative residual: 4.79859e-11
+   Line search iteration 2, with norm of the rhs 88.8558 and going to 73.4591, relative residual: 4.79859e-11
       Newton system information: Norm of the rhs: 67.8813, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 27: 3.66588e-11
 
@@ -198,8 +198,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 9+0 iterations.
    Line search iteration 0, with norm of the rhs 118.506 and going to 67.8751, relative residual: 6.39984e-11
    Line search iteration 1, with norm of the rhs 106.538 and going to 67.8773, relative residual: 5.75351e-11
-   Line search iteration 2, with norm of the rhs 122.507 and going to 67.8773, relative residual: 6.61592e-11
-   Line search iteration 3, with norm of the rhs 84.3781 and going to 67.8773, relative residual: 4.55677e-11
+   Line search iteration 2, with norm of the rhs 122.507 and going to 67.8789, relative residual: 6.61592e-11
+   Line search iteration 3, with norm of the rhs 84.3781 and going to 67.8799, relative residual: 4.55677e-11
       Newton system information: Norm of the rhs: 61.6791, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 28: 3.33093e-11
 
@@ -208,7 +208,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 9+0 iterations.
    Line search iteration 0, with norm of the rhs 97.8973 and going to 61.6734, relative residual: 5.28687e-11
    Line search iteration 1, with norm of the rhs 65.5127 and going to 61.6755, relative residual: 3.53796e-11
-   Line search iteration 2, with norm of the rhs 65.8885 and going to 61.6755, relative residual: 3.55826e-11
+   Line search iteration 2, with norm of the rhs 65.8885 and going to 61.6769, relative residual: 3.55826e-11
       Newton system information: Norm of the rhs: 60.1622, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 29: 3.24901e-11
 
@@ -224,7 +224,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 10+0 iterations.
    Line search iteration 0, with norm of the rhs 96.853 and going to 56.908, relative residual: 5.23047e-11
    Line search iteration 1, with norm of the rhs 70.6258 and going to 56.9099, relative residual: 3.81409e-11
-   Line search iteration 2, with norm of the rhs 60.7305 and going to 56.9099, relative residual: 3.2797e-11
+   Line search iteration 2, with norm of the rhs 60.7305 and going to 56.9112, relative residual: 3.2797e-11
       Newton system information: Norm of the rhs: 56.2797, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 31: 3.03934e-11
 
@@ -233,9 +233,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 11+0 iterations.
    Line search iteration 0, with norm of the rhs 140.539 and going to 56.2727, relative residual: 7.5897e-11
    Line search iteration 1, with norm of the rhs 101.445 and going to 56.2745, relative residual: 5.47845e-11
-   Line search iteration 2, with norm of the rhs 96.3688 and going to 56.2745, relative residual: 5.20432e-11
-   Line search iteration 3, with norm of the rhs 105.781 and going to 56.2745, relative residual: 5.71259e-11
-   Line search iteration 4, with norm of the rhs 102.698 and going to 56.2745, relative residual: 5.54612e-11
+   Line search iteration 2, with norm of the rhs 96.3688 and going to 56.2758, relative residual: 5.20432e-11
+   Line search iteration 3, with norm of the rhs 105.781 and going to 56.2766, relative residual: 5.71259e-11
+   Line search iteration 4, with norm of the rhs 102.698 and going to 56.2772, relative residual: 5.54612e-11
       Newton system information: Norm of the rhs: 73.2129, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 32: 3.95381e-11
 
@@ -251,7 +251,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 8+0 iterations.
    Line search iteration 0, with norm of the rhs 86.7045 and going to 69.4534, relative residual: 4.68241e-11
    Line search iteration 1, with norm of the rhs 87.7801 and going to 69.4557, relative residual: 4.74049e-11
-   Line search iteration 2, with norm of the rhs 77.0737 and going to 69.4557, relative residual: 4.16231e-11
+   Line search iteration 2, with norm of the rhs 77.0737 and going to 69.4572, relative residual: 4.16231e-11
       Newton system information: Norm of the rhs: 66.5538, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 34: 3.59418e-11
 
@@ -260,7 +260,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 8+0 iterations.
    Line search iteration 0, with norm of the rhs 95.1011 and going to 66.5481, relative residual: 5.13586e-11
    Line search iteration 1, with norm of the rhs 98.144 and going to 66.5503, relative residual: 5.30019e-11
-   Line search iteration 2, with norm of the rhs 87.3775 and going to 66.5503, relative residual: 4.71876e-11
+   Line search iteration 2, with norm of the rhs 87.3775 and going to 66.5518, relative residual: 4.71876e-11
       Newton system information: Norm of the rhs: 61.4063, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 35: 3.3162e-11
 
@@ -269,9 +269,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 9+0 iterations.
    Line search iteration 0, with norm of the rhs 109.389 and going to 61.4017, relative residual: 5.90748e-11
    Line search iteration 1, with norm of the rhs 128.67 and going to 61.4038, relative residual: 6.94874e-11
-   Line search iteration 2, with norm of the rhs 107.897 and going to 61.4038, relative residual: 5.82688e-11
-   Line search iteration 3, with norm of the rhs 109.582 and going to 61.4038, relative residual: 5.91789e-11
-   Line search iteration 4, with norm of the rhs 75.0159 and going to 61.4038, relative residual: 4.05118e-11
+   Line search iteration 2, with norm of the rhs 107.897 and going to 61.4051, relative residual: 5.82688e-11
+   Line search iteration 3, with norm of the rhs 109.582 and going to 61.406, relative residual: 5.91789e-11
+   Line search iteration 4, with norm of the rhs 75.0159 and going to 61.4066, relative residual: 4.05118e-11
       Newton system information: Norm of the rhs: 64.7333, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 36: 3.49587e-11
 
@@ -280,9 +280,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 9+0 iterations.
    Line search iteration 0, with norm of the rhs 95.6929 and going to 64.7278, relative residual: 5.16782e-11
    Line search iteration 1, with norm of the rhs 100.707 and going to 64.7299, relative residual: 5.43858e-11
-   Line search iteration 2, with norm of the rhs 120.01 and going to 64.7299, relative residual: 6.48106e-11
-   Line search iteration 3, with norm of the rhs 105.683 and going to 64.7299, relative residual: 5.70731e-11
-   Line search iteration 4, with norm of the rhs 65.5847 and going to 64.7299, relative residual: 3.54185e-11
+   Line search iteration 2, with norm of the rhs 120.01 and going to 64.7314, relative residual: 6.48106e-11
+   Line search iteration 3, with norm of the rhs 105.683 and going to 64.7323, relative residual: 5.70731e-11
+   Line search iteration 4, with norm of the rhs 65.5847 and going to 64.733, relative residual: 3.54185e-11
       Newton system information: Norm of the rhs: 66.6483, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 37: 3.59929e-11
 
@@ -299,7 +299,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 8+0 iterations.
    Line search iteration 0, with norm of the rhs 86.4812 and going to 62.0038, relative residual: 4.67035e-11
    Line search iteration 1, with norm of the rhs 85.3262 and going to 62.0059, relative residual: 4.60797e-11
-   Line search iteration 2, with norm of the rhs 66.0641 and going to 62.0059, relative residual: 3.56774e-11
+   Line search iteration 2, with norm of the rhs 66.0641 and going to 62.0073, relative residual: 3.56774e-11
       Newton system information: Norm of the rhs: 55.432, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 39: 2.99356e-11
 
@@ -316,9 +316,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 10+0 iterations.
    Line search iteration 0, with norm of the rhs 85.9739 and going to 54.6636, relative residual: 4.64296e-11
    Line search iteration 1, with norm of the rhs 82.5981 and going to 54.6654, relative residual: 4.46064e-11
-   Line search iteration 2, with norm of the rhs 60.2273 and going to 54.6654, relative residual: 3.25253e-11
-   Line search iteration 3, with norm of the rhs 59.7146 and going to 54.6654, relative residual: 3.22484e-11
-   Line search iteration 4, with norm of the rhs 55.2724 and going to 54.6654, relative residual: 2.98494e-11
+   Line search iteration 2, with norm of the rhs 60.2273 and going to 54.6666, relative residual: 3.25253e-11
+   Line search iteration 3, with norm of the rhs 59.7146 and going to 54.6674, relative residual: 3.22484e-11
+   Line search iteration 4, with norm of the rhs 55.2724 and going to 54.668, relative residual: 2.98494e-11
       Newton system information: Norm of the rhs: 54.4382, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 41: 2.93989e-11
 
@@ -327,9 +327,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 9+0 iterations.
    Line search iteration 0, with norm of the rhs 95.3578 and going to 54.433, relative residual: 5.14972e-11
    Line search iteration 1, with norm of the rhs 83.6778 and going to 54.4348, relative residual: 4.51895e-11
-   Line search iteration 2, with norm of the rhs 85.5007 and going to 54.4348, relative residual: 4.6174e-11
-   Line search iteration 3, with norm of the rhs 60.413 and going to 54.4348, relative residual: 3.26256e-11
-   Line search iteration 4, with norm of the rhs 58.1811 and going to 54.4348, relative residual: 3.14202e-11
+   Line search iteration 2, with norm of the rhs 85.5007 and going to 54.436, relative residual: 4.6174e-11
+   Line search iteration 3, with norm of the rhs 60.413 and going to 54.4368, relative residual: 3.26256e-11
+   Line search iteration 4, with norm of the rhs 58.1811 and going to 54.4373, relative residual: 3.14202e-11
       Newton system information: Norm of the rhs: 56.6384, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 42: 3.05871e-11
 
@@ -338,9 +338,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 8+0 iterations.
    Line search iteration 0, with norm of the rhs 102.691 and going to 56.6328, relative residual: 5.54576e-11
    Line search iteration 1, with norm of the rhs 63.7097 and going to 56.6347, relative residual: 3.44059e-11
-   Line search iteration 2, with norm of the rhs 56.8917 and going to 56.6347, relative residual: 3.07239e-11
-   Line search iteration 3, with norm of the rhs 57.8712 and going to 56.6347, relative residual: 3.12529e-11
-   Line search iteration 4, with norm of the rhs 57.8416 and going to 56.6347, relative residual: 3.12369e-11
+   Line search iteration 2, with norm of the rhs 56.8917 and going to 56.636, relative residual: 3.07239e-11
+   Line search iteration 3, with norm of the rhs 57.8712 and going to 56.6368, relative residual: 3.12529e-11
+   Line search iteration 4, with norm of the rhs 57.8416 and going to 56.6374, relative residual: 3.12369e-11
       Newton system information: Norm of the rhs: 59.2123, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 43: 3.19771e-11
 
@@ -357,9 +357,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 8+0 iterations.
    Line search iteration 0, with norm of the rhs 92.3851 and going to 57.312, relative residual: 4.98919e-11
    Line search iteration 1, with norm of the rhs 86.7368 and going to 57.3139, relative residual: 4.68415e-11
-   Line search iteration 2, with norm of the rhs 83.9369 and going to 57.3139, relative residual: 4.53294e-11
-   Line search iteration 3, with norm of the rhs 78.461 and going to 57.3139, relative residual: 4.23723e-11
-   Line search iteration 4, with norm of the rhs 63.4244 and going to 57.3139, relative residual: 3.42518e-11
+   Line search iteration 2, with norm of the rhs 83.9369 and going to 57.3152, relative residual: 4.53294e-11
+   Line search iteration 3, with norm of the rhs 78.461 and going to 57.316, relative residual: 4.23723e-11
+   Line search iteration 4, with norm of the rhs 63.4244 and going to 57.3166, relative residual: 3.42518e-11
       Newton system information: Norm of the rhs: 56.589, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 45: 3.05604e-11
 
@@ -368,9 +368,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 8+0 iterations.
    Line search iteration 0, with norm of the rhs 89.2578 and going to 56.5836, relative residual: 4.8203e-11
    Line search iteration 1, with norm of the rhs 70.0518 and going to 56.5855, relative residual: 3.78309e-11
-   Line search iteration 2, with norm of the rhs 84.9889 and going to 56.5855, relative residual: 4.58976e-11
-   Line search iteration 3, with norm of the rhs 57.0529 and going to 56.5855, relative residual: 3.0811e-11
-   Line search iteration 4, with norm of the rhs 58.4369 and going to 56.5855, relative residual: 3.15584e-11
+   Line search iteration 2, with norm of the rhs 84.9889 and going to 56.5867, relative residual: 4.58976e-11
+   Line search iteration 3, with norm of the rhs 57.0529 and going to 56.5876, relative residual: 3.0811e-11
+   Line search iteration 4, with norm of the rhs 58.4369 and going to 56.5881, relative residual: 3.15584e-11
       Newton system information: Norm of the rhs: 57.246, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 46: 3.09152e-11
 
@@ -379,9 +379,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 8+0 iterations.
    Line search iteration 0, with norm of the rhs 99.5814 and going to 57.2407, relative residual: 5.37782e-11
    Line search iteration 1, with norm of the rhs 90.1675 and going to 57.2426, relative residual: 4.86943e-11
-   Line search iteration 2, with norm of the rhs 83.9391 and going to 57.2426, relative residual: 4.53306e-11
-   Line search iteration 3, with norm of the rhs 77.7145 and going to 57.2426, relative residual: 4.19691e-11
-   Line search iteration 4, with norm of the rhs 73.3019 and going to 57.2426, relative residual: 3.95861e-11
+   Line search iteration 2, with norm of the rhs 83.9391 and going to 57.2439, relative residual: 4.53306e-11
+   Line search iteration 3, with norm of the rhs 77.7145 and going to 57.2447, relative residual: 4.19691e-11
+   Line search iteration 4, with norm of the rhs 73.3019 and going to 57.2453, relative residual: 3.95861e-11
       Newton system information: Norm of the rhs: 59.1085, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 47: 3.19211e-11
 
@@ -390,8 +390,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 8+0 iterations.
    Line search iteration 0, with norm of the rhs 88.7371 and going to 59.103, relative residual: 4.79218e-11
    Line search iteration 1, with norm of the rhs 81.2391 and going to 59.105, relative residual: 4.38726e-11
-   Line search iteration 2, with norm of the rhs 89.3969 and going to 59.105, relative residual: 4.82781e-11
-   Line search iteration 3, with norm of the rhs 88.6349 and going to 59.105, relative residual: 4.78666e-11
+   Line search iteration 2, with norm of the rhs 89.3969 and going to 59.1063, relative residual: 4.82781e-11
+   Line search iteration 3, with norm of the rhs 88.6349 and going to 59.1071, relative residual: 4.78666e-11
       Newton system information: Norm of the rhs: 56.7381, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 48: 3.0641e-11
 
@@ -400,7 +400,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 8+0 iterations.
    Line search iteration 0, with norm of the rhs 93.8493 and going to 56.7327, relative residual: 5.06826e-11
    Line search iteration 1, with norm of the rhs 69.1379 and going to 56.7345, relative residual: 3.73374e-11
-   Line search iteration 2, with norm of the rhs 83.3806 and going to 56.7345, relative residual: 4.50291e-11
+   Line search iteration 2, with norm of the rhs 83.3806 and going to 56.7358, relative residual: 4.50291e-11
       Newton system information: Norm of the rhs: 54.8581, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 49: 2.96257e-11
 
@@ -409,9 +409,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 8+0 iterations.
    Line search iteration 0, with norm of the rhs 106.992 and going to 54.853, relative residual: 5.778e-11
    Line search iteration 1, with norm of the rhs 98.9332 and going to 54.8548, relative residual: 5.34281e-11
-   Line search iteration 2, with norm of the rhs 83.4454 and going to 54.8548, relative residual: 4.50641e-11
-   Line search iteration 3, with norm of the rhs 80.2811 and going to 54.8548, relative residual: 4.33552e-11
-   Line search iteration 4, with norm of the rhs 86.008 and going to 54.8548, relative residual: 4.6448e-11
+   Line search iteration 2, with norm of the rhs 83.4454 and going to 54.856, relative residual: 4.50641e-11
+   Line search iteration 3, with norm of the rhs 80.2811 and going to 54.8568, relative residual: 4.33552e-11
+   Line search iteration 4, with norm of the rhs 86.008 and going to 54.8574, relative residual: 4.6448e-11
       Newton system information: Norm of the rhs: 56.351, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 50: 3.04319e-11
 
@@ -420,8 +420,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 8+0 iterations.
    Line search iteration 0, with norm of the rhs 95.759 and going to 56.3454, relative residual: 5.17139e-11
    Line search iteration 1, with norm of the rhs 83.6952 and going to 56.3473, relative residual: 4.5199e-11
-   Line search iteration 2, with norm of the rhs 91.1648 and going to 56.3473, relative residual: 4.92329e-11
-   Line search iteration 3, with norm of the rhs 73.7711 and going to 56.3473, relative residual: 3.98395e-11
+   Line search iteration 2, with norm of the rhs 91.1648 and going to 56.3486, relative residual: 4.92329e-11
+   Line search iteration 3, with norm of the rhs 73.7711 and going to 56.3494, relative residual: 3.98395e-11
       Newton system information: Norm of the rhs: 56.0332, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 51: 3.02603e-11
 
@@ -430,7 +430,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 8+0 iterations.
    Line search iteration 0, with norm of the rhs 81.3494 and going to 56.0278, relative residual: 4.39321e-11
    Line search iteration 1, with norm of the rhs 83.9766 and going to 56.0296, relative residual: 4.53509e-11
-   Line search iteration 2, with norm of the rhs 79.6517 and going to 56.0296, relative residual: 4.30153e-11
+   Line search iteration 2, with norm of the rhs 79.6517 and going to 56.0309, relative residual: 4.30153e-11
       Newton system information: Norm of the rhs: 55.639, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 52: 3.00474e-11
 
@@ -439,8 +439,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 7+0 iterations.
    Line search iteration 0, with norm of the rhs 118.237 and going to 55.6336, relative residual: 6.3853e-11
    Line search iteration 1, with norm of the rhs 105.557 and going to 55.6355, relative residual: 5.70052e-11
-   Line search iteration 2, with norm of the rhs 91.8271 and going to 55.6355, relative residual: 4.95905e-11
-   Line search iteration 3, with norm of the rhs 70.1305 and going to 55.6355, relative residual: 3.78734e-11
+   Line search iteration 2, with norm of the rhs 91.8271 and going to 55.6367, relative residual: 4.95905e-11
+   Line search iteration 3, with norm of the rhs 70.1305 and going to 55.6375, relative residual: 3.78734e-11
       Newton system information: Norm of the rhs: 54.4017, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 53: 2.93792e-11
 
@@ -449,9 +449,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 8+0 iterations.
    Line search iteration 0, with norm of the rhs 112.153 and going to 54.3968, relative residual: 6.05675e-11
    Line search iteration 1, with norm of the rhs 111.538 and going to 54.3986, relative residual: 6.02354e-11
-   Line search iteration 2, with norm of the rhs 107.473 and going to 54.3986, relative residual: 5.804e-11
-   Line search iteration 3, with norm of the rhs 104.802 and going to 54.3986, relative residual: 5.65976e-11
-   Line search iteration 4, with norm of the rhs 57.9105 and going to 54.3986, relative residual: 3.12741e-11
+   Line search iteration 2, with norm of the rhs 107.473 and going to 54.3998, relative residual: 5.804e-11
+   Line search iteration 3, with norm of the rhs 104.802 and going to 54.4006, relative residual: 5.65976e-11
+   Line search iteration 4, with norm of the rhs 57.9105 and going to 54.4011, relative residual: 3.12741e-11
       Newton system information: Norm of the rhs: 55.1299, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 54: 2.97725e-11
 
@@ -460,8 +460,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 8+0 iterations.
    Line search iteration 0, with norm of the rhs 113.06 and going to 55.1246, relative residual: 6.1057e-11
    Line search iteration 1, with norm of the rhs 101.555 and going to 55.1264, relative residual: 5.48438e-11
-   Line search iteration 2, with norm of the rhs 82.633 and going to 55.1264, relative residual: 4.46253e-11
-   Line search iteration 3, with norm of the rhs 71.6824 and going to 55.1264, relative residual: 3.87115e-11
+   Line search iteration 2, with norm of the rhs 82.633 and going to 55.1276, relative residual: 4.46253e-11
+   Line search iteration 3, with norm of the rhs 71.6824 and going to 55.1285, relative residual: 3.87115e-11
       Newton system information: Norm of the rhs: 49.1019, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 55: 2.65171e-11
 
@@ -470,9 +470,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 9+0 iterations.
    Line search iteration 0, with norm of the rhs 109.242 and going to 49.0979, relative residual: 5.89951e-11
    Line search iteration 1, with norm of the rhs 102.493 and going to 49.0995, relative residual: 5.53506e-11
-   Line search iteration 2, with norm of the rhs 69.3194 and going to 49.0995, relative residual: 3.74354e-11
-   Line search iteration 3, with norm of the rhs 59.9344 and going to 49.0995, relative residual: 3.23671e-11
-   Line search iteration 4, with norm of the rhs 55.6129 and going to 49.0995, relative residual: 3.00333e-11
+   Line search iteration 2, with norm of the rhs 69.3194 and going to 49.1006, relative residual: 3.74354e-11
+   Line search iteration 3, with norm of the rhs 59.9344 and going to 49.1013, relative residual: 3.23671e-11
+   Line search iteration 4, with norm of the rhs 55.6129 and going to 49.1018, relative residual: 3.00333e-11
       Newton system information: Norm of the rhs: 49.3226, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 56: 2.66363e-11
 
@@ -481,9 +481,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 8+0 iterations.
    Line search iteration 0, with norm of the rhs 98.8531 and going to 49.318, relative residual: 5.33849e-11
    Line search iteration 1, with norm of the rhs 97.7798 and going to 49.3197, relative residual: 5.28052e-11
-   Line search iteration 2, with norm of the rhs 71.9168 and going to 49.3197, relative residual: 3.88381e-11
-   Line search iteration 3, with norm of the rhs 53.8283 and going to 49.3197, relative residual: 2.90696e-11
-   Line search iteration 4, with norm of the rhs 55.5532 and going to 49.3197, relative residual: 3.00011e-11
+   Line search iteration 2, with norm of the rhs 71.9168 and going to 49.3208, relative residual: 3.88381e-11
+   Line search iteration 3, with norm of the rhs 53.8283 and going to 49.3215, relative residual: 2.90696e-11
+   Line search iteration 4, with norm of the rhs 55.5532 and going to 49.322, relative residual: 3.00011e-11
       Newton system information: Norm of the rhs: 56.5091, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 57: 3.05173e-11
 
@@ -492,8 +492,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 8+0 iterations.
    Line search iteration 0, with norm of the rhs 115.359 and going to 56.5037, relative residual: 6.22985e-11
    Line search iteration 1, with norm of the rhs 114.038 and going to 56.5056, relative residual: 6.15855e-11
-   Line search iteration 2, with norm of the rhs 85.287 and going to 56.5056, relative residual: 4.60586e-11
-   Line search iteration 3, with norm of the rhs 63.2503 and going to 56.5056, relative residual: 3.41578e-11
+   Line search iteration 2, with norm of the rhs 85.287 and going to 56.5068, relative residual: 4.60586e-11
+   Line search iteration 3, with norm of the rhs 63.2503 and going to 56.5077, relative residual: 3.41578e-11
       Newton system information: Norm of the rhs: 53.1876, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 58: 2.87236e-11
 
@@ -502,7 +502,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 8+0 iterations.
    Line search iteration 0, with norm of the rhs 79.9668 and going to 53.1828, relative residual: 4.31855e-11
    Line search iteration 1, with norm of the rhs 66.0474 and going to 53.1846, relative residual: 3.56684e-11
-   Line search iteration 2, with norm of the rhs 53.3306 and going to 53.1846, relative residual: 2.88008e-11
+   Line search iteration 2, with norm of the rhs 53.3306 and going to 53.1857, relative residual: 2.88008e-11
       Newton system information: Norm of the rhs: 51.8443, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 59: 2.79981e-11
 
@@ -511,9 +511,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 8+0 iterations.
    Line search iteration 0, with norm of the rhs 81.5939 and going to 51.8395, relative residual: 4.40641e-11
    Line search iteration 1, with norm of the rhs 78.5112 and going to 51.8412, relative residual: 4.23993e-11
-   Line search iteration 2, with norm of the rhs 81.5054 and going to 51.8412, relative residual: 4.40164e-11
-   Line search iteration 3, with norm of the rhs 76.1186 and going to 51.8412, relative residual: 4.11073e-11
-   Line search iteration 4, with norm of the rhs 57.9104 and going to 51.8412, relative residual: 3.1274e-11
+   Line search iteration 2, with norm of the rhs 81.5054 and going to 51.8424, relative residual: 4.40164e-11
+   Line search iteration 3, with norm of the rhs 76.1186 and going to 51.8431, relative residual: 4.11073e-11
+   Line search iteration 4, with norm of the rhs 57.9104 and going to 51.8436, relative residual: 3.1274e-11
       Newton system information: Norm of the rhs: 55.3777, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 60: 2.99063e-11
 
@@ -522,8 +522,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 8+0 iterations.
    Line search iteration 0, with norm of the rhs 80.9522 and going to 55.3724, relative residual: 4.37176e-11
    Line search iteration 1, with norm of the rhs 75.6832 and going to 55.3743, relative residual: 4.08721e-11
-   Line search iteration 2, with norm of the rhs 70.1457 and going to 55.3743, relative residual: 3.78816e-11
-   Line search iteration 3, with norm of the rhs 61.7386 and going to 55.3743, relative residual: 3.33414e-11
+   Line search iteration 2, with norm of the rhs 70.1457 and going to 55.3755, relative residual: 3.78816e-11
+   Line search iteration 3, with norm of the rhs 61.7386 and going to 55.3763, relative residual: 3.33414e-11
       Newton system information: Norm of the rhs: 52.2449, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 61: 2.82145e-11
 
@@ -532,9 +532,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 8+0 iterations.
    Line search iteration 0, with norm of the rhs 69.875 and going to 52.2402, relative residual: 3.77354e-11
    Line search iteration 1, with norm of the rhs 73.9755 and going to 52.242, relative residual: 3.99499e-11
-   Line search iteration 2, with norm of the rhs 62.7517 and going to 52.242, relative residual: 3.38886e-11
-   Line search iteration 3, with norm of the rhs 54.9751 and going to 52.242, relative residual: 2.96889e-11
-   Line search iteration 4, with norm of the rhs 54.3393 and going to 52.242, relative residual: 2.93455e-11
+   Line search iteration 2, with norm of the rhs 62.7517 and going to 52.2431, relative residual: 3.38886e-11
+   Line search iteration 3, with norm of the rhs 54.9751 and going to 52.2439, relative residual: 2.96889e-11
+   Line search iteration 4, with norm of the rhs 54.3393 and going to 52.2444, relative residual: 2.93455e-11
       Newton system information: Norm of the rhs: 53.2504, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 62: 2.87575e-11
 
@@ -543,9 +543,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 8+0 iterations.
    Line search iteration 0, with norm of the rhs 90.9868 and going to 53.2453, relative residual: 4.91367e-11
    Line search iteration 1, with norm of the rhs 63.9804 and going to 53.2471, relative residual: 3.45521e-11
-   Line search iteration 2, with norm of the rhs 66.393 and going to 53.2471, relative residual: 3.5855e-11
-   Line search iteration 3, with norm of the rhs 55.4672 and going to 53.2471, relative residual: 2.99546e-11
-   Line search iteration 4, with norm of the rhs 55.0266 and going to 53.2471, relative residual: 2.97167e-11
+   Line search iteration 2, with norm of the rhs 66.393 and going to 53.2483, relative residual: 3.5855e-11
+   Line search iteration 3, with norm of the rhs 55.4672 and going to 53.2491, relative residual: 2.99546e-11
+   Line search iteration 4, with norm of the rhs 55.0266 and going to 53.2496, relative residual: 2.97167e-11
       Newton system information: Norm of the rhs: 55.3508, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 63: 2.98918e-11
 
@@ -554,9 +554,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 8+0 iterations.
    Line search iteration 0, with norm of the rhs 116.064 and going to 55.3455, relative residual: 6.26794e-11
    Line search iteration 1, with norm of the rhs 119.662 and going to 55.3473, relative residual: 6.46227e-11
-   Line search iteration 2, with norm of the rhs 97.2128 and going to 55.3473, relative residual: 5.2499e-11
-   Line search iteration 3, with norm of the rhs 112.872 and going to 55.3473, relative residual: 6.09557e-11
-   Line search iteration 4, with norm of the rhs 65.7762 and going to 55.3473, relative residual: 3.55219e-11
+   Line search iteration 2, with norm of the rhs 97.2128 and going to 55.3485, relative residual: 5.2499e-11
+   Line search iteration 3, with norm of the rhs 112.872 and going to 55.3493, relative residual: 6.09557e-11
+   Line search iteration 4, with norm of the rhs 65.7762 and going to 55.3499, relative residual: 3.55219e-11
       Newton system information: Norm of the rhs: 49.9425, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 64: 2.69711e-11
 
@@ -565,9 +565,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 9+0 iterations.
    Line search iteration 0, with norm of the rhs 72.6717 and going to 49.9378, relative residual: 3.92458e-11
    Line search iteration 1, with norm of the rhs 68.7498 and going to 49.9395, relative residual: 3.71278e-11
-   Line search iteration 2, with norm of the rhs 60.4011 and going to 49.9395, relative residual: 3.26191e-11
-   Line search iteration 3, with norm of the rhs 54.252 and going to 49.9395, relative residual: 2.92984e-11
-   Line search iteration 4, with norm of the rhs 51.4103 and going to 49.9395, relative residual: 2.77637e-11
+   Line search iteration 2, with norm of the rhs 60.4011 and going to 49.9406, relative residual: 3.26191e-11
+   Line search iteration 3, with norm of the rhs 54.252 and going to 49.9414, relative residual: 2.92984e-11
+   Line search iteration 4, with norm of the rhs 51.4103 and going to 49.9418, relative residual: 2.77637e-11
       Newton system information: Norm of the rhs: 50.7804, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 65: 2.74236e-11
 
@@ -584,9 +584,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 13+0 iterations.
    Line search iteration 0, with norm of the rhs 82.2894 and going to 50.3749, relative residual: 4.44397e-11
    Line search iteration 1, with norm of the rhs 60.836 and going to 50.3766, relative residual: 3.2854e-11
-   Line search iteration 2, with norm of the rhs 60.8176 and going to 50.3766, relative residual: 3.28441e-11
-   Line search iteration 3, with norm of the rhs 58.6988 and going to 50.3766, relative residual: 3.16998e-11
-   Line search iteration 4, with norm of the rhs 52.1015 and going to 50.3766, relative residual: 2.8137e-11
+   Line search iteration 2, with norm of the rhs 60.8176 and going to 50.3777, relative residual: 3.28441e-11
+   Line search iteration 3, with norm of the rhs 58.6988 and going to 50.3785, relative residual: 3.16998e-11
+   Line search iteration 4, with norm of the rhs 52.1015 and going to 50.379, relative residual: 2.8137e-11
       Newton system information: Norm of the rhs: 51.192, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 67: 2.76459e-11
 
@@ -595,9 +595,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 12+0 iterations.
    Line search iteration 0, with norm of the rhs 111.295 and going to 51.1868, relative residual: 6.01038e-11
    Line search iteration 1, with norm of the rhs 101.482 and going to 51.1885, relative residual: 5.48047e-11
-   Line search iteration 2, with norm of the rhs 102.753 and going to 51.1885, relative residual: 5.54908e-11
-   Line search iteration 3, with norm of the rhs 121.911 and going to 51.1885, relative residual: 6.58368e-11
-   Line search iteration 4, with norm of the rhs 60.2152 and going to 51.1885, relative residual: 3.25188e-11
+   Line search iteration 2, with norm of the rhs 102.753 and going to 51.1896, relative residual: 5.54908e-11
+   Line search iteration 3, with norm of the rhs 121.911 and going to 51.1904, relative residual: 6.58368e-11
+   Line search iteration 4, with norm of the rhs 60.2152 and going to 51.1909, relative residual: 3.25188e-11
       Newton system information: Norm of the rhs: 54.9069, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 68: 2.9652e-11
 
@@ -606,9 +606,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 11+0 iterations.
    Line search iteration 0, with norm of the rhs 94.185 and going to 54.9014, relative residual: 5.08639e-11
    Line search iteration 1, with norm of the rhs 63.948 and going to 54.9032, relative residual: 3.45346e-11
-   Line search iteration 2, with norm of the rhs 55.9932 and going to 54.9032, relative residual: 3.02387e-11
-   Line search iteration 3, with norm of the rhs 60.0902 and going to 54.9032, relative residual: 3.24513e-11
-   Line search iteration 4, with norm of the rhs 60.4459 and going to 54.9032, relative residual: 3.26434e-11
+   Line search iteration 2, with norm of the rhs 55.9932 and going to 54.9044, relative residual: 3.02387e-11
+   Line search iteration 3, with norm of the rhs 60.0902 and going to 54.9052, relative residual: 3.24513e-11
+   Line search iteration 4, with norm of the rhs 60.4459 and going to 54.9058, relative residual: 3.26434e-11
       Newton system information: Norm of the rhs: 57.8556, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 69: 3.12445e-11
 
@@ -625,8 +625,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 8+0 iterations.
    Line search iteration 0, with norm of the rhs 82.8675 and going to 57.4649, relative residual: 4.47519e-11
    Line search iteration 1, with norm of the rhs 62.9414 and going to 57.4668, relative residual: 3.3991e-11
-   Line search iteration 2, with norm of the rhs 70.5459 and going to 57.4668, relative residual: 3.80978e-11
-   Line search iteration 3, with norm of the rhs 59.2813 and going to 57.4668, relative residual: 3.20144e-11
+   Line search iteration 2, with norm of the rhs 70.5459 and going to 57.4681, relative residual: 3.80978e-11
+   Line search iteration 3, with norm of the rhs 59.2813 and going to 57.469, relative residual: 3.20144e-11
       Newton system information: Norm of the rhs: 56.455, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 71: 3.04881e-11
 
@@ -635,7 +635,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 8+0 iterations.
    Line search iteration 0, with norm of the rhs 89.9724 and going to 56.4491, relative residual: 4.85889e-11
    Line search iteration 1, with norm of the rhs 76.0461 and going to 56.451, relative residual: 4.10681e-11
-   Line search iteration 2, with norm of the rhs 59.4123 and going to 56.451, relative residual: 3.20851e-11
+   Line search iteration 2, with norm of the rhs 59.4123 and going to 56.4522, relative residual: 3.20851e-11
       Newton system information: Norm of the rhs: 53.9508, Derivative scaling factor: 1
       Relative nonlinear residual (Stokes system) after nonlinear iteration 72: 2.91357e-11
 
@@ -644,807 +644,791 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 8+0 iterations.
    Line search iteration 0, with norm of the rhs 84.7445 and going to 53.9452, relative residual: 4.57656e-11
    Line search iteration 1, with norm of the rhs 68.4337 and going to 53.947, relative residual: 3.69571e-11
-   Line search iteration 2, with norm of the rhs 67.5512 and going to 53.947, relative residual: 3.64805e-11
-   Line search iteration 3, with norm of the rhs 53.9479 and going to 53.947, relative residual: 2.91342e-11
-      Newton system information: Norm of the rhs: 52.8373, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 73: 2.85344e-11
+   Line search iteration 2, with norm of the rhs 67.5512 and going to 53.9482, relative residual: 3.64805e-11
+      Newton system information: Norm of the rhs: 53.9479, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 73: 2.91342e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 9+0 iterations.
-   Line search iteration 0, with norm of the rhs 99.2572 and going to 52.8318, relative residual: 5.36031e-11
-   Line search iteration 1, with norm of the rhs 71.6113 and going to 52.8336, relative residual: 3.86731e-11
-   Line search iteration 2, with norm of the rhs 75.6687 and going to 52.8336, relative residual: 4.08643e-11
-   Line search iteration 3, with norm of the rhs 53.7232 and going to 52.8336, relative residual: 2.90128e-11
-   Line search iteration 4, with norm of the rhs 53.533 and going to 52.8336, relative residual: 2.89101e-11
-      Newton system information: Norm of the rhs: 52.8338, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 74: 2.85325e-11
+   Line search iteration 0, with norm of the rhs 83.904 and going to 53.9422, relative residual: 4.53117e-11
+   Line search iteration 1, with norm of the rhs 72.2979 and going to 53.944, relative residual: 3.90439e-11
+   Line search iteration 2, with norm of the rhs 54.268 and going to 53.9452, relative residual: 2.9307e-11
+      Newton system information: Norm of the rhs: 51.8107, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 74: 2.798e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 8+0 iterations.
-   Line search iteration 0, with norm of the rhs 82.6293 and going to 52.8284, relative residual: 4.46233e-11
-   Line search iteration 1, with norm of the rhs 82.2063 and going to 52.8301, relative residual: 4.43949e-11
-   Line search iteration 2, with norm of the rhs 63.192 and going to 52.8301, relative residual: 3.41264e-11
-   Line search iteration 3, with norm of the rhs 55.8773 and going to 52.8301, relative residual: 3.01761e-11
-   Line search iteration 4, with norm of the rhs 53.4433 and going to 52.8301, relative residual: 2.88616e-11
-      Newton system information: Norm of the rhs: 53.1528, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 75: 2.87048e-11
+   Line search iteration 0, with norm of the rhs 115.333 and going to 51.8054, relative residual: 6.22848e-11
+   Line search iteration 1, with norm of the rhs 89.4967 and going to 51.8071, relative residual: 4.8332e-11
+   Line search iteration 2, with norm of the rhs 72.3995 and going to 51.8083, relative residual: 3.90988e-11
+   Line search iteration 3, with norm of the rhs 54.947 and going to 51.809, relative residual: 2.96737e-11
+   Line search iteration 4, with norm of the rhs 54.997 and going to 51.8095, relative residual: 2.97007e-11
+      Newton system information: Norm of the rhs: 55.8005, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 75: 3.01346e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 8+0 iterations.
-   Line search iteration 0, with norm of the rhs 82.7086 and going to 53.1473, relative residual: 4.46661e-11
-   Line search iteration 1, with norm of the rhs 98.5723 and going to 53.1491, relative residual: 5.32332e-11
-   Line search iteration 2, with norm of the rhs 80.549 and going to 53.1491, relative residual: 4.34998e-11
-   Line search iteration 3, with norm of the rhs 78.4314 and going to 53.1491, relative residual: 4.23563e-11
-   Line search iteration 4, with norm of the rhs 66.8768 and going to 53.1491, relative residual: 3.61163e-11
-      Newton system information: Norm of the rhs: 52.3073, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 76: 2.82481e-11
+   Line search iteration 0, with norm of the rhs 83.242 and going to 55.7948, relative residual: 4.49542e-11
+   Line search iteration 1, with norm of the rhs 66.4423 and going to 55.7966, relative residual: 3.58816e-11
+   Line search iteration 2, with norm of the rhs 58.305 and going to 55.7979, relative residual: 3.14872e-11
+      Newton system information: Norm of the rhs: 54.7929, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 76: 2.95905e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 9+0 iterations.
-   Line search iteration 0, with norm of the rhs 78.4729 and going to 52.302, relative residual: 4.23787e-11
-   Line search iteration 1, with norm of the rhs 75.9189 and going to 52.3037, relative residual: 4.09994e-11
-   Line search iteration 2, with norm of the rhs 55.3477 and going to 52.3037, relative residual: 2.98901e-11
-   Line search iteration 3, with norm of the rhs 56.0716 and going to 52.3037, relative residual: 3.0281e-11
-   Line search iteration 4, with norm of the rhs 54.0603 and going to 52.3037, relative residual: 2.91949e-11
-      Newton system information: Norm of the rhs: 54.7346, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 77: 2.9559e-11
+   Line search iteration 0, with norm of the rhs 85.6343 and going to 54.787, relative residual: 4.62461e-11
+   Line search iteration 1, with norm of the rhs 76.3473 and going to 54.7889, relative residual: 4.12307e-11
+   Line search iteration 2, with norm of the rhs 61.0564 and going to 54.7901, relative residual: 3.2973e-11
+   Line search iteration 3, with norm of the rhs 56.8571 and going to 54.7909, relative residual: 3.07052e-11
+   Line search iteration 4, with norm of the rhs 55.852 and going to 54.7914, relative residual: 3.01624e-11
+      Newton system information: Norm of the rhs: 55.0002, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 77: 2.97024e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 9+0 iterations.
+   Line search iteration 0, with norm of the rhs 73.0739 and going to 54.9946, relative residual: 3.9463e-11
+   Line search iteration 1, with norm of the rhs 84.3392 and going to 54.9965, relative residual: 4.55467e-11
+   Line search iteration 2, with norm of the rhs 67.3158 and going to 54.9977, relative residual: 3.63534e-11
+   Line search iteration 3, with norm of the rhs 57.6997 and going to 54.9985, relative residual: 3.11603e-11
+      Newton system information: Norm of the rhs: 53.7259, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 78: 2.90143e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 9+0 iterations.
+   Line search iteration 0, with norm of the rhs 76.8743 and going to 53.7205, relative residual: 4.15154e-11
+   Line search iteration 1, with norm of the rhs 71.1092 and going to 53.7223, relative residual: 3.8402e-11
+   Line search iteration 2, with norm of the rhs 61.2993 and going to 53.7235, relative residual: 3.31042e-11
+   Line search iteration 3, with norm of the rhs 57.2074 and going to 53.7242, relative residual: 3.08944e-11
+      Newton system information: Norm of the rhs: 53.1997, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 79: 2.87301e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 9+0 iterations.
+   Line search iteration 0, with norm of the rhs 96.5349 and going to 53.1942, relative residual: 5.21329e-11
+   Line search iteration 1, with norm of the rhs 89.0234 and going to 53.196, relative residual: 4.80764e-11
+   Line search iteration 2, with norm of the rhs 77.4899 and going to 53.1972, relative residual: 4.18478e-11
+   Line search iteration 3, with norm of the rhs 85.7045 and going to 53.198, relative residual: 4.62841e-11
+   Line search iteration 4, with norm of the rhs 60.9483 and going to 53.1985, relative residual: 3.29146e-11
+      Newton system information: Norm of the rhs: 51.8058, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 80: 2.79773e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 9+0 iterations.
+   Line search iteration 0, with norm of the rhs 94.9164 and going to 51.8005, relative residual: 5.12588e-11
+   Line search iteration 1, with norm of the rhs 83.3287 and going to 51.8022, relative residual: 4.5001e-11
+   Line search iteration 2, with norm of the rhs 88.837 and going to 51.8034, relative residual: 4.79757e-11
+   Line search iteration 3, with norm of the rhs 54.5975 and going to 51.8041, relative residual: 2.9485e-11
+   Line search iteration 4, with norm of the rhs 52.9128 and going to 51.8046, relative residual: 2.85752e-11
+      Newton system information: Norm of the rhs: 53.266, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 81: 2.87659e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 8+0 iterations.
-   Line search iteration 0, with norm of the rhs 77.9211 and going to 54.729, relative residual: 4.20807e-11
-   Line search iteration 1, with norm of the rhs 69.2306 and going to 54.7309, relative residual: 3.73874e-11
-   Line search iteration 2, with norm of the rhs 66.0671 and going to 54.7309, relative residual: 3.5679e-11
-      Newton system information: Norm of the rhs: 52.2528, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 78: 2.82187e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 9+0 iterations.
-   Line search iteration 0, with norm of the rhs 79.8708 and going to 52.2473, relative residual: 4.31336e-11
-   Line search iteration 1, with norm of the rhs 90.8872 and going to 52.2491, relative residual: 4.90829e-11
-   Line search iteration 2, with norm of the rhs 61.541 and going to 52.2491, relative residual: 3.32347e-11
-   Line search iteration 3, with norm of the rhs 56.9203 and going to 52.2491, relative residual: 3.07393e-11
-   Line search iteration 4, with norm of the rhs 53.042 and going to 52.2491, relative residual: 2.86449e-11
-      Newton system information: Norm of the rhs: 53.5456, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 79: 2.89169e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 9+0 iterations.
-   Line search iteration 0, with norm of the rhs 122.736 and going to 53.5401, relative residual: 6.62829e-11
-   Line search iteration 1, with norm of the rhs 111.841 and going to 53.5419, relative residual: 6.03987e-11
-   Line search iteration 2, with norm of the rhs 120.413 and going to 53.5419, relative residual: 6.50282e-11
-   Line search iteration 3, with norm of the rhs 95.8451 and going to 53.5419, relative residual: 5.17604e-11
-   Line search iteration 4, with norm of the rhs 72.5326 and going to 53.5419, relative residual: 3.91706e-11
-      Newton system information: Norm of the rhs: 52.1324, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 80: 2.81537e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 9+0 iterations.
-   Line search iteration 0, with norm of the rhs 89.9122 and going to 52.127, relative residual: 4.85564e-11
-   Line search iteration 1, with norm of the rhs 68.7946 and going to 52.1288, relative residual: 3.7152e-11
-   Line search iteration 2, with norm of the rhs 59.9694 and going to 52.1288, relative residual: 3.2386e-11
-   Line search iteration 3, with norm of the rhs 55.6171 and going to 52.1288, relative residual: 3.00356e-11
-   Line search iteration 4, with norm of the rhs 55.0426 and going to 52.1288, relative residual: 2.97254e-11
-      Newton system information: Norm of the rhs: 51.5799, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 81: 2.78553e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 9+0 iterations.
-   Line search iteration 0, with norm of the rhs 89.4229 and going to 51.5746, relative residual: 4.82922e-11
-   Line search iteration 1, with norm of the rhs 57.4896 and going to 51.5763, relative residual: 3.10468e-11
-   Line search iteration 2, with norm of the rhs 58.3671 and going to 51.5763, relative residual: 3.15207e-11
-   Line search iteration 3, with norm of the rhs 54.4659 and going to 51.5763, relative residual: 2.94139e-11
-   Line search iteration 4, with norm of the rhs 54.6028 and going to 51.5763, relative residual: 2.94878e-11
-      Newton system information: Norm of the rhs: 53.4435, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 82: 2.88617e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 9+0 iterations.
-   Line search iteration 0, with norm of the rhs 76.0366 and going to 53.438, relative residual: 4.1063e-11
-   Line search iteration 1, with norm of the rhs 91.0661 and going to 53.4398, relative residual: 4.91796e-11
-   Line search iteration 2, with norm of the rhs 68.5046 and going to 53.4398, relative residual: 3.69954e-11
-   Line search iteration 3, with norm of the rhs 57.7665 and going to 53.4398, relative residual: 3.11963e-11
-      Newton system information: Norm of the rhs: 53.2998, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 83: 2.87841e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 9+0 iterations.
-   Line search iteration 0, with norm of the rhs 103.359 and going to 53.2943, relative residual: 5.58181e-11
-   Line search iteration 1, with norm of the rhs 78.304 and going to 53.296, relative residual: 4.22874e-11
-   Line search iteration 2, with norm of the rhs 81.1485 and going to 53.296, relative residual: 4.38236e-11
-   Line search iteration 3, with norm of the rhs 57.0778 and going to 53.296, relative residual: 3.08244e-11
-   Line search iteration 4, with norm of the rhs 58.1404 and going to 53.296, relative residual: 3.13983e-11
-      Newton system information: Norm of the rhs: 53.6412, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 84: 2.89685e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 9+0 iterations.
-   Line search iteration 0, with norm of the rhs 84.3584 and going to 53.6359, relative residual: 4.55571e-11
-   Line search iteration 1, with norm of the rhs 82.8627 and going to 53.6377, relative residual: 4.47493e-11
-   Line search iteration 2, with norm of the rhs 96.4136 and going to 53.6377, relative residual: 5.20674e-11
-   Line search iteration 3, with norm of the rhs 66.061 and going to 53.6377, relative residual: 3.56758e-11
-      Newton system information: Norm of the rhs: 53.0083, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 85: 2.86267e-11
+   Line search iteration 0, with norm of the rhs 100.299 and going to 53.2605, relative residual: 5.41656e-11
+   Line search iteration 1, with norm of the rhs 66.8563 and going to 53.2623, relative residual: 3.61052e-11
+   Line search iteration 2, with norm of the rhs 56.3412 and going to 53.2635, relative residual: 3.04266e-11
+   Line search iteration 3, with norm of the rhs 57.7028 and going to 53.2643, relative residual: 3.11619e-11
+      Newton system information: Norm of the rhs: 52.1329, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 82: 2.8154e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 8+0 iterations.
-   Line search iteration 0, with norm of the rhs 79.1605 and going to 53.0028, relative residual: 4.275e-11
-   Line search iteration 1, with norm of the rhs 65.0288 and going to 53.0046, relative residual: 3.51183e-11
-   Line search iteration 2, with norm of the rhs 61.1262 and going to 53.0046, relative residual: 3.30107e-11
-   Line search iteration 3, with norm of the rhs 54.6035 and going to 53.0046, relative residual: 2.94882e-11
-   Line search iteration 4, with norm of the rhs 54.8948 and going to 53.0046, relative residual: 2.96455e-11
-      Newton system information: Norm of the rhs: 54.8043, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 86: 2.95966e-11
+   Line search iteration 0, with norm of the rhs 124.076 and going to 52.1275, relative residual: 6.70062e-11
+   Line search iteration 1, with norm of the rhs 101.606 and going to 52.1292, relative residual: 5.48713e-11
+   Line search iteration 2, with norm of the rhs 93.9161 and going to 52.1304, relative residual: 5.07186e-11
+   Line search iteration 3, with norm of the rhs 75.4936 and going to 52.1312, relative residual: 4.07697e-11
+   Line search iteration 4, with norm of the rhs 52.7645 and going to 52.1317, relative residual: 2.84951e-11
+      Newton system information: Norm of the rhs: 51.5329, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 83: 2.78299e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 9+0 iterations.
-   Line search iteration 0, with norm of the rhs 86.1959 and going to 54.7986, relative residual: 4.65494e-11
-   Line search iteration 1, with norm of the rhs 106.595 and going to 54.8005, relative residual: 5.75658e-11
-   Line search iteration 2, with norm of the rhs 79.2694 and going to 54.8005, relative residual: 4.28088e-11
-   Line search iteration 3, with norm of the rhs 74.1876 and going to 54.8005, relative residual: 4.00644e-11
-   Line search iteration 4, with norm of the rhs 64.7932 and going to 54.8005, relative residual: 3.49911e-11
-      Newton system information: Norm of the rhs: 53.1437, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 87: 2.86998e-11
+   Line search iteration 0, with norm of the rhs 66.9808 and going to 51.5277, relative residual: 3.61725e-11
+   Line search iteration 1, with norm of the rhs 67.9344 and going to 51.5294, relative residual: 3.66874e-11
+   Line search iteration 2, with norm of the rhs 58.095 and going to 51.5305, relative residual: 3.13738e-11
+   Line search iteration 3, with norm of the rhs 54.0005 and going to 51.5313, relative residual: 2.91626e-11
+   Line search iteration 4, with norm of the rhs 53.868 and going to 51.5318, relative residual: 2.9091e-11
+      Newton system information: Norm of the rhs: 52.222, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 84: 2.82021e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 8+0 iterations.
+   Line search iteration 0, with norm of the rhs 80.5224 and going to 52.2166, relative residual: 4.34855e-11
+   Line search iteration 1, with norm of the rhs 80.1781 and going to 52.2183, relative residual: 4.32995e-11
+   Line search iteration 2, with norm of the rhs 70.142 and going to 52.2195, relative residual: 3.78797e-11
+   Line search iteration 3, with norm of the rhs 58.3843 and going to 52.2203, relative residual: 3.153e-11
+   Line search iteration 4, with norm of the rhs 55.0182 and going to 52.2208, relative residual: 2.97122e-11
+      Newton system information: Norm of the rhs: 54.1348, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 85: 2.92351e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 9+0 iterations.
-   Line search iteration 0, with norm of the rhs 94.4076 and going to 53.1382, relative residual: 5.09841e-11
-   Line search iteration 1, with norm of the rhs 69.6717 and going to 53.14, relative residual: 3.76257e-11
-   Line search iteration 2, with norm of the rhs 56.1281 and going to 53.14, relative residual: 3.03116e-11
-   Line search iteration 3, with norm of the rhs 56.168 and going to 53.14, relative residual: 3.03331e-11
-      Newton system information: Norm of the rhs: 52.6336, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 88: 2.84244e-11
+   Line search iteration 0, with norm of the rhs 100.764 and going to 54.1293, relative residual: 5.44166e-11
+   Line search iteration 1, with norm of the rhs 99.8141 and going to 54.1311, relative residual: 5.39038e-11
+   Line search iteration 2, with norm of the rhs 56.8436 and going to 54.1323, relative residual: 3.0698e-11
+      Newton system information: Norm of the rhs: 53.2841, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 86: 2.87756e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 8+0 iterations.
+   Line search iteration 0, with norm of the rhs 82.9613 and going to 53.2786, relative residual: 4.48026e-11
+   Line search iteration 1, with norm of the rhs 85.8346 and going to 53.2804, relative residual: 4.63543e-11
+   Line search iteration 2, with norm of the rhs 67.9127 and going to 53.2816, relative residual: 3.66757e-11
+   Line search iteration 3, with norm of the rhs 58.4785 and going to 53.2824, relative residual: 3.15808e-11
+   Line search iteration 4, with norm of the rhs 53.3209 and going to 53.2829, relative residual: 2.87956e-11
+      Newton system information: Norm of the rhs: 53.0775, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 87: 2.86641e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 8+0 iterations.
+   Line search iteration 0, with norm of the rhs 90.5803 and going to 53.0721, relative residual: 4.89172e-11
+   Line search iteration 1, with norm of the rhs 77.9573 and going to 53.0739, relative residual: 4.21003e-11
+   Line search iteration 2, with norm of the rhs 64.1953 and going to 53.0751, relative residual: 3.46682e-11
+   Line search iteration 3, with norm of the rhs 55.1082 and going to 53.0759, relative residual: 2.97608e-11
+      Newton system information: Norm of the rhs: 52.2632, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 88: 2.82243e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 8+0 iterations.
+   Line search iteration 0, with norm of the rhs 83.9041 and going to 52.2579, relative residual: 4.53117e-11
+   Line search iteration 1, with norm of the rhs 86.0429 and going to 52.2597, relative residual: 4.64668e-11
+   Line search iteration 2, with norm of the rhs 78.2936 and going to 52.2608, relative residual: 4.22818e-11
+   Line search iteration 3, with norm of the rhs 78.3761 and going to 52.2616, relative residual: 4.23264e-11
+   Line search iteration 4, with norm of the rhs 54.4179 and going to 52.2621, relative residual: 2.93879e-11
+      Newton system information: Norm of the rhs: 53.9417, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 89: 2.91308e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Line search iteration 0, with norm of the rhs 91.9697 and going to 53.9363, relative residual: 4.96675e-11
+   Line search iteration 1, with norm of the rhs 86.2562 and going to 53.9381, relative residual: 4.6582e-11
+   Line search iteration 2, with norm of the rhs 81.1944 and going to 53.9393, relative residual: 4.38484e-11
+   Line search iteration 3, with norm of the rhs 74.1399 and going to 53.9401, relative residual: 4.00387e-11
+   Line search iteration 4, with norm of the rhs 71.8973 and going to 53.9406, relative residual: 3.88276e-11
+      Newton system information: Norm of the rhs: 53.4473, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 90: 2.88638e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 8+0 iterations.
+   Line search iteration 0, with norm of the rhs 68.6108 and going to 53.4418, relative residual: 3.70527e-11
+   Line search iteration 1, with norm of the rhs 89.9175 and going to 53.4436, relative residual: 4.85592e-11
+   Line search iteration 2, with norm of the rhs 65.7227 and going to 53.4448, relative residual: 3.54931e-11
+   Line search iteration 3, with norm of the rhs 57.625 and going to 53.4456, relative residual: 3.11199e-11
+   Line search iteration 4, with norm of the rhs 53.9221 and going to 53.4461, relative residual: 2.91202e-11
+      Newton system information: Norm of the rhs: 55.1537, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 91: 2.97853e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Line search iteration 0, with norm of the rhs 103.404 and going to 55.1482, relative residual: 5.58427e-11
+   Line search iteration 1, with norm of the rhs 77.2893 and going to 55.15, relative residual: 4.17395e-11
+   Line search iteration 2, with norm of the rhs 80.7639 and going to 55.1513, relative residual: 4.36159e-11
+   Line search iteration 3, with norm of the rhs 71.5484 and going to 55.1521, relative residual: 3.86392e-11
+   Line search iteration 4, with norm of the rhs 55.7153 and going to 55.1526, relative residual: 3.00886e-11
+      Newton system information: Norm of the rhs: 53.4317, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 92: 2.88554e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 8+0 iterations.
+   Line search iteration 0, with norm of the rhs 99.7296 and going to 53.4262, relative residual: 5.38582e-11
+   Line search iteration 1, with norm of the rhs 101.293 and going to 53.428, relative residual: 5.47024e-11
+   Line search iteration 2, with norm of the rhs 81.2496 and going to 53.4292, relative residual: 4.38782e-11
+   Line search iteration 3, with norm of the rhs 78.9461 and going to 53.43, relative residual: 4.26342e-11
+   Line search iteration 4, with norm of the rhs 71.7981 and going to 53.4305, relative residual: 3.8774e-11
+      Newton system information: Norm of the rhs: 55.1296, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 93: 2.97723e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 8+0 iterations.
+   Line search iteration 0, with norm of the rhs 72.507 and going to 55.124, relative residual: 3.91568e-11
+   Line search iteration 1, with norm of the rhs 62.2497 and going to 55.1258, relative residual: 3.36175e-11
+   Line search iteration 2, with norm of the rhs 60.2744 and going to 55.1271, relative residual: 3.25507e-11
+   Line search iteration 3, with norm of the rhs 56.3648 and going to 55.1279, relative residual: 3.04394e-11
+   Line search iteration 4, with norm of the rhs 55.6128 and going to 55.1284, relative residual: 3.00333e-11
+      Newton system information: Norm of the rhs: 54.2233, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 94: 2.92829e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 8+0 iterations.
+   Line search iteration 0, with norm of the rhs 78.1257 and going to 54.2178, relative residual: 4.21912e-11
+   Line search iteration 1, with norm of the rhs 76.9949 and going to 54.2196, relative residual: 4.15805e-11
+   Line search iteration 2, with norm of the rhs 61.0979 and going to 54.2208, relative residual: 3.29955e-11
+   Line search iteration 3, with norm of the rhs 57.0632 and going to 54.2216, relative residual: 3.08165e-11
+   Line search iteration 4, with norm of the rhs 56.2307 and going to 54.2221, relative residual: 3.0367e-11
+      Newton system information: Norm of the rhs: 56.2698, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 95: 3.0388e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 8+0 iterations.
+   Line search iteration 0, with norm of the rhs 77.1247 and going to 56.264, relative residual: 4.16506e-11
+   Line search iteration 1, with norm of the rhs 72.8903 and going to 56.2659, relative residual: 3.93638e-11
+   Line search iteration 2, with norm of the rhs 58.8634 and going to 56.2671, relative residual: 3.17887e-11
+      Newton system information: Norm of the rhs: 54.9851, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 96: 2.96943e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 8+0 iterations.
+   Line search iteration 0, with norm of the rhs 79.6322 and going to 54.9793, relative residual: 4.30047e-11
+   Line search iteration 1, with norm of the rhs 80.7533 and going to 54.9812, relative residual: 4.36102e-11
+   Line search iteration 2, with norm of the rhs 55.1375 and going to 54.9824, relative residual: 2.97766e-11
+   Line search iteration 3, with norm of the rhs 56.7139 and going to 54.9832, relative residual: 3.06279e-11
+      Newton system information: Norm of the rhs: 54.1586, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 97: 2.92479e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 8+0 iterations.
+   Line search iteration 0, with norm of the rhs 84.7118 and going to 54.153, relative residual: 4.57479e-11
+   Line search iteration 1, with norm of the rhs 69.9811 and going to 54.1549, relative residual: 3.77928e-11
+   Line search iteration 2, with norm of the rhs 64.8847 and going to 54.1561, relative residual: 3.50405e-11
+      Newton system information: Norm of the rhs: 53.8091, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 98: 2.90592e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 8+0 iterations.
+   Line search iteration 0, with norm of the rhs 80.5283 and going to 53.8035, relative residual: 4.34887e-11
+   Line search iteration 1, with norm of the rhs 82.2194 and going to 53.8053, relative residual: 4.4402e-11
+   Line search iteration 2, with norm of the rhs 63.9465 and going to 53.8065, relative residual: 3.45338e-11
+   Line search iteration 3, with norm of the rhs 58.7716 and going to 53.8073, relative residual: 3.17392e-11
+   Line search iteration 4, with norm of the rhs 55.4562 and going to 53.8078, relative residual: 2.99487e-11
+      Newton system information: Norm of the rhs: 55.6773, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 99: 3.00681e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 8+0 iterations.
+   Line search iteration 0, with norm of the rhs 80.9364 and going to 55.6717, relative residual: 4.37091e-11
+   Line search iteration 1, with norm of the rhs 74.6423 and going to 55.6735, relative residual: 4.031e-11
+   Line search iteration 2, with norm of the rhs 63.7502 and going to 55.6748, relative residual: 3.44278e-11
+   Line search iteration 3, with norm of the rhs 56.5371 and going to 55.6756, relative residual: 3.05324e-11
+      Newton system information: Norm of the rhs: 54.5111, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 100: 2.94383e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 9+0 iterations.
-   Line search iteration 0, with norm of the rhs 80.9626 and going to 52.6284, relative residual: 4.37232e-11
-   Line search iteration 1, with norm of the rhs 80.7052 and going to 52.6301, relative residual: 4.35842e-11
-   Line search iteration 2, with norm of the rhs 59.3676 and going to 52.6301, relative residual: 3.2061e-11
-   Line search iteration 3, with norm of the rhs 58.2514 and going to 52.6301, relative residual: 3.14582e-11
-   Line search iteration 4, with norm of the rhs 53.5994 and going to 52.6301, relative residual: 2.8946e-11
-      Newton system information: Norm of the rhs: 51.0739, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 89: 2.75821e-11
+   Line search iteration 0, with norm of the rhs 99.5402 and going to 54.5055, relative residual: 5.37559e-11
+   Line search iteration 1, with norm of the rhs 84.1544 and going to 54.5074, relative residual: 4.54469e-11
+   Line search iteration 2, with norm of the rhs 77.5596 and going to 54.5086, relative residual: 4.18855e-11
+   Line search iteration 3, with norm of the rhs 54.7472 and going to 54.5094, relative residual: 2.95658e-11
+      Newton system information: Norm of the rhs: 51.9376, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 101: 2.80485e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 8+0 iterations.
-   Line search iteration 0, with norm of the rhs 72.1681 and going to 51.0689, relative residual: 3.89738e-11
-   Line search iteration 1, with norm of the rhs 79.462 and going to 51.0706, relative residual: 4.29128e-11
-   Line search iteration 2, with norm of the rhs 56.8691 and going to 51.0706, relative residual: 3.07117e-11
-   Line search iteration 3, with norm of the rhs 53.3367 and going to 51.0706, relative residual: 2.88041e-11
-   Line search iteration 4, with norm of the rhs 53.6487 and going to 51.0706, relative residual: 2.89726e-11
-      Newton system information: Norm of the rhs: 52.193, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 90: 2.81864e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 9+0 iterations.
-   Line search iteration 0, with norm of the rhs 91.1695 and going to 52.1877, relative residual: 4.92354e-11
-   Line search iteration 1, with norm of the rhs 76.0038 and going to 52.1894, relative residual: 4.10453e-11
-   Line search iteration 2, with norm of the rhs 78.4303 and going to 52.1894, relative residual: 4.23556e-11
-   Line search iteration 3, with norm of the rhs 56.0243 and going to 52.1894, relative residual: 3.02555e-11
-   Line search iteration 4, with norm of the rhs 54.3751 and going to 52.1894, relative residual: 2.93649e-11
-      Newton system information: Norm of the rhs: 54.4667, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 91: 2.94143e-11
+   Line search iteration 0, with norm of the rhs 123.424 and going to 51.9322, relative residual: 6.66539e-11
+   Line search iteration 1, with norm of the rhs 97.4047 and going to 51.934, relative residual: 5.26027e-11
+   Line search iteration 2, with norm of the rhs 75.1288 and going to 51.9351, relative residual: 4.05727e-11
+   Line search iteration 3, with norm of the rhs 56.1477 and going to 51.9359, relative residual: 3.03221e-11
+   Line search iteration 4, with norm of the rhs 53.3119 and going to 51.9364, relative residual: 2.87907e-11
+      Newton system information: Norm of the rhs: 51.2517, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 102: 2.76781e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 8+0 iterations.
-   Line search iteration 0, with norm of the rhs 74.6441 and going to 54.4612, relative residual: 4.03109e-11
-   Line search iteration 1, with norm of the rhs 74.7866 and going to 54.463, relative residual: 4.03879e-11
-   Line search iteration 2, with norm of the rhs 56.9014 and going to 54.463, relative residual: 3.07291e-11
-      Newton system information: Norm of the rhs: 51.9036, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 92: 2.80301e-11
+   Line search iteration 0, with norm of the rhs 102.354 and going to 51.2465, relative residual: 5.52754e-11
+   Line search iteration 1, with norm of the rhs 92.3836 and going to 51.2482, relative residual: 4.9891e-11
+   Line search iteration 2, with norm of the rhs 77.3563 and going to 51.2493, relative residual: 4.17757e-11
+   Line search iteration 3, with norm of the rhs 78.669 and going to 51.2501, relative residual: 4.24846e-11
+   Line search iteration 4, with norm of the rhs 82.6463 and going to 51.2506, relative residual: 4.46325e-11
+      Newton system information: Norm of the rhs: 62.0817, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 103: 3.35267e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 8+0 iterations.
-   Line search iteration 0, with norm of the rhs 119.096 and going to 51.8981, relative residual: 6.43169e-11
-   Line search iteration 1, with norm of the rhs 95.5088 and going to 51.8998, relative residual: 5.15788e-11
-   Line search iteration 2, with norm of the rhs 68.3812 and going to 51.8998, relative residual: 3.69288e-11
-   Line search iteration 3, with norm of the rhs 54.9798 and going to 51.8998, relative residual: 2.96914e-11
-   Line search iteration 4, with norm of the rhs 52.749 and going to 51.8998, relative residual: 2.84867e-11
-      Newton system information: Norm of the rhs: 52.7473, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 93: 2.84858e-11
+   Line search iteration 0, with norm of the rhs 87.0439 and going to 62.0755, relative residual: 4.70074e-11
+   Line search iteration 1, with norm of the rhs 73.1901 and going to 62.0776, relative residual: 3.95257e-11
+   Line search iteration 2, with norm of the rhs 82.4213 and going to 62.079, relative residual: 4.4511e-11
+   Line search iteration 3, with norm of the rhs 73.6518 and going to 62.0799, relative residual: 3.97751e-11
+   Line search iteration 4, with norm of the rhs 68.4616 and going to 62.0805, relative residual: 3.69721e-11
+      Newton system information: Norm of the rhs: 67.9883, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 104: 3.67166e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Line search iteration 0, with norm of the rhs 83.2164 and going to 67.9815, relative residual: 4.49403e-11
+   Line search iteration 1, with norm of the rhs 91.9308 and going to 67.9838, relative residual: 4.96465e-11
+   Line search iteration 2, with norm of the rhs 74.3076 and going to 67.9853, relative residual: 4.01292e-11
+      Newton system information: Norm of the rhs: 58.8251, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 105: 3.1768e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Line search iteration 0, with norm of the rhs 74.1243 and going to 58.8193, relative residual: 4.00302e-11
+      Newton system information: Norm of the rhs: 57.8827, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 106: 3.12591e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 8+0 iterations.
-   Line search iteration 0, with norm of the rhs 89.6877 and going to 52.742, relative residual: 4.84352e-11
-   Line search iteration 1, with norm of the rhs 71.6871 and going to 52.7437, relative residual: 3.8714e-11
-   Line search iteration 2, with norm of the rhs 74.3476 and going to 52.7437, relative residual: 4.01509e-11
-      Newton system information: Norm of the rhs: 52.6566, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 94: 2.84368e-11
+   Line search iteration 0, with norm of the rhs 81.3834 and going to 57.8767, relative residual: 4.39505e-11
+   Line search iteration 1, with norm of the rhs 83.4193 and going to 57.8787, relative residual: 4.50499e-11
+   Line search iteration 2, with norm of the rhs 72.787 and going to 57.88, relative residual: 3.9308e-11
+   Line search iteration 3, with norm of the rhs 62.1775 and going to 57.8808, relative residual: 3.35785e-11
+   Line search iteration 4, with norm of the rhs 58.8341 and going to 57.8814, relative residual: 3.17729e-11
+      Newton system information: Norm of the rhs: 58.6148, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 107: 3.16545e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 8+0 iterations.
+   Line search iteration 0, with norm of the rhs 107.54 and going to 58.6089, relative residual: 5.80762e-11
+   Line search iteration 1, with norm of the rhs 66.4825 and going to 58.6108, relative residual: 3.59034e-11
+   Line search iteration 2, with norm of the rhs 61.0658 and going to 58.6121, relative residual: 3.29781e-11
+      Newton system information: Norm of the rhs: 56.7844, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 108: 3.0666e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Line search iteration 0, with norm of the rhs 93.2944 and going to 56.7787, relative residual: 5.03829e-11
+   Line search iteration 1, with norm of the rhs 131.594 and going to 56.7806, relative residual: 7.10662e-11
+   Line search iteration 2, with norm of the rhs 110.027 and going to 56.7819, relative residual: 5.9419e-11
+   Line search iteration 3, with norm of the rhs 67.0507 and going to 56.7827, relative residual: 3.62102e-11
+   Line search iteration 4, with norm of the rhs 57.6439 and going to 56.7833, relative residual: 3.11302e-11
+      Newton system information: Norm of the rhs: 58.9492, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 109: 3.18351e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Line search iteration 0, with norm of the rhs 115.769 and going to 58.9433, relative residual: 6.25202e-11
+   Line search iteration 1, with norm of the rhs 118.808 and going to 58.9453, relative residual: 6.41615e-11
+   Line search iteration 2, with norm of the rhs 96.2799 and going to 58.9466, relative residual: 5.19952e-11
+   Line search iteration 3, with norm of the rhs 60.9626 and going to 58.9475, relative residual: 3.29224e-11
+      Newton system information: Norm of the rhs: 57.6487, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 110: 3.11327e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Line search iteration 0, with norm of the rhs 118.286 and going to 57.6428, relative residual: 6.38796e-11
+   Line search iteration 1, with norm of the rhs 133.178 and going to 57.6448, relative residual: 7.19215e-11
+   Line search iteration 2, with norm of the rhs 93.1711 and going to 57.646, relative residual: 5.03163e-11
+   Line search iteration 3, with norm of the rhs 66.2425 and going to 57.6469, relative residual: 3.57737e-11
+      Newton system information: Norm of the rhs: 57.2635, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 111: 3.09247e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Line search iteration 0, with norm of the rhs 73.8197 and going to 57.2577, relative residual: 3.98658e-11
+   Line search iteration 1, with norm of the rhs 65.0646 and going to 57.2596, relative residual: 3.51376e-11
+   Line search iteration 2, with norm of the rhs 60.1729 and going to 57.2609, relative residual: 3.24959e-11
+   Line search iteration 3, with norm of the rhs 58.0561 and going to 57.2617, relative residual: 3.13528e-11
+      Newton system information: Norm of the rhs: 56.9859, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 112: 3.07748e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Line search iteration 0, with norm of the rhs 93.4497 and going to 56.9801, relative residual: 5.04668e-11
+   Line search iteration 1, with norm of the rhs 128.516 and going to 56.982, relative residual: 6.94041e-11
+   Line search iteration 2, with norm of the rhs 107.528 and going to 56.9832, relative residual: 5.80699e-11
+   Line search iteration 3, with norm of the rhs 67.5455 and going to 56.9841, relative residual: 3.64774e-11
+      Newton system information: Norm of the rhs: 55.0716, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 113: 2.9741e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Line search iteration 0, with norm of the rhs 67.7459 and going to 55.0658, relative residual: 3.65856e-11
+   Line search iteration 1, with norm of the rhs 66.208 and going to 55.0677, relative residual: 3.57551e-11
+   Line search iteration 2, with norm of the rhs 59.9975 and going to 55.0689, relative residual: 3.24012e-11
+   Line search iteration 3, with norm of the rhs 59.3988 and going to 55.0697, relative residual: 3.20779e-11
+   Line search iteration 4, with norm of the rhs 58.5436 and going to 55.0702, relative residual: 3.1616e-11
+      Newton system information: Norm of the rhs: 57.7992, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 114: 3.1214e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Line search iteration 0, with norm of the rhs 125.56 and going to 57.7934, relative residual: 6.78079e-11
+   Line search iteration 1, with norm of the rhs 129.146 and going to 57.7953, relative residual: 6.97444e-11
+   Line search iteration 2, with norm of the rhs 104.916 and going to 57.7966, relative residual: 5.66591e-11
+   Line search iteration 3, with norm of the rhs 62.0292 and going to 57.7974, relative residual: 3.34984e-11
+      Newton system information: Norm of the rhs: 55.2344, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 115: 2.98289e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 8+0 iterations.
+   Line search iteration 0, with norm of the rhs 113.886 and going to 55.2285, relative residual: 6.15034e-11
+   Line search iteration 1, with norm of the rhs 101.121 and going to 55.2303, relative residual: 5.46097e-11
+   Line search iteration 2, with norm of the rhs 84.5384 and going to 55.2315, relative residual: 4.56543e-11
+   Line search iteration 3, with norm of the rhs 56.0208 and going to 55.2323, relative residual: 3.02536e-11
+   Line search iteration 4, with norm of the rhs 56.0519 and going to 55.2329, relative residual: 3.02704e-11
+      Newton system information: Norm of the rhs: 56.0558, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 116: 3.02725e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Line search iteration 0, with norm of the rhs 78.8061 and going to 56.05, relative residual: 4.25586e-11
+   Line search iteration 1, with norm of the rhs 69.8923 and going to 56.0519, relative residual: 3.77448e-11
+   Line search iteration 2, with norm of the rhs 65.3163 and going to 56.0531, relative residual: 3.52736e-11
+   Line search iteration 3, with norm of the rhs 57.0312 and going to 56.054, relative residual: 3.07992e-11
+   Line search iteration 4, with norm of the rhs 57.5966 and going to 56.0545, relative residual: 3.11046e-11
+      Newton system information: Norm of the rhs: 57.8478, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 117: 3.12402e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Line search iteration 0, with norm of the rhs 78.4341 and going to 57.8418, relative residual: 4.23577e-11
+   Line search iteration 1, with norm of the rhs 58.4288 and going to 57.8438, relative residual: 3.1554e-11
+      Newton system information: Norm of the rhs: 54.1351, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 118: 2.92352e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 10+0 iterations.
-   Line search iteration 0, with norm of the rhs 118.485 and going to 52.651, relative residual: 6.39869e-11
-   Line search iteration 1, with norm of the rhs 111.721 and going to 52.6528, relative residual: 6.03342e-11
-   Line search iteration 2, with norm of the rhs 84.7112 and going to 52.6528, relative residual: 4.57476e-11
-   Line search iteration 3, with norm of the rhs 71.7579 and going to 52.6528, relative residual: 3.87523e-11
-   Line search iteration 4, with norm of the rhs 52.8123 and going to 52.6528, relative residual: 2.85209e-11
-      Newton system information: Norm of the rhs: 52.8762, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 95: 2.85554e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 8+0 iterations.
-   Line search iteration 0, with norm of the rhs 81.9299 and going to 52.8708, relative residual: 4.42456e-11
-   Line search iteration 1, with norm of the rhs 81.1023 and going to 52.8726, relative residual: 4.37987e-11
-   Line search iteration 2, with norm of the rhs 55.7144 and going to 52.8726, relative residual: 3.00881e-11
-   Line search iteration 3, with norm of the rhs 53.9406 and going to 52.8726, relative residual: 2.91302e-11
-   Line search iteration 4, with norm of the rhs 53.8579 and going to 52.8726, relative residual: 2.90855e-11
-      Newton system information: Norm of the rhs: 52.3628, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 96: 2.82781e-11
+   Line search iteration 0, with norm of the rhs 85.2822 and going to 54.1289, relative residual: 4.6056e-11
+   Line search iteration 1, with norm of the rhs 78.5254 and going to 54.1307, relative residual: 4.2407e-11
+   Line search iteration 2, with norm of the rhs 54.6549 and going to 54.1319, relative residual: 2.9516e-11
+      Newton system information: Norm of the rhs: 53.9454, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 119: 2.91328e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 9+0 iterations.
-   Line search iteration 0, with norm of the rhs 82.5067 and going to 52.3575, relative residual: 4.45571e-11
-   Line search iteration 1, with norm of the rhs 79.3963 and going to 52.3593, relative residual: 4.28773e-11
-   Line search iteration 2, with norm of the rhs 57.1929 and going to 52.3593, relative residual: 3.08866e-11
-   Line search iteration 3, with norm of the rhs 54.1108 and going to 52.3593, relative residual: 2.92221e-11
-   Line search iteration 4, with norm of the rhs 53.4474 and going to 52.3593, relative residual: 2.88639e-11
-      Newton system information: Norm of the rhs: 54.2902, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 97: 2.9319e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 8+0 iterations.
-   Line search iteration 0, with norm of the rhs 112.594 and going to 54.2846, relative residual: 6.08054e-11
-   Line search iteration 1, with norm of the rhs 118.701 and going to 54.2864, relative residual: 6.41037e-11
-   Line search iteration 2, with norm of the rhs 98.2312 and going to 54.2864, relative residual: 5.3049e-11
-   Line search iteration 3, with norm of the rhs 65.0328 and going to 54.2864, relative residual: 3.51204e-11
-      Newton system information: Norm of the rhs: 53.8332, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 98: 2.90722e-11
+   Line search iteration 0, with norm of the rhs 122.116 and going to 53.9397, relative residual: 6.59477e-11
+   Line search iteration 1, with norm of the rhs 100.719 and going to 53.9415, relative residual: 5.43924e-11
+   Line search iteration 2, with norm of the rhs 124.283 and going to 53.9427, relative residual: 6.71181e-11
+   Line search iteration 3, with norm of the rhs 106.003 and going to 53.9435, relative residual: 5.72459e-11
+   Line search iteration 4, with norm of the rhs 54.536 and going to 53.944, relative residual: 2.94517e-11
+      Newton system information: Norm of the rhs: 53.5483, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 120: 2.89183e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 9+0 iterations.
-   Line search iteration 0, with norm of the rhs 104.808 and going to 53.8277, relative residual: 5.66009e-11
-   Line search iteration 1, with norm of the rhs 86.1204 and going to 53.8295, relative residual: 4.65087e-11
-   Line search iteration 2, with norm of the rhs 62.1961 and going to 53.8295, relative residual: 3.35885e-11
-   Line search iteration 3, with norm of the rhs 57.3919 and going to 53.8295, relative residual: 3.09941e-11
-   Line search iteration 4, with norm of the rhs 56.3285 and going to 53.8295, relative residual: 3.04197e-11
-      Newton system information: Norm of the rhs: 54.5436, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 99: 2.94558e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 8+0 iterations.
-   Line search iteration 0, with norm of the rhs 78.0139 and going to 54.5379, relative residual: 4.21308e-11
-   Line search iteration 1, with norm of the rhs 71.0354 and going to 54.5397, relative residual: 3.83621e-11
-   Line search iteration 2, with norm of the rhs 75.5485 and going to 54.5397, relative residual: 4.07994e-11
-   Line search iteration 3, with norm of the rhs 59.2298 and going to 54.5397, relative residual: 3.19866e-11
-      Newton system information: Norm of the rhs: 54.1031, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 100: 2.9218e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 8+0 iterations.
-   Line search iteration 0, with norm of the rhs 95.8861 and going to 54.0975, relative residual: 5.17825e-11
-   Line search iteration 1, with norm of the rhs 64.6153 and going to 54.0993, relative residual: 3.4895e-11
-   Line search iteration 2, with norm of the rhs 72.2928 and going to 54.0993, relative residual: 3.90412e-11
-   Line search iteration 3, with norm of the rhs 54.1616 and going to 54.0993, relative residual: 2.92496e-11
-   Line search iteration 4, with norm of the rhs 54.9142 and going to 54.0993, relative residual: 2.9656e-11
-      Newton system information: Norm of the rhs: 54.8121, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 101: 2.96008e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 8+0 iterations.
-   Line search iteration 0, with norm of the rhs 94.7992 and going to 54.8065, relative residual: 5.11956e-11
-   Line search iteration 1, with norm of the rhs 123.338 and going to 54.8083, relative residual: 6.66077e-11
-   Line search iteration 2, with norm of the rhs 112.384 and going to 54.8083, relative residual: 6.06922e-11
-   Line search iteration 3, with norm of the rhs 67.0085 and going to 54.8083, relative residual: 3.61874e-11
-   Line search iteration 4, with norm of the rhs 57.0888 and going to 54.8083, relative residual: 3.08304e-11
-      Newton system information: Norm of the rhs: 54.8761, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 102: 2.96354e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 8+0 iterations.
-   Line search iteration 0, with norm of the rhs 121.315 and going to 54.8704, relative residual: 6.55154e-11
-   Line search iteration 1, with norm of the rhs 114.495 and going to 54.8722, relative residual: 6.18323e-11
-   Line search iteration 2, with norm of the rhs 78.7509 and going to 54.8722, relative residual: 4.25288e-11
-   Line search iteration 3, with norm of the rhs 73.5413 and going to 54.8722, relative residual: 3.97154e-11
-   Line search iteration 4, with norm of the rhs 56.4886 and going to 54.8722, relative residual: 3.05062e-11
-      Newton system information: Norm of the rhs: 54.4948, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 103: 2.94295e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 8+0 iterations.
-   Line search iteration 0, with norm of the rhs 100.526 and going to 54.4893, relative residual: 5.42883e-11
-   Line search iteration 1, with norm of the rhs 88.0312 and going to 54.4911, relative residual: 4.75406e-11
-   Line search iteration 2, with norm of the rhs 68.9256 and going to 54.4911, relative residual: 3.72227e-11
-   Line search iteration 3, with norm of the rhs 75.1033 and going to 54.4911, relative residual: 4.05589e-11
-   Line search iteration 4, with norm of the rhs 56.3556 and going to 54.4911, relative residual: 3.04344e-11
-      Newton system information: Norm of the rhs: 55.7709, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 104: 3.01186e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 8+0 iterations.
-   Line search iteration 0, with norm of the rhs 83.2673 and going to 55.7652, relative residual: 4.49678e-11
-   Line search iteration 1, with norm of the rhs 71.8168 and going to 55.7671, relative residual: 3.87841e-11
-   Line search iteration 2, with norm of the rhs 62.2711 and going to 55.7671, relative residual: 3.3629e-11
-   Line search iteration 3, with norm of the rhs 58.5147 and going to 55.7671, relative residual: 3.16004e-11
-   Line search iteration 4, with norm of the rhs 55.9728 and going to 55.7671, relative residual: 3.02277e-11
-      Newton system information: Norm of the rhs: 55.7171, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 105: 3.00896e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 8+0 iterations.
-   Line search iteration 0, with norm of the rhs 68.2514 and going to 55.7114, relative residual: 3.68586e-11
-   Line search iteration 1, with norm of the rhs 85.4979 and going to 55.7132, relative residual: 4.61725e-11
-   Line search iteration 2, with norm of the rhs 80.0774 and going to 55.7132, relative residual: 4.32452e-11
-   Line search iteration 3, with norm of the rhs 58.1721 and going to 55.7132, relative residual: 3.14154e-11
-      Newton system information: Norm of the rhs: 53.7372, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 106: 2.90204e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 8+0 iterations.
-   Line search iteration 0, with norm of the rhs 99.5897 and going to 53.7317, relative residual: 5.37826e-11
-   Line search iteration 1, with norm of the rhs 83.1454 and going to 53.7335, relative residual: 4.4902e-11
-   Line search iteration 2, with norm of the rhs 82.4767 and going to 53.7335, relative residual: 4.45409e-11
-   Line search iteration 3, with norm of the rhs 74.8328 and going to 53.7335, relative residual: 4.04129e-11
-   Line search iteration 4, with norm of the rhs 61.1759 and going to 53.7335, relative residual: 3.30376e-11
-      Newton system information: Norm of the rhs: 55.1043, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 107: 2.97587e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 8+0 iterations.
-   Line search iteration 0, with norm of the rhs 77.1958 and going to 55.0988, relative residual: 4.1689e-11
-   Line search iteration 1, with norm of the rhs 56.3487 and going to 55.1006, relative residual: 3.04307e-11
-   Line search iteration 2, with norm of the rhs 57.6827 and going to 55.1006, relative residual: 3.11511e-11
-   Line search iteration 3, with norm of the rhs 55.1546 and going to 55.1006, relative residual: 2.97858e-11
-      Newton system information: Norm of the rhs: 53.4924, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 108: 2.88882e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 8+0 iterations.
-   Line search iteration 0, with norm of the rhs 77.319 and going to 53.487, relative residual: 4.17555e-11
-   Line search iteration 1, with norm of the rhs 79.8266 and going to 53.4888, relative residual: 4.31097e-11
-   Line search iteration 2, with norm of the rhs 83.6783 and going to 53.4888, relative residual: 4.51898e-11
-   Line search iteration 3, with norm of the rhs 68.1469 and going to 53.4888, relative residual: 3.68022e-11
-   Line search iteration 4, with norm of the rhs 56.1517 and going to 53.4888, relative residual: 3.03243e-11
-      Newton system information: Norm of the rhs: 55.2944, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 109: 2.98613e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 8+0 iterations.
-   Line search iteration 0, with norm of the rhs 79.9424 and going to 55.2887, relative residual: 4.31723e-11
-   Line search iteration 1, with norm of the rhs 75.7256 and going to 55.2906, relative residual: 4.0895e-11
-   Line search iteration 2, with norm of the rhs 77.615 and going to 55.2906, relative residual: 4.19154e-11
-      Newton system information: Norm of the rhs: 50.5137, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 110: 2.72795e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-   Line search iteration 0, with norm of the rhs 89.9218 and going to 50.5085, relative residual: 4.85616e-11
-   Line search iteration 1, with norm of the rhs 78.1842 and going to 50.5102, relative residual: 4.22228e-11
-   Line search iteration 2, with norm of the rhs 51.6047 and going to 50.5102, relative residual: 2.78687e-11
-      Newton system information: Norm of the rhs: 50.0167, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 111: 2.70112e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-   Line search iteration 0, with norm of the rhs 70.2847 and going to 50.0115, relative residual: 3.79567e-11
-   Line search iteration 1, with norm of the rhs 65.2304 and going to 50.0132, relative residual: 3.52272e-11
-   Line search iteration 2, with norm of the rhs 56.8537 and going to 50.0132, relative residual: 3.07034e-11
-   Line search iteration 3, with norm of the rhs 50.9277 and going to 50.0132, relative residual: 2.75031e-11
-   Line search iteration 4, with norm of the rhs 51.3877 and going to 50.0132, relative residual: 2.77515e-11
-      Newton system information: Norm of the rhs: 50.6181, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 112: 2.73359e-11
+   Line search iteration 0, with norm of the rhs 126.839 and going to 53.5428, relative residual: 6.84984e-11
+   Line search iteration 1, with norm of the rhs 123.016 and going to 53.5446, relative residual: 6.64341e-11
+   Line search iteration 2, with norm of the rhs 114.229 and going to 53.5458, relative residual: 6.16887e-11
+   Line search iteration 3, with norm of the rhs 125.621 and going to 53.5466, relative residual: 6.78407e-11
+   Line search iteration 4, with norm of the rhs 95.2686 and going to 53.5471, relative residual: 5.1449e-11
+      Newton system information: Norm of the rhs: 54.1452, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 121: 2.92407e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 9+0 iterations.
-   Line search iteration 0, with norm of the rhs 107.603 and going to 50.6129, relative residual: 5.81104e-11
-   Line search iteration 1, with norm of the rhs 89.93 and going to 50.6146, relative residual: 4.8566e-11
-   Line search iteration 2, with norm of the rhs 79.5155 and going to 50.6146, relative residual: 4.29417e-11
-   Line search iteration 3, with norm of the rhs 51.8142 and going to 50.6146, relative residual: 2.79818e-11
-   Line search iteration 4, with norm of the rhs 51.68 and going to 50.6146, relative residual: 2.79094e-11
-      Newton system information: Norm of the rhs: 51.9329, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 113: 2.8046e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-   Line search iteration 0, with norm of the rhs 110.197 and going to 51.9276, relative residual: 5.95112e-11
-   Line search iteration 1, with norm of the rhs 103.31 and going to 51.9293, relative residual: 5.5792e-11
-   Line search iteration 2, with norm of the rhs 105.613 and going to 51.9293, relative residual: 5.70354e-11
-   Line search iteration 3, with norm of the rhs 57.6564 and going to 51.9293, relative residual: 3.11369e-11
-      Newton system information: Norm of the rhs: 48.8987, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 114: 2.64074e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 9+0 iterations.
-   Line search iteration 0, with norm of the rhs 103.777 and going to 48.8937, relative residual: 5.60441e-11
-   Line search iteration 1, with norm of the rhs 105.854 and going to 48.8953, relative residual: 5.71658e-11
-   Line search iteration 2, with norm of the rhs 95.5107 and going to 48.8953, relative residual: 5.15798e-11
-   Line search iteration 3, with norm of the rhs 50.6747 and going to 48.8953, relative residual: 2.73665e-11
-   Line search iteration 4, with norm of the rhs 52.0825 and going to 48.8953, relative residual: 2.81267e-11
-      Newton system information: Norm of the rhs: 52.0841, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 115: 2.81276e-11
+   Line search iteration 0, with norm of the rhs 175.714 and going to 54.1396, relative residual: 9.48931e-11
+   Line search iteration 1, with norm of the rhs 145.781 and going to 54.1414, relative residual: 7.87276e-11
+   Line search iteration 2, with norm of the rhs 122.469 and going to 54.1427, relative residual: 6.61382e-11
+   Line search iteration 3, with norm of the rhs 112.104 and going to 54.1435, relative residual: 6.05408e-11
+   Line search iteration 4, with norm of the rhs 113.777 and going to 54.144, relative residual: 6.14441e-11
+      Newton system information: Norm of the rhs: 100.217, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 122: 5.41216e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 8+0 iterations.
-   Line search iteration 0, with norm of the rhs 102.226 and going to 52.0788, relative residual: 5.52065e-11
-   Line search iteration 1, with norm of the rhs 63.3831 and going to 52.0805, relative residual: 3.42296e-11
-   Line search iteration 2, with norm of the rhs 65.7284 and going to 52.0805, relative residual: 3.54961e-11
-   Line search iteration 3, with norm of the rhs 53.0127 and going to 52.0805, relative residual: 2.86291e-11
-      Newton system information: Norm of the rhs: 49.156, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 116: 2.65463e-11
+   Line search iteration 0, with norm of the rhs 107.962 and going to 100.207, relative residual: 5.83042e-11
+   Line search iteration 1, with norm of the rhs 105.672 and going to 100.21, relative residual: 5.70674e-11
+      Newton system information: Norm of the rhs: 96.2978, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 123: 5.20049e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 6+0 iterations.
+   Line search iteration 0, with norm of the rhs 109.393 and going to 96.2884, relative residual: 5.90768e-11
+   Line search iteration 1, with norm of the rhs 106.496 and going to 96.2917, relative residual: 5.75121e-11
+   Line search iteration 2, with norm of the rhs 96.3469 and going to 96.2938, relative residual: 5.20314e-11
+   Line search iteration 3, with norm of the rhs 96.905 and going to 96.2952, relative residual: 5.23328e-11
+      Newton system information: Norm of the rhs: 95.19, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 124: 5.14066e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 6+0 iterations.
+      Newton system information: Norm of the rhs: 82.9914, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 125: 4.48189e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 9+0 iterations.
-   Line search iteration 0, with norm of the rhs 80.4168 and going to 49.1509, relative residual: 4.34284e-11
-   Line search iteration 1, with norm of the rhs 78.0206 and going to 49.1525, relative residual: 4.21344e-11
-   Line search iteration 2, with norm of the rhs 60.5688 and going to 49.1525, relative residual: 3.27097e-11
-   Line search iteration 3, with norm of the rhs 65.4397 and going to 49.1525, relative residual: 3.53402e-11
-      Newton system information: Norm of the rhs: 48.4975, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 117: 2.61907e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-   Line search iteration 0, with norm of the rhs 82.9615 and going to 48.4925, relative residual: 4.48027e-11
-   Line search iteration 1, with norm of the rhs 81.5007 and going to 48.4941, relative residual: 4.40138e-11
-   Line search iteration 2, with norm of the rhs 84.4428 and going to 48.4941, relative residual: 4.56027e-11
-   Line search iteration 3, with norm of the rhs 57.4631 and going to 48.4941, relative residual: 3.10325e-11
-   Line search iteration 4, with norm of the rhs 53.7714 and going to 48.4941, relative residual: 2.90388e-11
-      Newton system information: Norm of the rhs: 47.9295, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 118: 2.58839e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-   Line search iteration 0, with norm of the rhs 77.4157 and going to 47.9247, relative residual: 4.18078e-11
-   Line search iteration 1, with norm of the rhs 88.1308 and going to 47.9263, relative residual: 4.75944e-11
-   Line search iteration 2, with norm of the rhs 63.2765 and going to 47.9263, relative residual: 3.4172e-11
-   Line search iteration 3, with norm of the rhs 61.1917 and going to 47.9263, relative residual: 3.30461e-11
-   Line search iteration 4, with norm of the rhs 52.3004 and going to 47.9263, relative residual: 2.82444e-11
-      Newton system information: Norm of the rhs: 50.4167, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 119: 2.72271e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-   Line search iteration 0, with norm of the rhs 112.317 and going to 50.4116, relative residual: 6.06557e-11
-   Line search iteration 1, with norm of the rhs 59.8062 and going to 50.4132, relative residual: 3.22979e-11
-   Line search iteration 2, with norm of the rhs 51.517 and going to 50.4132, relative residual: 2.78213e-11
-      Newton system information: Norm of the rhs: 50.0214, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 120: 2.70137e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-   Line search iteration 0, with norm of the rhs 84.7036 and going to 50.0159, relative residual: 4.57435e-11
-   Line search iteration 1, with norm of the rhs 102.915 and going to 50.0176, relative residual: 5.55786e-11
-   Line search iteration 2, with norm of the rhs 102.015 and going to 50.0176, relative residual: 5.50925e-11
-      Newton system information: Norm of the rhs: 48.0629, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 121: 2.5956e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-   Line search iteration 0, with norm of the rhs 68.0462 and going to 48.0581, relative residual: 3.67478e-11
-   Line search iteration 1, with norm of the rhs 56.1728 and going to 48.0597, relative residual: 3.03357e-11
-   Line search iteration 2, with norm of the rhs 60.4826 and going to 48.0597, relative residual: 3.26631e-11
-   Line search iteration 3, with norm of the rhs 50.8339 and going to 48.0597, relative residual: 2.74525e-11
-   Line search iteration 4, with norm of the rhs 49.2012 and going to 48.0597, relative residual: 2.65707e-11
-      Newton system information: Norm of the rhs: 47.81, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 122: 2.58194e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-   Line search iteration 0, with norm of the rhs 122.468 and going to 47.8053, relative residual: 6.61377e-11
-   Line search iteration 1, with norm of the rhs 115.2 and going to 47.8069, relative residual: 6.2213e-11
-   Line search iteration 2, with norm of the rhs 108.276 and going to 47.8069, relative residual: 5.84739e-11
-   Line search iteration 3, with norm of the rhs 89.2144 and going to 47.8069, relative residual: 4.81795e-11
-   Line search iteration 4, with norm of the rhs 51.7788 and going to 47.8069, relative residual: 2.79628e-11
-      Newton system information: Norm of the rhs: 48.1893, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 123: 2.60242e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 11+0 iterations.
-   Line search iteration 0, with norm of the rhs 110.612 and going to 48.1844, relative residual: 5.97353e-11
-   Line search iteration 1, with norm of the rhs 90.14 and going to 48.186, relative residual: 4.86794e-11
-   Line search iteration 2, with norm of the rhs 54.4481 and going to 48.186, relative residual: 2.94043e-11
-   Line search iteration 3, with norm of the rhs 53.2383 and going to 48.186, relative residual: 2.87509e-11
-   Line search iteration 4, with norm of the rhs 53.126 and going to 48.186, relative residual: 2.86903e-11
-      Newton system information: Norm of the rhs: 51.9295, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 124: 2.80441e-11
+   Line search iteration 0, with norm of the rhs 114.927 and going to 82.982, relative residual: 6.20653e-11
+   Line search iteration 1, with norm of the rhs 92.8865 and going to 82.9847, relative residual: 5.01626e-11
+   Line search iteration 2, with norm of the rhs 88.269 and going to 82.9866, relative residual: 4.7669e-11
+      Newton system information: Norm of the rhs: 82.4867, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 126: 4.45463e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 9+0 iterations.
-   Line search iteration 0, with norm of the rhs 98.6714 and going to 51.9243, relative residual: 5.32867e-11
-   Line search iteration 1, with norm of the rhs 70.0412 and going to 51.9261, relative residual: 3.78252e-11
-   Line search iteration 2, with norm of the rhs 61.3144 and going to 51.9261, relative residual: 3.31123e-11
-   Line search iteration 3, with norm of the rhs 56.5149 and going to 51.9261, relative residual: 3.05205e-11
-   Line search iteration 4, with norm of the rhs 53.9425 and going to 51.9261, relative residual: 2.91312e-11
-      Newton system information: Norm of the rhs: 52.243, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 125: 2.82134e-11
+   Line search iteration 0, with norm of the rhs 94.461 and going to 82.4787, relative residual: 5.10129e-11
+   Line search iteration 1, with norm of the rhs 112.271 and going to 82.4814, relative residual: 6.06312e-11
+   Line search iteration 2, with norm of the rhs 87.9824 and going to 82.4832, relative residual: 4.75142e-11
+   Line search iteration 3, with norm of the rhs 87.9989 and going to 82.4845, relative residual: 4.75231e-11
+      Newton system information: Norm of the rhs: 78.5798, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 127: 4.24364e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-   Line search iteration 0, with norm of the rhs 123.431 and going to 52.2378, relative residual: 6.66581e-11
-   Line search iteration 1, with norm of the rhs 100.968 and going to 52.2395, relative residual: 5.45269e-11
-   Line search iteration 2, with norm of the rhs 97.4521 and going to 52.2395, relative residual: 5.26282e-11
-      Newton system information: Norm of the rhs: 50.6109, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 126: 2.7332e-11
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Line search iteration 0, with norm of the rhs 112.159 and going to 78.5718, relative residual: 6.05708e-11
+   Line search iteration 1, with norm of the rhs 98.4514 and going to 78.5745, relative residual: 5.31679e-11
+   Line search iteration 2, with norm of the rhs 86.5352 and going to 78.5762, relative residual: 4.67327e-11
+   Line search iteration 3, with norm of the rhs 79.1196 and going to 78.5774, relative residual: 4.27279e-11
+   Line search iteration 4, with norm of the rhs 80.5684 and going to 78.5782, relative residual: 4.35103e-11
+      Newton system information: Norm of the rhs: 79.2115, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 128: 4.27776e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-   Line search iteration 0, with norm of the rhs 90.8615 and going to 50.6059, relative residual: 4.9069e-11
-   Line search iteration 1, with norm of the rhs 57.8431 and going to 50.6076, relative residual: 3.12377e-11
-   Line search iteration 2, with norm of the rhs 53.8545 and going to 50.6076, relative residual: 2.90837e-11
-   Line search iteration 3, with norm of the rhs 51.4458 and going to 50.6076, relative residual: 2.77829e-11
-   Line search iteration 4, with norm of the rhs 53.1987 and going to 50.6076, relative residual: 2.87295e-11
-      Newton system information: Norm of the rhs: 53.2112, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 127: 2.87363e-11
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Line search iteration 0, with norm of the rhs 123.401 and going to 79.2034, relative residual: 6.66419e-11
+   Line search iteration 1, with norm of the rhs 92.4919 and going to 79.2061, relative residual: 4.99495e-11
+   Line search iteration 2, with norm of the rhs 90.0997 and going to 79.2078, relative residual: 4.86576e-11
+   Line search iteration 3, with norm of the rhs 87.8819 and going to 79.209, relative residual: 4.746e-11
+   Line search iteration 4, with norm of the rhs 106.846 and going to 79.2098, relative residual: 5.77011e-11
+      Newton system information: Norm of the rhs: 81.434, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 129: 4.39778e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-   Line search iteration 0, with norm of the rhs 112.549 and going to 53.2059, relative residual: 6.07815e-11
-   Line search iteration 1, with norm of the rhs 107.445 and going to 53.2076, relative residual: 5.8025e-11
-      Newton system information: Norm of the rhs: 52.7011, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 128: 2.84608e-11
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Line search iteration 0, with norm of the rhs 110.467 and going to 81.4262, relative residual: 5.96569e-11
+   Line search iteration 1, with norm of the rhs 98.9025 and going to 81.4289, relative residual: 5.34115e-11
+   Line search iteration 2, with norm of the rhs 83.3151 and going to 81.4307, relative residual: 4.49937e-11
+   Line search iteration 3, with norm of the rhs 92.1391 and going to 81.4319, relative residual: 4.9759e-11
+   Line search iteration 4, with norm of the rhs 99.5881 and going to 81.4327, relative residual: 5.37818e-11
+      Newton system information: Norm of the rhs: 80.0092, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 130: 4.32083e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 11+0 iterations.
-   Line search iteration 0, with norm of the rhs 112.094 and going to 52.6957, relative residual: 6.05356e-11
-   Line search iteration 1, with norm of the rhs 123.734 and going to 52.6975, relative residual: 6.68217e-11
-   Line search iteration 2, with norm of the rhs 102.26 and going to 52.6975, relative residual: 5.52249e-11
-      Newton system information: Norm of the rhs: 52.0724, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 129: 2.81213e-11
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Line search iteration 0, with norm of the rhs 88.9725 and going to 80.0013, relative residual: 4.80489e-11
+   Line search iteration 1, with norm of the rhs 83.6866 and going to 80.004, relative residual: 4.51943e-11
+      Newton system information: Norm of the rhs: 78.5225, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 131: 4.24055e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-   Line search iteration 0, with norm of the rhs 131.42 and going to 52.0671, relative residual: 7.09726e-11
-   Line search iteration 1, with norm of the rhs 112.523 and going to 52.0689, relative residual: 6.0767e-11
-   Line search iteration 2, with norm of the rhs 116.967 and going to 52.0689, relative residual: 6.31672e-11
-   Line search iteration 3, with norm of the rhs 91.7177 and going to 52.0689, relative residual: 4.95314e-11
-      Newton system information: Norm of the rhs: 50.6603, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 130: 2.73587e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 11+0 iterations.
-   Line search iteration 0, with norm of the rhs 139.451 and going to 50.6551, relative residual: 7.53094e-11
-   Line search iteration 1, with norm of the rhs 114.15 and going to 50.6568, relative residual: 6.16456e-11
-   Line search iteration 2, with norm of the rhs 114.463 and going to 50.6568, relative residual: 6.18149e-11
-   Line search iteration 3, with norm of the rhs 100.953 and going to 50.6568, relative residual: 5.45188e-11
-   Line search iteration 4, with norm of the rhs 51.5135 and going to 50.6568, relative residual: 2.78195e-11
-      Newton system information: Norm of the rhs: 54.5086, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 131: 2.94369e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-   Line search iteration 0, with norm of the rhs 92.1552 and going to 54.5031, relative residual: 4.97677e-11
-   Line search iteration 1, with norm of the rhs 115.996 and going to 54.5049, relative residual: 6.26428e-11
-   Line search iteration 2, with norm of the rhs 127.39 and going to 54.5049, relative residual: 6.87957e-11
-   Line search iteration 3, with norm of the rhs 94.7882 and going to 54.5049, relative residual: 5.11896e-11
-      Newton system information: Norm of the rhs: 52.0925, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 132: 2.81321e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-   Line search iteration 0, with norm of the rhs 87.0025 and going to 52.0873, relative residual: 4.6985e-11
-   Line search iteration 1, with norm of the rhs 78.5349 and going to 52.089, relative residual: 4.24122e-11
-   Line search iteration 2, with norm of the rhs 82.0285 and going to 52.089, relative residual: 4.42989e-11
-   Line search iteration 3, with norm of the rhs 58.9636 and going to 52.089, relative residual: 3.18429e-11
-   Line search iteration 4, with norm of the rhs 53.431 and going to 52.089, relative residual: 2.8855e-11
-      Newton system information: Norm of the rhs: 51.9643, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 133: 2.80629e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 11+0 iterations.
-   Line search iteration 0, with norm of the rhs 91.9389 and going to 51.9591, relative residual: 4.96509e-11
-   Line search iteration 1, with norm of the rhs 64.473 and going to 51.9608, relative residual: 3.48181e-11
-   Line search iteration 2, with norm of the rhs 53.979 and going to 51.9608, relative residual: 2.91509e-11
-   Line search iteration 3, with norm of the rhs 54.8309 and going to 51.9608, relative residual: 2.9611e-11
-   Line search iteration 4, with norm of the rhs 53.6485 and going to 51.9608, relative residual: 2.89724e-11
-      Newton system information: Norm of the rhs: 51.3141, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 134: 2.77118e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-   Line search iteration 0, with norm of the rhs 111.492 and going to 51.309, relative residual: 6.02104e-11
-   Line search iteration 1, with norm of the rhs 106.562 and going to 51.3107, relative residual: 5.7548e-11
-   Line search iteration 2, with norm of the rhs 122.543 and going to 51.3107, relative residual: 6.61785e-11
-   Line search iteration 3, with norm of the rhs 103.577 and going to 51.3107, relative residual: 5.59361e-11
-   Line search iteration 4, with norm of the rhs 56.0938 and going to 51.3107, relative residual: 3.0293e-11
-      Newton system information: Norm of the rhs: 54.8471, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 135: 2.96197e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-   Line search iteration 0, with norm of the rhs 132.365 and going to 54.8416, relative residual: 7.14829e-11
-   Line search iteration 1, with norm of the rhs 93.9934 and going to 54.8435, relative residual: 5.07604e-11
-   Line search iteration 2, with norm of the rhs 78.1206 and going to 54.8435, relative residual: 4.21884e-11
-      Newton system information: Norm of the rhs: 51.9614, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 136: 2.80613e-11
+   Solving Stokes system (AMG)... 8+0 iterations.
+   Line search iteration 0, with norm of the rhs 128.568 and going to 78.5147, relative residual: 6.94324e-11
+      Newton system information: Norm of the rhs: 76.2495, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 132: 4.11779e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 12+0 iterations.
-   Line search iteration 0, with norm of the rhs 93.9485 and going to 51.9561, relative residual: 5.07362e-11
-   Line search iteration 1, with norm of the rhs 88.906 and going to 51.9578, relative residual: 4.8013e-11
-   Line search iteration 2, with norm of the rhs 53.7477 and going to 51.9578, relative residual: 2.9026e-11
-   Line search iteration 3, with norm of the rhs 52.591 and going to 51.9578, relative residual: 2.84014e-11
-      Newton system information: Norm of the rhs: 51.8242, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 137: 2.79873e-11
+   Line search iteration 0, with norm of the rhs 98.2793 and going to 76.2429, relative residual: 5.3075e-11
+   Line search iteration 1, with norm of the rhs 92.1752 and going to 76.2454, relative residual: 4.97785e-11
+   Line search iteration 2, with norm of the rhs 107.451 and going to 76.2471, relative residual: 5.80279e-11
+   Line search iteration 3, with norm of the rhs 93.5212 and going to 76.2483, relative residual: 5.05054e-11
+      Newton system information: Norm of the rhs: 69.9507, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 133: 3.77763e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-   Line search iteration 0, with norm of the rhs 74.5212 and going to 51.8191, relative residual: 4.02446e-11
-   Line search iteration 1, with norm of the rhs 67.1825 and going to 51.8208, relative residual: 3.62814e-11
-   Line search iteration 2, with norm of the rhs 52.211 and going to 51.8208, relative residual: 2.81962e-11
-      Newton system information: Norm of the rhs: 51.0999, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 138: 2.75961e-11
+   Solving Stokes system (AMG)... 12+0 iterations.
+   Line search iteration 0, with norm of the rhs 131.713 and going to 69.9437, relative residual: 7.11304e-11
+   Line search iteration 1, with norm of the rhs 79.5522 and going to 69.946, relative residual: 4.29616e-11
+      Newton system information: Norm of the rhs: 65.9103, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 134: 3.55943e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 11+0 iterations.
-   Line search iteration 0, with norm of the rhs 124.22 and going to 51.0949, relative residual: 6.70843e-11
-   Line search iteration 1, with norm of the rhs 109.702 and going to 51.0966, relative residual: 5.92439e-11
-   Line search iteration 2, with norm of the rhs 115.639 and going to 51.0966, relative residual: 6.24498e-11
-   Line search iteration 3, with norm of the rhs 117.929 and going to 51.0966, relative residual: 6.36865e-11
-   Line search iteration 4, with norm of the rhs 52.6884 and going to 51.0966, relative residual: 2.8454e-11
-      Newton system information: Norm of the rhs: 53.4557, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 139: 2.88683e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-   Line search iteration 0, with norm of the rhs 116.866 and going to 53.4504, relative residual: 6.31124e-11
-   Line search iteration 1, with norm of the rhs 85.0784 and going to 53.4521, relative residual: 4.59459e-11
-   Line search iteration 2, with norm of the rhs 113.891 and going to 53.4521, relative residual: 6.15057e-11
-   Line search iteration 3, with norm of the rhs 114.454 and going to 53.4521, relative residual: 6.18101e-11
-   Line search iteration 4, with norm of the rhs 64.9959 and going to 53.4521, relative residual: 3.51005e-11
-      Newton system information: Norm of the rhs: 51.2587, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 140: 2.76819e-11
+   Solving Stokes system (AMG)... 12+0 iterations.
+   Line search iteration 0, with norm of the rhs 109.285 and going to 65.9038, relative residual: 5.90183e-11
+   Line search iteration 1, with norm of the rhs 116.916 and going to 65.906, relative residual: 6.31394e-11
+   Line search iteration 2, with norm of the rhs 104.536 and going to 65.9075, relative residual: 5.64541e-11
+   Line search iteration 3, with norm of the rhs 86.7172 and going to 65.9085, relative residual: 4.6831e-11
+   Line search iteration 4, with norm of the rhs 78.9108 and going to 65.9091, relative residual: 4.26152e-11
+      Newton system information: Norm of the rhs: 66.4384, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 135: 3.58795e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 11+0 iterations.
-   Line search iteration 0, with norm of the rhs 125.475 and going to 51.2537, relative residual: 6.77619e-11
-   Line search iteration 1, with norm of the rhs 112.029 and going to 51.2554, relative residual: 6.05001e-11
-   Line search iteration 2, with norm of the rhs 85.258 and going to 51.2554, relative residual: 4.60429e-11
-   Line search iteration 3, with norm of the rhs 55.0419 and going to 51.2554, relative residual: 2.97249e-11
-   Line search iteration 4, with norm of the rhs 53.8596 and going to 51.2554, relative residual: 2.90865e-11
-      Newton system information: Norm of the rhs: 53.5576, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 141: 2.89234e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-   Line search iteration 0, with norm of the rhs 150.63 and going to 53.5523, relative residual: 8.13463e-11
-   Line search iteration 1, with norm of the rhs 110.693 and going to 53.5541, relative residual: 5.97789e-11
-   Line search iteration 2, with norm of the rhs 122.057 and going to 53.5541, relative residual: 6.5916e-11
-   Line search iteration 3, with norm of the rhs 92.4461 and going to 53.5541, relative residual: 4.99248e-11
-      Newton system information: Norm of the rhs: 53.5462, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 142: 2.89172e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-   Line search iteration 0, with norm of the rhs 94.3211 and going to 53.5409, relative residual: 5.09374e-11
-   Line search iteration 1, with norm of the rhs 121.495 and going to 53.5427, relative residual: 6.56123e-11
-   Line search iteration 2, with norm of the rhs 96.504 and going to 53.5427, relative residual: 5.21162e-11
-      Newton system information: Norm of the rhs: 53.2746, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 143: 2.87705e-11
+   Line search iteration 0, with norm of the rhs 128.218 and going to 66.4314, relative residual: 6.9243e-11
+   Line search iteration 1, with norm of the rhs 107.261 and going to 66.4336, relative residual: 5.79256e-11
+   Line search iteration 2, with norm of the rhs 88.7159 and going to 66.4351, relative residual: 4.79104e-11
+   Line search iteration 3, with norm of the rhs 83.775 and going to 66.4361, relative residual: 4.5242e-11
+   Line search iteration 4, with norm of the rhs 92.1942 and going to 66.4367, relative residual: 4.97887e-11
+      Newton system information: Norm of the rhs: 66.5406, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 136: 3.59347e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 11+0 iterations.
-   Line search iteration 0, with norm of the rhs 121.318 and going to 53.2693, relative residual: 6.55168e-11
-   Line search iteration 1, with norm of the rhs 113.906 and going to 53.271, relative residual: 6.15143e-11
-   Line search iteration 2, with norm of the rhs 97.3233 and going to 53.271, relative residual: 5.25587e-11
-   Line search iteration 3, with norm of the rhs 53.8324 and going to 53.271, relative residual: 2.90718e-11
-      Newton system information: Norm of the rhs: 52.676, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 144: 2.84473e-11
+   Line search iteration 0, with norm of the rhs 120.134 and going to 66.5337, relative residual: 6.48774e-11
+   Line search iteration 1, with norm of the rhs 98.1348 and going to 66.5359, relative residual: 5.29969e-11
+   Line search iteration 2, with norm of the rhs 116.566 and going to 66.5374, relative residual: 6.29503e-11
+   Line search iteration 3, with norm of the rhs 97.6009 and going to 66.5384, relative residual: 5.27086e-11
+   Line search iteration 4, with norm of the rhs 83.9694 and going to 66.539, relative residual: 4.5347e-11
+      Newton system information: Norm of the rhs: 68.6782, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 137: 3.70891e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-   Line search iteration 0, with norm of the rhs 120.326 and going to 52.6708, relative residual: 6.49811e-11
-   Line search iteration 1, with norm of the rhs 100.363 and going to 52.6725, relative residual: 5.42003e-11
-   Line search iteration 2, with norm of the rhs 64.9144 and going to 52.6725, relative residual: 3.50565e-11
-   Line search iteration 3, with norm of the rhs 56.022 and going to 52.6725, relative residual: 3.02542e-11
-   Line search iteration 4, with norm of the rhs 54.9781 and going to 52.6725, relative residual: 2.96905e-11
-      Newton system information: Norm of the rhs: 54.6286, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 145: 2.95017e-11
+   Solving Stokes system (AMG)... 11+0 iterations.
+   Line search iteration 0, with norm of the rhs 110.323 and going to 68.6713, relative residual: 5.95788e-11
+   Line search iteration 1, with norm of the rhs 100.028 and going to 68.6736, relative residual: 5.40191e-11
+   Line search iteration 2, with norm of the rhs 97.4853 and going to 68.6751, relative residual: 5.26462e-11
+   Line search iteration 3, with norm of the rhs 92.1847 and going to 68.6761, relative residual: 4.97837e-11
+   Line search iteration 4, with norm of the rhs 70.1656 and going to 68.6768, relative residual: 3.78924e-11
+      Newton system information: Norm of the rhs: 69.4727, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 138: 3.75182e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-   Line search iteration 0, with norm of the rhs 109.743 and going to 54.623, relative residual: 5.92658e-11
-   Line search iteration 1, with norm of the rhs 118.059 and going to 54.6248, relative residual: 6.37569e-11
-   Line search iteration 2, with norm of the rhs 88.0302 and going to 54.6248, relative residual: 4.754e-11
-      Newton system information: Norm of the rhs: 53.5164, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 146: 2.89011e-11
+   Solving Stokes system (AMG)... 11+0 iterations.
+   Line search iteration 0, with norm of the rhs 102.351 and going to 69.4657, relative residual: 5.5274e-11
+   Line search iteration 1, with norm of the rhs 93.559 and going to 69.4681, relative residual: 5.05258e-11
+   Line search iteration 2, with norm of the rhs 93.3703 and going to 69.4696, relative residual: 5.04239e-11
+   Line search iteration 3, with norm of the rhs 89.8145 and going to 69.4706, relative residual: 4.85036e-11
+      Newton system information: Norm of the rhs: 68.0336, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 139: 3.6741e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-   Line search iteration 0, with norm of the rhs 104.076 and going to 53.5109, relative residual: 5.62054e-11
-   Line search iteration 1, with norm of the rhs 115.045 and going to 53.5127, relative residual: 6.21294e-11
-   Line search iteration 2, with norm of the rhs 106.903 and going to 53.5127, relative residual: 5.77323e-11
-   Line search iteration 3, with norm of the rhs 111.415 and going to 53.5127, relative residual: 6.0169e-11
-   Line search iteration 4, with norm of the rhs 117.676 and going to 53.5127, relative residual: 6.35499e-11
-      Newton system information: Norm of the rhs: 54.411, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 147: 2.93842e-11
-
-   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 10+0 iterations.
-   Line search iteration 0, with norm of the rhs 81.3822 and going to 54.4055, relative residual: 4.39498e-11
-   Line search iteration 1, with norm of the rhs 64.8293 and going to 54.4073, relative residual: 3.50106e-11
-      Newton system information: Norm of the rhs: 52.0702, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 148: 2.81201e-11
+   Solving Stokes system (AMG)... 11+0 iterations.
+   Line search iteration 0, with norm of the rhs 110.077 and going to 68.027, relative residual: 5.94462e-11
+   Line search iteration 1, with norm of the rhs 106.388 and going to 68.0292, relative residual: 5.74543e-11
+   Line search iteration 2, with norm of the rhs 104.926 and going to 68.0307, relative residual: 5.66647e-11
+   Line search iteration 3, with norm of the rhs 100.131 and going to 68.0317, relative residual: 5.40752e-11
+   Line search iteration 4, with norm of the rhs 90.965 and going to 68.0324, relative residual: 4.9125e-11
+      Newton system information: Norm of the rhs: 75.3081, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 140: 4.06696e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 9+0 iterations.
-   Line search iteration 0, with norm of the rhs 76.3595 and going to 52.065, relative residual: 4.12373e-11
-   Line search iteration 1, with norm of the rhs 78.2337 and going to 52.0668, relative residual: 4.22495e-11
-   Line search iteration 2, with norm of the rhs 74.2853 and going to 52.0668, relative residual: 4.01172e-11
-   Line search iteration 3, with norm of the rhs 58.242 and going to 52.0668, relative residual: 3.14531e-11
-      Newton system information: Norm of the rhs: 51.6382, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 149: 2.78868e-11
+   Line search iteration 0, with norm of the rhs 131.863 and going to 75.3007, relative residual: 7.12116e-11
+   Line search iteration 1, with norm of the rhs 100.569 and going to 75.3032, relative residual: 5.43117e-11
+      Newton system information: Norm of the rhs: 74.1116, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 141: 4.00234e-11
 
    The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 9+0 iterations.
-   Line search iteration 0, with norm of the rhs 70.5365 and going to 51.6331, relative residual: 3.80927e-11
-   Line search iteration 1, with norm of the rhs 62.4985 and going to 51.6348, relative residual: 3.37518e-11
-   Line search iteration 2, with norm of the rhs 55.0588 and going to 51.6348, relative residual: 2.97341e-11
-      Newton system information: Norm of the rhs: 50.9421, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 150: 2.75109e-11
+   Solving Stokes system (AMG)... 8+0 iterations.
+   Line search iteration 0, with norm of the rhs 105.721 and going to 74.1051, relative residual: 5.70939e-11
+   Line search iteration 1, with norm of the rhs 97.9609 and going to 74.1076, relative residual: 5.2903e-11
+   Line search iteration 2, with norm of the rhs 97.9007 and going to 74.1092, relative residual: 5.28705e-11
+   Line search iteration 3, with norm of the rhs 114.701 and going to 74.1103, relative residual: 6.19431e-11
+   Line search iteration 4, with norm of the rhs 87.4157 and going to 74.111, relative residual: 4.72082e-11
+      Newton system information: Norm of the rhs: 73.2307, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 142: 3.95477e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 8+0 iterations.
+   Line search iteration 0, with norm of the rhs 94.0831 and going to 73.2233, relative residual: 5.08088e-11
+   Line search iteration 1, with norm of the rhs 110.978 and going to 73.2257, relative residual: 5.99328e-11
+   Line search iteration 2, with norm of the rhs 91.244 and going to 73.2273, relative residual: 4.92756e-11
+      Newton system information: Norm of the rhs: 73.1066, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 143: 3.94807e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Line search iteration 0, with norm of the rhs 102.031 and going to 73.0988, relative residual: 5.51011e-11
+   Line search iteration 1, with norm of the rhs 88.9422 and going to 73.1013, relative residual: 4.80325e-11
+   Line search iteration 2, with norm of the rhs 103.111 and going to 73.1029, relative residual: 5.56845e-11
+   Line search iteration 3, with norm of the rhs 104.109 and going to 73.104, relative residual: 5.62232e-11
+   Line search iteration 4, with norm of the rhs 77.3843 and going to 73.1047, relative residual: 4.17908e-11
+      Newton system information: Norm of the rhs: 76.4373, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 144: 4.12794e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Line search iteration 0, with norm of the rhs 107.66 and going to 76.4298, relative residual: 5.81411e-11
+   Line search iteration 1, with norm of the rhs 102.203 and going to 76.4323, relative residual: 5.51939e-11
+   Line search iteration 2, with norm of the rhs 87.8418 and going to 76.434, relative residual: 4.74383e-11
+   Line search iteration 3, with norm of the rhs 100.183 and going to 76.4351, relative residual: 5.41031e-11
+   Line search iteration 4, with norm of the rhs 96.9007 and going to 76.4359, relative residual: 5.23305e-11
+      Newton system information: Norm of the rhs: 73.7147, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 145: 3.98091e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Line search iteration 0, with norm of the rhs 141.642 and going to 73.7074, relative residual: 7.64928e-11
+   Line search iteration 1, with norm of the rhs 93.7923 and going to 73.7099, relative residual: 5.06518e-11
+   Line search iteration 2, with norm of the rhs 88.7065 and going to 73.7115, relative residual: 4.79052e-11
+   Line search iteration 3, with norm of the rhs 75.2602 and going to 73.7126, relative residual: 4.06437e-11
+   Line search iteration 4, with norm of the rhs 74.4138 and going to 73.7134, relative residual: 4.01866e-11
+      Newton system information: Norm of the rhs: 74.3549, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 146: 4.01548e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Line search iteration 0, with norm of the rhs 95.8015 and going to 74.3473, relative residual: 5.17369e-11
+   Line search iteration 1, with norm of the rhs 105.067 and going to 74.3498, relative residual: 5.67405e-11
+   Line search iteration 2, with norm of the rhs 104.792 and going to 74.3515, relative residual: 5.65922e-11
+   Line search iteration 3, with norm of the rhs 88.9629 and going to 74.3526, relative residual: 4.80437e-11
+   Line search iteration 4, with norm of the rhs 75.0534 and going to 74.3533, relative residual: 4.0532e-11
+      Newton system information: Norm of the rhs: 74.2678, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 147: 4.01077e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Line search iteration 0, with norm of the rhs 98.0223 and going to 74.2603, relative residual: 5.29362e-11
+   Line search iteration 1, with norm of the rhs 108.916 and going to 74.2628, relative residual: 5.88191e-11
+   Line search iteration 2, with norm of the rhs 99.6268 and going to 74.2644, relative residual: 5.38027e-11
+   Line search iteration 3, with norm of the rhs 91.4603 and going to 74.2655, relative residual: 4.93924e-11
+   Line search iteration 4, with norm of the rhs 76.1243 and going to 74.2663, relative residual: 4.11103e-11
+      Newton system information: Norm of the rhs: 76.424, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 148: 4.12722e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Line search iteration 0, with norm of the rhs 108.433 and going to 76.4167, relative residual: 5.85585e-11
+   Line search iteration 1, with norm of the rhs 88.3598 and going to 76.4193, relative residual: 4.7718e-11
+   Line search iteration 2, with norm of the rhs 101.63 and going to 76.421, relative residual: 5.48847e-11
+   Line search iteration 3, with norm of the rhs 87.8506 and going to 76.4221, relative residual: 4.74431e-11
+      Newton system information: Norm of the rhs: 75.4291, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 149: 4.07349e-11
+
+   The linear solver tolerance is set to 0.01. Stabilization Preconditioner is SPD and A block is SPD.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Line search iteration 0, with norm of the rhs 118.488 and going to 75.4216, relative residual: 6.39885e-11
+   Line search iteration 1, with norm of the rhs 94.8532 and going to 75.4241, relative residual: 5.12247e-11
+   Line search iteration 2, with norm of the rhs 110.36 and going to 75.4258, relative residual: 5.95991e-11
+   Line search iteration 3, with norm of the rhs 85.7219 and going to 75.4269, relative residual: 4.62935e-11
+   Line search iteration 4, with norm of the rhs 98.7875 and going to 75.4277, relative residual: 5.33494e-11
+      Newton system information: Norm of the rhs: 99.9804, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 150: 5.39936e-11
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -1453,7 +1437,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Postprocessing:
      RMS, max velocity:                  2.57e-08 m/s, 3.05e-08 m/s
-     Pressure min/avg/max:               -2.683e-05 Pa, 5e+08 Pa, 1e+09 Pa
+     Pressure min/avg/max:               -3.005e-05 Pa, 5e+08 Pa, 1e+09 Pa
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.8139 kg/s, 0.8139 kg/s
      Writing graphical output:           output-nonlinear_channel_flow_tractions_benchmark/solution/solution-00000
 
