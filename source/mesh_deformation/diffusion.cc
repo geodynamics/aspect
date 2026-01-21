@@ -182,13 +182,14 @@ namespace aspect
       // Make the no normal flux boundary constraints for boundaries on which the mesh is
       // allowed to move tangentially. We can use the manifold information to
       // compute the normal vector because these boundaries do not move normal to themselves.
-      // Therefore, we can use the default for the last boolean parameter
-      // (use_manifold_for_normal=true).
       VectorTools::compute_no_normal_flux_constraints (mesh_deformation_dof_handler,
                                                        /* first_vector_component= */
                                                        0,
                                                        all_tangential_mesh_deformation_boundaries,
-                                                       matrix_constraints, this->get_mapping());
+                                                       matrix_constraints,
+                                                       this->get_mapping(),
+                                                       /* use_manifold_for_normal= */
+                                                       true);
 
       // Note that we do not apply any constraints on the mesh of the diffusing boundaries
       // listed in boundary_ids. Their displacement is governed by the diffusion equation.

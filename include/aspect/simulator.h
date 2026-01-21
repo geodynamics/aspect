@@ -381,15 +381,6 @@ namespace aspect
       void compute_initial_velocity_boundary_constraints (AffineConstraints<double> &constraints);
 
       /**
-       * Fill the given @p constraints with no-normal-flux constraints on
-       * boundaries with tangential velocity boundary conditions for simulations where
-       * mesh deformation is active. On boundaries where mesh deformation is not active,
-       * we use the manifold information to compute the normal vector. Otherwise,
-       * we compute the normal vector based on the current geometry.
-       */
-      void compute_no_normal_flux_constraints_with_mesh_deformation (AffineConstraints<double> &constraints);
-
-      /**
        * Fill the given @p constraints with constraints coming from the velocity boundary
        * conditions that do can change over time. This function is used by
        * compute_current_constraints().

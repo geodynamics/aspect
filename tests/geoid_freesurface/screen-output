@@ -19,7 +19,7 @@ Number of mesh deformation degrees of freedom: 450
      Writing geoid anomaly:            output-geoid_freesurface/geoid/geoid_anomaly.00000
 
 *** Timestep 1:  t=1e-06 seconds, dt=1e-06 seconds
-   Solving mesh displacement system... 3 iterations.
+   Solving mesh displacement system... 2 iterations.
    Solving temperature system... 8 iterations.
    Solving Stokes system (GMG)... 85+0 iterations.
 

@@ -621,14 +621,15 @@ namespace aspect
       // constraints on the movement of material on these boundaries.
       // As these boundaries are not allowed to move normal to themselves, they
       // should remain aligned with the initial manifold. We can therefore use
-      // the manifold to compute the normal vector, and do not need to
-      // specify the use_manifold_for_normal parameter (default=true).
+      // the manifold to compute the normal vector.
       VectorTools::compute_no_normal_flux_constraints (mesh_deformation_dof_handler,
                                                        /* first_vector_component= */
                                                        0,
                                                        tangential_mesh_deformation_boundary_indicators,
                                                        mesh_velocity_constraints,
-                                                       this->get_mapping());
+                                                       this->get_mapping(),
+                                                       /* use_manifold_for_normal= */
+                                                       true);
 
       this->get_signals().post_compute_no_normal_flux_constraints(sim.triangulation);
 
@@ -751,15 +752,16 @@ namespace aspect
       // constraints on the movement of material on these boundaries.
       // As these boundaries are not allowed to move normal to themselves, they
       // should remain aligned with the initial manifold. We can therefore use
-      // the manifold to compute the normal vector, and do not need to
-      // specify the use_manifold_for_normal parameter (default=true).
+      // the manifold to compute the normal vector.
       this->get_signals().pre_compute_no_normal_flux_constraints(sim.triangulation);
       VectorTools::compute_no_normal_flux_constraints (mesh_deformation_dof_handler,
                                                        /* first_vector_component= */
                                                        0,
                                                        tangential_mesh_deformation_boundary_indicators,
                                                        mesh_velocity_constraints,
-                                                       this->get_mapping());
+                                                       this->get_mapping(),
+                                                       /* use_manifold_for_normal= */
+                                                       true);
       this->get_signals().post_compute_no_normal_flux_constraints(sim.triangulation);
 
       // Ask all plugins to add their constraints.
@@ -1143,7 +1145,7 @@ namespace aspect
 #endif
               const IndexSet &refinement_edge_indices =
                 mg_constrained_dofs.get_refinement_edge_indices(level);
-              dealii::VectorTools::compute_no_normal_flux_constraints_on_level(
+              VectorTools::compute_no_normal_flux_constraints_on_level(
                 mesh_deformation_dof_handler,
                 0,
                 no_flux_boundary,
@@ -1151,8 +1153,8 @@ namespace aspect
                 mapping,
                 refinement_edge_indices,
                 level,
-                /*use_manifold_for_normal=*/
-                !this->get_parameters().mesh_deformation_enabled);
+                /* use_manifold_for_normal= */
+                true);
 
               user_level_constraints.close();
               mg_constrained_dofs.add_user_constraints(level, user_level_constraints);
@@ -1634,6 +1636,8 @@ namespace aspect
       return tangential_velocity_without_prescribed_mesh_deformation_boundary_indicators;
     }
 
+
+    
     template <int dim>
     const std::set<types::boundary_id> &
     MeshDeformationHandler<dim>::get_boundary_indicators_requiring_stabilization () const
