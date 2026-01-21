@@ -1000,6 +1000,8 @@ namespace aspect
         }
     }
 
+
+
     template <int dim>
     template <unsigned int mesh_deformation_fe_degree>
     void MeshDeformationHandler<dim>::compute_mesh_displacements_gmg_for_degree()
@@ -1426,13 +1428,26 @@ namespace aspect
       // cells are created.
       DoFRenumbering::hierarchical (mesh_deformation_dof_handler);
 
+      // Determine the polynomial degree to use for the mapping.
+      unsigned int mapping_degree = mesh_deformation_fe.degree;
+
+      // If the geometry model has curved elements (e.g., spherical shells),
+      // ASPECT convention is to use at least a degree 4 mapping to ensure
+      // geometric accuracy.
+      // Even for box models (has_curved_elements is false), we keep
+      // mesh_deformation_fe.degree (usually 2, same as Stokes velocity),
+      // instead of forcing it down to 1, to correctly represent internal
+      // mesh curvature/deformation.
+      if (this->get_geometry_model().has_curved_elements())
+        mapping_degree = std::max(4u, mapping_degree);
+
       // If necessary reset the mapping of the simulator to something
       // that captures mesh deformation in time. This has to
       // happen after we distribute the mesh_deformation DoFs
       // above.
       if (dynamic_cast<const MappingQEulerian<dim, LinearAlgebra::Vector>*>(&(this->get_mapping())) == nullptr)
         {
-          sim.mapping.reset (new MappingQEulerian<dim, LinearAlgebra::Vector> (this->get_geometry_model().has_curved_elements() ? (mesh_deformation_fe.degree+1) : 1,
+          sim.mapping.reset (new MappingQEulerian<dim, LinearAlgebra::Vector> (mapping_degree,
                                                                                mesh_deformation_dof_handler,
                                                                                mesh_displacements));
 
@@ -1490,7 +1505,7 @@ namespace aspect
           {
             object = std::make_unique<MappingQEulerian<dim,
             dealii::LinearAlgebra::distributed::Vector<double>>>(
-              mesh_deformation_fe.degree,
+              mapping_degree,
               mesh_deformation_dof_handler,
               level_displacements[level],
               level);
