@@ -238,7 +238,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 27+0 iterations.
    Line search iteration 0, with norm of the rhs 7.58766e+09 and going to 4.41541e+09, relative residual: 0.00409766
    Line search iteration 1, with norm of the rhs 6.22363e+09 and going to 4.41555e+09, relative residual: 0.00336102
-   Line search iteration 2, with norm of the rhs 5.6175e+09 and going to 4.41555e+09, relative residual: 0.00303369
+   Line search iteration 2, with norm of the rhs 5.6175e+09 and going to 4.41565e+09, relative residual: 0.00303369
       Newton system information: Norm of the rhs: 3.44862e+09, Derivative scaling factor: 1
       Relative nonlinear residuals (temperature, Stokes system): 0, 0.0018624
       Relative nonlinear residual (total system) after nonlinear iteration 27: 0.0018624
@@ -249,9 +249,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 31+0 iterations.
    Line search iteration 0, with norm of the rhs 8.80122e+09 and going to 3.44833e+09, relative residual: 0.00475303
    Line search iteration 1, with norm of the rhs 6.13742e+09 and going to 3.44844e+09, relative residual: 0.00331447
-   Line search iteration 2, with norm of the rhs 5.03873e+09 and going to 3.44844e+09, relative residual: 0.00272113
-   Line search iteration 3, with norm of the rhs 4.34505e+09 and going to 3.44844e+09, relative residual: 0.00234651
-   Line search iteration 4, with norm of the rhs 3.96024e+09 and going to 3.44844e+09, relative residual: 0.0021387
+   Line search iteration 2, with norm of the rhs 5.03873e+09 and going to 3.44852e+09, relative residual: 0.00272113
+   Line search iteration 3, with norm of the rhs 4.34505e+09 and going to 3.44857e+09, relative residual: 0.00234651
+   Line search iteration 4, with norm of the rhs 3.96024e+09 and going to 3.4486e+09, relative residual: 0.0021387
       Newton system information: Norm of the rhs: 3.77035e+09, Derivative scaling factor: 1
       Relative nonlinear residuals (temperature, Stokes system): 0, 0.00203615
       Relative nonlinear residual (total system) after nonlinear iteration 28: 0.00203615
@@ -262,7 +262,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 25+0 iterations.
    Line search iteration 0, with norm of the rhs 6.74006e+09 and going to 3.76998e+09, relative residual: 0.00363992
    Line search iteration 1, with norm of the rhs 4.9751e+09 and going to 3.77011e+09, relative residual: 0.00268676
-   Line search iteration 2, with norm of the rhs 3.87562e+09 and going to 3.77011e+09, relative residual: 0.002093
+   Line search iteration 2, with norm of the rhs 3.87562e+09 and going to 3.77019e+09, relative residual: 0.002093
       Newton system information: Norm of the rhs: 3.59946e+09, Derivative scaling factor: 1
       Relative nonlinear residuals (temperature, Stokes system): 0, 0.00194386
       Relative nonlinear residual (total system) after nonlinear iteration 29: 0.00194386
@@ -273,8 +273,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 25+0 iterations.
    Line search iteration 0, with norm of the rhs 4.88677e+09 and going to 3.59912e+09, relative residual: 0.00263906
    Line search iteration 1, with norm of the rhs 4.34793e+09 and going to 3.59924e+09, relative residual: 0.00234806
-   Line search iteration 2, with norm of the rhs 3.87138e+09 and going to 3.59924e+09, relative residual: 0.00209071
-   Line search iteration 3, with norm of the rhs 3.67974e+09 and going to 3.59924e+09, relative residual: 0.00198721
+   Line search iteration 2, with norm of the rhs 3.87138e+09 and going to 3.59932e+09, relative residual: 0.00209071
+   Line search iteration 3, with norm of the rhs 3.67974e+09 and going to 3.59937e+09, relative residual: 0.00198721
       Newton system information: Norm of the rhs: 3.59367e+09, Derivative scaling factor: 1
       Relative nonlinear residuals (temperature, Stokes system): 0, 0.00194073
       Relative nonlinear residual (total system) after nonlinear iteration 30: 0.00194073
@@ -293,9 +293,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 35+0 iterations.
    Line search iteration 0, with norm of the rhs 5.25065e+09 and going to 1.97637e+09, relative residual: 0.00283557
    Line search iteration 1, with norm of the rhs 3.93568e+09 and going to 1.97643e+09, relative residual: 0.00212543
-   Line search iteration 2, with norm of the rhs 3.15187e+09 and going to 1.97643e+09, relative residual: 0.00170214
-   Line search iteration 3, with norm of the rhs 2.6888e+09 and going to 1.97643e+09, relative residual: 0.00145206
-   Line search iteration 4, with norm of the rhs 2.35833e+09 and going to 1.97643e+09, relative residual: 0.0012736
+   Line search iteration 2, with norm of the rhs 3.15187e+09 and going to 1.97648e+09, relative residual: 0.00170214
+   Line search iteration 3, with norm of the rhs 2.6888e+09 and going to 1.97651e+09, relative residual: 0.00145206
+   Line search iteration 4, with norm of the rhs 2.35833e+09 and going to 1.97653e+09, relative residual: 0.0012736
       Newton system information: Norm of the rhs: 2.17676e+09, Derivative scaling factor: 1
       Relative nonlinear residuals (temperature, Stokes system): 0, 0.00117554
       Relative nonlinear residual (total system) after nonlinear iteration 32: 0.00117554
@@ -322,9 +322,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 200+0 iterations.
    Line search iteration 0, with norm of the rhs 1.71454e+09 and going to 1.92156e+08, relative residual: 0.000925922
    Line search iteration 1, with norm of the rhs 1.1485e+09 and going to 1.92163e+08, relative residual: 0.000620236
-   Line search iteration 2, with norm of the rhs 7.6788e+08 and going to 1.92163e+08, relative residual: 0.000414687
-   Line search iteration 3, with norm of the rhs 5.20985e+08 and going to 1.92163e+08, relative residual: 0.000281354
-   Line search iteration 4, with norm of the rhs 3.66024e+08 and going to 1.92163e+08, relative residual: 0.000197668
+   Line search iteration 2, with norm of the rhs 7.6788e+08 and going to 1.92167e+08, relative residual: 0.000414687
+   Line search iteration 3, with norm of the rhs 5.20985e+08 and going to 1.9217e+08, relative residual: 0.000281354
+   Line search iteration 4, with norm of the rhs 3.66024e+08 and going to 1.92172e+08, relative residual: 0.000197668
       Newton system information: Norm of the rhs: 2.74837e+08, Derivative scaling factor: 1
       Relative nonlinear residuals (temperature, Stokes system): 0, 0.000148424
       Relative nonlinear residual (total system) after nonlinear iteration 35: 0.000148424
@@ -338,25 +338,25 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
       Relative nonlinear residual (total system) after nonlinear iteration 36: 1.41862e-05
 
    Skipping temperature solve because RHS is zero.
-   The linear solver tolerance is set to 1.30682e-05. Stabilization Preconditioner is SPD and A block is SPD.
+   The linear solver tolerance is set to 1.30863e-05. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 532+0 iterations.
-      Newton system information: Norm of the rhs: 1229.18, Derivative scaling factor: 1
-      Relative nonlinear residuals (temperature, Stokes system): 0, 6.63808e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 37: 6.63808e-10
+      Newton system information: Norm of the rhs: 1230.03, Derivative scaling factor: 1
+      Relative nonlinear residuals (temperature, Stokes system): 0, 6.64266e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 37: 6.64266e-10
 
    Skipping temperature solve because RHS is zero.
-   The linear solver tolerance is set to 3.3857e-05. Stabilization Preconditioner is SPD and A block is SPD.
+   The linear solver tolerance is set to 3.38847e-05. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 476+0 iterations.
-      Newton system information: Norm of the rhs: 108.511, Derivative scaling factor: 1
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.86004e-11
-      Relative nonlinear residual (total system) after nonlinear iteration 38: 5.86004e-11
+   Solving Stokes system (AMG)... 477+0 iterations.
+      Newton system information: Norm of the rhs: 83.1922, Derivative scaling factor: 1
+      Relative nonlinear residuals (temperature, Stokes system): 0, 4.49273e-11
+      Relative nonlinear residual (total system) after nonlinear iteration 38: 4.49273e-11
 
 
    Postprocessing:
      RMS, max velocity:                  2.57e-08 m/s, 3.05e-08 m/s
-     Pressure min/avg/max:               -0.0003456 Pa, 5e+08 Pa, 1e+09 Pa
+     Pressure min/avg/max:               -0.001288 Pa, 5e+08 Pa, 1e+09 Pa
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.8139 kg/s, 0.8139 kg/s
      Writing graphical output:           output-nonlinear_channel_flow_tractions_Newton_Stokes/solution/solution-00000
 
@@ -366,91 +366,63 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
-      Newton system information: Norm of the rhs: 177.653
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.16485e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 5.16485e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 455+0 iterations.
-      Newton system information: Norm of the rhs: 120.557, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, Stokes system): 0, 3.50493e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.50493e-10
+      Newton system information: Norm of the rhs: 158.59
+      Relative nonlinear residuals (temperature, Stokes system): 0, 4.61063e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 4.61063e-10
 
 
    Postprocessing:
      RMS, max velocity:                  2.57e-08 m/s, 3.05e-08 m/s
-     Pressure min/avg/max:               -0.0002781 Pa, 5e+08 Pa, 1e+09 Pa
+     Pressure min/avg/max:               -0.001288 Pa, 5e+08 Pa, 1e+09 Pa
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.8139 kg/s, 0.8139 kg/s
 
 *** Timestep 2:  t=2 seconds, dt=1 seconds
    Skipping temperature solve because RHS is zero.
-   Initial Newton Stokes residual = 3.43965e+11, v = 3.43965e+11, p = 0
+   Initial Newton Stokes residual = 1.85171e+12, v = 1.85171e+12, p = 0
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
-      Newton system information: Norm of the rhs: 279.831
-      Relative nonlinear residuals (temperature, Stokes system): 0, 8.13545e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 8.13545e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 458+0 iterations.
-      Newton system information: Norm of the rhs: 103.634, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, Stokes system): 0, 3.01292e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.01292e-10
+      Newton system information: Norm of the rhs: 158.59
+      Relative nonlinear residuals (temperature, Stokes system): 0, 8.56451e-11
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 8.56451e-11
 
 
    Postprocessing:
      RMS, max velocity:                  2.57e-08 m/s, 3.05e-08 m/s
-     Pressure min/avg/max:               -0.001245 Pa, 5e+08 Pa, 1e+09 Pa
+     Pressure min/avg/max:               -0.001288 Pa, 5e+08 Pa, 1e+09 Pa
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.8139 kg/s, 0.8139 kg/s
      Writing graphical output:           output-nonlinear_channel_flow_tractions_Newton_Stokes/solution/solution-00001
 
 *** Timestep 3:  t=3 seconds, dt=1 seconds
    Skipping temperature solve because RHS is zero.
-   Initial Newton Stokes residual = 3.43965e+11, v = 3.43965e+11, p = 0
+   Initial Newton Stokes residual = 1.85171e+12, v = 1.85171e+12, p = 0
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
-      Newton system information: Norm of the rhs: 254.521
-      Relative nonlinear residuals (temperature, Stokes system): 0, 7.39961e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.39961e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 491+0 iterations.
-      Newton system information: Norm of the rhs: 101.634, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, Stokes system): 0, 2.95477e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.95477e-10
+      Newton system information: Norm of the rhs: 158.59
+      Relative nonlinear residuals (temperature, Stokes system): 0, 8.56451e-11
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 8.56451e-11
 
 
    Postprocessing:
      RMS, max velocity:                  2.57e-08 m/s, 3.05e-08 m/s
-     Pressure min/avg/max:               -0.001028 Pa, 5e+08 Pa, 1e+09 Pa
+     Pressure min/avg/max:               -0.001288 Pa, 5e+08 Pa, 1e+09 Pa
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.8139 kg/s, 0.8139 kg/s
 
 *** Timestep 4:  t=4 seconds, dt=1 seconds
    Skipping temperature solve because RHS is zero.
-   Initial Newton Stokes residual = 3.43965e+11, v = 3.43965e+11, p = 0
+   Initial Newton Stokes residual = 1.85171e+12, v = 1.85171e+12, p = 0
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
-      Newton system information: Norm of the rhs: 250.532
-      Relative nonlinear residuals (temperature, Stokes system): 0, 7.28363e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.28363e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 390+0 iterations.
-      Newton system information: Norm of the rhs: 99.9841, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, Stokes system): 0, 2.90681e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.90681e-10
+      Newton system information: Norm of the rhs: 158.59
+      Relative nonlinear residuals (temperature, Stokes system): 0, 8.56451e-11
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 8.56451e-11
 
 
    Postprocessing:
      RMS, max velocity:                  2.57e-08 m/s, 3.05e-08 m/s
-     Pressure min/avg/max:               -0.0002298 Pa, 5e+08 Pa, 1e+09 Pa
+     Pressure min/avg/max:               -0.001288 Pa, 5e+08 Pa, 1e+09 Pa
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.8139 kg/s, 0.8139 kg/s
      Writing graphical output:           output-nonlinear_channel_flow_tractions_Newton_Stokes/solution/solution-00002
 

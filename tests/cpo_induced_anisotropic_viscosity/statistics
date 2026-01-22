@@ -1,0 +1,62 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for composition solver 14
+# 11: Iterations for Stokes solver
+# 12: Velocity iterations in Stokes preconditioner
+# 13: Schur complement iterations in Stokes preconditioner
+# 14: RMS velocity (m/s)
+# 15: Max. velocity (m/s)
+# 16: Minimal value for composition scalar_viscosity
+# 17: Maximal value for composition scalar_viscosity
+# 18: Global mass for composition scalar_viscosity
+# 19: Minimal value for composition phi1
+# 20: Maximal value for composition phi1
+# 21: Global mass for composition phi1
+# 22: Minimal value for composition eigvalue_a1
+# 23: Maximal value for composition eigvalue_a1
+# 24: Global mass for composition eigvalue_a1
+# 25: Minimal value for composition eigvalue_a2
+# 26: Maximal value for composition eigvalue_a2
+# 27: Global mass for composition eigvalue_a2
+# 28: Minimal value for composition eigvalue_a3
+# 29: Maximal value for composition eigvalue_a3
+# 30: Global mass for composition eigvalue_a3
+# 31: Minimal value for composition theta
+# 32: Maximal value for composition theta
+# 33: Global mass for composition theta
+# 34: Minimal value for composition eigvalue_b1
+# 35: Maximal value for composition eigvalue_b1
+# 36: Global mass for composition eigvalue_b1
+# 37: Minimal value for composition eigvalue_b2
+# 38: Maximal value for composition eigvalue_b2
+# 39: Global mass for composition eigvalue_b2
+# 40: Minimal value for composition eigvalue_b3
+# 41: Maximal value for composition eigvalue_b3
+# 42: Global mass for composition eigvalue_b3
+# 43: Minimal value for composition phi2
+# 44: Maximal value for composition phi2
+# 45: Global mass for composition phi2
+# 46: Minimal value for composition eigvalue_c1
+# 47: Maximal value for composition eigvalue_c1
+# 48: Global mass for composition eigvalue_c1
+# 49: Minimal value for composition eigvalue_c2
+# 50: Maximal value for composition eigvalue_c2
+# 51: Global mass for composition eigvalue_c2
+# 52: Minimal value for composition eigvalue_c3
+# 53: Maximal value for composition eigvalue_c3
+# 54: Global mass for composition eigvalue_c3
+# 55: Minimal value for composition water
+# 56: Maximal value for composition water
+# 57: Global mass for composition water
+# 58: Visualization file name
+# 59: Number of advected particles
+# 60: Particle file name
+# 61: Particle CPO file name
+0 0.000000000000e+00 0.000000000000e+00 1 89 27 378 0 0 0 3 3 3 2.88675135e-01 5.00000000e-01 1.00000000e+09 1.00000000e+09 1.00000000e+09 5.27630079e+00 5.27630079e+00 5.27630079e+00 5.20309402e-01 5.20309402e-01 5.20309402e-01 3.47923711e-01 3.47923711e-01 3.47923711e-01 1.31766887e-01 1.31766887e-01 1.31766887e-01 1.73622715e+00 1.73622715e+00 1.73622715e+00 5.74325744e-01 5.74325744e-01 5.74325744e-01 3.80780388e-01 3.80780388e-01 3.80780388e-01 4.48938682e-02 4.48938682e-02 4.48938682e-02 5.43504380e+00 5.43504380e+00 5.43504380e+00 6.07858069e-01 6.07858069e-01 6.07858069e-01 3.10569263e-01 3.10569263e-01 3.10569263e-01 8.15726682e-02 8.15726682e-02 8.15726682e-02 0.00000000e+00 0.00000000e+00 0.00000000e+00 output-cpo_induced_anisotropic_viscosity/solution/solution-00000 1 output-cpo_induced_anisotropic_viscosity/particles/particles-00000 output-cpo_induced_anisotropic_viscosity/particles_cpo/CPO-00000 

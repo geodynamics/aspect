@@ -75,7 +75,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system (AMG)... 12+0 iterations.
    Line search iteration 0, with norm of the rhs 3.91964e+10 and going to 2.42012e+10, relative residual: 5.86802e-07
    Line search iteration 1, with norm of the rhs 3.33544e+10 and going to 2.4202e+10, relative residual: 4.99343e-07
-   Line search iteration 2, with norm of the rhs 2.48423e+10 and going to 2.4202e+10, relative residual: 3.71909e-07
+   Line search iteration 2, with norm of the rhs 2.48423e+10 and going to 2.42025e+10, relative residual: 3.71909e-07
       Newton system information: Norm of the rhs: 2.0494e+10, Derivative scaling factor: 1
       Relative nonlinear residuals (temperature, Stokes system): 0, 3.06812e-07
       Relative nonlinear residual (total system) after nonlinear iteration 8: 3.06812e-07

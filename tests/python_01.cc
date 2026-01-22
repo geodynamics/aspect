@@ -23,6 +23,12 @@
 
 #include <iostream>
 
+// Python does not like it if this macro is already defined. This happens at
+// least in some versions of Trilinos and can trigger only with certain unity
+// build options:
+#ifdef HAVE_SYS_TIME_H
+#  undef HAVE_SYS_TIME_H
+#endif
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION

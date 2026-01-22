@@ -2634,12 +2634,8 @@ namespace aspect
   template <int dim>
   double Simulator<dim>::perform_line_search(const DefectCorrectionResiduals &dcr,
                                              const bool use_picard,
-                                             LinearAlgebra::BlockVector &search_direction)
+                                             const LinearAlgebra::BlockVector &search_direction)
   {
-    LinearAlgebra::BlockVector backup_linearization_point(introspection.index_sets.stokes_partitioning, mpi_communicator);
-    double step_length_factor = 1.0;
-    unsigned int line_search_iteration = 0;
-
     // Many parts of the solver depend on the block layout (velocity = 0,
     // pressure = 1). For example the linearized_stokes_initial_guess vector or the StokesBlock matrix
     // wrapper. Let us make sure that this holds (and shorten their names):
@@ -2649,30 +2645,30 @@ namespace aspect
     const unsigned int velocity_block_index = introspection.block_indices.velocities;
     Assert(velocity_block_index == 0, ExcNotImplemented());
     Assert(pressure_block_index == 1, ExcNotImplemented());
-    (void) pressure_block_index;
+
+    // Immutable copy of the original iterate for restoration
+    const LinearAlgebra::BlockVector original_iterate(current_linearization_point);
+    // Create a fully distributed copy of the current_linearization_point
+    LinearAlgebra::BlockVector current_iterate(system_rhs);
+    current_iterate = current_linearization_point;
+    double step_length_factor = 1.0;
+    unsigned int line_search_iteration = 0;
 
     // Do the loop for the line search at least once with the full step length.
     // If line search is disabled we will exit the loop in the first iteration.
     do
       {
-        if (line_search_iteration == 0)
-          {
-            // backup our starting point for the line search
-            backup_linearization_point.block(pressure_block_index) = current_linearization_point.block(pressure_block_index);
-            backup_linearization_point.block(velocity_block_index) = current_linearization_point.block(velocity_block_index);
-          }
-        else
-          {
-            // undo the last iteration and try again with smaller step length
-            current_linearization_point.block(pressure_block_index) = backup_linearization_point.block(pressure_block_index);
-            current_linearization_point.block(velocity_block_index) = backup_linearization_point.block(velocity_block_index);
-            search_direction.block(pressure_block_index) *= step_length_factor;
-            search_direction.block(velocity_block_index) *= step_length_factor;
-          }
+        // Compute a candidate solution based on the current search direction and step length
+        // and store it in a distributed vector.
+        current_iterate.block(pressure_block_index) = original_iterate.block(pressure_block_index);
+        current_iterate.block(velocity_block_index) = original_iterate.block(velocity_block_index);
 
-        // Update the current linearization point with the search direction
-        current_linearization_point.block(pressure_block_index) += search_direction.block(pressure_block_index);
-        current_linearization_point.block(velocity_block_index) += search_direction.block(velocity_block_index);
+        current_iterate.block(pressure_block_index).sadd(1.0,step_length_factor,search_direction.block(pressure_block_index));
+        current_iterate.block(velocity_block_index).sadd(1.0,step_length_factor,search_direction.block(velocity_block_index));
+
+        // Update the ghosted vector current_linearization_point with the new candidate solution
+        current_linearization_point.block(pressure_block_index) = current_iterate.block(pressure_block_index);
+        current_linearization_point.block(velocity_block_index) = current_iterate.block(velocity_block_index);
 
         // Rebuild the rhs to determine the new residual.
         assemble_newton_stokes_matrix = rebuild_stokes_preconditioner = false;
@@ -2706,7 +2702,7 @@ namespace aspect
             // The current search direction has not decreased the residual
             // enough, so we take a smaller step and try again.
             // TODO: make a parameter out of this.
-            step_length_factor = 2.0/3.0;
+            step_length_factor *= 2.0/3.0;
           }
 
         ++line_search_iteration;
@@ -2868,7 +2864,7 @@ namespace aspect
   template double Simulator<dim>::compute_initial_newton_residual(); \
   template double Simulator<dim>::perform_line_search(const DefectCorrectionResiduals &dcr, \
                                                       const bool use_picard, \
-                                                      LinearAlgebra::BlockVector &search_direction); \
+                                                      const LinearAlgebra::BlockVector &search_direction); \
   template double Simulator<dim>::compute_Eisenstat_Walker_linear_tolerance(const bool EisenstatWalkerChoiceOne, \
                                                                             const double maximum_linear_stokes_solver_tolerance, \
                                                                             const double linear_stokes_solver_tolerance, \
