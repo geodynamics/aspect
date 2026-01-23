@@ -1,0 +1,22 @@
+include $ASPECT_SOURCE_DIR/cookbooks/CPO_induced_anisotropic_viscosity/shearbox_cpo_av.prm
+set Additional shared libraries = ./libCPO_induced_anisotropic_viscosity.debug.so
+
+set End time = 0
+
+subsection Particles
+    subsection Generator
+        subsection Ascii file
+            set Data directory = $ASPECT_SOURCE_DIR/cookbooks/CPO_induced_anisotropic_viscosity/
+            set Data file name = particle_one.dat
+        end
+    end
+    subsection Crystal Preferred Orientation
+        set Number of grains per particle = 10
+    end
+end
+
+# The same postprocessors as in the cookbook, without memory statistics, because
+# that is very sensitive to the test system.
+subsection Postprocess
+  set List of postprocessors = velocity statistics, composition statistics, visualization, particles, crystal preferred orientation
+end
