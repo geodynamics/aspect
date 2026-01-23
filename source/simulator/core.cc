@@ -1947,9 +1947,12 @@ namespace aspect
         global_volume = GridTools::volume (triangulation, *mapping);
 
         // since the mesh has changed, boundary conditions may have changed as well
-        // so we need to recompute the current constraints and if necessary the system
-        // matrix and preconditioner
+        // so we need to recompute the current constraints
         compute_current_constraints ();
+
+        // if compute_current_constraints() changed which DoFs are constrained,
+        // we need to rebuild the system matrices
+        if (rebuild_sparsity_and_matrices)
         {
           computing_timer.enter_subsection("Setup matrices");
 
