@@ -1950,6 +1950,10 @@ namespace aspect
         // so we need to recompute the current constraints
         compute_current_constraints ();
 
+        // The boundary conditions of the GMG solver are handled as part of setup_dofs()
+        if (stokes_matrix_free)
+          stokes_matrix_free->setup_dofs();
+
         // if compute_current_constraints() changed which DoFs are constrained,
         // we need to rebuild the system matrices
         if (rebuild_sparsity_and_matrices)
