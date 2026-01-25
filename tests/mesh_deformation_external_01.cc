@@ -70,8 +70,6 @@ namespace aspect
                           points.emplace_back(0.1+x*1.0/5, 0.1+y*1.0/5, 1.0);
                     }
                 }
-              else
-                Assert(false, ExcNotImplemented());
 
               this->set_evaluation_points (points);
 

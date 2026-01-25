@@ -107,16 +107,17 @@ namespace aspect
       // Create a mapping from evaluation points to support points. Note that one evaluation point can map to
       // multiple support points.
       {
-        // For now, we only support a single MPI rank for ASPECT and the external mesh deformation class. Because deciding
-        // which evaluation point is closest to a support point requires somewhat complex MPI communication.
-        Assert(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
-               ExcNotImplemented("This function is not implemented for parallel computations."));
+        // Deciding which evaluation point is closest to a support point requires somewhat complex MPI communication.
+        // For now, we just gather all data on rank 0, do the computation, and then scatter the results back.
+
+        const unsigned int n_mpi_processes = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
+        const unsigned int my_rank = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
 
         const DoFHandler<dim> &mesh_dof_handler = this->get_mesh_deformation_handler().get_mesh_deformation_dof_handler();
 
         std::vector<double> squared_distances(mesh_dof_handler.locally_owned_dofs().size(), std::numeric_limits<double>::max());
-        std::vector<DofToEvalPointData> closest_evaluation_point_and_component(mesh_dof_handler.locally_owned_dofs().size(),
-                                                                               DofToEvalPointData {numbers::invalid_dof_index, numbers::invalid_unsigned_int, numbers::invalid_unsigned_int});
+        DofToEvalPointData invalid {numbers::invalid_dof_index, numbers::invalid_unsigned_int, numbers::invalid_unsigned_int, numbers::invalid_unsigned_int, -1.0};
+        std::vector<DofToEvalPointData> closest_evaluation_point_and_component(mesh_dof_handler.locally_owned_dofs().size(), invalid);
 
         // TODO: do we need to support the case of more than one different mesh deformation plugin to be active?
         const auto boundary_ids = this->get_mesh_deformation_boundary_indicators();
@@ -148,11 +149,20 @@ namespace aspect
               cell_dofs->get_dof_indices(cell_dof_indices);
 
               const ArrayView<const Point<dim>> unit_points = cell_data.get_unit_points(cell_index);
-              const auto local_values = cell_data.get_data_view(cell_index, values);
+
+              // TODO: cell_data.get_data_view() does not work with 2 components:
+              const ArrayView<const unsigned int> local_values(
+                values.data() +
+                2*cell_data.reference_point_ptrs[cell_index],
+                2*(cell_data.reference_point_ptrs[cell_index + 1] -
+                   cell_data.reference_point_ptrs[cell_index]));
 
               const std::vector< Point< dim >> &support_points = mesh_dof_handler.get_fe().get_unit_support_points();
               for (unsigned int i=0; i<unit_points.size(); ++i)
                 {
+                  const unsigned int point_index = local_values[2*i];
+                  const unsigned int rank = local_values[2*i+1];
+
                   for (unsigned int j=0; j<support_points.size(); ++j)
                     {
                       const double distance_sq = unit_points[i].distance_square(support_points[j]);
@@ -161,22 +171,63 @@ namespace aspect
                           squared_distances[cell_dof_indices[j]] = distance_sq;
                           const unsigned int component = mesh_dof_handler.get_fe().system_to_component_index(j).first;
                           closest_evaluation_point_and_component[cell_dof_indices[j]] =
-                            DofToEvalPointData {cell_dof_indices[j], local_values[i], component};
+                            DofToEvalPointData {cell_dof_indices[j], rank, point_index, component, distance_sq};
                         }
                     }
                 }
             }
         };
 
-        std::vector<unsigned int> indices (evaluation_points.size());
-        std::iota(indices.begin(), indices.end(), 0);
-        this->remote_point_evaluator->template process_and_evaluate<unsigned int, 1>(indices, eval_func, /*sort_data*/ true);
-
-        map_dof_to_eval_point.clear();
-        for (unsigned int i=0; i<closest_evaluation_point_and_component.size(); ++i)
+        // store index and rank for each evaluation point:
+        std::vector<unsigned int> indices (evaluation_points.size() * 2);
+        if (evaluation_points.size() > 0)
           {
-            if (closest_evaluation_point_and_component[i].dof_index != numbers::invalid_dof_index)
-              map_dof_to_eval_point.push_back(closest_evaluation_point_and_component[i]);
+            for (unsigned int i=0; i<evaluation_points.size(); ++i)
+              {
+                indices[2*i] = i;
+                indices[2*i+1] = my_rank;
+              }
+          }
+        this->remote_point_evaluator->template process_and_evaluate<unsigned int, 2>(indices, eval_func, /*sort_data*/ true);
+
+        // remove DoFs not found (for example not surface DoFs):
+        auto new_end_it = std::remove_if(closest_evaluation_point_and_component.begin(), closest_evaluation_point_and_component.end(),
+                                         [](const DofToEvalPointData &data)
+        {
+          return data.dof_index == numbers::invalid_dof_index;
+        });
+        closest_evaluation_point_and_component.erase(new_end_it, closest_evaluation_point_and_component.end());
+
+        // send to rank 0 and find the closest evaluation point across all ranks:
+        std::vector<std::vector<DofToEvalPointData>> all_closest_evaluation_point_and_component
+          = Utilities::MPI::gather(this->get_mpi_communicator(), closest_evaluation_point_and_component, /* root = */ 0);
+
+        if (my_rank == 0)
+          {
+            std::map<types::global_dof_index, DofToEvalPointData> map_from_dof;
+            for (const auto &data : all_closest_evaluation_point_and_component)
+              for (const auto &p : data)
+                {
+                  if (map_from_dof.find(p.dof_index) == map_from_dof.end())
+                    map_from_dof[p.dof_index] = p;
+                  else
+                    {
+                      if (p.squared_distance < map_from_dof[p.dof_index].squared_distance)
+                        map_from_dof[p.dof_index] = p;
+                    }
+                }
+
+            // compile data for each rank and send it:
+            std::vector<std::vector<DofToEvalPointData>> map_from_rank(n_mpi_processes);
+            for (const auto &data : map_from_dof)
+              map_from_rank[data.second.evaluation_point_rank].push_back(data.second);
+
+            map_dof_to_eval_point = Utilities::MPI::scatter (this->get_mpi_communicator(), map_from_rank, 0);
+          }
+        else
+          {
+            std::vector<std::vector<DofToEvalPointData>> map_from_rank;
+            map_dof_to_eval_point = Utilities::MPI::scatter (this->get_mpi_communicator(), map_from_rank, 0);
           }
       }
 

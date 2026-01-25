@@ -1,0 +1,7 @@
+# Test the ExternalToolInterface class for mesh deformation
+# derived class written as a plugin
+# Like mesh_deformation_external_01.prm but with MPI.
+#
+# MPI: 2
+
+include $ASPECT_SOURCE_DIR/tests/mesh_deformation_external_01.prm
