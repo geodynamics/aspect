@@ -132,35 +132,62 @@ namespace aspect
       const std::set<types::boundary_id> tangential_velocity_boundary_indicators =
         this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators();
 
-      // The list of all tangential mesh deformation boundary indicators.
-      std::set<types::boundary_id> tmp_tangential_boundaries, tmp2_tangential_boundaries, all_tangential_boundaries;
-      std::set_union(tangential_velocity_boundary_indicators.begin(),tangential_velocity_boundary_indicators.end(),
-                     additional_tangential_mesh_boundary_indicators.begin(),additional_tangential_mesh_boundary_indicators.end(),
-                     std::inserter(tmp_tangential_boundaries, tmp_tangential_boundaries.end()));
-      std::set_union(tmp_tangential_boundaries.begin(),tmp_tangential_boundaries.end(),
-                     periodic_boundary_indicators.begin(),periodic_boundary_indicators.end(),
-                     std::inserter(tmp2_tangential_boundaries, tmp2_tangential_boundaries.end()));
-      // Tangential Stokes velocity boundaries can also be mesh deformation boundaries,
-      // so correct for that.
-      std::set_difference(tmp2_tangential_boundaries.begin(),tmp2_tangential_boundaries.end(),
-                          boundary_ids.begin(),boundary_ids.end(),
-                          std::inserter(all_tangential_boundaries, all_tangential_boundaries.end()));
+      // Here we start to construct the list of all
+      // tangential mesh deformation boundary indicators.
+      std::set<types::boundary_id> tangential_stokes_and_mesh_boundaries;
+      std::set<types::boundary_id> tangential_stokes_and_mesh_and_periodic_boundaries;
+      std::set<types::boundary_id> all_tangential_mesh_deformation_boundaries;
 
-      // The list of mesh deformation boundary indicators of boundaries that are allowed to move either
-      // tangentially or in all directions.
-      std::set<types::boundary_id> all_deformable_boundaries;
-      std::set_union(all_tangential_boundaries.begin(),all_tangential_boundaries.end(),
-                     boundary_ids.begin(),boundary_ids.end(),
-                     std::inserter(all_deformable_boundaries, all_deformable_boundaries.end()));
+      // tangential_stokes_and_mesh_boundaries contains both the tangential Stokes velocity boundaries
+      // and the additional tangential mesh boundaries.
+      std::set_union(tangential_velocity_boundary_indicators.begin(),
+                     tangential_velocity_boundary_indicators.end(),
+                     additional_tangential_mesh_boundary_indicators.begin(),
+                     additional_tangential_mesh_boundary_indicators.end(),
+                     std::inserter(tangential_stokes_and_mesh_boundaries,
+                                   tangential_stokes_and_mesh_boundaries.end()));
 
-      // The list of mesh deformation boundary indicators of boundaries that are not allowed to move.
-      std::set<types::boundary_id> all_fixed_boundaries;
-      std::set_difference(all_boundaries.begin(),all_boundaries.end(),
-                          all_deformable_boundaries.begin(),all_deformable_boundaries.end(),
-                          std::inserter(all_fixed_boundaries, all_fixed_boundaries.end()));
+      // tangential_stokes_and_mesh_and_periodic_boundaries contains also the periodic boundaries.
+      std::set_union(tangential_stokes_and_mesh_boundaries.begin(),
+                     tangential_stokes_and_mesh_boundaries.end(),
+                     periodic_boundary_indicators.begin(),
+                     periodic_boundary_indicators.end(),
+                     std::inserter(tangential_stokes_and_mesh_and_periodic_boundaries,
+                                   tangential_stokes_and_mesh_and_periodic_boundaries.end()));
 
-      // Make the no flux boundary constraints
-      for (const types::boundary_id &boundary_id : all_fixed_boundaries)
+      // The set of tangential_velocity_boundary_indicators might already contain the
+      // diffusion boundaries (i.e. those boundaries contained in the set boundary_ids).
+      // These are not boundaries on which the mesh deforms tangentially,
+      // so we here create a new set containing only tangential_mesh_deformation_boundaries
+      std::set_difference(tangential_stokes_and_mesh_and_periodic_boundaries.begin(),
+                          tangential_stokes_and_mesh_and_periodic_boundaries.end(),
+                          boundary_ids.begin(),
+                          boundary_ids.end(),
+                          std::inserter(all_tangential_mesh_deformation_boundaries,
+                                        all_tangential_mesh_deformation_boundaries.end()));
+
+      // We now add the diffusion boundaries to the list of tangential mesh deformation boundaries
+      // to create a set of all boundaries on which the mesh is allowed to deform in some way.
+      std::set<types::boundary_id> all_deformable_mesh_boundaries;
+      std::set_union(all_tangential_mesh_deformation_boundaries.begin(),
+                     all_tangential_mesh_deformation_boundaries.end(),
+                     boundary_ids.begin(),
+                     boundary_ids.end(),
+                     std::inserter(all_deformable_mesh_boundaries,
+                                   all_deformable_mesh_boundaries.end()));
+
+      // Finally, we get the set of all fixed mesh boundaries by
+      // subtracting the deformable mesh boundaries from all boundaries.
+      std::set<types::boundary_id> all_fixed_mesh_boundaries;
+      std::set_difference(all_boundaries.begin(),
+                          all_boundaries.end(),
+                          all_deformable_mesh_boundaries.begin(),
+                          all_deformable_mesh_boundaries.end(),
+                          std::inserter(all_fixed_mesh_boundaries,
+                                        all_fixed_mesh_boundaries.end()));
+
+      // Make the no flux boundary constraints for boundaries on which the mesh is fixed
+      for (const types::boundary_id &boundary_id : all_fixed_mesh_boundaries)
         {
           VectorTools::interpolate_boundary_values (this->get_mapping(),
                                                     mesh_deformation_dof_handler,
@@ -169,12 +196,20 @@ namespace aspect
                                                     matrix_constraints);
         }
 
-      // Make the no normal flux boundary constraints
+      // Make the no normal flux boundary constraints for boundaries on which the mesh is
+      // allowed to move tangentially. We can use the manifold information to
+      // compute the normal vector because these boundaries do not move normal to themselves.
       VectorTools::compute_no_normal_flux_constraints (mesh_deformation_dof_handler,
                                                        /* first_vector_component= */
                                                        0,
-                                                       all_tangential_boundaries,
-                                                       matrix_constraints, this->get_mapping());
+                                                       all_tangential_mesh_deformation_boundaries,
+                                                       matrix_constraints,
+                                                       this->get_mapping(),
+                                                       /* use_manifold_for_normal= */
+                                                       true);
+
+      // Note that we do not apply any constraints on the mesh of the diffusing boundaries
+      // listed in boundary_ids. Their displacement is governed by the diffusion equation.
 
       matrix_constraints.close();
 
