@@ -1572,14 +1572,15 @@ namespace aspect
                 }
             }
 
-      have_periodic_hanging_nodes = (dealii::Utilities::MPI::max(have_periodic_hanging_nodes ? 1 : 0, this->get_mpi_communicator())) == 1;
+      have_periodic_hanging_nodes = (Utilities::MPI::max(have_periodic_hanging_nodes ? 1 : 0,
+                                                         this->get_mpi_communicator())) == 1;
       AssertThrow(have_periodic_hanging_nodes==false, ExcNotImplemented());
     }
 
     // This vector will be refilled with the new MatrixFree objects below:
     matrix_free_objects.clear();
 
-    // Velocity DoFHandler
+    // Set up velocity DoFHandler
     {
       dof_handler_v.clear();
       dof_handler_v.distribute_dofs(fe_v);
@@ -1599,19 +1600,10 @@ namespace aspect
       constraints_v.reinit(locally_relevant_dofs);
 #endif
 
-      {
-        const auto &pbs = this->get_geometry_model().get_periodic_boundary_pairs();
-
-        for (const auto &p: pbs)
-          {
-            DoFTools::make_periodicity_constraints(dof_handler_v,
-                                                   p.first.first,  // first boundary id
-                                                   p.first.second, // second boundary id
-                                                   p.second,       // cartesian direction for translational symmetry
-                                                   constraints_v);
-          }
-      }
-      DoFTools::make_hanging_node_constraints (dof_handler_v, constraints_v);
+      this->get_geometry_model().make_periodicity_constraints(dof_handler_v,
+                                                              constraints_v);
+      DoFTools::make_hanging_node_constraints (dof_handler_v,
+                                               constraints_v);
       sim.compute_initial_velocity_boundary_constraints(constraints_v);
       sim.compute_current_velocity_boundary_constraints(constraints_v);
 
@@ -1630,7 +1622,7 @@ namespace aspect
       constraints_v.close ();
     }
 
-    // Pressure DoFHandler
+    // Set up pressure DoFHandler
     {
       dof_handler_p.clear();
       dof_handler_p.distribute_dofs(fe_p);
@@ -1650,19 +1642,12 @@ namespace aspect
         dof_handler_p.locally_owned_dofs(),
 #endif
         locally_relevant_dofs);
-      {
-        const auto &pbs = this->get_geometry_model().get_periodic_boundary_pairs();
 
-        for (const auto &p: pbs)
-          {
-            DoFTools::make_periodicity_constraints(dof_handler_p,
-                                                   p.first.first,  // first boundary id
-                                                   p.first.second, // second boundary id
-                                                   p.second,       // cartesian direction for translational symmetry
-                                                   constraints_p);
-          }
-      }
-      DoFTools::make_hanging_node_constraints (dof_handler_p, constraints_p);
+      this->get_geometry_model().make_periodicity_constraints(dof_handler_p,
+                                                              constraints_p);
+
+      DoFTools::make_hanging_node_constraints (dof_handler_p,
+                                               constraints_p);
       constraints_p.close();
     }
 
@@ -1674,15 +1659,15 @@ namespace aspect
       DoFRenumbering::hierarchical(dof_handler_projection);
     }
 
-    // Multigrid DoF setup
+    // Distribute multigrid DoFs and multigrid constraints
     {
-      //Ablock GMG
+      // A block
       dof_handler_v.distribute_mg_dofs();
 
       mg_constrained_dofs_A_block.clear();
       mg_constrained_dofs_A_block.initialize(dof_handler_v);
 
-      std::set<types::boundary_id> dirichlet_boundary = this->get_boundary_velocity_manager().get_zero_boundary_velocity_indicators();
+      std::set<types::boundary_id> dirichlet_boundaries = this->get_boundary_velocity_manager().get_zero_boundary_velocity_indicators();
       for (const auto boundary_id: this->get_boundary_velocity_manager().get_prescribed_boundary_velocity_indicators())
         {
           const ComponentMask component_mask = this->get_boundary_velocity_manager().get_component_mask(boundary_id);
@@ -1698,16 +1683,16 @@ namespace aspect
             }
           else
             {
-              // no mask given: add at the end
-              dirichlet_boundary.insert(boundary_id);
+              // no mask given: combine with zero velocity boundaries
+              dirichlet_boundaries.insert(boundary_id);
             }
         }
 
       // Unconditionally call this function, even if the set is empty. Otherwise, the data structure
       // for boundary indices will not be created (if mesh has no Dirichlet conditions).
-      mg_constrained_dofs_A_block.make_zero_boundary_constraints(dof_handler_v, dirichlet_boundary);
+      mg_constrained_dofs_A_block.make_zero_boundary_constraints(dof_handler_v, dirichlet_boundaries);
 
-      //Schur complement matrix GMG
+      // Schur complement block
       dof_handler_p.distribute_mg_dofs();
 
       mg_constrained_dofs_Schur_complement.clear();
@@ -1720,7 +1705,7 @@ namespace aspect
     std::shared_ptr<MatrixFree<dim,double>> matrix_free = std::make_shared<MatrixFree<dim,double>>();
     matrix_free_objects.push_back(matrix_free);
 
-    // Matrixfree object
+    // MatrixFree object
     {
       typename MatrixFree<dim,double>::AdditionalData additional_data;
       additional_data.tasks_parallel_scheme = MatrixFree<dim,double>::AdditionalData::none;
@@ -1747,14 +1732,14 @@ namespace aspect
       stokes_matrix.initialize(matrix_free);
     }
 
-    // ABlock matrix
+    // A block matrix
     {
       A_block_matrix.clear();
-      std::vector<unsigned int> selected = {0}; // select velocity DoFHandler
-      A_block_matrix.initialize(matrix_free, selected);
+      const std::vector<unsigned int> selected_dof_handler = {/*velocity =*/0};
+      A_block_matrix.initialize(matrix_free, selected_dof_handler);
     }
 
-    //B^T Block matrix
+    // B^T block matrix
     {
       BT_block.clear();
       BT_block.initialize(matrix_free);
@@ -1763,11 +1748,11 @@ namespace aspect
     // Schur complement block matrix
     {
       Schur_complement_block_matrix.clear();
-      std::vector< unsigned int > selected = {1}; // select pressure DoFHandler
-      Schur_complement_block_matrix.initialize(matrix_free, selected , selected);
+      const std::vector<unsigned int> selected_dof_handler = {/*pressure =*/1};
+      Schur_complement_block_matrix.initialize(matrix_free, selected_dof_handler , selected_dof_handler);
     }
 
-    // GMG matrices
+    // Create GMG matrices and constraints for each multigrid level
     {
       const unsigned int n_levels = this->get_triangulation().n_global_levels();
 
@@ -1780,8 +1765,11 @@ namespace aspect
         {
           AffineConstraints<double> level_constraints_v;
           AffineConstraints<double> level_constraints_p;
-          const Mapping<dim> &mapping =
-            (this->get_parameters().mesh_deformation_enabled) ? this->get_mesh_deformation_handler().get_level_mapping(level) : this->get_mapping();
+          const Mapping<dim> &mapping = this->get_parameters().mesh_deformation_enabled
+                                        ?
+                                        this->get_mesh_deformation_handler().get_level_mapping(level)
+                                        :
+                                        this->get_mapping();
 
           {
 #if DEAL_II_VERSION_GTE(9,7,0)
@@ -1801,9 +1789,9 @@ namespace aspect
 #endif
             level_constraints_v.close();
 
-            std::set<types::boundary_id> no_flux_boundary
+            std::set<types::boundary_id> no_flux_boundaries
               = this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators();
-            if (!no_flux_boundary.empty())
+            if (!no_flux_boundaries.empty())
               {
                 AffineConstraints<double> user_level_constraints;
 #if DEAL_II_VERSION_GTE(9,6,0)
@@ -1813,17 +1801,18 @@ namespace aspect
 #endif
                 const IndexSet &refinement_edge_indices =
                   mg_constrained_dofs_A_block.get_refinement_edge_indices(level);
-                dealii::VectorTools::compute_no_normal_flux_constraints_on_level(
-                  dof_handler_v,
-                  0,
-                  no_flux_boundary,
-                  user_level_constraints,
-                  mapping,
-                  refinement_edge_indices,
-                  level);
+
+                VectorTools::compute_no_normal_flux_constraints_on_level(dof_handler_v,
+                                                                         0,
+                                                                         no_flux_boundaries,
+                                                                         user_level_constraints,
+                                                                         mapping,
+                                                                         refinement_edge_indices,
+                                                                         level);
 
                 user_level_constraints.close();
-                mg_constrained_dofs_A_block.add_user_constraints(level,user_level_constraints);
+                mg_constrained_dofs_A_block.add_user_constraints(level,
+                                                                 user_level_constraints);
 
                 // let Dirichlet values win over no normal flux:
                 level_constraints_v.merge(user_level_constraints, AffineConstraints<double>::left_object_wins);
@@ -1847,6 +1836,7 @@ namespace aspect
             level_constraints_p.close();
           }
 
+          // set up MatrixFree objects for each multigrid level
           std::shared_ptr<MatrixFree<dim,GMGNumberType>> matrix_free_level = std::make_shared<MatrixFree<dim,GMGNumberType>>();
           matrix_free_objects.push_back(matrix_free_level);
 
@@ -1860,24 +1850,31 @@ namespace aspect
             std::vector<const AffineConstraints<double> *> stokes_constraints {&level_constraints_v,&level_constraints_p};
 
             matrix_free_level->reinit(mapping,
-                                      stokes_dofs, stokes_constraints,
+                                      stokes_dofs,
+                                      stokes_constraints,
                                       QGauss<1>(this->get_parameters().stokes_velocity_degree+1),
                                       additional_data);
           }
           {
             mg_matrices_A_block[level].clear();
-            std::vector<unsigned int> selected = {0}; // select velocity DoFHandler
-            mg_matrices_A_block[level].initialize(matrix_free_level, mg_constrained_dofs_A_block, level, selected);
+            const std::vector<unsigned int> selected_dof_handler = {/*velocity =*/0};
+            mg_matrices_A_block[level].initialize(matrix_free_level,
+                                                  mg_constrained_dofs_A_block,
+                                                  level,
+                                                  selected_dof_handler);
           }
           {
             mg_matrices_Schur_complement[level].clear();
-            std::vector<unsigned int> selected = {1}; // select pressure DoFHandler
-            mg_matrices_Schur_complement[level].initialize(matrix_free_level, mg_constrained_dofs_Schur_complement, level, selected);
+            const std::vector<unsigned int> selected_dof_handler = {/*pressure =*/1};
+            mg_matrices_Schur_complement[level].initialize(matrix_free_level,
+                                                           mg_constrained_dofs_Schur_complement,
+                                                           level,
+                                                           selected_dof_handler);
           }
         }
     }
 
-    // Build MG transfer
+    // Build multigrid transfer objects
     mg_transfer_A_block.clear();
     mg_transfer_A_block.initialize_constraints(mg_constrained_dofs_A_block);
     mg_transfer_A_block.build(dof_handler_v);
