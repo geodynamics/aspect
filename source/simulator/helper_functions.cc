@@ -2646,11 +2646,15 @@ namespace aspect
     Assert(velocity_block_index == 0, ExcNotImplemented());
     Assert(pressure_block_index == 1, ExcNotImplemented());
 
-    // Immutable copy of the original iterate for restoration
+    // Create an immutable copy of the original iterate for restoration.
+    // This will be a vector that has ghost entries.
     const LinearAlgebra::BlockVector original_iterate(current_linearization_point);
-    // Create a fully distributed copy of the current_linearization_point
-    LinearAlgebra::BlockVector current_iterate(system_rhs);
+
+    // Then also create a fully distributed copy of the current_linearization_point:
+    LinearAlgebra::BlockVector current_iterate(introspection.index_sets.system_partitioning,
+                                               mpi_communicator);
     current_iterate = current_linearization_point;
+
     double step_length_factor = 1.0;
     unsigned int line_search_iteration = 0;
 
@@ -2659,16 +2663,17 @@ namespace aspect
     do
       {
         // Compute a candidate solution based on the current search direction and step length
-        // and store it in a distributed vector.
-        current_iterate.block(pressure_block_index) = original_iterate.block(pressure_block_index);
+        // times search direction, and store it in a fully distributed vector.
         current_iterate.block(velocity_block_index) = original_iterate.block(velocity_block_index);
+        current_iterate.block(pressure_block_index) = original_iterate.block(pressure_block_index);
 
-        current_iterate.block(pressure_block_index).sadd(1.0,step_length_factor,search_direction.block(pressure_block_index));
-        current_iterate.block(velocity_block_index).sadd(1.0,step_length_factor,search_direction.block(velocity_block_index));
+        current_iterate.block(velocity_block_index).sadd(1.0, step_length_factor, search_direction.block(velocity_block_index));
+        current_iterate.block(pressure_block_index).sadd(1.0, step_length_factor, search_direction.block(pressure_block_index));
 
-        // Update the ghosted vector current_linearization_point with the new candidate solution
-        current_linearization_point.block(pressure_block_index) = current_iterate.block(pressure_block_index);
+        // Update the ghosted vector current_linearization_point with the new candidate solution.
+        // This is the vector the following function calls then all work on.
         current_linearization_point.block(velocity_block_index) = current_iterate.block(velocity_block_index);
+        current_linearization_point.block(pressure_block_index) = current_iterate.block(pressure_block_index);
 
         // Rebuild the rhs to determine the new residual.
         assemble_newton_stokes_matrix = rebuild_stokes_preconditioner = false;
