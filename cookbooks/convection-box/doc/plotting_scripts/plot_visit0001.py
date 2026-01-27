@@ -5,16 +5,13 @@ from cmcrameri import cm # Fabio Crameri's color maps
 import numpy as np
 import os
 
-timereader = pv.get_reader("./output-convection-box/solution.pvd")
-times = np.array(timereader.time_values) / 1e6  # convert yrs to Myrs
-
 pv.set_plot_theme("document")
 plotter = pv.Plotter(off_screen=True)
 
-mesh = pv.read("output-convection-box/solution/solution-00049.pvtu")
+mesh = pv.read("../../output-convection-box/solution/solution-00049.pvtu")
 plot_spatial_bounds = [0, 1, 0, 1, 0, 0]
 mesh = mesh.clip_box(bounds=plot_spatial_bounds, invert=False)
-arrows = mesh.glyph(scale="velocity", factor=0.0009,orient="velocity")
+arrows = mesh.glyph(scale="velocity", factor=0.001,orient="velocity")
 
 # scale the meshes down to put the scale bar on the side (like in the docs)
 mesh = mesh.scale(0.75)
@@ -29,7 +26,7 @@ sargs = dict(
     title_font_size=32,
     color="black",
     position_x=0.0,
-    position_y=0.35,
+    position_y=0.20,
     vertical=True
 )
 
@@ -38,8 +35,8 @@ arrows_actor = plotter.add_mesh(arrows,color='white')
 plotter.view_xy()
 
 # Displace the meshes to make room for the scalar bar
-mesh_actor.position = (0.25,0.23,0)
-arrows_actor.position = (0.25,0.23,0)
+mesh_actor.position = (0.225,0.15,0)
+arrows_actor.position = (0.225,0.15,0)
 
 # shows the axes labels on the actual mesh (show_axes shows a widget in 3d space)
 plotter.show_bounds(
@@ -53,7 +50,10 @@ xtitle='X Axis',ytitle='Y Axis'# Model bounds are in meters, kilometers make the
 bounds_array = np.array(plot_spatial_bounds)
 xmag = float(abs(bounds_array[1] - bounds_array[0]))
 ymag = float(abs(bounds_array[3] - bounds_array[2]))
-aspect_ratio = ymag / xmag
+
+# Multiplying the xmagnitude here results in an image with less white space.
+# Modifying plot_spatial_bounds directly will distort the actual pyvista mesh.
+aspect_ratio = ymag / (xmag*1.2) 
 plotter.window_size = (1024, int(1024 * aspect_ratio))
 xmid = xmag / 2 + bounds_array[0]  # X midpoint
 ymid = ymag / 2 + bounds_array[2]  # Y midpoint
@@ -65,4 +65,4 @@ viewup = (0, 1, 0)
 camera = [position, focal_point, viewup]
 plotter.camera_position = camera
 plotter.camera_set = True
-plotter.screenshot("fig17.png")
+plotter.screenshot("../visit0001.png")

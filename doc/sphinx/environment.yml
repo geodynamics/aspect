@@ -11,3 +11,4 @@ dependencies:
   - pip:
     - sphinxcontrib-tikz
     - sphinxcontrib-svg2pdfconverter[CairoSVG]
+    - cmcrameri
