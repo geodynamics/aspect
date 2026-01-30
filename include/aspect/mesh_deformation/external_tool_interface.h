@@ -204,8 +204,21 @@ namespace aspect
         struct DofToEvalPointData
         {
           types::global_dof_index dof_index;
-          unsigned int evaluation_point_index;
-          unsigned int component;
+          unsigned int            evaluation_point_rank;
+          unsigned int            evaluation_point_index;
+          unsigned int            component;
+          double                  squared_distance;
+
+          template <class Archive>
+          void
+          serialize(Archive &ar, const unsigned int /*version*/)
+          {
+            ar &dof_index;
+            ar &evaluation_point_rank;
+            ar &evaluation_point_index;
+            ar &component;
+            ar &squared_distance;
+          }
         };
 
         /**
