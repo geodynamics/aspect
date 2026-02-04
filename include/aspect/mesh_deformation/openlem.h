@@ -63,14 +63,14 @@ namespace openlem
           }
       }
 
-      vector<openlem::PointValue<double> > findDeltas ( double dt )
+      vector<openlem::PointValue<double>> findDeltas ( double dt )
       {
         return emplaceSediments(dt);
       }
 
-      vector<openlem::PointValue<double> > emplaceSediments ( double dt )
+      vector<openlem::PointValue<double>> emplaceSediments ( double dt )
       {
-        vector <PointValue<double> >  delta;
+        vector <PointValue<double>>  delta;
         for ( int i = 0; i < m; ++i )
           for ( int j = 0; j < n; ++j )
             if ( getNode(i,j)->b & 2 )
@@ -102,7 +102,7 @@ namespace openlem
             double tmp;
             double vd = 0;
             Point p = delta[i].p;
-            vector<PointValue<float> >::iterator  it = offset.begin();
+            vector<PointValue<float>>::iterator  it = offset.begin();
             while ( it != offset.end() )
               {
                 if ( (tmp=getNode(p)->h+v) <= getNode(p)->l )
@@ -214,9 +214,9 @@ namespace openlem
   class Connector
   {
     public:
-      double  hscale, x0, y0, alpha, dx0, dy0, dalpha;
+      double  hscale, x0, y0, alpha;
       vector<vector<double>>  x, y, vx, vy, vz;
-      OceanGrid  *g;
+      Grid<>  *g;
 
       Connector ( OceanGrid *g, double hscale = 1, double x0 = 0, double y0 = 0, double alpha = 0 )
       {
@@ -226,7 +226,6 @@ namespace openlem
         this->x0 = x0;
         this->y0 = y0;
         this->alpha = alpha;
-        dx0 = dy0 = dalpha = 0;
         x.resize(g->m);
         for ( int i = 0; i < g->m; ++i )  x[i].resize(g->n);
         y.resize(g->m);
@@ -237,8 +236,14 @@ namespace openlem
         for ( int i = 0; i < g->m; ++i )  vy[i].resize(g->n);
         vz.resize(g->m);
         for ( int i = 0; i < g->m; ++i )  vz[i].resize(g->n);
-
-        updateXY();
+        double  c = cos(alpha);
+        double  s = sin(alpha);
+        for ( int i = 0; i < g->m; ++i )
+          for ( int j = 0; j < g->n; ++j )
+            {
+              x[i][j] = x0 + hscale*(c*g->getNode(i,j)->x-s*g->getNode(i,j)->y);
+              y[i][j] = y0 + hscale*(s*g->getNode(i,j)->x+c*g->getNode(i,j)->y);
+            }
       }
 
       void updateXY()
@@ -258,7 +263,45 @@ namespace openlem
             }
       }
 
-      void convertVelocities(bool minimize_advection = true)
+      void update ( double dt )
+      {
+        int  n = 0;
+        double  isum = 0, jsum = 0, xsum = 0, ysum = 0, xi = 0, xj = 0, yi = 0, yj = 0;
+        for ( int i = 0; i < g->m; ++i )
+          for ( int j = 0; j < g->n; ++j )
+            {
+              x[i][j] += vx[i][j]*dt;
+              y[i][j] += vy[i][j]*dt;
+              if ( g->getNode(i,j)->b == 0 )
+                {
+                  ++n;
+                  isum += i;
+                  jsum += j;
+                  xsum += x[i][j];
+                  ysum += y[i][j];
+                  xi += x[i][j]*i;
+                  xj += x[i][j]*j;
+                  yi += y[i][j]*i;
+                  yj += y[i][j]*j;
+                }
+            }
+        double  dom = (yi*n-ysum*isum)-(xj*n-xsum*jsum);
+        double  den = (xi*n-xsum*isum)+(yj*n-ysum*jsum);
+//    alpha = atan2(dom,den);
+//    printf("%e\n",alpha);
+        double  c = cos(alpha);
+        double  s = sin(alpha);
+        for ( int i = 0; i < g->m; ++i )
+          for ( int j = 0; j < g->n; ++j )
+            {
+              g->getNode(i,j)->x = (c*(x[i][j]-x0)+s*(y[i][j]-y0))/hscale;
+              g->getNode(i,j)->y = (-s*(x[i][j]-x0)+c*(y[i][j]-y0))/hscale;
+              g->getNode(i,j)->u = vz[i][j];
+            }
+        g->computeCellSizes();
+      }
+
+      /*void convertVelocities(bool minimize_advection = true)
       {
 
         //todo: add and substract 4 of b
@@ -272,14 +315,14 @@ namespace openlem
           for ( int j = 0; j < g->n; ++j )
             if (!std::isnan(vx[i][j]))
               {
-// Convert velocities to OpenLEM coordinate system
+      // Convert velocities to OpenLEM coordinate system
                 double  tmp = vx[i][j];
                 vx[i][j] = (c*vx[i][j]+s*vy[i][j])/hscale;;
                 vy[i][j] = (-s*tmp+c*vy[i][j])/hscale;
 
                 AssertThrow(!std::isnan(vx[i][j]) && !std::isnan(vy[i][j]),
                             aspect::ExcMessage("vx and/or vy are nan at " + std::to_string(i) + ":" + std::to_string(j) + ", vxx:y = "  + std::to_string(vx[i][j]) + ":" + std::to_string(vy[i][j])));
-// Only continental area
+      // Only continental area
                 if ( g->getNode(i,j)->b == 0 )
                   {
                     ++n;
@@ -368,9 +411,9 @@ namespace openlem
         //          std::cout << "residual x:y = " << i << ":" << j << " = "<< vx[i][j] << " : " << vy[i][j] << std::endl;
         //        }
         //    }
-      }
+      }*/
 
-      void computeUpliftRate()
+      /*void computeUpliftRate()
       {
         std::cout << "connector computeUpliftRate" << std::endl;
         for ( int i = 0; i < g->m; ++i )
@@ -400,7 +443,7 @@ namespace openlem
         alpha += dalpha*dt;
         //std::cout << "connector updateCoordinatesystem x0:y0 = " << x0 << ":" << y0 << ", dx0:dy0 = " << dx0 << ":" << dy0 << ", dt = " << dt << ", alpha = " << alpha << std::endl;
         updateXY();
-      }
+      }*/
 
       double interpolation(double x, double y, const std::vector<std::vector<double>> &interperolat, const std::vector<std::vector<double>> &interperolat2,  double dx, double dy, double origin_x, double origin_y) const
       {

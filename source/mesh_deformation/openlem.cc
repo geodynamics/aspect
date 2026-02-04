@@ -64,7 +64,7 @@ namespace aspect
 
         // Get the deformation type names called for each boundary.
         std::map<types::boundary_id, std::vector<std::string>> mesh_deformation_boundary_indicators_map
-                                                            = this->get_mesh_deformation_handler().get_active_mesh_deformation_names();
+          = this->get_mesh_deformation_handler().get_active_mesh_deformation_names();
 
         // Loop over each mesh deformation boundary, and make sure openlem is only called on the surface.
         for (const types::boundary_id id : mesh_deformation_boundary_ids)
@@ -408,7 +408,7 @@ namespace aspect
       std::vector<std::vector<Tensor<1,dim>>> openlem_mesh_velocities(openlem_nx,std::vector<Tensor<1,dim>>(openlem_ny, invalid_velocity));
       //std::vector<std::vector<Point<dim>>> mesh_velocity_locations(openlem_nx,std::vector<Point<dim>>(openlem_ny));
       //std::vector<std::vector<double>> mesh_velocity_distances(openlem_nx,std::vector<double>(openlem_ny));
-      aspect_mesh_z = std::vector<std::vector<double>>(aspect_nx,std::vector<double>(aspect_ny,std::numeric_limits<double>::signaling_NaN()));
+      aspect_mesh_z = std::vector<std::vector<double>>(aspect_nx,std::vector<double>(aspect_ny,std::numeric_limits<double>::quiet_NaN()));
 
 
       std::vector<std::vector<std::vector<Tensor<1,dim>>>> mesh_velocities_vector;
@@ -870,10 +870,10 @@ namespace aspect
                 connector.vz[x_i][y_i] =  openlem_mesh_velocities[x_i][y_i][2];//*100000;
               }
           //connector.write_vtk(grid_extent[dim-1].second,this->get_timestep_number(), 0.0, dirname  , "_preconvert");
-          connector.convertVelocities(openlem_minimize_advection);
+          //connector.convertVelocities(openlem_minimize_advection);
           //connector.write_vtk(grid_extent[dim-1].second,this->get_timestep_number(), 0.0, dirname  , "_postconvert");
           //connector.write_vtk(grid_extent[dim-1].second, this->get_timestep_number() , "_postconvert");
-          connector.computeUpliftRate();
+          //connector.computeUpliftRate();
           //connector.write_vtk(grid_extent[dim-1].second,this->get_timestep_number(), 0.0, dirname  , "_postuplift");
           //connector.write_vtk(grid_extent[dim-1].second, this->get_timestep_number() , "_postuplift");
           // Define all nodes with non-positive elevations (here, the ocean around the
@@ -1202,7 +1202,7 @@ namespace aspect
 
     template <int dim>
     std::vector<std::vector<double>>
-                                  OpenLEM<dim>::get_aspect_values() const
+    OpenLEM<dim>::get_aspect_values() const
     {
 
       /*
@@ -1343,16 +1343,19 @@ namespace aspect
         for (unsigned int openlem_iteration = 0; openlem_iteration < openlem_iterations; ++openlem_iteration)//openlem_iterations; ++openlem_iteration)
           {
             //std::cout << "before = " << (grid.getNode(5,7))->h << std::endl;
-            grid.computeWaterLevel();
-            grid.clearOceans();
+
+            //grid.computeWaterLevel();
+            //grid.clearOceans();
+            connector.update (openlem_timestep_in_years);
             grid.markOcean(deepest_point, sea_level);
             int nc = grid.computeFlowDirection();
             double ch = grid.erode(openlem_timestep_in_years);
-            grid.findDeltas(openlem_timestep_in_years);
+            //grid.findDeltas(openlem_timestep_in_years);
+            grid.emplaceSediments(openlem_timestep_in_years);
             grid.diffuse(openlem_timestep_in_years);
             printf("it: %i, Changes in flow direction: %i, Maximum elevation change: %e; ",openlem_iteration,nc,ch);
             unsigned int aspect_timestep_number = this->get_timestep_number();
-            connector.updateCoordinateSystem (openlem_timestep_in_years);
+            //connector.updateCoordinateSystem (openlem_timestep_in_years);
             //connector.write_vtk(grid_extent[dim-1].second, aspect_timestep_number*10000+openlem_iteration,dirname);
             //std::cout << "after = " << (grid.getNode(5,7))->h << std::endl;
             //openlem_execute_step_();
