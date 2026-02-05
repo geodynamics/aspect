@@ -107,6 +107,24 @@ namespace aspect
         compute_initial_deformation_on_boundary(const types::boundary_id boundary_indicator,
                                                 const Point<dim> &position) const;
 
+
+        /**
+         * A function that creates constraints for the initial deformation of the mesh.
+         *
+         * This function gives an alternative way to determine the initial deformation
+         * instead of using the compute_initial_deformation_on_boundary function. The
+         * default implementation of this function calls compute_initial_deformation_on_boundary()
+         * with the coordinates of each point on the boundary. If you need lower level control
+         * over the initial deformation or it is more efficient to provide constraints directly,
+         * override this function.
+         */
+        virtual
+        void
+        compute_initial_deformation_as_constraints(const Mapping<dim> &mapping,
+                                                   const DoFHandler<dim> &mesh_deformation_dof_handler,
+                                                   const types::boundary_id boundary_indicator,
+                                                   AffineConstraints<double> &constraints) const;
+
         /**
          * A function that creates constraints for the velocity of certain mesh
          * vertices (e.g. the surface vertices) for a specific set of boundaries.
