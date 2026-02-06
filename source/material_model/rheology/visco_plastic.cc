@@ -153,7 +153,7 @@ namespace aspect
           edot_ii = ref_strain_rate;
         else
           // Calculate the square root of the second moment invariant for the deviatoric strain rate tensor.
-          edot_ii = std::max(std::sqrt(std::max(-second_invariant(deviator(in.strain_rate[i])), 0.)),
+          edot_ii = std::max(std::sqrt(std::max(-Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(Utilities::Tensors::consistent_deviator(in.strain_rate[i])), 0.)),
                              min_strain_rate);
 
         // Calculate viscosities for each of the individual compositional phases
@@ -320,13 +320,14 @@ namespace aspect
                            ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
                                       "not filled by the caller."));
 
-                    const SymmetricTensor<2, dim> effective_strain_rate = elastic_rheology.calculate_viscoelastic_strain_rate(in.strain_rate[i],
+                    const SymmetricTensor<2, dim> effective_strain_rate =
+                      elastic_rheology.calculate_viscoelastic_strain_rate(Utilities::Tensors::consistent_deviator(in.strain_rate[i]),
                                                                           stress_0_advected,
                                                                           stress_old,
                                                                           non_yielding_viscosity,
                                                                           elastic_shear_modulus);
 
-                    effective_edot_ii = std::max(std::sqrt(std::max(-second_invariant(effective_strain_rate), 0.)),
+                    effective_edot_ii = std::max(std::sqrt(std::max(-Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(effective_strain_rate), 0.)),
                                                  min_strain_rate);
                   }
               }
@@ -479,16 +480,16 @@ namespace aspect
                    ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
                               "not filled by the caller."));
 
-            const SymmetricTensor<2,dim> deviatoric_strain_rate = deviator(in.strain_rate[i]);
+            const SymmetricTensor<2,dim> current_strain_rate = in.strain_rate[i];
 
             // For each independent component, compute the derivative.
             for (unsigned int component = 0; component < SymmetricTensor<2,dim>::n_independent_components; ++component)
               {
                 const TableIndices<2> strain_rate_indices = SymmetricTensor<2,dim>::unrolled_to_component_indices (component);
 
-                const double strain_rate_difference = std::max(std::fabs(deviatoric_strain_rate[strain_rate_indices]), min_strain_rate)
+                const double strain_rate_difference = std::max(std::fabs(current_strain_rate[strain_rate_indices]), min_strain_rate)
                                                       * finite_difference_accuracy;
-                const SymmetricTensor<2,dim> forward_strain_rate = deviatoric_strain_rate
+                const SymmetricTensor<2,dim> forward_strain_rate = current_strain_rate
                                                                    + strain_rate_difference * Utilities::nth_basis_for_symmetric_tensors<dim>(component);
 
                 in_derivatives.strain_rate[i] = forward_strain_rate;
@@ -529,7 +530,7 @@ namespace aspect
             in_derivatives.pressure[i] = forward_pressure;
 
             // Modify the in_derivatives object again to take the original strain rate.
-            in_derivatives.strain_rate[i] = in.strain_rate[i];
+            in_derivatives.strain_rate[i] = current_strain_rate;
 
             const IsostrainViscosities forward_isostrain_values =
               calculate_isostrain_viscosities(in_derivatives, i, volume_fractions,

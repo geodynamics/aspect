@@ -194,9 +194,15 @@ namespace aspect
 
         // Derivative terms related to the Newton solver
         VectorizedArray<number> deta_deps_times_sym_grad_u(0.);
-        VectorizedArray<number> eps_times_sym_grad_u(0.);
         VectorizedArray<number> deta_dp_times_p(0.);
-        if (cell_data->enable_newton_derivatives)
+        VectorizedArray<number> eps_times_sym_grad_u(0.);
+        VectorizedArray<number> eps_times_sym_grad_u_JxW(0.);
+        VectorizedArray<number> theta_times_div_u(0.);
+        VectorizedArray<number> theta_times_div_u_JxW(0.);
+
+        // Pre-compute the averaged values
+        if (cell_data->enable_newton_derivatives
+            && cell_data->average_newton_factors)
           {
             SymmetricTensor<2,dim,VectorizedArray<number>> sym_grad_u;
             VectorizedArray<number> val_p;
@@ -208,7 +214,29 @@ namespace aspect
                                               * sym_grad_u;
                 deta_dp_times_p += cell_data->newton_factor_wrt_pressure_table(cell,q) * val_p;
                 if (cell_data->symmetrize_newton_system)
-                  eps_times_sym_grad_u += cell_data->strain_rate_table(cell,q) * sym_grad_u;
+                  {
+                    // The symmetrization is more complicated than it looks:
+                    // The averaged Newton term is expressed as
+                    // 2 (\sum_q JxW_q symgrad_phi_Iq : epsilon_q) (\sum_r w_r deta_depsilon_r : symgrad_phi_Jr)
+                    // when symmetrized, it becomes
+                    // (\sum_q JxW_q symgrad_phi_Iq : epsilon_q) (\sum_r w_r deta_depsilon_r : symgrad_phi_Jr) +
+                    // (\sum_r w_r symgrad_phi_Ir : deta_depsilon_r) (\sum_q JxW_q epsilon_q : symgrad_phi_Jq)
+                    // Let us focus on the second term. In the matrix-free framework, we should submit a
+                    // symmetric tensor for each quadrature point q to be multiplied by the test function
+                    // symgrad_phi_Iq and the quadrature weight JxW_q. In order to do so, we first rewrite the
+                    // second term by swapping q and r:
+                    // \sum_q\sum_r JxW_r w_q (symgrad_phi_Iq : deta_depsilon_q) (epsilon_r : symgrad_phi_Jr)
+                    // In the above expression, the test function is separated out, but the quadrature weight
+                    // is not. To separate JxW_q, we further rewrite the second term by
+                    // \sum_q\sum_r JxW_q (JxW_r / JxW_q) w_q (symgrad_phi_Iq : deta_depsilon_q) (epsilon_r : symgrad_phi_Jr)
+                    // Thus, the term to be submitted for each quadrature point q is
+                    // \sum_r (JxW_r / JxW_q) w_q deta_depsilon_q (epsilon_r : symgrad_phi_Jr)
+                    // That is the reason why we need the term (epsilon_r : symgrad_phi_Jr) JxW_r.
+                    eps_times_sym_grad_u_JxW += cell_data->strain_rate_table(cell,q) * sym_grad_u * u_eval.JxW(q);
+                    // The same goes for the term corresponding to compressibility/dilation
+                    if (cell_data->is_compressible || cell_data->enable_prescribed_dilation)
+                      theta_times_div_u_JxW += trace(cell_data->strain_rate_table(cell,q)) * trace(sym_grad_u) * u_eval.JxW(q);
+                  }
               }
           }
 
@@ -248,6 +276,20 @@ namespace aspect
             // Add the Newton derivatives if required.
             if (cell_data->enable_newton_derivatives)
               {
+                if (cell_data->average_newton_factors)
+                  {
+                    if (cell_data->symmetrize_newton_system)
+                      eps_times_sym_grad_u = eps_times_sym_grad_u_JxW / u_eval.JxW(q);
+                  }
+                else
+                  {
+                    deta_deps_times_sym_grad_u = cell_data->newton_factor_wrt_strain_rate_table(cell,q)
+                                                 * sym_grad_u;
+                    deta_dp_times_p = cell_data->newton_factor_wrt_pressure_table(cell,q) * val_p;
+                    if (cell_data->symmetrize_newton_system)
+                      eps_times_sym_grad_u = cell_data->strain_rate_table(cell,q) * sym_grad_u;
+                  }
+
                 velocity_terms +=
                   ( cell_data->symmetrize_newton_system ?
                     ( cell_data->strain_rate_table(cell,q) * deta_deps_times_sym_grad_u +
@@ -256,15 +298,37 @@ namespace aspect
                   +
                   2. * cell_data->strain_rate_table(cell,q) * deta_dp_times_p;
 
-                if (cell_data->enable_prescribed_dilation)
+                if (cell_data->is_compressible ||
+                    cell_data->enable_prescribed_dilation)
                   {
-                    pressure_terms += ( ( cell_data->dilation_derivative_wrt_strain_rate_table(cell,q)
-                                          * sym_grad_u )
-                                        +
-                                        ( cell_data->dilation_derivative_wrt_pressure_table(cell,q)
-                                          * cell_data->pressure_scaling * val_p )
-                                      )
-                                      * cell_data->pressure_scaling;
+                    constexpr number one_third = 1.0 / 3.0;
+                    if (cell_data->symmetrize_newton_system)
+                      {
+                        if (cell_data->average_newton_factors)
+                          theta_times_div_u = theta_times_div_u_JxW / u_eval.JxW(q);
+                        else
+                          theta_times_div_u = trace(cell_data->strain_rate_table(cell,q)) * div_u;
+
+                        velocity_terms -= one_third * cell_data->newton_factor_wrt_strain_rate_table(cell,q) * theta_times_div_u;
+                        for (unsigned int d = 0; d < dim; ++d)
+                          velocity_terms[d][d] -= one_third * trace(cell_data->strain_rate_table(cell,q)) * deta_deps_times_sym_grad_u;
+                      }
+                    else
+                      {
+                        for (unsigned int d = 0; d < dim; ++d)
+                          velocity_terms[d][d] -= 2.0 * one_third * trace(cell_data->strain_rate_table(cell,q)) * deta_deps_times_sym_grad_u;
+                      }
+
+                    if (cell_data->enable_prescribed_dilation)
+                      {
+                        pressure_terms += ( ( cell_data->dilation_derivative_wrt_strain_rate_table(cell,q)
+                                              * sym_grad_u )
+                                            +
+                                            ( cell_data->dilation_derivative_wrt_pressure_table(cell,q)
+                                              * cell_data->pressure_scaling * val_p )
+                                          )
+                                          * cell_data->pressure_scaling;
+                      }
                   }
               }
 

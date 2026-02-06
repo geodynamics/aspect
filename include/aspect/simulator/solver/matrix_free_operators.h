@@ -123,6 +123,11 @@ namespace aspect
       bool apply_stabilization_free_surface_faces;
 
       /**
+       * If true, average the Newton factors in each cell.
+       */
+      bool average_newton_factors;
+
+      /**
        * Table which stores viscosity values for each cell.
        *
        * If the second dimension is of size 1, the viscosity is
