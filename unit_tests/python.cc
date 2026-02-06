@@ -21,18 +21,9 @@
 #include "common.h"
 #include <aspect/utilities.h>
 
-#ifdef ASPECT_WITH_PYTHON
+#include <aspect/python_helper.h>
 
-// Python does not like it if this macro is already defined. This happens at
-// least in some versions of Trilinos and can trigger only with certain unity
-// build options:
-#ifdef HAVE_SYS_TIME_H
-#  undef HAVE_SYS_TIME_H
-#endif
-#define PY_SSIZE_T_CLEAN
-#include <Python.h>
-#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
-#include <numpy/arrayobject.h>
+#ifdef ASPECT_WITH_PYTHON
 
 TEST_CASE("Utilities::python-string")
 {
@@ -45,6 +36,20 @@ TEST_CASE("Utilities::python-string")
   PyObject *obj = PyEval_EvalCode(code_obj, global_dict, local_dict);
   long result = PyLong_AsLong(obj);
   REQUIRE(result == 2);
+}
+
+TEST_CASE("Utilities::python-numpy-array1")
+{
+  using namespace dealii;
+
+  const std::vector<double> x = {1.0, 2.0, 3.0};
+  PyObject *arr = PythonHelper::vector_to_numpy_object(x);
+  ArrayView<double> view = PythonHelper::numpy_to_array_view(arr);
+  REQUIRE(view.size() == 3);
+  REQUIRE(view[0] == 1.0);
+  REQUIRE(view[1] == 2.0);
+  REQUIRE(view[2] == 3.0);
+  Py_DECREF(arr);
 }
 
 #endif
