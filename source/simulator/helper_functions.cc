@@ -2599,10 +2599,17 @@ namespace aspect
   Simulator<dim>::compute_initial_newton_residual()
   {
     // Store the values of current_linearization_point to be able to restore it later.
-    LinearAlgebra::BlockVector temp_linearization_point = current_linearization_point;
-
-    // Set the velocity initial guess to zero.
-    current_linearization_point.block(introspection.block_indices.velocities) = 0;
+    // We will want to set the velocity component of the current_linearization_points
+    // to a zero vector until the end of the function,
+    // which is most efficiently done by creating the
+    // temp_linearization_point as a zero vector, swapping contents, and at the end
+    // of the function, swapping things back:
+    LinearAlgebra::Vector temp_velocity_linearization_point
+    (introspection.index_sets.system_partitioning[introspection.block_indices.velocities],
+     introspection.index_sets.system_relevant_partitioning[introspection.block_indices.velocities],
+     mpi_communicator);
+    temp_velocity_linearization_point
+    .swap(current_linearization_point.block(introspection.block_indices.velocities));
 
     // Rebuild the whole system to compute the rhs.
     assemble_newton_stokes_system = true;
@@ -2623,7 +2630,9 @@ namespace aspect
     const double initial_newton_residual_p = system_rhs.block(introspection.block_indices.pressure).l2_norm();
     const double initial_newton_residual = std::sqrt(initial_newton_residual_vel * initial_newton_residual_vel + initial_newton_residual_p * initial_newton_residual_p);
 
-    current_linearization_point = temp_linearization_point;
+    // Swap old content back in:
+    current_linearization_point.block(introspection.block_indices.velocities)
+    .swap(temp_velocity_linearization_point);
 
     pcout << "   Initial Newton Stokes residual = " << initial_newton_residual << ", v = " << initial_newton_residual_vel << ", p = " << initial_newton_residual_p << std::endl << std::endl;
     return initial_newton_residual;
