@@ -43,13 +43,12 @@ TEST_CASE("Utilities::python-numpy-array1")
   using namespace dealii;
 
   const std::vector<double> x = {1.0, 2.0, 3.0};
-  PyObject *arr = PythonHelper::vector_to_numpy_object(x);
-  ArrayView<double> view = PythonHelper::numpy_to_array_view(arr);
+  auto arr = aspect::PythonHelper::vector_to_numpy_object(x);
+  ArrayView<double> view = aspect::PythonHelper::numpy_to_array_view(arr.get());
   REQUIRE(view.size() == 3);
   REQUIRE(view[0] == 1.0);
   REQUIRE(view[1] == 2.0);
   REQUIRE(view[2] == 3.0);
-  Py_DECREF(arr);
 }
 
 #endif

@@ -34,11 +34,11 @@ int f()
   AssertThrow(pModule != nullptr, dealii::ExcMessage("Failed to load Python module"));
 
   std::vector<double> x = {1.0, 2.0, 3.0};
-  PyObject *arr = PythonHelper::vector_to_numpy_object(x);
+  auto arr = aspect::PythonHelper::vector_to_numpy_object(x);
 
   PyObject *pFunc = PyObject_GetAttrString(pModule, "update");
   Assert(pFunc != nullptr, dealii::ExcMessage("update() function not found."));
-  PyObject *pArgs = PyTuple_Pack(2, PyFloat_FromDouble(42.0), arr);
+  PyObject *pArgs = PyTuple_Pack(2, PyFloat_FromDouble(42.0), arr.get());
 
   PyObject *result = PyObject_CallObject(pFunc, pArgs);
   Assert(result != nullptr, dealii::ExcMessage("Python call to update() failed."));
@@ -46,8 +46,6 @@ int f()
   Assert(result_double == 21.0, dealii::ExcMessage("Incorrect result."));
   std::cout << "result: " << result_double << std::endl;
 
-
-  Py_DECREF(arr);
   Py_DECREF(pArgs);
   Py_DECREF(pFunc);
 

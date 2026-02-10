@@ -45,7 +45,7 @@
 // the ASPECT executable. This will be used by numpy to declare a static member
 // variable that will be initialized using the import_array() function (see below).
 #ifndef PY_ARRAY_UNIQUE_SYMBOL
-#define PY_ARRAY_UNIQUE_SYMBOL ASPECT_ARRAY_API
+#  define PY_ARRAY_UNIQUE_SYMBOL ASPECT_ARRAY_API
 #endif
 
 // NumPY API requires a call to import_array() to be made before usage
@@ -56,7 +56,7 @@
 // therefore define NO_IMPORT_ARRAY that asks numpy to skip defining
 // import_array().
 #ifndef ASPECT_NUMPY_DEFINE_API
-#define NO_IMPORT_ARRAY
+#  define NO_IMPORT_ARRAY
 #endif
 
 #include <numpy/arrayobject.h>
@@ -64,42 +64,54 @@
 // Clean up any of the macros defined above. This is important if we
 // are doing a unity build:
 #ifdef ASPECT_NUMPY_DEFINE_API
-#undef ASPECT_NUMPY_DEFINE_API
+#  undef ASPECT_NUMPY_DEFINE_API
 #endif
 #ifdef NO_IMPORT_ARRAY
-#undef NO_IMPORT_ARRAY
+#  undef NO_IMPORT_ARRAY
 #endif
 
-namespace PythonHelper
+namespace aspect
 {
-  /**
-   * Convert a std::vector<double> to a numpy array.
-   * @param[in] vec The vector to convert.
-   * @return A PyObject* to the numpy array.
-   */
-  inline PyObject *vector_to_numpy_object(const std::vector<double> &vec)
+  namespace PythonHelper
   {
-    npy_intp size = static_cast<npy_intp>(vec.size());
-    if (size == 0)
-      return PyArray_SimpleNew(1, &size, NPY_DOUBLE);
-    double *data = const_cast<double *>(vec.data());
-    return PyArray_SimpleNewFromData(1, &size, NPY_DOUBLE, data);
+    /**
+     * Convert a std::vector<double> to a numpy array.
+     *
+     * The caller is responsible for decrementing the reference count of the returned PyObject once
+     * it is no longer needed.
+     * @param[in] vec The vector to convert.
+     * @return A PyObject* to the numpy array inside a std::unique_ptr.
+     */
+    inline
+    std::unique_ptr<PyObject, void(*)(PyObject *)> vector_to_numpy_object(const std::vector<double> &vec)
+    {
+      const npy_intp size = static_cast<npy_intp>(vec.size());
+
+      auto deleter = [](PyObject *obj)
+      {
+        Py_DECREF(obj);
+      };
+      if (size == 0)
+        return std::unique_ptr<PyObject, void(*)(PyObject *)>(PyArray_SimpleNew(1, &size, NPY_DOUBLE), deleter);
+      double *data = const_cast<double *>(vec.data());
+      return std::unique_ptr<PyObject, void(*)(PyObject *)>(PyArray_SimpleNewFromData(1, &size, NPY_DOUBLE, data), deleter);
+    }
+
+
+
+    /**
+     * Access the contents of a numpy array (PyObject*) using an ArrayView<double>.
+     * The PyObject must remain valid while the view is in use.
+     */
+    inline dealii::ArrayView<double> numpy_to_array_view(PyObject *obj)
+    {
+      AssertThrow(PyArray_Check(obj), dealii::ExcMessage("Expected a numpy array"));
+      PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
+      return dealii::ArrayView<double>(static_cast<double *>(PyArray_DATA(arr)),
+                                       static_cast<size_t>(PyArray_SIZE(arr)));
+    }
+
   }
-
-
-
-  /**
-   * Access the contents of a numpy array (PyObject*) using an ArrayView<double>.
-   * The PyObject must remain valid while the view is in use.
-   */
-  inline dealii::ArrayView<double> numpy_to_array_view(PyObject *obj)
-  {
-    AssertThrow(PyArray_Check(obj), dealii::ExcMessage("Expected a numpy array"));
-    PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
-    return dealii::ArrayView<double>(static_cast<double *>(PyArray_DATA(arr)),
-                                     static_cast<size_t>(PyArray_SIZE(arr)));
-  }
-
 }
 #endif
 
