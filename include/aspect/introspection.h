@@ -132,12 +132,6 @@ namespace aspect
       Introspection (const std::vector<VariableDeclaration<dim>> &variables,
                      const Parameters<dim> &parameters);
 
-      /**
-       * Destructor.
-       */
-      ~Introspection ();
-
-
 
       /**
        * @name Things that are independent of the current mesh
