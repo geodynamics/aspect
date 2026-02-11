@@ -633,7 +633,32 @@ namespace aspect
                    ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
                               "not filled by the caller."));
 
-            const double edot_ii = std::max(std::sqrt(std::max(-second_invariant(deviator(in.strain_rate[i])), 0.)),
+
+            // Get old (previous time step) velocity gradients to compute the ol strain-rate
+            std::vector<Point<dim>> quadrature_positions(in.n_evaluation_points());
+            quadrature_positions[i] = this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]);
+
+            std::vector<double> solution_values(this->get_fe().dofs_per_cell);
+            in.current_cell->get_dof_values(this->get_old_solution(),
+                                            solution_values.begin(),
+                                            solution_values.end());
+
+            // Only create the evaluator the first time we get here
+            if (!evaluator)
+              evaluator = std::make_unique<FEPointEvaluation<dim,dim>>(this->get_mapping(),
+                                                                        this->get_fe(),
+                                                                        update_gradients,
+                                                                        this->introspection().component_indices.velocities[0]);
+
+            // Initialize the evaluator for the old velocity gradients
+            evaluator->reinit(in.current_cell, quadrature_positions);
+            evaluator->evaluate(solution_values,
+                                EvaluationFlags::gradients);
+
+            const SymmetricTensor<2,dim> strain_rate = symmetrize (evaluator->get_gradient(i));
+
+
+            const double edot_ii = std::max(std::sqrt(std::max(-second_invariant(deviator(strain_rate)), 0.)),
                                             min_strain_rate);
             double delta_e_ii = edot_ii*this->get_timestep();
 
@@ -664,7 +689,6 @@ namespace aspect
             // as the values from the current linearization point are an extrapolation of the solution
             // from the old timesteps.
             // Prepare the field function and extract the old solution values at the current cell.
-            std::vector<Point<dim>> quadrature_positions(1,this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]));
 
             // Use a small_vector to avoid memory allocation if possible.
             small_vector<double> old_solution_values(this->get_fe().dofs_per_cell);
