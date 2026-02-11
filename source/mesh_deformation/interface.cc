@@ -190,6 +190,29 @@ namespace aspect
     template <int dim>
     void
     Interface<dim>::
+    compute_initial_deformation_as_constraints(const Mapping<dim> &mapping,
+                                               const DoFHandler<dim> &mesh_deformation_dof_handler,
+                                               const types::boundary_id boundary_indicator,
+                                               AffineConstraints<double> &constraints) const
+    {
+      Utilities::VectorFunctionFromVelocityFunctionObject<dim> vel
+      (dim,
+       [&] (const Point<dim> &x) -> Tensor<1,dim>
+      {
+        return this->compute_initial_deformation_on_boundary(boundary_indicator, x);
+      });
+
+      VectorTools::interpolate_boundary_values (mapping,
+                                                mesh_deformation_dof_handler,
+                                                boundary_indicator,
+                                                vel,
+                                                constraints);
+    }
+
+
+    template <int dim>
+    void
+    Interface<dim>::
     compute_velocity_constraints_on_boundary(const DoFHandler<dim> &/*mesh_deformation_dof_handler*/,
                                              AffineConstraints<double> &/*mesh_velocity_constraints*/,
                                              const std::set<types::boundary_id> &/*boundary_id*/) const
@@ -759,18 +782,11 @@ namespace aspect
               AffineConstraints<double> current_plugin_constraints(mesh_vertex_constraints.get_local_lines());
 #endif
 
-              Utilities::VectorFunctionFromVelocityFunctionObject<dim> vel
-              (dim,
-               [&] (const Point<dim> &x) -> Tensor<1,dim>
-              {
-                return deformation_object->compute_initial_deformation_on_boundary(boundary_id_and_deformation_objects.first, x);
-              });
-
-              VectorTools::interpolate_boundary_values (this->get_mapping(),
-                                                        mesh_deformation_dof_handler,
-                                                        boundary_id_and_deformation_objects.first,
-                                                        vel,
-                                                        current_plugin_constraints);
+              deformation_object->compute_initial_deformation_as_constraints(
+                this->get_mapping(),
+                mesh_deformation_dof_handler,
+                boundary_id_and_deformation_objects.first,
+                current_plugin_constraints);
 
               boundary_id_set.insert(boundary_id_and_deformation_objects.first);
 
