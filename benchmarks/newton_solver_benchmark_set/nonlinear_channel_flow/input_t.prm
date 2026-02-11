@@ -6,6 +6,19 @@ include $ASPECT_SOURCE_DIR/benchmarks/newton_solver_benchmark_set/nonlinear_chan
 
 set Output directory = output_t
 
+subsection Solver parameters
+  subsection Newton solver parameters
+    set Max pre-Newton nonlinear iterations = 3
+    set Nonlinear Newton solver switch tolerance = 1e-20
+    set Max Newton line search iterations = 5
+    set Maximum linear Stokes solver tolerance = 1e-2
+    set Use Newton residual scaling method = false
+    set Use Newton failsafe = false
+    set Stabilization preconditioner = SPD
+    set Stabilization velocity block = SPD
+  end
+end
+
 subsection Boundary velocity model
   # pressure bc: Prescribe a zero vertical velocity component on the vertical boundaries
   set Prescribed velocity boundary indicators = bottom x: function, top x: function

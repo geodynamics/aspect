@@ -1,0 +1,32 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Loading shared library <./libmesh_deformation_initial_constraints.debug.so>
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+Number of mesh deformation degrees of freedom: 162
+   Solving mesh displacement system... 6 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 17+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_initial_constraints/solution/solution-00000
+     RMS, max velocity:        7.12e-11 m/year, 1.89e-10 m/year
+     Topography min/max:       0 m, 1590 m
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------

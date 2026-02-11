@@ -352,12 +352,6 @@ namespace aspect
 
 
 
-  template <int dim>
-  Introspection<dim>::~Introspection ()
-    = default;
-
-
-
   namespace
   {
     std::vector<FEValuesExtractors::Scalar>
