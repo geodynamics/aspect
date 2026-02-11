@@ -270,6 +270,7 @@ namespace aspect
             system_matrix.block(1,0).vmult(ptmp,wtmp);
 
             dst=0;
+            solver_control.set_tolerance(1e-6*ptmp.l2_norm());
             solver.solve(pressure_laplace_matrix,
                          dst,
                          ptmp,
