@@ -1,0 +1,6 @@
+Improved: The mesh deformation solver now always uses
+the same polynomial degree as the Stokes velocity system.
+This improves accuracy for free surface problems and curved geometries
+by ensuring the mesh deformation is consistent with the Stokes discretization.
+<br>
+(Ninghui Tian, Rene Gassmoeller, Timo Heister, 2026/01/14)

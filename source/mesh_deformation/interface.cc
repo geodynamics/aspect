@@ -223,13 +223,10 @@ namespace aspect
     template <int dim>
     MeshDeformationHandler<dim>::MeshDeformationHandler (Simulator<dim> &simulator)
       : sim(simulator),  // reference to the simulator that owns the MeshDeformationHandler
-        mesh_deformation_fe (FE_Q<dim>(1),dim), // Q1 elements which describe the mesh geometry
+        mesh_deformation_fe (FE_Q<dim>(sim.parameters.stokes_velocity_degree),dim),
         mesh_deformation_dof_handler (sim.triangulation),
         include_initial_topography(false)
     {
-      // Now reset the mapping of the simulator to be something that captures mesh deformation in time.
-      sim.mapping = std::make_unique<MappingQ1Eulerian<dim, LinearAlgebra::Vector>> (mesh_deformation_dof_handler,
-                                                                                      mesh_displacements);
     }
 
 
@@ -261,6 +258,13 @@ namespace aspect
     void
     MeshDeformationHandler<dim>::initialize ()
     {
+      // For geometries with curved elements, higher-order mesh deformation
+      // is required for accurate representation
+      if (this->get_geometry_model().has_curved_elements())
+        AssertThrow(this->get_parameters().stokes_velocity_degree > 1,
+                    ExcMessage("For geometries with curved elements, the Stokes velocity polynomial degree "
+                               "must be greater than 1 to ensure accurate mesh deformation."));
+
       // In case we prescribed initial topography, we should take this into
       // account. However, it is not included in the mesh displacements,
       // so we need to fetch it separately.
@@ -935,10 +939,10 @@ namespace aspect
                                                                   ComponentMask(dim, true));
 #endif
       Amg_data.elliptic = true;
-      Amg_data.higher_order_elements = false;
+      Amg_data.higher_order_elements = this->get_parameters().stokes_velocity_degree > 1 ? true : false;
       Amg_data.smoother_sweeps = 2;
       Amg_data.aggregation_threshold = 0.02;
-      preconditioner_stiffness.initialize(mesh_matrix);
+      preconditioner_stiffness.initialize(mesh_matrix, Amg_data);
 
       // we solve with higher accuracy in the initial timestep:
       const double tolerance
@@ -950,8 +954,9 @@ namespace aspect
 
       try
         {
+          this->get_pcout() << "   Solving mesh displacement system... " << std::flush;
           cg.solve (mesh_matrix, solution, rhs, preconditioner_stiffness);
-          this->get_pcout() << "   Solving mesh displacement system... " << solver_control.last_step() <<" iterations."<< std::endl;
+          this->get_pcout() << solver_control.last_step() <<" iterations."<< std::endl;
         }
       catch (const std::exception &exc)
         {
@@ -992,6 +997,32 @@ namespace aspect
     template <int dim>
     void MeshDeformationHandler<dim>::compute_mesh_displacements_gmg()
     {
+      // We use the same polynomial degree for the mesh deformation as for the
+      // Stokes velocity. This ensures that we have consistent accuracy between
+      // the two physics solvers.
+      switch (this->get_parameters().stokes_velocity_degree)
+        {
+          case 1:
+            compute_mesh_displacements_gmg_for_degree<1>();
+            break;
+          case 2:
+            compute_mesh_displacements_gmg_for_degree<2>();
+            break;
+          case 3:
+            compute_mesh_displacements_gmg_for_degree<3>();
+            break;
+          default:
+            AssertThrow(false, ExcMessage("Unsupported polynomial degree (determined from Stokes velocity degree)!"));
+        }
+    }
+
+
+
+    template <int dim>
+    template <unsigned int mesh_deformation_fe_degree>
+    void MeshDeformationHandler<dim>::compute_mesh_displacements_gmg_for_degree()
+    {
+
       // Same as compute_mesh_displacements, but using matrix-free GMG
       // instead of matrix-based AMG.
 
@@ -1004,10 +1035,8 @@ namespace aspect
       // 3. Although this gmg solver is much faster than the amg solver, it's only tested for
       //    limited free surface cases.
 
-      Assert(mesh_deformation_fe.degree == 1, ExcNotImplemented());
       // To be efficient, the operations performed in the matrix-free implementation require
       // knowledge of loop lengths at compile time, which are given by the degree of the finite element.
-      const unsigned int mesh_deformation_fe_degree = 1;
 
       using SystemOperatorType = dealii::MatrixFreeOperators::
                                  LaplaceOperator<dim, mesh_deformation_fe_degree, mesh_deformation_fe_degree + 1, dim>;
@@ -1241,8 +1270,9 @@ namespace aspect
 
       try
         {
+          this->get_pcout() << "   Solving mesh displacement system... " << std::flush;
           cg.solve(laplace_operator, solution, rhs, preconditioner);
-          this->get_pcout() << "   Solving mesh displacement system... " << solver_control_mf.last_step() <<" iterations."<< std::endl;
+          this->get_pcout() << solver_control_mf.last_step() <<" iterations."<< std::endl;
         }
       catch (const std::exception &exc)
         {
@@ -1414,6 +1444,47 @@ namespace aspect
       // cells are created.
       DoFRenumbering::hierarchical (mesh_deformation_dof_handler);
 
+      // Determine the polynomial degree to use for the mapping.
+      unsigned int mapping_degree = mesh_deformation_fe.degree;
+
+      // If the geometry model has curved elements (e.g., spherical shells),
+      // ASPECT convention is to use at least a degree 4 mapping to ensure
+      // geometric accuracy.
+      // Even for box models (has_curved_elements is false), we keep
+      // mesh_deformation_fe.degree (usually 2, same as Stokes velocity),
+      // instead of forcing it down to 1, to correctly represent internal
+      // mesh curvature/deformation.
+      if (this->get_geometry_model().has_curved_elements())
+        mapping_degree = std::max(4u, mapping_degree);
+
+      // If necessary reset the mapping of the simulator to something
+      // that captures mesh deformation in time. This has to
+      // happen after we distribute the mesh_deformation DoFs
+      // above.
+      if (dynamic_cast<const MappingQEulerian<dim, LinearAlgebra::Vector>*>(&(this->get_mapping())) == nullptr)
+        {
+          sim.mapping.reset (new MappingQEulerian<dim, LinearAlgebra::Vector> (mapping_degree,
+                                                                               mesh_deformation_dof_handler,
+                                                                               mesh_displacements));
+
+          // Reset the simulator's mapping to a MappingQEulerian that captures mesh deformation over time.
+          // This must be done *after* distributing the mesh_deformation degrees of freedom (DoFs),
+          // because the mapping depends on those DoFs being set up correctly.
+          //
+          // Note that resetting the mapping changes the underlying pointer, which invalidates
+          // the ParticleHandler's internal non-owning pointer to the mapping. Therefore,
+          // we must reinitialize each particle handler here to ensure they use the updated mapping
+          // and avoid dangling references or errors.
+          //
+          // This design choice was made to correctly track mesh deformation in time,
+          // but it requires careful synchronization between the mesh deformation DoFs,
+          // the mapping, and the particle handlers.
+          for (auto &pm : sim.particle_managers)
+            pm.get_particle_handler().initialize(this->get_triangulation(),
+                                                 this->get_mapping(),
+                                                 pm.get_property_manager().get_n_property_components());
+        }
+
       if (this->is_stokes_matrix_free())
         {
           mesh_deformation_dof_handler.distribute_mg_dofs();
@@ -1450,7 +1521,7 @@ namespace aspect
           {
             object = std::make_unique<MappingQEulerian<dim,
             dealii::LinearAlgebra::distributed::Vector<double>>>(
-              /* degree = */ 1,
+              mapping_degree,
               mesh_deformation_dof_handler,
               level_displacements[level],
               level);

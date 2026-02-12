@@ -2,7 +2,7 @@
 Number of active cells: 160 (on 3 levels)
 Number of degrees of freedom: 2,977 (1,394+189+697+697)
 
-Number of mesh deformation degrees of freedom: 378
+Number of mesh deformation degrees of freedom: 1,394
    Solving mesh displacement system... 0 iterations.
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 0 iterations.
@@ -13,7 +13,7 @@ Number of mesh deformation degrees of freedom: 378
 Number of active cells: 88 (on 4 levels)
 Number of degrees of freedom: 1,877 (878+121+439+439)
 
-Number of mesh deformation degrees of freedom: 242
+Number of mesh deformation degrees of freedom: 878
    Solving mesh displacement system... 0 iterations.
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 0 iterations.
@@ -24,7 +24,7 @@ Number of mesh deformation degrees of freedom: 242
 Number of active cells: 112 (on 5 levels)
 Number of degrees of freedom: 2,354 (1,102+150+551+551)
 
-Number of mesh deformation degrees of freedom: 300
+Number of mesh deformation degrees of freedom: 1,102
    Solving mesh displacement system... 0 iterations.
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 0 iterations.
@@ -38,222 +38,222 @@ Number of mesh deformation degrees of freedom: 300
      RMS, max velocity:        0.398 m/year, 0.901 m/year
 
 *** Timestep 1:  t=347.273 years, dt=347.273 years
-   Solving mesh displacement system... 6 iterations.
+   Solving mesh displacement system... 5 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 10 iterations.
    Solving Stokes system (GMG)... 101+0 iterations.
 
    Postprocessing:
-     Topography min/max: -303.3 m, 148.6 m
+     Topography min/max: -303 m, 148.2 m
      RMS, max velocity:  0.362 m/year, 0.87 m/year
 
-*** Timestep 2:  t=707.133 years, dt=359.86 years
-   Solving mesh displacement system... 6 iterations.
+*** Timestep 2:  t=707.13 years, dt=359.857 years
+   Solving mesh displacement system... 5 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
    Solving Stokes system (GMG)... 122+0 iterations.
 
    Postprocessing:
-     Topography min/max: -605.3 m, 279.1 m
+     Topography min/max: -604.5 m, 278.4 m
      RMS, max velocity:  0.337 m/year, 0.832 m/year
 
-*** Timestep 3:  t=1083.77 years, dt=376.641 years
-   Solving mesh displacement system... 6 iterations.
+*** Timestep 3:  t=1083.76 years, dt=376.634 years
+   Solving mesh displacement system... 5 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
-   Solving Stokes system (GMG)... 95+0 iterations.
+   Solving Stokes system (GMG)... 96+0 iterations.
 
    Postprocessing:
-     Topography min/max: -900.4 m, 396.7 m
+     Topography min/max: -898.8 m, 395.7 m
      RMS, max velocity:  0.311 m/year, 0.782 m/year
 
-*** Timestep 4:  t=1484.47 years, dt=400.7 years
-   Solving mesh displacement system... 6 iterations.
+*** Timestep 4:  t=1484.45 years, dt=400.69 years
+   Solving mesh displacement system... 5 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
-   Solving Stokes system (GMG)... 95+0 iterations.
+   Solving Stokes system (GMG)... 156+0 iterations.
 
    Postprocessing:
-     Topography min/max: -1194 m, 504.2 m
+     Topography min/max: -1191 m, 503.1 m
      RMS, max velocity:  0.287 m/year, 0.733 m/year
 
-*** Timestep 5:  t=1911.77 years, dt=427.295 years
-   Solving mesh displacement system... 6 iterations.
+*** Timestep 5:  t=1911.73 years, dt=427.281 years
+   Solving mesh displacement system... 5 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
-   Solving Stokes system (GMG)... 148+0 iterations.
+   Solving Stokes system (GMG)... 146+0 iterations.
 
    Postprocessing:
-     Topography min/max: -1484 m, 601.6 m
+     Topography min/max: -1481 m, 600.4 m
      RMS, max velocity:  0.262 m/year, 0.673 m/year
 
-Number of active cells: 136 (on 5 levels)
-Number of degrees of freedom: 2,788 (1,306+176+653+653)
+Number of active cells: 148 (on 5 levels)
+Number of degrees of freedom: 3,026 (1,418+190+709+709)
 
-Number of mesh deformation degrees of freedom: 352
-*** Timestep 6:  t=2377.22 years, dt=465.455 years
+Number of mesh deformation degrees of freedom: 1,418
+*** Timestep 6:  t=2377.17 years, dt=465.432 years
+   Solving mesh displacement system... 5 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 9 iterations.
+   Solving Stokes system (GMG)... 102+0 iterations.
+
+   Postprocessing:
+     Topography min/max: -1767 m, 687.6 m
+     RMS, max velocity:  0.246 m/year, 0.656 m/year
+
+*** Timestep 7:  t=2854 years, dt=476.835 years
+   Solving mesh displacement system... 5 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 9 iterations.
+   Solving Stokes system (GMG)... 120+0 iterations.
+
+   Postprocessing:
+     Topography min/max: -2045 m, 761.4 m
+     RMS, max velocity:  0.228 m/year, 0.617 m/year
+
+*** Timestep 8:  t=3361.28 years, dt=507.28 years
+   Solving mesh displacement system... 5 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 9 iterations.
+   Solving Stokes system (GMG)... 83+0 iterations.
+
+   Postprocessing:
+     Topography min/max: -2320 m, 825.2 m
+     RMS, max velocity:  0.211 m/year, 0.58 m/year
+
+*** Timestep 9:  t=3901.19 years, dt=539.908 years
+   Solving mesh displacement system... 5 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 9 iterations.
+   Solving Stokes system (GMG)... 120+0 iterations.
+
+   Postprocessing:
+     Topography min/max: -2591 m, 879.1 m
+     RMS, max velocity:  0.197 m/year, 0.546 m/year
+
+*** Timestep 10:  t=4474.67 years, dt=573.482 years
+   Solving mesh displacement system... 5 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 9 iterations.
+   Solving Stokes system (GMG)... 102+0 iterations.
+
+   Postprocessing:
+     Topography min/max: -2852 m, 923.4 m
+     RMS, max velocity:  0.185 m/year, 0.515 m/year
+
+Number of active cells: 202 (on 5 levels)
+Number of degrees of freedom: 4,114 (1,930+254+965+965)
+
+Number of mesh deformation degrees of freedom: 1,930
+*** Timestep 11:  t=5082.84 years, dt=608.172 years
    Solving mesh displacement system... 6 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
+   Solving Stokes system (GMG)... 89+0 iterations.
+
+   Postprocessing:
+     Topography min/max: -3106 m, 958.8 m
+     RMS, max velocity:  0.177 m/year, 0.518 m/year
+
+*** Timestep 12:  t=5686.9 years, dt=604.06 years
+   Solving mesh displacement system... 5 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 8 iterations.
    Solving Stokes system (GMG)... 95+0 iterations.
 
    Postprocessing:
-     Topography min/max: -1772 m, 688.9 m
-     RMS, max velocity:  0.243 m/year, 0.643 m/year
+     Topography min/max: -3356 m, 985.4 m
+     RMS, max velocity:  0.168 m/year, 0.493 m/year
 
-*** Timestep 7:  t=2863.25 years, dt=486.029 years
+*** Timestep 13:  t=6322.04 years, dt=635.133 years
    Solving mesh displacement system... 5 iterations.
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 9 iterations.
-   Solving Stokes system (GMG)... 135+0 iterations.
-
-   Postprocessing:
-     Topography min/max: -2056 m, 765.3 m
-     RMS, max velocity:  0.224 m/year, 0.601 m/year
-
-*** Timestep 8:  t=3383.33 years, dt=520.083 years
-   Solving mesh displacement system... 5 iterations.
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 9 iterations.
-   Solving Stokes system (GMG)... 94+0 iterations.
-
-   Postprocessing:
-     Topography min/max: -2337 m, 831.5 m
-     RMS, max velocity:  0.207 m/year, 0.562 m/year
-
-*** Timestep 9:  t=3939.9 years, dt=556.564 years
-   Solving mesh displacement system... 5 iterations.
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 9 iterations.
-   Solving Stokes system (GMG)... 81+0 iterations.
-
-   Postprocessing:
-     Topography min/max: -2615 m, 887.2 m
-     RMS, max velocity:  0.192 m/year, 0.526 m/year
-
-*** Timestep 10:  t=4534.85 years, dt=594.955 years
-   Solving mesh displacement system... 5 iterations.
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 9 iterations.
-   Solving Stokes system (GMG)... 93+0 iterations.
-
-   Postprocessing:
-     Topography min/max: -2884 m, 932.9 m
-     RMS, max velocity:  0.179 m/year, 0.492 m/year
-
-Number of active cells: 178 (on 5 levels)
-Number of degrees of freedom: 3,638 (1,706+226+853+853)
-
-Number of mesh deformation degrees of freedom: 452
-*** Timestep 11:  t=5170.14 years, dt=635.282 years
-   Solving mesh displacement system... 6 iterations.
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 9 iterations.
-   Solving Stokes system (GMG)... 119+0 iterations.
-
-   Postprocessing:
-     Topography min/max: -3147 m, 969.2 m
-     RMS, max velocity:  0.174 m/year, 0.508 m/year
-
-*** Timestep 12:  t=5786.5 years, dt=616.359 years
-   Solving mesh displacement system... 6 iterations.
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 9 iterations.
-   Solving Stokes system (GMG)... 144+0 iterations.
-
-   Postprocessing:
-     Topography min/max: -3397 m, 993.6 m
-     RMS, max velocity:  0.165 m/year, 0.484 m/year
-
-*** Timestep 13:  t=6433.85 years, dt=647.353 years
-   Solving mesh displacement system... 6 iterations.
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 9 iterations.
-   Solving Stokes system (GMG)... 87+0 iterations.
-
-   Postprocessing:
-     Topography min/max: -3642 m, 1012 m
-     RMS, max velocity:  0.158 m/year, 0.461 m/year
-
-*** Timestep 14:  t=7113.57 years, dt=679.723 years
-   Solving mesh displacement system... 6 iterations.
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 9 iterations.
-   Solving Stokes system (GMG)... 91+0 iterations.
-
-   Postprocessing:
-     Topography min/max: -3881 m, 1024 m
-     RMS, max velocity:  0.152 m/year, 0.442 m/year
-
-*** Timestep 15:  t=7821.66 years, dt=708.089 years
-   Solving mesh displacement system... 6 iterations.
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 9 iterations.
-   Solving Stokes system (GMG)... 85+0 iterations.
-
-   Postprocessing:
-     Topography min/max: -4110 m, 1031 m
-     RMS, max velocity:  0.146 m/year, 0.424 m/year
-
-Number of active cells: 232 (on 5 levels)
-Number of degrees of freedom: 4,694 (2,202+290+1,101+1,101)
-
-Number of mesh deformation degrees of freedom: 580
-*** Timestep 16:  t=8560.86 years, dt=739.195 years
-   Solving mesh displacement system... 6 iterations.
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 9 iterations.
-   Solving Stokes system (GMG)... 61+0 iterations.
-
-   Postprocessing:
-     Topography min/max: -4331 m, 1035 m
-     RMS, max velocity:  0.141 m/year, 0.408 m/year
-
-*** Timestep 17:  t=9327.59 years, dt=766.731 years
-   Solving mesh displacement system... 6 iterations.
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 8 iterations.
-   Solving Stokes system (GMG)... 79+0 iterations.
-
-   Postprocessing:
-     Topography min/max: -4547 m, 1036 m
-     RMS, max velocity:  0.137 m/year, 0.393 m/year
-
-*** Timestep 18:  t=10123 years, dt=795.392 years
-   Solving mesh displacement system... 6 iterations.
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 8 iterations.
-   Solving Stokes system (GMG)... 73+0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-advect_mesh_vertically/solution/solution-00001
-     Topography min/max:       -4755 m, 1036 m
-     RMS, max velocity:        0.134 m/year, 0.38 m/year
-
-*** Timestep 19:  t=10945.4 years, dt=822.465 years
-   Solving mesh displacement system... 6 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system (GMG)... 78+0 iterations.
 
    Postprocessing:
-     Topography min/max: -4957 m, 1034 m
-     RMS, max velocity:  0.132 m/year, 0.373 m/year
+     Topography min/max: -3600 m, 1006 m
+     RMS, max velocity:  0.16 m/year, 0.469 m/year
 
-*** Timestep 20:  t=11783.6 years, dt=838.166 years
+*** Timestep 14:  t=6988.77 years, dt=666.735 years
+   Solving mesh displacement system... 5 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 8 iterations.
+   Solving Stokes system (GMG)... 76+0 iterations.
+
+   Postprocessing:
+     Topography min/max: -3837 m, 1020 m
+     RMS, max velocity:  0.154 m/year, 0.45 m/year
+
+*** Timestep 15:  t=7683.82 years, dt=695.047 years
+   Solving mesh displacement system... 5 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 8 iterations.
+   Solving Stokes system (GMG)... 80+0 iterations.
+
+   Postprocessing:
+     Topography min/max: -4066 m, 1029 m
+     RMS, max velocity:  0.148 m/year, 0.431 m/year
+
+Number of active cells: 226 (on 5 levels)
+Number of degrees of freedom: 4,539 (2,130+279+1,065+1,065)
+
+Number of mesh deformation degrees of freedom: 2,130
+*** Timestep 16:  t=8409.85 years, dt=726.033 years
    Solving mesh displacement system... 6 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
-   Solving Stokes system (GMG)... 75+0 iterations.
+   Solving Stokes system (GMG)... 68+0 iterations.
 
    Postprocessing:
-     Topography min/max: -5146 m, 1032 m
-     RMS, max velocity:  0.13 m/year, 0.365 m/year
+     Topography min/max: -4287 m, 1033 m
+     RMS, max velocity:  0.143 m/year, 0.418 m/year
 
-Number of active cells: 274 (on 5 levels)
-Number of degrees of freedom: 5,461 (2,562+337+1,281+1,281)
+*** Timestep 17:  t=9156.75 years, dt=746.9 years
+   Solving mesh displacement system... 5 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 8 iterations.
+   Solving Stokes system (GMG)... 69+0 iterations.
 
-Number of mesh deformation degrees of freedom: 674
+   Postprocessing:
+     Topography min/max: -4504 m, 1036 m
+     RMS, max velocity:  0.139 m/year, 0.403 m/year
+
+*** Timestep 18:  t=9932.56 years, dt=775.807 years
+   Solving mesh displacement system... 5 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 8 iterations.
+   Solving Stokes system (GMG)... 67+0 iterations.
+
+   Postprocessing:
+     Topography min/max: -4713 m, 1037 m
+     RMS, max velocity:  0.135 m/year, 0.389 m/year
+
+*** Timestep 19:  t=10736.2 years, dt=803.668 years
+   Solving mesh displacement system... 5 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 8 iterations.
+   Solving Stokes system (GMG)... 70+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-advect_mesh_vertically/solution/solution-00001
+     Topography min/max:       -4916 m, 1036 m
+     RMS, max velocity:        0.132 m/year, 0.377 m/year
+
+*** Timestep 20:  t=11566.3 years, dt=830.055 years
+   Solving mesh displacement system... 5 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 8 iterations.
+   Solving Stokes system (GMG)... 70+0 iterations.
+
+   Postprocessing:
+     Topography min/max: -5112 m, 1034 m
+     RMS, max velocity:  0.13 m/year, 0.367 m/year
+
+Number of active cells: 262 (on 5 levels)
+Number of degrees of freedom: 5,127 (2,406+315+1,203+1,203)
+
+Number of mesh deformation degrees of freedom: 2,406
 Termination requested by criterion: end step
 
 

@@ -2,7 +2,7 @@
 Number of active cells: 4,096 (on 7 levels)
 Number of degrees of freedom: 54,148 (33,282+4,225+16,641)
 
-Number of mesh deformation degrees of freedom: 8,450
+Number of mesh deformation degrees of freedom: 33,282
    Solving mesh displacement system... 0 iterations.
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 0 iterations.
@@ -13,7 +13,7 @@ Number of mesh deformation degrees of freedom: 8,450
 Number of active cells: 1,444 (on 8 levels)
 Number of degrees of freedom: 20,706 (12,722+1,623+6,361)
 
-Number of mesh deformation degrees of freedom: 3,246
+Number of mesh deformation degrees of freedom: 12,722
    Solving mesh displacement system... 0 iterations.
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 0 iterations.
@@ -41,44 +41,44 @@ Number of mesh deformation degrees of freedom: 3,246
      Topography min/max: 0 m, 0 m
 
 *** Timestep 1:  t=655.581 years, dt=655.581 years
-   Solving mesh displacement system... 11 iterations.
+   Solving mesh displacement system... 16 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 60+0 iterations.
 
    Postprocessing:
      RMS, max velocity:  0.438 m/year, 1 m/year
-     Topography min/max: -464.4 m, 509.8 m
+     Topography min/max: -463.4 m, 508.5 m
 
-*** Timestep 2:  t=1527.23 years, dt=871.645 years
-   Solving mesh displacement system... 11 iterations.
+*** Timestep 2:  t=1527.23 years, dt=871.646 years
+   Solving mesh displacement system... 16 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 61+0 iterations.
 
    Postprocessing:
      RMS, max velocity:  0.405 m/year, 0.953 m/year
-     Topography min/max: -641 m, 752.3 m
+     Topography min/max: -639.8 m, 743.9 m
 
-*** Timestep 3:  t=2468.73 years, dt=941.502 years
-   Solving mesh displacement system... 11 iterations.
+*** Timestep 3:  t=2468.73 years, dt=941.504 years
+   Solving mesh displacement system... 16 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 53+0 iterations.
 
    Postprocessing:
      RMS, max velocity:  0.393 m/year, 0.933 m/year
-     Topography min/max: -727.3 m, 907.2 m
+     Topography min/max: -726.1 m, 895.8 m
 
-*** Timestep 4:  t=3442.52 years, dt=973.793 years
-   Solving mesh displacement system... 11 iterations.
+*** Timestep 4:  t=3442.53 years, dt=973.795 years
+   Solving mesh displacement system... 16 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 50+0 iterations.
 
    Postprocessing:
      RMS, max velocity:  0.387 m/year, 0.923 m/year
-     Topography min/max: -773.3 m, 1009 m
+     Topography min/max: -772.1 m, 994.9 m
 
 Termination requested by criterion: end step
 

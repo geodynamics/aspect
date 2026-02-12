@@ -4,7 +4,7 @@ Loading shared library <./libbox_initial_mesh_deformation_periodic.debug.so>
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
-Number of mesh deformation degrees of freedom: 162
+Number of mesh deformation degrees of freedom: 578
    Solving mesh displacement system... 1 iterations.
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 0 iterations.
@@ -14,7 +14,7 @@ Number of mesh deformation degrees of freedom: 162
 
    Postprocessing:
      Writing graphical output: output-box_initial_mesh_deformation_periodic/solution/solution-00000
-     RMS, max velocity:        2.44e-10 m/year, 9.05e-10 m/year
+     RMS, max velocity:        0.000434 m/year, 0.00203 m/year
      Topography min/max:       -2e+04 m, 2e+04 m
 
 Termination requested by criterion: end time
