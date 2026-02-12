@@ -14,7 +14,7 @@ Number of mesh deformation degrees of freedom: 578
 
    Postprocessing:
      Writing graphical output: output-box_initial_mesh_deformation_periodic/solution/solution-00000
-     RMS, max velocity:        2.43e-10 m/year, 8.97e-10 m/year
+     RMS, max velocity:        0.000434 m/year, 0.00203 m/year
      Topography min/max:       -2e+04 m, 2e+04 m
 
 Termination requested by criterion: end time

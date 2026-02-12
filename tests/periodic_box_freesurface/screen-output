@@ -50,17 +50,17 @@ Number of mesh deformation degrees of freedom: 12,722
      RMS, max velocity:  0.438 m/year, 1 m/year
      Topography min/max: -463.4 m, 508.5 m
 
-*** Timestep 2:  t=1526.76 years, dt=871.179 years
+*** Timestep 2:  t=1527.23 years, dt=871.646 years
    Solving mesh displacement system... 16 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 61+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:  0.406 m/year, 0.953 m/year
-     Topography min/max: -640.2 m, 744.7 m
+     RMS, max velocity:  0.405 m/year, 0.953 m/year
+     Topography min/max: -639.8 m, 743.9 m
 
-*** Timestep 3:  t=2467.73 years, dt=940.965 years
+*** Timestep 3:  t=2468.73 years, dt=941.504 years
    Solving mesh displacement system... 16 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
@@ -68,9 +68,9 @@ Number of mesh deformation degrees of freedom: 12,722
 
    Postprocessing:
      RMS, max velocity:  0.393 m/year, 0.933 m/year
-     Topography min/max: -726.9 m, 897.8 m
+     Topography min/max: -726.1 m, 895.8 m
 
-*** Timestep 4:  t=3441.05 years, dt=973.328 years
+*** Timestep 4:  t=3442.53 years, dt=973.795 years
    Solving mesh displacement system... 16 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
@@ -78,7 +78,7 @@ Number of mesh deformation degrees of freedom: 12,722
 
    Postprocessing:
      RMS, max velocity:  0.387 m/year, 0.923 m/year
-     Topography min/max: -773.1 m, 998.3 m
+     Topography min/max: -772.1 m, 994.9 m
 
 Termination requested by criterion: end step
 

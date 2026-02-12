@@ -21,7 +21,7 @@ Number of mesh deformation degrees of freedom: 33,282
 
 *** Timestep 2:  t=0.001 seconds, dt=0.0005 seconds
    Solving mesh surface diffusion
-   Solving mesh displacement system... 5 iterations.
+   Solving mesh displacement system... 4 iterations.
 
    Postprocessing:
      Writing graphical output: output-hill_diffusion/solution/solution-00002

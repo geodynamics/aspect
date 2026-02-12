@@ -34,7 +34,7 @@ Number of mesh deformation degrees of freedom: 16,270
    Solving mesh displacement system... 0 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system (GMG)... 57+0 iterations.
+   Solving Stokes system (GMG)... 58+0 iterations.
 
    Postprocessing:
      RMS, max velocity:     1.72e+06 m/year, 2.2e+06 m/year
@@ -50,7 +50,7 @@ Number of mesh deformation degrees of freedom: 16,270
 
    Postprocessing:
      RMS, max velocity:     1.58e+06 m/year, 2.03e+06 m/year
-     Pressure min/avg/max:  -0.5498 Pa, 4.998 Pa, 10.01 Pa
+     Pressure min/avg/max:  -0.55 Pa, 4.998 Pa, 10.01 Pa
      Topography min/max:    4.148e-11 m, 0.04609 m
      Points lie in domain:  true false false
 
@@ -61,9 +61,9 @@ Number of mesh deformation degrees of freedom: 16,270
    Solving Stokes system (GMG)... 50+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:     1.51e+06 m/year, 1.94e+06 m/year
-     Pressure min/avg/max:  -0.5328 Pa, 4.998 Pa, 10.02 Pa
-     Topography min/max:    7.657e-11 m, 0.04259 m
+     RMS, max velocity:     1.51e+06 m/year, 1.93e+06 m/year
+     Pressure min/avg/max:  -0.5331 Pa, 4.998 Pa, 10.02 Pa
+     Topography min/max:    1.202e-10 m, 0.04259 m
      Points lie in domain:  true false false
 
 Termination requested by criterion: end time

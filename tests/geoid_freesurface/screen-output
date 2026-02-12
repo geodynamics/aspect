@@ -7,12 +7,12 @@ Number of mesh deformation degrees of freedom: 2,910
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 1000+7 iterations.
+   Solving Stokes system (GMG)... 1000+6 iterations.
 
    Postprocessing:
-     Topography min/max:               -3.331e-16 m, 6.661e-16 m
+     Topography min/max:               -2.22e-16 m, 0 m
      RMS, max velocity:                0.014 m/s, 0.0224 m/s
-     Temperature min/avg/max:          -3.154 K, 2.098e-16 K, 6.308 K
+     Temperature min/avg/max:          -3.154 K, -6.52e-16 K, 6.308 K
      Density at top/bottom of domain:  1 kg/m^3, 1 kg/m^3
      Pressure at top/bottom of domain: 0.0006808 Pa, 0.4774 Pa
      Computing dynamic topography      
@@ -21,7 +21,7 @@ Number of mesh deformation degrees of freedom: 2,910
 *** Timestep 1:  t=1e-06 seconds, dt=1e-06 seconds
    Solving mesh displacement system... 3 iterations.
    Solving temperature system... 8 iterations.
-   Solving Stokes system (GMG)... 93+0 iterations.
+   Solving Stokes system (GMG)... 94+0 iterations.
 
    Postprocessing:
      Topography min/max:               -1.012e-08 m, 1.815e-08 m

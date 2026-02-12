@@ -41,16 +41,16 @@ Number of mesh deformation degrees of freedom: 4,290
      Model domain volume: 1.869e+10 m^2
 
 *** Timestep 4:  t=898601 years, dt=228327 years
-   Solving mesh displacement system... 7 iterations.
+   Solving mesh displacement system... 8 iterations.
    Solving temperature system... 9 iterations.
-   Solving Stokes system (GMG)... 14+0 iterations.
+   Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:
      Topography min/max:  -8688 m, -8688 m
      Model domain volume: 1.826e+10 m^2
 
 *** Timestep 5:  t=1e+06 years, dt=101399 years
-   Solving mesh displacement system... 8 iterations.
+   Solving mesh displacement system... 7 iterations.
    Solving temperature system... 6 iterations.
    Solving Stokes system (GMG)... 11+0 iterations.
 

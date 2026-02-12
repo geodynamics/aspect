@@ -44,7 +44,7 @@ Number of mesh deformation degrees of freedom: 2,178
 
    Postprocessing:
      RMS, max velocity:        0 m/s, 0 m/s
-     Topography min/max:       -6.299e-08 m, 0.1496 m
+     Topography min/max:       -5.55e-08 m, 0.1496 m
      Writing graphical output: output-hill_diffusion_field_boundary_conditions/solution/solution-00002
 
 Termination requested by criterion: end time

@@ -36,7 +36,7 @@ Number of mesh deformation degrees of freedom: 2,178
    Solving Stokes system (GMG)... 42+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:         0.0013 m/s, 0.00306 m/s
+     RMS, max velocity:         0.00131 m/s, 0.00306 m/s
      Compositions min/max/mass: -0.0017/1.001/0.1824
      Writing particle output:   output-particle_free_surface/particles/particles-00001
 

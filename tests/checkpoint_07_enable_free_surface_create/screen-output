@@ -15,7 +15,7 @@ Number of mesh deformation degrees of freedom: 6,528
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
      RMS, max velocity:        0.0156 m/year, 0.0457 m/year
 
-*** Timestep 1:  t=4.00721e+06 years, dt=4.00721e+06 years
+*** Timestep 1:  t=4.00722e+06 years, dt=4.00722e+06 years
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 7 iterations.
    Rebuilding Stokes preconditioner...
@@ -26,7 +26,7 @@ Number of mesh deformation degrees of freedom: 6,528
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
      RMS, max velocity:        0.0156 m/year, 0.0456 m/year
 
-*** Timestep 2:  t=8.02685e+06 years, dt=4.01964e+06 years
+*** Timestep 2:  t=8.02686e+06 years, dt=4.01964e+06 years
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...

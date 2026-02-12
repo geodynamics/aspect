@@ -39,7 +39,7 @@ Number of mesh deformation degrees of freedom: 8,282
      Topography min/max: -1.495e+04 m, 1.495e+04 m
      RMS, max velocity:  0.062 m/year, 0.199 m/year
 
-*** Timestep 2:  t=491.262 years, dt=246.164 years
+*** Timestep 2:  t=491.277 years, dt=246.179 years
    Solving mesh displacement system... 3 iterations.
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 0+7 iterations.
@@ -48,80 +48,80 @@ Number of mesh deformation degrees of freedom: 8,282
      Topography min/max: -1.491e+04 m, 1.491e+04 m
      RMS, max velocity:  0.0618 m/year, 0.199 m/year
 
-*** Timestep 3:  t=738.103 years, dt=246.841 years
+*** Timestep 3:  t=738.148 years, dt=246.871 years
    Solving mesh displacement system... 3 iterations.
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 0+5 iterations.
 
    Postprocessing:
      Topography min/max: -1.486e+04 m, 1.486e+04 m
-     RMS, max velocity:  0.0617 m/year, 0.198 m/year
+     RMS, max velocity:  0.0616 m/year, 0.198 m/year
 
-*** Timestep 4:  t=985.625 years, dt=247.522 years
+*** Timestep 4:  t=985.715 years, dt=247.567 years
    Solving mesh displacement system... 3 iterations.
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 0+5 iterations.
 
    Postprocessing:
      Topography min/max: -1.482e+04 m, 1.481e+04 m
-     RMS, max velocity:  0.0615 m/year, 0.197 m/year
+     RMS, max velocity:  0.0614 m/year, 0.197 m/year
 
-*** Timestep 5:  t=1233.83 years, dt=248.207 years
+*** Timestep 5:  t=1233.98 years, dt=248.268 years
    Solving mesh displacement system... 3 iterations.
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 0+5 iterations.
 
    Postprocessing:
      Topography min/max: -1.477e+04 m, 1.476e+04 m
-     RMS, max velocity:  0.0613 m/year, 0.197 m/year
+     RMS, max velocity:  0.0612 m/year, 0.197 m/year
 
 
 
 
-*** Timestep 6:  t=1482.73 years, dt=248.897 years
+*** Timestep 6:  t=1482.95 years, dt=248.973 years
    Solving mesh displacement system... 3 iterations.
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 0+5 iterations.
 
    Postprocessing:
      Topography min/max: -1.473e+04 m, 1.472e+04 m
-     RMS, max velocity:  0.0611 m/year, 0.196 m/year
+     RMS, max velocity:  0.061 m/year, 0.196 m/year
 
-*** Timestep 7:  t=1732.32 years, dt=249.591 years
+*** Timestep 7:  t=1732.64 years, dt=249.682 years
    Solving mesh displacement system... 3 iterations.
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 0+5 iterations.
 
    Postprocessing:
      Topography min/max: -1.468e+04 m, 1.467e+04 m
-     RMS, max velocity:  0.0609 m/year, 0.196 m/year
+     RMS, max velocity:  0.0608 m/year, 0.195 m/year
 
-*** Timestep 8:  t=1982.61 years, dt=250.289 years
+*** Timestep 8:  t=1983.03 years, dt=250.397 years
    Solving mesh displacement system... 3 iterations.
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 0+4 iterations.
+   Solving Stokes system (GMG)... 0+5 iterations.
 
    Postprocessing:
      Topography min/max: -1.464e+04 m, 1.462e+04 m
-     RMS, max velocity:  0.0607 m/year, 0.195 m/year
+     RMS, max velocity:  0.0606 m/year, 0.195 m/year
 
-*** Timestep 9:  t=2233.6 years, dt=250.992 years
+*** Timestep 9:  t=2234.15 years, dt=251.116 years
    Solving mesh displacement system... 3 iterations.
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 0+4 iterations.
+   Solving Stokes system (GMG)... 0+5 iterations.
 
    Postprocessing:
      Topography min/max: -1.459e+04 m, 1.457e+04 m
-     RMS, max velocity:  0.0605 m/year, 0.194 m/year
+     RMS, max velocity:  0.0604 m/year, 0.194 m/year
 
-*** Timestep 10:  t=2485.3 years, dt=251.7 years
+*** Timestep 10:  t=2485.99 years, dt=251.839 years
    Solving mesh displacement system... 3 iterations.
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 0+4 iterations.
+   Solving Stokes system (GMG)... 0+5 iterations.
 
    Postprocessing:
      Topography min/max: -1.455e+04 m, 1.453e+04 m
-     RMS, max velocity:  0.0603 m/year, 0.194 m/year
+     RMS, max velocity:  0.0602 m/year, 0.193 m/year
 
 
 

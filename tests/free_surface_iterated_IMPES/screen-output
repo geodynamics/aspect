@@ -8,12 +8,12 @@ Number of mesh deformation degrees of freedom: 5,346
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 0 iterations.
    Solving Stokes system (GMG)... 0+11 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 2.45124e-16, 0.00104778
+      Relative nonlinear residuals (temperature, Stokes system): 1.8903e-16, 0.00104778
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00104778
 
    Solving temperature system... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 2.45124e-16, 3.59962e-11
+      Relative nonlinear residuals (temperature, Stokes system): 1.8903e-16, 3.59962e-11
       Relative nonlinear residual (total system) after nonlinear iteration 2: 3.59962e-11
 
 
@@ -26,12 +26,12 @@ Number of mesh deformation degrees of freedom: 5,634
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 0 iterations.
    Solving Stokes system (GMG)... 0+11 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 2.19446e-16, 0.000806375
+      Relative nonlinear residuals (temperature, Stokes system): 1.71543e-16, 0.000806375
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000806375
 
    Solving temperature system... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 2.19446e-16, 5.22562e-11
+      Relative nonlinear residuals (temperature, Stokes system): 1.71543e-16, 5.22562e-11
       Relative nonlinear residual (total system) after nonlinear iteration 2: 5.22562e-11
 
 
@@ -57,239 +57,239 @@ Number of mesh deformation degrees of freedom: 5,634
 *** Timestep 1:  t=135061 years, dt=135061 years
    Solving mesh displacement system... 4 iterations.
    Solving temperature system... 9 iterations.
-   Solving Stokes system (GMG)... 0+25 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.320949, 0.00144211
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.320949
+   Solving Stokes system (GMG)... 0+26 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0.320948, 0.00144772
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.320948
 
    Solving temperature system... 8 iterations.
    Solving Stokes system (GMG)... 0+20 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.00826808, 5.70752e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00826808
+      Relative nonlinear residuals (temperature, Stokes system): 0.00829077, 5.72383e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00829077
 
    Solving temperature system... 6 iterations.
    Solving Stokes system (GMG)... 0+11 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 2.43136e-05, 1.61918e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 2.43136e-05
+      Relative nonlinear residuals (temperature, Stokes system): 2.43963e-05, 1.6247e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 2.43963e-05
 
    Solving temperature system... 4 iterations.
    Solving Stokes system (GMG)... 0+2 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 6.67801e-08, 1.73541e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 6.67801e-08
+      Relative nonlinear residuals (temperature, Stokes system): 6.70135e-08, 1.74154e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 6.70135e-08
 
 
    Postprocessing:
      Topography min/max: -78.71 m, 174.3 m
-     RMS, max velocity:  0.000549 m/year, 0.00136 m/year
+     RMS, max velocity:  0.00055 m/year, 0.00136 m/year
 
-*** Timestep 2:  t=370662 years, dt=235601 years
+*** Timestep 2:  t=371091 years, dt=236030 years
    Solving mesh displacement system... 4 iterations.
    Solving temperature system... 9 iterations.
    Solving Stokes system (GMG)... 0+29 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.417732, 0.00673638
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.417732
+      Relative nonlinear residuals (temperature, Stokes system): 0.419153, 0.00679298
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.419153
 
    Solving temperature system... 8 iterations.
-   Solving Stokes system (GMG)... 0+24 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.0192711, 1.39058e-05
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0192711
+   Solving Stokes system (GMG)... 0+25 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0.0194054, 1.40046e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0194054
 
    Solving temperature system... 6 iterations.
    Solving Stokes system (GMG)... 0+17 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 5.73921e-05, 4.06384e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 5.73921e-05
+      Relative nonlinear residuals (temperature, Stokes system): 5.79128e-05, 4.10046e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 5.79128e-05
 
    Solving temperature system... 4 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 1.42014e-07, 1.64087e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.42014e-07
+      Relative nonlinear residuals (temperature, Stokes system): 1.43513e-07, 1.40885e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.43513e-07
 
 
    Postprocessing:
-     Topography min/max: -104.3 m, 83.07 m
-     RMS, max velocity:  0.000687 m/year, 0.0022 m/year
+     Topography min/max: -106.7 m, 83.44 m
+     RMS, max velocity:  0.000689 m/year, 0.00221 m/year
 
-*** Timestep 3:  t=513144 years, dt=142483 years
+*** Timestep 3:  t=513198 years, dt=142107 years
    Solving mesh displacement system... 4 iterations.
    Solving temperature system... 8 iterations.
    Solving Stokes system (GMG)... 0+25 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.0850448, 0.0017937
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0850448
+      Relative nonlinear residuals (temperature, Stokes system): 0.0847424, 0.00180272
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0847424
 
    Solving temperature system... 7 iterations.
    Solving Stokes system (GMG)... 0+21 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.00480151, 3.50736e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00480151
+      Relative nonlinear residuals (temperature, Stokes system): 0.00481835, 3.52041e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00481835
 
    Solving temperature system... 5 iterations.
    Solving Stokes system (GMG)... 0+13 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 1.038e-05, 7.45437e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.038e-05
+      Relative nonlinear residuals (temperature, Stokes system): 1.0407e-05, 7.47436e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.0407e-05
 
    Solving temperature system... 3 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 1.88422e-08, 6.36564e-11
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.88422e-08
+      Relative nonlinear residuals (temperature, Stokes system): 1.88602e-08, 6.3554e-11
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.88602e-08
 
 
    Postprocessing:
-     Topography min/max: -12.89 m, 41.52 m
+     Topography min/max: -12.6 m, 40.6 m
      RMS, max velocity:  0.000457 m/year, 0.00178 m/year
 
-*** Timestep 4:  t=693154 years, dt=180010 years
+*** Timestep 4:  t=693055 years, dt=179857 years
    Solving mesh displacement system... 4 iterations.
    Solving temperature system... 8 iterations.
    Solving Stokes system (GMG)... 0+26 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.0276547, 0.000975962
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0276547
+      Relative nonlinear residuals (temperature, Stokes system): 0.0275528, 0.000983304
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0275528
 
    Solving temperature system... 7 iterations.
    Solving Stokes system (GMG)... 0+20 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.00239102, 1.73291e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00239102
+      Relative nonlinear residuals (temperature, Stokes system): 0.00239874, 1.73885e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00239874
 
    Solving temperature system... 5 iterations.
    Solving Stokes system (GMG)... 0+11 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 5.53328e-06, 3.93372e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 5.53328e-06
+      Relative nonlinear residuals (temperature, Stokes system): 5.54973e-06, 3.94559e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 5.54973e-06
 
 
    Postprocessing:
-     Topography min/max: -18.66 m, 58.29 m
+     Topography min/max: -18.77 m, 58.08 m
      RMS, max velocity:  0.00044 m/year, 0.0017 m/year
 
-*** Timestep 5:  t=882106 years, dt=188952 years
+*** Timestep 5:  t=882221 years, dt=189167 years
    Solving mesh displacement system... 4 iterations.
    Solving temperature system... 8 iterations.
    Solving Stokes system (GMG)... 0+25 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.019305, 0.000124144
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.019305
+      Relative nonlinear residuals (temperature, Stokes system): 0.0193318, 0.000130909
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0193318
 
    Solving temperature system... 7 iterations.
    Solving Stokes system (GMG)... 0+18 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.00047687, 3.40945e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00047687
+      Relative nonlinear residuals (temperature, Stokes system): 0.000506297, 3.62027e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000506297
 
    Solving temperature system... 5 iterations.
    Solving Stokes system (GMG)... 0+6 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 1.15735e-06, 8.14084e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.15735e-06
+      Relative nonlinear residuals (temperature, Stokes system): 1.23022e-06, 8.64635e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.23022e-06
 
 
    Postprocessing:
-     Topography min/max: -14.51 m, 49.18 m
+     Topography min/max: -14.39 m, 48.35 m
      RMS, max velocity:  0.000445 m/year, 0.00171 m/year
 
 
 
 
-*** Timestep 6:  t=1.07003e+06 years, dt=187927 years
+*** Timestep 6:  t=1.07011e+06 years, dt=187884 years
    Solving mesh displacement system... 4 iterations.
    Solving temperature system... 8 iterations.
    Solving Stokes system (GMG)... 0+26 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.0120705, 6.16158e-05
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0120705
+      Relative nonlinear residuals (temperature, Stokes system): 0.0120722, 6.5687e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0120722
 
-   Solving temperature system... 6 iterations.
+   Solving temperature system... 7 iterations.
    Solving Stokes system (GMG)... 0+17 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.000232239, 1.63401e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000232239
+      Relative nonlinear residuals (temperature, Stokes system): 0.000249147, 1.75326e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000249147
 
    Solving temperature system... 4 iterations.
    Solving Stokes system (GMG)... 0+5 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 5.50779e-07, 3.85463e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 5.50779e-07
+      Relative nonlinear residuals (temperature, Stokes system): 5.91013e-07, 4.13778e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 5.91013e-07
 
 
    Postprocessing:
-     Topography min/max: -16.57 m, 53.65 m
+     Topography min/max: -16.6 m, 53.13 m
      RMS, max velocity:  0.000438 m/year, 0.00167 m/year
 
-*** Timestep 7:  t=1.2624e+06 years, dt=192365 years
+*** Timestep 7:  t=1.26258e+06 years, dt=192475 years
    Solving mesh displacement system... 4 iterations.
    Solving temperature system... 8 iterations.
-   Solving Stokes system (GMG)... 0+23 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.00837745, 3.06669e-05
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00837745
+   Solving Stokes system (GMG)... 0+24 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0.00838243, 3.31231e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00838243
 
    Solving temperature system... 6 iterations.
    Solving Stokes system (GMG)... 0+17 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.000117206, 8.11077e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000117206
+      Relative nonlinear residuals (temperature, Stokes system): 0.000127029, 8.79086e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000127029
 
    Solving temperature system... 4 iterations.
    Solving Stokes system (GMG)... 0+5 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 2.72772e-07, 1.8956e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 2.72772e-07
+      Relative nonlinear residuals (temperature, Stokes system): 2.95939e-07, 2.04949e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 2.95939e-07
 
 
    Postprocessing:
-     Topography min/max: -15.67 m, 51.78 m
+     Topography min/max: -15.62 m, 51.05 m
      RMS, max velocity:  0.000437 m/year, 0.00165 m/year
 
-*** Timestep 8:  t=1.4566e+06 years, dt=194198 years
-   Solving mesh displacement system... 4 iterations.
-   Solving temperature system... 8 iterations.
-   Solving Stokes system (GMG)... 0+23 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.00622566, 1.57704e-05
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00622566
-
-   Solving temperature system... 6 iterations.
-   Solving Stokes system (GMG)... 0+16 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 5.49887e-05, 3.72596e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 5.49887e-05
-
-   Solving temperature system... 4 iterations.
-   Solving Stokes system (GMG)... 0+5 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 1.26861e-07, 9.22192e-11
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.26861e-07
-
-
-   Postprocessing:
-     Topography min/max: -16.19 m, 52.95 m
-     RMS, max velocity:  0.000434 m/year, 0.00162 m/year
-
-*** Timestep 9:  t=1.65404e+06 years, dt=197445 years
+*** Timestep 8:  t=1.45681e+06 years, dt=194229 years
    Solving mesh displacement system... 4 iterations.
    Solving temperature system... 8 iterations.
    Solving Stokes system (GMG)... 0+22 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.00489239, 8.48576e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00489239
+      Relative nonlinear residuals (temperature, Stokes system): 0.00622752, 1.70626e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00622752
+
+   Solving temperature system... 6 iterations.
+   Solving Stokes system (GMG)... 0+17 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 6.0107e-05, 4.07357e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 6.0107e-05
+
+   Solving temperature system... 4 iterations.
+   Solving Stokes system (GMG)... 0+5 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 1.38702e-07, 9.56311e-11
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.38702e-07
+
+
+   Postprocessing:
+     Topography min/max: -16.18 m, 52.28 m
+     RMS, max velocity:  0.000434 m/year, 0.00162 m/year
+
+*** Timestep 9:  t=1.65433e+06 years, dt=197525 years
+   Solving mesh displacement system... 4 iterations.
+   Solving temperature system... 8 iterations.
+   Solving Stokes system (GMG)... 0+22 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0.00489486, 9.20367e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00489486
 
    Solving temperature system... 6 iterations.
    Solving Stokes system (GMG)... 0+16 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 3.06016e-05, 2.03966e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.06016e-05
+      Relative nonlinear residuals (temperature, Stokes system): 3.34588e-05, 2.22996e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.34588e-05
 
    Solving temperature system... 4 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 6.87482e-08, 4.98598e-11
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 6.87482e-08
+      Relative nonlinear residuals (temperature, Stokes system): 7.52876e-08, 5.54765e-11
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 7.52876e-08
 
 
    Postprocessing:
-     Topography min/max: -15.98 m, 52.56 m
-     RMS, max velocity:  0.000432 m/year, 0.00159 m/year
+     Topography min/max: -15.95 m, 51.81 m
+     RMS, max velocity:  0.000432 m/year, 0.0016 m/year
 
-*** Timestep 10:  t=1.85407e+06 years, dt=200032 years
+*** Timestep 10:  t=1.85442e+06 years, dt=200089 years
    Solving mesh displacement system... 4 iterations.
    Solving temperature system... 8 iterations.
    Solving Stokes system (GMG)... 0+22 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.00400126, 4.98521e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00400126
+      Relative nonlinear residuals (temperature, Stokes system): 0.00400265, 5.36605e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00400265
 
    Solving temperature system... 6 iterations.
    Solving Stokes system (GMG)... 0+16 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 1.42284e-05, 9.244e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.42284e-05
+      Relative nonlinear residuals (temperature, Stokes system): 1.57804e-05, 1.02573e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.57804e-05
 
    Solving temperature system... 3 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 3.22384e-08, 2.89988e-11
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 3.22384e-08
+      Relative nonlinear residuals (temperature, Stokes system): 3.57451e-08, 3.14601e-11
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 3.57451e-08
 
 
    Postprocessing:
-     Topography min/max: -16.15 m, 52.97 m
+     Topography min/max: -16.13 m, 52.23 m
      RMS, max velocity:  0.000429 m/year, 0.00157 m/year
 
 
