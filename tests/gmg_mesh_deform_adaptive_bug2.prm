@@ -1,6 +1,7 @@
 # This test is a simplified 2d crustal extension problem with
-# a free surface an adaptive refinement. It would trigger a bug
+# a free surface an adaptive refinement. It used to trigger a bug
 # with negative cell diagonals in the GMG preconditioner.
+# Now the test ensures the bug is fixed.
 
 set Dimension                                       = 2
 set Start time                                      = 0

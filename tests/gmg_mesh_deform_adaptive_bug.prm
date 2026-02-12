@@ -1,7 +1,8 @@
 # Test GMG with mesh deformation with adaptive mesh refinement
 # MPI: 4
 #
-# This test fails with dealii::MGLevelGlobalTransfer Dimension 2 not equal to 0.
+# This test used to fail with dealii::MGLevelGlobalTransfer Dimension 2 not equal to 0.
+# Now it ensures the bug is fixed.
 
 
 # This test is based on
