@@ -1,5 +1,5 @@
 # A modified 2d convection box with a prescribed, moving surface. The
-# oscillating sin wavee on the surface pushes the rising plume up and
+# oscillating sin wave on the surface pushes the rising plume up and
 # down. This test was used to verify that matrix-based and matrix-free
 # give the same solution in a moving domain with mesh deformation.
 
