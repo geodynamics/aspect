@@ -29,8 +29,8 @@ Number of mesh deformation degrees of freedom: 462
    Advecting particles...  done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 21+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000140692, 0, 0, 0, 0, 0, 0.977752
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.977752
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000140692, 0, 0, 0, 0, 0, 0.977815
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.977815
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.

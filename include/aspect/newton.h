@@ -263,6 +263,18 @@ namespace aspect
     };
 
     /**
+     * This class assembles the compressible adjustment to the Newton Stokes preconditioner.
+     */
+    template <int dim>
+    class NewtonStokesCompressiblePreconditioner : public NewtonInterface<dim>
+    {
+      public:
+        void
+        execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+                 internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
+    };
+
+    /**
      * This class assembles the terms for the matrix and right-hand-side of the incompressible
      * Newton Stokes system for the current cell.
      */

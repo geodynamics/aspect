@@ -12,16 +12,16 @@ Number of degrees of freedom: 53,952 (25,344+3,264+12,672+12,672)
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Solving Stokes system (GMG)... 34+0 iterations.
-      Newton system information: Norm of the rhs: 2.72883e+12, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.000687703
+      Newton system information: Norm of the rhs: 2.72732e+12, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.000687323
 
    Solving Stokes system (GMG)... 36+0 iterations.
-      Newton system information: Norm of the rhs: 3.29018e+11, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 8.29173e-05
+      Newton system information: Norm of the rhs: 3.28953e+11, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 8.29008e-05
 
    Solving Stokes system (GMG)... 35+0 iterations.
-      Newton system information: Norm of the rhs: 3.67646e+10, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 9.26519e-06
+      Newton system information: Norm of the rhs: 3.67584e+10, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 9.26364e-06
 
 
    Postprocessing:

@@ -8,32 +8,32 @@ Number of degrees of freedom: 3,909 (2,210+297+297+1,105)
    Solving Stokes system (GMG)... 0+12 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
-   Solving Stokes system (GMG)... 0+195 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.109954
+   Solving Stokes system (GMG)... 0+200 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.109956
 
-   Solving Stokes system (GMG)... 0+94 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.000100621
+   Solving Stokes system (GMG)... 0+83 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 9.8307e-05
 
-   Solving Stokes system (GMG)... 0+87 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 1.99744e-05
+   Solving Stokes system (GMG)... 0+71 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 1.62978e-05
 
-   Solving Stokes system (GMG)... 0+137 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 2.76645e-05
+   Solving Stokes system (GMG)... 0+90 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 1.26334e-05
 
-   Solving Stokes system (GMG)... 0+169 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 1.7908e-05
+   Solving Stokes system (GMG)... 0+158 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 1.23174e-05
 
-   Solving Stokes system (GMG)... 0+183 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 1.79603e-05
+   Solving Stokes system (GMG)... 0+140 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 3.27846e-05
 
-   Solving Stokes system (GMG)... 0+192 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 2.12207e-05
+   Solving Stokes system (GMG)... 0+172 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 1.42179e-05
 
-   Solving Stokes system (GMG)... 0+181 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 2.86925e-05
+   Solving Stokes system (GMG)... 0+155 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 3.24604e-05
 
-   Solving Stokes system (GMG)... 0+237 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 2.42321e-05
+   Solving Stokes system (GMG)... 0+153 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 1.22167e-05
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -41,11 +41,11 @@ Number of degrees of freedom: 3,909 (2,210+297+297+1,105)
    Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
-     RMS, max velocity:                                 2.05e-11 m/s, 2.51e-11 m/s
+     RMS, max velocity:                                 2.04e-11 m/s, 2.5e-11 m/s
      Mass fluxes through boundary parts:                0.00054 kg/s, 0.00054 kg/s, 0 kg/s, -0.00108 kg/s
      Writing graphical output:                          output-gs_drucker_prager_extension/solution/solution-00000
      Writing particle output:                           output-gs_drucker_prager_extension/particles/particles-00000
-     Average density / Average viscosity / Total mass:  2700 kg/m^3, 4.643e+25 Pa s, 1.08e+12 kg
+     Average density / Average viscosity / Total mass:  2700 kg/m^3, 4.605e+25 Pa s, 1.08e+12 kg
 
 Termination requested by criterion: end time
 

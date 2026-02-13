@@ -13,40 +13,40 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Solving Stokes system (GMG)... 12+0 iterations.
-      Newton system information: Norm of the rhs: 3.04031e+11, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.16419
+      Newton system information: Norm of the rhs: 2.91031e+11, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.157169
 
    Solving Stokes system (GMG)... 14+0 iterations.
-      Newton system information: Norm of the rhs: 2.64066e+11, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.142607
+      Newton system information: Norm of the rhs: 2.47357e+11, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.133583
 
    Solving Stokes system (GMG)... 16+0 iterations.
-      Newton system information: Norm of the rhs: 2.15319e+11, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.116281
+      Newton system information: Norm of the rhs: 1.97801e+11, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.106821
 
    Solving Stokes system (GMG)... 16+0 iterations.
-      Newton system information: Norm of the rhs: 1.662e+11, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.0897551
+      Newton system information: Norm of the rhs: 1.5031e+11, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.0811738
 
    Solving Stokes system (GMG)... 17+0 iterations.
-      Newton system information: Norm of the rhs: 1.22876e+11, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 0.0663582
+      Newton system information: Norm of the rhs: 1.09835e+11, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 0.0593156
 
    Solving Stokes system (GMG)... 17+0 iterations.
-      Newton system information: Norm of the rhs: 8.79976e+10, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 0.0475224
+      Newton system information: Norm of the rhs: 7.80005e+10, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 0.0421236
 
    Solving Stokes system (GMG)... 18+0 iterations.
-      Newton system information: Norm of the rhs: 6.16064e+10, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 0.0332701
+      Newton system information: Norm of the rhs: 5.42879e+10, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 0.0293178
 
    Solving Stokes system (GMG)... 18+0 iterations.
-      Newton system information: Norm of the rhs: 4.24552e+10, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 0.0229276
+      Newton system information: Norm of the rhs: 3.72611e+10, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 0.0201225
 
    Solving Stokes system (GMG)... 18+0 iterations.
-      Newton system information: Norm of the rhs: 2.89428e+10, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 0.0156303
+      Newton system information: Norm of the rhs: 2.53322e+10, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 0.0136804
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -54,9 +54,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
-     RMS, max velocity:                  1.96e-08 m/s, 2.33e-08 m/s
-     Pressure min/avg/max:               -2.142 Pa, 5e+08 Pa, 1e+09 Pa
-     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.6176 kg/s, 0.6176 kg/s
+     RMS, max velocity:                  5.07e-09 m/s, 6.03e-09 m/s
+     Pressure min/avg/max:               -2.19 Pa, 5e+08 Pa, 1e+09 Pa
+     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.1601 kg/s, 0.1601 kg/s
      Writing graphical output:           output-nonlinear_channel_flow_tractions_dc_picard_Stokes_GMG/solution/solution-00000
 
 Termination requested by criterion: end time

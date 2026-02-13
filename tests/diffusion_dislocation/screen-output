@@ -12,14 +12,14 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving temperature system... 0 iterations.
    Solving depleted_lithosphere system ... 0 iterations.
    Solving Stokes system (GMG)... 30+30 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.68721e-16, 1.05609e-16, 2.19803e-05
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.19803e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.68721e-16, 1.05609e-16, 2.19823e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.19823e-05
 
    Solving temperature system... 0 iterations.
    Solving depleted_lithosphere system ... 0 iterations.
    Solving Stokes system (GMG)... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.68721e-16, 1.05609e-16, 3.76193e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 3.76193e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.68721e-16, 1.05609e-16, 3.64391e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 3.64391e-07
 
 
    Postprocessing:

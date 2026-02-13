@@ -23,6 +23,7 @@
 #include <aspect/postprocess/visualization/stress_second_invariant.h>
 
 #include <aspect/material_model/rheology/elasticity.h>
+#include <aspect/utilities.h>
 
 namespace aspect
 {
@@ -107,14 +108,14 @@ namespace aspect
               }
 
             // Compute the deviatoric stress tensor after elastic stresses were added.
-            const SymmetricTensor<2, dim> deviatoric_stress = deviator(stress);
+            const SymmetricTensor<2, dim> deviatoric_stress = Utilities::Tensors::consistent_deviator(stress);
 
 
             // Compute the second moment invariant of the deviatoric stress
             // in the same way as the second moment invariant of the deviatoric
             // strain rate is computed in the viscoplastic material model.
             // TODO check that this is valid for the compressible case.
-            const double stress_invariant = std::sqrt(std::max(-second_invariant(deviatoric_stress), 0.));
+            const double stress_invariant = std::sqrt(std::max(-Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(deviatoric_stress), 0.));
 
             computed_quantities[q](0) = stress_invariant;
           }

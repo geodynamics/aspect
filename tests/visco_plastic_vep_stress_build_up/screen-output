@@ -40,8 +40,8 @@ Number of degrees of freedom: 25,844 (3,362+441+441+3,600+3,600+3,600+3,600+3,60
    Solving ve_stress_yy_old system ... 1 iterations.
    Solving ve_stress_xy_old system ... 2 iterations.
    Solving Stokes system (GMG)... 1+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.2168e-16, 3.80945e-09, 3.80945e-09, 1.02914e-08, 0, 0, 0, 1.13256e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.13256e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.2168e-16, 4.04247e-09, 4.01501e-09, 1.02914e-08, 0, 0, 0, 1.16455e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.16455e-07
 
 
    Postprocessing:

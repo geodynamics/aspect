@@ -21,13 +21,13 @@ Number of degrees of freedom: 61,140 (37,570+4,785+18,785)
 
    Solving temperature system... 0 iterations.
    Solving Stokes system (GMG)... 42+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 1.73824e-16, 0.337213
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.337213
+      Relative nonlinear residuals (temperature, Stokes system): 1.73824e-16, 0.344659
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.344659
 
    Solving temperature system... 0 iterations.
    Solving Stokes system (GMG)... 38+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 1.73824e-16, 0.133364
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.133364
+      Relative nonlinear residuals (temperature, Stokes system): 1.73824e-16, 0.143982
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.143982
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -35,8 +35,8 @@ Number of degrees of freedom: 61,140 (37,570+4,785+18,785)
    Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
-     RMS, max velocity:                  41.8 m/year, 121 m/year
-     Mass fluxes through boundary parts: 3.376e+06 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     RMS, max velocity:                  41.4 m/year, 120 m/year
+     Mass fluxes through boundary parts: 3.477e+06 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
 
 Termination requested by criterion: end time
 
