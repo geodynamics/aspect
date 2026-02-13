@@ -37,6 +37,8 @@ int f()
 
   PyRun_SimpleString("import sys; sys.path.append(\"" ASPECT_SOURCE_DIR "/tests\")");
   PyObject *pModule = PyImport_ImportModule("python_01");
+  if (pModule == nullptr && PyErr_Occurred())
+    PyErr_Print();
   AssertThrow(pModule != nullptr, dealii::ExcMessage("Failed to load Python module"));
 
   std::vector<double> x = {1.0, 2.0, 3.0};
