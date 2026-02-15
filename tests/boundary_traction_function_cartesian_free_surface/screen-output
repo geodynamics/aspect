@@ -120,7 +120,7 @@ Number of mesh deformation degrees of freedom: 9,288
    Solving ve_stress_yy_old system ... 1 iterations.
    Solving ve_stress_xy_old system ... 1 iterations.
    Solving Stokes system (GMG)... 23+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.55923e-16, 5.84216e-06, 5.84216e-06, 3.43134e-06, 0, 0, 0, 4.03944e-11
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.51272e-16, 5.84216e-06, 5.84216e-06, 3.43134e-06, 0, 0, 0, 4.03945e-11
       Relative nonlinear residual (total system) after nonlinear iteration 2: 5.84216e-06
 
 
@@ -144,12 +144,12 @@ Number of mesh deformation degrees of freedom: 9,288
    Solving ve_stress_yy_old system ... 1 iterations.
    Solving ve_stress_xy_old system ... 1 iterations.
    Solving Stokes system (GMG)... 115+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.30757e-16, 4.05723e-07, 4.05723e-07, 3.7722e-07, 0, 0, 0, 8.08466e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 8.08466e-06
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.37372e-16, 4.05723e-07, 4.05723e-07, 3.7722e-07, 0, 0, 0, 8.08465e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 8.08465e-06
 
 
    Postprocessing:
-     Compositions min/max/mass: -1.066e+05/1.066e+05/-1.46e+08 // -1.066e+05/1.066e+05/-2.122e+07 // -8.863e+04/5.229e+04/-4.078e+14 // -1.066e+05/1.066e+05/-1.46e+08 // -1.066e+05/1.066e+05/-2.122e+07 // -8.863e+04/5.229e+04/-4.078e+14
+     Compositions min/max/mass: -1.066e+05/1.066e+05/-1.459e+08 // -1.066e+05/1.066e+05/-2.128e+07 // -8.863e+04/5.229e+04/-4.078e+14 // -1.066e+05/1.066e+05/-1.459e+08 // -1.066e+05/1.066e+05/-2.128e+07 // -8.863e+04/5.229e+04/-4.078e+14
      Temperature min/avg/max:   293 K, 293 K, 293 K
      Topography min/max:        -0.09426 m, 0.02027 m
      RMS, max velocity:         0.011 m/year, 0.0383 m/year

@@ -1,0 +1,45 @@
+
+Number of active cells: 12 (on 1 levels)
+Number of degrees of freedom: 240 (144+24+72)
+
+Number of mesh deformation degrees of freedom: 48
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 19+0 iterations.
+
+   Postprocessing:
+     Topography min/max:                 -9.313e-10 m, 0 m
+     Writing graphical output:           output-function_mesh_deformation_tangential_mesh_velocity_spherical/solution/solution-00000
+     RMS, max velocity:                  1.47 m/year, 1.87 m/year
+     Temperature min/avg/max:            273 K, 1507 K, 3000 K
+     Heat fluxes through boundary parts: -2.074e+05 W, 3.32e+05 W
+
+*** Timestep 1:  t=450000 years, dt=450000 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 14 iterations.
+   Solving Stokes system (GMG)... 35+0 iterations.
+
+   Postprocessing:
+     Topography min/max:                 0 m, 1.853e+05 m
+     RMS, max velocity:                  1.48 m/year, 1.92 m/year
+     Temperature min/avg/max:            273 K, 1468 K, 3000 K
+     Heat fluxes through boundary parts: 6.024e+07 W, 1.242e+08 W
+
+*** Timestep 2:  t=900000 years, dt=450000 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 12 iterations.
+   Solving Stokes system (GMG)... 34+0 iterations.
+
+   Postprocessing:
+     Topography min/max:                 0 m, 5.287e+05 m
+     Writing graphical output:           output-function_mesh_deformation_tangential_mesh_velocity_spherical/solution/solution-00001
+     RMS, max velocity:                  1.46 m/year, 1.99 m/year
+     Temperature min/avg/max:            273 K, 1410 K, 3000 K
+     Heat fluxes through boundary parts: 1.07e+08 W, 2.243e+08 W
+
+Termination requested by criterion: end time
+
+
+

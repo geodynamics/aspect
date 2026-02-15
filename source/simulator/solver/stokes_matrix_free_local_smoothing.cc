@@ -1611,12 +1611,40 @@ namespace aspect
       sim.compute_initial_velocity_boundary_constraints(constraints_v);
       sim.compute_current_velocity_boundary_constraints(constraints_v);
 
-      VectorTools::compute_no_normal_flux_constraints (dof_handler_v,
-                                                       /* first_vector_component= */
-                                                       0,
-                                                       this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators(),
-                                                       constraints_v,
-                                                       this->get_mapping());
+      if (!this->get_parameters().mesh_deformation_enabled)
+        {
+          VectorTools::compute_no_normal_flux_constraints(dof_handler_v,
+                                                          /* first_vector_component= */
+                                                          0,
+                                                          this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators(),
+                                                          constraints_v,
+                                                          this->get_mapping(),
+                                                          /* use_manifold_for_normal= */
+                                                          true);
+        }
+      else
+        {
+          // If mesh deformation is active, we need to distinguish between tangential velocity boundaries
+          // where mesh deformation is active and where it is not. For the first case, we cannot use the manifold
+          // normal vectors since those do not include the mesh deformation.
+          VectorTools::compute_no_normal_flux_constraints(dof_handler_v,
+                                                          /* first_vector_component= */
+                                                          0,
+                                                          this->get_mesh_deformation_handler().get_tangential_velocity_with_active_mesh_deformation_boundary_indicators(),
+                                                          constraints_v,
+                                                          this->get_mapping(),
+                                                          /* use_manifold_for_normal= */
+                                                          false);
+
+          VectorTools::compute_no_normal_flux_constraints(dof_handler_v,
+                                                          /* first_vector_component= */
+                                                          0,
+                                                          this->get_mesh_deformation_handler().get_tangential_velocity_without_active_mesh_deformation_boundary_indicators(),
+                                                          constraints_v,
+                                                          this->get_mapping(),
+                                                          /* use_manifold_for_normal= */
+                                                          true);
+        }
 
       sim.prescribed_solution_manager.constrain_solution(constraints_v);
 
@@ -1793,7 +1821,7 @@ namespace aspect
 #endif
             level_constraints_v.close();
 
-            std::set<types::boundary_id> no_flux_boundaries
+            const std::set<types::boundary_id> &no_flux_boundaries
               = this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators();
             if (!no_flux_boundaries.empty())
               {
@@ -1806,13 +1834,48 @@ namespace aspect
                 const IndexSet &refinement_edge_indices =
                   mg_constrained_dofs_A_block.get_refinement_edge_indices(level);
 
-                VectorTools::compute_no_normal_flux_constraints_on_level(dof_handler_v,
-                                                                         0,
-                                                                         no_flux_boundaries,
-                                                                         user_level_constraints,
-                                                                         mapping,
-                                                                         refinement_edge_indices,
-                                                                         level);
+                if (!this->get_parameters().mesh_deformation_enabled)
+                  {
+                    VectorTools::compute_no_normal_flux_constraints_on_level(dof_handler_v,
+                                                                             0,
+                                                                             no_flux_boundaries,
+                                                                             user_level_constraints,
+                                                                             mapping,
+                                                                             refinement_edge_indices,
+                                                                             level,
+                                                                             /*use_manifold_for_normal=*/
+                                                                             true);
+                  }
+                else
+                  {
+                    // If mesh deformation is active, we need to distinguish between tangential velocity boundaries
+                    // where mesh deformation is active and where it is not. For the first case, we cannot use the manifold
+                    // normal vectors since those do not include the mesh deformation.
+
+                    const auto &no_flux_boundaries_with_mesh_deformation =
+                      this->get_mesh_deformation_handler().get_tangential_velocity_with_active_mesh_deformation_boundary_indicators();
+                    VectorTools::compute_no_normal_flux_constraints_on_level(dof_handler_v,
+                                                                             0,
+                                                                             no_flux_boundaries_with_mesh_deformation,
+                                                                             user_level_constraints,
+                                                                             mapping,
+                                                                             refinement_edge_indices,
+                                                                             level,
+                                                                             /*use_manifold_for_normal=*/
+                                                                             false);
+
+                    const auto &no_flux_boundaries_without_mesh_deformation =
+                      this->get_mesh_deformation_handler().get_tangential_velocity_without_active_mesh_deformation_boundary_indicators();
+                    VectorTools::compute_no_normal_flux_constraints_on_level(dof_handler_v,
+                                                                             0,
+                                                                             no_flux_boundaries_without_mesh_deformation,
+                                                                             user_level_constraints,
+                                                                             mapping,
+                                                                             refinement_edge_indices,
+                                                                             level,
+                                                                             /*use_manifold_for_normal=*/
+                                                                             true);
+                  }
 
                 user_level_constraints.close();
                 mg_constrained_dofs_A_block.add_user_constraints(level,

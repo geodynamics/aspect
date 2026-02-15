@@ -1,0 +1,122 @@
+# This test is a modified version of
+# function_mesh_deformation_tangential_mesh_velocity_simple_shear_amg.prm
+
+# The simulation starts as a spherical shell of 3481 km inner radius
+# and 6371 km outer radius. A prescribed velocity tangential to
+# the boundary is applied at the bottom boundary. 
+# The top boundary is free slip. 
+# Gravity is set to zero, and the temperature
+# is constant throughout the domain.
+
+# The mesh is deformed by prescribing a mesh velocity at the top
+# boundary. The test ensures the velocity at the top boundary
+# remains tangential to the (changing) domain over time.
+
+set Dimension                              = 2
+set End time                               = 9e5
+set Maximum time step                      = 4.5e5
+set Use years instead of seconds           = true
+set Adiabatic surface temperature          = 1613
+set CFL number                             = 1.0
+set Pressure normalization                 = surface
+
+set Output directory = output-function-mesh-deformation-tangential-mesh-velocity-spherical
+
+subsection Geometry model
+  set Model name =  spherical shell
+
+  subsection Spherical shell
+    set Inner radius = 3481e3
+    set Outer radius = 6371e3
+    set Opening angle = 360
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top
+  set List of model names =  spherical constant 
+
+  subsection Spherical constant
+    set Inner temperature = 3000
+    set Outer temperature = 273
+  end
+end
+
+subsection Initial temperature model
+  set Model name = harmonic perturbation
+
+  subsection Harmonic perturbation
+    set Magnitude = 200
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top
+  set Prescribed velocity boundary indicators = bottom: function
+
+  subsection Function
+    set Coordinate system = spherical
+    set Use spherical unit vectors = true
+    set Function constants = m_per_yr=1
+    set Variable names = r,phi
+    set Function expression = 0;m_per_yr
+  end
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: boundary function, bottom: boundary function
+
+  subsection Boundary function
+    set Variable names      = x,y,t
+    set Function constants = m_per_yr=1, rm=5371000, ra=6371000
+    set Function expression = 0.0 ; (x*x+y*y<rm*rm) ? 0.0 : 3 * y/6371000 * sin(t/1e6) / 1e8
+  end
+end
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 10.
+  end
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density     = 3300
+    set Thermal conductivity  = 3.3
+    set Thermal expansion coefficient  = 3e-5
+    set Reference specific heat        = 1200
+    set Viscosity             = 1e23
+    set Reference temperature = 1613
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+  set Strategy                           = strain rate, topography
+end
+
+subsection Postprocess
+  set List of postprocessors = topography, visualization, velocity statistics, temperature statistics, heat flux statistics
+
+  subsection Visualization
+    set Output mesh displacement = true
+    set Output mesh velocity = true
+    set Output undeformed mesh = false
+    set Interpolate output = false
+    set Time between graphical output = 9e5
+    set Output format = gnuplot
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7
+    set Stokes solver type = block GMG
+  end
+end

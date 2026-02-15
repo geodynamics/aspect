@@ -440,6 +440,12 @@ namespace aspect
             // Store the boundary indicator. If the entry exists this does nothing.
             prescribed_mesh_deformation_boundary_indicators.insert(boundary_id);
 
+            // If the mesh deformation boundary also has a tangential velocity boundary condition,
+            // store it in the appropriate set.
+            const auto &indicators = this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators();
+            if (indicators.find(boundary_id) != indicators.end())
+              tangential_velocity_with_prescribed_mesh_deformation_boundary_indicators.insert(boundary_id);
+
             for (const auto &object_name : object_names)
               {
                 // Make sure there are no duplicated entries. If this boundary is not
@@ -455,6 +461,14 @@ namespace aspect
                 if (object_name == "free surface")
                   free_surface_boundary_indicators.insert(boundary_id);
               }
+          }
+
+        // Create the list of indicators for tangential velocity boundaries on which mesh deformation does not occur
+        for (const auto &boundary_id : this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators())
+          {
+            if (prescribed_mesh_deformation_boundary_indicators.find(boundary_id)
+                == prescribed_mesh_deformation_boundary_indicators.end())
+              tangential_velocity_without_prescribed_mesh_deformation_boundary_indicators.insert(boundary_id);
           }
 
         // Create the list of tangential mesh movement boundary indicators
@@ -624,13 +638,21 @@ namespace aspect
         }
 
       this->get_signals().pre_compute_no_normal_flux_constraints(sim.triangulation);
-      // Make the no flux boundary constraints
+
+      // Make the no flux boundary constraints for all boundaries on which the mesh
+      // is allowed to move tangential to that boundary. This is independent of any
+      // constraints on the movement of material on these boundaries.
+      // As these boundaries are not allowed to move normal to themselves, they
+      // should remain aligned with the initial manifold. We can therefore use
+      // the manifold to compute the normal vector.
       VectorTools::compute_no_normal_flux_constraints (mesh_deformation_dof_handler,
                                                        /* first_vector_component= */
                                                        0,
                                                        tangential_mesh_deformation_boundary_indicators,
                                                        mesh_velocity_constraints,
-                                                       this->get_mapping());
+                                                       this->get_mapping(),
+                                                       /* use_manifold_for_normal= */
+                                                       true);
 
       this->get_signals().post_compute_no_normal_flux_constraints(sim.triangulation);
 
@@ -748,14 +770,21 @@ namespace aspect
                                                     mesh_velocity_constraints);
         }
 
-      // Make tangential deformation constraints for tangential boundaries
+      // Make the no flux boundary constraints for all boundaries on which the mesh
+      // is allowed to move tangential to that boundary. This is independent of any
+      // constraints on the movement of material on these boundaries.
+      // As these boundaries are not allowed to move normal to themselves, they
+      // should remain aligned with the initial manifold. We can therefore use
+      // the manifold to compute the normal vector.
       this->get_signals().pre_compute_no_normal_flux_constraints(sim.triangulation);
       VectorTools::compute_no_normal_flux_constraints (mesh_deformation_dof_handler,
                                                        /* first_vector_component= */
                                                        0,
                                                        tangential_mesh_deformation_boundary_indicators,
                                                        mesh_velocity_constraints,
-                                                       this->get_mapping());
+                                                       this->get_mapping(),
+                                                       /* use_manifold_for_normal= */
+                                                       true);
       this->get_signals().post_compute_no_normal_flux_constraints(sim.triangulation);
 
       // Ask all plugins to add their constraints.
@@ -1132,14 +1161,16 @@ namespace aspect
 #endif
               const IndexSet &refinement_edge_indices =
                 mg_constrained_dofs.get_refinement_edge_indices(level);
-              dealii::VectorTools::compute_no_normal_flux_constraints_on_level(
+              VectorTools::compute_no_normal_flux_constraints_on_level(
                 mesh_deformation_dof_handler,
                 0,
                 no_flux_boundary,
                 user_level_constraints,
                 mapping,
                 refinement_edge_indices,
-                level);
+                level,
+                /* use_manifold_for_normal= */
+                true);
 
               user_level_constraints.close();
               mg_constrained_dofs.add_user_constraints(level, user_level_constraints);
@@ -1602,6 +1633,23 @@ namespace aspect
     MeshDeformationHandler<dim>::get_active_mesh_deformation_boundary_indicators () const
     {
       return prescribed_mesh_deformation_boundary_indicators;
+    }
+
+
+    template <int dim>
+    const std::set<types::boundary_id> &
+    MeshDeformationHandler<dim>::get_tangential_velocity_with_active_mesh_deformation_boundary_indicators () const
+    {
+      return tangential_velocity_with_prescribed_mesh_deformation_boundary_indicators;
+    }
+
+
+
+    template <int dim>
+    const std::set<types::boundary_id> &
+    MeshDeformationHandler<dim>::get_tangential_velocity_without_active_mesh_deformation_boundary_indicators () const
+    {
+      return tangential_velocity_without_prescribed_mesh_deformation_boundary_indicators;
     }
 
 

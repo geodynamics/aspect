@@ -1,0 +1,8 @@
+Fixed: Tangential velocity boundary conditions along
+boundaries with mesh deformation did not
+correctly include the mesh deformation when computing
+the tangential direction, leading to flow into and out of
+the domain. This is fixed now.
+
+<br>
+(Bob Myhill, Rene Gassmoeller and Timo Heister, 2026/01/12)
