@@ -29,6 +29,12 @@
 // create a function that is run upon loading the plugin
 int f()
 {
+  if (_import_array() < 0)
+    {
+      PyErr_Print();
+      AssertThrow(false, dealii::ExcMessage("Numpy init failed!"));
+    }
+
   PyRun_SimpleString("import sys; sys.path.append(\"" ASPECT_SOURCE_DIR "/tests\")");
   PyObject *pModule = PyImport_ImportModule("python_01");
   AssertThrow(pModule != nullptr, dealii::ExcMessage("Failed to load Python module"));
