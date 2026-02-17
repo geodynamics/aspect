@@ -229,31 +229,27 @@ namespace aspect
                                                   const unsigned int nonlinear_iteration,
                                                   std::vector<double> *residual)
   {
-    // Advect the particles before they are potentially used to
-    // set up the compositional fields.
+    // Prepare the particles for use by the compositional fields
     for (auto &particle_manager : particle_managers)
       {
-        // Restore particles through stored copy of particle handler,
-        // but only if they have already been displaced in a nonlinear
-        // iteration.
+        // If necessary restore particles to the beginning of the time step
         if (nonlinear_iteration > 0)
           particle_manager.restore_particles();
 
-        // Apply a particle update if required by the particle properties.
-        // Apply the update even if nonlinear_iteration == 0,
-        // because the signal could be used, for example, to apply operator
-        // splitting on the particles, and this would need to be
-        // applied at the beginning of the timestep and after
-        // every restore_particles().
+        // Signal that particles have been restored (or we just started a time
+        // step, which means they are in the same state as post restore).
+        // This signal can be used to apply operator
+        // splitting on the particle properties.
         signals.post_restore_particles(particle_manager);
 
-        // Do not advect the particles in the initial refinement stage
+        // Advect particles, but not if we are in the initial refinement stage
         const bool in_initial_refinement = (timestep_number == 0)
                                            && (pre_refinement_step < parameters.initial_adaptive_refinement);
+
         if (!in_initial_refinement)
-          // Advance the particles in the manager to the current time
           particle_manager.advance_timestep();
 
+        // If necessary update particle properties
         if (particle_manager.get_property_manager().need_update() == Particle::Property::update_output_step)
           particle_manager.update_particles();
       }
