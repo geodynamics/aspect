@@ -23,41 +23,28 @@
 
 #include <iostream>
 
-// Python does not like it if this macro is already defined. This happens at
-// least in some versions of Trilinos and can trigger only with certain unity
-// build options:
-#ifdef HAVE_SYS_TIME_H
-#  undef HAVE_SYS_TIME_H
-#endif
-#define PY_SSIZE_T_CLEAN
-#include <Python.h>
-#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
-#include <numpy/arrayobject.h>
-
-PyObject *vector_to_numpy(const std::vector<double> &vec)
-{
-  npy_intp size = vec.size();
-  double *data = const_cast<double *>(vec.data());
-  return PyArray_SimpleNewFromData(1, &size, NPY_DOUBLE, data);
-}
+#define ASPECT_NUMPY_DEFINE_API
+#include <aspect/python_helper.h>
 
 // create a function that is run upon loading the plugin
 int f()
 {
-  // required for Numpy interop in each translation unit
   if (_import_array() < 0)
-    AssertThrow(false, dealii::ExcMessage("Numpy init failed!"));
+    {
+      PyErr_Print();
+      AssertThrow(false, dealii::ExcMessage("Numpy init failed!"));
+    }
 
   PyRun_SimpleString("import sys; sys.path.append(\"" ASPECT_SOURCE_DIR "/tests\")");
   PyObject *pModule = PyImport_ImportModule("python_01");
   AssertThrow(pModule != nullptr, dealii::ExcMessage("Failed to load Python module"));
 
   std::vector<double> x = {1.0, 2.0, 3.0};
-  PyObject *arr = vector_to_numpy(x);
+  auto arr = aspect::PythonHelper::vector_to_numpy_object(x);
 
   PyObject *pFunc = PyObject_GetAttrString(pModule, "update");
   Assert(pFunc != nullptr, dealii::ExcMessage("update() function not found."));
-  PyObject *pArgs = PyTuple_Pack(2, PyFloat_FromDouble(42.0), arr);
+  PyObject *pArgs = PyTuple_Pack(2, PyFloat_FromDouble(42.0), arr.get());
 
   PyObject *result = PyObject_CallObject(pFunc, pArgs);
   Assert(result != nullptr, dealii::ExcMessage("Python call to update() failed."));
@@ -65,8 +52,6 @@ int f()
   Assert(result_double == 21.0, dealii::ExcMessage("Incorrect result."));
   std::cout << "result: " << result_double << std::endl;
 
-
-  Py_DECREF(arr);
   Py_DECREF(pArgs);
   Py_DECREF(pFunc);
 

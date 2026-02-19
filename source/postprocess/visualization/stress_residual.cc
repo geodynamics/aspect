@@ -90,7 +90,7 @@ namespace aspect
               }
 
             // Compute the second moment invariant of the deviatoric stress
-            const double stress_invariant = std::sqrt(std::fabs(second_invariant(deviatoric_stress)));
+            const double stress_invariant = std::sqrt(std::fabs(Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(deviatoric_stress)));
 
             // Get the current yield_stress
             const std::shared_ptr<const MaterialModel::PlasticAdditionalOutputs<dim>> plastic_output

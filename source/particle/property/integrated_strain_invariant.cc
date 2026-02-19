@@ -19,6 +19,7 @@
  */
 
 #include <aspect/particle/property/integrated_strain_invariant.h>
+#include <aspect/utilities.h>
 
 namespace aspect
 {
@@ -61,7 +62,7 @@ namespace aspect
             const SymmetricTensor<2,dim> strain_rate = symmetrize (grad_u);
 
             // Calculate strain rate second invariant
-            const double edot_ii = std::sqrt(std::max(-second_invariant(deviator(strain_rate)), 0.));
+            const double edot_ii = std::sqrt(std::max(-Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(Utilities::Tensors::consistent_deviator(strain_rate)), 0.));
 
             // New strain is the old strain plus dt*edot_ii
             const double new_strain = old_strain + dt*edot_ii;

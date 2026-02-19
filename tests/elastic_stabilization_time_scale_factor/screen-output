@@ -54,8 +54,8 @@ Number of mesh deformation degrees of freedom: 336
    Solving inclusion system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 43+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.54089e-16, 0.00425245, 0.00425245, 0.00532994, 0, 0, 0, 0, 0, 2.45597
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.45597
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.54089e-16, 0.00423873, 0.00460622, 0.00532727, 0, 0, 0, 0, 0, 2.41263
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.41263
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 2 iterations.
@@ -68,8 +68,8 @@ Number of mesh deformation degrees of freedom: 336
    Solving inclusion system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 37+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.68015e-16, 0.00218164, 0.00218164, 0.00129176, 0, 0, 0, 0, 0, 2.27095
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.27095
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.70981e-16, 0.0021859, 0.00218954, 0.00129109, 0, 0, 0, 0, 0, 2.20368
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.20368
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 2 iterations.
@@ -82,8 +82,8 @@ Number of mesh deformation degrees of freedom: 336
    Solving inclusion system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 32+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.72333e-16, 0.000368507, 0.000368507, 0.000336474, 0, 0, 0, 0, 0, 0.319022
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.319022
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.798e-16, 0.00036212, 0.000387302, 0.000337697, 0, 0, 0, 0, 0, 0.303798
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.303798
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 2 iterations.
@@ -96,8 +96,8 @@ Number of mesh deformation degrees of freedom: 336
    Solving inclusion system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 14+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.85308e-16, 2.62637e-05, 2.62637e-05, 4.39833e-05, 0, 0, 0, 0, 0, 0.000150671
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.000150671
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.62873e-16, 2.33663e-05, 2.92363e-05, 4.3346e-05, 0, 0, 0, 0, 0, 0.000152545
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.000152545
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 1 iterations.
@@ -109,14 +109,14 @@ Number of mesh deformation degrees of freedom: 336
    Solving plate system ... 2 iterations.
    Solving inclusion system ... 2 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 1+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.71207e-16, 3.33778e-08, 3.33778e-08, 2.39665e-08, 0, 0, 0, 0, 0, 1.78562e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 5: 1.78562e-07
+   Solving Stokes system (AMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.78072e-16, 3.46443e-08, 3.22387e-08, 2.41789e-08, 0, 0, 0, 0, 0, 1.46776e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 1.46776e-07
 
 
    Postprocessing:
      Average density / Average viscosity / Total mass:  2672 kg/m^3, 1.522e+18 Pa s, 2.338e+12 kg
-     RMS, max velocity:                                 2.22 m/year, 4.24 m/year
+     RMS, max velocity:                                 2.22 m/year, 4.23 m/year
      Topography min/max:                                -9.004 m, 17.42 m
 
 Termination requested by criterion: end time

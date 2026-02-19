@@ -19,4 +19,4 @@
 # 19: Outward mass flux through boundary with indicator 2 ("bottom") (kg/s)
 # 20: Outward mass flux through boundary with indicator 3 ("top") (kg/s)
 # 21: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 32 0 1159 1159 2438 2.57348854e-08 3.05181621e-08 -1.07436330e+07 5.00753885e+08 1.01225140e+09 0.00000000e+00 0.00000000e+00 -8.13924078e-01 8.13924078e-01 output-nonlinear_channel_flow_velocities_benchmark/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 17 0 678 678 1479 2.57348854e-08 3.05181621e-08 -1.70533270e+07 7.94897082e+08 1.60684749e+09 0.00000000e+00 0.00000000e+00 -8.13924078e-01 8.13924078e-01 output-nonlinear_channel_flow_velocities_benchmark/solution/solution-00000 

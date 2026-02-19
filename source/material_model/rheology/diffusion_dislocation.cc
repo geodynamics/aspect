@@ -51,7 +51,7 @@ namespace aspect
         // to prevent a division-by-zero, and a floating point exception.
         // Otherwise, calculate the square-root of the norm of the second invariant of the deviatoric-
         // strain rate (often simplified as epsilondot_ii)
-        const double edot_ii = std::max(std::sqrt(std::max(-second_invariant(deviator(strain_rate)), 0.)),
+        const double edot_ii = std::max(std::sqrt(std::max(-Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(Utilities::Tensors::consistent_deviator(strain_rate)), 0.)),
                                         min_strain_rate);
         const double log_edot_ii = std::log(edot_ii);
 

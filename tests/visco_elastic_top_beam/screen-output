@@ -43,9 +43,9 @@ Number of degrees of freedom: 11,104 (1,302+176+176+1,350+1,350+1,350+1,350+1,35
    Solving ve_stress_yy_old system ... 3 iterations.
    Solving ve_stress_xy_old system ... 3 iterations.
    Solving beam system ... 3 iterations.
-   Solving Stokes system (GMG)... 124+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.25608e-16, 0.00369925, 0.00369925, 0.000625104, 0, 0, 0, 0, 0.451981
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.451981
+   Solving Stokes system (GMG)... 127+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.25608e-16, 0.00258812, 0.00495297, 0.000625077, 0, 0, 0, 0, 0.336215
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.336215
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 2 iterations.
@@ -55,9 +55,9 @@ Number of degrees of freedom: 11,104 (1,302+176+176+1,350+1,350+1,350+1,350+1,35
    Solving ve_stress_yy_old system ... 2 iterations.
    Solving ve_stress_xy_old system ... 3 iterations.
    Solving beam system ... 2 iterations.
-   Solving Stokes system (GMG)... 92+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.39745e-16, 0.00262685, 0.00262685, 0.000712297, 0, 0, 0, 0, 0.00198063
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00262685
+   Solving Stokes system (GMG)... 90+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.27352e-16, 0.00186779, 0.00364618, 0.000589053, 0, 0, 0, 0, 0.0011715
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00364618
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 2 iterations.
@@ -67,9 +67,9 @@ Number of degrees of freedom: 11,104 (1,302+176+176+1,350+1,350+1,350+1,350+1,35
    Solving ve_stress_yy_old system ... 2 iterations.
    Solving ve_stress_xy_old system ... 2 iterations.
    Solving beam system ... 2 iterations.
-   Solving Stokes system (GMG)... 44+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.38555e-16, 1.4594e-05, 1.4594e-05, 4.41105e-06, 0, 0, 0, 0, 9.13419e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.4594e-05
+   Solving Stokes system (GMG)... 43+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.32449e-16, 6.60135e-06, 1.19915e-05, 2.38455e-06, 0, 0, 0, 0, 4.98798e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.19915e-05
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 1 iterations.
@@ -79,13 +79,13 @@ Number of degrees of freedom: 11,104 (1,302+176+176+1,350+1,350+1,350+1,350+1,35
    Solving ve_stress_yy_old system ... 1 iterations.
    Solving ve_stress_xy_old system ... 2 iterations.
    Solving beam system ... 2 iterations.
-   Solving Stokes system (GMG)... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.27785e-16, 9.53071e-08, 9.53071e-08, 7.24358e-08, 0, 0, 0, 0, 7.83804e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 9.53071e-08
+   Solving Stokes system (GMG)... 7+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.30349e-16, 4.57058e-08, 5.28172e-08, 4.17707e-08, 0, 0, 0, 0, 7.40297e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 7.40297e-08
 
 
    Postprocessing:
-     RMS, max velocity:        0.0012 m/year, 0.00307 m/year
+     RMS, max velocity:        0.00101 m/year, 0.00269 m/year
      Temperature min/avg/max:  293 K, 293 K, 293 K
      Writing graphical output: output-visco_elastic_top_beam/solution/solution-00001
 
@@ -99,9 +99,9 @@ Number of degrees of freedom: 11,104 (1,302+176+176+1,350+1,350+1,350+1,350+1,35
    Solving ve_stress_yy_old system ... 2 iterations.
    Solving ve_stress_xy_old system ... 2 iterations.
    Solving beam system ... 2 iterations.
-   Solving Stokes system (GMG)... 124+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.58328e-16, 0.0017739, 0.0017739, 0.000531666, 0, 0, 0, 0, 0.472376
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.472376
+   Solving Stokes system (GMG)... 129+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.54489e-16, 0.00093114, 0.00274211, 0.000346402, 0, 0, 0, 0, 0.450562
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.450562
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 2 iterations.
@@ -111,9 +111,9 @@ Number of degrees of freedom: 11,104 (1,302+176+176+1,350+1,350+1,350+1,350+1,35
    Solving ve_stress_yy_old system ... 2 iterations.
    Solving ve_stress_xy_old system ... 2 iterations.
    Solving beam system ... 2 iterations.
-   Solving Stokes system (GMG)... 90+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.68751e-16, 0.00173356, 0.00173356, 0.000414997, 0, 0, 0, 0, 0.00152592
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00173356
+   Solving Stokes system (GMG)... 92+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.56424e-16, 0.00084326, 0.00268209, 0.000363672, 0, 0, 0, 0, 0.000808406
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00268209
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 2 iterations.
@@ -123,13 +123,13 @@ Number of degrees of freedom: 11,104 (1,302+176+176+1,350+1,350+1,350+1,350+1,35
    Solving ve_stress_yy_old system ... 2 iterations.
    Solving ve_stress_xy_old system ... 2 iterations.
    Solving beam system ... 2 iterations.
-   Solving Stokes system (GMG)... 35+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.7286e-16, 6.61379e-06, 6.61379e-06, 2.40442e-06, 0, 0, 0, 0, 5.03154e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 6.61379e-06
+   Solving Stokes system (GMG)... 40+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.67567e-16, 2.52263e-06, 6.3115e-06, 1.40335e-06, 0, 0, 0, 0, 3.02245e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 6.3115e-06
 
 
    Postprocessing:
-     RMS, max velocity:        0.00139 m/year, 0.00385 m/year
+     RMS, max velocity:        0.00109 m/year, 0.00342 m/year
      Temperature min/avg/max:  293 K, 293 K, 293 K
      Writing graphical output: output-visco_elastic_top_beam/solution/solution-00002
 

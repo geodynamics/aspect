@@ -1379,6 +1379,38 @@ namespace aspect
       // Declare the existence of a specialization:
       template <>
       const Tensor<3,3> &levi_civita<3>();
+
+      /**
+       * Compute the deviator of a symmetric tensor. This function is equivalent to
+       * dealii::deviator in 3D, while in 2D it is consistent with the plane strain assumption.
+       * Specifically, the deviator of the stress tensor $\mathbf\tau$ in 2D is given by
+       * $\text{dev}(\mathbf\tau) = \mathbf\tau - \frac{1}{3}\text{trace}(\mathbf\tau)\mathbf 1$
+       * under the plane strain assumption.
+       *
+       * It should be noted that the consistent deviator of a consistently deviatoric tensor is
+       * not itself in 2D, which implies that it is invalid to apply this function to a symmetric
+       * tensor more than once.
+       */
+      template <int dim>
+      SymmetricTensor<2,dim>
+      consistent_deviator(const SymmetricTensor<2,dim> &input);
+
+      /**
+       * Compute the second invariant of a deviatoric tensor of rank 2. This function is
+       * equivalent to dealii::second_invariant in 3D, while in 2D it is consistent with the
+       * plane strain assumption. Specifically, the second invariant of the deviatoric
+       * stress tensor $\tau_{II}$ in 2D is given by $\tau_{II} = -\frac{1}{2}(\tau_{11}^2 +
+       * \tau_{22}^2 + \tau_{33}^2 + 2\tau_{12}^2) = -\frac{1}{2}[\tau_{11}^2 + \tau_{22}^2 +
+       * (\tau_{11} + \tau_{22})^2 + 2\tau_{12}^2]$ under the plane strain assumption.
+       *
+       * It should be noted that this function provides the correct result in 2D only when the
+       * input tensor is deviatoric in the sense of plane strain, which cannot be examined
+       * without extra information (the trace of a plane strain deviatoric tensor is not
+       * zero). Thus, extra care must be taken when using this function.
+       */
+      template <int dim>
+      double
+      consistent_second_invariant_of_deviatoric_tensor(const SymmetricTensor<2,dim> &input);
     }
 
   }

@@ -1,0 +1,75 @@
+
+Number of active cells: 128 (on 4 levels)
+Number of degrees of freedom: 1,836 (1,122+153+561)
+
+Number of mesh deformation degrees of freedom: 306
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 6+0 iterations.
+
+   Postprocessing:
+     Topography min/max:                 0 m, 0 m
+     Writing graphical output:           output-function_mesh_deformation_tangential_mesh_velocity_simple_shear_amg/solution/solution-00000
+     RMS, max velocity:                  1.03e-09 m/year, 3.17e-09 m/year
+     Temperature min/avg/max:            1613 K, 1613 K, 1613 K
+     Heat fluxes through boundary parts: -4.288e-12 W, -3.157e-12 W, -1.726e-11 W, -1.712e-11 W
+
+*** Timestep 1:  t=250000 years, dt=250000 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 7+0 iterations.
+
+   Postprocessing:
+     Topography min/max:                 -2500 m, 2500 m
+     Writing graphical output:           output-function_mesh_deformation_tangential_mesh_velocity_simple_shear_amg/solution/solution-00001
+     RMS, max velocity:                  1.03e-09 m/year, 3.17e-09 m/year
+     Temperature min/avg/max:            1613 K, 1613 K, 1613 K
+     Heat fluxes through boundary parts: -4.409e-13 W, -1.698e-13 W, 4.147e-12 W, -5.021e-12 W
+
+*** Timestep 2:  t=500000 years, dt=250000 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 6+0 iterations.
+
+   Postprocessing:
+     Topography min/max:                 -5000 m, 5000 m
+     Writing graphical output:           output-function_mesh_deformation_tangential_mesh_velocity_simple_shear_amg/solution/solution-00002
+     RMS, max velocity:                  1.03e-09 m/year, 3.17e-09 m/year
+     Temperature min/avg/max:            1613 K, 1613 K, 1613 K
+     Heat fluxes through boundary parts: 3.586e-12 W, -3.259e-13 W, 3.277e-12 W, 2.059e-12 W
+
+*** Timestep 3:  t=750000 years, dt=250000 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 6+0 iterations.
+
+   Postprocessing:
+     Topography min/max:                 -7500 m, 7500 m
+     Writing graphical output:           output-function_mesh_deformation_tangential_mesh_velocity_simple_shear_amg/solution/solution-00003
+     RMS, max velocity:                  1.03e-09 m/year, 3.17e-09 m/year
+     Temperature min/avg/max:            1613 K, 1613 K, 1613 K
+     Heat fluxes through boundary parts: 5.874e-12 W, -7.288e-13 W, 1.133e-12 W, 7.05e-12 W
+
+*** Timestep 4:  t=1e+06 years, dt=250000 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 6+0 iterations.
+
+   Postprocessing:
+     Topography min/max:                 -1e+04 m, 1e+04 m
+     Writing graphical output:           output-function_mesh_deformation_tangential_mesh_velocity_simple_shear_amg/solution/solution-00004
+     RMS, max velocity:                  1.03e-09 m/year, 3.17e-09 m/year
+     Temperature min/avg/max:            1613 K, 1613 K, 1613 K
+     Heat fluxes through boundary parts: 4.571e-12 W, -9.889e-13 W, 2.832e-12 W, 3.47e-12 W
+
+Termination requested by criterion: end time
+
+
+

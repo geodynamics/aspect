@@ -37,10 +37,10 @@ Number of degrees of freedom: 93,572 (8,450+1,089+1,089+9,216+9,216+9,216+9,216+
    Solving air system ... 2 iterations.
    Solving inclusion system ... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 0+25 iterations.
-      Newton system information: Norm of the rhs: 9.19463e+11, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.92761e-17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0214869
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0214869
+   Solving Stokes system (AMG)... 0+26 iterations.
+      Newton system information: Norm of the rhs: 9.08232e+11, Derivative scaling factor: 0
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.92761e-17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0212244
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0212244
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
@@ -60,9 +60,9 @@ Number of degrees of freedom: 93,572 (8,450+1,089+1,089+9,216+9,216+9,216+9,216+
    The linear solver tolerance is set to 0.1. 
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+1 iterations.
-      Newton system information: Norm of the rhs: 7.48612e+11, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.36302e-17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0174943
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.0174943
+      Newton system information: Norm of the rhs: 7.35023e+11, Derivative scaling factor: 0
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.36302e-17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0171767
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.0171767
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
@@ -82,9 +82,9 @@ Number of degrees of freedom: 93,572 (8,450+1,089+1,089+9,216+9,216+9,216+9,216+
    The linear solver tolerance is set to 0.1. 
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+1 iterations.
-      Newton system information: Norm of the rhs: 7.43475e+11, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.52391e-17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0173742
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.0173742
+      Newton system information: Norm of the rhs: 7.27318e+11, Derivative scaling factor: 0
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.52391e-17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0169967
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.0169967
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
@@ -104,13 +104,13 @@ Number of degrees of freedom: 93,572 (8,450+1,089+1,089+9,216+9,216+9,216+9,216+
    The linear solver tolerance is set to 0.1. 
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+1 iterations.
-      Newton system information: Norm of the rhs: 7.42874e+11, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.98693e-17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0173602
-      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.0173602
+      Newton system information: Norm of the rhs: 7.23526e+11, Derivative scaling factor: 0
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.98693e-17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.016908
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.016908
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
-     RMS, max velocity:         0.141 m/year, 0.223 m/year
+     RMS, max velocity:         0.142 m/year, 0.223 m/year
      Writing graphical output:  output-newton_postprocess_nonlinear/solution/solution-00000.0004
 
 

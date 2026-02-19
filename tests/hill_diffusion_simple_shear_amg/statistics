@@ -1,0 +1,26 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Minimum topography (m)
+# 12: Maximum topography (m)
+# 13: Visualization file name
+# 14: RMS velocity (m/year)
+# 15: Max. velocity (m/year)
+# 16: Minimal temperature (K)
+# 17: Average temperature (K)
+# 18: Maximal temperature (K)
+# 19: Average nondimensional temperature (K)
+# 20: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 21: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 22: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 23: Outward heat flux through boundary with indicator 3 ("top") (W)
+0 0.000000000000e+00 0.000000000000e+00 12288 111875 49665 0 39 39 39 0.00000000e+00 2.50000000e+04 output-hill_diffusion_simple_shear_amg/solution/solution-00000 1.09894627e-09 3.16880878e-09 1.61300000e+03 1.61300000e+03 1.61300000e+03 1.05581415e-13 -4.54198211e-11 1.21348517e-11  5.56429500e-12 -1.40754634e-12 
+1 1.000000000000e+03 1.000000000000e+03 12288 111875 49665 0 26 26 52 3.05066373e+02 2.49951343e+04 output-hill_diffusion_simple_shear_amg/solution/solution-00001 1.09872000e-09 3.16880878e-09 1.61300000e+03 1.61300000e+03 1.61300000e+03 2.16948113e-15 -2.76294946e-11 1.67583037e-11 -7.05303252e-12 -2.01002244e-11 
+2 2.000000000000e+03 1.000000000000e+03 12288 111875 49665 0 23 23 46 4.86358517e+02 2.49902704e+04 output-hill_diffusion_simple_shear_amg/solution/solution-00002 1.09855994e-09 3.16880878e-09 1.61300000e+03 1.61300000e+03 1.61300000e+03 6.08659985e-15  6.24540884e-11 7.04828462e-12  3.14239333e-10 -4.12114293e-11 

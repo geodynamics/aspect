@@ -30,8 +30,8 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
    Initial Newton Stokes residual = 1.85485e+13, v = 1.85069e+13, p = 1.24042e+12
 
    Solving Stokes system (GMG)... 0+6 iterations.
-      Newton system information: Norm of the rhs: 1.80069e+09
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.70804e-05
+      Newton system information: Norm of the rhs: 1.80052e+09
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.7071e-05
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.

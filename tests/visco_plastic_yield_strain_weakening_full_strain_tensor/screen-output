@@ -9,7 +9,7 @@ Number of degrees of freedom: 3,208 (882+121+441+441+441+441+441)
    Skipping s21 composition solve because RHS is zero.
    Solving s22 system ... 0 iterations.
    Solving Stokes system (GMG)... 0+7 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.230577
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.216444
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -31,7 +31,7 @@ Number of degrees of freedom: 3,208 (882+121+441+441+441+441+441)
    Solving s21 system ... 12 iterations.
    Solving s22 system ... 6 iterations.
    Solving Stokes system (GMG)... 0+2 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.84205e-09
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.42022e-09
 
 
    Postprocessing:

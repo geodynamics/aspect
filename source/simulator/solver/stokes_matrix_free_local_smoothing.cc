@@ -454,12 +454,14 @@ namespace aspect
           active_cell_data.enable_newton_derivatives = (Parameters<dim>::is_defect_correction(this->get_parameters().nonlinear_solver)
                                                         && this->get_newton_handler().parameters.newton_derivative_scaling_factor != 0);
           active_cell_data.enable_prescribed_dilation = this->get_parameters().enable_prescribed_dilation;
+          active_cell_data.average_newton_factors = (this->get_parameters().material_averaging != MaterialModel::MaterialAveraging::none);
 
           // TODO: these are not implemented yet
           for (unsigned int level=0; level<n_levels; ++level)
             {
               level_cell_data[level].enable_newton_derivatives = false;
               level_cell_data[level].enable_prescribed_dilation = false;
+              level_cell_data[level].average_newton_factors = false;
             }
 
           FEValues<dim> fe_values (this->get_mapping(),
@@ -556,15 +558,8 @@ namespace aspect
 
                       for (unsigned int q=0; q<n_q_points; ++q)
                         {
-                          // use the correct strain rate for the Jacobian
-                          // when elasticity is enabled use viscoelastic strain rate
-                          // when stabilization is enabled, use the deviatoric strain rate because the SPD factor
-                          // that is computed is only safe for the deviatoric strain rate (see PR #5580 and issue #5555)
-                          SymmetricTensor<2,dim> effective_strain_rate = in.strain_rate[q];
-                          if (elastic_out != nullptr)
-                            effective_strain_rate = elastic_out->viscoelastic_strain_rate[q];
-                          else if ((this->get_newton_handler().parameters.velocity_block_stabilization & Newton::Parameters::Stabilization::PD) != Newton::Parameters::Stabilization::none)
-                            effective_strain_rate = deviator(effective_strain_rate);
+                          const SymmetricTensor<2,dim> effective_strain_rate
+                            = (elastic_out == nullptr ? in.strain_rate[q] : elastic_out->viscoelastic_strain_rate[q]);
 
                           // use the spd factor when the stabilization is PD or SPD.
                           const double alpha =  (this->get_newton_handler().parameters.velocity_block_stabilization
@@ -579,14 +574,19 @@ namespace aspect
                                                 1.0;
 
                           active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]
-                            = derivatives->viscosity_derivative_wrt_pressure[q] *
-                              derivatives->viscosity_derivative_averaging_weights[q] *
-                              newton_derivative_scaling_factor;
+                            = newton_derivative_scaling_factor * derivatives->viscosity_derivative_wrt_pressure[q]
+                              * (active_cell_data.average_newton_factors ? derivatives->viscosity_derivative_averaging_weights[q] : 1.0);
                           Assert(std::isfinite(active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]),
-                                 ExcMessage("active_cell_data.newton_factor_wrt_pressure_table is not finite: " + std::to_string(active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]) +
-                                            ". Relevant variables are derivatives->viscosity_derivative_wrt_pressure[q] = " + std::to_string(derivatives->viscosity_derivative_wrt_pressure[q]) +
-                                            ", derivatives->viscosity_derivative_averaging_weights[q] = " + std::to_string(derivatives->viscosity_derivative_averaging_weights[q]) +
-                                            ", and newton_derivative_scaling_factor = " + std::to_string(newton_derivative_scaling_factor)));
+                                 ExcMessage("active_cell_data.newton_factor_wrt_pressure_table is not finite: "
+                                            + std::to_string(active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i])
+                                            + ". Relevant variables are derivatives->viscosity_derivative_wrt_pressure[q] = "
+                                            + std::to_string(derivatives->viscosity_derivative_wrt_pressure[q])
+                                            + (active_cell_data.average_newton_factors ?
+                                               ", derivatives->viscosity_derivative_averaging_weights[q] = "
+                                               + std::to_string(derivatives->viscosity_derivative_averaging_weights[q])
+                                               + ", and newton_derivative_scaling_factor = "
+                                               + std::to_string(newton_derivative_scaling_factor) :
+                                               "")));
 
                           for (unsigned int m=0; m<dim; ++m)
                             for (unsigned int n=0; n<dim; ++n)
@@ -595,14 +595,15 @@ namespace aspect
                                   = effective_strain_rate[m][n];
 
                                 active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i]
-                                  = derivatives->viscosity_derivative_wrt_strain_rate[q][m][n] *
-                                    derivatives->viscosity_derivative_averaging_weights[q] *
-                                    newton_derivative_scaling_factor * alpha;
+                                  = newton_derivative_scaling_factor * alpha * derivatives->viscosity_derivative_wrt_strain_rate[q][m][n]
+                                    * (active_cell_data.average_newton_factors ? derivatives->viscosity_derivative_averaging_weights[q] : 1.0);
 
                                 Assert(std::isfinite(active_cell_data.strain_rate_table(cell, q)[m][n][i]),
-                                       ExcMessage("active_cell_data.strain_rate_table has an element which is not finite: " + std::to_string(active_cell_data.strain_rate_table(cell, q)[m][n][i])));
+                                       ExcMessage("active_cell_data.strain_rate_table has an element which is not finite: "
+                                                  + std::to_string(active_cell_data.strain_rate_table(cell, q)[m][n][i])));
                                 Assert(std::isfinite(active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i]),
-                                       ExcMessage("active_cell_data.newton_factor_wrt_strain_rate_table has an element which is not finite: " + std::to_string(active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i])));
+                                       ExcMessage("active_cell_data.newton_factor_wrt_strain_rate_table has an element which is not finite: "
+                                                  + std::to_string(active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i])));
                               }
 
                           if (active_cell_data.enable_prescribed_dilation)
@@ -610,9 +611,12 @@ namespace aspect
                               active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]
                                 = derivatives->dilation_derivative_wrt_pressure[q] * newton_derivative_scaling_factor;
                               Assert(std::isfinite(active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]),
-                                     ExcMessage("active_cell_data.dilation_derivative_wrt_pressure_table is not finite: " + std::to_string(active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]) +
-                                                ". Relevant variables are derivatives->dilation_derivative_wrt_pressure[q] = " + std::to_string(derivatives->dilation_derivative_wrt_pressure[q]) +
-                                                " and newton_derivative_scaling_factor = " + std::to_string(newton_derivative_scaling_factor)));
+                                     ExcMessage("active_cell_data.dilation_derivative_wrt_pressure_table is not finite: "
+                                                + std::to_string(active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i])
+                                                + ". Relevant variables are derivatives->dilation_derivative_wrt_pressure[q] = "
+                                                + std::to_string(derivatives->dilation_derivative_wrt_pressure[q])
+                                                + " and newton_derivative_scaling_factor = "
+                                                + std::to_string(newton_derivative_scaling_factor)));
 
                               for (unsigned int m=0; m<dim; ++m)
                                 for (unsigned int n=0; n<dim; ++n)
@@ -1607,12 +1611,40 @@ namespace aspect
       sim.compute_initial_velocity_boundary_constraints(constraints_v);
       sim.compute_current_velocity_boundary_constraints(constraints_v);
 
-      VectorTools::compute_no_normal_flux_constraints (dof_handler_v,
-                                                       /* first_vector_component= */
-                                                       0,
-                                                       this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators(),
-                                                       constraints_v,
-                                                       this->get_mapping());
+      if (!this->get_parameters().mesh_deformation_enabled)
+        {
+          VectorTools::compute_no_normal_flux_constraints(dof_handler_v,
+                                                          /* first_vector_component= */
+                                                          0,
+                                                          this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators(),
+                                                          constraints_v,
+                                                          this->get_mapping(),
+                                                          /* use_manifold_for_normal= */
+                                                          true);
+        }
+      else
+        {
+          // If mesh deformation is active, we need to distinguish between tangential velocity boundaries
+          // where mesh deformation is active and where it is not. For the first case, we cannot use the manifold
+          // normal vectors since those do not include the mesh deformation.
+          VectorTools::compute_no_normal_flux_constraints(dof_handler_v,
+                                                          /* first_vector_component= */
+                                                          0,
+                                                          this->get_mesh_deformation_handler().get_tangential_velocity_with_active_mesh_deformation_boundary_indicators(),
+                                                          constraints_v,
+                                                          this->get_mapping(),
+                                                          /* use_manifold_for_normal= */
+                                                          false);
+
+          VectorTools::compute_no_normal_flux_constraints(dof_handler_v,
+                                                          /* first_vector_component= */
+                                                          0,
+                                                          this->get_mesh_deformation_handler().get_tangential_velocity_without_active_mesh_deformation_boundary_indicators(),
+                                                          constraints_v,
+                                                          this->get_mapping(),
+                                                          /* use_manifold_for_normal= */
+                                                          true);
+        }
 
       sim.prescribed_solution_manager.constrain_solution(constraints_v);
 
@@ -1789,7 +1821,7 @@ namespace aspect
 #endif
             level_constraints_v.close();
 
-            std::set<types::boundary_id> no_flux_boundaries
+            const std::set<types::boundary_id> &no_flux_boundaries
               = this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators();
             if (!no_flux_boundaries.empty())
               {
@@ -1802,13 +1834,48 @@ namespace aspect
                 const IndexSet &refinement_edge_indices =
                   mg_constrained_dofs_A_block.get_refinement_edge_indices(level);
 
-                VectorTools::compute_no_normal_flux_constraints_on_level(dof_handler_v,
-                                                                         0,
-                                                                         no_flux_boundaries,
-                                                                         user_level_constraints,
-                                                                         mapping,
-                                                                         refinement_edge_indices,
-                                                                         level);
+                if (!this->get_parameters().mesh_deformation_enabled)
+                  {
+                    VectorTools::compute_no_normal_flux_constraints_on_level(dof_handler_v,
+                                                                             0,
+                                                                             no_flux_boundaries,
+                                                                             user_level_constraints,
+                                                                             mapping,
+                                                                             refinement_edge_indices,
+                                                                             level,
+                                                                             /*use_manifold_for_normal=*/
+                                                                             true);
+                  }
+                else
+                  {
+                    // If mesh deformation is active, we need to distinguish between tangential velocity boundaries
+                    // where mesh deformation is active and where it is not. For the first case, we cannot use the manifold
+                    // normal vectors since those do not include the mesh deformation.
+
+                    const auto &no_flux_boundaries_with_mesh_deformation =
+                      this->get_mesh_deformation_handler().get_tangential_velocity_with_active_mesh_deformation_boundary_indicators();
+                    VectorTools::compute_no_normal_flux_constraints_on_level(dof_handler_v,
+                                                                             0,
+                                                                             no_flux_boundaries_with_mesh_deformation,
+                                                                             user_level_constraints,
+                                                                             mapping,
+                                                                             refinement_edge_indices,
+                                                                             level,
+                                                                             /*use_manifold_for_normal=*/
+                                                                             false);
+
+                    const auto &no_flux_boundaries_without_mesh_deformation =
+                      this->get_mesh_deformation_handler().get_tangential_velocity_without_active_mesh_deformation_boundary_indicators();
+                    VectorTools::compute_no_normal_flux_constraints_on_level(dof_handler_v,
+                                                                             0,
+                                                                             no_flux_boundaries_without_mesh_deformation,
+                                                                             user_level_constraints,
+                                                                             mapping,
+                                                                             refinement_edge_indices,
+                                                                             level,
+                                                                             /*use_manifold_for_normal=*/
+                                                                             true);
+                  }
 
                 user_level_constraints.close();
                 mg_constrained_dofs_A_block.add_user_constraints(level,

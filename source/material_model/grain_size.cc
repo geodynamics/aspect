@@ -198,8 +198,8 @@ namespace aspect
         }
 
       const double strain_rate_dependence = (1.0 - dislocation_creep_exponent[phase_index]) / dislocation_creep_exponent[phase_index];
-      const SymmetricTensor<2,dim> shear_strain_rate = strain_rate - 1./dim * trace(strain_rate) * unit_symmetric_tensor<dim>();
-      const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
+      const SymmetricTensor<2,dim> shear_strain_rate = Utilities::Tensors::consistent_deviator(strain_rate);
+      const double second_strain_rate_invariant = std::sqrt(std::max(-Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(shear_strain_rate), 0.));
 
       // If the strain rate is zero, the dislocation viscosity is infinity.
       if (second_strain_rate_invariant <= std::numeric_limits<double>::min())
@@ -221,7 +221,7 @@ namespace aspect
         {
           const SymmetricTensor<2,dim> dislocation_strain_rate = diffusion_viscosity
                                                                  / (diffusion_viscosity + dis_viscosity) * shear_strain_rate;
-          const double dislocation_strain_rate_invariant = std::sqrt(std::max(-second_invariant(dislocation_strain_rate), 0.));
+          const double dislocation_strain_rate_invariant = std::sqrt(std::max(-Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(dislocation_strain_rate), 0.));
 
           dis_viscosity_old = dis_viscosity;
           dis_viscosity = dislocation_creep_prefactor[phase_index]
@@ -540,8 +540,8 @@ namespace aspect
               Assert(std::isfinite(in.strain_rate[i].norm()),
                      ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
                                 "not filled by the caller."));
-              const SymmetricTensor<2,dim> shear_strain_rate = deviator(in.strain_rate[i]);
-              const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
+              const SymmetricTensor<2,dim> shear_strain_rate = Utilities::Tensors::consistent_deviator(in.strain_rate[i]);
+              const double second_strain_rate_invariant = std::sqrt(std::max(-Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(shear_strain_rate), 0.));
 
               const double adiabatic_temperature = this->get_adiabatic_conditions().is_initialized()
                                                    ?

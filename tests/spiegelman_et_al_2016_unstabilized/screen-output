@@ -7,68 +7,68 @@ Number of degrees of freedom: 18,133 (8,514+1,105+4,257+4,257)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
-   Initial Newton Stokes residual = 1.56e+14, v = 1.54916e+14, p = 1.83559e+13
+   Initial Newton Stokes residual = 7.82833e+13, v = 7.75167e+13, p = 1.09293e+13
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 73+0 iterations.
-      Newton system information: Norm of the rhs: 1.56e+14
+   Solving Stokes system (AMG)... 68+0 iterations.
+      Newton system information: Norm of the rhs: 7.82833e+13
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 73+0 iterations.
-      Newton system information: Norm of the rhs: 2.96687e+11, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.00190184
+   Solving Stokes system (AMG)... 74+0 iterations.
+      Newton system information: Norm of the rhs: 9.62985e+10, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.00123013
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 75+0 iterations.
-      Newton system information: Norm of the rhs: 6.45169e+10, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.00041357
+   Solving Stokes system (AMG)... 74+0 iterations.
+      Newton system information: Norm of the rhs: 2.54283e+10, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.000324823
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 75+0 iterations.
-      Newton system information: Norm of the rhs: 1.68293e+10, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.00010788
+   Solving Stokes system (AMG)... 76+0 iterations.
+      Newton system information: Norm of the rhs: 8.97037e+09, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.000114589
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 77+0 iterations.
-      Newton system information: Norm of the rhs: 5.77031e+09, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 3.69892e-05
+   Solving Stokes system (AMG)... 78+0 iterations.
+      Newton system information: Norm of the rhs: 3.92951e+09, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 5.0196e-05
 
    Switching from defect correction form of Picard to the Newton solver scheme.
-   The linear solver tolerance is set to 0.342872. Stabilization Preconditioner is none and A block is none.
+   The linear solver tolerance is set to 0.438054. Stabilization Preconditioner is none and A block is none.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 6+0 iterations.
-      Newton system information: Norm of the rhs: 1.84613e+09, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 1.18342e-05
+   Solving Stokes system (AMG)... 5+0 iterations.
+      Newton system information: Norm of the rhs: 1.68193e+09, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 2.14852e-05
 
-   The linear solver tolerance is set to 0.176941. Stabilization Preconditioner is none and A block is none.
+   The linear solver tolerance is set to 0.263015. Stabilization Preconditioner is none and A block is none.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 14+0 iterations.
-      Newton system information: Norm of the rhs: 3.08962e+08, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 1.98053e-06
+   Solving Stokes system (AMG)... 7+0 iterations.
+      Newton system information: Norm of the rhs: 3.82637e+08, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 4.88785e-06
 
-   The linear solver tolerance is set to 5.66517e-05. Stabilization Preconditioner is none and A block is none.
+   The linear solver tolerance is set to 0.115215. Stabilization Preconditioner is none and A block is none.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 51+0 iterations.
-      Newton system information: Norm of the rhs: 45303.2, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 2.90406e-10
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Newton system information: Norm of the rhs: 4.00422e+07, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 5.11503e-07
 
-   The linear solver tolerance is set to 9.48822e-05. Stabilization Preconditioner is none and A block is none.
+   The linear solver tolerance is set to 3.5641e-08. Stabilization Preconditioner is none and A block is none.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 53+0 iterations.
-      Newton system information: Norm of the rhs: 3.63436, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 2.32972e-14
+   Solving Stokes system (AMG)... 84+0 iterations.
+      Newton system information: Norm of the rhs: 317.144, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 4.05123e-12
 
-   The linear solver tolerance is set to 3.40767e-08. Stabilization Preconditioner is none and A block is none.
+   The linear solver tolerance is set to 7.89444e-06. Stabilization Preconditioner is none and A block is none.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 91+0 iterations.
-      Newton system information: Norm of the rhs: 0.087634, Derivative scaling factor: 1
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 5.61756e-16
+   Solving Stokes system (AMG)... 60+0 iterations.
+      Newton system information: Norm of the rhs: 0.0914918, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 1.16873e-15
 
 
    Postprocessing:
      RMS, max velocity:                  5.21e-11 m/s, 8.76e-11 m/s
-     Pressure min/avg/max:               8.098e+07 Pa, 5.014e+08 Pa, 8.58e+08 Pa
+     Pressure min/avg/max:               8.101e+07 Pa, 5.013e+08 Pa, 8.576e+08 Pa
      Mass fluxes through boundary parts: -0.006483 kg/s, -0.006483 kg/s, 0 kg/s, 0.01297 kg/s
      Compositions min/max/mass:          0/1/8.705e+08
      Writing graphical output:           output-spiegelman_et_al_2016_unstabilized/solution/solution-00000

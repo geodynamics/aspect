@@ -42,9 +42,9 @@ Number of degrees of freedom: 11,104 (1,302+176+176+1,350+1,350+1,350+1,350+1,35
    Solving ve_stress_yy_old system ... 4 iterations.
    Solving ve_stress_xy_old system ... 3 iterations.
    Solving beam system ... 3 iterations.
-   Solving Stokes system (GMG)... 137+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.28993e-16, 0.0924842, 0.0924842, 0.010698, 0, 0, 0, 0, 0.263533
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.263533
+   Solving Stokes system (GMG)... 139+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.28993e-16, 0.123098, 0.0610863, 0.0106499, 0, 0, 0, 0, 0.180174
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.180174
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 3 iterations.
@@ -54,21 +54,21 @@ Number of degrees of freedom: 11,104 (1,302+176+176+1,350+1,350+1,350+1,350+1,35
    Solving ve_stress_yy_old system ... 3 iterations.
    Solving ve_stress_xy_old system ... 3 iterations.
    Solving beam system ... 3 iterations.
-   Solving Stokes system (GMG)... 109+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.45986e-16, 0.00744266, 0.00744266, 0.00172126, 0, 0, 0, 0, 0.00187603
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00744266
+   Solving Stokes system (GMG)... 120+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.54704e-16, 0.0127329, 0.00624605, 0.00214911, 0, 0, 0, 0, 0.0021079
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0127329
 
    Solving temperature system... 0 iterations.
-   Solving ve_stress_xx system ... 2 iterations.
-   Solving ve_stress_yy system ... 2 iterations.
+   Solving ve_stress_xx system ... 3 iterations.
+   Solving ve_stress_yy system ... 3 iterations.
    Solving ve_stress_xy system ... 3 iterations.
    Solving ve_stress_xx_old system ... 3 iterations.
    Solving ve_stress_yy_old system ... 3 iterations.
    Solving ve_stress_xy_old system ... 2 iterations.
    Solving beam system ... 3 iterations.
-   Solving Stokes system (GMG)... 44+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.38371e-16, 2.79292e-05, 2.79292e-05, 1.17398e-05, 0, 0, 0, 0, 5.72036e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 2.79292e-05
+   Solving Stokes system (GMG)... 60+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.41224e-16, 0.000115345, 5.94148e-05, 2.68532e-05, 0, 0, 0, 0, 1.24139e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000115345
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 2 iterations.
@@ -78,13 +78,13 @@ Number of degrees of freedom: 11,104 (1,302+176+176+1,350+1,350+1,350+1,350+1,35
    Solving ve_stress_yy_old system ... 2 iterations.
    Solving ve_stress_xy_old system ... 2 iterations.
    Solving beam system ... 3 iterations.
-   Solving Stokes system (GMG)... 3+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.38371e-16, 1.21864e-07, 1.21864e-07, 4.66737e-08, 0, 0, 0, 0, 3.28287e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.21864e-07
+   Solving Stokes system (GMG)... 9+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.39192e-16, 9.24547e-07, 4.65693e-07, 1.29888e-07, 0, 0, 0, 0, 9.68245e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 9.24547e-07
 
 
    Postprocessing:
-     RMS, max velocity:     0.00818 m/year, 0.0155 m/year
+     RMS, max velocity:     0.00804 m/year, 0.0152 m/year
      Writing depth average: output-viscoelastic_bending_beam/depth_average
 
 Termination requested by criterion: end time

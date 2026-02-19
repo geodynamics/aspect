@@ -1,0 +1,28 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Minimum topography (m)
+# 12: Maximum topography (m)
+# 13: Visualization file name
+# 14: RMS velocity (m/year)
+# 15: Max. velocity (m/year)
+# 16: Minimal temperature (K)
+# 17: Average temperature (K)
+# 18: Maximal temperature (K)
+# 19: Average nondimensional temperature (K)
+# 20: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 21: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 22: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 23: Outward heat flux through boundary with indicator 3 ("top") (W)
+0 0.000000000000e+00 0.000000000000e+00 128 1275 561 0 6 6  6  0.00000000e+00 0.00000000e+00 output-function_mesh_deformation_tangential_mesh_velocity_simple_shear_amg/solution/solution-00000 1.02803397e-09 3.16880878e-09 1.61300000e+03 1.61300000e+03 1.61300000e+03 -7.59318397e-15 -4.28796857e-12 -3.15718586e-12 -1.72602216e-11 -1.71188738e-11 
+1 2.500000000000e+05 2.500000000000e+05 128 1275 561 0 7 7 14 -2.49994866e+03 2.49994866e+03 output-function_mesh_deformation_tangential_mesh_velocity_simple_shear_amg/solution/solution-00001 1.02796229e-09 3.16880878e-09 1.61300000e+03 1.61300000e+03 1.61300000e+03  4.82106919e-16 -4.40943183e-13 -1.69843422e-13  4.14684072e-12 -5.02080809e-12 
+2 5.000000000000e+05 2.500000000000e+05 128 1275 561 0 6 6 12 -4.99989733e+03 4.99989733e+03 output-function_mesh_deformation_tangential_mesh_velocity_simple_shear_amg/solution/solution-00002 1.02774754e-09 3.16880878e-09 1.61300000e+03 1.61300000e+03 1.61300000e+03  1.44632076e-15  3.58624925e-12 -3.25899954e-13  3.27730502e-12  2.05885867e-12 
+3 7.500000000000e+05 2.500000000000e+05 128 1275 561 0 6 6 12 -7.49984599e+03 7.49984599e+03 output-function_mesh_deformation_tangential_mesh_velocity_simple_shear_amg/solution/solution-00003 1.02739051e-09 3.16880878e-09 1.61300000e+03 1.61300000e+03 1.61300000e+03  1.02447720e-15  5.87432636e-12 -7.28777058e-13  1.13280340e-12  7.04974782e-12 
+4 1.000000000000e+06 2.500000000000e+05 128 1275 561 0 6 6 12 -9.99979466e+03 9.99979466e+03 output-function_mesh_deformation_tangential_mesh_velocity_simple_shear_amg/solution/solution-00004 1.02689259e-09 3.16880878e-09 1.61300000e+03 1.61300000e+03 1.61300000e+03  1.20526730e-16  4.57052348e-12 -9.88926844e-13  2.83211357e-12  3.47037334e-12 

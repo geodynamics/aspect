@@ -25,7 +25,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 13 iterations.
    Solving Stokes system (GMG)... 0+5 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000121775
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000121761
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -43,7 +43,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 14 iterations.
    Solving Stokes system (GMG)... 0+5 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000108342
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000108327
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -61,7 +61,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 14 iterations.
    Solving Stokes system (GMG)... 0+4 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.5092e-05
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.50873e-05
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -79,7 +79,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 14 iterations.
    Solving Stokes system (GMG)... 0+4 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.18718e-05
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.18725e-05
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -97,7 +97,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 14 iterations.
    Solving Stokes system (GMG)... 0+4 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.05226e-05
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.0522e-05
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -115,7 +115,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 14 iterations.
    Solving Stokes system (GMG)... 0+4 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.51517e-06
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.51452e-06
 
 
    Postprocessing:
@@ -129,7 +129,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 14 iterations.
    Solving Stokes system (GMG)... 0+4 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 4.87897e-06
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 4.87828e-06
 
 
    Postprocessing:
@@ -143,7 +143,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 13 iterations.
    Solving Stokes system (GMG)... 0+4 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 3.16371e-06
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 3.16326e-06
 
 
    Postprocessing:

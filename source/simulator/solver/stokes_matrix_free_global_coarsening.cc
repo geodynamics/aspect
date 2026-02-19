@@ -1646,12 +1646,40 @@ namespace aspect
 
             if (this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators().size() > 0)
               {
-                VectorTools::compute_no_normal_flux_constraints (dof_handler,
-                                                                 0 /* first_vector_component */,
-                                                                 this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators(),
-                                                                 constraint,
-                                                                 mapping);
+                if (!this->get_parameters().mesh_deformation_enabled)
+                  {
+                    VectorTools::compute_no_normal_flux_constraints(dof_handler,
+                                                                    /* first_vector_component= */
+                                                                    0,
+                                                                    this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators(),
+                                                                    constraint,
+                                                                    mapping,
+                                                                    /* use_manifold_for_normal= */
+                                                                    true);
+                  }
+                else
+                  {
+                    // If mesh deformation is active, we need to distinguish between tangential velocity boundaries
+                    // where mesh deformation is active and where it is not. For the first case, we cannot use the manifold
+                    // normal vectors since those do not include the mesh deformation.
+                    VectorTools::compute_no_normal_flux_constraints(dof_handler,
+                                                                    /* first_vector_component= */
+                                                                    0,
+                                                                    this->get_mesh_deformation_handler().get_tangential_velocity_with_active_mesh_deformation_boundary_indicators(),
+                                                                    constraint,
+                                                                    mapping,
+                                                                    /* use_manifold_for_normal= */
+                                                                    false);
 
+                    VectorTools::compute_no_normal_flux_constraints(dof_handler,
+                                                                    /* first_vector_component= */
+                                                                    0,
+                                                                    this->get_mesh_deformation_handler().get_tangential_velocity_without_active_mesh_deformation_boundary_indicators(),
+                                                                    constraint,
+                                                                    mapping,
+                                                                    /* use_manifold_for_normal= */
+                                                                    true);
+                  }
               }
 
             DoFTools::make_hanging_node_constraints(dof_handler, constraint);

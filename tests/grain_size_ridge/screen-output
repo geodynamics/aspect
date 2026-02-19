@@ -11,79 +11,73 @@ Number of degrees of freedom: 57,556 (21,186+2,737+10,593+23,040)
 
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system (GMG)... 41+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.59987e-16, 0, 0.0102295
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0102295
+   Solving Stokes system (GMG)... 42+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.59987e-16, 0, 0.0103148
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0103148
 
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system (GMG)... 23+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.59987e-16, 0, 0.00119391
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00119391
+   Solving Stokes system (GMG)... 22+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.59987e-16, 0, 0.000933683
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000933683
 
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 16+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.59987e-16, 0, 0.000367418
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.000367418
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.59987e-16, 0, 0.000249047
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.000249047
 
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 2+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.59987e-16, 0, 0.00030747
-      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.00030747
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.59987e-16, 0, 0.000255107
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.000255107
 
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 2+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.59987e-16, 0, 0.000248259
-      Relative nonlinear residual (total system) after nonlinear iteration 6: 0.000248259
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.59987e-16, 0, 0.000178877
+      Relative nonlinear residual (total system) after nonlinear iteration 6: 0.000178877
 
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 1+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.59987e-16, 0, 0.000123521
-      Relative nonlinear residual (total system) after nonlinear iteration 7: 0.000123521
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.59987e-16, 0, 0.000137098
+      Relative nonlinear residual (total system) after nonlinear iteration 7: 0.000137098
 
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 1+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.59987e-16, 0, 0.000111289
-      Relative nonlinear residual (total system) after nonlinear iteration 8: 0.000111289
-
-   Solving temperature system... 0 iterations.
-   Advecting particles...  done.
-   Solving Stokes system (GMG)... 1+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.59987e-16, 0, 9.97029e-05
-      Relative nonlinear residual (total system) after nonlinear iteration 9: 9.97029e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.59987e-16, 0, 9.25609e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 8: 9.25609e-05
 
 
    Postprocessing:
      Writing graphical output:           output-grain_size_ridge/solution/solution-00000
      Compositions min/max/mass:          0.002101/0.005/8.195e+09
-     RMS, max velocity:                  0.0356 m/year, 0.176 m/year
-     Mass fluxes through boundary parts: 0 kg/yr, 4.133e+07 kg/yr, -1.835e+07 kg/yr, 0 kg/yr
+     RMS, max velocity:                  0.0357 m/year, 0.178 m/year
+     Mass fluxes through boundary parts: 0 kg/yr, 4.133e+07 kg/yr, -1.68e+07 kg/yr, 0 kg/yr
      Writing particle output:            output-grain_size_ridge/particles/particles-00000
 
 *** Timestep 1:  t=500 years, dt=500 years
    Solving temperature system... 7 iterations.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 1+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.07544e-05, 0, 0.00012418
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00012418
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.08426e-05, 0, 0.000108042
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000108042
 
    Solving temperature system... 5 iterations.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 1+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.44489e-07, 0, 7.78237e-05
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.78237e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.63068e-07, 0, 6.22306e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 6.22306e-05
 
 
    Postprocessing:
-     Compositions min/max/mass:          0.0006567/0.005/8.175e+09
-     RMS, max velocity:                  0.0355 m/year, 0.179 m/year
-     Mass fluxes through boundary parts: 0 kg/yr, 4.133e+07 kg/yr, -1.688e+07 kg/yr, 0 kg/yr
-     Number of advected particles:       499998
+     Compositions min/max/mass:          0.0006661/0.005/8.171e+09
+     RMS, max velocity:                  0.0356 m/year, 0.181 m/year
+     Mass fluxes through boundary parts: 0 kg/yr, 4.133e+07 kg/yr, -1.207e+07 kg/yr, 0 kg/yr
+     Number of advected particles:       499997
 
 Termination requested by criterion: end time
 *** Snapshot output-grain_size_ridge/restart/01/ created!

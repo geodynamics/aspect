@@ -22,15 +22,15 @@ Number of degrees of freedom: 61,140 (37,570+4,785+18,785)
 
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 94+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 1.73824e-16, 0.172827
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.172827
+   Solving Stokes system (AMG)... 93+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 1.73824e-16, 0.175179
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.175179
 
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 85+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 1.73824e-16, 0.0233251
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.0233251
+   Solving Stokes system (AMG)... 84+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 1.73824e-16, 0.0204378
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.0204378
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -39,7 +39,7 @@ Number of degrees of freedom: 61,140 (37,570+4,785+18,785)
 
    Postprocessing:
      RMS, max velocity:                  66.5 m/year, 176 m/year
-     Mass fluxes through boundary parts: 3.559e+06 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Mass fluxes through boundary parts: 3.52e+06 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
 
 Termination requested by criterion: end time
 

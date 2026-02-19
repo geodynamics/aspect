@@ -1,0 +1,24 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Minimum topography (m)
+# 12: Maximum topography (m)
+# 13: Visualization file name
+# 14: RMS velocity (m/year)
+# 15: Max. velocity (m/year)
+# 16: Minimal temperature (K)
+# 17: Average temperature (K)
+# 18: Maximal temperature (K)
+# 19: Average nondimensional temperature (K)
+# 20: Outward heat flux through boundary with indicator 0 ("bottom") (W)
+# 21: Outward heat flux through boundary with indicator 1 ("top") (W)
+0 0.000000000000e+00 0.000000000000e+00 12 168 72  0 19 20 20 -9.31322575e-10 0.00000000e+00 output-function_mesh_deformation_tangential_mesh_velocity_spherical/solution/solution-00000 1.46809617e+00 1.86569934e+00 2.73000000e+02 1.50681968e+03 3.00000000e+03 4.52445793e-01 -2.07390770e+05 3.32012719e+05 
+1 4.500000000000e+05 4.500000000000e+05 12 168 72 14 35 36 36  0.00000000e+00 1.85303518e+05                                                                                          "" 1.47708800e+00 1.92432792e+00 2.73000000e+02 1.46780705e+03 3.00000000e+03 4.38139733e-01  6.02390419e+07 1.24163838e+08 
+2 9.000000000000e+05 4.500000000000e+05 12 168 72 12 34 35 35  0.00000000e+00 5.28721719e+05 output-function_mesh_deformation_tangential_mesh_velocity_spherical/solution/solution-00001 1.45942603e+00 1.98927464e+00 2.73000000e+02 1.40993320e+03 3.00000000e+03 4.16917200e-01  1.07040268e+08 2.24297737e+08 

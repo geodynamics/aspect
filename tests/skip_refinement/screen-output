@@ -161,34 +161,34 @@ Skipping mesh refinement, because the mesh did not change.
    Solving mesh displacement system... 5 iterations.
    Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
-   Solving ve_stress_xx system ... 2 iterations.
+   Solving ve_stress_xx system ... 1 iterations.
    Solving ve_stress_yy system ... 2 iterations.
    Solving ve_stress_xy system ... 2 iterations.
-   Solving ve_stress_xx_old system ... 2 iterations.
+   Solving ve_stress_xx_old system ... 1 iterations.
    Solving ve_stress_yy_old system ... 2 iterations.
    Solving ve_stress_xy_old system ... 2 iterations.
    Solving LM system ... 1 iterations.
    Solving TZ system ... 2 iterations.
    Solving UM system ... 2 iterations.
    Solving Lith system ... 1 iterations.
-   Solving Stokes system (GMG)... 13+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.24168e-16, 0.00111333, 0.00111333, 3.65971e-12, 0, 0, 0, 0, 0, 0, 0, 0.00595533
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00595533
+   Solving Stokes system (GMG)... 14+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.24168e-16, 0.000742221, 0.00148444, 3.65971e-12, 0, 0, 0, 0, 0, 0, 0, 0.00793593
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00793593
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 2 iterations.
-   Solving ve_stress_yy system ... 2 iterations.
-   Solving ve_stress_xy system ... 1 iterations.
+   Solving ve_stress_yy system ... 1 iterations.
+   Solving ve_stress_xy system ... 2 iterations.
    Solving ve_stress_xx_old system ... 2 iterations.
-   Solving ve_stress_yy_old system ... 2 iterations.
+   Solving ve_stress_yy_old system ... 1 iterations.
    Solving ve_stress_xy_old system ... 2 iterations.
    Solving LM system ... 1 iterations.
-   Solving TZ system ... 2 iterations.
-   Solving UM system ... 1 iterations.
+   Solving TZ system ... 1 iterations.
+   Solving UM system ... 2 iterations.
    Solving Lith system ... 1 iterations.
-   Solving Stokes system (GMG)... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.22158e-16, 0.000484232, 0.000484232, 5.57091e-12, 0, 0, 0, 0, 0, 0, 0, 5.53219e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000484232
+   Solving Stokes system (GMG)... 11+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.58719e-16, 0.000430195, 0.000860391, 6.39419e-12, 0, 0, 0, 0, 0, 0, 0, 7.29978e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000860391
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 1 iterations.
@@ -202,15 +202,15 @@ Skipping mesh refinement, because the mesh did not change.
    Solving UM system ... 2 iterations.
    Solving Lith system ... 1 iterations.
    Solving Stokes system (GMG)... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.05233e-16, 3.04086e-07, 3.04086e-07, 1.83149e-12, 0, 0, 0, 0, 0, 0, 0, 3.56498e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 3.04086e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.33306e-16, 2.24651e-07, 4.49302e-07, 1.56014e-12, 0, 0, 0, 0, 0, 0, 0, 3.79719e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 4.49302e-07
 
 
    Postprocessing:
-     Compositions min/max/mass: -5.378e+07/1.456e+08/7.261e+18 // -1.456e+08/5.378e+07/-7.261e+18 // -1.42/1.42/6166 // -5.378e+07/1.456e+08/7.261e+18 // -1.456e+08/5.378e+07/-7.261e+18 // -1.42/1.42/4575 // 0/1/3.343e+12 // 0/1/3.615e+11 // -8.47e-22/1/5.081e+11 // 0/1/1.242e+11
+     Compositions min/max/mass: -3.585e+07/9.71e+07/4.844e+18 // -1.942e+08/7.17e+07/-9.687e+18 // -1.419/1.419/6074 // -3.585e+07/9.71e+07/4.844e+18 // -1.942e+08/7.17e+07/-9.687e+18 // -1.42/1.42/4575 // 0/1/3.343e+12 // 0/1/3.614e+11 // 0/1/5.082e+11 // 0/1/1.242e+11
      Temperature min/avg/max:   293 K, 293 K, 293 K
      Topography min/max:        -3.089e-06 m, 1.304e-06 m
-     RMS, max velocity:         0.218 m/year, 0.89 m/year
+     RMS, max velocity:         0.161 m/year, 0.663 m/year
 
 Skipping mesh refinement, because the mesh did not change.
 
@@ -226,16 +226,16 @@ Skipping mesh refinement, because the mesh did not change.
    Solving ve_stress_xy_old system ... 2 iterations.
    Solving LM system ... 1 iterations.
    Solving TZ system ... 1 iterations.
-   Solving UM system ... 1 iterations.
+   Solving UM system ... 2 iterations.
    Solving Lith system ... 1 iterations.
-   Solving Stokes system (GMG)... 13+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.75057e-16, 0.000204933, 0.000204933, 4.35826e-12, 0, 0, 0, 0, 0, 0, 0, 0.00356215
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00356215
+   Solving Stokes system (GMG)... 14+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.69167e-16, 0.000177504, 0.000355009, 3.83393e-12, 0, 0, 0, 0, 0, 0, 0, 0.00588903
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00588903
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 2 iterations.
    Solving ve_stress_yy system ... 2 iterations.
-   Solving ve_stress_xy system ... 2 iterations.
+   Solving ve_stress_xy system ... 1 iterations.
    Solving ve_stress_xx_old system ... 2 iterations.
    Solving ve_stress_yy_old system ... 2 iterations.
    Solving ve_stress_xy_old system ... 1 iterations.
@@ -244,8 +244,8 @@ Skipping mesh refinement, because the mesh did not change.
    Solving UM system ... 1 iterations.
    Solving Lith system ... 1 iterations.
    Solving Stokes system (GMG)... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.43713e-16, 0.000183328, 0.000183328, 5.04307e-12, 0, 0, 0, 0, 0, 0, 0, 2.10342e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000183328
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.14268e-16, 0.000150644, 0.000301288, 5.58651e-12, 0, 0, 0, 0, 0, 0, 0, 3.6598e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000301288
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 1 iterations.
@@ -258,16 +258,16 @@ Skipping mesh refinement, because the mesh did not change.
    Solving TZ system ... 1 iterations.
    Solving UM system ... 1 iterations.
    Solving Lith system ... 1 iterations.
-   Solving Stokes system (GMG)... 4+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.49496e-16, 6.3467e-08, 6.3467e-08, 7.21895e-13, 0, 0, 0, 0, 0, 0, 0, 7.8265e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 6.3467e-08
+   Solving Stokes system (GMG)... 6+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.44663e-16, 1.09388e-07, 2.18777e-07, 1.29062e-12, 0, 0, 0, 0, 0, 0, 0, 2.06425e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 2.18777e-07
 
 
    Postprocessing:
-     Compositions min/max/mass: -5.994e+07/2.057e+08/9.967e+18 // -2.057e+08/5.994e+07/-9.967e+18 // -1.113/1.112/4.886e+06 // -5.994e+07/2.057e+08/9.967e+18 // -2.057e+08/5.994e+07/-9.967e+18 // -1.113/1.112/4.885e+06 // 0/1/3.343e+12 // 0/1/3.615e+11 // -1.694e-21/1/5.081e+11 // 0/1/1.242e+11
+     Compositions min/max/mass: -3.61e+07/1.232e+08/5.963e+18 // -2.463e+08/7.221e+07/-1.193e+19 // -1.148/1.148/-2.823e+06 // -3.61e+07/1.232e+08/5.963e+18 // -2.463e+08/7.221e+07/-1.193e+19 // -1.148/1.148/-2.824e+06 // -4.674e-41/1/3.343e+12 // -2.972e-43/1/3.615e+11 // -4.3e-42/1/5.081e+11 // -1.164e-37/1/1.242e+11
      Temperature min/avg/max:   293 K, 293 K, 293 K
-     Topography min/max:        -5.56e-06 m, -1.085e-06 m
-     RMS, max velocity:         0.146 m/year, 0.631 m/year
+     Topography min/max:        -5.885e-06 m, -1.427e-06 m
+     RMS, max velocity:         0.0995 m/year, 0.45 m/year
 
 Skipping mesh refinement, because the mesh did not change.
 

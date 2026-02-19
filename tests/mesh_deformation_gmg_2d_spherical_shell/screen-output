@@ -10,8 +10,8 @@ Number of mesh deformation degrees of freedom: 480
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 12 iterations.
-   Solving Stokes system (GMG)... 9+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 1, 0.146653
+   Solving Stokes system (GMG)... 6+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 1, 0.146688
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
 
@@ -21,7 +21,7 @@ Number of mesh deformation degrees of freedom: 480
 
    Postprocessing:
      Writing graphical output: output-mesh_deformation_gmg_2d_spherical_shell/solution/solution-00000
-     RMS, max velocity:        3.45 m/year, 13.7 m/year
+     RMS, max velocity:        0.0689 m/year, 0.263 m/year
      Topography min/max:       3000 m, 3.999e+05 m
 
 Termination requested by criterion: end time
