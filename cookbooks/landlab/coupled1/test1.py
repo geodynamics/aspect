@@ -42,7 +42,7 @@ def finalize():
 # node.
 def update_until(end_time, dict_variable_name_to_value_in_nodes):
     global current_time, elevation, linear_diffuser
-    dt = end_time - current_time
+    aspect_dt = end_time - current_time
     
     deposition_erosion = np.zeros(model_grid.number_of_nodes)
 
@@ -50,9 +50,9 @@ def update_until(end_time, dict_variable_name_to_value_in_nodes):
     y_velocity = dict_variable_name_to_value_in_nodes["y velocity"]
     z_velocity = dict_variable_name_to_value_in_nodes["z velocity"]
 
-    if dt>0:
+    if aspect_dt>0:
         n_substeps = 10
-        sub_dt = dt / n_substeps
+        dt = aspect_dt / n_substeps
         for _ in range(n_substeps):
           
           # TODO:
@@ -60,10 +60,9 @@ def update_until(end_time, dict_variable_name_to_value_in_nodes):
           #advect(x_velocity * sub_dt, y_velocity * sub_dt)
           elevation_before = elevation
           
-          linear_diffuser.run_one_step(sub_dt)
+          linear_diffuser.run_one_step(dt)
           
           deposition_erosion += elevation - elevation_before
-        pass
     
     current_time = end_time
     

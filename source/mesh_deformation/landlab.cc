@@ -204,7 +204,7 @@ namespace aspect
         {
           // Build a dictionary with solution values for each variable to pass to Python:
           PyObject *pDict = PyDict_New();
-          std::vector<std::string> variable_names = { "x velocity", "y velocity", "z velocity" };
+          const std::vector<std::string> variable_names = { "x velocity", "y velocity", "z velocity" };
           std::vector<std::vector<double>> variable_data(variable_names.size(),  std::vector<double>(current_solution_at_points.size(), 0.0));
           for (unsigned int i=0; i<variable_names.size(); ++i)
             {
@@ -225,7 +225,7 @@ namespace aspect
           Py_DECREF(pDict);
           Py_DECREF(pArgs);
 
-          ArrayView<double> data = PythonHelper::numpy_to_array_view(pValue);
+          const ArrayView<const double> data = PythonHelper::numpy_to_array_view(pValue);
           for (size_t i=0; i<data.size(); ++i)
             velocities[i][dim-1] = data[i];
 
