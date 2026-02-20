@@ -92,7 +92,7 @@ namespace aspect
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
-          // precompute the values of shape functions and their gradients.
+          // Precompute the values of shape functions and their gradients.
           // We only need to look up values of shape functions if they
           // belong to 'our' component. They are zero otherwise anyway.
           // Note that we later only look at the values that we do set here.
@@ -160,7 +160,7 @@ namespace aspect
               (density_c_P + latent_heat_LHS);
 
           Tensor<1,dim> current_u = scratch.current_velocity_values[q];
-          // Subtract off the mesh velocity for ALE corrections if necessary
+          // Subtract the mesh velocity for ALE corrections, if necessary.
           if (this->get_parameters().mesh_deformation_enabled)
             current_u -= scratch.mesh_velocity_values[q];
 
@@ -190,8 +190,8 @@ namespace aspect
 
           const double tau = (use_supg) ? scratch.artificial_viscosity : 0.0;
 
-          // do the actual assembly. note that we only need to loop over the advection
-          // shape functions because these are the only contributions we compute here
+          // Perform the assembly. We only need to loop over advection
+          // shape functions because these are the only contributions computed here.
           for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
             {
               data.local_rhs(i)
@@ -347,7 +347,7 @@ namespace aspect
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
-          // precompute the values of shape functions and their gradients.
+          // Precompute the values of shape functions and their gradients.
           // We only need to look up values of shape functions if they
           // belong to 'our' component. They are zero otherwise anyway.
           // Note that we later only look at the values that we do set here.
@@ -364,8 +364,8 @@ namespace aspect
 
           const double JxW = scratch.finite_element_values.JxW(q);
 
-          // do the actual assembly. note that we only need to loop over the advection
-          // shape functions because these are the only contributions we compute here
+          // Perform the assembly. We only need to loop over advection
+          // shape functions because these are the only contributions computed here.
           for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
             {
               data.local_rhs(i)
@@ -451,8 +451,8 @@ namespace aspect
       const unsigned int n_face_q_points    = scratch.face_finite_element_values->n_quadrature_points;
       const double time_step = this->get_timestep();
 
-      // also have the number of dofs that correspond just to the element for
-      // the system we are currently trying to assemble
+      // Number of DoFs associated with the element for the
+      // system currently being assembled.
       const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
 
       Assert (advection_dofs_per_cell < scratch.face_finite_element_values->get_fe().dofs_per_cell, ExcInternalError());
@@ -476,7 +476,7 @@ namespace aspect
 
           for (unsigned int q=0; q<n_face_q_points; ++q)
             {
-              // precompute the values of shape functions.
+              // Precompute the values of shape functions.
               // We only need to look up values of shape functions if they
               // belong to 'our' component. They are zero otherwise anyway.
               // Note that we later only look at the values that we do set here.
@@ -529,8 +529,8 @@ namespace aspect
       const unsigned int n_face_q_points    = scratch.face_finite_element_values->n_quadrature_points;
       const double time_step = this->get_timestep();
 
-      // also have the number of dofs that correspond just to the element for
-      // the system we are currently trying to assemble
+      // Number of DoFs associated with the element for the
+      // system currently being assembled.
       const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
 
       Assert (advection_dofs_per_cell < scratch.face_finite_element_values->get_fe().dofs_per_cell, ExcInternalError());
@@ -568,7 +568,7 @@ namespace aspect
 
           for (unsigned int q=0; q<n_face_q_points; ++q)
             {
-              // precompute the values of shape functions.
+              // Precompute the values of shape functions.
               // We only need to look up values of shape functions if they
               // belong to 'our' component. They are zero otherwise anyway.
               // Note that we later only look at the values that we do set here.
@@ -667,7 +667,7 @@ namespace aspect
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
-          // precompute the values of shape functions and their gradients.
+          // Precompute the values of shape functions and their gradients.
           // We only need to look up values of shape functions if they
           // belong to 'our' component. They are zero otherwise anyway.
           // Note that we later only look at the values that we do set here.
@@ -700,12 +700,12 @@ namespace aspect
           // u_f = u_s - K_D / phi * (rho_s * g - rho_f * g)
           // u_f = fluid velocity
           // u_s = solid velocity
-          // K_D = Darcy Coefficient
+          // K_D = Darcy coefficient
           // phi = porosity
           // rho_f = fluid density
-          // rhos_s = solid density
-          // g = gravity
-          // The second term on the rhs of Darcy's Law only contributes to the component of the
+          // rho_s = solid density
+          // g = gravity acceleration
+          // The second term on the right-hand side of Darcy's law only contributes to the component of the
           // fluid velocity parallel to the gravity vector, which is proportional to the
           // buoyancy of the fluid phase.
           const double rho_s = scratch.material_model_outputs.densities[q];
@@ -717,13 +717,13 @@ namespace aspect
           const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
           Tensor<1,dim> current_u_f = current_u - K_D * (rho_s - rho_f) * gravity;
 
-          // Subtract off the mesh velocity for ALE corrections if necessary
+          // Subtract the mesh velocity for ALE corrections, if necessary.
           if (this->get_parameters().mesh_deformation_enabled)
             current_u_f -= scratch.mesh_velocity_values[q];
           const double JxW = scratch.finite_element_values.JxW(q);
 
-          // do the actual assembly. note that we only need to loop over the advection
-          // shape functions because these are the only contributions we compute here
+          // Perform the assembly. We only need to loop over advection
+          // shape functions because these are the only contributions computed here.
           for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
             {
               data.local_rhs(i)
@@ -825,8 +825,8 @@ namespace aspect
              ExcMessage("The 'AdvectionSystemBoundaryFace' assembler can only be executed for fields "
                         "that use the advection method 'field' and a discontinuous discretization."));
 
-      // also have the number of dofs that correspond just to the element for
-      // the system we are currently trying to assemble
+      // Number of DoFs associated with the element for the
+      // system currently being assembled.
       const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
 
       Assert (advection_dofs_per_cell < scratch.face_finite_element_values->get_fe().dofs_per_cell, ExcInternalError());
@@ -861,7 +861,7 @@ namespace aspect
 
           for (unsigned int q=0; q<n_q_points; ++q)
             {
-              // precompute the values of shape functions and their gradients.
+              // Precompute the values of shape functions and their gradients.
               // We only need to look up values of shape functions if they
               // belong to 'our' component. They are zero otherwise anyway.
               // Note that we later only look at the values that we do set here.
@@ -927,7 +927,7 @@ namespace aspect
                                                 advection_field.compositional_variable));
 
               Tensor<1,dim> current_u = scratch.face_current_velocity_values[q];
-              // Subtract off the mesh velocity for ALE corrections if necessary
+              // Subtract the mesh velocity for ALE corrections, if necessary.
               if (parameters.mesh_deformation_enabled)
                 current_u -= scratch.face_mesh_velocity_values[q];
 
@@ -1006,7 +1006,8 @@ namespace aspect
         }
       else
         {
-          // Neumann temperature term - no non-zero contribution as only homogeneous Neumann boundary conditions are implemented elsewhere for temperature
+          // Neumann temperature term: no nonzero contribution, because only
+          // homogeneous Neumann boundary conditions are implemented elsewhere for temperature.
         }
     }
 
@@ -1037,8 +1038,8 @@ namespace aspect
       if (!advection_field.is_discontinuous(introspection))
         return;
 
-      // also have the number of dofs that correspond just to the element for
-      // the system we are currently trying to assemble
+      // Number of DoFs associated with the element for the
+      // system currently being assembled.
       const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int dofs_per_cell = fe.dofs_per_cell;
 
@@ -1052,12 +1053,12 @@ namespace aspect
 
       const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
 
-      // interior face or periodic face - no contribution on RHS
+      // Interior or periodic face: no contribution on the right-hand side.
 
       const typename DoFHandler<dim>::cell_iterator
       neighbor = cell->neighbor_or_periodic_neighbor (face_no);
-      // note: "neighbor" defined above is NOT active_cell_iterator, so this includes cells that are refined
-      // for example: cell with periodic boundary.
+      // Note: "neighbor" defined above is not an active_cell_iterator, so this
+      // also includes refined cells
       Assert (neighbor.state() == IteratorState::valid,
               ExcInternalError());
       const bool cell_has_periodic_neighbor = cell->has_periodic_neighbor (face_no);
@@ -1071,18 +1072,19 @@ namespace aspect
                ((!neighbor->is_locally_owned()) && (cell->subdomain_id() < neighbor->subdomain_id()))))
             {
               Assert (cell->is_locally_owned(), ExcInternalError());
-              // cell and neighbor are equal-sized, and cell has been chosen to assemble this face, so calculate from cell
+              // Cell and neighbor are equally sized, and this cell has been chosen
+              // to assemble this face, so assemble from this cell.
 
               const unsigned int neighbor2 =
                 (cell->has_periodic_neighbor(face_no)
                  ?
-                 // how does the periodic neighbor talk about this cell?
+                 // How does the periodic neighbor refer to this cell?
                  cell->periodic_neighbor_of_periodic_neighbor( face_no )
                  :
-                 // how does the neighbor talk about this cell?
+                 // How does the neighbor refer to this cell?
                  cell->neighbor_of_neighbor(face_no));
 
-              // set up neighbor values
+              // Set up neighbor values.
               scratch.neighbor_face_finite_element_values->reinit (neighbor, neighbor2);
 
               scratch.neighbor_face_material_model_inputs.reinit  (*scratch.neighbor_face_finite_element_values,
@@ -1116,7 +1118,7 @@ namespace aspect
                                                          scratch.neighbor_face_heating_model_outputs);
 
               std::vector<types::global_dof_index> neighbor_dof_indices (dofs_per_cell);
-              // get all dof indices on the neighbor, then extract those
+              // Get all DoF indices on the neighbor, then extract those
               // that correspond to the solution_field we are interested in
               neighbor->get_dof_indices (neighbor_dof_indices);
               for (unsigned int i=0, i_advection=0; i_advection<advection_dofs_per_cell;/*increment at end of loop*/)
@@ -1132,7 +1134,7 @@ namespace aspect
 
               for (unsigned int q=0; q<n_q_points; ++q)
                 {
-                  // precompute the values of shape functions and their gradients.
+                  // Precompute the values of shape functions and their gradients.
                   // We only need to look up values of shape functions if they
                   // belong to 'our' component. They are zero otherwise anyway.
                   // Note that we later only look at the values that we do set here.
@@ -1189,7 +1191,7 @@ namespace aspect
                                           0.0);
 
                   Tensor<1,dim> current_u = scratch.face_current_velocity_values[q];
-                  // Subtract off the mesh velocity for ALE corrections if necessary
+                  // Subtract the mesh velocity for ALE corrections, if necessary.
                   if (parameters.mesh_deformation_enabled)
                     current_u -= scratch.face_mesh_velocity_values[q];
 
@@ -1382,15 +1384,15 @@ namespace aspect
             }
           else
             {
-              /* neighbor is taking responsibility for assembly of this face, because
+              /* The neighbor is responsible for assembling this face, because
                * either (1) neighbor is coarser, or
                *        (2) neighbor is equally-sized and
-               *           (a) neighbor is on a different subdomain, with lower subdmain_id(), or
+               *           (a) neighbor is on a different subdomain, with lower subdomain_id(), or
                *           (b) neighbor is on the same subdomain and has lower index().
               */
             }
         }
-      // neighbor has children, so always assemble from here.
+      // The neighbor has children, so always assemble from this cell.
       else
         {
           const unsigned int neighbor2 =
@@ -1400,9 +1402,9 @@ namespace aspect
              :
              cell->neighbor_face_no(face_no));
 
-          // Loop over subfaces. We know that the neighbor is finer, so we could loop over the subfaces of the current
-          // face. but if we are at a periodic boundary, then the face of the current cell has no children, so instead use
-          // the children of the periodic neighbor's corresponding face since we know that the letter does indeed have
+          // Loop over subfaces. We know that the neighbor is finer, so we could loop over subfaces of the current
+          // face. However, at a periodic boundary, the current cell face has no children, so use
+          // the children of the periodic neighbor's corresponding face since we know that the latter does indeed have
           // children (because we know that the neighbor is refined).
           typename DoFHandler<dim>::face_iterator neighbor_face=neighbor->face(neighbor2);
           for (unsigned int subface_no=0; subface_no<neighbor_face->n_children(); ++subface_no)
@@ -1414,14 +1416,14 @@ namespace aspect
                     :
                     cell->neighbor_child_on_subface (face_no, subface_no));
 
-              // set up subface values
+              // Set up subface values.
               scratch.subface_finite_element_values->reinit (cell, face_no, subface_no);
 
-              // subface->face
+              // Subface to face.
               (*scratch.subface_finite_element_values)[introspection.extractors.velocities].get_function_values(this->get_current_linearization_point(),
                   scratch.face_current_velocity_values);
 
-              // get the mesh velocity, as we need to subtract it off of the advection systems
+              // Get the mesh velocity, because we need to subtract it from advection systems.
               if (parameters.mesh_deformation_enabled)
                 (*scratch.subface_finite_element_values)[introspection.extractors.velocities].get_function_values(this->get_mesh_velocity(),
                     scratch.face_mesh_velocity_values);
@@ -1446,7 +1448,7 @@ namespace aspect
                                                          scratch.face_material_model_outputs,
                                                          scratch.face_heating_model_outputs);
 
-              // set up neighbor values
+              // Set up neighbor values.
               scratch.neighbor_face_finite_element_values->reinit (neighbor_child, neighbor2);
 
               scratch.neighbor_face_material_model_inputs.reinit  (*scratch.neighbor_face_finite_element_values,
@@ -1470,7 +1472,7 @@ namespace aspect
                                                          scratch.neighbor_face_heating_model_outputs);
 
               std::vector<types::global_dof_index> neighbor_dof_indices (fe.dofs_per_cell);
-              // get all dof indices on the neighbor, then extract those
+              // Get all DoF indices on the neighbor, then extract those
               // that correspond to the solution_field we are interested in
               neighbor_child->get_dof_indices (neighbor_dof_indices);
               for (unsigned int i=0, i_advection=0; i_advection<advection_dofs_per_cell;/*increment at end of loop*/)
@@ -1486,7 +1488,7 @@ namespace aspect
 
               for (unsigned int q=0; q<n_q_points; ++q)
                 {
-                  // precompute the values of shape functions and their gradients.
+                  // Precompute the values of shape functions and their gradients.
                   // We only need to look up values of shape functions if they
                   // belong to 'our' component. They are zero otherwise anyway.
                   // Note that we later only look at the values that we do set here.
@@ -1543,7 +1545,7 @@ namespace aspect
                                           0.0);
 
                   Tensor<1,dim> current_u = scratch.face_current_velocity_values[q];
-                  // Subtract off the mesh velocity for ALE corrections if necessary
+                  // Subtract the mesh velocity for ALE corrections, if necessary.
                   if (parameters.mesh_deformation_enabled)
                     current_u -= scratch.face_mesh_velocity_values[q];
 
