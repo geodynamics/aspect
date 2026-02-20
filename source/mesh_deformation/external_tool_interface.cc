@@ -52,7 +52,12 @@ namespace aspect
       const LinearAlgebra::Vector v_interpolated
         = interpolate_external_velocities_to_surface_support_points(external_surface_velocities);
 
-      // TODO: need ghost values of v_interpolated?
+      const DoFHandler<dim> &mesh_dof_handler = this->get_mesh_deformation_handler().get_mesh_deformation_dof_handler();
+      const IndexSet mesh_locally_relevant = DoFTools::extract_locally_relevant_dofs (mesh_dof_handler);
+      LinearAlgebra::Vector v_interpolated_ghosted(mesh_dof_handler.locally_owned_dofs(),
+                                                   mesh_locally_relevant,
+                                                   this->get_mpi_communicator());
+      v_interpolated_ghosted = v_interpolated;
 
       // Turn v_interpolated into constraints. For this, loop over all
       // boundary DoFs and if a boundary DoF is locally owned, create a
@@ -73,10 +78,10 @@ namespace aspect
 #if DEAL_II_VERSION_GTE(9,6,0)
                 mesh_velocity_constraints.add_constraint(index,
                                                          {},
-                                                         v_interpolated(index));
+                                                         v_interpolated_ghosted(index));
 #else
                 mesh_velocity_constraints.add_line(index);
-                mesh_velocity_constraints.set_inhomogeneity(index, v_interpolated(index));
+                mesh_velocity_constraints.set_inhomogeneity(index, v_interpolated_ghosted(index));
 #endif
               }
         }

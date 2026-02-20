@@ -773,9 +773,28 @@ int main (int argc, char *argv[])
 
 #ifdef ASPECT_WITH_PYTHON
   Py_Initialize();
-  // required for Numpy interop
+
+  // Add VIRTUAL_ENV site-packages so embedded Python finds numpy, landlab, mpi4py, etc.
+  // site.addsitedir() processes .pth files (needed for uv editable/workspace installs).
+  // Append PYTHONPATH so users can point to a custom landlab install.
+  PyRun_SimpleString(
+    "import sys, os, site\n"
+    "venv = os.environ.get('VIRTUAL_ENV')\n"
+    "if venv:\n"
+    "    ver = '%d.%d' % (sys.version_info.major, sys.version_info.minor)\n"
+    "    sp = os.path.join(venv, 'lib', 'python' + ver, 'site-packages')\n"
+    "    if os.path.isdir(sp):\n"
+    "        site.addsitedir(sp)\n"
+    "for p in os.environ.get('PYTHONPATH', '').split(os.pathsep):\n"
+    "    if p and os.path.isdir(p):\n"
+    "        sys.path.append(p)\n");
+
+  // Required for Numpy interop:
   if (_import_array() < 0)
-    AssertThrow(false, ExcMessage("Numpy init failed!"));
+    {
+      PyErr_Print();
+      AssertThrow(false, ExcMessage("Numpy init failed!"));
+    }
 
   ScopeExit python_cleanup(
     []()

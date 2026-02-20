@@ -7,6 +7,7 @@ requires-python = ">=3.12"
 dependencies = [
     "landlab",
     "mpi4py",
+    "numpy",
     "pymetis>=2025.2.1",
 ]
 
