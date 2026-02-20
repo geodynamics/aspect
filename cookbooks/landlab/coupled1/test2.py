@@ -53,7 +53,7 @@ def finalize():
 # node.
 def update_until(end_time, dict_variable_name_to_value_in_nodes):
     global current_time, elevation, linear_diffuser, flow_accumulator, stream_power_eroder, timestep
-    dt = end_time - current_time
+    aspect_dt = end_time - current_time
     timestep += 1
     
     deposition_erosion = np.zeros(model_grid.number_of_nodes)
@@ -62,9 +62,9 @@ def update_until(end_time, dict_variable_name_to_value_in_nodes):
     y_velocity = dict_variable_name_to_value_in_nodes["y velocity"]
     z_velocity = dict_variable_name_to_value_in_nodes["z velocity"]
 
-    if dt>0:
+    if aspect_dt>0:
         n_substeps = 10
-        sub_dt = dt / n_substeps
+        dt = aspect_dt / n_substeps
         for _ in range(n_substeps):
           
           # TODO:
@@ -75,14 +75,13 @@ def update_until(end_time, dict_variable_name_to_value_in_nodes):
           # Run the landlab components: First route the water, use stream power to erode based on
           # the routing of the water, then diffuse the topography
           flow_accumulator.run_one_step()
-          stream_power_eroder.run_one_step(sub_dt)
-          linear_diffuser.run_one_step(sub_dt)
+          stream_power_eroder.run_one_step(dt)
+          linear_diffuser.run_one_step(dt)
 
           # Uplift the topography at a constant rate.
-          elevation[model_grid.core_nodes] += uplift_rate * sub_dt
+          elevation[model_grid.core_nodes] += uplift_rate * dt
           
           deposition_erosion += elevation - elevation_before
-        pass
     
     current_time = end_time
 
