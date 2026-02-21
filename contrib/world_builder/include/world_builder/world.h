@@ -79,6 +79,15 @@ namespace WorldBuilder
       void parse_entries(Parameters &prm);
 
       /**
+       * Return the size of the output vector returned by the properties function for a given properties vector.
+       *
+       * @param properties The properties parameter from the properties function. See the documentation of that
+       * function for more info.
+       * @return unsigned int Return the size of the output vector returned by the properties function for a given properties vector.
+       */
+      unsigned int properties_output_size(const std::vector<std::array<unsigned int,3>> &properties) const;
+
+      /**
        * Returns different values at a single point in one go stored in a vector of doubles.
        *
        * The properties input decides what each entry means, and the output is generated in the
@@ -92,15 +101,24 @@ namespace WorldBuilder
        *
        * Composition is identified by 2. This produces one
        * value in the output. The second entry  identifies the composition number and the third
-       * number is not used. So a commposition query asking about composition 1 looks like this:
+       * number is not used. So a composition query asking about composition 1 looks like this:
        * {2,1,0}. A composition query prodoces one entry in the output vector.
        *
-       * Grains are identified by 2. The second entry is the grain composition number and the third
+       * Grains are identified by 3. The second entry is the grain composition number and the third
        * entry is the number of grains. A query about the grains, where it asks about composition 1
-       * (for example enstatite) and 500 grains, looks like this: {2,1,500}.
+       * (for example enstatite) and 500 grains, looks like this: {3,1,500}.
        * A composition query prodoces n_grains*10 entries in the output vector. The first n_grains
        * entries are the sizes of all the grains, and the other 9 entries are sets of rotation
        * matrices. The rotation matrix entries are ordered [0][0],[0][1],[0][2],[1][0],[1][1],etc.
+       *
+       * The tag is identified by 4 and no extra information is needed. So the tag
+       * input usually looks like {4,0,0}. A tag query produces one entry in the output
+       * vector, representing the index of the tag of the last/dominant feature.
+       *
+       * The velocity is identified by 5 and no extra information is needed. So the tag
+       * input usually looks like {5,0,0}. A tag query produces three entry in the output
+       * vector, representing the x, y and z velocity, even in 2D. In 2D the velocies are
+       * projected on the 2D plane, and the 3rd velocity element will be zero.
        */
       std::vector<double> properties(const std::array<double, 2> &point,
                                      const double depth,
@@ -131,8 +149,13 @@ namespace WorldBuilder
        * matrices. The rotation matrix entries are ordered [0][0],[0][1],[0][2],[1][0],[1][1],etc.
        *
        * The tag is identified by 4 and no extra information is needed. So the tag
-       * input usually looks like {4,0,0}. A tag query prodoces one entry in the output
+       * input usually looks like {4,0,0}. A tag query produces one entry in the output
        * vector, representing the index of the tag of the last/dominant feature.
+       *
+       * The velocity is identified by 5 and no extra information is needed. So the tag
+       * input usually looks like {5,0,0}. A tag query produces three entry in the output
+       * vector, representing the x, y and z velocity, even in 2D. In 2D the velocies are
+       * projected on the 2D plane, and the 3rd velocity element will be zero.
        */
       std::vector<double> properties(const std::array<double, 3> &point,
                                      const double depth,
@@ -233,6 +256,7 @@ namespace WorldBuilder
        * Todo
        */
       std::vector<Point<2> > cross_section;
+
 
       /**
        * Todo

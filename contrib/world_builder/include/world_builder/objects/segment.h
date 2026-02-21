@@ -34,7 +34,7 @@ namespace WorldBuilder
     /**
       * This class represents an actual segment
       */
-    template <class A, class B, class C>
+    template <class A, class B, class C, class D>
     class Segment
     {
       public:
@@ -48,7 +48,8 @@ namespace WorldBuilder
                 const WorldBuilder::Point<2> &default_angle,
                 std::vector<std::shared_ptr<A> > temperature_systems,
                 std::vector<std::shared_ptr<B> > composition_systems,
-                std::vector<std::shared_ptr<C> > grains_systems);
+                std::vector<std::shared_ptr<C> > grains_systems,
+                std::vector<std::shared_ptr<D> > velocity_systems);
 
         /**
          * Copy constructor
@@ -68,6 +69,7 @@ namespace WorldBuilder
         std::vector<std::shared_ptr<A> > temperature_systems;
         std::vector<std::shared_ptr<B> > composition_systems;
         std::vector<std::shared_ptr<C> > grains_systems;
+        std::vector<std::shared_ptr<D> > velocity_systems;
 
       protected:
       private:

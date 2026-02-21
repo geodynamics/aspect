@@ -12,18 +12,20 @@ Stand-alone installation with all apps
 ::::{tab-set}
 :::{tab-item} For Windows with Visual Studio
 6. Run CMake by entering: `cmake MAKE_FILE_GENERATOR="Visual Studio 15 2017 Win64"..`, or the version of Visual Studio you have installed, and make sure CMake finds all the dependencies.
-7. For production runs, set build type to release by entering `-DCMAKE_BUILD_TYPE=Release`.
-8. Run make with the amount of threads you want to use (e.g., use 8 processes: `make -j 8`).
-9. If you want the Geodynamic World Builder to be installed on your system, run `cmake -build . -target install -j 8`
-10. Run the tests to make sure everything is installed correctly (`cmake -build . -target run_tests -j 8`).
+7. If you want to make use of MPI parallelism in the stand-alone apps, add `-DUSE_MPI=ON` to the cmake command of 6.
+8. For production runs, set build type to release by adding `-DCMAKE_BUILD_TYPE=Release` to the cmake command of 6.
+9. Run make with the amount of threads you want to use (e.g., use 8 processes: `make -j 8`).
+10. If you want the Geodynamic World Builder to be installed on your system, run `cmake -build . -target install -j 8`
+11. Run the tests to make sure everything is installed correctly (`cmake -build . -target run_tests -j 8`).
 :::
 
 :::{tab-item} For all other configurations
 6. Run CMake by entering: `cmake ..` and make sure CMake finds all the dependencies.
-7. For production runs, set build type to release by entering `make release`.
-8. Run make with the amount of threads you want to use (e.g., use 8 processes: `make -j 8`).
-9. If you want the Geodynamic World Builder to be installed on your system, run `sudo make install -j 4`
-10. Run the tests to make sure everything is installed correctly (`ctest`).
+7. If you want to make use of MPI parallelism in the stand-alone apps, add `-DUSE_MPI=ON` to the cmake command of 6.
+8. For production runs, set build type to release by entering `make release`.
+9. Run make with the amount of threads you want to use (e.g., use 8 processes: `make -j 8`).
+10. If you want the Geodynamic World Builder to be installed on your system, run `sudo make install -j 4`
+11. Run the tests to make sure everything is installed correctly (`ctest`).
 :::
 ::::
 

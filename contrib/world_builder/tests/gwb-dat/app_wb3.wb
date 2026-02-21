@@ -1,5 +1,5 @@
 {
-"version": "1.0",
+"version":"1.1",
 "features":
 [
      {"model":"continental plate", "name":"Caribbean", "max depth":250e3, "coordinates":[[-1e3,500e3],[500e3,500e3],[500e3,1000e3],[-1e3,1000e3]],

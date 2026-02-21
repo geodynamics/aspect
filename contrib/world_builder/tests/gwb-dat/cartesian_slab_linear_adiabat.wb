@@ -1,5 +1,5 @@
 {
-  "version": "1.0",
+  "version":"1.1",
   "coordinate system":{"model":"cartesian"},
   "gravity model":{"model":"uniform", "magnitude":10},
   "cross section":[[0,0],[1000e3,0]],"surface temperature":273, "force surface temperature":true,
@@ -14,7 +14,8 @@
 	  {"length":460e3,"thickness":[300e3],"top truncation":[-300e3],"angle":[45]}],
 	 "temperature models":[{"model":"linear", "top temperature":10, "bottom temperature":-1, "max distance slab top":300e3}],
 	 "composition models":[
-	 {"model":"uniform", "compositions":[0], "max distance slab top":100e3}]
+	 {"model":"uniform", "compositions":[0], "max distance slab top":100e3}],
+   "velocity models":[{"model":"uniform raw","velocity":[1,2,3]}]
 	 }      
   ]
 }

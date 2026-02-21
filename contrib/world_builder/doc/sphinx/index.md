@@ -53,6 +53,7 @@ developer_manual/start_devel_and_contrib/index
 developer_manual/contributing_to_the_documentation/index
 developer_manual/contributing_to_the_code/index
 developer_manual/developing_for_the_GWB/index
+Source code documentation <https://codedocs.xyz/GeodynamicWorldBuilder/WorldBuilder/index.html>
 
 ```
 

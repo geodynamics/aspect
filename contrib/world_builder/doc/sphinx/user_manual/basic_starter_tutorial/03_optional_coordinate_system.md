@@ -54,7 +54,7 @@ Our previous minimal example looks like this:
 lineno-start: 1
 ---
 {
-    "version": "1.0",
+    "version":"1.1",
     "features":[ ]
 }
 ```
@@ -66,21 +66,21 @@ We can be more explicit and add one line setting it to the default value. Howeve
 lineno-start: 1
 ---
 {
-    "version": "1.0",
+    "version":"1.1",
     "coordinate system":{"model":"cartesian"},
     "features":[ ]
 }
 ```
 
 ````{note}
-If you want to have a spherical model, please see {ref}`part:user_manual:chap:concepts:sec:const_angle_spherical` first. An input file for a spherical model would like something like this:
+If you want to have a spherical model, please see {ref}`part:user_manual:chap:concepts:sec:const_angle_spherical` first. An input file for a spherical model would be something like this:
 
 ```{code-block} json
 ---
 lineno-start: 1
 ---
 {
-    "version": "1.0",
+    "version":"1.1",
     "coordinate system":{"model":"spherical", "depth method":"begin segment"}, 
     "features":[ ]
 }

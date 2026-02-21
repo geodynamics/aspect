@@ -6,7 +6,7 @@
 // in clockwise direction from top to bottom. This rotation crosses from 360
 // to zero degrees, making sure this crossover works correctly.
 {
-  "version": "1.0",
+  "version":"1.1",
   "surface temperature":273.15,
   "potential mantle temperature":1573.15,
   "features":

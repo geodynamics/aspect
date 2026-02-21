@@ -12,10 +12,10 @@ GWB input files are plain-text files which generally have the extension `.wb`. A
 ```
 
 ::::{grid} 3
-:::{grid-item-card} BST_1_minimal_box.wb
+:::{grid-item-card} BST_02_minimal_box.wb
 :link: ../../_static/gwb_input_files/BST_02_minimal_box.wb
 :::
-:::{grid-item-card} BST_1_minimal_box.grid
+:::{grid-item-card} BST_02_minimal_box.grid
 :link: ../../_static/gwb_input_files/BST_02_minimal_box.grid
 :::
 :::{grid-item-card} Paraview v1 state file 
@@ -24,9 +24,9 @@ GWB input files are plain-text files which generally have the extension `.wb`. A
 ::::
 
 ```{note}
-You can copy the text in the box by selecting it or by hovering over the box and clicking the copy symbol in the top right corner. The file can also be downloaded by clicking on the `BST_1_minimal_box.wb` button below the textbox. 
+You can copy the text in the box by selecting it or by hovering over the box and clicking the copy symbol in the top right corner. The file can also be downloaded by clicking on the `BST_02_minimal_box.wb` button below the textbox. 
 
-If you want to inspect the results yourself, you can also download the corresponding `.grid` file and use the `gwb-grid` application (`gwb-grid BST_1_minimal_box.wb BST_1_minimal_box.grid`) to create a vtk output (`BST_1_minimal_box.vtk`) and view it in, for example, Paraview.
+If you want to inspect the results yourself, you can also download the corresponding `.grid` file and use the `gwb-grid` application (`gwb-grid BST_02_minimal_box.wb BST_02_minimal_box.grid`) to create a vtk output (`BST_02_minimal_box.vtk`) and view it in, for example, Paraview.
 ```
 
 Congratulations on creating your first World Builder input file! If you visualize the result (shown below), you will notice an adiabatic temperature profile and that the compositional field is zero everywhere. This is the background, or our canvas if we want to stay in the painting analogy. Now, before grabbing our brushes, we should first discuss the shape of our canvas.

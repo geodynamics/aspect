@@ -1,0 +1,42 @@
+// This is a test for the plume feature in spherical geometry.
+// It checks if the plume has the right geometry in terms of its temperature
+// and composition, which are uniform within the plume, with the composition
+// having two layers.
+// Specifically, the plume changes the location of its center axis going in a
+// clockwise circle a bit more than half way on the way down and it
+// increases in radius with depth. Its cross section is slightly elongated in
+// the same direction the center axis is curved, but the eccentricity stays
+// the same.
+{
+  "version":"1.1",
+  "coordinate system":{"model":"spherical", "depth method":"starting point"},
+  "maximum distance between coordinates":0.01,
+  //"thermal expansion coefficient":0,
+  "features":
+  [
+    {"model":"oceanic plate",
+      "name":"oceanic plate A", "min depth":-1e3,
+      "coordinates":[[-1, 51],[51,51],[51,-1],[-1,-1]],
+      "velocity models":[{"model":"euler pole","euler pole":[25,25],"angular velocity":0.1}],
+      "composition models":[{"model":"uniform", "compositions":[0], "fractions":[1]}]
+    },
+    {"model":"oceanic plate",
+      "name":"oceanic plate B", "min depth":-1e3,
+      "coordinates":[[-1, -51],[51,-51],[51,-1],[-1,-1]],
+      "velocity models":[{"model":"euler pole","euler pole":[25,-25],"angular velocity":-0.05}],
+      "composition models":[{"model":"uniform", "compositions":[1], "fractions":[1]}]
+    },
+    {"model":"continental plate",
+      "name":"continental plate A", "min depth":-1e3,
+      "coordinates":[[-51, 51],[-1,51],[-1,-1],[-51,-1]],
+      "velocity models":[{"model":"euler pole","euler pole":[-25,25],"angular velocity":0.1}],
+      "composition models":[{"model":"uniform", "compositions":[2], "fractions":[1]}]
+    },
+    {"model":"mantle layer",
+      "name":"continental plate A", "min depth":-1e3,
+      "coordinates":[[-51, -51],[-1,-51],[-1,-1],[-51,-1]],
+      "velocity models":[{"model":"euler pole","euler pole":[-25,-25],"angular velocity":0.1}],
+      "composition models":[{"model":"uniform", "compositions":[3], "fractions":[1]}]
+    }
+  ]
+}

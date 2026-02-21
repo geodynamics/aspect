@@ -1,6 +1,6 @@
-version: '1.0.0.{build}'
+version: '1.1.0-pre.{build}'
 
-image: Visual Studio 2015
+image: Visual Studio 2019
 
 platform:
   - x64
@@ -10,8 +10,8 @@ configuration:
   - Debug
 
 environment:
-  CMAKE_GENERATOR: "Visual Studio 14 2015 Win64" 
-  VS: 2015
+  CMAKE_GENERATOR: "Visual Studio 16 2019" 
+  VS: 2019
   #VCPKG_ARCH: x64-windows
 
 init:
@@ -20,6 +20,7 @@ init:
 before_build:
 
 install:
+  - if "%VS%"=="2019" call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
   - if "%VS%"=="2017" call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
   - if "%VS%"=="2015" call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64
   - if "%VS%"=="2015" call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86_amd64
