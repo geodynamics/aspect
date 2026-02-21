@@ -223,13 +223,10 @@ namespace aspect
     template <int dim>
     MeshDeformationHandler<dim>::MeshDeformationHandler (Simulator<dim> &simulator)
       : sim(simulator),  // reference to the simulator that owns the MeshDeformationHandler
-        mesh_deformation_fe (FE_Q<dim>(1),dim), // Q1 elements which describe the mesh geometry
+        mesh_deformation_fe (FE_Q<dim>(sim.parameters.stokes_velocity_degree),dim),
         mesh_deformation_dof_handler (sim.triangulation),
         include_initial_topography(false)
     {
-      // Now reset the mapping of the simulator to be something that captures mesh deformation in time.
-      sim.mapping = std::make_unique<MappingQ1Eulerian<dim, LinearAlgebra::Vector>> (mesh_deformation_dof_handler,
-                                                                                      mesh_displacements);
     }
 
 
@@ -1445,6 +1442,22 @@ namespace aspect
       // cells are created.
       DoFRenumbering::hierarchical (mesh_deformation_dof_handler);
 
+      // If necessary reset the mapping of the simulator to something
+      // that captures mesh deformation in time. This has to
+      // happen after we distribute the mesh_deformation DoFs
+      // above.
+      if (dynamic_cast<const MappingQEulerian<dim, LinearAlgebra::Vector>*>(&(this->get_mapping())) == nullptr)
+        {
+          sim.mapping.reset (new MappingQEulerian<dim, LinearAlgebra::Vector> (this->get_geometry_model().has_curved_elements() ? 4 : 1,
+                                                                               mesh_deformation_dof_handler,
+                                                                               mesh_displacements));
+
+          for (auto &pm : sim.particle_managers)
+            pm.get_particle_handler().initialize(this->get_triangulation(),
+                                                 this->get_mapping(),
+                                                 pm.get_property_manager().get_n_property_components());
+        }
+
       if (this->is_stokes_matrix_free())
         {
           mesh_deformation_dof_handler.distribute_mg_dofs();
@@ -1481,7 +1494,7 @@ namespace aspect
           {
             object = std::make_unique<MappingQEulerian<dim,
             dealii::LinearAlgebra::distributed::Vector<double>>>(
-              /* degree = */ 1,
+              mesh_deformation_fe.degree,
               mesh_deformation_dof_handler,
               level_displacements[level],
               level);
