@@ -32,67 +32,79 @@ namespace WorldBuilder
 {
   namespace Objects
   {
-    BezierCurve::BezierCurve(const std::vector<Point<2> > &p, const std::vector<double> &angle_constrains_input)
+    /*
+    Takes a vector of points and interpolates a spline using a cubic Bezier curve, for more information see this wikipedia
+    page https://en.wikipedia.org/wiki/B%C3%A9zier_curve
+    */
+    BezierCurve::BezierCurve(const std::vector<Point<2> > &p, const std::vector<double> &angle_constraints_input)
     {
       points = p;
       const size_t n_points = p.size();
       control_points.resize(n_points-1, {{p[0],p[0]}});
       lengths.resize(n_points-1,NaN::DSNAN);
       angles.resize(n_points,NaN::DSNAN);
-      std::vector<double> angle_constrains = angle_constrains_input;
-      angle_constrains.resize(n_points,NaN::DQNAN);
+      std::vector<double> angle_constraints = angle_constraints_input;
+      angle_constraints.resize(n_points,NaN::DQNAN);
 
       // if no angle is provided, compute the angle as the average angle between the previous and next point.
       // The first angle points at the second point and the last angle points at the second to last point.
       // The check points are set at a distance of 1/10th the line length from the point in the direction of the angle.
-      if (std::isnan(angle_constrains[0]))
+      if (std::isnan(angle_constraints[0]))
         {
           Point<2> P1P2 = points[1]-points[0];
           angles[0] = atan2(P1P2[1],P1P2[0]);
         }
       else
         {
-          angles[0] = angle_constrains[0];
+          angles[0] = angle_constraints[0];
         }
 
+      // If there are more than 2 points provided, calculate the average angle between a given point and the previous point,
+      // and the following point. If only 2 points are provided, this for loop is skipped.
       for (size_t p_i = 1; p_i < n_points-1; ++p_i)
         {
           // first determine the angle
-          if (std::isnan(angle_constrains[p_i]))
+          if (std::isnan(angle_constraints[p_i]))
             {
-              // get the average angle
+              // Calculate the line between the current point and the previous point
               const Point<2> P1P2 = points[p_i-1]-points[p_i];
+              // Calculate the line between the current point and the following point
               const Point<2> P3P2 = points[p_i+1]-points[p_i];
 
+              // Calculate the angles of the two lines determined above
               const double angle_p1p2 = atan2(P1P2[1],P1P2[0]);
               const double angle_p3p1 = atan2(P3P2[1],P3P2[0]);
+              // Calculate the average angle
               const double average_angle = (angle_p1p2 + angle_p3p1)*0.5;
               angles[p_i] = average_angle;
               angles[p_i] -= Consts::PI*0.5;
             }
           else
             {
-              angles[p_i] = angle_constrains[p_i];
+              angles[p_i] = angle_constraints[p_i];
             }
 
         }
 
-      if (std::isnan(angle_constrains[n_points-1]))
+      if (std::isnan(angle_constraints[n_points-1]))
         {
           Point<2> P1P2 = points[n_points-2]-points[n_points-1];
           angles[n_points-1] =  atan2(P1P2[1],P1P2[0]);
         }
       else
         {
-          angles[n_points-1] = angle_constrains[n_points-1];
+          angles[n_points-1] = angle_constraints[n_points-1];
         }
 
+      // If there are more than 2 points provided, loop through the points and determine the control points
       if (points.size() > 2)
         {
           // next determine the location of the control points
-          // the location of the control point is 1/10th p1p2 distance in the direction of the angle.
+          // the location of the control point is 2/10th p1p2 distance in the direction of the angle.
           // make sure the angle is pointing away from the next point, e.g.
           // the check point is on the other side of the of the line p1p2 compared to p3.
+          // This first block determines the control points for the special case of the first
+          // 3 points.
           const double fraction_of_length = 0.2;
           {
             const Point<2> &p1 = points[0];
@@ -104,6 +116,7 @@ namespace WorldBuilder
             control_points[0][1][0] = cos(angles[1])*length*fraction_of_length+p2[0];
             control_points[0][1][1] = sin(angles[1])*length*fraction_of_length+p2[1];
             {
+              // Determine which side of the line the control points lie on
               const bool side_of_line_1 =  (p1[0] - p2[0]) * (control_points[0][1][1] - p1[1])
                                            - (p1[1] - p2[1]) * (control_points[0][1][0] - p1[0])
                                            < 0;
@@ -128,6 +141,7 @@ namespace WorldBuilder
               control_points[p_i][0][1] = sin(angles[p_i])*length*fraction_of_length+p1[1];
 
               {
+                // Determine which side of the line the control points lie on
                 const bool side_of_line_1 =  (p1[0] - p2[0]) * (control_points[p_i-1][1][1] - p1[1])
                                              - (p1[1] - p2[1]) * (control_points[p_i-1][1][0] - p1[0])
                                              < 0;

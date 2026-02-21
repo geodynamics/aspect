@@ -172,7 +172,7 @@ namespace WorldBuilder
                           // set a uniform random a_cosine_matrix per grain
                           // This function is based on an article in Graphic Gems III, written by James Arvo, Cornell University (p 116-120).
                           // The original code can be found on  http://www.realtimerendering.com/resources/GraphicsGems/gemsiii/rand_rotation.c
-                          // and is licenend accourding to this website with the following licence:
+                          // and is licenend according to this website with the following licence:
                           //
                           // "The Graphics Gems code is copyright-protected. In other words, you cannot claim the text of the code as your own and
                           // resell it. Using the code is permitted in any program, product, or library, non-commercial or commercial. Giving credit

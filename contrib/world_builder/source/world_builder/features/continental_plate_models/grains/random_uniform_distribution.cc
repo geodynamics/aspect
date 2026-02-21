@@ -64,10 +64,16 @@ namespace WorldBuilder
                             "to a single value or to a random distribution.");
 
           // Declare entries of this plugin
-          prm.declare_entry("min depth", Types::OneOf(Types::Double(0),Types::Array(Types::ValueAtPoints(0., 2.))),
+          prm.declare_entry("min depth", Types::OneOf(Types::Double(0),
+                                                      Types::Array(Types::ValueAtPoints(0.,2)),
+                                                      Types::String("")),
                             "The depth in meters from which the composition of this feature is present.");
-          prm.declare_entry("max depth", Types::OneOf(Types::Double(std::numeric_limits<double>::max()),Types::Array(Types::ValueAtPoints(std::numeric_limits<double>::max(), 2.))),
+
+          prm.declare_entry("max depth", Types::OneOf(Types::Double(std::numeric_limits<double>::max()),
+                                                      Types::Array(Types::ValueAtPoints(std::numeric_limits<double>::max(),2)),
+                                                      Types::String("")),
                             "The depth in meters to which the composition of this feature is present.");
+
 
           prm.declare_entry("compositions", Types::Array(Types::UnsignedInt(),0),
                             "A list with the integer labels of the composition which are present there.");
@@ -138,7 +144,7 @@ namespace WorldBuilder
                               // set a uniform random a_cosine_matrix per grain
                               // This function is based on an article in Graphic Gems III, written by James Arvo, Cornell University (p 116-120).
                               // The original code can be found on  http://www.realtimerendering.com/resources/GraphicsGems/gemsiii/rand_rotation.c
-                              // and is licenend accourding to this website with the following licence:
+                              // and is licenend according to this website with the following licence:
                               //
                               // "The Graphics Gems code is copyright-protected. In other words, you cannot claim the text of the code as your own and
                               // resell it. Using the code is permitted in any program, product, or library, non-commercial or commercial. Giving credit

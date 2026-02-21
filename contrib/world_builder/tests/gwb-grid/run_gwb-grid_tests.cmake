@@ -1,16 +1,19 @@
 # arguments checking
-if( NOT TEST_NAME )
+if( NOT DEFINED TEST_NAME )
   message( FATAL_ERROR "Require TEST_NAME to be defined." )
-endif( NOT TEST_NAME )
-if( NOT TEST_PROGRAM )
+endif( NOT DEFINED TEST_NAME )
+if( NOT DEFINED TEST_PROGRAM )
   message( FATAL_ERROR "Require TEST_PROGRAM to be defined." )
-endif( NOT TEST_PROGRAM )
-if( NOT TEST_OUTPUT )
+endif( NOT DEFINED TEST_PROGRAM )
+if( NOT DEFINED TEST_OUTPUT )
   message( FATAL_ERROR "Require TEST_OUTPUT to be defined" )
-endif( NOT TEST_OUTPUT )
-if( NOT TEST_REFERENCE )
+endif( NOT DEFINED TEST_OUTPUT )
+if( NOT DEFINED TEST_REFERENCE )
   message( FATAL_ERROR "Require TEST_REFERENCE to be defined" )
-endif( NOT TEST_REFERENCE )
+endif( NOT DEFINED TEST_REFERENCE )
+if( NOT DEFINED REPLACE_FAILING_TEST_RESULTS )
+  message( FATAL_ERROR "Require REPLACE_FAILING_TEST_RESULTS to be defined" )
+endif( NOT DEFINED REPLACE_FAILING_TEST_RESULTS )
 
 # create a directory for the test
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/gwb-grid/${TEST_NAME})
@@ -76,6 +79,9 @@ execute_process(
 
 # again, if return value is !=0 scream and shout
 if( TEST_RESULT )
+  if( REPLACE_FAILING_TEST_RESULTS )
+	  file(COPY_FILE ${TEST_NATIVE_OUTPUT} ${TEST_NATIVE_REFERENCE} )
+  endif( REPLACE_FAILING_TEST_RESULTS )
 	execute_process(COMMAND ${TEST_DIFF} ${TEST_NATIVE_OUTPUT} ${TEST_NATIVE_REFERENCE})
 	message( FATAL_ERROR "Failed: The output of ${TEST_NAME} stored in ${TEST_NATIVE_OUTPUT} did not match the reference output stored in ${TEST_NATIVE_REFERENCE}")
 endif( TEST_RESULT )

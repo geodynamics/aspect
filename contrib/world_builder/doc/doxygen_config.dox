@@ -5,7 +5,7 @@
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = "World Builder"
-PROJECT_NUMBER         = 1.0.0
+PROJECT_NUMBER         = 1.1.0-pre
 PROJECT_BRIEF          = "A geodynamic initial conditions generator"
 PROJECT_LOGO           = 
 OUTPUT_DIRECTORY       = doc/doxygen/
@@ -171,7 +171,7 @@ EXCLUDE_SYMBOLS        =
 EXAMPLE_PATH           = 
 EXAMPLE_PATTERNS       = *
 EXAMPLE_RECURSIVE      = NO
-IMAGE_PATH             = 
+IMAGE_PATH             = sphinx/_static/images/
 INPUT_FILTER           = 
 FILTER_PATTERNS        = 
 FILTER_SOURCE_FILES    = NO
@@ -206,7 +206,7 @@ HTML_FILE_EXTENSION    = .html
 HTML_HEADER            = 
 HTML_FOOTER            = 
 HTML_STYLESHEET        = 
-HTML_EXTRA_STYLESHEET  = 
+HTML_EXTRA_STYLESHEET  = doxygen-awesome.css
 HTML_EXTRA_FILES       = 
 HTML_COLORSTYLE_HUE    = 220
 HTML_COLORSTYLE_SAT    = 100

@@ -23,6 +23,9 @@
 #include <string>
 #include "world_builder/deprecate.h"
 
+/**
+ * This namespace contains the C++ wrapper of the WorldBuilder library.
+ */
 namespace wrapper_cpp
 {
   /**

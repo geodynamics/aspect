@@ -24,6 +24,7 @@
 #include "world_builder/features/subducting_plate_models/composition/interface.h"
 #include "world_builder/features/subducting_plate_models/grains/interface.h"
 #include "world_builder/features/subducting_plate_models/temperature/interface.h"
+#include "world_builder/features/subducting_plate_models/velocity/interface.h"
 #include "world_builder/objects/segment.h"
 #include "world_builder/bounding_box.h"
 #include "world_builder/objects/distance_from_surface.h"
@@ -51,6 +52,10 @@ namespace WorldBuilder
       {
         class Interface;
       }  // namespace Temperature
+      namespace Velocity
+      {
+        class Interface;
+      }  // namespace Velocity
     }  // namespace SubductingPlateModels
 
     /**
@@ -151,21 +156,25 @@ namespace WorldBuilder
         std::vector<std::shared_ptr<Features::SubductingPlateModels::Temperature::Interface> > default_temperature_models;
         std::vector<std::shared_ptr<Features::SubductingPlateModels::Composition::Interface>  > default_composition_models;
         std::vector<std::shared_ptr<Features::SubductingPlateModels::Grains::Interface>  > default_grains_models;
+        std::vector<std::shared_ptr<Features::SubductingPlateModels::Velocity::Interface>  > default_velocity_models;
 
         std::vector<Objects::Segment<Features::SubductingPlateModels::Temperature::Interface,
             Features::SubductingPlateModels::Composition::Interface,
-            Features::SubductingPlateModels::Grains::Interface> > default_segment_vector;
+            Features::SubductingPlateModels::Grains::Interface,
+            Features::SubductingPlateModels::Velocity::Interface> > default_segment_vector;
 
         std::vector< std::vector<Objects::Segment<Features::SubductingPlateModels::Temperature::Interface,
             Features::SubductingPlateModels::Composition::Interface,
-            Features::SubductingPlateModels::Grains::Interface> > > sections_segment_vector;
+            Features::SubductingPlateModels::Grains::Interface,
+            Features::SubductingPlateModels::Velocity::Interface> > > sections_segment_vector;
 
         // This vector stores segments to this coordinate/section.
         //First used (raw) pointers to the segment relevant to this coordinate/section,
         // but I do not trust it won't fail when memory is moved. So storing the all the data now.
         std::vector<std::vector<Objects::Segment<Features::SubductingPlateModels::Temperature::Interface,
             Features::SubductingPlateModels::Composition::Interface,
-            Features::SubductingPlateModels::Grains::Interface> > > segment_vector;
+            Features::SubductingPlateModels::Grains::Interface,
+            Features::SubductingPlateModels::Velocity::Interface> > > segment_vector;
 
         // todo: the memory of this can be greatly improved by
         // or using a plugin system for the submodules, or

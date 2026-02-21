@@ -1,5 +1,5 @@
 {
-"version": "1.0",
+"version":"1.1",
 "cross section": [[100e3,100e3],[400e3,500e3]],
 "coordinate system":{"model":"cartesian"},
 "gravity model":{"model":"uniform", "magnitude":10},
@@ -8,7 +8,8 @@
   {"model":"oceanic plate", "name":"First continental plate", "max depth":250e3, "coordinates":[[-1e3,500e3],[500e3,500e3],[500e3,1000e3],[-1e3,1000e3]],
     "temperature models":[{"model":"uniform", "max depth":75e3, "temperature":150},
                           {"model":"uniform", "min depth":75e3, "max depth":150e3, "temperature":100},
-                          {"model":"uniform", "min depth":150e3, "max depth":22.5e3, "temperature":50}]},
+                          {"model":"uniform", "min depth":150e3, "max depth":22.5e3, "temperature":50}],
+                          "velocity models":[{"model":"uniform raw","velocity":[1,2,3]}]},
      
   {"model":"oceanic plate", "name":"Second continental plate", "coordinates":[[2000e3,2000e3],[1000e3,2000e3],[1000e3,1000e3],[2000e3,1000e3]],
     "temperature models":[{"model":"adiabatic", "potential mantle temperature":20}],

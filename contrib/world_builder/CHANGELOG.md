@@ -9,6 +9,34 @@ Add new entries a the bottom of the current list in the subheading. Item format:
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Added
+- Added a cookbook which demonstrates how to use the tian 2019 composition model to create a subducting plate with hydrated lithologies. \[Daniel Douglas; 2025-01-22; [#812](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/812)\]
+- Added documentation for the subducting plate feature in the parameter documentation section of the manual. \[Daniel Douglas; 2024-11-19; [#768](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/768)\]
+- Added a velocities system where each feature can define a velocity field and the gwb can return the resulting velocity field. \[Menno Fraters; 2024-10-20; [#761](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/761)\]
+- There is now a CMake variable to automatically update the reference files for failed tests (gdb-dat and gwb-grid tests) \[Menno Fraters; 2024-10-20; [#761](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/761)\]
+- There is now a properties_output_size function, which returns the size of the output vector/array returned by the properties functions for a given properties input vector \[Menno Fraters; 2024-10-27; [#765](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/765)\]
+- Added 2d and 3d versions of the properties function to the C wrapper \[Menno Fraters; 2024-10-27; [#765](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/765)\]
+- Added continental geotherm from Chapman (1986) for the Temperature Model in Continental Plate \[Alan Yu; 2025-01-21; [#778](https://github.com/GeodynamicWorldBuilder/WorldBuilder/issues/778), [#797](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/797)\]
+- Min and max depth parameters now have an the option to accept a string which can be used select a model. \[Menno Fraters; 2025-08-23; [#842](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/842)\]
+- You can now add LITHO1.0 layers as the min depth or max depth in the continental plate, oceanic plate and mantle models. \[Menno Fraters; 2025-08-23; [#842](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/842)\]
+- Added a Euler pole velocity field (in spherical coordinates) for the continental plate, oceanic plate and mantel layer. \[Menno Fraters; 2025-08-25; [#850](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/850)\]
+- Added an experimental (initial) topography infrastructure. This can also make use of the surface plugins, which includes the Litho1.0 dataset. \[Menno Fraters; 2026-02-21; [#780](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/780), [#848](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/848)\]
+
+### Changed
+- The tian2019 composition model now returns a mass fraction instead of a mass percentage. \[Daniel Douglas; 2024-11-12; [#767](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/767)\]
+- Only link to MPI libraries if the cmake variable USE_MPI has been set. No longer automatically link to MPI if MPI is found. \[Rene Gassmoeller; 2025-01-20; [#792](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/792)\]
+- Change the Doxygen documentation design using the Doxygen Awesome theme. Also fix the main README logo so it appears in the doxygen start page. \[Rene Gassmoeller; 2025-01-21; [#807](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/807)\]
+- The approval unit tests now have the option to add a label to each of them to increase readability and findablitliy of individual tests. \[Menno Fraters and Rene Gassmoeller; 2025-01-23; [809](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/809)\]
+- gwb-grid now exclusively uses the FT versions of cos and sin, since that seems to improve compatibility between the different operating systems. Also included compiler flags to make the results more deterministic. \[Menno Fraters; 2026-02-21; [#848](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/848)\]
+- The Litho1.0 dataset now contains all the different available layers. \[Menno Fraters; 2026-02-21; [#848](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/848)\]
+
+### Fixed
+- Fixed index for 2D compositional fields in gwb-grid. \[Derek Neuharth; 2025-01-21; [#788](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/788)\]
+- Fixed the tag and velocity outputs while using --by-tag --filtered options in gwb-grid. \[Arushi Saxena; 2025-01-21; [#802](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/802)\]
+- Fixed the 3D z velocity of the subducting plate and fault models, which was the velocity of x + 2. \[Menno Fraters; 2025-08-27; [#851](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/851)\]
+
+
 ## [1.0.0]
 ### Added
 - Added the ability to calculate the water content within the oceanic plate feature and the subducting plate feature. The implementation samples the temperature within the feature, calculates a lithostatic pressure, and determines the water content using parameterized phase diagrams for 4 different lithologies: sediment, mid ocean ridge basalt (MORB), gabbro, and peridotite from [Tian et al., 2019](https://doi.org/10.1029/2019GC008488). \[Daniel Douglas; 2024-08-20; [#661](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/661)\]
@@ -64,7 +92,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - A surface object which can take an array of value at points and create an interpolation through delaunay triangulation (with the delaunator library which was added) and a KD-Tree and barycentric linear interpolation. \[Menno Fraters, KD-Tree with help of Oliver Kreylos; 2022-03-26; [#396](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/396)\]
 - The option to make min and max depth into variable surfaces for all area features (continental plate, oceanic plate and mantle layer) and their temperature, composition and grain plugins. \[Menno Fraters; 2022-03-26; [#366](https://github.com/GeodynamicWorldBuilder/WorldBuilder/issues/366) and [#396](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/396)\]
 - The option to the WordBuilderApp to input 3D spherical coordinates \[Menno Fraters; 2022-03-26; [#396](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/396)\]
-- An equal operator (operator==) for the point class, which compares two points with an espilon. \[Menno Fraters; 2022-03-26; [#396](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/396)\]
+- An equal operator (operator==) for the point class, which compares two points with an epsilon. \[Menno Fraters; 2022-03-26; [#396](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/396)\]
 - New gravity plugin system with a uniform gravity plugin where the gravity magnitude can be set from the input file. This how replaces the gravity input provided through the interface. The interface itself will be updated in a future pull request, where the gravity norm parameter will be removed. \[Menno Fraters; 2022-03-27; [#370](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/370)\]
 - ApprovalTest have been added to the unit tests. \[Menno Fraters; 2022-04-09; [#401](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/401)\]
 - Added a cmake target to update the reference test results called `update_test_references`. \[Menno Fraters; 2022-04-12; [#404](github.com/GeodynamicWorldBuilder/WorldBuilder/issues/404)\]
