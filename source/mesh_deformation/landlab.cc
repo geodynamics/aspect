@@ -82,42 +82,48 @@ namespace aspect
                   ExcMessage("The surface diffusion mesh deformation plugin only works for Box geometries."));
 
       unsigned int rank = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
-      if (rank >= n_landlab_ranks)
-        return;
 
+      this_rank_runs_landlab = (rank < n_landlab_ranks);
+      const int color = this_rank_runs_landlab?1:0;
+      int ierr = MPI_Comm_split(this->get_mpi_communicator(), color, rank, &landlab_communicator);
+      AssertThrow(ierr == MPI_SUCCESS, ExcMessage("Failed to split MPI communicator for Landlab simulation"));
+
+      if (this_rank_runs_landlab)
+        {
 #ifdef ASPECT_WITH_PYTHON
-      // Append script dirs so env packages (venv site-packages, PYTHONPATH) are found first
-      // for "import landlab":
-      PyRun_SimpleString("import sys");
-      PyRun_SimpleString("sys.path.append(\"" ASPECT_SOURCE_DIR "/tests\")");
-      PyRun_SimpleString("sys.path.append(\".\")");
+          // Append script dirs so env packages (venv site-packages, PYTHONPATH) are found first
+          // for "import landlab":
+          PyRun_SimpleString("import sys");
+          PyRun_SimpleString("sys.path.append(\"" ASPECT_SOURCE_DIR "/tests\")");
+          PyRun_SimpleString("sys.path.append(\".\")");
 
-      // avoid floating point exceptions in Landlab Python code:
+          // avoid floating point exceptions in Landlab Python code:
 #ifdef ASPECT_USE_FP_EXCEPTIONS
-      fedisableexcept(FE_DIVBYZERO|FE_INVALID);
+          fedisableexcept(FE_DIVBYZERO|FE_INVALID);
 #endif
 
-      std::cout << "importing '" << script_module_name << "' ..." << std::endl;
-      pModule = PyImport_ImportModule(script_module_name.c_str());
-      if (PyErr_Occurred())
-        PyErr_Print();
-      AssertThrow(pModule, ExcMessage("Failed to load Python module"));
+          std::cout << "importing '" << script_module_name << "' ..." << std::endl;
+          pModule = PyImport_ImportModule(script_module_name.c_str());
+          if (PyErr_Occurred())
+            PyErr_Print();
+          AssertThrow(pModule, ExcMessage("Failed to load Python module"));
 
-      // Call Python initialize() function with communicator handle
-      PyObject *pArgs;
-      if (n_landlab_ranks == 1)
-        pArgs = PyTuple_Pack(1, Py_None);
-      else
-        pArgs = PyTuple_Pack(1, PyLong_FromLong(MPI_Comm_c2f(this->get_mpi_communicator())));
-      PyObject *pValue = call_python_function(pModule, "initialize", pArgs);
+          // Call Python initialize() function with communicator handle
+          PyObject *pArgs;
+          if (n_landlab_ranks == 1)
+            pArgs = PyTuple_Pack(1, Py_None);
+          else
+            pArgs = PyTuple_Pack(1, PyLong_FromLong(MPI_Comm_c2f(landlab_communicator)));
+          PyObject *pValue = call_python_function(pModule, "initialize", pArgs);
 
-      Py_DECREF(pArgs);
-      Py_DECREF(pValue);
+          Py_DECREF(pArgs);
+          Py_DECREF(pValue);
 
 #else
-      AssertThrow(false, ExcMessage("ASPECT needs to be configure with Python support "
-                                    "(ASPECT_WITH_PYTHON=ON in CMake) to be able to use the Landlab mesh deformation model."));
+          AssertThrow(false, ExcMessage("ASPECT needs to be configure with Python support "
+                                        "(ASPECT_WITH_PYTHON=ON in CMake) to be able to use the Landlab mesh deformation model."));
 #endif
+        }
     }
 
 
@@ -130,8 +136,7 @@ namespace aspect
 #ifdef ASPECT_WITH_PYTHON
       if (!this->remote_point_evaluator)
         {
-          unsigned int rank = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
-          if (rank >= n_landlab_ranks)
+          if (!this_rank_runs_landlab)
             {
               // This rank does not participate, so we don't own any evaluation points:
               std::vector<Point<dim>> surface_points;
@@ -200,7 +205,7 @@ namespace aspect
       Assert(current_solution_at_points.size() == this->evaluation_points.size(), ExcInternalError());
       std::vector<Tensor<1,dim>> velocities(current_solution_at_points.size(), Tensor<1,dim>());
 
-      if (pModule)
+      if (this_rank_runs_landlab)
         {
           // Build a dictionary with solution values for each variable to pass to Python:
           PyObject *pDict = PyDict_New();
@@ -282,7 +287,7 @@ namespace aspect
 
       // 1. Grab initial deformation from Landlab:
       std::vector<Tensor<1,dim>> initial_deformation(this->evaluation_points.size(), Tensor<1,dim>());
-      if (pModule)
+      if (this_rank_runs_landlab)
         {
           Tensor<1,dim> topography_direction;
           topography_direction[dim-1] = 1.0;
@@ -344,7 +349,8 @@ namespace aspect
         {
           prm.declare_entry("MPI ranks for Landlab", "1",
                             Patterns::Integer(1),
-                            "Number of ranks to use for the Landlab simulation. If set to 1, the Landlab simulation will run sequentially without MPI.");
+                            "Number of ranks to use for the Landlab simulation. If set to 1, the Landlab simulation will run sequentially "
+                            "without MPI. If set to -1, the Landlab simulation will run on all ranks.");
           prm.declare_entry("Script path", "",
                             Patterns::Anything(),
                             "Path to the Python script to execute. Relative paths and the placeholders "
@@ -371,7 +377,12 @@ namespace aspect
       {
         prm.enter_subsection ("Landlab");
         {
-          n_landlab_ranks = prm.get_integer("MPI ranks for Landlab");
+          const int ranks = prm.get_integer("MPI ranks for Landlab");
+          if (ranks == -1)
+            n_landlab_ranks = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
+          else
+            n_landlab_ranks = ranks;
+
           script_path = prm.get("Script path");
           script_module_name = prm.get("Script name");
           script_argument = prm.get("Script argument");
