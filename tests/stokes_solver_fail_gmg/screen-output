@@ -30,16 +30,20 @@ Additional information:
     VectorType&, const VectorType&, const PreconditionerType&) [with
     MatrixType = aspect::MatrixFreeStokesOperators::StokesOperator<2, 2,
     double>; PreconditionerType =
-    aspect::internal::BlockSchurGMGPreconditioner<aspect::MatrixFreeStokesOperators::StokesOperator<2,
-    2, double>, aspect::MatrixFreeStokesOperators::ABlockOperator<2, 2,
-    double>, aspect::MatrixFreeStokesOperators::BTBlockOperator<2, 2,
-    double>, aspect::MatrixFreeStokesOperators::MassMatrixOperator<2, 1,
-    double>, dealii::PreconditionMG<2,
+    aspect::internal::BlockSchurPreconditioner<aspect::internal::InverseVelocityBlock<dealii::PreconditionMG<2,
     dealii::LinearAlgebra::distributed::Vector<double>,
-    dealii::MGTransferMF<2, double> >, dealii::PreconditionMG<2,
+    dealii::MGTransferMF<2, double> >,
     dealii::LinearAlgebra::distributed::Vector<double>,
-    dealii::MGTransferMF<2, double> > >; VectorType =
-    dealii::LinearAlgebra::distributed::BlockVector<double>]
+    aspect::MatrixFreeStokesOperators::ABlockOperator<2, 2, double> >,
+    aspect::internal::SchurApproximation<dealii::PreconditionMG<2,
+    dealii::LinearAlgebra::distributed::Vector<double>,
+    dealii::MGTransferMF<2, double> >,
+    aspect::MatrixFreeStokesOperators::StokesOperator<2, 2, double>,
+    aspect::MatrixFreeStokesOperators::MassMatrixOperator<2, 1, double>,
+    dealii::LinearAlgebra::distributed::Vector<double> >,
+    aspect::MatrixFreeStokesOperators::BTBlockOperator<2, 2, double>,
+    dealii::LinearAlgebra::distributed::BlockVector<double> >; VectorType
+    = dealii::LinearAlgebra::distributed::BlockVector<double>]
     Additional information:
     Iterative method reported convergence failure in step 10. The residual
     in the last step was 1239.44.

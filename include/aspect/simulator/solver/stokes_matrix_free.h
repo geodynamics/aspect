@@ -302,7 +302,7 @@ namespace aspect
       dst.block(1) *= -1.0;
 
       {
-        BT_block.vmult(utmp,dst);
+        BT_block.vmult(utmp, dst);
         utmp.block(0) *= -1.0;
         utmp.block(0) += src.block(0);
       }
