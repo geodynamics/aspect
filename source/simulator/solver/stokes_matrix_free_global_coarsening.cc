@@ -21,6 +21,7 @@
 #include <aspect/simulator/solver/matrix_free_operators.h>
 #include <aspect/simulator/solver/stokes_matrix_free.h>
 #include <aspect/simulator/solver/stokes_matrix_free_global_coarsening.h>
+#include <aspect/simulator/solver/block_stokes_preconditioner.h>
 #include <aspect/mesh_deformation/interface.h>
 
 #include <aspect/mesh_deformation/interface.h>
@@ -1207,22 +1208,21 @@ namespace aspect
       this->get_parameters().linear_solver_A_block_tolerance
     );
     using SchurApproximationType=internal::SchurApproximation<GMGPreconditioner, StokesMatrixType, SchurComplementMatrixType, VectorType>;
-    internal::SchurApproximation<GMGPreconditioner, StokesMatrixType, SchurComplementMatrixType, VectorType>;
 
     internal::SchurApproximation<GMGPreconditioner, StokesMatrixType, SchurComplementMatrixType, VectorType>
     schur_approximation_cheap(prec_Schur,
-    stokes_matrix,
-  Schur_complement_block_matrix,
-   /*do_solve_Schur*/ false,
-  this->get_parameters().linear_solver_S_block_tolerance);
-   
-  internal::SchurApproximation<GMGPreconditioner, StokesMatrixType, SchurComplementMatrixType, VectorType>
+                              stokes_matrix,
+                              Schur_complement_block_matrix,
+                              /*do_solve_Schur*/ false,
+                              this->get_parameters().linear_solver_S_block_tolerance);
+
+    internal::SchurApproximation<GMGPreconditioner, StokesMatrixType, SchurComplementMatrixType, VectorType>
     schur_approximation_expensive(prec_Schur,
-    stokes_matrix,
-  Schur_complement_block_matrix,
-   /*do_solve_Schur*/ true,
-  this->get_parameters().linear_solver_S_block_tolerance);
-     const internal::BlockSchurPreconditioner<internal::InverseVelocityBlock<GMGPreconditioner,VectorType,ABlockMatrixType>,
+                                  stokes_matrix,
+                                  Schur_complement_block_matrix,
+                                  /*do_solve_Schur*/ true,
+                                  this->get_parameters().linear_solver_S_block_tolerance);
+    const internal::BlockSchurPreconditioner<internal::InverseVelocityBlock<GMGPreconditioner,VectorType,ABlockMatrixType>,
           SchurApproximationType,BTBlockOperatorType, dealii::LinearAlgebra::distributed::BlockVector<double>>
           preconditioner_cheap (
             inverse_velocity_block_cheap,
