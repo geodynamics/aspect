@@ -1,5 +1,5 @@
 {
-  "version": "1.0",
+  "version":"1.1",
   "surface temperature":273.15,
   "potential mantle temperature":1573.15,
   "features":
@@ -32,7 +32,8 @@
       "composition models":
       [
         {"model":"uniform","compositions":[1], "min depth":0, "max depth":100e3}
-      ]
+      ],
+      "velocity models":[{"model":"uniform raw","velocity":[1,2,3]}]
     }
   ]
 }
