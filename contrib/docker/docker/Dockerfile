@@ -50,3 +50,6 @@ RUN git clone https://github.com/geodynamics/aspect.git $Aspect_DIR && \
 
 WORKDIR $Aspect_DIR
 ENV PATH $Aspect_DIR/bin:$PATH
+
+# Prevent an OpenMPI warning in Ubuntu 22.04 (see https://github.com/openwall/john/issues/5088)
+ENV HWLOC_HIDE_ERRORS=2
