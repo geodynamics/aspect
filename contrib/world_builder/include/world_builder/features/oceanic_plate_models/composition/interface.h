@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018-2024 by the authors of the World Builder code.
+  Copyright (C) 2018-2026 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -147,18 +147,18 @@ namespace WorldBuilder
          * register it. Because this is a library, we need some extra measures
          * to ensure that the static variable is actually initialized.
          */
-#define WB_REGISTER_FEATURE_OCEANIC_PLATE_COMPOSITION_MODEL(klass,name) \
-  class klass##Factory : public ObjectFactory { \
+#define WB_REGISTER_FEATURE_OCEANIC_PLATE_COMPOSITION_MODEL(classname,name) \
+  class classname##Factory : public ObjectFactory { \
     public: \
-      klass##Factory() \
+      classname##Factory() \
       { \
-        Interface::registerType(#name, klass::declare_entries, this); \
+        Interface::registerType(#name, classname::declare_entries, this); \
       } \
       std::unique_ptr<Interface> create(World *world) override final { \
-        return std::unique_ptr<Interface>(new klass(world)); \
+        return std::unique_ptr<Interface>(new classname(world)); \
       } \
   }; \
-  static klass##Factory global_##klass##Factory;
+  static classname##Factory global_##classname##Factory;
 
       } // namespace Composition
     } // namespace OceanicPlateModels

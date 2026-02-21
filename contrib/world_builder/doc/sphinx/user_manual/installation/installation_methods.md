@@ -148,4 +148,16 @@ If you already cloned ASPECT, use the command `git submodule update -init -recur
 
 When ASPECT has been successfully compiled with the World Builder, set the ASPECT global input parameter `World builder file` to the World Builder file location.
 :::::
+
+:::::{tab-item} CHIC
+The Geodynamic World Builder is integrated into the convection code CHIC (Noack et al., 2015). For this purpose, the Fortran wrapper, found in `source/world_builder/wrapper_fortran.f90`, was included in the CHIC `src/`-directory (see `examples/fortran/example.f90` for an Example). In order to enable the use of the Fortran wrapper module, the static library of the Geodynamic World Builder is linked during the compilation of CHIC. With this addition, the Fortran wrapper module can be used to interface the World Builder in CHIC.
+
+```{important}
+As an additional input file, the user has to provide a file in the `.wb` format, the specifics of which are outlined in {ref}`part:user_manual:chap:basic_starter_tutorial:sec:index`. The resulting temperature and compositonal fields are read-in and used as initial fields for a CHIC simulation run.
+```
+
+(In the future, you will be able to find more information on CHIC [here](https://www.geo.fu-berlin.de/en/geol/fachrichtungen/planet/projects_noack/Convection-Code/index.html))
+
+
+:::::
 ::::::

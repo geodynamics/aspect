@@ -87,7 +87,7 @@ compare_quaternions(
 
 TEST_CASE("glm quat basic functions")
 {
-  typedef glm::quaternion::quat QT;
+  using QT = glm::quaternion::quat;
   QT q1(2,3,4,5);
   QT const q2(6,7,8,9);
   QT const q3(9,8,7,6);
