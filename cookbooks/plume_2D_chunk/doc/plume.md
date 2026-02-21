@@ -31,8 +31,8 @@ $T=T\_{patch}=T\_{surf}+\Delta T$. Note that in the
 original publication the portion of the inner boundary that is not the patch
 is also insulating. By default, ASPECT cannot accommodate two different boundary
 condition types on one boundary. So, we will prescribe plausible temperatures
-along the whole boundary, instead: $T\_{surf}=0^\\circ\text{ C}$,
-$\Delta T=3000^\\circ\text{ C}$, and $T\_{cmb}=2750^\\circ\text{ C}$
+along the whole boundary, instead: $T\_{surf}=0^\circ\text{ C}$,
+$\Delta T=3000^\circ\text{ C}$, and $T\_{cmb}=2750^\circ\text{ C}$
 (see for instance {cite:t}`steinberger:calderwood:2006`).
 
 The domain contains a single fluid described by the 'visco

@@ -764,7 +764,7 @@ namespace aspect
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
-                             "Units: $\\frac{\\text{W}}{\\text{m}\\text{K}}$$\\frac{\\text{W}{\\text{m}\\text{K}}$.");
+                             "Units: $\\frac{\\text{W}}{\\text{m}\\text{K}}$.");
           prm.declare_entry ("Reference specific heat", "1250.",
                              Patterns::Double (0.),
                              "The value of the specific heat $cp$. "
@@ -814,7 +814,7 @@ namespace aspect
                              Patterns::List (Patterns::Double (0.)),
                              "The prefactor for the dislocation creep law $A_{dis}$. "
                              "List must have one more entry than the Phase transition depths. "
-                             "Units: $\\frac{\\text{Pa}^\\text{-n_{dis}}}{\\text{s}}$.");
+                             "Units: $\\frac{\\text{Pa}^{\\text{-n}_\\text{dis}}}{\\text{s}}$.");
           prm.declare_entry ("Diffusion creep exponent", "1.",
                              Patterns::List (Patterns::Double (0.)),
                              "The power-law exponent $n_{diff}$ for diffusion creep. "
@@ -834,7 +834,7 @@ namespace aspect
                              Patterns::List (Patterns::Double (0.)),
                              "The prefactor for the diffusion creep law $A_{diff}$. "
                              "List must have one more entry than the Phase transition depths. "
-                             "Units: $\\frac{ \\text{m}^\\text{p_{diff}}\\text{Pa}^\\text{-n_{diff}} }{\\text{s}}$.");
+                             "Units: $\\frac{\\text{m}^{\\text{p}_{\\text{diff}}}\\text{Pa}^{-\\text{n}_{\\text{diff}}}}{\\text{s}}$.");
           prm.declare_entry ("Diffusion creep grain size exponent", "3.",
                              Patterns::List (Patterns::Double (0.)),
                              "The diffusion creep grain size exponent $p_{diff}$ that determines the "
