@@ -294,40 +294,20 @@ namespace aspect
 
         for (unsigned int advection_field=0; advection_field<advection_fields.size(); ++advection_field)
           {
-            if (parameters.mapped_particle_properties.size() != 0)
+            const std::pair<std::string,unsigned int> particle_property_and_component = parameters.mapped_particle_properties.find(advection_fields[advection_field].compositional_variable)->second;
+
+            // Check if the required particle property exists in the current particle manager.
+            // If not: assume we find it in another world.
+            if (particle_property_manager.get_data_info().fieldname_exists(particle_property_and_component.first))
               {
-                const std::pair<std::string,unsigned int> particle_property_and_component = parameters.mapped_particle_properties.find(advection_fields[advection_field].compositional_variable)->second;
+                Assert (advection_field_has_been_found[advection_field] == false,
+                        ExcMessage("The field " + advection_fields[advection_field].name(introspection) + " is mapped to particle properties in more than one particle manager. This is not supported."));
 
-                // Check if the required particle property exists in the current particle manager.
-                // If not: assume we find it in another world.
-                if (particle_property_manager.get_data_info().fieldname_exists(particle_property_and_component.first))
-                  {
-                    Assert (advection_field_has_been_found[advection_field] == false,
-                            ExcMessage("The field " + advection_fields[advection_field].name(introspection) + " is mapped to particle properties in more than one particle manager. This is not supported."));
-
-                    const unsigned int particle_property_index = particle_property_manager.get_data_info().get_position_by_field_name(particle_property_and_component.first)
-                                                                 + particle_property_and_component.second;
-
-                    advection_field_has_been_found[advection_field] = true;
-                    particle_property_indices[particle_manager].emplace_back(advection_field, particle_property_index);
-                    property_mask[particle_manager].set(particle_property_index,true);
-                  }
-              }
-            else
-              {
-                Assert(particle_managers.size() == 1,
-                       ExcMessage("Automatically mapping particle properties to compositional fields is only supported if there is exactly one set of particles. "
-                                  "Please specify the particle properties manually in the parameter file using the parameter 'Compositional Fields/Mapped particle properties'."));
-
-                const unsigned int particle_property_index = std::count(introspection.compositional_field_methods.begin(),
-                                                                        introspection.compositional_field_methods.begin() + advection_fields[advection_field].compositional_variable,
-                                                                        Parameters<dim>::AdvectionFieldMethod::particles);
-                AssertThrow(particle_property_index <= particle_property_manager.get_data_info().n_components(),
-                            ExcMessage("Can not automatically match particle properties to fields, because there are"
-                                       "more fields that are marked as particle advected than particle properties"));
+                const unsigned int particle_property_index = particle_property_manager.get_data_info().get_position_by_field_name(particle_property_and_component.first)
+                                                             + particle_property_and_component.second;
 
                 advection_field_has_been_found[advection_field] = true;
-                particle_property_indices[particle_manager].emplace_back(advection_field,particle_property_index);
+                particle_property_indices[particle_manager].emplace_back(advection_field, particle_property_index);
                 property_mask[particle_manager].set(particle_property_index,true);
               }
           }
