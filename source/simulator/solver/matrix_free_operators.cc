@@ -454,7 +454,7 @@ namespace aspect
   MatrixFreeStokesOperators::BTBlockOperator<dim,degree_v,number>
   ::compute_diagonal ()
   {
-    // There no need in the code for this diagonal.
+    // There is no need in the code for this diagonal.
     Assert(false, ExcNotImplemented());
   }
 
