@@ -223,7 +223,7 @@ namespace aspect
        * Destructor. Does nothing but is virtual so that derived classes
        * destructors are also virtual.
        */
-      virtual ~SimulatorAccess () = default;
+      virtual ~SimulatorAccess ();
 
       /**
        * Initialize this class for a given simulator. This function is marked
@@ -1081,7 +1081,7 @@ namespace aspect
       /**
        * A pointer to the simulator object to which we want to get access.
        */
-      const Simulator<dim> *simulator;
+      ObserverPointer<const Simulator<dim>, SimulatorAccess<dim>> simulator;
   };
 }
 
