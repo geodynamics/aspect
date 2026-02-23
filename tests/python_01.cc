@@ -37,7 +37,11 @@ int f()
 
   PyRun_SimpleString("import sys; sys.path.append(\"" ASPECT_SOURCE_DIR "/tests\")");
   PyObject *pModule = PyImport_ImportModule("python_01");
-  AssertThrow(pModule != nullptr, dealii::ExcMessage("Failed to load Python module"));
+  if (pModule == nullptr)
+    {
+      PyErr_Print();
+      AssertThrow(false, dealii::ExcMessage("Failed to load Python module"));
+    }
 
   std::vector<double> x = {1.0, 2.0, 3.0};
   auto arr = aspect::PythonHelper::vector_to_numpy_object(x);

@@ -773,9 +773,12 @@ int main (int argc, char *argv[])
 
 #ifdef ASPECT_WITH_PYTHON
   Py_Initialize();
-  // required for Numpy interop
+  // Required for Numpy interop:
   if (_import_array() < 0)
-    AssertThrow(false, ExcMessage("Numpy init failed!"));
+    {
+      PyErr_Print();
+      AssertThrow(false, ExcMessage("Numpy init failed!"));
+    }
 
   ScopeExit python_cleanup(
     []()

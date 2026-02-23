@@ -845,6 +845,11 @@ if(ASPECT_UNITY_BUILD)
     foreach(_T ${TARGET_EXECUTABLES})
       set_property(TARGET ${_T} PROPERTY UNITY_BUILD TRUE)
     endforeach()
+
+    # exclude main.cc from unity builds as this file needs to define the special
+    # Python numpy static object:
+    set_property(SOURCE ${ASPECT_MAIN_FILE} PROPERTY SKIP_UNITY_BUILD_INCLUSION TRUE )
+
     message(STATUS "Combining source files into unity build.")
   elseif(CMAKE_VERSION VERSION_LESS 3.16)
     message(FATAL_ERROR "ASPECT_UNITY_BUILD is currently only supported for CMake 3.16 and newer versions.")
