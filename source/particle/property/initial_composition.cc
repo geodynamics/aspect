@@ -32,8 +32,14 @@ namespace aspect
       InitialComposition<dim>::initialize_one_particle_property(const Point<dim> &position,
                                                                 std::vector<double> &data) const
       {
-        for (unsigned int i = 0; i < this->n_compositional_fields(); ++i)
-          data.push_back(this->get_initial_composition_manager().initial_composition(position,i));
+        const std::string prefix = "initial ";
+        for (const auto &key_and_value : this->get_parameters().mapped_particle_properties)
+          {
+            const std::string &property_name = key_and_value.second.first;
+            if (property_name.size() > prefix.size() &&
+                property_name.compare(0, prefix.size(), prefix) == 0)
+              data.push_back(this->get_initial_composition_manager().initial_composition(position, key_and_value.first));
+          }
       }
 
 
@@ -63,20 +69,27 @@ namespace aspect
       std::vector<std::pair<std::string, unsigned int>>
       InitialComposition<dim>::get_property_information() const
       {
-        AssertThrow(this->n_compositional_fields() > 0,
-                    ExcMessage("You have requested the particle property <initial "
-                               "composition>, but the number of compositional fields is 0. "
-                               "Please add compositional fields to your model, or remove "
-                               "this particle property."));
-
         std::vector<std::pair<std::string,unsigned int>> property_information;
 
-        for (unsigned int i = 0; i < this->n_compositional_fields(); ++i)
+        // Find the compositional fields that are mapped to this particle property
+        const std::string prefix = "initial ";
+        for (const auto &key_and_value : this->get_parameters().mapped_particle_properties)
           {
-            std::ostringstream field_name;
-            field_name << "initial " << this->introspection().name_for_compositional_index(i);
-            property_information.emplace_back(field_name.str(),1);
+            const std::string &property_name = key_and_value.second.first;
+            if (property_name.size() > prefix.size() &&
+                property_name.compare(0, prefix.size(), prefix) == 0)
+              {
+                AssertThrow(key_and_value.second.second == 0, ExcNotImplemented());
+                property_information.emplace_back(key_and_value.second.first, 1);
+              }
           }
+
+        AssertThrow(property_information.size() > 0,
+                    ExcMessage("You have requested the particle property <initial "
+                               "composition>, but there is no compositional field "
+                               "mapped to this particle property. Please prefix the "
+                               "property names of the corresponding compositional fields "
+                               "by 'initial ', or remove this particle property."));
 
         return property_information;
       }
