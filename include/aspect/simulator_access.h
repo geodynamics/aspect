@@ -166,11 +166,6 @@ namespace aspect
    * Every Postprocessor is required to derive from SimulatorAccess. It is
    * optional for other plugins like MaterialModel, GravityModel, etc..
    *
-   * Since the functions providing access to details of the simulator class
-   * are meant to be used only by derived classes of this class (rather than
-   * becoming part of the public interface of these classes), the functions of
-   * this class are made @p protected.
-   *
    * @ingroup Simulator
    */
   template <int dim>
