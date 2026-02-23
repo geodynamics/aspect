@@ -196,7 +196,7 @@ namespace aspect
    * @ingroup Simulator
    */
   template <int dim>
-  class Simulator
+  class Simulator : public EnableObserverPointer
   {
     public:
       /**
