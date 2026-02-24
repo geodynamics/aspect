@@ -159,9 +159,42 @@ namespace aspect
    * the current time, time step sizes, material models, or the triangulations
    * and DoFHandlers that correspond to solutions.
    *
-   * This class is the interface between plugins and the main simulator class.
-   * Using this insulation layer, the plugins need not know anything about the
-   * internal details of the simulation class.
+   * The primary motivation of this class is that many plugins need access
+   * about the state and set-up of the current simulation. For example, an
+   * assembler might need to know about what kind of boundary a boundary indicator
+   * corresponds to; or a postprocessor computing the stress from the strain
+   * needs to know about the material model to determine the stress-strain
+   * relationship. All of this information is stored in the Simulator class
+   * that describes the entire simulation. Typical design choices to provide
+   * the kind of information mentioned above to plugins could include one
+   * of the following two options:
+   * - The Simulator class makes the variables that store this information
+   *   `public`.
+   * - The Simulator class provides "getter" functions for each of these
+   *   variables.
+   * In both cases, whenever a plugin function is called, one would also pass
+   * in a reference to the Simulator object. Both of these strategies have
+   * downsides:
+   * - Making members `public` is rarely a good idea given that it makes
+   *   changing how we store data very difficult without incurring backward
+   *   incompatibilities.
+   * - The Simulator class might have to gain *many* getter functions, likely
+   *   dozens, that then obscure the *real* interface of the class and
+   *   distracting from its purpose: namely, *running* a simulation.
+   * - One would have to pass around a reference to the Simulator object
+   *   almost literally everywhere.
+   *
+   * The design chosen in ASPECT is therefore to provide a
+   * [view](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller)
+   * of the Simulator object in the form of the current class. In other words,
+   * the SimulatorAccess is a class that is a "friend" of the Simulator and
+   * provides the getter functions -- and that's all it does. In essence,
+   * SimulatorAccess is a place where all of the getters are located. Second,
+   * rather than passing around a reference to a Simulator or SimulatorAccess
+   * object, plugins that require access to simulator data *inherit* from
+   * SimulatorAccess and the Simulator class ensures that these derived
+   * classes are initialized in a way so that they can use the getter functions
+   * provided through their SimulatorAccess base class.
    *
    * Every Postprocessor is required to derive from SimulatorAccess. It is
    * optional for other plugins like MaterialModel, GravityModel, etc..
