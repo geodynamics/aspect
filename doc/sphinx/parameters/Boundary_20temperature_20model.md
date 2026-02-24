@@ -287,7 +287,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Core heat conductivity $k_c$. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+**Documentation:** Core heat conductivity $k_c$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 
 (parameters:Boundary_20temperature_20model/Dynamic_20core/Core_20density)=
 ### __Parameter name:__ Core density
