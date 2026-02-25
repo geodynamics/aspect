@@ -2413,28 +2413,25 @@ namespace aspect
 
       // The factor in the Newton matrix is going to be of the form
       //   2*eta I + (a \otimes b + b \otimes a)
-      // where a=strain_rate and b=dviscosities_dstrain_rate.
-      //
-      // If a,b are parallel, this simplifies to
-      //   [2*eta + 2 a:b] I =  2 [eta + a:b] I
+      // where a=strain_rate and b=dviscosities_dstrain_rate,
       // and we need to make sure that
-      //   [eta + alpha a:b] > (1-safety_factor)*eta
+      //   eta + alpha (a:b - |a||b|) / 2 >= (1-safety_factor)*eta
       // by choosing alpha appropriately.
 
       // So, first check: If
-      //   [eta + a:b] > (1-safety_factor)*eta
+      //   alpha (|a||b| - a:b) <= 2*safety_factor*eta
       // is already satisfied, then we can choose alpha=1
-      const double a_colon_b = strain_rate * dviscosities_dstrain_rate;
-      if (eta + a_colon_b > eta * (1. - SPD_safety_factor))
+      const double norm_a_b = std::sqrt((strain_rate * strain_rate) * (dviscosities_dstrain_rate * dviscosities_dstrain_rate));
+      const double contract_a_b = strain_rate * dviscosities_dstrain_rate;
+      const double denominator = norm_a_b - contract_a_b;
+
+      if (denominator <= 2.0 * SPD_safety_factor * eta)
         return 1.0;
       else
         {
           // Otherwise solve the equation above for alpha, which yields
-          //   a:b = -safety_factor*eta / a:b
-          // This can only ever happen if a:b < 0, so we get
-          //   a:b = safety_factor * abs(eta / a:b)
-          Assert (a_colon_b < 0, ExcInternalError());
-          return SPD_safety_factor * std::abs(eta / a_colon_b);
+          //   alpha = 2*safety_factor*eta / (|a||b| - a:b)
+          return 2.0 * SPD_safety_factor * eta / denominator;
         }
     }
 
