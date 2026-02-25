@@ -121,6 +121,10 @@ namespace aspect
          */
         std::string script_argument;
 
+        /**
+         * Whether the ASPECT geometry is spherical.
+         */
+        bool is_spherical;
 #ifdef ASPECT_WITH_PYTHON
         /**
          * The Python module object.

@@ -24,7 +24,9 @@
 #include <deal.II/base/patterns.h>
 
 #include <aspect/gravity_model/interface.h>
-#include <aspect/geometry_model/box.h>
+#include <aspect/geometry_model/chunk.h>
+#include <aspect/geometry_model/sphere.h>
+#include <aspect/geometry_model/spherical_shell.h>
 #include <deal.II/base/array_view.h>
 
 #include <cfenv>
@@ -78,8 +80,16 @@ namespace aspect
     void
     Landlab<dim>::initialize ()
     {
-      AssertThrow(Plugins::plugin_type_matches<GeometryModel::Box<dim>>(this->get_geometry_model()),
-                  ExcMessage("The surface diffusion mesh deformation plugin only works for Box geometries."));
+      // AssertThrow(Plugins::plugin_type_matches<GeometryModel::Box<dim>>(this->get_geometry_model()),
+      //             ExcMessage("The surface diffusion mesh deformation plugin only works for Box geometries."));
+
+      // Determine whether we are in a spherical geometry or not, which affects how we interpret the coordinates of the evaluation points.
+      if (Plugins::plugin_type_matches<GeometryModel::Chunk<dim>>(this->get_geometry_model()) ||
+          Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim>>(this->get_geometry_model()) ||
+          Plugins::plugin_type_matches<GeometryModel::Sphere<dim>>(this->get_geometry_model()))
+        is_spherical = true;
+      else
+        is_spherical = false;
 
       unsigned int rank = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
 
@@ -156,22 +166,29 @@ namespace aspect
             // get grid:
             PyObject *pArgs = PyTuple_Pack(1, PyLong_FromLong(-1L));
             PyObject *pgrid_x = call_python_function(pModule, "get_grid_x", pArgs);
-            Py_DECREF(pArgs);
 
             PyObject *pgrid_y = nullptr;
+            PyObject *pgrid_z = nullptr;
             if (dim == 3)
-              {
-                PyObject *pArgs = PyTuple_Pack(1, PyLong_FromLong(-1L));
-                pgrid_y = call_python_function(pModule, "get_grid_y", pArgs);
-                Py_DECREF(pArgs);
-              }
+              pgrid_y = call_python_function(pModule, "get_grid_y", pArgs);
+            if (dim == 3 && is_spherical)
+              pgrid_z = call_python_function(pModule, "get_grid_z", pArgs);
+            Py_DECREF(pArgs);
 
             const ArrayView<double> data_x = PythonHelper::numpy_to_array_view(pgrid_x);
             const ArrayView<double> data_y = (dim == 3)
                                              ? PythonHelper::numpy_to_array_view(pgrid_y)
                                              : ArrayView<double>(nullptr, 0);
+// For 3D spherical models, we need the z coordinates of the LandLab grid to be able to
+            // correctly set the evaluation points.
+            const ArrayView<double> data_z = (dim == 3 && is_spherical)
+                                             ? PythonHelper::numpy_to_array_view(pgrid_z)
+                                             : ArrayView<double>(nullptr, 0);
+
             if (dim == 3)
               AssertThrow(data_x.size() == data_y.size(), ExcMessage("get_grid_x and get_grid_y returned different sizes"));
+            if (dim == 3 && is_spherical)
+              AssertThrow(data_x.size() == data_z.size(), ExcMessage("get_grid_x and get_grid_z returned different sizes"));
 
             std::vector<Point<dim>> surface_points(data_x.size());
             for (size_t i = 0; i < data_x.size(); i++)
@@ -181,6 +198,9 @@ namespace aspect
                 if (dim == 3)
                   point(1) = data_y[i];
                 point(dim-1) = this->get_geometry_model().representative_point(0.0)[dim-1];
+
+                if (dim == 3 && is_spherical)
+                  point(dim-1) = data_z[i];
                 surface_points[i] = point;
               }
 
@@ -300,10 +320,17 @@ namespace aspect
       std::vector<Tensor<1,dim>> initial_deformation(this->evaluation_points.size(), Tensor<1,dim>());
       if (this_rank_runs_landlab)
         {
-          PyObject *pArgs = PyTuple_Pack(1, PyLong_FromLong(-1L));
+          PyObject *pDict = PyDict_New();
+          PyDict_SetItemString(pDict, "ASPECT Dimension", PyLong_FromLong(dim));
+
+          PyObject *pArgs = PyTuple_Pack(1,
+                                         pDict
+                                        );
+          Py_DECREF(pDict);
           PyObject *pValue = call_python_function(pModule, "get_initial_topography", pArgs);
           Py_DECREF(pArgs);
           ArrayView<double> data = PythonHelper::numpy_to_array_view(pValue);
+
           for (size_t i=0; i<data.size(); ++i)
             {
               const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(this->evaluation_points[i]);
