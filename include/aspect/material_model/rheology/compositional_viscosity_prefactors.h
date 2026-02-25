@@ -58,7 +58,7 @@ namespace aspect
           void
           parse_parameters (ParameterHandler &prm);
 
-          // The flow laws that can be
+          // The flow law that can be
           // currently modified.
           enum ModifiedFlowLaws
           {
@@ -70,11 +70,14 @@ namespace aspect
            * Compute the viscosity.
            */
           double
-          compute_viscosity (const MaterialModel::MaterialModelInputs<dim> &in,
-                             const double base_viscosity,
-                             const unsigned int composition_index,
-                             const unsigned int q,
-                             const ModifiedFlowLaws &modified_flow_laws) const;
+          compute_viscosity(
+            const double temperature,
+            const double pressure,
+            const double bound_fluid_fraction,
+            const double base_viscosity,
+            const unsigned int composition_index,
+            const ModifiedFlowLaws &modified_flow_laws) const;
+
 
         private:
           /**

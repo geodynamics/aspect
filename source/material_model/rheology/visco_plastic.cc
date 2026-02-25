@@ -190,27 +190,40 @@ namespace aspect
               if (use_adiabatic_pressure_in_creep)
                 pressure_for_creep = this->get_adiabatic_conditions().pressure(in.position[i]);
 
-              const double viscosity_diffusion
-                = (viscous_flow_law != dislocation
+              const double bound_fluid_fraction
+                = (this->introspection().compositional_name_exists("bound_fluid")
                    ?
-                   diffusion_creep.compute_viscosity(pressure_for_creep, temperature_for_viscosity, j,
-                                                     phase_function_values,
-                                                     n_phase_transitions_per_composition)
+                   in.composition[i][this->introspection().compositional_index_for_name("bound_fluid")]
                    :
                    numbers::signaling_nan<double>());
 
+              double viscosity_diffusion = numbers::signaling_nan<double>();
+              if (viscous_flow_law != dislocation)
+                {
+                  const double viscosity_diffusion_base = diffusion_creep.compute_viscosity(pressure_for_creep, temperature_for_viscosity, j,
+                                                                                            phase_function_values,
+                                                                                            n_phase_transitions_per_composition);
+                  viscosity_diffusion = compositional_viscosity_prefactors.compute_viscosity(temperature_for_viscosity, pressure_for_creep, bound_fluid_fraction, viscosity_diffusion_base, j,
+                                                                                             CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::diffusion);
+
+                }
+
               // Step 1b: compute viscosity from dislocation creep law
-              const double viscosity_dislocation
-                = (viscous_flow_law != diffusion
-                   ?
-                   dislocation_creep.compute_viscosity(edot_ii,
-                                                       pressure_for_creep,
-                                                       temperature_for_viscosity,
-                                                       j,
-                                                       phase_function_values,
-                                                       n_phase_transitions_per_composition)
-                   :
-                   numbers::signaling_nan<double>());
+              double viscosity_dislocation = numbers::signaling_nan<double>();
+              if (viscous_flow_law != diffusion)
+                {
+                  const double viscosity_dislocation_base = dislocation_creep.compute_viscosity(edot_ii,
+                                                                                                pressure_for_creep,
+                                                                                                temperature_for_viscosity,
+                                                                                                j,
+                                                                                                phase_function_values,
+                                                                                                n_phase_transitions_per_composition);
+
+                  viscosity_dislocation = compositional_viscosity_prefactors.compute_viscosity(temperature_for_viscosity, pressure_for_creep, bound_fluid_fraction, viscosity_dislocation_base, j,
+                                                                                               CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::dislocation);
+
+                }
+
 
               // Step 1c: select which form of viscosity to use (diffusion, dislocation, their minimum or composite, or fk), and apply
               // pre-exponential weakening, if required.
@@ -218,14 +231,13 @@ namespace aspect
                 {
                   case diffusion:
                   {
-                    non_yielding_viscosity = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_diffusion, j, i, \
-                                                                                                  CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::diffusion);
+
+                    non_yielding_viscosity = viscosity_diffusion;
                     break;
                   }
                   case dislocation:
                   {
-                    non_yielding_viscosity = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_dislocation, j, i, \
-                                                                                                  CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::dislocation);
+                    non_yielding_viscosity = viscosity_dislocation;
                     break;
                   }
                   case frank_kamenetskii:
@@ -238,21 +250,13 @@ namespace aspect
                   }
                   case composite:
                   {
-                    const double scaled_viscosity_diffusion = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_diffusion, j, i, \
-                                                              CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::diffusion);
-                    const double scaled_viscosity_dislocation = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_dislocation, j, i, \
-                                                                CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::dislocation);
-                    non_yielding_viscosity = (scaled_viscosity_diffusion * scaled_viscosity_dislocation)/
-                                             (scaled_viscosity_diffusion + scaled_viscosity_dislocation);
+                    non_yielding_viscosity = (viscosity_diffusion * viscosity_dislocation)/
+                                             (viscosity_diffusion + viscosity_dislocation);
                     break;
                   }
                   case minimum_diffusion_dislocation:
                   {
-                    const double scaled_viscosity_diffusion = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_diffusion, j, i, \
-                                                              CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::diffusion);
-                    const double scaled_viscosity_dislocation = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_dislocation, j, i, \
-                                                                CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::dislocation);
-                    non_yielding_viscosity = std::min(scaled_viscosity_diffusion, scaled_viscosity_dislocation);
+                    non_yielding_viscosity = std::min(viscosity_diffusion, viscosity_dislocation);
                     break;
                   }
                   default:
