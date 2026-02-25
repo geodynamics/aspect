@@ -2410,6 +2410,23 @@ namespace aspect
       if ((strain_rate.norm() == 0) || (dviscosities_dstrain_rate.norm() == 0))
         return 1;
 
+      // The following algorithm for computing the algorithm assumes that
+      // strain_rate and dviscosities_dstrain_rate are parallel or
+      // antiparallel vectors (tensors). Check that this is indeed so, to
+      // within a tolerance.
+      Assert (std::abs(std::abs(strain_rate*dviscosities_dstrain_rate
+                                / strain_rate.norm()
+                                / dviscosities_dstrain_rate.norm())
+                       -1) < 1e-6,
+              ExcMessage("This function assumes that the strain rate and "
+                         "the derivative of the viscosity with regard to "
+                         "the strain rate are parallel, but they are not. "
+                         "The relative deviation from parallelity is " +
+                         std::to_string(std::abs(std::abs(strain_rate*dviscosities_dstrain_rate
+                                                          / strain_rate.norm()
+                                                          / dviscosities_dstrain_rate.norm())
+                                                 -1)) +
+                         "."));
 
       // The factor in the Newton matrix is going to be of the form
       //   2*eta I + (a \otimes b + b \otimes a)
