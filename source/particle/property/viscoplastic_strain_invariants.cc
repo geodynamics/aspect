@@ -52,17 +52,16 @@ namespace aspect
         material_inputs = MaterialModel::MaterialModelInputs<dim>(1,this->n_compositional_fields());
 
         // Find out which fields are used.
-        if (this->introspection().compositional_name_exists("plastic_strain"))
-          n_components += 1;
-
-        if (this->introspection().compositional_name_exists("viscous_strain"))
-          n_components += 1;
-
-        if (this->introspection().compositional_name_exists("total_strain"))
-          n_components += 1;
-
-        if (this->introspection().compositional_name_exists("noninitial_plastic_strain"))
-          n_components += 1;
+        const std::vector<std::string> possible_names = {"plastic_strain", "viscous_strain", "total_strain", "noninitial_plastic_strain"};
+        for (const auto &name : possible_names)
+          {
+            // Make sure that the compositional field is mapped to the particle property with the same name
+            const auto it = this->get_parameters().mapped_particle_properties.find(this->introspection().compositional_index_for_name(name));
+            AssertThrow(it != this->get_parameters().mapped_particle_properties.end() && it->second.first == name,
+                        ExcMessage("Particle property plugin <viscoplastic strain invariants> requires the compositional field '"
+                                   + name + "' to be mapped to the particle property with the same name."));
+            n_components += 1;
+          }
 
         if (n_components == 0)
           AssertThrow(false,
