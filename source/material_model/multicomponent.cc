@@ -99,7 +99,7 @@ namespace aspect
                              "List of thermal conductivities for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
                              "If only one value is given, then all use the same value. "
-                             "Units: $\\frac{\\text{W}{\\text{m}\\text{K}}$.");
+                             "Units: $\\frac{\\text{W}}{\\text{m}\\text{K}}$.");
           prm.declare_entry ("Viscosity averaging scheme", "harmonic",
                              Patterns::Selection("arithmetic|harmonic|geometric|maximum composition"),
                              "When more than one compositional field is present at a point "

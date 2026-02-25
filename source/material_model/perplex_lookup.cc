@@ -150,7 +150,7 @@ namespace aspect
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
-                             "Units: $\\frac{\\text{W}{\\text{m}\\text{K}}$.");
+                             "Units: $\\frac{\\text{W}}{\\text{m}\\text{K}}$.");
           prm.declare_entry ("Minimum material temperature", "0.",
                              Patterns::Double (0.),
                              "The value of the minimum temperature used to query PerpleX. "

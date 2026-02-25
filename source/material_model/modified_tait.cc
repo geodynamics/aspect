@@ -168,7 +168,7 @@ namespace aspect
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0.),
                              "The value of the constant thermal conductivity $k$. "
-                             "Units: $\\frac{\\text{W}{\\text{m}\\text{K}}$.");
+                             "Units: $\\frac{\\text{W}}{\\text{m}\\text{K}}$.");
 
           prm.enter_subsection("Reference heat capacity function");
           {

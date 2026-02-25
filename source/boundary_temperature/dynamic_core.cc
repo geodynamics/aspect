@@ -902,7 +902,7 @@ namespace aspect
                              "Partition coefficient of the light element.");
           prm.declare_entry ("Core conductivity", "60.",
                              Patterns::Double (0.),
-                             "Core heat conductivity $k_c$. Units: $\\frac{\\text{W}{\\text{m}\\text{K}}$.");
+                             "Core heat conductivity $k_c$. Units: $\\frac{\\text{W}}{\\text{m}\\text{K}}$.");
           prm.enter_subsection("Geotherm parameters");
           {
             prm.declare_entry ("Tm0","1695.",

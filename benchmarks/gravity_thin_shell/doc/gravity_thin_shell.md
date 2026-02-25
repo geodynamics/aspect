@@ -40,7 +40,7 @@ We wish to compute the gravity potential $U$ and the gravity vector
 ${\mathbf g}$ at a radius of $R_{s}=6371+250=6621~\text{ km}$ (i.e.
 the gravity experienced by a satellite flying at a height of $250~\text{ km}$
 above the surface of the Earth) on a regular longitude-latitude grid spanning
-the whole Earth, with a $2^\\circ\times 2^\\circ$ resolution:
+the whole Earth, with a $2^\circ\times 2^\circ$ resolution:
 
 ```{literalinclude} thinshell_c.prm
 ```

@@ -77,6 +77,8 @@ Select one of the following models:
 
 &lsquo;quadratic least squares&rsquo;: Interpolates particle properties onto a vector of points using a quadratic least squares method. Note that deal.II must be configured with BLAS/LAPACK.
 
+&lsquo;bilinear least squares&rsquo;: Deprecated, now an alias for &lsquo;linear least squares&rsquo;. This alias will be removed in the future.
+
 (parameters:Particles_202/List_20of_20particle_20properties)=
 ### __Parameter name:__ List of particle properties
 **Default value:**

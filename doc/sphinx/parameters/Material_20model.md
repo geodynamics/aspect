@@ -470,7 +470,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$$\frac{\text{W}{\text{m}\text{K}}$.
+**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 
 (parameters:Material_20model/Composition_20reaction_20model/Thermal_20expansion_20coefficient)=
 ### __Parameter name:__ Thermal expansion coefficient
@@ -494,7 +494,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the constant viscosity. Units: $\frac{\text{kg}}{\text{m}\test{s}}$.
+**Documentation:** The value of the constant viscosity. Units: $\frac{\text{kg}}{\text{m}\text{s}}$.
 
 (parameters:Material_20model/Depth_20dependent_20model)=
 ## **Subsection:** Material model / Depth dependent model
@@ -996,7 +996,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of base values of the thermal conductivity for each of the horizontal layers. Pressure- and temperature-dependence will be applied on top of this base value, according to the parameters &rsquo;Pressure dependencies of thermal conductivity&rsquo; and &rsquo;Reference temperatures for thermal conductivity&rsquo;. Units: $\frac{\text{W}{\text{m}\text{K}}$
+**Documentation:** A list of base values of the thermal conductivity for each of the horizontal layers. Pressure- and temperature-dependence will be applied on top of this base value, according to the parameters &rsquo;Pressure dependencies of thermal conductivity&rsquo; and &rsquo;Reference temperatures for thermal conductivity&rsquo;. Units: $\frac{\text{W}}{\text{m}\text{K}}$
 
 (parameters:Material_20model/Entropy_20model/Reference_20viscosity)=
 ### __Parameter name:__ Reference viscosity
@@ -1022,7 +1022,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 
 (parameters:Material_20model/Entropy_20model/Thermal_20conductivity_20exponents)=
 ### __Parameter name:__ Thermal conductivity exponents
@@ -1176,7 +1176,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The prefactor for the diffusion creep law $A_{diff}$. List must have one more entry than the Phase transition depths. Units: $\frac{ \text{m}^\text{p_{diff}}\text{Pa}^\text{-n_{diff}} }{\text{s}}$.
+**Documentation:** The prefactor for the diffusion creep law $A_{diff}$. List must have one more entry than the Phase transition depths. Units: $\frac{\text{m}^{\text{p}_{\text{diff}}}\text{Pa}^{-\text{n}_{\text{diff}}}}{\text{s}}$.
 
 (parameters:Material_20model/Grain_20size_20model/Dislocation_20activation_20energy)=
 ### __Parameter name:__ Dislocation activation energy
@@ -1208,7 +1208,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The prefactor for the dislocation creep law $A_{dis}$. List must have one more entry than the Phase transition depths. Units: $\frac{\text{Pa}^\text{-n_{dis}}}{\text{s}}$.
+**Documentation:** The prefactor for the dislocation creep law $A_{dis}$. List must have one more entry than the Phase transition depths. Units: $\frac{\text{Pa}^{\text{-n}_\text{dis}}}{\text{s}}$.
 
 (parameters:Material_20model/Grain_20size_20model/Dislocation_20viscosity_20iteration_20number)=
 ### __Parameter name:__ Dislocation viscosity iteration number
@@ -1520,7 +1520,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$$\frac{\text{W}{\text{m}\text{K}}$.
+**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 
 (parameters:Material_20model/Grain_20size_20model/Thermal_20expansion_20coefficient)=
 ### __Parameter name:__ Thermal expansion coefficient
@@ -1796,7 +1796,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 
 (parameters:Material_20model/Latent_20heat/Thermal_20expansion_20coefficient)=
 ### __Parameter name:__ Thermal expansion coefficient
@@ -2038,7 +2038,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 
 (parameters:Material_20model/Latent_20heat_20melt/Thermal_20expansion_20coefficient)=
 ### __Parameter name:__ Thermal expansion coefficient
@@ -2534,7 +2534,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 
 (parameters:Material_20model/Melt_20global/Thermal_20expansion_20coefficient)=
 ### __Parameter name:__ Thermal expansion coefficient
@@ -2794,7 +2794,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 
 (parameters:Material_20model/Melt_20simple/Thermal_20expansion_20coefficient)=
 ### __Parameter name:__ Thermal expansion coefficient
@@ -2918,7 +2918,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the constant thermal conductivity $k$. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+**Documentation:** The value of the constant thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 
 (parameters:Material_20model/Modified_20Tait_20model/Viscosity)=
 ### __Parameter name:__ Viscosity
@@ -2994,7 +2994,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** List of thermal conductivities for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+**Documentation:** List of thermal conductivities for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 
 (parameters:Material_20model/Multicomponent/Thermal_20expansivities)=
 ### __Parameter name:__ Thermal expansivities
@@ -3288,7 +3288,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 
 (parameters:Material_20model/PerpleX_20lookup_20model/Viscosity)=
 ### __Parameter name:__ Viscosity
@@ -3814,7 +3814,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 
 (parameters:Material_20model/Simple_20compressible_20model/Thermal_20expansion_20coefficient)=
 ### __Parameter name:__ Thermal expansion coefficient
@@ -3896,7 +3896,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 
 (parameters:Material_20model/Simple_20model/Thermal_20expansion_20coefficient)=
 ### __Parameter name:__ Thermal expansion coefficient
@@ -3954,7 +3954,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 
 (parameters:Material_20model/Simpler_20model/Thermal_20expansion_20coefficient)=
 ### __Parameter name:__ Thermal expansion coefficient
@@ -4164,7 +4164,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of base values of the thermal conductivity for each of the horizontal layers. Pressure- and temperature-dependence will be applied on top of this base value, according to the parameters &rsquo;Pressure dependencies of thermal conductivity&rsquo; and &rsquo;Reference temperatures for thermal conductivity&rsquo;. Units: $\frac{\text{W}{\text{m}\text{K}}$
+**Documentation:** A list of base values of the thermal conductivity for each of the horizontal layers. Pressure- and temperature-dependence will be applied on top of this base value, according to the parameters &rsquo;Pressure dependencies of thermal conductivity&rsquo; and &rsquo;Reference temperatures for thermal conductivity&rsquo;. Units: $\frac{\text{W}}{\text{m}\text{K}}$
 
 (parameters:Material_20model/Steinberger_20model/Saturation_20prefactors)=
 ### __Parameter name:__ Saturation prefactors
@@ -4180,7 +4180,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 
 (parameters:Material_20model/Steinberger_20model/Thermal_20conductivity_20exponents)=
 ### __Parameter name:__ Thermal conductivity exponents
@@ -4928,7 +4928,7 @@ If a compositional field named &rsquo;noninitial\_plastic\_strain&rsquo; is incl
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of thermal conductivities, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+**Documentation:** List of thermal conductivities, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 
 (parameters:Material_20model/Visco_20Plastic/Thermal_20diffusivities)=
 ### __Parameter name:__ Thermal diffusivities
@@ -5224,7 +5224,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of thermal conductivities for background mantle and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+**Documentation:** List of thermal conductivities for background mantle and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 
 (parameters:Material_20model/Viscoelastic/Thermal_20expansivities)=
 ### __Parameter name:__ Thermal expansivities

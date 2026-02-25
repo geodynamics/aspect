@@ -83,7 +83,7 @@ The number of space dimensions you want to run this program in. ASPECT can run i
 The end time of the simulation. The default value is a number so that when converted from years to seconds it is approximately equal to the largest number representable in floating point arithmetic. For all practical purposes, this equals infinity. Units: Years if the &apos;Use years instead of seconds&apos; parameter is set; seconds otherwise.
 </documentation>
 <pattern>
-501
+502
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -470,7 +470,7 @@ Select one of the following models:
 `function&apos;: A model in which the adiabatic profile is specified by a user defined function. The supplied function has to contain temperature, pressure, and density as a function of depth in this order.
 </documentation>
 <pattern>
-1539
+1546
 </pattern>
 <pattern_description>
 [Selection ascii data|compute entropy profile|compute profile|function ]
@@ -488,7 +488,7 @@ $ASPECT_SOURCE_DIR/tests/adiabatic-conditions/ascii-data/test/
 The name of a directory that contains the model data. This path may either be absolute (if starting with a `/&apos;) or relative to the current directory. The path may also include the special text `$ASPECT_SOURCE_DIR&apos; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/&apos; subdirectory of ASPECT. A trailing slash at the end of the directory path is optional; the plugin will automatically append a &apos;/&apos; when the parameters are parsed if it is missing.
 </documentation>
 <pattern>
-1540
+1547
 </pattern>
 <pattern_description>
 [DirectoryName]
@@ -501,7 +501,7 @@ The name of a directory that contains the model data. This path may either be ab
 The file name of the model data.
 </documentation>
 <pattern>
-1541
+1548
 </pattern>
 <pattern_description>
 [Anything]
@@ -518,7 +518,7 @@ The file name of the model data.
 Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
 </documentation>
 <pattern>
-1542
+1549
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -537,7 +537,7 @@ Scalar factor, which is applied to the model data. You might want to use this to
 The number of points we use to compute the adiabatic profile. The higher the number of points, the more accurate the downward integration from the adiabatic surface conditions will be.
 </documentation>
 <pattern>
-1543
+1550
 </pattern>
 <pattern_description>
 [Integer range 5...2147483647 (inclusive)]
@@ -554,7 +554,7 @@ The number of points we use to compute the adiabatic profile. The higher the num
 The surface entropy for the profile.
 </documentation>
 <pattern>
-1544
+1551
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -573,7 +573,7 @@ initial composition
 Select how the reference profile for composition is computed. This profile is used to evaluate the material model, when computing the pressure and temperature profile.
 </documentation>
 <pattern>
-1548
+1555
 </pattern>
 <pattern_description>
 [Selection initial composition|function ]
@@ -588,7 +588,7 @@ Sometimes it is convenient to use symbolic constants in the expression that desc
 A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
 </documentation>
 <pattern>
-1547
+1554
 </pattern>
 <pattern_description>
 [Anything]
@@ -607,7 +607,7 @@ The formula that denotes the function you want to evaluate for particular values
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 </documentation>
 <pattern>
-1546
+1553
 </pattern>
 <pattern_description>
 [Anything]
@@ -624,7 +624,7 @@ If the function you are describing represents a vector-valued function with mult
 The number of points we use to compute the adiabatic profile. The higher the number of points, the more accurate the downward integration from the adiabatic surface temperature will be.
 </documentation>
 <pattern>
-1549
+1556
 </pattern>
 <pattern_description>
 [Integer range 5...2147483647 (inclusive)]
@@ -641,7 +641,7 @@ false
 Whether to use the &apos;Surface condition function&apos; to determine surface conditions, or the &apos;Adiabatic surface temperature&apos; and &apos;Surface pressure&apos; parameters. If this is set to true the reference profile is updated every timestep. The function expression of the function should be independent of space, but can depend on time &apos;t&apos;. The function must return two components, the first one being reference surface pressure, the second one being reference surface temperature.
 </documentation>
 <pattern>
-1550
+1557
 </pattern>
 <pattern_description>
 [Bool]
@@ -658,7 +658,7 @@ x,t
 The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
 </documentation>
 <pattern>
-1545
+1552
 </pattern>
 <pattern_description>
 [Anything]
@@ -674,7 +674,7 @@ Sometimes it is convenient to use symbolic constants in the expression that desc
 A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
 </documentation>
 <pattern>
-1553
+1560
 </pattern>
 <pattern_description>
 [Anything]
@@ -693,7 +693,7 @@ The formula that denotes the function you want to evaluate for particular values
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 </documentation>
 <pattern>
-1552
+1559
 </pattern>
 <pattern_description>
 [Anything]
@@ -710,7 +710,7 @@ x,t
 The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
 </documentation>
 <pattern>
-1551
+1558
 </pattern>
 <pattern_description>
 [Anything]
@@ -728,7 +728,7 @@ Sometimes it is convenient to use symbolic constants in the expression that desc
 A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
 </documentation>
 <pattern>
-1556
+1563
 </pattern>
 <pattern_description>
 [Anything]
@@ -745,7 +745,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536&apo
 Expression for the adiabatic temperature, pressure, and density separated by semicolons as a function of `depth&apos;.
 </documentation>
 <pattern>
-1557
+1564
 </pattern>
 <pattern_description>
 [Anything]
@@ -760,7 +760,7 @@ depth
 </default_value>
 <documentation/>
 <pattern>
-1558
+1565
 </pattern>
 <pattern_description>
 [Anything]
@@ -784,7 +784,7 @@ Mathematically speaking, the compositional fields satisfy an advection equation 
 A warning for models with melt transport: In models with fluid flow, some compositional fields (in particular the porosity) might be transported with the fluid velocity, and would need to set the constraints based on the fluid velocity. However, this is currently not possible, because we reuse the same matrix for all compositional fields, and therefore can not use different constraints for different fields. Consequently, we set this parameter to true by default in models where melt transport is enabled. Be aware that if you change this default setting, you will not use the melt velocity, but the solid velocity to determine on which parts of the boundaries there is outflow.
 </documentation>
 <pattern>
-1512
+1519
 </pattern>
 <pattern_description>
 [Selection true|false|false for models without melt ]
@@ -801,7 +801,7 @@ The names of the boundaries listed here can either be numbers (in which case the
 This parameter only describes which boundaries have a fixed composition, but not what composition should hold on these boundaries. The latter piece of information needs to be implemented in a plugin in the BoundaryComposition group, unless an existing implementation in this group already provides what you want.
 </documentation>
 <pattern>
-1511
+1518
 </pattern>
 <pattern_description>
 [List of &lt;[Anything]&gt; of length 0...4294967295 (inclusive)]
@@ -834,7 +834,7 @@ Because this class simply takes what the initial composition had described, this
 `spherical constant&apos;: A model in which the composition is chosen constant on the inner and outer boundaries of a sphere, spherical shell, chunk or ellipsoidal chunk. Parameters are read from subsection &apos;Spherical constant&apos;.
 </documentation>
 <pattern>
-1508
+1515
 </pattern>
 <pattern_description>
 [MultipleSelection ascii data|box|box with lithosphere boundary indicators|function|initial composition|spherical constant ]
@@ -851,7 +851,7 @@ add
 A comma-separated list of operators that will be used to append the listed composition models onto the previous models. If only one operator is given, the same operator is applied to all models.
 </documentation>
 <pattern>
-1509
+1516
 </pattern>
 <pattern_description>
 [MultipleSelection add|subtract|minimum|maximum|replace if valid ]
@@ -888,7 +888,7 @@ Because this class simply takes what the initial composition had described, this
 \textbf{Warning}: This parameter provides an old and deprecated way of specifying boundary composition models and shouldn&apos;t be used. Please use &apos;List of model names&apos; instead.
 </documentation>
 <pattern>
-1510
+1517
 </pattern>
 <pattern_description>
 [Selection ascii data|box|box with lithosphere boundary indicators|function|initial composition|spherical constant|unspecified ]
@@ -906,7 +906,7 @@ $ASPECT_SOURCE_DIR/data/boundary-composition/ascii-data/test/
 The name of a directory that contains the model data. This path may either be absolute (if starting with a `/&apos;) or relative to the current directory. The path may also include the special text `$ASPECT_SOURCE_DIR&apos; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/&apos; subdirectory of ASPECT. A trailing slash at the end of the directory path is optional; the plugin will automatically append a &apos;/&apos; when the parameters are parsed if it is missing.
 </documentation>
 <pattern>
-1513
+1520
 </pattern>
 <pattern_description>
 [DirectoryName]
@@ -923,7 +923,7 @@ box_2d_%s.%d.txt
 The file name of the model data. Provide file in format: (File name).\%s\%d, where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model), and \%d is any sprintf integer qualifier specifying the format of the current file number.
 </documentation>
 <pattern>
-1516
+1523
 </pattern>
 <pattern_description>
 [Anything]
@@ -940,7 +940,7 @@ The file name of the model data. Provide file in format: (File name).\%s\%d, whe
 Time step between following data files. Depending on the setting of the global `Use years instead of seconds&apos; flag in the input file, this number is either interpreted as seconds or as years. The default is one million, i.e., either one million seconds or one million years.
 </documentation>
 <pattern>
-1517
+1524
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -957,7 +957,7 @@ false
 In some cases the boundary files are not numbered in increasing but in decreasing order (e.g. `Ma BP&apos;). If this flag is set to `True&apos; the plugin will first load the file with the number `First data file number&apos; and decrease the file number during the model run.
 </documentation>
 <pattern>
-1520
+1527
 </pattern>
 <pattern_description>
 [Bool]
@@ -974,7 +974,7 @@ In some cases the boundary files are not numbered in increasing but in decreasin
 The `First data file model time&apos; parameter has been deactivated and will be removed in a future release. Do not use this parameter and instead provide data files starting from the model start time.
 </documentation>
 <pattern>
-1518
+1525
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -991,7 +991,7 @@ The `First data file model time&apos; parameter has been deactivated and will be
 Number of the first velocity file to be loaded when the model time is larger than `First velocity file model time&apos;.
 </documentation>
 <pattern>
-1519
+1526
 </pattern>
 <pattern_description>
 [Integer range -2147483648...2147483647 (inclusive)]
@@ -1008,7 +1008,7 @@ Number of the first velocity file to be loaded when the model time is larger tha
 Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
 </documentation>
 <pattern>
-1515
+1522
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -1023,7 +1023,7 @@ Scalar factor, which is applied to the model data. You might want to use this to
 A comma separated list of composition boundary values at the bottom boundary (at minimal $y$-value in 2d, or minimal $z$-value in 3d). This list must have as many entries as there are compositional fields. Units: none.
 </documentation>
 <pattern>
-1523
+1530
 </pattern>
 <pattern_description>
 [List of &lt;[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -1036,7 +1036,7 @@ A comma separated list of composition boundary values at the bottom boundary (at
 A comma separated list of composition boundary values at the left boundary (at minimal $x$-value). This list must have as many entries as there are compositional fields. Units: none.
 </documentation>
 <pattern>
-1521
+1528
 </pattern>
 <pattern_description>
 [List of &lt;[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -1049,7 +1049,7 @@ A comma separated list of composition boundary values at the left boundary (at m
 A comma separated list of composition boundary values at the right boundary (at maximal $x$-value). This list must have as many entries as there are compositional fields. Units: none.
 </documentation>
 <pattern>
-1522
+1529
 </pattern>
 <pattern_description>
 [List of &lt;[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -1062,7 +1062,7 @@ A comma separated list of composition boundary values at the right boundary (at 
 A comma separated list of composition boundary values at the top boundary (at maximal $y$-value in 2d, or maximal $z$-value in 3d). This list must have as many entries as there are compositional fields. Units: none.
 </documentation>
 <pattern>
-1524
+1531
 </pattern>
 <pattern_description>
 [List of &lt;[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -1077,7 +1077,7 @@ A comma separated list of composition boundary values at the top boundary (at ma
 A comma separated list of composition boundary values at the bottom boundary (at minimal $y$-value in 2d, or minimal $z$-value in 3d). This list must have as many entries as there are compositional fields. Units: none.
 </documentation>
 <pattern>
-1537
+1544
 </pattern>
 <pattern_description>
 [List of &lt;[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -1090,7 +1090,7 @@ A comma separated list of composition boundary values at the bottom boundary (at
 A comma separated list of composition boundary values at the left boundary (at minimal $x$-value). This list must have as many entries as there are compositional fields. Units: none.
 </documentation>
 <pattern>
-1533
+1540
 </pattern>
 <pattern_description>
 [List of &lt;[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -1103,7 +1103,7 @@ A comma separated list of composition boundary values at the left boundary (at m
 A comma separated list of composition boundary values at the left boundary (at minimal $x$-value). This list must have as many entries as there are compositional fields. Units: none.
 </documentation>
 <pattern>
-1535
+1542
 </pattern>
 <pattern_description>
 [List of &lt;[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -1116,7 +1116,7 @@ A comma separated list of composition boundary values at the left boundary (at m
 A comma separated list of composition boundary values at the right boundary (at maximal $x$-value). This list must have as many entries as there are compositional fields. Units: none.
 </documentation>
 <pattern>
-1534
+1541
 </pattern>
 <pattern_description>
 [List of &lt;[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -1129,7 +1129,7 @@ A comma separated list of composition boundary values at the right boundary (at 
 A comma separated list of composition boundary values at the right boundary (at maximal $x$-value). This list must have as many entries as there are compositional fields. Units: none.
 </documentation>
 <pattern>
-1536
+1543
 </pattern>
 <pattern_description>
 [List of &lt;[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -1142,7 +1142,7 @@ A comma separated list of composition boundary values at the right boundary (at 
 A comma separated list of composition boundary values at the top boundary (at maximal $y$-value in 2d, or maximal $z$-value in 3d). This list must have as many entries as there are compositional fields. Units: none.
 </documentation>
 <pattern>
-1538
+1545
 </pattern>
 <pattern_description>
 [List of &lt;[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -1161,7 +1161,7 @@ cartesian
 A selection that determines the assumed coordinate system for the function variables. Allowed values are &apos;cartesian&apos;, &apos;spherical&apos;, and &apos;depth&apos;. &apos;spherical&apos; coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. &apos;depth&apos; will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
 </documentation>
 <pattern>
-1525
+1532
 </pattern>
 <pattern_description>
 [Selection cartesian|spherical|depth ]
@@ -1176,7 +1176,7 @@ Sometimes it is convenient to use symbolic constants in the expression that desc
 A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
 </documentation>
 <pattern>
-1528
+1535
 </pattern>
 <pattern_description>
 [Anything]
@@ -1195,7 +1195,7 @@ The formula that denotes the function you want to evaluate for particular values
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 </documentation>
 <pattern>
-1527
+1534
 </pattern>
 <pattern_description>
 [Anything]
@@ -1212,7 +1212,7 @@ x,y,t
 The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
 </documentation>
 <pattern>
-1526
+1533
 </pattern>
 <pattern_description>
 [Anything]
@@ -1231,7 +1231,7 @@ The names of the variables as they will be used in the function, separated by co
 Maximal composition. Units: none.
 </documentation>
 <pattern>
-1530
+1537
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -1248,7 +1248,7 @@ Maximal composition. Units: none.
 Minimal composition. Units: none.
 </documentation>
 <pattern>
-1529
+1536
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -1267,7 +1267,7 @@ Minimal composition. Units: none.
 A comma separated list of composition boundary values at the bottom boundary (at minimal radius). This list must have one entry or as many entries as there are compositional fields. Units: none.
 </documentation>
 <pattern>
-1532
+1539
 </pattern>
 <pattern_description>
 [List of &lt;[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -1284,7 +1284,7 @@ A comma separated list of composition boundary values at the bottom boundary (at
 A comma separated list of composition boundary values at the top boundary (at maximal radius). This list must have one entry or as many entries as there are compositional fields. Units: none.
 </documentation>
 <pattern>
-1531
+1538
 </pattern>
 <pattern_description>
 [List of &lt;[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -1304,7 +1304,7 @@ The names of the boundaries listed here can either be numbers (in which case the
 This parameter only describes which boundaries have a fixed convective flux (i.e. Robin boundary condictions), but not what conditions should hold on these boundaries. The latter piece of information needs to be implemented in a plugin in the BoundaryConvectiveHeating group, unless an existing implementation in this group already provides what you want.
 </documentation>
 <pattern>
-1503
+1510
 </pattern>
 <pattern_description>
 [List of &lt;[Anything]&gt; of length 0...4294967295 (inclusive)]
@@ -1325,7 +1325,7 @@ The formula you describe in the mentioned section is a scalar value for the heat
 The symbol $t$ indicating time that may appear in the formulas for the prescribed heat flux is interpreted as having units seconds unless the global parameter ``Use years instead of seconds&apos;&apos; has been set.
 </documentation>
 <pattern>
-1502
+1509
 </pattern>
 <pattern_description>
 [MultipleSelection function ]
@@ -1364,7 +1364,7 @@ Because this class simply takes what the initial temperature had described, this
 `spherical constant&apos;: A model in which the temperature is chosen constant on the inner and outer boundaries of a spherical shell, ellipsoidal chunk or chunk. Parameters are read from subsection &apos;Spherical constant&apos;.
 </documentation>
 <pattern>
-1501
+1508
 </pattern>
 <pattern_description>
 [MultipleSelection ascii data|box|box with lithosphere boundary indicators|constant|dynamic core|function|initial temperature|spherical constant ]
@@ -1385,7 +1385,7 @@ The formula you describe in the mentioned section is a scalar value for the heat
 The symbol $t$ indicating time that may appear in the formulas for the prescribed heat flux is interpreted as having units seconds unless the global parameter ``Use years instead of seconds&apos;&apos; has been set.
 </documentation>
 <pattern>
-1500
+1507
 </pattern>
 <pattern_description>
 [MultipleSelection function ]
@@ -1403,7 +1403,7 @@ cartesian
 A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian&apos;, `spherical&apos;, and `depth&apos;. `spherical&apos; coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. `depth&apos; will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
 </documentation>
 <pattern>
-1504
+1511
 </pattern>
 <pattern_description>
 [Selection cartesian|spherical|depth ]
@@ -1418,7 +1418,7 @@ Sometimes it is convenient to use symbolic constants in the expression that desc
 A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
 </documentation>
 <pattern>
-1507
+1514
 </pattern>
 <pattern_description>
 [Anything]
@@ -1437,7 +1437,7 @@ The formula that denotes the function you want to evaluate for particular values
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 </documentation>
 <pattern>
-1506
+1513
 </pattern>
 <pattern_description>
 [Anything]
@@ -1454,7 +1454,7 @@ x,y,t
 The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
 </documentation>
 <pattern>
-1505
+1512
 </pattern>
 <pattern_description>
 [Anything]
@@ -1543,7 +1543,7 @@ The formula you describe in the mentioned section is a scalar value for the heat
 The symbol $t$ indicating time that may appear in the formulas for the prescribed heat flux is interpreted as having units seconds unless the global parameter ``Use years instead of seconds&apos;&apos; has been set.
 </documentation>
 <pattern>
-1604
+1611
 </pattern>
 <pattern_description>
 [Selection function ]
@@ -1561,7 +1561,7 @@ cartesian
 A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian&apos;, `spherical&apos;, and `depth&apos;. `spherical&apos; coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. `depth&apos; will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
 </documentation>
 <pattern>
-1605
+1612
 </pattern>
 <pattern_description>
 [Selection cartesian|spherical|depth ]
@@ -1576,7 +1576,7 @@ Sometimes it is convenient to use symbolic constants in the expression that desc
 A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
 </documentation>
 <pattern>
-1608
+1615
 </pattern>
 <pattern_description>
 [Anything]
@@ -1595,7 +1595,7 @@ The formula that denotes the function you want to evaluate for particular values
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 </documentation>
 <pattern>
-1607
+1614
 </pattern>
 <pattern_description>
 [Anything]
@@ -1612,7 +1612,7 @@ x,y,t
 The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
 </documentation>
 <pattern>
-1606
+1613
 </pattern>
 <pattern_description>
 [Anything]
@@ -1634,7 +1634,7 @@ When the temperature is fixed on a given boundary as determined by the list of &
 Mathematically speaking, the temperature satisfies an advection-diffusion equation. For this type of equation, one can prescribe the temperature even on outflow boundaries as long as the diffusion coefficient is nonzero. This would correspond to the ``true&apos;&apos; setting of this parameter, which is correspondingly the default. In practice, however, this would only make physical sense if the diffusion coefficient is actually quite large to prevent the creation of a boundary layer. In addition, if there is no diffusion, one can only impose Dirichlet boundary conditions (i.e., prescribe a fixed temperature value at the boundary) at those boundaries where material flows in. This would correspond to the ``false&apos;&apos; setting of this parameter.
 </documentation>
 <pattern>
-1440
+1447
 </pattern>
 <pattern_description>
 [Bool]
@@ -1653,7 +1653,7 @@ The names of the boundaries listed here can either be numbers (in which case the
 This parameter only describes which boundaries have a fixed temperature, but not what temperature should hold on these boundaries. The latter piece of information needs to be implemented in a plugin in the BoundaryTemperature group, unless an existing implementation in this group already provides what you want.
 </documentation>
 <pattern>
-1439
+1446
 </pattern>
 <pattern_description>
 [List of &lt;[Anything]&gt; of length 0...4294967295 (inclusive)]
@@ -1694,7 +1694,7 @@ Because this class simply takes what the initial temperature had described, this
 `spherical constant&apos;: A model in which the temperature is chosen constant on the inner and outer boundaries of a spherical shell, ellipsoidal chunk or chunk. Parameters are read from subsection &apos;Spherical constant&apos;.
 </documentation>
 <pattern>
-1436
+1443
 </pattern>
 <pattern_description>
 [MultipleSelection ascii data|box|box with lithosphere boundary indicators|constant|dynamic core|function|initial temperature|spherical constant ]
@@ -1711,7 +1711,7 @@ add
 A comma-separated list of operators that will be used to append the listed temperature models onto the previous models. If only one operator is given, the same operator is applied to all models.
 </documentation>
 <pattern>
-1437
+1444
 </pattern>
 <pattern_description>
 [MultipleSelection add|subtract|minimum|maximum|replace if valid ]
@@ -1754,7 +1754,7 @@ Because this class simply takes what the initial temperature had described, this
 \textbf{Warning}: This parameter provides an old and deprecated way of specifying boundary temperature models and shouldn&apos;t be used. Please use &apos;List of model names&apos; instead.
 </documentation>
 <pattern>
-1438
+1445
 </pattern>
 <pattern_description>
 [Selection ascii data|box|box with lithosphere boundary indicators|constant|dynamic core|function|initial temperature|spherical constant|unspecified ]
@@ -1772,7 +1772,7 @@ $ASPECT_SOURCE_DIR/data/boundary-temperature/ascii-data/test/
 The name of a directory that contains the model data. This path may either be absolute (if starting with a `/&apos;) or relative to the current directory. The path may also include the special text `$ASPECT_SOURCE_DIR&apos; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/&apos; subdirectory of ASPECT. A trailing slash at the end of the directory path is optional; the plugin will automatically append a &apos;/&apos; when the parameters are parsed if it is missing.
 </documentation>
 <pattern>
-1488
+1495
 </pattern>
 <pattern_description>
 [DirectoryName]
@@ -1789,7 +1789,7 @@ box_2d_%s.%d.txt
 The file name of the model data. Provide file in format: (File name).\%s\%d, where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model), and \%d is any sprintf integer qualifier specifying the format of the current file number.
 </documentation>
 <pattern>
-1491
+1498
 </pattern>
 <pattern_description>
 [Anything]
@@ -1806,7 +1806,7 @@ The file name of the model data. Provide file in format: (File name).\%s\%d, whe
 Time step between following data files. Depending on the setting of the global `Use years instead of seconds&apos; flag in the input file, this number is either interpreted as seconds or as years. The default is one million, i.e., either one million seconds or one million years.
 </documentation>
 <pattern>
-1492
+1499
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -1823,7 +1823,7 @@ false
 In some cases the boundary files are not numbered in increasing but in decreasing order (e.g. `Ma BP&apos;). If this flag is set to `True&apos; the plugin will first load the file with the number `First data file number&apos; and decrease the file number during the model run.
 </documentation>
 <pattern>
-1495
+1502
 </pattern>
 <pattern_description>
 [Bool]
@@ -1840,7 +1840,7 @@ In some cases the boundary files are not numbered in increasing but in decreasin
 The `First data file model time&apos; parameter has been deactivated and will be removed in a future release. Do not use this parameter and instead provide data files starting from the model start time.
 </documentation>
 <pattern>
-1493
+1500
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -1857,7 +1857,7 @@ The `First data file model time&apos; parameter has been deactivated and will be
 Number of the first velocity file to be loaded when the model time is larger than `First velocity file model time&apos;.
 </documentation>
 <pattern>
-1494
+1501
 </pattern>
 <pattern_description>
 [Integer range -2147483648...2147483647 (inclusive)]
@@ -1874,7 +1874,7 @@ Number of the first velocity file to be loaded when the model time is larger tha
 Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
 </documentation>
 <pattern>
-1490
+1497
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -1893,7 +1893,7 @@ Scalar factor, which is applied to the model data. You might want to use this to
 Temperature at the bottom boundary (at minimal $z$-value). Units: $\text{K}$.
 </documentation>
 <pattern>
-1498
+1505
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -1910,7 +1910,7 @@ Temperature at the bottom boundary (at minimal $z$-value). Units: $\text{K}$.
 Temperature at the left boundary (at minimal $x$-value). Units: $\text{K}$.
 </documentation>
 <pattern>
-1496
+1503
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -1927,7 +1927,7 @@ Temperature at the left boundary (at minimal $x$-value). Units: $\text{K}$.
 Temperature at the right boundary (at maximal $x$-value). Units: $\text{K}$.
 </documentation>
 <pattern>
-1497
+1504
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -1944,7 +1944,7 @@ Temperature at the right boundary (at maximal $x$-value). Units: $\text{K}$.
 Temperature at the top boundary (at maximal $x$-value). Units: $\text{K}$.
 </documentation>
 <pattern>
-1499
+1506
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -1963,7 +1963,7 @@ Temperature at the top boundary (at maximal $x$-value). Units: $\text{K}$.
 Temperature at the bottom boundary (at minimal $z$-value). Units: $\text{K}$.
 </documentation>
 <pattern>
-1484
+1491
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -1980,7 +1980,7 @@ Temperature at the bottom boundary (at minimal $z$-value). Units: $\text{K}$.
 Temperature at the left boundary (at minimal $x$-value). Units: $\text{K}$.
 </documentation>
 <pattern>
-1482
+1489
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -1997,7 +1997,7 @@ Temperature at the left boundary (at minimal $x$-value). Units: $\text{K}$.
 Temperature at the additional left lithosphere boundary (specified by user in Geometry Model). Units: $\text{K}$.
 </documentation>
 <pattern>
-1486
+1493
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -2014,7 +2014,7 @@ Temperature at the additional left lithosphere boundary (specified by user in Ge
 Temperature at the right boundary (at maximal $x$-value). Units: $\text{K}$.
 </documentation>
 <pattern>
-1483
+1490
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -2031,7 +2031,7 @@ Temperature at the right boundary (at maximal $x$-value). Units: $\text{K}$.
 Temperature at the additional right lithosphere boundary (specified by user in Geometry Model). Units: $\text{K}$.
 </documentation>
 <pattern>
-1487
+1494
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -2048,7 +2048,7 @@ Temperature at the additional right lithosphere boundary (specified by user in G
 Temperature at the top boundary (at maximal $x$-value). Units: $\text{K}$.
 </documentation>
 <pattern>
-1485
+1492
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -2063,7 +2063,7 @@ Temperature at the top boundary (at maximal $x$-value). Units: $\text{K}$.
 A comma separated list of mappings between boundary indicators and the temperature associated with the boundary indicators. The format for this list is ``indicator1 : value1, indicator2 : value2, ...&apos;&apos;, where each indicator is a valid boundary indicator (either a number or the symbolic name of a boundary as provided by the geometry model) and each value is the temperature of that boundary.
 </documentation>
 <pattern>
-1441
+1448
 </pattern>
 <pattern_description>
 [Map of &lt;[Anything]&gt;:&lt;[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -2082,7 +2082,7 @@ A comma separated list of mappings between boundary indicators and the temperatu
 Core thermal expansivity. Units: $\frac{1}{\text{K}}$.
 </documentation>
 <pattern>
-1455
+1462
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -2099,7 +2099,7 @@ Core thermal expansivity. Units: $\frac{1}{\text{K}}$.
 Compositional expansion coefficient $Beta_c$. See \cite{NPB+04} for more details.
 </documentation>
 <pattern>
-1458
+1465
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -2116,7 +2116,7 @@ Compositional expansion coefficient $Beta_c$. See \cite{NPB+04} for more details
 Pressure at CMB. Units: \si{\pascal}.
 </documentation>
 <pattern>
-1449
+1456
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -2130,10 +2130,10 @@ Pressure at CMB. Units: \si{\pascal}.
 60.
 </default_value>
 <documentation>
-Core heat conductivity $k_c$. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+Core heat conductivity $k_c$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 </documentation>
 <pattern>
-1460
+1467
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -2150,7 +2150,7 @@ Core heat conductivity $k_c$. Units: $\frac{\text{W}{\text{m}\text{K}}$.
 Density of the core. Units: $\frac{\text{kg}}{\text{m}^3}$.
 </documentation>
 <pattern>
-1447
+1454
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -2167,7 +2167,7 @@ Density of the core. Units: $\frac{\text{kg}}{\text{m}^3}$.
 Heat capacity of the core. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
 </documentation>
 <pattern>
-1452
+1459
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -2184,7 +2184,7 @@ Heat capacity of the core. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
 Partition coefficient of the light element.
 </documentation>
 <pattern>
-1459
+1466
 </pattern>
 <pattern_description>
 [Double 0...1 (inclusive)]
@@ -2201,7 +2201,7 @@ Partition coefficient of the light element.
 Gravitation acceleration at CMB. Units: \si{\meter\per\second\squared}.
 </documentation>
 <pattern>
-1448
+1455
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -2218,7 +2218,7 @@ Gravitation acceleration at CMB. Units: \si{\meter\per\second\squared}.
 Initial light composition (eg. S,O) concentration in weight fraction.
 </documentation>
 <pattern>
-1450
+1457
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -2235,7 +2235,7 @@ Initial light composition (eg. S,O) concentration in weight fraction.
 Temperature at the inner boundary (core mantle boundary) at the beginning. Units: $\text{K}$.
 </documentation>
 <pattern>
-1443
+1450
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -2252,7 +2252,7 @@ Temperature at the inner boundary (core mantle boundary) at the beginning. Units
 Core compressibility at zero pressure. See \cite{NPB+04} for more details.
 </documentation>
 <pattern>
-1453
+1460
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -2269,7 +2269,7 @@ Core compressibility at zero pressure. See \cite{NPB+04} for more details.
 The latent heat of core freeze. Units: \si{\joule\per\kilogram}.
 </documentation>
 <pattern>
-1456
+1463
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -2286,7 +2286,7 @@ The latent heat of core freeze. Units: \si{\joule\per\kilogram}.
 The max iterations for nonlinear core energy solver.
 </documentation>
 <pattern>
-1451
+1458
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -2303,7 +2303,7 @@ The max iterations for nonlinear core energy solver.
 Temperature at the outer boundary (lithosphere water/air). Units: $\text{K}$.
 </documentation>
 <pattern>
-1442
+1449
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -2320,7 +2320,7 @@ Temperature at the outer boundary (lithosphere water/air). Units: $\text{K}$.
 The heat of reaction. Units: \si{\joule\per\kilogram}.
 </documentation>
 <pattern>
-1457
+1464
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -2337,7 +2337,7 @@ The heat of reaction. Units: \si{\joule\per\kilogram}.
 Core density at zero pressure. Units: $\frac{\text{kg}}{\text{m}^3}$. See \cite{NPB+04} for more details.
 </documentation>
 <pattern>
-1454
+1461
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -2354,7 +2354,7 @@ Core density at zero pressure. Units: $\frac{\text{kg}}{\text{m}^3}$. See \cite{
 Initial inner core radius changing rate. Units: \si{\kilo\meter}/year.
 </documentation>
 <pattern>
-1445
+1452
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -2371,7 +2371,7 @@ Initial inner core radius changing rate. Units: \si{\kilo\meter}/year.
 Initial CMB temperature changing rate. Units: $\text{K}$/year.
 </documentation>
 <pattern>
-1444
+1451
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -2388,7 +2388,7 @@ Initial CMB temperature changing rate. Units: $\text{K}$/year.
 Initial light composition changing rate. Units: 1/year.
 </documentation>
 <pattern>
-1446
+1453
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -2406,7 +2406,7 @@ true
 If melting curve dependent on composition.
 </documentation>
 <pattern>
-1465
+1472
 </pattern>
 <pattern_description>
 [Bool]
@@ -2423,7 +2423,7 @@ If melting curve dependent on composition.
 Melting curve (\cite{NPB+04} eq. (40)) parameter Theta.
 </documentation>
 <pattern>
-1464
+1471
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -2440,7 +2440,7 @@ Melting curve (\cite{NPB+04} eq. (40)) parameter Theta.
 Melting curve (\cite{NPB+04} eq. (40)) parameter Tm0. Units: $\text{K}$.
 </documentation>
 <pattern>
-1461
+1468
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -2457,7 +2457,7 @@ Melting curve (\cite{NPB+04} eq. (40)) parameter Tm0. Units: $\text{K}$.
 Melting curve (\cite{NPB+04} eq. (40)) parameter Tm1. Units: \si{\per\tera\pascal}.
 </documentation>
 <pattern>
-1462
+1469
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -2474,7 +2474,7 @@ Melting curve (\cite{NPB+04} eq. (40)) parameter Tm1. Units: \si{\per\tera\pasca
 Melting curve (\cite{NPB+04} eq. (40)) parameter Tm2. Units: \si{\per\tera\pascal\squared}.
 </documentation>
 <pattern>
-1463
+1470
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -2491,7 +2491,7 @@ false
 If using the Fe-FeS system solidus from Buono \&amp; Walker (2011) instead.
 </documentation>
 <pattern>
-1466
+1473
 </pattern>
 <pattern_description>
 [Bool]
@@ -2506,7 +2506,7 @@ If using the Fe-FeS system solidus from Buono \&amp; Walker (2011) instead.
 Data file name for other energy source into the core. The &apos;other energy source&apos; is used for external core energy source.For example if someone want to test the early lunar core powered by precession (Dwyer, C. A., et al. (2011). A long-lived lunar dynamo driven by continuous mechanical stirring. Nature 479(7372): 212-214.)Format [Time(Gyr)   Energy rate(W)]
 </documentation>
 <pattern>
-1471
+1478
 </pattern>
 <pattern_description>
 [Anything]
@@ -2521,7 +2521,7 @@ Data file name for other energy source into the core. The &apos;other energy sou
 Half decay times of different elements (Ga)
 </documentation>
 <pattern>
-1469
+1476
 </pattern>
 <pattern_description>
 [List of &lt;[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -2534,7 +2534,7 @@ Half decay times of different elements (Ga)
 Heating rates of different elements (W/kg)
 </documentation>
 <pattern>
-1468
+1475
 </pattern>
 <pattern_description>
 [List of &lt;[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -2547,7 +2547,7 @@ Heating rates of different elements (W/kg)
 Initial concentrations of different elements (ppm)
 </documentation>
 <pattern>
-1470
+1477
 </pattern>
 <pattern_description>
 [List of &lt;[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -2564,7 +2564,7 @@ Initial concentrations of different elements (ppm)
 Number of different radioactive heating elements in core
 </documentation>
 <pattern>
-1467
+1474
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -2584,7 +2584,7 @@ cartesian
 A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian&apos;, `spherical&apos;, and `depth&apos;. `spherical&apos; coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. `depth&apos; will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
 </documentation>
 <pattern>
-1472
+1479
 </pattern>
 <pattern_description>
 [Selection cartesian|spherical|depth ]
@@ -2599,7 +2599,7 @@ Sometimes it is convenient to use symbolic constants in the expression that desc
 A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
 </documentation>
 <pattern>
-1475
+1482
 </pattern>
 <pattern_description>
 [Anything]
@@ -2618,7 +2618,7 @@ The formula that denotes the function you want to evaluate for particular values
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 </documentation>
 <pattern>
-1474
+1481
 </pattern>
 <pattern_description>
 [Anything]
@@ -2635,7 +2635,7 @@ If the function you are describing represents a vector-valued function with mult
 Maximal temperature. Units: $\text{K}$.
 </documentation>
 <pattern>
-1477
+1484
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -2652,7 +2652,7 @@ Maximal temperature. Units: $\text{K}$.
 Minimal temperature. Units: $\text{K}$.
 </documentation>
 <pattern>
-1476
+1483
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -2669,7 +2669,7 @@ x,y,t
 The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
 </documentation>
 <pattern>
-1473
+1480
 </pattern>
 <pattern_description>
 [Anything]
@@ -2688,7 +2688,7 @@ The names of the variables as they will be used in the function, separated by co
 Maximal temperature. Units: $\text{K}$.
 </documentation>
 <pattern>
-1479
+1486
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -2705,7 +2705,7 @@ Maximal temperature. Units: $\text{K}$.
 Minimal temperature. Units: $\text{K}$.
 </documentation>
 <pattern>
-1478
+1485
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -2724,7 +2724,7 @@ Minimal temperature. Units: $\text{K}$.
 Temperature at the inner boundary (core mantle boundary). Units: $\text{K}$.
 </documentation>
 <pattern>
-1481
+1488
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -2741,7 +2741,7 @@ Temperature at the inner boundary (core mantle boundary). Units: $\text{K}$.
 Temperature at the outer boundary (lithosphere water/air). Units: $\text{K}$.
 </documentation>
 <pattern>
-1480
+1487
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -2775,7 +2775,7 @@ Gravity is expected to point along the depth direction.
 `zero traction&apos;: Implementation of a model in which the boundary traction is zero. This is commonly referred to as an ``open boundary condition&apos;&apos;, indicating that the material experiences no forces in response to what might exist on the other side of the boundary. However, this is only true in the case where hydrostatic pressure is not relevant. If hydrostatic pressure is not negligible, for example at the sides of a regional model, the material at the other side of the boundary does exceed a force, namely the force normal to the boundary induced by the hydrostatic pressure.
 </documentation>
 <pattern>
-1586
+1593
 </pattern>
 <pattern_description>
 [Map of &lt;[Anything]&gt;:&lt;[Selection ascii data|function|initial lithostatic pressure|zero traction ]&gt; of length 0...4294967295 (inclusive)]
@@ -2793,7 +2793,7 @@ $ASPECT_SOURCE_DIR/data/boundary-traction/ascii-data/test/
 The name of a directory that contains the model data. This path may either be absolute (if starting with a `/&apos;) or relative to the current directory. The path may also include the special text `$ASPECT_SOURCE_DIR&apos; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/&apos; subdirectory of ASPECT. A trailing slash at the end of the directory path is optional; the plugin will automatically append a &apos;/&apos; when the parameters are parsed if it is missing.
 </documentation>
 <pattern>
-1594
+1601
 </pattern>
 <pattern_description>
 [DirectoryName]
@@ -2810,7 +2810,7 @@ box_2d_%s.%d.txt
 The file name of the model data. Provide file in format: (File name).\%s\%d, where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model), and \%d is any sprintf integer qualifier specifying the format of the current file number.
 </documentation>
 <pattern>
-1597
+1604
 </pattern>
 <pattern_description>
 [Anything]
@@ -2827,7 +2827,7 @@ The file name of the model data. Provide file in format: (File name).\%s\%d, whe
 Time step between following data files. Depending on the setting of the global `Use years instead of seconds&apos; flag in the input file, this number is either interpreted as seconds or as years. The default is one million, i.e., either one million seconds or one million years.
 </documentation>
 <pattern>
-1598
+1605
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -2844,7 +2844,7 @@ false
 In some cases the boundary files are not numbered in increasing but in decreasing order (e.g. `Ma BP&apos;). If this flag is set to `True&apos; the plugin will first load the file with the number `First data file number&apos; and decrease the file number during the model run.
 </documentation>
 <pattern>
-1601
+1608
 </pattern>
 <pattern_description>
 [Bool]
@@ -2861,7 +2861,7 @@ In some cases the boundary files are not numbered in increasing but in decreasin
 The `First data file model time&apos; parameter has been deactivated and will be removed in a future release. Do not use this parameter and instead provide data files starting from the model start time.
 </documentation>
 <pattern>
-1599
+1606
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -2878,7 +2878,7 @@ The `First data file model time&apos; parameter has been deactivated and will be
 Number of the first velocity file to be loaded when the model time is larger than `First velocity file model time&apos;.
 </documentation>
 <pattern>
-1600
+1607
 </pattern>
 <pattern_description>
 [Integer range -2147483648...2147483647 (inclusive)]
@@ -2895,7 +2895,7 @@ true
 Whether to prescribe pressure (true) or full traction vector (false) at the boundary. If true, only 1 component will be used for the boundary condition.
 </documentation>
 <pattern>
-1603
+1610
 </pattern>
 <pattern_description>
 [Bool]
@@ -2912,7 +2912,7 @@ Whether to prescribe pressure (true) or full traction vector (false) at the boun
 Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
 </documentation>
 <pattern>
-1596
+1603
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -2929,7 +2929,7 @@ false
 Specify traction as r, phi, and theta components instead of x, y, and z. Positive tractions point up, east, and north (in 3d) or out and clockwise (in 2d). This setting only makes sense for spherical geometries.
 </documentation>
 <pattern>
-1602
+1609
 </pattern>
 <pattern_description>
 [Bool]
@@ -2948,7 +2948,7 @@ cartesian
 A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian&apos;, `spherical&apos;, and `depth&apos;. `spherical&apos; coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. `depth&apos; will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
 </documentation>
 <pattern>
-1587
+1594
 </pattern>
 <pattern_description>
 [Selection cartesian|spherical|depth ]
@@ -2963,7 +2963,7 @@ Sometimes it is convenient to use symbolic constants in the expression that desc
 A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
 </documentation>
 <pattern>
-1591
+1598
 </pattern>
 <pattern_description>
 [Anything]
@@ -2982,7 +2982,7 @@ The formula that denotes the function you want to evaluate for particular values
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 </documentation>
 <pattern>
-1590
+1597
 </pattern>
 <pattern_description>
 [Anything]
@@ -2999,7 +2999,7 @@ false
 Specify traction as $r$, $\phi$, and $\theta$ components instead of $x$, $y$, and $z$. Positive tractions point up, east, and north (in 3d) or out and clockwise (in 2d). This setting only makes sense for spherical geometries.
 </documentation>
 <pattern>
-1588
+1595
 </pattern>
 <pattern_description>
 [Bool]
@@ -3016,7 +3016,7 @@ x,y,t
 The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
 </documentation>
 <pattern>
-1589
+1596
 </pattern>
 <pattern_description>
 [Anything]
@@ -3035,7 +3035,7 @@ The names of the variables as they will be used in the function, separated by co
 The number of integration points over which we integrate the lithostatic pressure downwards.
 </documentation>
 <pattern>
-1593
+1600
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -3048,7 +3048,7 @@ The number of integration points over which we integrate the lithostatic pressur
 The point where the pressure profile will be calculated. Cartesian coordinates $(x,y,z)$ when geometry is a box, otherwise enter radius, longitude, and in 3d latitude. Note that the coordinate related to the depth ($y$ in 2d Cartesian, $z$ in 3d Cartesian and radius in spherical coordinates) is not used. Units: \si{\meter} or degrees.
 </documentation>
 <pattern>
-1592
+1599
 </pattern>
 <pattern_description>
 [List of &lt;[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -3082,7 +3082,7 @@ Likewise, since the symbol $t$ indicating time may appear in the formulas for th
 `zero velocity&apos;: Implementation of a model in which the boundary velocity is zero. This is commonly referred to as a ``stick boundary condition&apos;&apos;, indicating that the material ``sticks&apos;&apos; to the material on the other side of the boundary.
 </documentation>
 <pattern>
-1559
+1566
 </pattern>
 <pattern_description>
 [Map of &lt;[Anything]&gt;:&lt;[Selection ascii data|function|gplates|zero velocity ]&gt; of length 0...4294967295 (inclusive)]
@@ -3097,7 +3097,7 @@ A comma separated list of names denoting those boundaries on which the velocity 
 The names of the boundaries listed here can either by numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
 </documentation>
 <pattern>
-1561
+1568
 </pattern>
 <pattern_description>
 [List of &lt;[Anything]&gt; of length 0...4294967295 (inclusive)]
@@ -3112,7 +3112,7 @@ A comma separated list of names denoting those boundaries on which the velocity 
 The names of the boundaries listed here can either by numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
 </documentation>
 <pattern>
-1560
+1567
 </pattern>
 <pattern_description>
 [List of &lt;[Anything]&gt; of length 0...4294967295 (inclusive)]
@@ -3130,7 +3130,7 @@ $ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/
 The name of a directory that contains the model data. This path may either be absolute (if starting with a `/&apos;) or relative to the current directory. The path may also include the special text `$ASPECT_SOURCE_DIR&apos; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/&apos; subdirectory of ASPECT. A trailing slash at the end of the directory path is optional; the plugin will automatically append a &apos;/&apos; when the parameters are parsed if it is missing.
 </documentation>
 <pattern>
-1562
+1569
 </pattern>
 <pattern_description>
 [DirectoryName]
@@ -3147,7 +3147,7 @@ box_2d_%s.%d.txt
 The file name of the model data. Provide file in format: (File name).\%s\%d, where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model), and \%d is any sprintf integer qualifier specifying the format of the current file number.
 </documentation>
 <pattern>
-1565
+1572
 </pattern>
 <pattern_description>
 [Anything]
@@ -3164,7 +3164,7 @@ The file name of the model data. Provide file in format: (File name).\%s\%d, whe
 Time step between following data files. Depending on the setting of the global `Use years instead of seconds&apos; flag in the input file, this number is either interpreted as seconds or as years. The default is one million, i.e., either one million seconds or one million years.
 </documentation>
 <pattern>
-1566
+1573
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -3181,7 +3181,7 @@ false
 In some cases the boundary files are not numbered in increasing but in decreasing order (e.g. `Ma BP&apos;). If this flag is set to `True&apos; the plugin will first load the file with the number `First data file number&apos; and decrease the file number during the model run.
 </documentation>
 <pattern>
-1569
+1576
 </pattern>
 <pattern_description>
 [Bool]
@@ -3198,7 +3198,7 @@ In some cases the boundary files are not numbered in increasing but in decreasin
 The `First data file model time&apos; parameter has been deactivated and will be removed in a future release. Do not use this parameter and instead provide data files starting from the model start time.
 </documentation>
 <pattern>
-1567
+1574
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -3215,7 +3215,7 @@ The `First data file model time&apos; parameter has been deactivated and will be
 Number of the first velocity file to be loaded when the model time is larger than `First velocity file model time&apos;.
 </documentation>
 <pattern>
-1568
+1575
 </pattern>
 <pattern_description>
 [Integer range -2147483648...2147483647 (inclusive)]
@@ -3232,7 +3232,7 @@ Number of the first velocity file to be loaded when the model time is larger tha
 Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
 </documentation>
 <pattern>
-1564
+1571
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -3249,7 +3249,7 @@ false
 Specify velocity as r, phi, and theta components instead of x, y, and z. Positive velocities point up, east, and north (in 3d) or out and clockwise (in 2d). This setting only makes sense for spherical geometries.
 </documentation>
 <pattern>
-1570
+1577
 </pattern>
 <pattern_description>
 [Bool]
@@ -3268,7 +3268,7 @@ cartesian
 A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian&apos;, `spherical&apos;, and `depth&apos;. `spherical&apos; coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. `depth&apos; will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
 </documentation>
 <pattern>
-1571
+1578
 </pattern>
 <pattern_description>
 [Selection cartesian|spherical|depth ]
@@ -3283,7 +3283,7 @@ Sometimes it is convenient to use symbolic constants in the expression that desc
 A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
 </documentation>
 <pattern>
-1575
+1582
 </pattern>
 <pattern_description>
 [Anything]
@@ -3302,7 +3302,7 @@ The formula that denotes the function you want to evaluate for particular values
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 </documentation>
 <pattern>
-1574
+1581
 </pattern>
 <pattern_description>
 [Anything]
@@ -3319,7 +3319,7 @@ false
 Specify velocity as $r$, $\phi$, and $\theta$ components instead of $x$, $y$, and $z$. Positive velocities point up, east, and north (in 3d) or out and clockwise (in 2d). This setting only makes sense for spherical geometries.
 </documentation>
 <pattern>
-1572
+1579
 </pattern>
 <pattern_description>
 [Bool]
@@ -3336,7 +3336,7 @@ x,y,t
 The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
 </documentation>
 <pattern>
-1573
+1580
 </pattern>
 <pattern_description>
 [Anything]
@@ -3355,7 +3355,7 @@ $ASPECT_SOURCE_DIR/data/boundary-velocity/gplates/
 The name of a directory that contains the model data. This path may either be absolute (if starting with a &apos;/&apos;) or relative to the current directory. The path may also include the special text &apos;$ASPECT_SOURCE_DIR&apos; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/&apos; subdirectory of ASPECT. 
 </documentation>
 <pattern>
-1576
+1583
 </pattern>
 <pattern_description>
 [DirectoryName]
@@ -3372,7 +3372,7 @@ The name of a directory that contains the model data. This path may either be ab
 Time step between following velocity files. Depending on the setting of the global &apos;Use years instead of seconds&apos; flag in the input file, this number is either interpreted as seconds or as years. The default is one million, i.e., either one million seconds or one million years.
 </documentation>
 <pattern>
-1581
+1588
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -3389,7 +3389,7 @@ false
 In some cases the boundary files are not numbered in increasing but in decreasing order (e.g. &apos;Ma BP&apos;). If this flag is set to &apos;True&apos; the plugin will first load the file with the number &apos;First velocity file number&apos; and decrease the file number during the model run.
 </documentation>
 <pattern>
-1580
+1587
 </pattern>
 <pattern_description>
 [Bool]
@@ -3406,7 +3406,7 @@ In some cases the boundary files are not numbered in increasing but in decreasin
 Time from which on the velocity file with number &apos;First velocity file number&apos; is used as boundary condition. Previous to this time, a no-slip boundary condition is assumed. Depending on the setting of the global &apos;Use years instead of seconds&apos; flag in the input file, this number is either interpreted as seconds or as years.
 </documentation>
 <pattern>
-1578
+1585
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -3423,7 +3423,7 @@ Time from which on the velocity file with number &apos;First velocity file numbe
 Number of the first velocity file to be loaded when the model time is larger than &apos;First velocity file model time&apos;.
 </documentation>
 <pattern>
-1579
+1586
 </pattern>
 <pattern_description>
 [Integer range -2147483648...2147483647 (inclusive)]
@@ -3440,7 +3440,7 @@ Number of the first velocity file to be loaded when the model time is larger tha
 Determines the depth of the lithosphere, so that the GPlates velocities can be applied at the sides of the model as well as at the surface.
 </documentation>
 <pattern>
-1585
+1592
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -3457,7 +3457,7 @@ Determines the depth of the lithosphere, so that the GPlates velocities can be a
 Point that determines the plane in which a 2d model lies in. Has to be in the format `a,b&apos; where a and b are theta (polar angle) and phi in radians. This value is not utilized in 3d geometries, and can therefore be set to the default or any user-defined quantity.
 </documentation>
 <pattern>
-1583
+1590
 </pattern>
 <pattern_description>
 [Anything]
@@ -3474,7 +3474,7 @@ Point that determines the plane in which a 2d model lies in. Has to be in the fo
 Point that determines the plane in which a 2d model lies in. Has to be in the format `a,b&apos; where a and b are theta (polar angle) and phi in radians. This value is not utilized in 3d geometries, and can therefore be set to the default or any user-defined quantity.
 </documentation>
 <pattern>
-1584
+1591
 </pattern>
 <pattern_description>
 [Anything]
@@ -3491,7 +3491,7 @@ Point that determines the plane in which a 2d model lies in. Has to be in the fo
 Scalar factor, which is applied to the boundary velocity. You might want to use this to scale the velocities to a reference model (e.g. with free-slip boundary) or another plate reconstruction.
 </documentation>
 <pattern>
-1582
+1589
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -3508,7 +3508,7 @@ phi.%d
 The file name of the material data. Provide file in format: (Velocity file name).\%d.gpml where \%d is any sprintf integer qualifier, specifying the format of the current file number.
 </documentation>
 <pattern>
-1577
+1584
 </pattern>
 <pattern_description>
 [Anything]
@@ -9545,7 +9545,7 @@ The reference temperature $T_0$. Units: $\text{K}$.
 4.7
 </default_value>
 <documentation>
-The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$$\frac{\text{W}{\text{m}\text{K}}$.
+The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 </documentation>
 <pattern>
 1087
@@ -9596,7 +9596,7 @@ The temperature dependence of viscosity. Dimensionless exponent.
 5e24
 </default_value>
 <documentation>
-The value of the constant viscosity. Units: $\frac{\text{kg}}{\text{m}\test{s}}$.
+The value of the constant viscosity. Units: $\frac{\text{kg}}{\text{m}\text{s}}$.
 </documentation>
 <pattern>
 1083
@@ -10626,7 +10626,7 @@ A list of values of reference temperatures used to determine the temperature-dep
 2.47, 3.81, 3.52, 4.9
 </default_value>
 <documentation>
-A list of base values of the thermal conductivity for each of the horizontal layers. Pressure- and temperature-dependence will be applied on top of this base value, according to the parameters &apos;Pressure dependencies of thermal conductivity&apos; and &apos;Reference temperatures for thermal conductivity&apos;. Units: $\frac{\text{W}{\text{m}\text{K}}$
+A list of base values of the thermal conductivity for each of the horizontal layers. Pressure- and temperature-dependence will be applied on top of this base value, according to the parameters &apos;Pressure dependencies of thermal conductivity&apos; and &apos;Reference temperatures for thermal conductivity&apos;. Units: $\frac{\text{W}}{\text{m}\text{K}}$
 </documentation>
 <pattern>
 970
@@ -10679,7 +10679,7 @@ A list of values that indicate how a given layer should take into account the ef
 4.7
 </default_value>
 <documentation>
-The value of the thermal conductivity $k$. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 </documentation>
 <pattern>
 967
@@ -11000,7 +11000,7 @@ The diffusion creep grain size exponent $p_{diff}$ that determines the dependenc
 7.4e-15
 </default_value>
 <documentation>
-The prefactor for the diffusion creep law $A_{diff}$. List must have one more entry than the Phase transition depths. Units: $\frac{ \text{m}^\text{p_{diff}}\text{Pa}^\text{-n_{diff}} }{\text{s}}$.
+The prefactor for the diffusion creep law $A_{diff}$. List must have one more entry than the Phase transition depths. Units: $\frac{\text{m}^{\text{p}_{\text{diff}}}\text{Pa}^{-\text{n}_{\text{diff}}}}{\text{s}}$.
 </documentation>
 <pattern>
 1004
@@ -11068,7 +11068,7 @@ The power-law exponent $n_{dis}$ for dislocation creep. List must have one more 
 4.5e-15
 </default_value>
 <documentation>
-The prefactor for the dislocation creep law $A_{dis}$. List must have one more entry than the Phase transition depths. Units: $\frac{\text{Pa}^\text{-n_{dis}}}{\text{s}}$.
+The prefactor for the dislocation creep law $A_{dis}$. List must have one more entry than the Phase transition depths. Units: $\frac{\text{Pa}^{\text{-n}_\text{dis}}}{\text{s}}$.
 </documentation>
 <pattern>
 1000
@@ -11703,7 +11703,7 @@ The reference temperature $T_0$. Units: $\text{K}$.
 4.7
 </default_value>
 <documentation>
-The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$$\frac{\text{W}{\text{m}\text{K}}$.
+The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 </documentation>
 <pattern>
 982
@@ -12253,7 +12253,7 @@ The reference temperature $T_0$. Units: $\text{K}$.
 2.38
 </default_value>
 <documentation>
-The value of the thermal conductivity $k$. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 </documentation>
 <pattern>
 771
@@ -12765,7 +12765,7 @@ The relative density of melt compared to the solid material. This means, the den
 2.38
 </default_value>
 <documentation>
-The value of the thermal conductivity $k$. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 </documentation>
 <pattern>
 795
@@ -13810,7 +13810,7 @@ The temperature dependence of the bulk viscosity. Dimensionless exponent. See th
 4.7
 </default_value>
 <documentation>
-The value of the thermal conductivity $k$. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 </documentation>
 <pattern>
 864
@@ -14358,7 +14358,7 @@ The temperature dependence of the bulk viscosity. Dimensionless exponent. See th
 4.7
 </default_value>
 <documentation>
-The value of the thermal conductivity $k$. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 </documentation>
 <pattern>
 910
@@ -14617,7 +14617,7 @@ The thermal expansion coefficient at the reference pressure and temperature. Uni
 4.7
 </default_value>
 <documentation>
-The value of the constant thermal conductivity $k$. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+The value of the constant thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 </documentation>
 <pattern>
 924
@@ -14761,7 +14761,7 @@ false
 4.7
 </default_value>
 <documentation>
-List of thermal conductivities for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+List of thermal conductivities for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 </documentation>
 <pattern>
 935
@@ -15355,7 +15355,7 @@ The name of the PerpleX input file (should end with .dat).
 4.7
 </default_value>
 <documentation>
-The value of the thermal conductivity $k$. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 </documentation>
 <pattern>
 710
@@ -16431,7 +16431,7 @@ The value of the specific heat $C_p$. Units: $\frac{\text{J}}{\text{K}\text{kg}}
 4.7
 </default_value>
 <documentation>
-The value of the thermal conductivity $k$. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 </documentation>
 <pattern>
 649
@@ -16603,7 +16603,7 @@ The reference temperature $T_0$. The reference temperature is used in both the d
 4.7
 </default_value>
 <documentation>
-The value of the thermal conductivity $k$. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 </documentation>
 <pattern>
 647
@@ -16724,7 +16724,7 @@ The reference temperature $T_0$. The reference temperature is used in both the d
 4.7
 </default_value>
 <documentation>
-The value of the thermal conductivity $k$. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 </documentation>
 <pattern>
 658
@@ -17164,7 +17164,7 @@ A list of values of reference temperatures used to determine the temperature-dep
 2.47, 3.81, 3.52, 4.9
 </default_value>
 <documentation>
-A list of base values of the thermal conductivity for each of the horizontal layers. Pressure- and temperature-dependence will be applied on top of this base value, according to the parameters &apos;Pressure dependencies of thermal conductivity&apos; and &apos;Reference temperatures for thermal conductivity&apos;. Units: $\frac{\text{W}{\text{m}\text{K}}$
+A list of base values of the thermal conductivity for each of the horizontal layers. Pressure- and temperature-dependence will be applied on top of this base value, according to the parameters &apos;Pressure dependencies of thermal conductivity&apos; and &apos;Reference temperatures for thermal conductivity&apos;. Units: $\frac{\text{W}}{\text{m}\text{K}}$
 </documentation>
 <pattern>
 673
@@ -17198,7 +17198,7 @@ A list of values that indicate how a given layer should take into account the ef
 4.7
 </default_value>
 <documentation>
-The value of the thermal conductivity $k$. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 </documentation>
 <pattern>
 670
@@ -18721,7 +18721,7 @@ List of stress limiter exponents, $n_{\text{lim}}$, for background material and 
 3.0
 </default_value>
 <documentation>
-List of thermal conductivities, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+List of thermal conductivities, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 </documentation>
 <pattern>
 623
@@ -19330,7 +19330,7 @@ A stabilization factor for the elastic stresses that influences how fast elastic
 4.7
 </default_value>
 <documentation>
-List of thermal conductivities for background mantle and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\frac{\text{W}{\text{m}\text{K}}$.
+List of thermal conductivities for background mantle and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
 </documentation>
 <pattern>
 634
@@ -20563,6 +20563,8 @@ Select one of the following models:
 `nearest neighbor&apos;: Return the properties of the nearest neighboring particle in the current cell, or nearest particle in nearest neighboring cell if current cell is empty. In case the neighboring cells are also empty, and &apos;Allow cells without particles&apos; is set to true, the interpolator returns 0. Otherwise, an exception is thrown. 
 
 `quadratic least squares&apos;: Interpolates particle properties onto a vector of points using a quadratic least squares method. Note that deal.II must be configured with BLAS/LAPACK.
+
+`bilinear least squares&apos;: Deprecated, now an alias for `linear least squares&apos;. This alias will be removed in the future. 
 </documentation>
 <pattern>
 249
@@ -22205,6 +22207,8 @@ Select one of the following models:
 `nearest neighbor&apos;: Return the properties of the nearest neighboring particle in the current cell, or nearest particle in nearest neighboring cell if current cell is empty. In case the neighboring cells are also empty, and &apos;Allow cells without particles&apos; is set to true, the interpolator returns 0. Otherwise, an exception is thrown. 
 
 `quadratic least squares&apos;: Interpolates particle properties onto a vector of points using a quadratic least squares method. Note that deal.II must be configured with BLAS/LAPACK.
+
+`bilinear least squares&apos;: Deprecated, now an alias for `linear least squares&apos;. This alias will be removed in the future. 
 </documentation>
 <pattern>
 343
@@ -25581,9 +25585,9 @@ Following \cite{LundTownend07}, we define the maximum horizontal stress directio
 
 In two space dimensions, $\mathbf n$ is simply a vector that is horizontal (we choose one of the two possible choices). This direction is then scaled by the size of the horizontal stress in this direction, i.e., the plugin outputs the vector $\mathbf w = (\mathbf n^T \sigma_c \mathbf n) \; \mathbf n$.
 
-In three space dimensions, given two horizontal, perpendicular, unit length, but otherwise arbitrarily chosen vectors $\mathbf u,\mathbf v$, we can express $\mathbf n = (\cos \alpha)\mathbf u + (\sin\alpha)\mathbf v$ where $\alpha$ maximizes the expression $\begin{align*}  f(\alpha) = \mathbf n^T \sigma_c \mathbf n  = (\mathbf u^T \sigma_c \mathbf u)(\cos\alpha)^2    +2(\mathbf u^T \sigma_c \mathbf v)(\cos\alpha)(\sin\alpha)    +(\mathbf v^T \sigma_c \mathbf v)(\sin\alpha)^2.\end{align*}$
+In three space dimensions, given two horizontal, perpendicular, unit length, but otherwise arbitrarily chosen vectors $\mathbf u,\mathbf v$, we can express $\mathbf n = (\cos \alpha)\mathbf u + (\sin\alpha)\mathbf v$ where $\alpha$ maximizes the expression \begin{align*}  f(\alpha) = \mathbf n^T \sigma_c \mathbf n  = (\mathbf u^T \sigma_c \mathbf u)(\cos\alpha)^2    +2(\mathbf u^T \sigma_c \mathbf v)(\cos\alpha)(\sin\alpha)    +(\mathbf v^T \sigma_c \mathbf v)(\sin\alpha)^2.\end{align*}
 
-The maximum of $f(\alpha)$ is attained where $f^\prime(\alpha)=0$. Evaluating the derivative and using trigonometric identities, one finds that $\alpha$ has to satisfy the equation $\begin{align*}  \tan(2\alpha) = \frac{2.0\mathbf u^T \sigma_c \mathbf v}                          {\mathbf u^T \sigma_c \mathbf u                            - \mathbf v^T \sigma_c \mathbf v}.\end{align*}$Since the transform $\alpha\mapsto\alpha+\pi$ flips the direction of $\mathbf n$, we only need to seek a solution to this equation in the interval $\alpha\in[0,\pi)$. These are given by $\alpha_1=\frac 12 \arctan \frac{2\mathbf u^T \sigma_c \mathbf v}{\mathbf u^T \sigma_c \mathbf u - \mathbf v^T \sigma_c \mathbf v}$ and $\alpha_2=\alpha_1+\frac{\pi}{2}$, one of which will correspond to a minimum and the other to a maximum of $f(\alpha)$. One checks the sign of $f^{\prime\prime}(\alpha)=-2(\mathbf u^T \sigma_c \mathbf u - \mathbf v^T \sigma_c \mathbf v)\cos(2\alpha) - 4 (\mathbf u^T \sigma_c \mathbf v) \sin(2\alpha)$ for each of these to determine the $\alpha$ that maximizes $f(\alpha)$, and from this immediately arrives at the correct form for the maximum horizontal stress $\mathbf n$.
+The maximum of $f(\alpha)$ is attained where $f^\prime(\alpha)=0$. Evaluating the derivative and using trigonometric identities, one finds that $\alpha$ has to satisfy the equation \begin{align*}  \tan(2\alpha) = \frac{2.0\mathbf u^T \sigma_c \mathbf v}                          {\mathbf u^T \sigma_c \mathbf u                            - \mathbf v^T \sigma_c \mathbf v}.\end{align*}Since the transform $\alpha\mapsto\alpha+\pi$ flips the direction of $\mathbf n$, we only need to seek a solution to this equation in the interval $\alpha\in[0,\pi)$. These are given by $\alpha_1=\frac 12 \arctan \frac{2\mathbf u^T \sigma_c \mathbf v}{\mathbf u^T \sigma_c \mathbf u - \mathbf v^T \sigma_c \mathbf v}$ and $\alpha_2=\alpha_1+\frac{\pi}{2}$, one of which will correspond to a minimum and the other to a maximum of $f(\alpha)$. One checks the sign of $f^{\prime\prime}(\alpha)=-2(\mathbf u^T \sigma_c \mathbf u - \mathbf v^T \sigma_c \mathbf v)\cos(2\alpha) - 4 (\mathbf u^T \sigma_c \mathbf v) \sin(2\alpha)$ for each of these to determine the $\alpha$ that maximizes $f(\alpha)$, and from this immediately arrives at the correct form for the maximum horizontal stress $\mathbf n$.
 
 The description above computes a 3d \textit{direction} vector $\mathbf n$. If one were to scale this vector the same way as done in 2d, i.e., with the magnitude of the stress in this direction, one will typically get vectors whose length is principally determined by the hydrostatic pressure at a given location simply because the hydrostatic pressure is the largest component of the overall stress. On the other hand, the hydrostatic pressure does not determine any principal direction because it is an isotropic, anti-compressive force. As a consequence, there are often points in simulations (e.g., at the center of convection rolls) where the stress has no dominant horizontal direction, and the algorithm above will then in essence choose a random direction because the stress is approximately equal in all horizontal directions. If one scaled the output by the magnitude of the stress in this direction (i.e., approximately equal to the hydrostatic pressure at this point), one would get randomly oriented vectors at these locations with significant lengths.
 
@@ -26565,7 +26569,7 @@ Select one of the following models:
 `function&apos;: This plugin allows to prescribe the Stokes solution for the velocity and pressure field in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see {ref}\`sec:run-aspect:parameters-overview:muparser-format\`.
 </documentation>
 <pattern>
-1414
+1421
 </pattern>
 <pattern_description>
 [Selection ascii data|circle|function|unspecified ]
@@ -26583,7 +26587,7 @@ $ASPECT_SOURCE_DIR/data/prescribed-stokes-solution/
 The name of a directory that contains the model data. This path may either be absolute (if starting with a `/&apos;) or relative to the current directory. The path may also include the special text `$ASPECT_SOURCE_DIR&apos; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/&apos; subdirectory of ASPECT. A trailing slash at the end of the directory path is optional; the plugin will automatically append a &apos;/&apos; when the parameters are parsed if it is missing.
 </documentation>
 <pattern>
-1415
+1422
 </pattern>
 <pattern_description>
 [DirectoryName]
@@ -26600,7 +26604,7 @@ box_2d.txt
 The file name of the model data.
 </documentation>
 <pattern>
-1416
+1423
 </pattern>
 <pattern_description>
 [Anything]
@@ -26617,7 +26621,7 @@ The file name of the model data.
 Point that determines the plane in which the 2d slice lies in. This variable is only used if &apos;Slice dataset in 2d plane&apos; is true. The slice will go through this point, the point defined by the parameter &apos;Second point on slice&apos;, and the center of the model domain. After the rotation, this first point will lie along the (0,1,0) axis of the coordinate system. The coordinates of the point have to be given in Cartesian coordinates.
 </documentation>
 <pattern>
-1419
+1426
 </pattern>
 <pattern_description>
 [Anything]
@@ -26634,7 +26638,7 @@ Point that determines the plane in which the 2d slice lies in. This variable is 
 Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
 </documentation>
 <pattern>
-1417
+1424
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -26651,7 +26655,7 @@ Scalar factor, which is applied to the model data. You might want to use this to
 Second point that determines the plane in which the 2d slice lies in. This variable is only used if &apos;Slice dataset in 2d plane&apos; is true. The slice will go through this point, the point defined by the parameter &apos;First point on slice&apos;, and the center of the model domain. The coordinates of the point have to be given in Cartesian coordinates.
 </documentation>
 <pattern>
-1420
+1427
 </pattern>
 <pattern_description>
 [Anything]
@@ -26668,7 +26672,7 @@ false
 Whether to use a 2d data slice of a 3d data file or the entire data file. Slicing a 3d dataset is only supported for 2d models.
 </documentation>
 <pattern>
-1418
+1425
 </pattern>
 <pattern_description>
 [Bool]
@@ -26685,7 +26689,7 @@ Sometimes it is convenient to use symbolic constants in the expression that desc
 A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
 </documentation>
 <pattern>
-1432
+1439
 </pattern>
 <pattern_description>
 [Anything]
@@ -26704,7 +26708,7 @@ The formula that denotes the function you want to evaluate for particular values
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 </documentation>
 <pattern>
-1431
+1438
 </pattern>
 <pattern_description>
 [Anything]
@@ -26721,7 +26725,7 @@ x,y,t
 The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
 </documentation>
 <pattern>
-1430
+1437
 </pattern>
 <pattern_description>
 [Anything]
@@ -26738,7 +26742,7 @@ Sometimes it is convenient to use symbolic constants in the expression that desc
 A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
 </documentation>
 <pattern>
-1429
+1436
 </pattern>
 <pattern_description>
 [Anything]
@@ -26757,7 +26761,7 @@ The formula that denotes the function you want to evaluate for particular values
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 </documentation>
 <pattern>
-1428
+1435
 </pattern>
 <pattern_description>
 [Anything]
@@ -26774,7 +26778,7 @@ x,y,t
 The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
 </documentation>
 <pattern>
-1427
+1434
 </pattern>
 <pattern_description>
 [Anything]
@@ -26791,7 +26795,7 @@ Sometimes it is convenient to use symbolic constants in the expression that desc
 A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
 </documentation>
 <pattern>
-1435
+1442
 </pattern>
 <pattern_description>
 [Anything]
@@ -26810,7 +26814,7 @@ The formula that denotes the function you want to evaluate for particular values
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 </documentation>
 <pattern>
-1434
+1441
 </pattern>
 <pattern_description>
 [Anything]
@@ -26827,7 +26831,7 @@ x,y,t
 The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
 </documentation>
 <pattern>
-1433
+1440
 </pattern>
 <pattern_description>
 [Anything]
@@ -26844,7 +26848,7 @@ Sometimes it is convenient to use symbolic constants in the expression that desc
 A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
 </documentation>
 <pattern>
-1426
+1433
 </pattern>
 <pattern_description>
 [Anything]
@@ -26863,7 +26867,7 @@ The formula that denotes the function you want to evaluate for particular values
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 </documentation>
 <pattern>
-1425
+1432
 </pattern>
 <pattern_description>
 [Anything]
@@ -26880,7 +26884,7 @@ x,y,t
 The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
 </documentation>
 <pattern>
-1424
+1431
 </pattern>
 <pattern_description>
 [Anything]
@@ -26897,7 +26901,7 @@ Sometimes it is convenient to use symbolic constants in the expression that desc
 A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
 </documentation>
 <pattern>
-1423
+1430
 </pattern>
 <pattern_description>
 [Anything]
@@ -26916,7 +26920,7 @@ The formula that denotes the function you want to evaluate for particular values
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 </documentation>
 <pattern>
-1422
+1429
 </pattern>
 <pattern_description>
 [Anything]
@@ -26933,7 +26937,7 @@ x,y,t
 The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
 </documentation>
 <pattern>
-1421
+1428
 </pattern>
 <pattern_description>
 [Anything]
@@ -26950,16 +26954,18 @@ A comma-separated list of prescribed solution models that will be used to comput
 
 The following prescribed solution models are available:
 
+`temperature function&apos;: Prescribe the temperature in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library.
+
 `velocity function&apos;: Prescribe the velocity in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see {ref}\`sec:run-aspect:parameters-overview:muparser-format\`.
 </documentation>
 <pattern>
 1405
 </pattern>
 <pattern_description>
-[MultipleSelection velocity function ]
+[MultipleSelection temperature function|velocity function ]
 </pattern_description>
 </List_20of_20model_20names>
-<Velocity_20function>
+<Temperature_20function>
 <Coordinate_20system>
 <value>
 cartesian
@@ -26968,7 +26974,7 @@ cartesian
 cartesian
 </default_value>
 <documentation>
-A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian&apos;, `spherical&apos;, and `depth&apos;. `spherical&apos; coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. `depth&apos; will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
+A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian&apos;, `spherical&apos;, and `depth&apos;.
 </documentation>
 <pattern>
 1406
@@ -26977,23 +26983,6 @@ A selection that determines the assumed coordinate system for the function varia
 [Selection cartesian|spherical|depth ]
 </pattern_description>
 </Coordinate_20system>
-<Use_20spherical_20unit_20vectors>
-<value>
-false
-</value>
-<default_value>
-false
-</default_value>
-<documentation>
-Specify velocity as $r$, $\phi$, and $\theta$ components instead of $x$, $y$, and $z$. Positive velocities point up, east, and north (in 3d) or out and clockwise (in 2d). This setting only makes sense for spherical geometries.
-</documentation>
-<pattern>
-1407
-</pattern>
-<pattern_description>
-[Bool]
-</pattern_description>
-</Use_20spherical_20unit_20vectors>
 <Function>
 <Function_20constants>
 <value/>
@@ -27004,7 +26993,7 @@ Sometimes it is convenient to use symbolic constants in the expression that desc
 A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
 </documentation>
 <pattern>
-1410
+1409
 </pattern>
 <pattern_description>
 [Anything]
@@ -27012,10 +27001,10 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536&apo
 </Function_20constants>
 <Function_20expression>
 <value>
-0; 0
+0
 </value>
 <default_value>
-0; 0
+0
 </default_value>
 <documentation>
 The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin&apos; or `cos&apos;. In addition, it may contain expressions like `if(x&gt;0, 1, -1)&apos; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
@@ -27023,7 +27012,7 @@ The formula that denotes the function you want to evaluate for particular values
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 </documentation>
 <pattern>
-1409
+1408
 </pattern>
 <pattern_description>
 [Anything]
@@ -27040,7 +27029,7 @@ x,y,t
 The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
 </documentation>
 <pattern>
-1408
+1407
 </pattern>
 <pattern_description>
 [Anything]
@@ -27057,7 +27046,96 @@ Sometimes it is convenient to use symbolic constants in the expression that desc
 A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
 </documentation>
 <pattern>
+1412
+</pattern>
+<pattern_description>
+[Anything]
+</pattern_description>
+</Function_20constants>
+<Function_20expression>
+<value>
+0
+</value>
+<default_value>
+0
+</default_value>
+<documentation>
+The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin&apos; or `cos&apos;. In addition, it may contain expressions like `if(x&gt;0, 1, -1)&apos; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
+
+If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+</documentation>
+<pattern>
+1411
+</pattern>
+<pattern_description>
+[Anything]
+</pattern_description>
+</Function_20expression>
+<Variable_20names>
+<value>
+x,y,t
+</value>
+<default_value>
+x,y,t
+</default_value>
+<documentation>
+The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
+</documentation>
+<pattern>
+1410
+</pattern>
+<pattern_description>
+[Anything]
+</pattern_description>
+</Variable_20names>
+</Indicator_20function>
+</Temperature_20function>
+<Velocity_20function>
+<Coordinate_20system>
+<value>
+cartesian
+</value>
+<default_value>
+cartesian
+</default_value>
+<documentation>
+A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian&apos;, `spherical&apos;, and `depth&apos;. `spherical&apos; coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. `depth&apos; will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
+</documentation>
+<pattern>
 1413
+</pattern>
+<pattern_description>
+[Selection cartesian|spherical|depth ]
+</pattern_description>
+</Coordinate_20system>
+<Use_20spherical_20unit_20vectors>
+<value>
+false
+</value>
+<default_value>
+false
+</default_value>
+<documentation>
+Specify velocity as $r$, $\phi$, and $\theta$ components instead of $x$, $y$, and $z$. Positive velocities point up, east, and north (in 3d) or out and clockwise (in 2d). This setting only makes sense for spherical geometries.
+</documentation>
+<pattern>
+1414
+</pattern>
+<pattern_description>
+[Bool]
+</pattern_description>
+</Use_20spherical_20unit_20vectors>
+<Function>
+<Function_20constants>
+<value/>
+<default_value/>
+<documentation>
+Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...&apos;.
+
+A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
+</documentation>
+<pattern>
+1417
 </pattern>
 <pattern_description>
 [Anything]
@@ -27076,7 +27154,7 @@ The formula that denotes the function you want to evaluate for particular values
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 </documentation>
 <pattern>
-1412
+1416
 </pattern>
 <pattern_description>
 [Anything]
@@ -27093,7 +27171,60 @@ x,y,t
 The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
 </documentation>
 <pattern>
-1411
+1415
+</pattern>
+<pattern_description>
+[Anything]
+</pattern_description>
+</Variable_20names>
+</Function>
+<Indicator_20function>
+<Function_20constants>
+<value/>
+<default_value/>
+<documentation>
+Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...&apos;.
+
+A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
+</documentation>
+<pattern>
+1420
+</pattern>
+<pattern_description>
+[Anything]
+</pattern_description>
+</Function_20constants>
+<Function_20expression>
+<value>
+0; 0
+</value>
+<default_value>
+0; 0
+</default_value>
+<documentation>
+The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin&apos; or `cos&apos;. In addition, it may contain expressions like `if(x&gt;0, 1, -1)&apos; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
+
+If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+</documentation>
+<pattern>
+1419
+</pattern>
+<pattern_description>
+[Anything]
+</pattern_description>
+</Function_20expression>
+<Variable_20names>
+<value>
+x,y,t
+</value>
+<default_value>
+x,y,t
+</default_value>
+<documentation>
+The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
+</documentation>
+<pattern>
+1418
 </pattern>
 <pattern_description>
 [Anything]
@@ -27825,7 +27956,7 @@ Whether to checkpoint the simulation right before termination.
 Terminate the simulation once the specified timestep has been reached.
 </documentation>
 <pattern>
-500
+501
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -27875,7 +28006,7 @@ The criterion considers the total heat flux over all boundaries listed by their 
 The wall time of the simulation. Unit: hours.
 </documentation>
 <pattern>
-502
+492
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -27891,7 +28022,7 @@ A comma separated list of names denoting those boundaries that should be taken i
 The names of the boundaries listed here can either be numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
 </documentation>
 <pattern>
-494
+495
 </pattern>
 <pattern_description>
 [List of &lt;[Anything]&gt; of length 0...4294967295 (inclusive)]
@@ -27908,7 +28039,7 @@ The names of the boundaries listed here can either be numbers (in which case the
 The maximum relative deviation of the heat flux in recent simulation time for the system to be considered in steady state. If the actual deviation is smaller than this number, then the simulation will be terminated.
 </documentation>
 <pattern>
-492
+493
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -27925,7 +28056,7 @@ The maximum relative deviation of the heat flux in recent simulation time for th
 The minimum length of simulation time that the system should be in steady state before termination. Note that if the time step size is similar to or larger than this value, the termination criterion will only have very few (in the most extreme case, just two) heat flux values to check. To ensure that a larger number of time steps are included in the check for steady state, this value should be much larger than the time step size. Units: years if the &apos;Use years instead of seconds&apos; parameter is set; seconds otherwise.
 </documentation>
 <pattern>
-493
+494
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -27944,7 +28075,7 @@ The minimum length of simulation time that the system should be in steady state 
 The maximum relative deviation of the temperature in recent simulation time for the system to be considered in steady state. If the actual deviation is smaller than this number, then the simulation will be terminated.
 </documentation>
 <pattern>
-497
+498
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -27961,7 +28092,7 @@ The maximum relative deviation of the temperature in recent simulation time for 
 The minimum length of simulation time that the system should be in steady state before termination.Units: years if the &apos;Use years instead of seconds&apos; parameter is set; seconds otherwise.
 </documentation>
 <pattern>
-498
+499
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -27980,7 +28111,7 @@ The minimum length of simulation time that the system should be in steady state 
 The maximum relative deviation of the RMS in recent simulation time for the system to be considered in steady state. If the actual deviation is smaller than this number, then the simulation will be terminated.
 </documentation>
 <pattern>
-495
+496
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -27997,7 +28128,7 @@ The maximum relative deviation of the RMS in recent simulation time for the syst
 The minimum length of simulation time that the system should be in steady state before termination.Units: years if the &apos;Use years instead of seconds&apos; parameter is set; seconds otherwise.
 </documentation>
 <pattern>
-496
+497
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -28016,7 +28147,7 @@ terminate-aspect
 The name of a file that, if it exists in the output directory (whose name is also specified in the input file) will lead to termination of the simulation. The file&apos;s location is chosen to be in the output directory, rather than in a generic location such as the ASPECT directory, so that one can run multiple simulations at the same time (which presumably write to different output directories) and can selectively terminate a particular one.
 </documentation>
 <pattern>
-499
+500
 </pattern>
 <pattern_description>
 [FileName (Type: input)]
@@ -28078,7 +28209,7 @@ Sometimes it is convenient to use symbolic constants in the expression that desc
 A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
 </documentation>
 <pattern>
-511
+508
 </pattern>
 <pattern_description>
 [Anything]
@@ -28095,7 +28226,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536&apo
 Expression for the time step size as a function of &apos;time&apos;.Units: years if the &apos;Use years instead of seconds&apos; parameter is set; seconds otherwise.
 </documentation>
 <pattern>
-512
+509
 </pattern>
 <pattern_description>
 [Anything]
@@ -28112,7 +28243,7 @@ time
 Name for the variable representing the current time.
 </documentation>
 <pattern>
-513
+510
 </pattern>
 <pattern_description>
 [Anything]
@@ -28131,7 +28262,7 @@ Name for the variable representing the current time.
 A factor that controls the size of the time step when repeating. The default of 0.5 corresponds to 50\% of the original step taken.
 </documentation>
 <pattern>
-507
+512
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -28148,7 +28279,7 @@ A factor that controls the size of the time step when repeating. The default of 
 A factor that controls when a step is going to be repeated. If the newly computed step size is smaller than the last step size multiplied by this factor, the step is repeated.
 </documentation>
 <pattern>
-506
+511
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -28167,7 +28298,7 @@ A factor that controls when a step is going to be repeated. If the newly compute
 A factor that controls the size of the time step when repeating. The default of 0.5 corresponds to 50\% of the original step taken.
 </documentation>
 <pattern>
-508
+513
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
