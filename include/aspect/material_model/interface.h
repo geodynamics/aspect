@@ -1247,10 +1247,10 @@ namespace aspect
         std::vector<double> dilation_lhs_term;
 
         /**
-         * A scalar value per evaluation point corresponding to the RHS term
+         * A scalar value per direction per evaluation point corresponding to the RHS term
          * due to plastic dilation.
          */
-        std::vector<double> dilation_rhs_term;
+        std::vector<std::vector<double>> dilation_rhs_term;
     };
 
 

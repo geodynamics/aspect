@@ -299,9 +299,15 @@ namespace aspect
               // should cancel out (RHS = LHS * p) so as to satisfy the loading-unloading conditions.
               plastic_dilation->dilation_lhs_term[i] = dilation_lhs_term;
               if (dilation_rhs_term - dilation_lhs_term * in.pressure[i] > 0)
-                plastic_dilation->dilation_rhs_term[i] = dilation_rhs_term;
+                {
+                  for (unsigned int dim_i = 0; dim_i < dim; ++dim_i)
+                    plastic_dilation->dilation_rhs_term[dim_i][i] = dilation_rhs_term;
+                }
               else
-                plastic_dilation->dilation_rhs_term[i] = dilation_lhs_term * in.pressure[i];
+                {
+                  for (unsigned int dim_i = 0; dim_i < dim; ++dim_i)
+                    plastic_dilation->dilation_rhs_term[dim_i][i] = dilation_lhs_term * in.pressure[i];
+                }
             }
         }
 

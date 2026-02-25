@@ -999,11 +999,14 @@ namespace aspect
 
     namespace
     {
-      std::vector<std::string> make_prescribed_dilation_outputs_names()
+      std::vector<std::string> make_prescribed_dilation_outputs_names(int dim)
       {
         std::vector<std::string> names;
         names.emplace_back("dilation_lhs_term");
         names.emplace_back("dilation_rhs_term");
+        names.emplace_back("dilation_rhs_term");
+        if (dim == 3)
+          names.emplace_back("dilation_rhs_term");
         return names;
       }
     }
@@ -1012,9 +1015,9 @@ namespace aspect
 
     template <int dim>
     PrescribedPlasticDilation<dim>::PrescribedPlasticDilation (const unsigned int n_points)
-      : NamedAdditionalMaterialOutputs<dim>(make_prescribed_dilation_outputs_names()),
+      : NamedAdditionalMaterialOutputs<dim>(make_prescribed_dilation_outputs_names(dim)),
         dilation_lhs_term(n_points, numbers::signaling_nan<double>()),
-        dilation_rhs_term(n_points, numbers::signaling_nan<double>())
+        dilation_rhs_term(dim, std::vector<double>(n_points, numbers::signaling_nan<double>()))
     {}
 
 
@@ -1022,14 +1025,20 @@ namespace aspect
     template <int dim>
     std::vector<double> PrescribedPlasticDilation<dim>::get_nth_output(const unsigned int idx) const
     {
-      AssertIndexRange (idx, 2);
+      AssertIndexRange (idx, 4);
       switch (idx)
         {
           case 0:
             return dilation_lhs_term;
 
           case 1:
-            return dilation_rhs_term;
+            return dilation_rhs_term[0];
+
+          case 2:
+            return dilation_rhs_term[1];
+
+          case 3:
+            return dilation_rhs_term[2];
 
           default:
             AssertThrow(false, ExcInternalError());
