@@ -164,8 +164,7 @@ namespace aspect
             {
               double thermal_diffusivity = 0.0;
 
-              for (unsigned int j=0; j < volume_fractions.size(); ++j)
-                thermal_diffusivity += volume_fractions[j] * thermal_diffusivities[j];
+              thermal_diffusivity = MaterialUtilities::average_value(volume_fractions, phase_function_values, phase_function.n_phase_transitions_for_each_composition(), thermal_diffusivities, MaterialUtilities::arithmetic);
 
               // Thermal conductivity at the given positions. If the temperature equation uses
               // the reference density profile formulation, use the reference density to
@@ -183,7 +182,7 @@ namespace aspect
             {
               // Use thermal conductivity values specified in the parameter file, if this
               // option was selected.
-              out.thermal_conductivities[i] = MaterialUtilities::average_value (volume_fractions, thermal_conductivities, MaterialUtilities::arithmetic);
+              out.thermal_conductivities[i] = MaterialUtilities::average_value(volume_fractions, phase_function_values, phase_function.n_phase_transitions_for_each_composition(), thermal_conductivities, MaterialUtilities::arithmetic);
             }
 
           out.compressibilities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.compressibilities, MaterialUtilities::arithmetic);
@@ -373,7 +372,7 @@ namespace aspect
 
           // Equation of state parameters
           prm.declare_entry ("Thermal diffusivities", "0.8e-6",
-                             Patterns::List(Patterns::Double (0.)),
+                             Patterns::Anything(),
                              "List of thermal diffusivities, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of all compositional fields or only "
                              "those corresponding to chemical compositions. "
@@ -385,7 +384,7 @@ namespace aspect
                              "instead of calculating the values through the specified thermal diffusivities, "
                              "densities, and heat capacities. ");
           prm.declare_entry ("Thermal conductivities", "3.0",
-                             Patterns::List(Patterns::Double(0)),
+                             Patterns::Anything(),
                              "List of thermal conductivities, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of all compositional fields or only "
                              "those corresponding to chemical compositions. "
