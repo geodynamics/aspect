@@ -15,7 +15,7 @@
 
   You should have received a copy of the GNU General Public License
   along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
+  <http://www.gnu.org/licenses/>. 
 */
 
 #ifndef _aspect_material_model_rheology_friction_models_h
@@ -43,11 +43,15 @@ namespace aspect
        *
        * For the type 'dynamic friction', the friction angle is rate dependent following
        * Equation 13 from \\cite{van_dinther_seismic_2013}.
+       * 
+       * For the type 'differential dynamic friction', the dynamic angle depends on whether
+       * local flow is convergent or divergent.
        */
       enum FrictionMechanism
       {
         static_friction,
         dynamic_friction,
+        differential_dynamic_friction,
         function
       };
 
@@ -77,7 +81,8 @@ namespace aspect
           compute_friction_angle(const double current_edot_ii,
                                  const unsigned int volume_fraction_index,
                                  const double static_friction_angle,
-                                 const Point<dim> &position) const;
+                                 const Point<dim> &position,
+                                 const SymmetricTensor<2, dim> &strain_rate) const;
 
           /**
            * A function that returns the selected type of friction dependence.
@@ -88,7 +93,7 @@ namespace aspect
         private:
           /**
            * Select the mechanism to be used for the friction dependence.
-           * Possible options: static friction | dynamic friction | function
+           * Possible options: static friction | dynamic friction | differential_dynamic_friction | function |
            */
           FrictionMechanism friction_mechanism;
 
@@ -127,6 +132,26 @@ namespace aspect
            * Possible choices are depth, cartesian and spherical.
            */
           Utilities::Coordinates::CoordinateSystem coordinate_system_friction_function;
+
+          /**
+           * Dynamic angles of internal friction that are used at high strain rates in  converging regions,
+           * when using differential dynamic friction.
+           */
+          std::vector<double> dynamic_angles_of_internal_friction_for_convergence;
+          /**
+           * Dynamic angles of internal friction that are used at high strain rates in  diverging regions,
+           * when using differential dynamic friction.
+           */
+          std::vector<double> dynamic_angles_of_internal_friction_for_divergence;
+
+          /**
+           * Thresholds on the strain rate trace to classify convergent regimes.
+           */
+          double convergence_threshold;
+          /**
+           * Thresholds on the strain rate trace to classify divergent regimes.
+           */
+          double divergence_threshold;
       };
     }
   }
