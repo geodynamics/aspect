@@ -259,24 +259,24 @@ namespace aspect
 
     // Set up the set of assemblers depending on the mode of equations
     if (!parameters.include_melt_transport
-        && !assemble_newton_stokes_system)
+        && !assemble_defect_correction_stokes_system)
       {
         set_advection_assemblers();
         set_stokes_assemblers();
       }
     else if (parameters.include_melt_transport
-             && !assemble_newton_stokes_system)
+             && !assemble_defect_correction_stokes_system)
       {
         melt_handler->set_assemblers(*assemblers);
       }
     else if (!parameters.include_melt_transport
-             && assemble_newton_stokes_system)
+             && assemble_defect_correction_stokes_system)
       {
         set_advection_assemblers();
         newton_handler->set_assemblers(*assemblers);
       }
     else if (parameters.include_melt_transport
-             && assemble_newton_stokes_system)
+             && assemble_defect_correction_stokes_system)
       {
         AssertThrow (false,
                      ExcMessage("The melt implementation does not support the Newton solver at the moment."));
@@ -337,7 +337,7 @@ namespace aspect
     scratch.material_model_inputs.requested_properties
       = MaterialModel::MaterialProperties::equation_of_state_properties |
         MaterialModel::MaterialProperties::viscosity |
-        (parameters.include_melt_transport || assemble_newton_stokes_system
+        (parameters.include_melt_transport || assemble_defect_correction_stokes_system
          ?
          MaterialModel::MaterialProperties::additional_outputs
          :
@@ -621,7 +621,7 @@ namespace aspect
 
     // initialize the material model data on the cell
     const bool need_viscosity =
-      assemble_newton_stokes_system || this->parameters.enable_prescribed_dilation || rebuild_stokes_matrix;
+      assemble_defect_correction_stokes_system || this->parameters.enable_prescribed_dilation || rebuild_stokes_matrix;
 
     scratch.material_model_inputs.reinit  (scratch.finite_element_values,
                                            cell,
@@ -649,7 +649,7 @@ namespace aspect
 
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
         scratch.velocity_values);
-    if (assemble_newton_stokes_system)
+    if (assemble_defect_correction_stokes_system)
       scratch.finite_element_values[introspection.extractors.velocities].get_function_divergences(current_linearization_point,scratch.velocity_divergence);
     if (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::hydrostatic_compression)
       scratch.finite_element_values[introspection.extractors.temperature].get_function_gradients(current_linearization_point,
@@ -755,20 +755,19 @@ namespace aspect
   {
     std::string timer_section_name = "Assemble Stokes system";
 
-    if (assemble_newton_stokes_system)
+    if (assemble_defect_correction_stokes_system)
       {
-        if (!assemble_newton_stokes_matrix && !stokes_matrix_free)
+        if (!rebuild_stokes_matrix && !stokes_matrix_free)
           timer_section_name += " rhs";
-        else if (assemble_newton_stokes_matrix && newton_handler->parameters.newton_derivative_scaling_factor == 0)
+        else if (rebuild_stokes_matrix && newton_handler->parameters.newton_derivative_scaling_factor == 0)
           timer_section_name += " Picard";
-        else if (assemble_newton_stokes_matrix && newton_handler->parameters.newton_derivative_scaling_factor != 0)
+        else if (rebuild_stokes_matrix && newton_handler->parameters.newton_derivative_scaling_factor != 0)
           timer_section_name += " Newton";
       }
 
     if (stokes_matrix_free)
       {
         rebuild_stokes_matrix = false;
-        assemble_newton_stokes_matrix = false;
         timer_section_name += " rhs";
       }
 
@@ -868,7 +867,6 @@ namespace aspect
                             parameters.include_melt_transport,
                             use_reference_density_profile,
                             rebuild_stokes_matrix,
-                            assemble_newton_stokes_matrix,
                             parameters.use_bfbt),
          internal::Assembly::CopyData::
          StokesSystem<dim> (stokes_dofs_per_cell,

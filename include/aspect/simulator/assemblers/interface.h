@@ -158,7 +158,6 @@ namespace aspect
                         const bool                add_compaction_pressure,
                         const bool                use_reference_density_profile,
                         const bool                rebuild_stokes_matrix,
-                        const bool                rebuild_newton_stokes_matrix,
                         const bool                use_bfbt);
 
           StokesSystem (const StokesSystem<dim> &scratch);
@@ -197,13 +196,6 @@ namespace aspect
            */
           std::vector<double> reference_densities;
           std::vector<double> reference_densities_depth_derivative;
-
-          /**
-           * Whether the Newton solver Stokes matrix should be rebuild during
-           * this assembly. If the matrix does not change, assembling the right
-           * hand side is sufficient.
-           */
-          const bool rebuild_newton_stokes_matrix;
         };
 
 

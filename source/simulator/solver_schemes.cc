@@ -611,16 +611,13 @@ namespace aspect
         dcr.switch_initial_residual = dcr.initial_residual;
         dcr.residual_old = dcr.initial_residual;
         dcr.residual = dcr.initial_residual;
-        assemble_newton_stokes_system = assemble_newton_stokes_matrix = false;
       }
-    else
-      assemble_newton_stokes_system = assemble_newton_stokes_matrix = true;
-
-    // We solve the normal system in nonlinear iteration 0, and the defect
-    // correction system (either Picard or Newton) in iteration >=1.
-    // These functions replace the assemblers and constraints when necessary.
-    if (nonlinear_iteration == 1)
+    else if (nonlinear_iteration == 1)
       {
+        // Switch to solving the defect correction system
+        assemble_defect_correction_stokes_system = true;
+
+        // Replace the assemblers and constraints
         set_assemblers();
         compute_current_constraints ();
       }
@@ -635,11 +632,16 @@ namespace aspect
     if (stokes_matrix_depends_on_solution()
         ||
         nonlinear_iteration == 0)
-      rebuild_stokes_matrix = rebuild_stokes_preconditioner = assemble_newton_stokes_matrix = true;
+        {
+      rebuild_stokes_matrix = true;
+      rebuild_stokes_preconditioner = true;
+        }
     else if (parameters.enable_prescribed_dilation)
+    {
       // The dilation requires the Stokes matrix (which is on the rhs
       // in the Newton solver) to be updated.
       rebuild_stokes_matrix = true;
+    }
 
     assemble_stokes_system();
 
@@ -710,7 +712,7 @@ namespace aspect
         if (stokes_matrix_depends_on_solution()
             ||
             (nonlinear_iteration == 0 && boundary_velocity_manager.get_prescribed_boundary_velocity_indicators().size() > 0))
-          rebuild_stokes_matrix = rebuild_stokes_preconditioner = assemble_newton_stokes_matrix = true;
+          rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
         else if (parameters.enable_prescribed_dilation)
           // The dilation requires the Stokes matrix (which is on the rhs
           // in the Newton solver) to be updated.

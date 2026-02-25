@@ -2612,7 +2612,8 @@ namespace aspect
     .swap(current_linearization_point.block(introspection.block_indices.velocities));
 
     // Rebuild the whole system to compute the rhs.
-    assemble_newton_stokes_system = true;
+    const bool assemble_dc_Stokes_backup = assemble_defect_correction_stokes_system;
+    assemble_defect_correction_stokes_system = true;
     rebuild_stokes_preconditioner = false;
 
     // Technically we only need the rhs, but we have asserts in place that check if
@@ -2620,10 +2621,9 @@ namespace aspect
     // TODO: This is a waste of time in the first nonlinear iteration. Check if we can modify the asserts in the
     // assemble_stokes_system() function to only assemble the RHS.
     rebuild_stokes_matrix = boundary_velocity_manager.get_prescribed_boundary_velocity_indicators().size()!=0;
-    assemble_newton_stokes_matrix = boundary_velocity_manager.get_prescribed_boundary_velocity_indicators().size()!=0;
+    rebuild_stokes_matrix = boundary_velocity_manager.get_prescribed_boundary_velocity_indicators().size()!=0;
 
     compute_current_constraints ();
-
     assemble_stokes_system();
 
     const double initial_newton_residual_vel = system_rhs.block(introspection.block_indices.velocities).l2_norm();
@@ -2633,6 +2633,9 @@ namespace aspect
     // Swap old content back in:
     current_linearization_point.block(introspection.block_indices.velocities)
     .swap(temp_velocity_linearization_point);
+
+    // Undo the change to this state variable
+    assemble_defect_correction_stokes_system = assemble_dc_Stokes_backup;
 
     pcout << "   Initial Newton Stokes residual = " << initial_newton_residual << ", v = " << initial_newton_residual_vel << ", p = " << initial_newton_residual_p << std::endl << std::endl;
     return initial_newton_residual;
@@ -2685,7 +2688,7 @@ namespace aspect
         current_linearization_point.block(pressure_block_index) = current_iterate.block(pressure_block_index);
 
         // Rebuild the rhs to determine the new residual.
-        assemble_newton_stokes_matrix = rebuild_stokes_preconditioner = false;
+        rebuild_stokes_preconditioner = false;
         rebuild_stokes_matrix = !boundary_velocity_manager.get_prescribed_boundary_velocity_indicators().empty();
 
         assemble_stokes_system();

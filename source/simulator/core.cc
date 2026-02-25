@@ -247,13 +247,12 @@ namespace aspect
     pressure_scaling (numbers::signaling_nan<double>()),
 
     rebuild_stokes_matrix (true),
-    assemble_newton_stokes_matrix (true),
-    assemble_newton_stokes_system (Parameters<dim>::is_defect_correction(parameters.nonlinear_solver)
-                                   ?
-                                   true
-                                   :
-                                   false),
-    rebuild_stokes_preconditioner (true)
+    rebuild_stokes_preconditioner (true),
+    // note that assemble_defect_correction_stokes_system is 
+    // initialized to false even for defect correction solvers
+    // because the first nonlinear iteration is always
+    // solved as the full system
+    assemble_defect_correction_stokes_system (false)
   {
     wall_timer.start();
 
@@ -439,11 +438,11 @@ namespace aspect
         melt_handler->initialize();
       }
 
-    // If the solver type is a Newton or defect correction type of solver, we need to set make sure
-    // assemble_newton_stokes_system set to true.
+
+    // Initialize the Newton handler for all defect correction solver schemes
+    // (defect correction Picard and Newton solvers)
     if (Parameters<dim>::is_defect_correction(parameters.nonlinear_solver))
       {
-        assemble_newton_stokes_system = true;
         newton_handler->initialize_simulator(*this);
         newton_handler->parameters.parse_parameters(prm);
       }
@@ -648,6 +647,13 @@ namespace aspect
     for (auto &particle_manager : particle_managers)
       particle_manager.backup_particles();
 
+    if (Parameters<dim>::is_defect_correction(parameters.nonlinear_solver))
+    {
+      // Ensure we always begin by solving the normal Stokes system
+      // even for defect correction / Newton solvers
+      assemble_defect_correction_stokes_system = false;
+      set_assemblers();
+    }
 
     // then interpolate the current boundary velocities. copy constraints
     // into current_constraints and then add to current_constraints
@@ -1448,7 +1454,7 @@ namespace aspect
         (introspection.n_components,
          [&] (const dealii::Point<dim> &x) -> Tensor<1,dim>
         {
-          if (!assemble_newton_stokes_system || (assemble_newton_stokes_system && nonlinear_iteration == 0))
+          if (!assemble_defect_correction_stokes_system || (assemble_defect_correction_stokes_system && nonlinear_iteration == 0))
             return boundary_velocity_manager.boundary_velocity(boundary_id, x);
           else
             return Tensor<1,dim>();

@@ -519,7 +519,7 @@ namespace aspect
       std::vector<double> deta_dp_times_phi_p;
       std::vector<double> eps_times_grads_phi_u;
 
-      if (scratch.rebuild_newton_stokes_matrix && derivative_scaling_factor > 0)
+      if (scratch.rebuild_stokes_matrix && derivative_scaling_factor > 0)
         {
           deta_deps_times_grads_phi_u.resize(stokes_dofs_per_cell);
           deta_dp_times_phi_p.resize(stokes_dofs_per_cell);
@@ -630,7 +630,7 @@ namespace aspect
             }
 
           // and then the matrix, if necessary
-          if (scratch.rebuild_newton_stokes_matrix)
+          if (scratch.rebuild_stokes_matrix)
             {
               const double dilation_lhs_term = (prescribed_dilation == nullptr ? 0.0 :
                                                 prescribed_dilation->dilation_lhs_term[q]);
@@ -737,7 +737,7 @@ namespace aspect
         }
 
 #if DEBUG
-      if (scratch.rebuild_newton_stokes_matrix)
+      if (scratch.rebuild_stokes_matrix)
         {
           if (this->get_newton_handler().parameters.velocity_block_stabilization
               == Newton::Parameters::Stabilization::SPD)
@@ -931,7 +931,7 @@ namespace aspect
             {
               if (derivative_scaling_factor == 0)
                 {
-                  if (scratch.rebuild_newton_stokes_matrix)
+                  if (scratch.rebuild_stokes_matrix)
                     for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
                       for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
                         {
