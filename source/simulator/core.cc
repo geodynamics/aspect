@@ -104,7 +104,7 @@ namespace aspect
      * of a curved mesh, and a cartesian mapping for a rectangular mesh that is
      * not deformed. Use a MappingQ1 if the initial mesh is deformed.
      * If mesh deformation is enabled, each mapping is later swapped out for a
-     * MappingQ1Eulerian, which allows for mesh deformation during the
+     * MappingQEulerian, which allows for mesh deformation during the
      * computation.
      */
     template <int dim>
