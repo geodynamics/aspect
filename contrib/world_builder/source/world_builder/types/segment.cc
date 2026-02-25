@@ -38,6 +38,10 @@ namespace WorldBuilder
       {
         class Interface;
       }  // namespace Temperature
+      namespace Velocity
+      {
+        class Interface;
+      }  // namespace Velocity
     }  // namespace FaultModels
     namespace SubductingPlateModels
     {
@@ -53,6 +57,10 @@ namespace WorldBuilder
       {
         class Interface;
       }  // namespace Temperature
+      namespace Velocity
+      {
+        class Interface;
+      }  // namespace Velocity
     }  // namespace SubductingPlateModels
   }  // namespace Features
 
@@ -64,7 +72,8 @@ namespace WorldBuilder
                      const WorldBuilder::Point<2> &default_angle_,
                      const Types::Interface &temperature_plugin_system_,
                      const Types::Interface &composition_plugin_system_,
-                     const Types::Interface &grains_plugin_system_)
+                     const Types::Interface &grains_plugin_system_,
+                     const Types::Interface &velocity_plugin_system_)
       :
       value_length(default_length_),
       default_length(default_length_),
@@ -75,7 +84,8 @@ namespace WorldBuilder
       default_angle(default_angle_),
       temperature_plugin_system(temperature_plugin_system_.clone()),
       composition_plugin_system(composition_plugin_system_.clone()),
-      grains_plugin_system(grains_plugin_system_.clone())
+      grains_plugin_system(grains_plugin_system_.clone()),
+      velocity_plugin_system(velocity_plugin_system_.clone())
     {
       this->type_name = Types::type::Segment;
     }
@@ -92,7 +102,8 @@ namespace WorldBuilder
       default_angle(other.default_angle),
       temperature_plugin_system(other.temperature_plugin_system->clone()),
       composition_plugin_system(other.composition_plugin_system->clone()),
-      grains_plugin_system(other.grains_plugin_system->clone())
+      grains_plugin_system(other.grains_plugin_system->clone()),
+      velocity_plugin_system(other.velocity_plugin_system->clone())
     {
       this->type_name = Types::type::Segment;
     }
@@ -159,6 +170,7 @@ namespace WorldBuilder
           temperature_plugin_system->write_schema(prm, "temperature models", "");
           composition_plugin_system->write_schema(prm, "composition models", "");
           grains_plugin_system->write_schema(prm, "grains models", "");
+          velocity_plugin_system->write_schema(prm, "velocity models", "");
         }
         prm.leave_subsection();
       }

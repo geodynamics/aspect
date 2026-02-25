@@ -29,6 +29,7 @@
 #include "world_builder/types/unsigned_int.h"
 #include "world_builder/world.h"
 #include <algorithm>
+#include <array>
 
 using namespace std;
 
@@ -114,7 +115,8 @@ namespace WorldBuilder
       prm.declare_entry("segments", Types::Array(Types::Segment(0,Point<2>(0,0,invalid),Point<2>(0,0,invalid),Point<2>(0,0,invalid),
                                                                 Types::PluginSystem("", Features::SubductingPlateModels::Temperature::Interface::declare_entries, {"model"}),
                                                                 Types::PluginSystem("", Features::SubductingPlateModels::Composition::Interface::declare_entries, {"model"}),
-                                                                Types::PluginSystem("", Features::SubductingPlateModels::Grains::Interface::declare_entries, {"model"}))),
+                                                                Types::PluginSystem("", Features::SubductingPlateModels::Grains::Interface::declare_entries, {"model"}),
+                                                                Types::PluginSystem("", Features::SubductingPlateModels::Velocity::Interface::declare_entries, {"model"}))),
                         "The depth to which this feature is present");
 
       prm.declare_entry("temperature models",
@@ -126,6 +128,9 @@ namespace WorldBuilder
       prm.declare_entry("grains models",
                         Types::PluginSystem("", Features::SubductingPlateModels::Grains::Interface::declare_entries, {"model"}),
                         "A list of grains models.");
+      prm.declare_entry("velocity models",
+                        Types::PluginSystem("", Features::SubductingPlateModels::Velocity::Interface::declare_entries, {"model"}),
+                        "A list of velocity models.");
 
       if (parent_name != "items")
         {
@@ -176,14 +181,17 @@ namespace WorldBuilder
       default_temperature_models.resize(0);
       default_composition_models.resize(0);
       default_grains_models.resize(0);
+      default_velocity_models.resize(0);
       prm.get_shared_pointers<Features::SubductingPlateModels::Temperature::Interface>("temperature models", default_temperature_models);
       prm.get_shared_pointers<Features::SubductingPlateModels::Composition::Interface>("composition models", default_composition_models);
       prm.get_shared_pointers<Features::SubductingPlateModels::Grains::Interface>("grains models", default_grains_models);
+      prm.get_shared_pointers<Features::SubductingPlateModels::Velocity::Interface>("velocity models", default_velocity_models);
 
       // get the default segments.
       default_segment_vector = prm.get_vector<Objects::Segment<Features::SubductingPlateModels::Temperature::Interface,
       Features::SubductingPlateModels::Composition::Interface,
-      Features::SubductingPlateModels::Grains::Interface> >("segments", default_temperature_models, default_composition_models, default_grains_models);
+      Features::SubductingPlateModels::Grains::Interface,
+      Features::SubductingPlateModels::Velocity::Interface> >("segments", default_temperature_models, default_composition_models, default_grains_models,default_velocity_models);
 
 
       // This vector stores segments to this coordinate/section.
@@ -214,6 +222,7 @@ namespace WorldBuilder
                 std::vector<std::shared_ptr<Features::SubductingPlateModels::Temperature::Interface> > local_default_temperature_models;
                 std::vector<std::shared_ptr<Features::SubductingPlateModels::Composition::Interface>  > local_default_composition_models;
                 std::vector<std::shared_ptr<Features::SubductingPlateModels::Grains::Interface>  > local_default_grains_models;
+                std::vector<std::shared_ptr<Features::SubductingPlateModels::Velocity::Interface>  > local_default_velocity_models;
 
                 if (!prm.get_shared_pointers<Features::SubductingPlateModels::Temperature::Interface>("temperature models", local_default_temperature_models))
                   {
@@ -233,9 +242,16 @@ namespace WorldBuilder
                     local_default_grains_models = default_grains_models;
                   }
 
+                if (!prm.get_shared_pointers<Features::SubductingPlateModels::Velocity::Interface>("velocity models", local_default_velocity_models))
+                  {
+                    // no local composition model, use global default
+                    local_default_velocity_models = default_velocity_models;
+                  }
+
                 segment_vector[change_coord_number] = prm.get_vector<Objects::Segment<Features::SubductingPlateModels::Temperature::Interface,
                                                       Features::SubductingPlateModels::Composition::Interface,
-                                                      Features::SubductingPlateModels::Grains::Interface> >("segments", local_default_temperature_models, local_default_composition_models, local_default_grains_models);
+                                                      Features::SubductingPlateModels::Grains::Interface,
+                                                      Features::SubductingPlateModels::Velocity::Interface> >("segments", local_default_temperature_models, local_default_composition_models, local_default_grains_models, local_default_velocity_models);
 
 
                 WBAssertThrow(segment_vector[change_coord_number].size() == default_segment_vector.size(),
@@ -283,6 +299,19 @@ namespace WorldBuilder
                               prm.enter_subsection(std::to_string(j));
                               {
                                 segment_vector[change_coord_number][i].grains_systems[j]->parse_entries(prm);
+                              }
+                              prm.leave_subsection();
+                            }
+                        }
+                        prm.leave_subsection();
+
+                        prm.enter_subsection("velocity models");
+                        {
+                          for (unsigned int j = 0; j < segment_vector[change_coord_number][i].velocity_systems.size(); ++j)
+                            {
+                              prm.enter_subsection(std::to_string(j));
+                              {
+                                segment_vector[change_coord_number][i].velocity_systems[j]->parse_entries(prm);
                               }
                               prm.leave_subsection();
                             }
@@ -343,6 +372,19 @@ namespace WorldBuilder
                     prm.enter_subsection(std::to_string(j));
                     {
                       default_segment_vector[i].grains_systems[j]->parse_entries(prm);
+                    }
+                    prm.leave_subsection();
+                  }
+              }
+              prm.leave_subsection();
+
+              prm.enter_subsection("velocity models");
+              {
+                for (unsigned int j = 0; j < default_segment_vector[i].velocity_systems.size(); ++j)
+                  {
+                    prm.enter_subsection(std::to_string(j));
+                    {
+                      default_segment_vector[i].velocity_systems[j]->parse_entries(prm);
                     }
                     prm.leave_subsection();
                   }
@@ -461,6 +503,10 @@ namespace WorldBuilder
                                 const std::vector<size_t> &entry_in_output,
                                 std::vector<double> &output) const
     {
+      // if we only ask for topography (which is common operation), then we return directly, since the slab doesn't currently support it.
+      if (properties.size() == 1 && properties[0][0] == 6)
+        return;
+
       // The depth variable is the distance from the surface to the position, the depth
       // coordinate is the distance from the bottom of the model to the position and
       // the starting radius is the distance from the bottom of the model to the surface.
@@ -704,11 +750,63 @@ namespace WorldBuilder
                             output[entry_in_output[i_property]] = static_cast<double>(tag_index);
                             break;
                           }
+                          case 5: // velocity
+                          {
+                            std::array<double,3> velocity_current_section;// = Point<3>(cartesian);
+                            velocity_current_section[0] = output[entry_in_output[i_property]];
+                            velocity_current_section[1] = output[entry_in_output[i_property]+1];
+                            velocity_current_section[2] = output[entry_in_output[i_property]+2];
+                            std::array<double,3> velocity_next_section = velocity_current_section;// output[entry_in_output[i_property]];
+
+                            for (const auto &velocity_model: segment_vector[current_section][current_segment].velocity_systems)
+                              {
+                                velocity_current_section = velocity_model->get_velocity(position_in_cartesian_coordinates,
+                                                                                        depth,
+                                                                                        gravity_norm,
+                                                                                        velocity_current_section,
+                                                                                        starting_depth,
+                                                                                        maximum_depth,
+                                                                                        distance_from_planes,
+                                                                                        additional_parameters);
+
+                                //WBAssert(!std::isnan(velocity_current_section), "Velocity is not a number: " << velocity_current_section
+                                //         << ", based on a velocity model with the name " << velocity_model->get_name() << ", in feature " << this->name);
+                                //WBAssert(std::isfinite(velocity_current_section), "Velocity is not a finite: " << velocity_current_section
+                                //         << ", based on a velocity model with the name " << velocity_model->get_name() << ", in feature " << this->name);
+
+                              }
+
+                            for (const auto &velocity_model: segment_vector[next_section][current_segment].velocity_systems)
+                              {
+                                velocity_next_section = velocity_model->get_velocity(position_in_cartesian_coordinates,
+                                                                                     depth,
+                                                                                     gravity_norm,
+                                                                                     velocity_next_section,
+                                                                                     starting_depth,
+                                                                                     maximum_depth,
+                                                                                     distance_from_planes,
+                                                                                     additional_parameters);
+
+                                //WBAssert(!std::isnan(velocity_next_section), "Velocity is not a number: " << velocity_next_section
+                                //         << ", based on a velocity model with the name " << velocity_model->get_name() << ", in feature " << this->name);
+                                //WBAssert(std::isfinite(velocity_next_section), "Velocity is not a finite: " << velocity_next_section
+                                //         << ", based on a velocity model with the name " << velocity_model->get_name() << ", in feature " << this->name);
+
+                              }
+
+                            // linear interpolation between current and next section velocitys
+                            output[entry_in_output[i_property]] = velocity_current_section[0] + section_fraction * (velocity_next_section[0] - velocity_current_section[0]);
+                            output[entry_in_output[i_property]+1] = velocity_current_section[1] + section_fraction * (velocity_next_section[1] - velocity_current_section[1]);
+                            output[entry_in_output[i_property]+2] = velocity_current_section[2] + section_fraction * (velocity_next_section[2] - velocity_current_section[2]);
+                            break;
+                          }
+                          case 6: // topography: not implemented
+                            break;
                           default:
                           {
                             WBAssertThrow(false,
                                           "Internal error: Unimplemented property provided. " <<
-                                          "Only temperature (1), composition (2), grains (3) or tag (4) are allowed. "
+                                          "Only temperature (1), composition (2), grains (3), tag (4) or velocity (5) are allowed. "
                                           "Provided property number was: " << properties[i_property][0]);
                           }
                         }

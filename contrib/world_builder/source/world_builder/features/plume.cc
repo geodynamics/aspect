@@ -23,6 +23,7 @@
 #include "world_builder/features/plume_models/composition/interface.h"
 #include "world_builder/features/plume_models/grains/interface.h"
 #include "world_builder/features/plume_models/temperature/interface.h"
+#include "world_builder/features/plume_models/velocity/interface.h"
 #include "world_builder/features/feature_utilities.h"
 #include "world_builder/nan.h"
 #include "world_builder/types/array.h"
@@ -111,6 +112,9 @@ namespace WorldBuilder
       prm.declare_entry("grains models",
                         Types::PluginSystem("", Features::PlumeModels::Grains::Interface::declare_entries, {"model"}),
                         "A list of grains models.");
+      prm.declare_entry("velocity models",
+                        Types::PluginSystem("", Features::PlumeModels::Velocity::Interface::declare_entries, {"model"}),
+                        "A list of velocity models.");
     }
 
     void
@@ -228,6 +232,20 @@ namespace WorldBuilder
       }
       prm.leave_subsection();
 
+      prm.get_unique_pointers<Features::PlumeModels::Velocity::Interface>("velocity models", velocity_models);
+
+      prm.enter_subsection("velocity models");
+      {
+        for (unsigned int i = 0; i < velocity_models.size(); ++i)
+          {
+            prm.enter_subsection(std::to_string(i));
+            {
+              velocity_models[i]->parse_entries(prm);
+            }
+            prm.leave_subsection();
+          }
+      }
+      prm.leave_subsection();
     }
 
 
@@ -241,6 +259,10 @@ namespace WorldBuilder
                       const std::vector<size_t> &entry_in_output,
                       std::vector<double> &output) const
     {
+      // if we only ask for topography (which is common operation), then we return directly, since the plume doesn't currently support it.
+      if (properties.size() == 1 && properties[0][0] == 6)
+        return;
+
       // Figure out if the point is within the plume
       auto upper = std::upper_bound(depths.begin(), depths.end(), depth);
 
@@ -300,7 +322,7 @@ namespace WorldBuilder
                                                               rotation_angle,
                                                               surface_point);
 
-      // If we are in the tip, we have to compute the difference diffently:
+      // If we are in the tip, we have to compute the difference differently:
       if (depth >= min_depth && depth < depths.front())
         {
           const double a = semi_major_axis_lengths.front();
@@ -385,11 +407,38 @@ namespace WorldBuilder
                     output[entry_in_output[i_property]] = static_cast<double>(tag_index);
                     break;
                   }
+                  case 5:  // velocity
+                  {
+                    std::array<double, 3> velocity = {{0,0,0}};
+                    for (const auto &velocity_model: velocity_models)
+                      {
+                        velocity = velocity_model->get_velocity(position_in_cartesian_coordinates,
+                                                                position_in_natural_coordinates,
+                                                                depth,
+                                                                gravity_norm,
+                                                                velocity,
+                                                                min_depth,
+                                                                max_depth,
+                                                                relative_distance_from_center);
+
+                        //WBAssert(!std::isnan(output[entry_in_output[i_property]]), "Velocity is not a number: " << output[entry_in_output[i_property]]
+                        //         << ", based on a velocity model with the name " << velocity_model->get_name() << ", in feature " << this->name);
+                        //WBAssert(std::isfinite(output[entry_in_output[i_property]]), "Velocity is not a finite: " << output[entry_in_output[i_property]]
+                        //         << ", based on a velocity model with the name " << velocity_model->get_name() << ", in feature " << this->name);
+                      }
+
+                    output[entry_in_output[i_property]] = velocity[0];
+                    output[entry_in_output[i_property]+1] = velocity[1];
+                    output[entry_in_output[i_property]+2] = velocity[2];
+                    break;
+                  }
+                  case 6: // topography: not implemented
+                    break;
                   default:
                   {
                     WBAssertThrow(false,
                                   "Internal error: Unimplemented property provided. " <<
-                                  "Only temperature (1), composition (2), grains (3) or tag (4) are allowed. "
+                                  "Only temperature (1), composition (2), grains (3), tag (4) or velocity (5) are allowed. "
                                   "Provided property number was: " << properties[i_property][0]);
                   }
                 }

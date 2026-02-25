@@ -12,6 +12,6 @@ oceanic_plate.md
 continental_plate.md
 mantle_layer.md
 fault.md
-subducting_plate.md
+subducting_plate/subducting_plate.md
 plume/plume.md
 ```

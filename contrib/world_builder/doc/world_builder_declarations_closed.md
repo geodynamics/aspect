@@ -565,6 +565,14 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/1/min depth/oneOf/3
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_1_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
 
 ::::::::::::::::
 
@@ -641,6 +649,14 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/1/max depth/oneOf/3
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_1_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
 
 ::::::::::::::::
 
@@ -676,9 +692,9 @@
 :name: closed_features_items_oneOf_1_temperature-models_items_oneOf_2
 
 - **type**:object
-- **description**:Linear temperature model. Can be set to use an adiabatic temperature at the boundaries.
+- **description**:Continental geotherm using the steady-state 1-D heat conduction equation from Chapman (1986).
 - **additionalProperties**:false
-- **required**:[model, max depth]
+- **required**:[model]
 
 ::::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/2/model
 :name: closed_features_items_oneOf_1_temperature-models_items_oneOf_2_model
@@ -686,7 +702,7 @@
 - **default value**:
 - **type**:string
 - **description**:The name of the temperature model.
-- **enum**:[linear]
+- **enum**:[chapman]
 ::::::::::::::::
 
 ::::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/2/operation
@@ -771,6 +787,14 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/2/min depth/oneOf/3
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_2_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
 
 ::::::::::::::::
 
@@ -847,6 +871,14 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/2/max depth/oneOf/3
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_2_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
 
 ::::::::::::::::
 
@@ -855,15 +887,31 @@
 
 - **default value**:293.15
 - **type**:number
-- **description**:The temperature at the top in degree Kelvin of this feature.If the value is below zero, the an adiabatic temperature is used.
+- **description**:The temperature at the top surface in K of this feature.If the value is below zero, then an adiabatic temperature is used.
 ::::::::::::::::
 
-::::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/2/bottom temperature
-:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_2_bottom-temperature
+::::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/2/top heat flux
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_2_top-heat-flux
 
-- **default value**:-1.0
+- **default value**:0.055
 - **type**:number
-- **description**:The temperature at the top in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
+- **description**:The heat flux at the top surface in W m^(-2) of this feature.The default value is 0.055.
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/2/thermal conductivity
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_2_thermal-conductivity
+
+- **default value**:2.5
+- **type**:number
+- **description**:The thermal conductivity in W m^(-1) K^(-1) of this feature.The default value is 2.5.
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/2/heat generation per unit volume
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_2_heat-generation-per-unit-volume
+
+- **default value**:0.000001
+- **type**:number
+- **description**:The heat generation per unit volume in W m^(-3) of this feature.The default value is 1e-6.
 ::::::::::::::::
 
 
@@ -874,9 +922,9 @@
 :name: closed_features_items_oneOf_1_temperature-models_items_oneOf_3
 
 - **type**:object
-- **description**:Uniform temperature model. Set the temperature to a constant value.
+- **description**:Linear temperature model. Can be set to use an adiabatic temperature at the boundaries.
 - **additionalProperties**:false
-- **required**:[model, temperature]
+- **required**:[model, max depth]
 
 ::::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/3/model
 :name: closed_features_items_oneOf_1_temperature-models_items_oneOf_3_model
@@ -884,7 +932,7 @@
 - **default value**:
 - **type**:string
 - **description**:The name of the temperature model.
-- **enum**:[uniform]
+- **enum**:[linear]
 ::::::::::::::::
 
 ::::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/3/operation
@@ -969,6 +1017,14 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/3/min depth/oneOf/3
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_3_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
 
 ::::::::::::::::
 
@@ -1045,15 +1101,694 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/3/max depth/oneOf/3
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_3_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
 
 ::::::::::::::::
 
-::::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/3/temperature
-:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_3_temperature
+::::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/3/top temperature
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_3_top-temperature
+
+- **default value**:293.15
+- **type**:number
+- **description**:The temperature at the top in degree Kelvin of this feature.If the value is below zero, the an adiabatic temperature is used.
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/3/bottom temperature
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_3_bottom-temperature
+
+- **default value**:-1.0
+- **type**:number
+- **description**:The temperature at the top in degree Kelvin of this feature. If the value is below zero, an adiabatic temperature is used.
+::::::::::::::::
+
+
+
+:::::::::::::::::
+
+:::::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4
+
+- **type**:object
+- **description**:Uniform temperature model. Set the temperature to a constant value.
+- **additionalProperties**:false
+- **required**:[model, temperature]
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/model
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_model
+
+- **default value**:
+- **type**:string
+- **description**:The name of the temperature model.
+- **enum**:[uniform]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/operation
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_operation
+
+- **default value**:replace
+- **type**:string
+- **description**:Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+- **enum**:[replace, add, subtract]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/min depth
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_min-depth
+
+- **description**:The depth in meters from which the composition of this feature is present.
+:::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/min depth/oneOf
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_min-depth_oneOf
+
+::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/min depth/oneOf/1
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_min-depth_oneOf_1
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/min depth/oneOf/2
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_min-depth_oneOf_2
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/min depth/oneOf/2/items
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_min-depth_oneOf_2_items
+
+- **type**:array
+- **additionalProperties**:false
+- **minItems**:1
+- **maxItems**:2
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/min depth/oneOf/2/items/items
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_min-depth_oneOf_2_items_items
+
+:::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/min depth/oneOf/2/items/items/anyOf
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_min-depth_oneOf_2_items_items_anyOf
+
+::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/min depth/oneOf/2/items/items/anyOf/1
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_min-depth_oneOf_2_items_items_anyOf_1
+
+- **type**:number
+- **default value**:0.0
+::::::::::
+
+::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/min depth/oneOf/2/items/items/anyOf/2
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_min-depth_oneOf_2_items_items_anyOf_2
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:4294967295
+:::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/min depth/oneOf/2/items/items/anyOf/2/items
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_min-depth_oneOf_2_items_items_anyOf_2_items
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:2
+::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/min depth/oneOf/2/items/items/anyOf/2/items/items
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_min-depth_oneOf_2_items_items_anyOf_2_items_items
+
+- **type**:number
+::::::::
+
+:::::::::
+
+::::::::::
+
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/min depth/oneOf/3
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/max depth
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_max-depth
+
+- **description**:The depth in meters to which the composition of this feature is present.
+:::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/max depth/oneOf
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_max-depth_oneOf
+
+::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/max depth/oneOf/1
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_max-depth_oneOf_1
+
+- **default value**:1.7976931348623157e308
+- **type**:number
+- **description**:
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/max depth/oneOf/2
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_max-depth_oneOf_2
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/max depth/oneOf/2/items
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_max-depth_oneOf_2_items
+
+- **type**:array
+- **additionalProperties**:false
+- **minItems**:1
+- **maxItems**:2
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/max depth/oneOf/2/items/items
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_max-depth_oneOf_2_items_items
+
+:::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/max depth/oneOf/2/items/items/anyOf
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_max-depth_oneOf_2_items_items_anyOf
+
+::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/max depth/oneOf/2/items/items/anyOf/1
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_max-depth_oneOf_2_items_items_anyOf_1
+
+- **type**:number
+- **default value**:1.7976931348623157e308
+::::::::::
+
+::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/max depth/oneOf/2/items/items/anyOf/2
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_max-depth_oneOf_2_items_items_anyOf_2
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:4294967295
+:::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/max depth/oneOf/2/items/items/anyOf/2/items
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_max-depth_oneOf_2_items_items_anyOf_2_items
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:2
+::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/max depth/oneOf/2/items/items/anyOf/2/items/items
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_max-depth_oneOf_2_items_items_anyOf_2_items_items
+
+- **type**:number
+::::::::
+
+:::::::::
+
+::::::::::
+
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/max depth/oneOf/3
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/temperature models/items/oneOf/4/temperature
+:name: closed_features_items_oneOf_1_temperature-models_items_oneOf_4_temperature
 
 - **default value**:293.15
 - **type**:number
 - **description**:The temperature in degree Kelvin which this feature should have
+::::::::::::::::
+
+
+
+:::::::::::::::::
+
+
+:::::::::::::::::::
+
+::::::::::::::::::::
+
+::::::::::::::::::::{dropdown} /features/items/oneOf/1/velocity models
+:name: closed_features_items_oneOf_1_velocity-models
+
+- **description**:A list of velocity models.
+- **default value**:
+- **type**:array
+:::::::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items
+:name: closed_features_items_oneOf_1_velocity-models_items
+
+::::::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf
+
+:::::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1
+
+- **type**:object
+- **description**:Uniform velocity model. Set the velocity to a constant value.
+- **additionalProperties**:false
+- **required**:[model, euler pole]
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/model
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_model
+
+- **default value**:
+- **type**:string
+- **description**:The name of the velocity model.
+- **enum**:[euler pole]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/operation
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_operation
+
+- **default value**:replace
+- **type**:string
+- **description**:Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+- **enum**:[replace, add, subtract]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/min depth
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_min-depth
+
+- **description**:The depth in meters from which the composition of this feature is present.
+:::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/min depth/oneOf
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_min-depth_oneOf
+
+::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/min depth/oneOf/1
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_min-depth_oneOf_1
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/min depth/oneOf/2
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_min-depth_oneOf_2
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/min depth/oneOf/2/items
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_min-depth_oneOf_2_items
+
+- **type**:array
+- **additionalProperties**:false
+- **minItems**:1
+- **maxItems**:2
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/min depth/oneOf/2/items/items
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_min-depth_oneOf_2_items_items
+
+:::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/min depth/oneOf/2/items/items/anyOf
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_min-depth_oneOf_2_items_items_anyOf
+
+::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/min depth/oneOf/2/items/items/anyOf/1
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_min-depth_oneOf_2_items_items_anyOf_1
+
+- **type**:number
+- **default value**:0.0
+::::::::::
+
+::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/min depth/oneOf/2/items/items/anyOf/2
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_min-depth_oneOf_2_items_items_anyOf_2
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:4294967295
+:::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/min depth/oneOf/2/items/items/anyOf/2/items
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_min-depth_oneOf_2_items_items_anyOf_2_items
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:2
+::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/min depth/oneOf/2/items/items/anyOf/2/items/items
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_min-depth_oneOf_2_items_items_anyOf_2_items_items
+
+- **type**:number
+::::::::
+
+:::::::::
+
+::::::::::
+
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/min depth/oneOf/3
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/max depth
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_max-depth
+
+- **description**:The depth in meters to which the composition of this feature is present.
+:::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/max depth/oneOf
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_max-depth_oneOf
+
+::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/max depth/oneOf/1
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_max-depth_oneOf_1
+
+- **default value**:1.7976931348623157e308
+- **type**:number
+- **description**:
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/max depth/oneOf/2
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_max-depth_oneOf_2
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/max depth/oneOf/2/items
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_max-depth_oneOf_2_items
+
+- **type**:array
+- **additionalProperties**:false
+- **minItems**:1
+- **maxItems**:2
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/max depth/oneOf/2/items/items
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_max-depth_oneOf_2_items_items
+
+:::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/max depth/oneOf/2/items/items/anyOf
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_max-depth_oneOf_2_items_items_anyOf
+
+::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/max depth/oneOf/2/items/items/anyOf/1
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_max-depth_oneOf_2_items_items_anyOf_1
+
+- **type**:number
+- **default value**:1.7976931348623157e308
+::::::::::
+
+::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/max depth/oneOf/2/items/items/anyOf/2
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_max-depth_oneOf_2_items_items_anyOf_2
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:4294967295
+:::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/max depth/oneOf/2/items/items/anyOf/2/items
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_max-depth_oneOf_2_items_items_anyOf_2_items
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:2
+::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/max depth/oneOf/2/items/items/anyOf/2/items/items
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_max-depth_oneOf_2_items_items_anyOf_2_items_items
+
+- **type**:number
+::::::::
+
+:::::::::
+
+::::::::::
+
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/max depth/oneOf/3
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/euler pole
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_euler-pole
+
+- **type**:array
+- **minItems**:2
+- **maxItems**:2
+- **uniqueItems**:false
+- **description**:The euler pole for the plate (longitude, latitude) in degree.
+:::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/euler pole/items
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_euler-pole_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+:::::::::::::::
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/1/angular velocity
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_1_angular-velocity
+
+- **default value**:0.0
+- **type**:number
+- **description**:The angular velocity of the Euler pole in degree/Myr.
+::::::::::::::::
+
+
+
+:::::::::::::::::
+
+:::::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2
+
+- **type**:object
+- **description**:Uniform velocity model. Set the velocity to a constant value.
+- **additionalProperties**:false
+- **required**:[model, velocity]
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/model
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_model
+
+- **default value**:
+- **type**:string
+- **description**:The name of the velocity model.
+- **enum**:[uniform raw]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/operation
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_operation
+
+- **default value**:replace
+- **type**:string
+- **description**:Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+- **enum**:[replace, add, subtract]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/min depth
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_min-depth
+
+- **description**:The depth in meters from which the composition of this feature is present.
+:::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/min depth/oneOf
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_min-depth_oneOf
+
+::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/min depth/oneOf/1
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_min-depth_oneOf_1
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/min depth/oneOf/2
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_min-depth_oneOf_2
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/min depth/oneOf/2/items
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_min-depth_oneOf_2_items
+
+- **type**:array
+- **additionalProperties**:false
+- **minItems**:1
+- **maxItems**:2
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/min depth/oneOf/2/items/items
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_min-depth_oneOf_2_items_items
+
+:::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf
+
+::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf/1
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf_1
+
+- **type**:number
+- **default value**:0.0
+::::::::::
+
+::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf/2
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf_2
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:4294967295
+:::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf/2/items
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf_2_items
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:2
+::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf/2/items/items
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf_2_items_items
+
+- **type**:number
+::::::::
+
+:::::::::
+
+::::::::::
+
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/min depth/oneOf/3
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/max depth
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_max-depth
+
+- **description**:The depth in meters to which the composition of this feature is present.
+:::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/max depth/oneOf
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_max-depth_oneOf
+
+::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/max depth/oneOf/1
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_max-depth_oneOf_1
+
+- **default value**:1.7976931348623157e308
+- **type**:number
+- **description**:
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/max depth/oneOf/2
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_max-depth_oneOf_2
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/max depth/oneOf/2/items
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_max-depth_oneOf_2_items
+
+- **type**:array
+- **additionalProperties**:false
+- **minItems**:1
+- **maxItems**:2
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/max depth/oneOf/2/items/items
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_max-depth_oneOf_2_items_items
+
+:::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf
+
+::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf/1
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf_1
+
+- **type**:number
+- **default value**:1.7976931348623157e308
+::::::::::
+
+::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf/2
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf_2
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:4294967295
+:::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf/2/items
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf_2_items
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:2
+::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf/2/items/items
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf_2_items_items
+
+- **type**:number
+::::::::
+
+:::::::::
+
+::::::::::
+
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/max depth/oneOf/3
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/velocity
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_velocity
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:The velocity in meter per year
+:::::::::::::::{dropdown} /features/items/oneOf/1/velocity models/items/oneOf/2/velocity/items
+:name: closed_features_items_oneOf_1_velocity-models_items_oneOf_2_velocity_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+:::::::::::::::
+
 ::::::::::::::::
 
 
@@ -1167,6 +1902,14 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/1/composition models/items/oneOf/1/min depth/oneOf/3
+:name: closed_features_items_oneOf_1_composition-models_items_oneOf_1_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
 
 ::::::::::::::::
 
@@ -1241,6 +1984,14 @@
 
 :::::::::::::
 
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/composition models/items/oneOf/1/max depth/oneOf/3
+:name: closed_features_items_oneOf_1_composition-models_items_oneOf_1_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
 ::::::::::::::
 
 
@@ -1403,6 +2154,14 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/1/composition models/items/oneOf/2/min depth/oneOf/3
+:name: closed_features_items_oneOf_1_composition-models_items_oneOf_2_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
 
 ::::::::::::::::
 
@@ -1477,6 +2236,14 @@
 
 :::::::::::::
 
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/composition models/items/oneOf/2/max depth/oneOf/3
+:name: closed_features_items_oneOf_1_composition-models_items_oneOf_2_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
 ::::::::::::::
 
 
@@ -1638,6 +2405,14 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/1/grains models/items/oneOf/1/min depth/oneOf/3
+:name: closed_features_items_oneOf_1_grains-models_items_oneOf_1_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
 
 ::::::::::::::::
 
@@ -1712,6 +2487,14 @@
 
 :::::::::::::
 
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/grains models/items/oneOf/1/max depth/oneOf/3
+:name: closed_features_items_oneOf_1_grains-models_items_oneOf_1_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
 ::::::::::::::
 
 
@@ -1874,6 +2657,14 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/1/grains models/items/oneOf/2/min depth/oneOf/3
+:name: closed_features_items_oneOf_1_grains-models_items_oneOf_2_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
 
 ::::::::::::::::
 
@@ -1948,6 +2739,14 @@
 
 :::::::::::::
 
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/grains models/items/oneOf/2/max depth/oneOf/3
+:name: closed_features_items_oneOf_1_grains-models_items_oneOf_2_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
 ::::::::::::::
 
 
@@ -2194,6 +2993,14 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/1/grains models/items/oneOf/3/min depth/oneOf/3
+:name: closed_features_items_oneOf_1_grains-models_items_oneOf_3_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
 
 ::::::::::::::::
 
@@ -2268,6 +3075,14 @@
 
 :::::::::::::
 
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/grains models/items/oneOf/3/max depth/oneOf/3
+:name: closed_features_items_oneOf_1_grains-models_items_oneOf_3_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
 ::::::::::::::
 
 
@@ -2382,6 +3197,511 @@
 - **description**:
 :::::::::::::::
 
+::::::::::::::::
+
+
+
+:::::::::::::::::
+
+
+:::::::::::::::::::
+
+::::::::::::::::::::
+
+::::::::::::::::::::{dropdown} /features/items/oneOf/1/topography models
+:name: closed_features_items_oneOf_1_topography-models
+
+- **description**:A list of topography models.
+- **default value**:
+- **type**:array
+:::::::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items
+:name: closed_features_items_oneOf_1_topography-models_items
+
+::::::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf
+
+:::::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1
+
+- **type**:object
+- **description**:DepthSurface topography model. Set the topography to a constant value.
+- **additionalProperties**:false
+- **required**:[model, topography]
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/model
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_model
+
+- **default value**:
+- **type**:string
+- **description**:The name of the topography model.
+- **enum**:[depth surface]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/operation
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_operation
+
+- **default value**:replace
+- **type**:string
+- **description**:Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+- **enum**:[replace, add, subtract]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/min depth
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_min-depth
+
+- **description**:The depth in meters from which the composition of this feature is present.
+:::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/min depth/oneOf
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_min-depth_oneOf
+
+::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/min depth/oneOf/1
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_min-depth_oneOf_1
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/min depth/oneOf/2
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_min-depth_oneOf_2
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/min depth/oneOf/2/items
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_min-depth_oneOf_2_items
+
+- **type**:array
+- **additionalProperties**:false
+- **minItems**:1
+- **maxItems**:2
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/min depth/oneOf/2/items/items
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_min-depth_oneOf_2_items_items
+
+:::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/min depth/oneOf/2/items/items/anyOf
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_min-depth_oneOf_2_items_items_anyOf
+
+::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/min depth/oneOf/2/items/items/anyOf/1
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_min-depth_oneOf_2_items_items_anyOf_1
+
+- **type**:number
+- **default value**:0.0
+::::::::::
+
+::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/min depth/oneOf/2/items/items/anyOf/2
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_min-depth_oneOf_2_items_items_anyOf_2
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:4294967295
+:::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/min depth/oneOf/2/items/items/anyOf/2/items
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_min-depth_oneOf_2_items_items_anyOf_2_items
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:2
+::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/min depth/oneOf/2/items/items/anyOf/2/items/items
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_min-depth_oneOf_2_items_items_anyOf_2_items_items
+
+- **type**:number
+::::::::
+
+:::::::::
+
+::::::::::
+
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/min depth/oneOf/3
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/max depth
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_max-depth
+
+- **description**:The depth in meters to which the composition of this feature is present.
+:::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/max depth/oneOf
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_max-depth_oneOf
+
+::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/max depth/oneOf/1
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_max-depth_oneOf_1
+
+- **default value**:1.7976931348623157e308
+- **type**:number
+- **description**:
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/max depth/oneOf/2
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_max-depth_oneOf_2
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/max depth/oneOf/2/items
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_max-depth_oneOf_2_items
+
+- **type**:array
+- **additionalProperties**:false
+- **minItems**:1
+- **maxItems**:2
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/max depth/oneOf/2/items/items
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_max-depth_oneOf_2_items_items
+
+:::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/max depth/oneOf/2/items/items/anyOf
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_max-depth_oneOf_2_items_items_anyOf
+
+::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/max depth/oneOf/2/items/items/anyOf/1
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_max-depth_oneOf_2_items_items_anyOf_1
+
+- **type**:number
+- **default value**:1.7976931348623157e308
+::::::::::
+
+::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/max depth/oneOf/2/items/items/anyOf/2
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_max-depth_oneOf_2_items_items_anyOf_2
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:4294967295
+:::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/max depth/oneOf/2/items/items/anyOf/2/items
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_max-depth_oneOf_2_items_items_anyOf_2_items
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:2
+::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/max depth/oneOf/2/items/items/anyOf/2/items/items
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_max-depth_oneOf_2_items_items_anyOf_2_items_items
+
+- **type**:number
+::::::::
+
+:::::::::
+
+::::::::::
+
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/max depth/oneOf/3
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/topography
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_topography
+
+- **description**:The topography in meters.
+:::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/topography/oneOf
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_topography_oneOf
+
+::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/topography/oneOf/1
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_topography_oneOf_1
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/topography/oneOf/2
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_topography_oneOf_2
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/topography/oneOf/2/items
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_topography_oneOf_2_items
+
+- **type**:array
+- **additionalProperties**:false
+- **minItems**:1
+- **maxItems**:2
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/topography/oneOf/2/items/items
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_topography_oneOf_2_items_items
+
+:::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/topography/oneOf/2/items/items/anyOf
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_topography_oneOf_2_items_items_anyOf
+
+::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/topography/oneOf/2/items/items/anyOf/1
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_topography_oneOf_2_items_items_anyOf_1
+
+- **type**:number
+- **default value**:0.0
+::::::::::
+
+::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/topography/oneOf/2/items/items/anyOf/2
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_topography_oneOf_2_items_items_anyOf_2
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:4294967295
+:::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/topography/oneOf/2/items/items/anyOf/2/items
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_topography_oneOf_2_items_items_anyOf_2_items
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:2
+::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/topography/oneOf/2/items/items/anyOf/2/items/items
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_topography_oneOf_2_items_items_anyOf_2_items_items
+
+- **type**:number
+::::::::
+
+:::::::::
+
+::::::::::
+
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/1/topography/oneOf/3
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_1_topography_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
+
+::::::::::::::::
+
+
+
+:::::::::::::::::
+
+:::::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2
+
+- **type**:object
+- **description**:Uniform topography model. Set the topography to a constant value.
+- **additionalProperties**:false
+- **required**:[model, topography]
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/model
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_model
+
+- **default value**:
+- **type**:string
+- **description**:The name of the topography model.
+- **enum**:[uniform]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/operation
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_operation
+
+- **default value**:replace
+- **type**:string
+- **description**:Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+- **enum**:[replace, add, subtract]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/min depth
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_min-depth
+
+- **description**:The depth in meters from which the composition of this feature is present.
+:::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/min depth/oneOf
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_min-depth_oneOf
+
+::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/min depth/oneOf/1
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_min-depth_oneOf_1
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/min depth/oneOf/2
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_min-depth_oneOf_2
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/min depth/oneOf/2/items
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_min-depth_oneOf_2_items
+
+- **type**:array
+- **additionalProperties**:false
+- **minItems**:1
+- **maxItems**:2
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/min depth/oneOf/2/items/items
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_min-depth_oneOf_2_items_items
+
+:::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf
+
+::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf/1
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf_1
+
+- **type**:number
+- **default value**:0.0
+::::::::::
+
+::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf/2
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf_2
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:4294967295
+:::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf/2/items
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf_2_items
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:2
+::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf/2/items/items
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf_2_items_items
+
+- **type**:number
+::::::::
+
+:::::::::
+
+::::::::::
+
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/min depth/oneOf/3
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/max depth
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_max-depth
+
+- **description**:The depth in meters to which the composition of this feature is present.
+:::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/max depth/oneOf
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_max-depth_oneOf
+
+::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/max depth/oneOf/1
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_max-depth_oneOf_1
+
+- **default value**:1.7976931348623157e308
+- **type**:number
+- **description**:
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/max depth/oneOf/2
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_max-depth_oneOf_2
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/max depth/oneOf/2/items
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_max-depth_oneOf_2_items
+
+- **type**:array
+- **additionalProperties**:false
+- **minItems**:1
+- **maxItems**:2
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/max depth/oneOf/2/items/items
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_max-depth_oneOf_2_items_items
+
+:::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf
+
+::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf/1
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf_1
+
+- **type**:number
+- **default value**:1.7976931348623157e308
+::::::::::
+
+::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf/2
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf_2
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:4294967295
+:::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf/2/items
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf_2_items
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:2
+::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf/2/items/items
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf_2_items_items
+
+- **type**:number
+::::::::
+
+:::::::::
+
+::::::::::
+
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/max depth/oneOf/3
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/topography models/items/oneOf/2/topography
+:name: closed_features_items_oneOf_1_topography-models_items_oneOf_2_topography
+
+- **default value**:0.0
+- **type**:number
+- **description**:The topography in meters.
 ::::::::::::::::
 
 
@@ -3409,6 +4729,87 @@
 
 ::::::::::::::::::
 
+::::::::::::::::::{dropdown} /features/items/oneOf/2/segments/items/velocity models
+:name: closed_features_items_oneOf_2_segments_items_velocity-models
+
+- **description**:
+- **default value**:
+- **type**:array
+:::::::::::::::::{dropdown} /features/items/oneOf/2/segments/items/velocity models/items
+:name: closed_features_items_oneOf_2_segments_items_velocity-models_items
+
+::::::::::::::::{dropdown} /features/items/oneOf/2/segments/items/velocity models/items/oneOf
+:name: closed_features_items_oneOf_2_segments_items_velocity-models_items_oneOf
+
+:::::::::::::::{dropdown} /features/items/oneOf/2/segments/items/velocity models/items/oneOf/1
+:name: closed_features_items_oneOf_2_segments_items_velocity-models_items_oneOf_1
+
+- **type**:object
+- **description**:Uniform velocity model. Set the velocity to a constant value.
+- **additionalProperties**:false
+- **required**:[model, velocity]
+
+::::::::::::::{dropdown} /features/items/oneOf/2/segments/items/velocity models/items/oneOf/1/model
+:name: closed_features_items_oneOf_2_segments_items_velocity-models_items_oneOf_1_model
+
+- **default value**:
+- **type**:string
+- **description**:The name of the velocity model.
+- **enum**:[uniform raw]
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/2/segments/items/velocity models/items/oneOf/1/operation
+:name: closed_features_items_oneOf_2_segments_items_velocity-models_items_oneOf_1_operation
+
+- **default value**:replace
+- **type**:string
+- **description**:Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+- **enum**:[replace, add, subtract]
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/2/segments/items/velocity models/items/oneOf/1/min distance fault center
+:name: closed_features_items_oneOf_2_segments_items_velocity-models_items_oneOf_1_min-distance-fault-center
+
+- **default value**:0.0
+- **type**:number
+- **description**:The distance in meters from which the composition of this feature is present.
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/2/segments/items/velocity models/items/oneOf/1/max distance fault center
+:name: closed_features_items_oneOf_2_segments_items_velocity-models_items_oneOf_1_max-distance-fault-center
+
+- **default value**:1.7976931348623157e308
+- **type**:number
+- **description**:The distance in meters to which the composition of this feature is present.
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/2/segments/items/velocity models/items/oneOf/1/velocity
+:name: closed_features_items_oneOf_2_segments_items_velocity-models_items_oneOf_1_velocity
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:The velocity in meter per year
+:::::::::::::{dropdown} /features/items/oneOf/2/segments/items/velocity models/items/oneOf/1/velocity/items
+:name: closed_features_items_oneOf_2_segments_items_velocity-models_items_oneOf_1_velocity_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+:::::::::::::
+
+::::::::::::::
+
+
+
+:::::::::::::::
+
+
+:::::::::::::::::
+
+::::::::::::::::::
+
 
 
 :::::::::::::::::::
@@ -4251,6 +5652,87 @@
 :name: closed_features_items_oneOf_2_grains-models_items_oneOf_3_grain-sizes_items
 
 - **default value**:-1.0
+- **type**:number
+- **description**:
+:::::::::::::::
+
+::::::::::::::::
+
+
+
+:::::::::::::::::
+
+
+:::::::::::::::::::
+
+::::::::::::::::::::
+
+::::::::::::::::::::{dropdown} /features/items/oneOf/2/velocity models
+:name: closed_features_items_oneOf_2_velocity-models
+
+- **description**:A list of velocity models.
+- **default value**:
+- **type**:array
+:::::::::::::::::::{dropdown} /features/items/oneOf/2/velocity models/items
+:name: closed_features_items_oneOf_2_velocity-models_items
+
+::::::::::::::::::{dropdown} /features/items/oneOf/2/velocity models/items/oneOf
+:name: closed_features_items_oneOf_2_velocity-models_items_oneOf
+
+:::::::::::::::::{dropdown} /features/items/oneOf/2/velocity models/items/oneOf/1
+:name: closed_features_items_oneOf_2_velocity-models_items_oneOf_1
+
+- **type**:object
+- **description**:Uniform velocity model. Set the velocity to a constant value.
+- **additionalProperties**:false
+- **required**:[model, velocity]
+
+::::::::::::::::{dropdown} /features/items/oneOf/2/velocity models/items/oneOf/1/model
+:name: closed_features_items_oneOf_2_velocity-models_items_oneOf_1_model
+
+- **default value**:
+- **type**:string
+- **description**:The name of the velocity model.
+- **enum**:[uniform raw]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/2/velocity models/items/oneOf/1/operation
+:name: closed_features_items_oneOf_2_velocity-models_items_oneOf_1_operation
+
+- **default value**:replace
+- **type**:string
+- **description**:Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+- **enum**:[replace, add, subtract]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/2/velocity models/items/oneOf/1/min distance fault center
+:name: closed_features_items_oneOf_2_velocity-models_items_oneOf_1_min-distance-fault-center
+
+- **default value**:0.0
+- **type**:number
+- **description**:The distance in meters from which the composition of this feature is present.
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/2/velocity models/items/oneOf/1/max distance fault center
+:name: closed_features_items_oneOf_2_velocity-models_items_oneOf_1_max-distance-fault-center
+
+- **default value**:1.7976931348623157e308
+- **type**:number
+- **description**:The distance in meters to which the composition of this feature is present.
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/2/velocity models/items/oneOf/1/velocity
+:name: closed_features_items_oneOf_2_velocity-models_items_oneOf_1_velocity
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:The velocity in meter per year
+:::::::::::::::{dropdown} /features/items/oneOf/2/velocity models/items/oneOf/1/velocity/items
+:name: closed_features_items_oneOf_2_velocity-models_items_oneOf_1_velocity_items
+
+- **default value**:0.0
 - **type**:number
 - **description**:
 :::::::::::::::
@@ -5227,6 +6709,87 @@
 
 ::::::::::::::::
 
+::::::::::::::::{dropdown} /features/items/oneOf/2/sections/items/segments/items/velocity models
+:name: closed_features_items_oneOf_2_sections_items_segments_items_velocity-models
+
+- **description**:
+- **default value**:
+- **type**:array
+:::::::::::::::{dropdown} /features/items/oneOf/2/sections/items/segments/items/velocity models/items
+:name: closed_features_items_oneOf_2_sections_items_segments_items_velocity-models_items
+
+::::::::::::::{dropdown} /features/items/oneOf/2/sections/items/segments/items/velocity models/items/oneOf
+:name: closed_features_items_oneOf_2_sections_items_segments_items_velocity-models_items_oneOf
+
+:::::::::::::{dropdown} /features/items/oneOf/2/sections/items/segments/items/velocity models/items/oneOf/1
+:name: closed_features_items_oneOf_2_sections_items_segments_items_velocity-models_items_oneOf_1
+
+- **type**:object
+- **description**:Uniform velocity model. Set the velocity to a constant value.
+- **additionalProperties**:false
+- **required**:[model, velocity]
+
+::::::::::::{dropdown} /features/items/oneOf/2/sections/items/segments/items/velocity models/items/oneOf/1/model
+:name: closed_features_items_oneOf_2_sections_items_segments_items_velocity-models_items_oneOf_1_model
+
+- **default value**:
+- **type**:string
+- **description**:The name of the velocity model.
+- **enum**:[uniform raw]
+::::::::::::
+
+::::::::::::{dropdown} /features/items/oneOf/2/sections/items/segments/items/velocity models/items/oneOf/1/operation
+:name: closed_features_items_oneOf_2_sections_items_segments_items_velocity-models_items_oneOf_1_operation
+
+- **default value**:replace
+- **type**:string
+- **description**:Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+- **enum**:[replace, add, subtract]
+::::::::::::
+
+::::::::::::{dropdown} /features/items/oneOf/2/sections/items/segments/items/velocity models/items/oneOf/1/min distance fault center
+:name: closed_features_items_oneOf_2_sections_items_segments_items_velocity-models_items_oneOf_1_min-distance-fault-center
+
+- **default value**:0.0
+- **type**:number
+- **description**:The distance in meters from which the composition of this feature is present.
+::::::::::::
+
+::::::::::::{dropdown} /features/items/oneOf/2/sections/items/segments/items/velocity models/items/oneOf/1/max distance fault center
+:name: closed_features_items_oneOf_2_sections_items_segments_items_velocity-models_items_oneOf_1_max-distance-fault-center
+
+- **default value**:1.7976931348623157e308
+- **type**:number
+- **description**:The distance in meters to which the composition of this feature is present.
+::::::::::::
+
+::::::::::::{dropdown} /features/items/oneOf/2/sections/items/segments/items/velocity models/items/oneOf/1/velocity
+:name: closed_features_items_oneOf_2_sections_items_segments_items_velocity-models_items_oneOf_1_velocity
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:The velocity in meter per year
+:::::::::::{dropdown} /features/items/oneOf/2/sections/items/segments/items/velocity models/items/oneOf/1/velocity/items
+:name: closed_features_items_oneOf_2_sections_items_segments_items_velocity-models_items_oneOf_1_velocity_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+:::::::::::
+
+::::::::::::
+
+
+
+:::::::::::::
+
+
+:::::::::::::::
+
+::::::::::::::::
+
 
 
 :::::::::::::::::
@@ -6069,6 +7632,87 @@
 :name: closed_features_items_oneOf_2_sections_items_grains-models_items_oneOf_3_grain-sizes_items
 
 - **default value**:-1.0
+- **type**:number
+- **description**:
+:::::::::::::
+
+::::::::::::::
+
+
+
+:::::::::::::::
+
+
+:::::::::::::::::
+
+::::::::::::::::::
+
+::::::::::::::::::{dropdown} /features/items/oneOf/2/sections/items/velocity models
+:name: closed_features_items_oneOf_2_sections_items_velocity-models
+
+- **description**:A list of velocity models.
+- **default value**:
+- **type**:array
+:::::::::::::::::{dropdown} /features/items/oneOf/2/sections/items/velocity models/items
+:name: closed_features_items_oneOf_2_sections_items_velocity-models_items
+
+::::::::::::::::{dropdown} /features/items/oneOf/2/sections/items/velocity models/items/oneOf
+:name: closed_features_items_oneOf_2_sections_items_velocity-models_items_oneOf
+
+:::::::::::::::{dropdown} /features/items/oneOf/2/sections/items/velocity models/items/oneOf/1
+:name: closed_features_items_oneOf_2_sections_items_velocity-models_items_oneOf_1
+
+- **type**:object
+- **description**:Uniform velocity model. Set the velocity to a constant value.
+- **additionalProperties**:false
+- **required**:[model, velocity]
+
+::::::::::::::{dropdown} /features/items/oneOf/2/sections/items/velocity models/items/oneOf/1/model
+:name: closed_features_items_oneOf_2_sections_items_velocity-models_items_oneOf_1_model
+
+- **default value**:
+- **type**:string
+- **description**:The name of the velocity model.
+- **enum**:[uniform raw]
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/2/sections/items/velocity models/items/oneOf/1/operation
+:name: closed_features_items_oneOf_2_sections_items_velocity-models_items_oneOf_1_operation
+
+- **default value**:replace
+- **type**:string
+- **description**:Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+- **enum**:[replace, add, subtract]
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/2/sections/items/velocity models/items/oneOf/1/min distance fault center
+:name: closed_features_items_oneOf_2_sections_items_velocity-models_items_oneOf_1_min-distance-fault-center
+
+- **default value**:0.0
+- **type**:number
+- **description**:The distance in meters from which the composition of this feature is present.
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/2/sections/items/velocity models/items/oneOf/1/max distance fault center
+:name: closed_features_items_oneOf_2_sections_items_velocity-models_items_oneOf_1_max-distance-fault-center
+
+- **default value**:1.7976931348623157e308
+- **type**:number
+- **description**:The distance in meters to which the composition of this feature is present.
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/2/sections/items/velocity models/items/oneOf/1/velocity
+:name: closed_features_items_oneOf_2_sections_items_velocity-models_items_oneOf_1_velocity
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:The velocity in meter per year
+:::::::::::::{dropdown} /features/items/oneOf/2/sections/items/velocity models/items/oneOf/1/velocity/items
+:name: closed_features_items_oneOf_2_sections_items_velocity-models_items_oneOf_1_velocity_items
+
+- **default value**:0.0
 - **type**:number
 - **description**:
 :::::::::::::
@@ -8023,6 +9667,447 @@
 
 ::::::::::::::::::::
 
+::::::::::::::::::::{dropdown} /features/items/oneOf/3/velocity models
+:name: closed_features_items_oneOf_3_velocity-models
+
+- **description**:A list of velocity models.
+- **default value**:
+- **type**:array
+:::::::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items
+:name: closed_features_items_oneOf_3_velocity-models_items
+
+::::::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf
+
+:::::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1
+
+- **type**:object
+- **description**:Uniform velocity model. Set the velocity to a constant value.
+- **additionalProperties**:false
+- **required**:[model, euler pole]
+
+::::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/model
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_model
+
+- **default value**:
+- **type**:string
+- **description**:The name of the velocity model.
+- **enum**:[euler pole]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/operation
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_operation
+
+- **default value**:replace
+- **type**:string
+- **description**:Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+- **enum**:[replace, add, subtract]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/min depth
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_min-depth
+
+- **description**:The depth in meters from which the composition of this feature is present.
+:::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/min depth/oneOf
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_min-depth_oneOf
+
+::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/min depth/oneOf/1
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_min-depth_oneOf_1
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/min depth/oneOf/2
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_min-depth_oneOf_2
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/min depth/oneOf/2/items
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_min-depth_oneOf_2_items
+
+- **type**:array
+- **additionalProperties**:false
+- **minItems**:1
+- **maxItems**:2
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/min depth/oneOf/2/items/items
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_min-depth_oneOf_2_items_items
+
+:::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/min depth/oneOf/2/items/items/anyOf
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_min-depth_oneOf_2_items_items_anyOf
+
+::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/min depth/oneOf/2/items/items/anyOf/1
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_min-depth_oneOf_2_items_items_anyOf_1
+
+- **type**:number
+- **default value**:0.0
+::::::::::
+
+::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/min depth/oneOf/2/items/items/anyOf/2
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_min-depth_oneOf_2_items_items_anyOf_2
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:4294967295
+:::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/min depth/oneOf/2/items/items/anyOf/2/items
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_min-depth_oneOf_2_items_items_anyOf_2_items
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:2
+::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/min depth/oneOf/2/items/items/anyOf/2/items/items
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_min-depth_oneOf_2_items_items_anyOf_2_items_items
+
+- **type**:number
+::::::::
+
+:::::::::
+
+::::::::::
+
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/min depth/oneOf/3
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/max depth
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_max-depth
+
+- **description**:The depth in meters to which the composition of this feature is present.
+:::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/max depth/oneOf
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_max-depth_oneOf
+
+::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/max depth/oneOf/1
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_max-depth_oneOf_1
+
+- **default value**:1.7976931348623157e308
+- **type**:number
+- **description**:
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/max depth/oneOf/2
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_max-depth_oneOf_2
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/max depth/oneOf/2/items
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_max-depth_oneOf_2_items
+
+- **type**:array
+- **additionalProperties**:false
+- **minItems**:1
+- **maxItems**:2
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/max depth/oneOf/2/items/items
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_max-depth_oneOf_2_items_items
+
+:::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/max depth/oneOf/2/items/items/anyOf
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_max-depth_oneOf_2_items_items_anyOf
+
+::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/max depth/oneOf/2/items/items/anyOf/1
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_max-depth_oneOf_2_items_items_anyOf_1
+
+- **type**:number
+- **default value**:1.7976931348623157e308
+::::::::::
+
+::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/max depth/oneOf/2/items/items/anyOf/2
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_max-depth_oneOf_2_items_items_anyOf_2
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:4294967295
+:::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/max depth/oneOf/2/items/items/anyOf/2/items
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_max-depth_oneOf_2_items_items_anyOf_2_items
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:2
+::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/max depth/oneOf/2/items/items/anyOf/2/items/items
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_max-depth_oneOf_2_items_items_anyOf_2_items_items
+
+- **type**:number
+::::::::
+
+:::::::::
+
+::::::::::
+
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/max depth/oneOf/3
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/euler pole
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_euler-pole
+
+- **type**:array
+- **minItems**:2
+- **maxItems**:2
+- **uniqueItems**:false
+- **description**:The euler pole for the plate (longitude, latitude) in degree.
+:::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/euler pole/items
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_euler-pole_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+:::::::::::::::
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/1/angular velocity
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_1_angular-velocity
+
+- **default value**:0.0
+- **type**:number
+- **description**:The angular velocity of the Euler pole in degree/Myr.
+::::::::::::::::
+
+
+
+:::::::::::::::::
+
+:::::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2
+
+- **type**:object
+- **description**:Uniform velocity model. Set the velocity to a constant value.
+- **additionalProperties**:false
+- **required**:[model, velocity]
+
+::::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2/model
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2_model
+
+- **default value**:
+- **type**:string
+- **description**:The name of the velocity model.
+- **enum**:[uniform raw]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2/operation
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2_operation
+
+- **default value**:replace
+- **type**:string
+- **description**:Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+- **enum**:[replace, add, subtract]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2/min depth
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2_min-depth
+
+- **description**:The depth in meters from which the velocity of this feature is present.
+:::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2/min depth/oneOf
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2_min-depth_oneOf
+
+::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2/min depth/oneOf/1
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2_min-depth_oneOf_1
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2/min depth/oneOf/2
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2_min-depth_oneOf_2
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2/min depth/oneOf/2/items
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2_min-depth_oneOf_2_items
+
+- **type**:array
+- **additionalProperties**:false
+- **minItems**:1
+- **maxItems**:2
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2/min depth/oneOf/2/items/items
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2_min-depth_oneOf_2_items_items
+
+:::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf
+
+::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf/1
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf_1
+
+- **type**:number
+- **default value**:0.0
+::::::::::
+
+::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf/2
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf_2
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:4294967295
+:::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf/2/items
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf_2_items
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:2
+::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf/2/items/items
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf_2_items_items
+
+- **type**:number
+::::::::
+
+:::::::::
+
+::::::::::
+
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2/max depth
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2_max-depth
+
+- **description**:The depth in meters to which the velocity of this feature is present.
+:::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2/max depth/oneOf
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2_max-depth_oneOf
+
+::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2/max depth/oneOf/1
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2_max-depth_oneOf_1
+
+- **default value**:1.7976931348623157e308
+- **type**:number
+- **description**:
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2/max depth/oneOf/2
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2_max-depth_oneOf_2
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2/max depth/oneOf/2/items
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2_max-depth_oneOf_2_items
+
+- **type**:array
+- **additionalProperties**:false
+- **minItems**:1
+- **maxItems**:2
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2/max depth/oneOf/2/items/items
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2_max-depth_oneOf_2_items_items
+
+:::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf
+
+::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf/1
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf_1
+
+- **type**:number
+- **default value**:1.7976931348623157e308
+::::::::::
+
+::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf/2
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf_2
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:4294967295
+:::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf/2/items
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf_2_items
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:2
+::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf/2/items/items
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf_2_items_items
+
+- **type**:number
+::::::::
+
+:::::::::
+
+::::::::::
+
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2/velocity
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2_velocity
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:The velocity in meter per year
+:::::::::::::::{dropdown} /features/items/oneOf/3/velocity models/items/oneOf/2/velocity/items
+:name: closed_features_items_oneOf_3_velocity-models_items_oneOf_2_velocity_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+:::::::::::::::
+
+::::::::::::::::
+
+
+
+:::::::::::::::::
+
+
+:::::::::::::::::::
+
+::::::::::::::::::::
+
 
 
 :::::::::::::::::::::
@@ -8286,7 +10371,7 @@
 ::::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/1/min depth
 :name: closed_features_items_oneOf_4_temperature-models_items_oneOf_1_min-depth
 
-- **description**:The depth in meters from which the temperature of this feature is present.
+- **description**:The depth in meters from which the composition of this feature is present.
 :::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/1/min depth/oneOf
 :name: closed_features_items_oneOf_4_temperature-models_items_oneOf_1_min-depth_oneOf
 
@@ -8356,13 +10441,21 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/1/min depth/oneOf/3
+:name: closed_features_items_oneOf_4_temperature-models_items_oneOf_1_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
 
 ::::::::::::::::
 
 ::::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/1/max depth
 :name: closed_features_items_oneOf_4_temperature-models_items_oneOf_1_max-depth
 
-- **description**:The depth in meters to which the temperature of this feature is present.
+- **description**:The depth in meters to which the composition of this feature is present.
 :::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/1/max depth/oneOf
 :name: closed_features_items_oneOf_4_temperature-models_items_oneOf_1_max-depth_oneOf
 
@@ -8432,6 +10525,14 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/1/max depth/oneOf/3
+:name: closed_features_items_oneOf_4_temperature-models_items_oneOf_1_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
 
 ::::::::::::::::
 
@@ -8492,7 +10593,7 @@
 ::::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/2/min depth
 :name: closed_features_items_oneOf_4_temperature-models_items_oneOf_2_min-depth
 
-- **description**:The depth in meters from which the temperature of this feature is present.
+- **description**:The depth in meters from which the composition of this feature is present.
 :::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/2/min depth/oneOf
 :name: closed_features_items_oneOf_4_temperature-models_items_oneOf_2_min-depth_oneOf
 
@@ -8562,13 +10663,21 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/2/min depth/oneOf/3
+:name: closed_features_items_oneOf_4_temperature-models_items_oneOf_2_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
 
 ::::::::::::::::
 
 ::::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/2/max depth
 :name: closed_features_items_oneOf_4_temperature-models_items_oneOf_2_max-depth
 
-- **description**:The depth in meters to which the temperature of this feature is present.Because half-space reaches background temperature asymptotically, this value should be ~2 times the nominal plate thickness of 100 km
+- **description**:The depth in meters to which the composition of this feature is present.Because half-space reaches background temperature asymptotically, this value should be ~2 times the nominal plate thickness of 100 km
 :::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/2/max depth/oneOf
 :name: closed_features_items_oneOf_4_temperature-models_items_oneOf_2_max-depth_oneOf
 
@@ -8636,6 +10745,14 @@
 
 :::::::::::::
 
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/2/max depth/oneOf/3
+:name: closed_features_items_oneOf_4_temperature-models_items_oneOf_2_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
 ::::::::::::::
 
 
@@ -8801,7 +10918,7 @@
 ::::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/3/min depth
 :name: closed_features_items_oneOf_4_temperature-models_items_oneOf_3_min-depth
 
-- **description**:The depth in meters from which the temperature of this feature is present.
+- **description**:The depth in meters from which the composition of this feature is present.
 :::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/3/min depth/oneOf
 :name: closed_features_items_oneOf_4_temperature-models_items_oneOf_3_min-depth_oneOf
 
@@ -8871,13 +10988,21 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/3/min depth/oneOf/3
+:name: closed_features_items_oneOf_4_temperature-models_items_oneOf_3_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
 
 ::::::::::::::::
 
 ::::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/3/max depth
 :name: closed_features_items_oneOf_4_temperature-models_items_oneOf_3_max-depth
 
-- **description**:The depth in meters to which the temperature of this feature is present.
+- **description**:The depth in meters to which the composition of this feature is present.
 :::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/3/max depth/oneOf
 :name: closed_features_items_oneOf_4_temperature-models_items_oneOf_3_max-depth_oneOf
 
@@ -8947,6 +11072,14 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/3/max depth/oneOf/3
+:name: closed_features_items_oneOf_4_temperature-models_items_oneOf_3_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
 
 ::::::::::::::::
 
@@ -8999,7 +11132,7 @@
 ::::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/4/min depth
 :name: closed_features_items_oneOf_4_temperature-models_items_oneOf_4_min-depth
 
-- **description**:The depth in meters from which the temperature of this feature is present.
+- **description**:The depth in meters from which the composition of this feature is present.
 :::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/4/min depth/oneOf
 :name: closed_features_items_oneOf_4_temperature-models_items_oneOf_4_min-depth_oneOf
 
@@ -9069,13 +11202,21 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/4/min depth/oneOf/3
+:name: closed_features_items_oneOf_4_temperature-models_items_oneOf_4_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
 
 ::::::::::::::::
 
 ::::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/4/max depth
 :name: closed_features_items_oneOf_4_temperature-models_items_oneOf_4_max-depth
 
-- **description**:The depth in meters to which the temperature of this feature is present.
+- **description**:The depth in meters to which the composition of this feature is present.
 :::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/4/max depth/oneOf
 :name: closed_features_items_oneOf_4_temperature-models_items_oneOf_4_max-depth_oneOf
 
@@ -9143,6 +11284,14 @@
 
 :::::::::::::
 
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/4/max depth/oneOf/3
+:name: closed_features_items_oneOf_4_temperature-models_items_oneOf_4_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
 ::::::::::::::
 
 
@@ -9308,7 +11457,7 @@
 ::::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/5/min depth
 :name: closed_features_items_oneOf_4_temperature-models_items_oneOf_5_min-depth
 
-- **description**:The depth in meters from which the temperature of this feature is present.
+- **description**:The depth in meters from which the composition of this feature is present.
 :::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/5/min depth/oneOf
 :name: closed_features_items_oneOf_4_temperature-models_items_oneOf_5_min-depth_oneOf
 
@@ -9378,13 +11527,21 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/5/min depth/oneOf/3
+:name: closed_features_items_oneOf_4_temperature-models_items_oneOf_5_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
 
 ::::::::::::::::
 
 ::::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/5/max depth
 :name: closed_features_items_oneOf_4_temperature-models_items_oneOf_5_max-depth
 
-- **description**:The depth in meters to which the temperature of this feature is present.
+- **description**:The depth in meters to which the composition of this feature is present.
 :::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/5/max depth/oneOf
 :name: closed_features_items_oneOf_4_temperature-models_items_oneOf_5_max-depth_oneOf
 
@@ -9454,6 +11611,14 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/5/max depth/oneOf/3
+:name: closed_features_items_oneOf_4_temperature-models_items_oneOf_5_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
 
 ::::::::::::::::
 
@@ -9514,7 +11679,7 @@
 ::::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/6/min depth
 :name: closed_features_items_oneOf_4_temperature-models_items_oneOf_6_min-depth
 
-- **description**:The depth in meters from which the temperature of this feature is present.
+- **description**:The depth in meters from which the composition of this feature is present.
 :::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/6/min depth/oneOf
 :name: closed_features_items_oneOf_4_temperature-models_items_oneOf_6_min-depth_oneOf
 
@@ -9584,13 +11749,21 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/6/min depth/oneOf/3
+:name: closed_features_items_oneOf_4_temperature-models_items_oneOf_6_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
 
 ::::::::::::::::
 
 ::::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/6/max depth
 :name: closed_features_items_oneOf_4_temperature-models_items_oneOf_6_max-depth
 
-- **description**:The depth in meters to which the temperature of this feature is present.
+- **description**:The depth in meters to which the composition of this feature is present.
 :::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/6/max depth/oneOf
 :name: closed_features_items_oneOf_4_temperature-models_items_oneOf_6_max-depth_oneOf
 
@@ -9658,6 +11831,14 @@
 
 :::::::::::::
 
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/temperature models/items/oneOf/6/max depth/oneOf/3
+:name: closed_features_items_oneOf_4_temperature-models_items_oneOf_6_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
 ::::::::::::::
 
 
@@ -9782,6 +11963,14 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/1/min depth/oneOf/3
+:name: closed_features_items_oneOf_4_composition-models_items_oneOf_1_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
 
 ::::::::::::::::
 
@@ -9856,6 +12045,14 @@
 
 :::::::::::::
 
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/1/max depth/oneOf/3
+:name: closed_features_items_oneOf_4_composition-models_items_oneOf_1_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
 ::::::::::::::
 
 
@@ -10014,6 +12211,14 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/min depth/oneOf/3
+:name: closed_features_items_oneOf_4_composition-models_items_oneOf_2_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
 
 ::::::::::::::::
 
@@ -10088,6 +12293,14 @@
 
 :::::::::::::
 
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/max depth/oneOf/3
+:name: closed_features_items_oneOf_4_composition-models_items_oneOf_2_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
 ::::::::::::::
 
 
@@ -10249,6 +12462,14 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/4/grains models/items/oneOf/1/min depth/oneOf/3
+:name: closed_features_items_oneOf_4_grains-models_items_oneOf_1_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
 
 ::::::::::::::::
 
@@ -10323,6 +12544,14 @@
 
 :::::::::::::
 
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/grains models/items/oneOf/1/max depth/oneOf/3
+:name: closed_features_items_oneOf_4_grains-models_items_oneOf_1_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
 ::::::::::::::
 
 
@@ -10485,6 +12714,14 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/4/grains models/items/oneOf/2/min depth/oneOf/3
+:name: closed_features_items_oneOf_4_grains-models_items_oneOf_2_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
 
 ::::::::::::::::
 
@@ -10559,6 +12796,14 @@
 
 :::::::::::::
 
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/grains models/items/oneOf/2/max depth/oneOf/3
+:name: closed_features_items_oneOf_4_grains-models_items_oneOf_2_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
 ::::::::::::::
 
 
@@ -10805,6 +13050,14 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/4/grains models/items/oneOf/3/min depth/oneOf/3
+:name: closed_features_items_oneOf_4_grains-models_items_oneOf_3_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
 
 ::::::::::::::::
 
@@ -10879,6 +13132,14 @@
 
 :::::::::::::
 
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/grains models/items/oneOf/3/max depth/oneOf/3
+:name: closed_features_items_oneOf_4_grains-models_items_oneOf_3_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
 ::::::::::::::
 
 
@@ -10993,6 +13254,968 @@
 - **description**:
 :::::::::::::::
 
+::::::::::::::::
+
+
+
+:::::::::::::::::
+
+
+:::::::::::::::::::
+
+::::::::::::::::::::
+
+::::::::::::::::::::{dropdown} /features/items/oneOf/4/velocity models
+:name: closed_features_items_oneOf_4_velocity-models
+
+- **description**:A list of velocity models.
+- **default value**:
+- **type**:array
+:::::::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items
+:name: closed_features_items_oneOf_4_velocity-models_items
+
+::::::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf
+
+:::::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1
+
+- **type**:object
+- **description**:Uniform velocity model. Set the velocity to a constant value.
+- **additionalProperties**:false
+- **required**:[model, euler pole]
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/model
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_model
+
+- **default value**:
+- **type**:string
+- **description**:The name of the velocity model.
+- **enum**:[euler pole]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/operation
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_operation
+
+- **default value**:replace
+- **type**:string
+- **description**:Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+- **enum**:[replace, add, subtract]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/min depth
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_min-depth
+
+- **description**:The depth in meters from which the composition of this feature is present.
+:::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/min depth/oneOf
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_min-depth_oneOf
+
+::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/min depth/oneOf/1
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_min-depth_oneOf_1
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/min depth/oneOf/2
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_min-depth_oneOf_2
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/min depth/oneOf/2/items
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_min-depth_oneOf_2_items
+
+- **type**:array
+- **additionalProperties**:false
+- **minItems**:1
+- **maxItems**:2
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/min depth/oneOf/2/items/items
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_min-depth_oneOf_2_items_items
+
+:::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/min depth/oneOf/2/items/items/anyOf
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_min-depth_oneOf_2_items_items_anyOf
+
+::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/min depth/oneOf/2/items/items/anyOf/1
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_min-depth_oneOf_2_items_items_anyOf_1
+
+- **type**:number
+- **default value**:0.0
+::::::::::
+
+::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/min depth/oneOf/2/items/items/anyOf/2
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_min-depth_oneOf_2_items_items_anyOf_2
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:4294967295
+:::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/min depth/oneOf/2/items/items/anyOf/2/items
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_min-depth_oneOf_2_items_items_anyOf_2_items
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:2
+::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/min depth/oneOf/2/items/items/anyOf/2/items/items
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_min-depth_oneOf_2_items_items_anyOf_2_items_items
+
+- **type**:number
+::::::::
+
+:::::::::
+
+::::::::::
+
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/min depth/oneOf/3
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/max depth
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_max-depth
+
+- **description**:The depth in meters to which the composition of this feature is present.
+:::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/max depth/oneOf
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_max-depth_oneOf
+
+::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/max depth/oneOf/1
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_max-depth_oneOf_1
+
+- **default value**:1.7976931348623157e308
+- **type**:number
+- **description**:
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/max depth/oneOf/2
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_max-depth_oneOf_2
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/max depth/oneOf/2/items
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_max-depth_oneOf_2_items
+
+- **type**:array
+- **additionalProperties**:false
+- **minItems**:1
+- **maxItems**:2
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/max depth/oneOf/2/items/items
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_max-depth_oneOf_2_items_items
+
+:::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/max depth/oneOf/2/items/items/anyOf
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_max-depth_oneOf_2_items_items_anyOf
+
+::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/max depth/oneOf/2/items/items/anyOf/1
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_max-depth_oneOf_2_items_items_anyOf_1
+
+- **type**:number
+- **default value**:1.7976931348623157e308
+::::::::::
+
+::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/max depth/oneOf/2/items/items/anyOf/2
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_max-depth_oneOf_2_items_items_anyOf_2
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:4294967295
+:::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/max depth/oneOf/2/items/items/anyOf/2/items
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_max-depth_oneOf_2_items_items_anyOf_2_items
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:2
+::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/max depth/oneOf/2/items/items/anyOf/2/items/items
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_max-depth_oneOf_2_items_items_anyOf_2_items_items
+
+- **type**:number
+::::::::
+
+:::::::::
+
+::::::::::
+
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/max depth/oneOf/3
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/euler pole
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_euler-pole
+
+- **type**:array
+- **minItems**:2
+- **maxItems**:2
+- **uniqueItems**:false
+- **description**:The euler pole for the plate (longitude, latitude) in degree.
+:::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/euler pole/items
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_euler-pole_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+:::::::::::::::
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/1/angular velocity
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_1_angular-velocity
+
+- **default value**:0.0
+- **type**:number
+- **description**:The angular velocity of the Euler pole in degree/Myr.
+::::::::::::::::
+
+
+
+:::::::::::::::::
+
+:::::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2
+
+- **type**:object
+- **description**:Uniform velocity model. Set the velocity to a constant value.
+- **additionalProperties**:false
+- **required**:[model, velocity]
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/model
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_model
+
+- **default value**:
+- **type**:string
+- **description**:The name of the velocity model.
+- **enum**:[uniform raw]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/operation
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_operation
+
+- **default value**:replace
+- **type**:string
+- **description**:Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+- **enum**:[replace, add, subtract]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/min depth
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_min-depth
+
+- **description**:The depth in meters from which the composition of this feature is present.
+:::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/min depth/oneOf
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_min-depth_oneOf
+
+::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/min depth/oneOf/1
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_min-depth_oneOf_1
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/min depth/oneOf/2
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_min-depth_oneOf_2
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/min depth/oneOf/2/items
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_min-depth_oneOf_2_items
+
+- **type**:array
+- **additionalProperties**:false
+- **minItems**:1
+- **maxItems**:2
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/min depth/oneOf/2/items/items
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_min-depth_oneOf_2_items_items
+
+:::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf
+
+::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf/1
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf_1
+
+- **type**:number
+- **default value**:0.0
+::::::::::
+
+::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf/2
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf_2
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:4294967295
+:::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf/2/items
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf_2_items
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:2
+::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf/2/items/items
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf_2_items_items
+
+- **type**:number
+::::::::
+
+:::::::::
+
+::::::::::
+
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/min depth/oneOf/3
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/max depth
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_max-depth
+
+- **description**:The depth in meters to which the composition of this feature is present.
+:::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/max depth/oneOf
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_max-depth_oneOf
+
+::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/max depth/oneOf/1
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_max-depth_oneOf_1
+
+- **default value**:1.7976931348623157e308
+- **type**:number
+- **description**:
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/max depth/oneOf/2
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_max-depth_oneOf_2
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/max depth/oneOf/2/items
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_max-depth_oneOf_2_items
+
+- **type**:array
+- **additionalProperties**:false
+- **minItems**:1
+- **maxItems**:2
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/max depth/oneOf/2/items/items
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_max-depth_oneOf_2_items_items
+
+:::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf
+
+::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf/1
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf_1
+
+- **type**:number
+- **default value**:1.7976931348623157e308
+::::::::::
+
+::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf/2
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf_2
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:4294967295
+:::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf/2/items
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf_2_items
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:2
+::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf/2/items/items
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf_2_items_items
+
+- **type**:number
+::::::::
+
+:::::::::
+
+::::::::::
+
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/max depth/oneOf/3
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/velocity
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_velocity
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:The velocity in meter per year
+:::::::::::::::{dropdown} /features/items/oneOf/4/velocity models/items/oneOf/2/velocity/items
+:name: closed_features_items_oneOf_4_velocity-models_items_oneOf_2_velocity_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+:::::::::::::::
+
+::::::::::::::::
+
+
+
+:::::::::::::::::
+
+
+:::::::::::::::::::
+
+::::::::::::::::::::
+
+::::::::::::::::::::{dropdown} /features/items/oneOf/4/topography models
+:name: closed_features_items_oneOf_4_topography-models
+
+- **description**:A list of topography models.
+- **default value**:
+- **type**:array
+:::::::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items
+:name: closed_features_items_oneOf_4_topography-models_items
+
+::::::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf
+
+:::::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1
+
+- **type**:object
+- **description**:DepthSurface topography model. Set the topography to a constant value.
+- **additionalProperties**:false
+- **required**:[model, topography]
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/model
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_model
+
+- **default value**:
+- **type**:string
+- **description**:The name of the topography model.
+- **enum**:[depth surface]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/operation
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_operation
+
+- **default value**:replace
+- **type**:string
+- **description**:Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+- **enum**:[replace, add, subtract]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/min depth
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_min-depth
+
+- **description**:The depth in meters from which the composition of this feature is present.
+:::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/min depth/oneOf
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_min-depth_oneOf
+
+::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/min depth/oneOf/1
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_min-depth_oneOf_1
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/min depth/oneOf/2
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_min-depth_oneOf_2
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/min depth/oneOf/2/items
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_min-depth_oneOf_2_items
+
+- **type**:array
+- **additionalProperties**:false
+- **minItems**:1
+- **maxItems**:2
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/min depth/oneOf/2/items/items
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_min-depth_oneOf_2_items_items
+
+:::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/min depth/oneOf/2/items/items/anyOf
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_min-depth_oneOf_2_items_items_anyOf
+
+::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/min depth/oneOf/2/items/items/anyOf/1
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_min-depth_oneOf_2_items_items_anyOf_1
+
+- **type**:number
+- **default value**:0.0
+::::::::::
+
+::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/min depth/oneOf/2/items/items/anyOf/2
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_min-depth_oneOf_2_items_items_anyOf_2
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:4294967295
+:::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/min depth/oneOf/2/items/items/anyOf/2/items
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_min-depth_oneOf_2_items_items_anyOf_2_items
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:2
+::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/min depth/oneOf/2/items/items/anyOf/2/items/items
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_min-depth_oneOf_2_items_items_anyOf_2_items_items
+
+- **type**:number
+::::::::
+
+:::::::::
+
+::::::::::
+
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/min depth/oneOf/3
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/max depth
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_max-depth
+
+- **description**:The depth in meters to which the composition of this feature is present.
+:::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/max depth/oneOf
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_max-depth_oneOf
+
+::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/max depth/oneOf/1
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_max-depth_oneOf_1
+
+- **default value**:1.7976931348623157e308
+- **type**:number
+- **description**:
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/max depth/oneOf/2
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_max-depth_oneOf_2
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/max depth/oneOf/2/items
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_max-depth_oneOf_2_items
+
+- **type**:array
+- **additionalProperties**:false
+- **minItems**:1
+- **maxItems**:2
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/max depth/oneOf/2/items/items
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_max-depth_oneOf_2_items_items
+
+:::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/max depth/oneOf/2/items/items/anyOf
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_max-depth_oneOf_2_items_items_anyOf
+
+::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/max depth/oneOf/2/items/items/anyOf/1
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_max-depth_oneOf_2_items_items_anyOf_1
+
+- **type**:number
+- **default value**:1.7976931348623157e308
+::::::::::
+
+::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/max depth/oneOf/2/items/items/anyOf/2
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_max-depth_oneOf_2_items_items_anyOf_2
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:4294967295
+:::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/max depth/oneOf/2/items/items/anyOf/2/items
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_max-depth_oneOf_2_items_items_anyOf_2_items
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:2
+::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/max depth/oneOf/2/items/items/anyOf/2/items/items
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_max-depth_oneOf_2_items_items_anyOf_2_items_items
+
+- **type**:number
+::::::::
+
+:::::::::
+
+::::::::::
+
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/max depth/oneOf/3
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/topography
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_topography
+
+- **description**:The topography in meters.
+:::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/topography/oneOf
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_topography_oneOf
+
+::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/topography/oneOf/1
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_topography_oneOf_1
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/topography/oneOf/2
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_topography_oneOf_2
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/topography/oneOf/2/items
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_topography_oneOf_2_items
+
+- **type**:array
+- **additionalProperties**:false
+- **minItems**:1
+- **maxItems**:2
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/topography/oneOf/2/items/items
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_topography_oneOf_2_items_items
+
+:::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/topography/oneOf/2/items/items/anyOf
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_topography_oneOf_2_items_items_anyOf
+
+::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/topography/oneOf/2/items/items/anyOf/1
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_topography_oneOf_2_items_items_anyOf_1
+
+- **type**:number
+- **default value**:0.0
+::::::::::
+
+::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/topography/oneOf/2/items/items/anyOf/2
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_topography_oneOf_2_items_items_anyOf_2
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:4294967295
+:::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/topography/oneOf/2/items/items/anyOf/2/items
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_topography_oneOf_2_items_items_anyOf_2_items
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:2
+::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/topography/oneOf/2/items/items/anyOf/2/items/items
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_topography_oneOf_2_items_items_anyOf_2_items_items
+
+- **type**:number
+::::::::
+
+:::::::::
+
+::::::::::
+
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/1/topography/oneOf/3
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_1_topography_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
+
+::::::::::::::::
+
+
+
+:::::::::::::::::
+
+:::::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2
+
+- **type**:object
+- **description**:Uniform topography model. Set the topography to a constant value.
+- **additionalProperties**:false
+- **required**:[model, topography]
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/model
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_model
+
+- **default value**:
+- **type**:string
+- **description**:The name of the topography model.
+- **enum**:[uniform]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/operation
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_operation
+
+- **default value**:replace
+- **type**:string
+- **description**:Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+- **enum**:[replace, add, subtract]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/min depth
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_min-depth
+
+- **description**:The depth in meters from which the composition of this feature is present.
+:::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/min depth/oneOf
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_min-depth_oneOf
+
+::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/min depth/oneOf/1
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_min-depth_oneOf_1
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/min depth/oneOf/2
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_min-depth_oneOf_2
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/min depth/oneOf/2/items
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_min-depth_oneOf_2_items
+
+- **type**:array
+- **additionalProperties**:false
+- **minItems**:1
+- **maxItems**:2
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/min depth/oneOf/2/items/items
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_min-depth_oneOf_2_items_items
+
+:::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf
+
+::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf/1
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf_1
+
+- **type**:number
+- **default value**:0.0
+::::::::::
+
+::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf/2
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf_2
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:4294967295
+:::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf/2/items
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf_2_items
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:2
+::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf/2/items/items
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf_2_items_items
+
+- **type**:number
+::::::::
+
+:::::::::
+
+::::::::::
+
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/min depth/oneOf/3
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_min-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/max depth
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_max-depth
+
+- **description**:The depth in meters to which the composition of this feature is present.
+:::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/max depth/oneOf
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_max-depth_oneOf
+
+::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/max depth/oneOf/1
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_max-depth_oneOf_1
+
+- **default value**:1.7976931348623157e308
+- **type**:number
+- **description**:
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/max depth/oneOf/2
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_max-depth_oneOf_2
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/max depth/oneOf/2/items
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_max-depth_oneOf_2_items
+
+- **type**:array
+- **additionalProperties**:false
+- **minItems**:1
+- **maxItems**:2
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/max depth/oneOf/2/items/items
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_max-depth_oneOf_2_items_items
+
+:::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf
+
+::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf/1
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf_1
+
+- **type**:number
+- **default value**:1.7976931348623157e308
+::::::::::
+
+::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf/2
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf_2
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:4294967295
+:::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf/2/items
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf_2_items
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:2
+::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf/2/items/items
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf_2_items_items
+
+- **type**:number
+::::::::
+
+:::::::::
+
+::::::::::
+
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/max depth/oneOf/3
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_max-depth_oneOf_3
+
+- **default value**:
+- **type**:string
+- **description**:
+::::::::::::::
+
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/topography models/items/oneOf/2/topography
+:name: closed_features_items_oneOf_4_topography-models_items_oneOf_2_topography
+
+- **default value**:0.0
+- **type**:number
+- **description**:The topography in meters.
 ::::::::::::::::
 
 
@@ -11750,6 +14973,87 @@
 :name: closed_features_items_oneOf_5_grains-models_items_oneOf_2_grain-sizes_items
 
 - **default value**:-1.0
+- **type**:number
+- **description**:
+:::::::::::::::
+
+::::::::::::::::
+
+
+
+:::::::::::::::::
+
+
+:::::::::::::::::::
+
+::::::::::::::::::::
+
+::::::::::::::::::::{dropdown} /features/items/oneOf/5/velocity models
+:name: closed_features_items_oneOf_5_velocity-models
+
+- **description**:A list of velocity models.
+- **default value**:
+- **type**:array
+:::::::::::::::::::{dropdown} /features/items/oneOf/5/velocity models/items
+:name: closed_features_items_oneOf_5_velocity-models_items
+
+::::::::::::::::::{dropdown} /features/items/oneOf/5/velocity models/items/oneOf
+:name: closed_features_items_oneOf_5_velocity-models_items_oneOf
+
+:::::::::::::::::{dropdown} /features/items/oneOf/5/velocity models/items/oneOf/1
+:name: closed_features_items_oneOf_5_velocity-models_items_oneOf_1
+
+- **type**:object
+- **description**:Uniform velocity model. Set the velocity to a constant value.
+- **additionalProperties**:false
+- **required**:[model, velocity]
+
+::::::::::::::::{dropdown} /features/items/oneOf/5/velocity models/items/oneOf/1/model
+:name: closed_features_items_oneOf_5_velocity-models_items_oneOf_1_model
+
+- **default value**:
+- **type**:string
+- **description**:The name of the velocity model.
+- **enum**:[uniform raw]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/5/velocity models/items/oneOf/1/operation
+:name: closed_features_items_oneOf_5_velocity-models_items_oneOf_1_operation
+
+- **default value**:replace
+- **type**:string
+- **description**:Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+- **enum**:[replace, add, subtract]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/5/velocity models/items/oneOf/1/min depth
+:name: closed_features_items_oneOf_5_velocity-models_items_oneOf_1_min-depth
+
+- **default value**:0.0
+- **type**:number
+- **description**:The depth in meters from which the velocity of this feature is present.
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/5/velocity models/items/oneOf/1/max depth
+:name: closed_features_items_oneOf_5_velocity-models_items_oneOf_1_max-depth
+
+- **default value**:1.7976931348623157e308
+- **type**:number
+- **description**:The depth in meters to which the velocity of this feature is present.
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/5/velocity models/items/oneOf/1/velocity
+:name: closed_features_items_oneOf_5_velocity-models_items_oneOf_1_velocity
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:The velocity in meter per year
+:::::::::::::::{dropdown} /features/items/oneOf/5/velocity models/items/oneOf/1/velocity/items
+:name: closed_features_items_oneOf_5_velocity-models_items_oneOf_1_velocity_items
+
+- **default value**:0.0
 - **type**:number
 - **description**:
 :::::::::::::::
@@ -13286,6 +16590,87 @@
 
 ::::::::::::::::::
 
+::::::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/velocity models
+:name: closed_features_items_oneOf_6_segments_items_velocity-models
+
+- **description**:
+- **default value**:
+- **type**:array
+:::::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/velocity models/items
+:name: closed_features_items_oneOf_6_segments_items_velocity-models_items
+
+::::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/velocity models/items/oneOf
+:name: closed_features_items_oneOf_6_segments_items_velocity-models_items_oneOf
+
+:::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/velocity models/items/oneOf/1
+:name: closed_features_items_oneOf_6_segments_items_velocity-models_items_oneOf_1
+
+- **type**:object
+- **description**:Uniform velocity model. Set the velocity to a constant value.
+- **additionalProperties**:false
+- **required**:[model, velocity]
+
+::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/velocity models/items/oneOf/1/model
+:name: closed_features_items_oneOf_6_segments_items_velocity-models_items_oneOf_1_model
+
+- **default value**:
+- **type**:string
+- **description**:The name of the velocity model.
+- **enum**:[uniform raw]
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/velocity models/items/oneOf/1/operation
+:name: closed_features_items_oneOf_6_segments_items_velocity-models_items_oneOf_1_operation
+
+- **default value**:replace
+- **type**:string
+- **description**:Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+- **enum**:[replace, add, subtract]
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/velocity models/items/oneOf/1/min distance slab top
+:name: closed_features_items_oneOf_6_segments_items_velocity-models_items_oneOf_1_min-distance-slab-top
+
+- **default value**:0.0
+- **type**:number
+- **description**:todo The depth in meters from which the composition of this feature is present.
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/velocity models/items/oneOf/1/max distance slab top
+:name: closed_features_items_oneOf_6_segments_items_velocity-models_items_oneOf_1_max-distance-slab-top
+
+- **default value**:1.7976931348623157e308
+- **type**:number
+- **description**:todo The depth in meters to which the composition of this feature is present.
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/velocity models/items/oneOf/1/velocity
+:name: closed_features_items_oneOf_6_segments_items_velocity-models_items_oneOf_1_velocity
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:The velocity in meter per year
+:::::::::::::{dropdown} /features/items/oneOf/6/segments/items/velocity models/items/oneOf/1/velocity/items
+:name: closed_features_items_oneOf_6_segments_items_velocity-models_items_oneOf_1_velocity_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+:::::::::::::
+
+::::::::::::::
+
+
+
+:::::::::::::::
+
+
+:::::::::::::::::
+
+::::::::::::::::::
+
 
 
 :::::::::::::::::::
@@ -14633,6 +18018,87 @@
 :name: closed_features_items_oneOf_6_grains-models_items_oneOf_3_grain-sizes_items
 
 - **default value**:-1.0
+- **type**:number
+- **description**:
+:::::::::::::::
+
+::::::::::::::::
+
+
+
+:::::::::::::::::
+
+
+:::::::::::::::::::
+
+::::::::::::::::::::
+
+::::::::::::::::::::{dropdown} /features/items/oneOf/6/velocity models
+:name: closed_features_items_oneOf_6_velocity-models
+
+- **description**:A list of velocity models.
+- **default value**:
+- **type**:array
+:::::::::::::::::::{dropdown} /features/items/oneOf/6/velocity models/items
+:name: closed_features_items_oneOf_6_velocity-models_items
+
+::::::::::::::::::{dropdown} /features/items/oneOf/6/velocity models/items/oneOf
+:name: closed_features_items_oneOf_6_velocity-models_items_oneOf
+
+:::::::::::::::::{dropdown} /features/items/oneOf/6/velocity models/items/oneOf/1
+:name: closed_features_items_oneOf_6_velocity-models_items_oneOf_1
+
+- **type**:object
+- **description**:Uniform velocity model. Set the velocity to a constant value.
+- **additionalProperties**:false
+- **required**:[model, velocity]
+
+::::::::::::::::{dropdown} /features/items/oneOf/6/velocity models/items/oneOf/1/model
+:name: closed_features_items_oneOf_6_velocity-models_items_oneOf_1_model
+
+- **default value**:
+- **type**:string
+- **description**:The name of the velocity model.
+- **enum**:[uniform raw]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/6/velocity models/items/oneOf/1/operation
+:name: closed_features_items_oneOf_6_velocity-models_items_oneOf_1_operation
+
+- **default value**:replace
+- **type**:string
+- **description**:Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+- **enum**:[replace, add, subtract]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/6/velocity models/items/oneOf/1/min distance slab top
+:name: closed_features_items_oneOf_6_velocity-models_items_oneOf_1_min-distance-slab-top
+
+- **default value**:0.0
+- **type**:number
+- **description**:todo The depth in meters from which the composition of this feature is present.
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/6/velocity models/items/oneOf/1/max distance slab top
+:name: closed_features_items_oneOf_6_velocity-models_items_oneOf_1_max-distance-slab-top
+
+- **default value**:1.7976931348623157e308
+- **type**:number
+- **description**:todo The depth in meters to which the composition of this feature is present.
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/6/velocity models/items/oneOf/1/velocity
+:name: closed_features_items_oneOf_6_velocity-models_items_oneOf_1_velocity
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:The velocity in meter per year
+:::::::::::::::{dropdown} /features/items/oneOf/6/velocity models/items/oneOf/1/velocity/items
+:name: closed_features_items_oneOf_6_velocity-models_items_oneOf_1_velocity_items
+
+- **default value**:0.0
 - **type**:number
 - **description**:
 :::::::::::::::
@@ -16114,6 +19580,87 @@
 
 ::::::::::::::::
 
+::::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/velocity models
+:name: closed_features_items_oneOf_6_sections_items_segments_items_velocity-models
+
+- **description**:
+- **default value**:
+- **type**:array
+:::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/velocity models/items
+:name: closed_features_items_oneOf_6_sections_items_segments_items_velocity-models_items
+
+::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/velocity models/items/oneOf
+:name: closed_features_items_oneOf_6_sections_items_segments_items_velocity-models_items_oneOf
+
+:::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/velocity models/items/oneOf/1
+:name: closed_features_items_oneOf_6_sections_items_segments_items_velocity-models_items_oneOf_1
+
+- **type**:object
+- **description**:Uniform velocity model. Set the velocity to a constant value.
+- **additionalProperties**:false
+- **required**:[model, velocity]
+
+::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/velocity models/items/oneOf/1/model
+:name: closed_features_items_oneOf_6_sections_items_segments_items_velocity-models_items_oneOf_1_model
+
+- **default value**:
+- **type**:string
+- **description**:The name of the velocity model.
+- **enum**:[uniform raw]
+::::::::::::
+
+::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/velocity models/items/oneOf/1/operation
+:name: closed_features_items_oneOf_6_sections_items_segments_items_velocity-models_items_oneOf_1_operation
+
+- **default value**:replace
+- **type**:string
+- **description**:Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+- **enum**:[replace, add, subtract]
+::::::::::::
+
+::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/velocity models/items/oneOf/1/min distance slab top
+:name: closed_features_items_oneOf_6_sections_items_segments_items_velocity-models_items_oneOf_1_min-distance-slab-top
+
+- **default value**:0.0
+- **type**:number
+- **description**:todo The depth in meters from which the composition of this feature is present.
+::::::::::::
+
+::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/velocity models/items/oneOf/1/max distance slab top
+:name: closed_features_items_oneOf_6_sections_items_segments_items_velocity-models_items_oneOf_1_max-distance-slab-top
+
+- **default value**:1.7976931348623157e308
+- **type**:number
+- **description**:todo The depth in meters to which the composition of this feature is present.
+::::::::::::
+
+::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/velocity models/items/oneOf/1/velocity
+:name: closed_features_items_oneOf_6_sections_items_segments_items_velocity-models_items_oneOf_1_velocity
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:The velocity in meter per year
+:::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/velocity models/items/oneOf/1/velocity/items
+:name: closed_features_items_oneOf_6_sections_items_segments_items_velocity-models_items_oneOf_1_velocity_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+:::::::::::
+
+::::::::::::
+
+
+
+:::::::::::::
+
+
+:::::::::::::::
+
+::::::::::::::::
+
 
 
 :::::::::::::::::
@@ -17461,6 +21008,87 @@
 :name: closed_features_items_oneOf_6_sections_items_grains-models_items_oneOf_3_grain-sizes_items
 
 - **default value**:-1.0
+- **type**:number
+- **description**:
+:::::::::::::
+
+::::::::::::::
+
+
+
+:::::::::::::::
+
+
+:::::::::::::::::
+
+::::::::::::::::::
+
+::::::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/velocity models
+:name: closed_features_items_oneOf_6_sections_items_velocity-models
+
+- **description**:A list of velocity models.
+- **default value**:
+- **type**:array
+:::::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/velocity models/items
+:name: closed_features_items_oneOf_6_sections_items_velocity-models_items
+
+::::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/velocity models/items/oneOf
+:name: closed_features_items_oneOf_6_sections_items_velocity-models_items_oneOf
+
+:::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/velocity models/items/oneOf/1
+:name: closed_features_items_oneOf_6_sections_items_velocity-models_items_oneOf_1
+
+- **type**:object
+- **description**:Uniform velocity model. Set the velocity to a constant value.
+- **additionalProperties**:false
+- **required**:[model, velocity]
+
+::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/velocity models/items/oneOf/1/model
+:name: closed_features_items_oneOf_6_sections_items_velocity-models_items_oneOf_1_model
+
+- **default value**:
+- **type**:string
+- **description**:The name of the velocity model.
+- **enum**:[uniform raw]
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/velocity models/items/oneOf/1/operation
+:name: closed_features_items_oneOf_6_sections_items_velocity-models_items_oneOf_1_operation
+
+- **default value**:replace
+- **type**:string
+- **description**:Whether the value should replace any value previously defined at this location (replace), add the value to the previously define value (add) or subtract the value to the previously define value (subtract).
+- **enum**:[replace, add, subtract]
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/velocity models/items/oneOf/1/min distance slab top
+:name: closed_features_items_oneOf_6_sections_items_velocity-models_items_oneOf_1_min-distance-slab-top
+
+- **default value**:0.0
+- **type**:number
+- **description**:todo The depth in meters from which the composition of this feature is present.
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/velocity models/items/oneOf/1/max distance slab top
+:name: closed_features_items_oneOf_6_sections_items_velocity-models_items_oneOf_1_max-distance-slab-top
+
+- **default value**:1.7976931348623157e308
+- **type**:number
+- **description**:todo The depth in meters to which the composition of this feature is present.
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/velocity models/items/oneOf/1/velocity
+:name: closed_features_items_oneOf_6_sections_items_velocity-models_items_oneOf_1_velocity
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:The velocity in meter per year
+:::::::::::::{dropdown} /features/items/oneOf/6/sections/items/velocity models/items/oneOf/1/velocity/items
+:name: closed_features_items_oneOf_6_sections_items_velocity-models_items_oneOf_1_velocity_items
+
+- **default value**:0.0
 - **type**:number
 - **description**:
 :::::::::::::

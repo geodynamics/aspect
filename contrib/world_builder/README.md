@@ -7,10 +7,7 @@
 [![Matrix space](https://img.shields.io/badge/Chat-matrix.org-brightgreen?logo=matrix&logoColor=eeeeee)](https://app.element.io/#/room/#gwb:matrix.org)
 [![Mastodon Follow](https://img.shields.io/badge/News-%40world__builder-brightgreen?logo=mastodon&logoColor=eeeeee)](https://social.mfraters.net/@world_builder)
 
-<p align="center">
-<img src="doc/sphinx/_static/images/world_builder_logo_v4_b_text.png" width="30%" alt="The Geodynamic World Builder logo"/> &nbsp;&nbsp;&nbsp;&nbsp; 
-<img src="doc/sphinx/_static/images/user_manual/basic_starter_tutorial/BST_17.png" width="65%" alt="The resulting model from the first tutorial"/>
-</p>
+![Geodynamic World Builder Logo](doc/sphinx/_static/images/world_builder_logo_with_example.png)
 
 # The Geodynamic World Builder (GWB)
 
@@ -21,7 +18,7 @@ For more information see the [GWB site](https://geodynamicworldbuilder.github.io
 
 ## Frequently Asked Questions (FAQ)
 ### What are the minimum requirements to compile the library and tools?
-Currently, GWB requires only a C++14 compiler and CMake version higher than 2.8.12 to compile the library tools. Note that for some optional features (such as certain wrappers and unity build) a higher version of CMake and other dependencies may be needed (e.g., a Fortran compiler to compile the Fortran wrapper).
+Currently, GWB requires only a C++14 compiler and CMake version higher than 3.5 to compile the library tools. Note that for some optional features (such as certain wrappers and unity build) a higher version of CMake and other dependencies may be needed (e.g., a Fortran compiler to compile the Fortran wrapper).
 ### What do I do when I have a question or want to request a feature?
 If you have a question about the code and you can not find the answer easily in the documentation or the question is not already raised as an [issue](https://github.com/GeodynamicWorldBuilder/WorldBuilder/issues), please let us know by opening an [issue on github](https://github.com/GeodynamicWorldBuilder/WorldBuilder/issues/new). This is also the preferred method for asking for new features for GWB.
 
@@ -29,7 +26,7 @@ If you have a question about the code and you can not find the answer easily in 
 Please do not keep it to yourself and let us know. Others will also profit from mistakes being found and fixed. Even if it is just a typo in the documentation feel free to raise an issue or, even better, make a pull request to fix the issue.
 
 ### Is there a way to ask a quick question or chat with the developers or other users?
-We are now also experimenting with matrix chat ([#gwb:matrix.org](https://app.element.io/#/room/#gwb:matrix.org)). [Matrix](https://matrix.org) is an open source distributed chat protocol (a description of how to communicate). The matrix is not limited to one client, but using the [Element](https://element.io) client is generally recommended. Element can be used as a desktop, mobile or web application. Since the main developer is already present on matrix, a special space has been created for the World Builder allowing the option for multiple rooms. You can join the main room [here](https://app.element.io/#/room/#gwb:matrix.org). This is the easiest way since you can just open it in your browser. If you want to join the whole space in any client, use this link: [https://matrix.to/#/!vhukRUGUINnZOIutoQ:matrix.org](https://matrix.to/#/!vhukRUGUINnZOIutoQ:matrix.org). 
+We are now also experimenting with matrix chat ([#gwb:matrix.org](https://app.element.io/#/room/#gwb:matrix.org)). [Matrix](https://matrix.org) is an open source distributed chat protocol (a description of how to communicate). The matrix is not limited to one client, but using the [Element](https://element.io) client is generally recommended. Element can be used as a desktop, mobile or web application. Since the main developer is already present on matrix, a special space has been created for the World Builder allowing the option for multiple rooms. You can join the main room [here](https://app.element.io/#/room/#gwb:matrix.org). This is the easiest way since you can just open it in your browser. If you want to join the whole space in any client, use this link: [https://matrix.to/#/!vhukRUGUINnZOIutoQ:matrix.org](https://matrix.to/#/!vhukRUGUINnZOIutoQ:matrix.org).
 
 Feel free to join!
 
@@ -46,8 +43,20 @@ Menno Fraters and others. August 2024. The Geodynamic World Builder v1.0.0. Zeno
 
 ### How can I follow the progress of this project?
 There are multiple ways in which you can follow this project:
- 1. Watch the repository on github. This will give you an update of what is happening in the repository. This happens automatically and you can set it up to notify you for different kinds of events. 
+ 1. Watch the repository on github. This will give you an update of what is happening in the repository. This happens automatically and you can set it up to notify you for different kinds of events.
  2. Follow the [World Builder Mastodon account](https://social.mfraters.net/@world_builder). This is a manually updated feed which updates when there are new releases or major new features merged into the main branch. More general news related to the project may also be posted.
  3. Subscribe to the Mastodon RSS feed: https://social.mfraters.net/@world_builder.rss. This will show exactly the same information as the Mastodon account, but you can use any RSS reader.
  4. Visit the [World Builder website](https://geodynamicworldbuilder.github.io/). Besides all kinds of useful information and links, it also contains a RSS feed viewer for the World Builder Mastodon account.
  5. Join the [main GWB Matrix chat room](https://app.element.io/#/room/#gwb:matrix.org) or the whole [GWB Matrix space](https://matrix.to/#/!vhukRUGUINnZOIutoQ:matrix.org)!
+
+## Developers of the GWB
+The development of the Geodynamic World Builderis currently lead by Menno Fraters.
+
+The following people currently serve as GWB developers -- people who have and are providing substantial technical contributions to the Geodynamic World Builder:
+
+- Juliane Dannberg (GEOMAR Helmholtz Centre for Ocean Research, Germany)
+- Daniel Douglas (New Mexico Tech, USA)
+- Menno Fraters (Geoforschungszentrum Potsdam, Germany)
+- Rene Gassmoeller (GEOMAR Helmholtz Centre for Ocean Research, Germany)
+- Timo Heister (Clemson University, USA)
+- Arushi Saxena (UC Davis, USA)

@@ -33,6 +33,17 @@ namespace WorldBuilder
 
     }
 
+    OneOf::OneOf(const Interface &type_1,
+                 const Interface &type_2,
+                 const Interface &type_3)
+    {
+      this->type_name = Types::type::OneOf;
+      inner_types_ptr.emplace_back(type_1.clone());
+      inner_types_ptr.emplace_back(type_2.clone());
+      inner_types_ptr.emplace_back(type_3.clone());
+
+    }
+
     OneOf::OneOf(OneOf const &other)
     {
       this->type_name = Types::type::OneOf;

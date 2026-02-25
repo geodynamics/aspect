@@ -1,0 +1,17 @@
+# output variables
+grid_type = chunk
+dim = 3
+compositions = 12
+
+# domain of the grid
+x_min = 272
+x_max = 300
+y_max = 10 #-61
+y_min = -10 #17
+z_min = 6171000
+z_max = 6371000
+
+# grid properties
+n_cell_x = 10 #400 #350 #150 #50 #150
+n_cell_y = 5 #400 #200 #180 #60 #180
+n_cell_z = 15 #35 #100 #30 #15 #45

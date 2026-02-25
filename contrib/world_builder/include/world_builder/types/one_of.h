@@ -44,6 +44,13 @@ namespace WorldBuilder
               const Interface &type_2);
 
         /**
+         * Constructor for the declaration
+         */
+        OneOf(const Interface &type_1,
+              const Interface &type_2,
+              const Interface &type_3);
+
+        /**
          * Constructor for cloning an array.
          */
         OneOf(OneOf const &other);
