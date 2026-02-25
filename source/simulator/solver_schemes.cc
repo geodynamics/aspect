@@ -616,10 +616,10 @@ namespace aspect
     else
       assemble_newton_stokes_system = assemble_newton_stokes_matrix = true;
 
-    // Make sure we use the correct assemblers for first and all other iterations
-    // We solve the normal system in the first iteration, and the defect correction
-    // system in all other iterations.
-    if (nonlinear_iteration <= 1)
+    // We solve the normal system in nonlinear iteration 0, and the defect
+    // correction system (either Picard or Newton) in iteration >=1.
+    // These functions replace the assemblers and constraints when necessary.
+    if (nonlinear_iteration == 1)
       {
         set_assemblers();
         compute_current_constraints ();
