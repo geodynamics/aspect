@@ -119,7 +119,6 @@ namespace aspect
                       const bool                add_compaction_pressure,
                       const bool                use_reference_density_profile,
                       const bool                rebuild_stokes_matrix,
-                      const bool                rebuild_newton_stokes_matrix,
                       const bool                use_bfbt)
           :
           StokesPreconditioner<dim> (finite_element, quadrature,
@@ -143,8 +142,7 @@ namespace aspect
           face_material_model_inputs(face_quadrature.size(), n_compositional_fields),
           face_material_model_outputs(face_quadrature.size(), n_compositional_fields),
           reference_densities(use_reference_density_profile ? quadrature.size() : 0, numbers::signaling_nan<double>()),
-          reference_densities_depth_derivative(use_reference_density_profile ? quadrature.size() : 0, numbers::signaling_nan<double>()),
-          rebuild_newton_stokes_matrix(rebuild_newton_stokes_matrix)
+          reference_densities_depth_derivative(use_reference_density_profile ? quadrature.size() : 0, numbers::signaling_nan<double>())
         {}
 
 
@@ -167,8 +165,7 @@ namespace aspect
           face_material_model_inputs(scratch.face_material_model_inputs),
           face_material_model_outputs(scratch.face_material_model_outputs),
           reference_densities(scratch.reference_densities),
-          reference_densities_depth_derivative(scratch.reference_densities_depth_derivative),
-          rebuild_newton_stokes_matrix(scratch.rebuild_newton_stokes_matrix)
+          reference_densities_depth_derivative(scratch.reference_densities_depth_derivative)
         {}
 
         template <int dim>
