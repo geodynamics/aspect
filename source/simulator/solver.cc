@@ -595,7 +595,7 @@ namespace aspect
       {
         outputs = stokes_matrix_free->solve(system_matrix,
                                             system_rhs,
-                                            assemble_defect_correction_stokes_system,
+                                            assemble_newton_stokes_system,
                                             last_pressure_normalization_adjustment,
                                             solution_vector);
       }
@@ -603,7 +603,7 @@ namespace aspect
       {
         outputs = stokes_direct->solve(system_matrix,
                                        system_rhs,
-                                       assemble_defect_correction_stokes_system,
+                                       assemble_newton_stokes_system,
                                        last_pressure_normalization_adjustment,
                                        solution_vector);
       }
@@ -676,7 +676,7 @@ namespace aspect
         // linearized_stokes_variables has a different
         // layout than current_linearization_point, which also contains all the
         // other solution variables.
-        if (assemble_defect_correction_stokes_system == false)
+        if (assemble_newton_stokes_system == false)
           {
             linearized_stokes_initial_guess.block (velocity_block_index) = current_linearization_point.block (velocity_block_index);
             linearized_stokes_initial_guess.block (pressure_block_index) = current_linearization_point.block (pressure_block_index);
@@ -702,7 +702,7 @@ namespace aspect
         linearized_stokes_initial_guess.block (pressure_block_index) /= pressure_scaling;
 
         double solver_tolerance = 0;
-        if (assemble_defect_correction_stokes_system == false)
+        if (assemble_newton_stokes_system == false)
           {
             // (ab)use the distributed solution vector to temporarily put a residual in
             // (we don't care about the residual vector -- all we care about is the
@@ -941,7 +941,7 @@ namespace aspect
         // do some cleanup now that we have the solution
         remove_nullspace(solution_vector, distributed_stokes_solution);
 
-        if (assemble_defect_correction_stokes_system == false)
+        if (assemble_newton_stokes_system == false)
           outputs.pressure_normalization_adjustment = normalize_pressure(solution_vector);
       }
 

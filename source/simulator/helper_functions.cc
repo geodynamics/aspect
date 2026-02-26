@@ -2611,16 +2611,19 @@ namespace aspect
     temp_velocity_linearization_point
     .swap(current_linearization_point.block(introspection.block_indices.velocities));
 
-    // Rebuild the whole system to compute the rhs.
-    const bool assemble_dc_Stokes_backup = assemble_defect_correction_stokes_system;
-    assemble_defect_correction_stokes_system = true;
-    rebuild_stokes_preconditioner = false;
+    // Ensure we assemble the Newton residual, no matter which system we are solving
+    const bool assemble_dc_Stokes_backup = assemble_newton_stokes_system;
+    assemble_newton_stokes_system = true;
+    // Ensure the assemblers are consistent with the system we are assembling
+    if (assemble_dc_Stokes_backup != assemble_newton_stokes_system)
+      set_assemblers();
 
     // Technically we only need the rhs, but we have asserts in place that check if
     // the system is assembled correctly when boundary conditions are prescribed, so we assemble the whole system.
     // TODO: This is a waste of time in the first nonlinear iteration. Check if we can modify the asserts in the
     // assemble_stokes_system() function to only assemble the RHS.
     rebuild_stokes_matrix = boundary_velocity_manager.get_prescribed_boundary_velocity_indicators().size()!=0;
+    rebuild_stokes_preconditioner = false;
 
     compute_current_constraints ();
     assemble_stokes_system();
@@ -2633,8 +2636,13 @@ namespace aspect
     current_linearization_point.block(introspection.block_indices.velocities)
     .swap(temp_velocity_linearization_point);
 
-    // Undo the change to this state variable
-    assemble_defect_correction_stokes_system = assemble_dc_Stokes_backup;
+    // Undo the change to the state of assembly, assemblers, and constraints
+    if (assemble_dc_Stokes_backup != assemble_newton_stokes_system)
+      {
+        assemble_newton_stokes_system = assemble_dc_Stokes_backup;
+        set_assemblers();
+        compute_current_constraints ();
+      }
 
     pcout << "   Initial Newton Stokes residual = " << initial_newton_residual << ", v = " << initial_newton_residual_vel << ", p = " << initial_newton_residual_p << std::endl << std::endl;
     return initial_newton_residual;

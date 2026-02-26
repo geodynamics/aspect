@@ -611,13 +611,22 @@ namespace aspect
         dcr.switch_initial_residual = dcr.initial_residual;
         dcr.residual_old = dcr.initial_residual;
         dcr.residual = dcr.initial_residual;
+
+        // Ensure we always begin by solving the normal Stokes system
+        // even for defect correction / Newton solvers
+        assemble_newton_stokes_system = false;
+        rebuild_stokes_matrix = true;
       }
     else if (nonlinear_iteration == 1)
       {
         // Switch to solving the defect correction system
-        assemble_defect_correction_stokes_system = true;
+        // and use the correct assemblers and constraints
+        assemble_newton_stokes_system = true;
+        rebuild_stokes_matrix = true;
+      }
 
-        // Replace the assemblers and constraints
+    if (nonlinear_iteration <=1)
+      {
         set_assemblers();
         compute_current_constraints ();
       }

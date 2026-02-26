@@ -2056,7 +2056,7 @@ namespace aspect
       bool                                                      rebuild_sparsity_and_matrices;
       bool                                                      rebuild_stokes_matrix;
       bool                                                      rebuild_stokes_preconditioner;
-      bool                                                      assemble_defect_correction_stokes_system;
+      bool                                                      assemble_newton_stokes_system;
 
       /**
        * @}
