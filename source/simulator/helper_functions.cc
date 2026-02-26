@@ -2621,7 +2621,6 @@ namespace aspect
     // TODO: This is a waste of time in the first nonlinear iteration. Check if we can modify the asserts in the
     // assemble_stokes_system() function to only assemble the RHS.
     rebuild_stokes_matrix = boundary_velocity_manager.get_prescribed_boundary_velocity_indicators().size()!=0;
-    rebuild_stokes_matrix = boundary_velocity_manager.get_prescribed_boundary_velocity_indicators().size()!=0;
 
     compute_current_constraints ();
     assemble_stokes_system();

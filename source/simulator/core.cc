@@ -248,7 +248,7 @@ namespace aspect
 
     rebuild_stokes_matrix (true),
     rebuild_stokes_preconditioner (true),
-    // note that assemble_defect_correction_stokes_system is 
+    // note that assemble_defect_correction_stokes_system is
     // initialized to false even for defect correction solvers
     // because the first nonlinear iteration is always
     // solved as the full system
@@ -648,12 +648,12 @@ namespace aspect
       particle_manager.backup_particles();
 
     if (Parameters<dim>::is_defect_correction(parameters.nonlinear_solver))
-    {
-      // Ensure we always begin by solving the normal Stokes system
-      // even for defect correction / Newton solvers
-      assemble_defect_correction_stokes_system = false;
-      set_assemblers();
-    }
+      {
+        // Ensure we always begin by solving the normal Stokes system
+        // even for defect correction / Newton solvers
+        assemble_defect_correction_stokes_system = false;
+        set_assemblers();
+      }
 
     // then interpolate the current boundary velocities. copy constraints
     // into current_constraints and then add to current_constraints

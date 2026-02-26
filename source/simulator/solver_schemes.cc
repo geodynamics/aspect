@@ -632,16 +632,16 @@ namespace aspect
     if (stokes_matrix_depends_on_solution()
         ||
         nonlinear_iteration == 0)
-        {
-      rebuild_stokes_matrix = true;
-      rebuild_stokes_preconditioner = true;
-        }
+      {
+        rebuild_stokes_matrix = true;
+        rebuild_stokes_preconditioner = true;
+      }
     else if (parameters.enable_prescribed_dilation)
-    {
-      // The dilation requires the Stokes matrix (which is on the rhs
-      // in the Newton solver) to be updated.
-      rebuild_stokes_matrix = true;
-    }
+      {
+        // The dilation requires the Stokes matrix (which is on the rhs
+        // in the Newton solver) to be updated.
+        rebuild_stokes_matrix = true;
+      }
 
     assemble_stokes_system();
 
@@ -712,11 +712,16 @@ namespace aspect
         if (stokes_matrix_depends_on_solution()
             ||
             (nonlinear_iteration == 0 && boundary_velocity_manager.get_prescribed_boundary_velocity_indicators().size() > 0))
-          rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+          {
+            rebuild_stokes_matrix = true;
+            rebuild_stokes_preconditioner = true;
+          }
         else if (parameters.enable_prescribed_dilation)
-          // The dilation requires the Stokes matrix (which is on the rhs
-          // in the Newton solver) to be updated.
-          rebuild_stokes_matrix = true;
+          {
+            // The dilation requires the Stokes matrix (which is on the rhs
+            // in the Newton solver) to be updated.
+            rebuild_stokes_matrix = true;
+          }
 
         assemble_stokes_system();
 
