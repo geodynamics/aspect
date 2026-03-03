@@ -24,6 +24,7 @@
 #include <aspect/gravity_model/interface.h>
 #include <aspect/material_model/rheology/visco_plastic.h>
 #include <aspect/utilities.h>
+#include <aspect/simulator_signals.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/base/signaling_nan.h>
@@ -1143,6 +1144,17 @@ namespace aspect
           if (reference_compressibility != 0)
             this->model_dependence.density |=NonlinearDependence::pressure;
         }
+
+
+#if !DEAL_II_VERSION_GTE(9, 8, 0)
+// Work around a memory leak in deal.II that is fixed in 9.8.0-pre:
+      this->get_signals().start_timestep.connect([&](const SimulatorAccess<dim> &)
+      {
+        temperature_evaluator.reset();
+        pressure_evaluator.reset();
+      });
+#endif
+
     }
 
 
