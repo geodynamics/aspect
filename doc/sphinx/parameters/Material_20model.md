@@ -5,8 +5,8 @@
 ## **Subsection:** Material model
 
 
-(parameters:Material_20model/Material_20averaging)=
-### __Parameter name:__ Material averaging
+::::{dropdown} __Parameter:__ {ref}`Material averaging<parameters:Material_20model/Material_20averaging>`
+:name: parameters:Material_20model/Material_20averaging
 **Default value:** default averaging
 
 **Pattern:** [Selection none|default averaging|arithmetic average|harmonic average|geometric average|pick largest|project to Q1|log average|harmonic average only viscosity|geometric average only viscosity|project to Q1 only viscosity ]
@@ -18,9 +18,10 @@ Possible choices: none|default averaging|arithmetic average|harmonic average|geo
 The process of averaging, and where it may be used, is discussed in more detail in {ref}`sec:cookbooks:sinker-with-averaging`.
 
 More averaging schemes are available in the averaging material model. This material model is a &ldquo;compositing material model&rdquo; which can be used in combination with other material models.
+::::
 
-(parameters:Material_20model/Model_20name)=
-### __Parameter name:__ Model name
+::::{dropdown} __Parameter:__ {ref}`Model name<parameters:Material_20model/Model_20name>`
+:name: parameters:Material_20model/Model_20name
 **Default value:** unspecified
 
 **Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|entropy model|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|prescribed viscosity|reactive fluid transport|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
@@ -221,357 +222,400 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
  Several model parameters (densities, elastic shear moduli, thermal expansivities, thermal conductivies, specific heats) can be defined per-compositional field. For each material parameter the user supplies a comma delimited list of length N+1, where N is the number of compositional fields. The additional field corresponds to the value for background material. They should be ordered &rdquo;background, composition1, composition2...&rdquo;. However, the first 3 (2d) or 6 (3d) composition fields correspond to components of the elastic stress tensor and their material values will not contribute to the volume fractions. If a single value is given, then all the compositional fields are given that value. Other lengths of lists are not allowed. For a given compositional field the material parameters are treated as constant, except density, which varies linearly with temperature according to the thermal expansivity.
 
  When more than one compositional field is present at a point, they are averaged arithmetically. An exception is viscosity, which may be averaged arithmetically, harmonically, geometrically, or by selecting the viscosity of the composition field with the greatest volume fraction.
+::::
 
 (parameters:Material_20model/Ascii_20reference_20profile)=
 ## **Subsection:** Material model / Ascii reference profile
-(parameters:Material_20model/Ascii_20reference_20profile/Thermal_20conductivity)=
-### __Parameter name:__ Thermal conductivity
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivity<parameters:Material_20model/Ascii_20reference_20profile/Thermal_20conductivity>`
+:name: parameters:Material_20model/Ascii_20reference_20profile/Thermal_20conductivity
 **Default value:** 4.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Reference conductivity
+::::
 
-(parameters:Material_20model/Ascii_20reference_20profile/Thermal_20viscosity_20exponent)=
-### __Parameter name:__ Thermal viscosity exponent
+::::{dropdown} __Parameter:__ {ref}`Thermal viscosity exponent<parameters:Material_20model/Ascii_20reference_20profile/Thermal_20viscosity_20exponent>`
+:name: parameters:Material_20model/Ascii_20reference_20profile/Thermal_20viscosity_20exponent
 **Default value:** 0.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The temperature dependence of viscosity. Dimensionless exponent.
+::::
 
-(parameters:Material_20model/Ascii_20reference_20profile/Transition_20depths)=
-### __Parameter name:__ Transition depths
+::::{dropdown} __Parameter:__ {ref}`Transition depths<parameters:Material_20model/Ascii_20reference_20profile/Transition_20depths>`
+:name: parameters:Material_20model/Ascii_20reference_20profile/Transition_20depths
 **Default value:** 1.5e5, 4.1e5, 6.6e5
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A list of depths where the viscosity changes. Values must monotonically increase. Units: \si{\meter}.
+::::
 
-(parameters:Material_20model/Ascii_20reference_20profile/Use_20TALA)=
-### __Parameter name:__ Use TALA
+::::{dropdown} __Parameter:__ {ref}`Use TALA<parameters:Material_20model/Ascii_20reference_20profile/Use_20TALA>`
+:name: parameters:Material_20model/Ascii_20reference_20profile/Use_20TALA
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to use the TALA instead of the ALA approximation.
+::::
 
-(parameters:Material_20model/Ascii_20reference_20profile/Viscosity)=
-### __Parameter name:__ Viscosity
+::::{dropdown} __Parameter:__ {ref}`Viscosity<parameters:Material_20model/Ascii_20reference_20profile/Viscosity>`
+:name: parameters:Material_20model/Ascii_20reference_20profile/Viscosity
 **Default value:** 1e21
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Viscosity
+::::
 
-(parameters:Material_20model/Ascii_20reference_20profile/Viscosity_20prefactors)=
-### __Parameter name:__ Viscosity prefactors
+::::{dropdown} __Parameter:__ {ref}`Viscosity prefactors<parameters:Material_20model/Ascii_20reference_20profile/Viscosity_20prefactors>`
+:name: parameters:Material_20model/Ascii_20reference_20profile/Viscosity_20prefactors
 **Default value:** 10., 0.1, 1., 10.
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A list of prefactors for the viscosity that determine the viscosity profile. Each prefactor is applied in a depth range specified by the list of &lsquo;Transition depths&rsquo;, i.e. the first prefactor is applied above the first transition depth, the second one between the first and second transition depth, and so on. To compute the viscosity profile, this prefactor is multiplied by the reference viscosity specified through the parameter &lsquo;Viscosity&rsquo;. List must have one more entry than Transition depths. Units: non-dimensional.
+::::
 
 (parameters:Material_20model/Ascii_20reference_20profile/Ascii_20data_20model)=
 ## **Subsection:** Material model / Ascii reference profile / Ascii data model
-(parameters:Material_20model/Ascii_20reference_20profile/Ascii_20data_20model/Data_20directory)=
-### __Parameter name:__ Data directory
+::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Material_20model/Ascii_20reference_20profile/Ascii_20data_20model/Data_20directory>`
+:name: parameters:Material_20model/Ascii_20reference_20profile/Ascii_20data_20model/Data_20directory
 **Default value:** $ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/
 
 **Pattern:** [DirectoryName]
 
 **Documentation:** The name of a directory that contains the model data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT. A trailing slash at the end of the directory path is optional; the plugin will automatically append a &rsquo;/&rsquo; when the parameters are parsed if it is missing.
+::::
 
-(parameters:Material_20model/Ascii_20reference_20profile/Ascii_20data_20model/Data_20file_20name)=
-### __Parameter name:__ Data file name
+::::{dropdown} __Parameter:__ {ref}`Data file name<parameters:Material_20model/Ascii_20reference_20profile/Ascii_20data_20model/Data_20file_20name>`
+:name: parameters:Material_20model/Ascii_20reference_20profile/Ascii_20data_20model/Data_20file_20name
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** The file name of the model data.
+::::
 
-(parameters:Material_20model/Ascii_20reference_20profile/Ascii_20data_20model/Scale_20factor)=
-### __Parameter name:__ Scale factor
+::::{dropdown} __Parameter:__ {ref}`Scale factor<parameters:Material_20model/Ascii_20reference_20profile/Ascii_20data_20model/Scale_20factor>`
+:name: parameters:Material_20model/Ascii_20reference_20profile/Ascii_20data_20model/Scale_20factor
 **Default value:** 1.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
+::::
 
 (parameters:Material_20model/Averaging)=
 ## **Subsection:** Material model / Averaging
-(parameters:Material_20model/Averaging/Averaging_20operation)=
-### __Parameter name:__ Averaging operation
+::::{dropdown} __Parameter:__ {ref}`Averaging operation<parameters:Material_20model/Averaging/Averaging_20operation>`
+:name: parameters:Material_20model/Averaging/Averaging_20operation
 **Default value:** none
 
 **Pattern:** [Selection none|arithmetic average|harmonic average|geometric average|pick largest|log average|nwd arithmetic average|nwd harmonic average|nwd geometric average ]
 
 **Documentation:** Choose the averaging operation to use.
+::::
 
-(parameters:Material_20model/Averaging/Base_20model)=
-### __Parameter name:__ Base model
+::::{dropdown} __Parameter:__ {ref}`Base model<parameters:Material_20model/Averaging/Base_20model>`
+:name: parameters:Material_20model/Averaging/Base_20model
 **Default value:** simple
 
 **Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|entropy model|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|prescribed viscosity|reactive fluid transport|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic ]
 
 **Documentation:** The name of a material model that will be modified by an averaging operation. Valid values for this parameter are the names of models that are also valid for the &ldquo;Material models/Model name&rdquo; parameter. See the documentation for that for more information.
+::::
 
-(parameters:Material_20model/Averaging/Bell_20shape_20limit)=
-### __Parameter name:__ Bell shape limit
+::::{dropdown} __Parameter:__ {ref}`Bell shape limit<parameters:Material_20model/Averaging/Bell_20shape_20limit>`
+:name: parameters:Material_20model/Averaging/Bell_20shape_20limit
 **Default value:** 1.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The limit normalized distance between 0 and 1 where the bell shape becomes zero. See the manual for a more information.
+::::
 
 (parameters:Material_20model/Compositing)=
 ## **Subsection:** Material model / Compositing
-(parameters:Material_20model/Compositing/Compressibility)=
-### __Parameter name:__ Compressibility
+::::{dropdown} __Parameter:__ {ref}`Compressibility<parameters:Material_20model/Compositing/Compressibility>`
+:name: parameters:Material_20model/Compositing/Compressibility
 **Default value:** unspecified
 
 **Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|entropy model|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|prescribed viscosity|reactive fluid transport|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
 
 **Documentation:** Material model to use for Compressibility. Valid values for this parameter are the names of models that are also valid for the &ldquo;Material models/Model name&rdquo; parameter. See the documentation for that for more information.
+::::
 
-(parameters:Material_20model/Compositing/Density)=
-### __Parameter name:__ Density
+::::{dropdown} __Parameter:__ {ref}`Density<parameters:Material_20model/Compositing/Density>`
+:name: parameters:Material_20model/Compositing/Density
 **Default value:** unspecified
 
 **Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|entropy model|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|prescribed viscosity|reactive fluid transport|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
 
 **Documentation:** Material model to use for Density. Valid values for this parameter are the names of models that are also valid for the &ldquo;Material models/Model name&rdquo; parameter. See the documentation for that for more information.
+::::
 
-(parameters:Material_20model/Compositing/Entropy_20derivative_20pressure)=
-### __Parameter name:__ Entropy derivative pressure
+::::{dropdown} __Parameter:__ {ref}`Entropy derivative pressure<parameters:Material_20model/Compositing/Entropy_20derivative_20pressure>`
+:name: parameters:Material_20model/Compositing/Entropy_20derivative_20pressure
 **Default value:** unspecified
 
 **Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|entropy model|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|prescribed viscosity|reactive fluid transport|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
 
 **Documentation:** Material model to use for Entropy derivative pressure. Valid values for this parameter are the names of models that are also valid for the &ldquo;Material models/Model name&rdquo; parameter. See the documentation for that for more information.
+::::
 
-(parameters:Material_20model/Compositing/Entropy_20derivative_20temperature)=
-### __Parameter name:__ Entropy derivative temperature
+::::{dropdown} __Parameter:__ {ref}`Entropy derivative temperature<parameters:Material_20model/Compositing/Entropy_20derivative_20temperature>`
+:name: parameters:Material_20model/Compositing/Entropy_20derivative_20temperature
 **Default value:** unspecified
 
 **Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|entropy model|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|prescribed viscosity|reactive fluid transport|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
 
 **Documentation:** Material model to use for Entropy derivative temperature. Valid values for this parameter are the names of models that are also valid for the &ldquo;Material models/Model name&rdquo; parameter. See the documentation for that for more information.
+::::
 
-(parameters:Material_20model/Compositing/Reaction_20terms)=
-### __Parameter name:__ Reaction terms
+::::{dropdown} __Parameter:__ {ref}`Reaction terms<parameters:Material_20model/Compositing/Reaction_20terms>`
+:name: parameters:Material_20model/Compositing/Reaction_20terms
 **Default value:** unspecified
 
 **Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|entropy model|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|prescribed viscosity|reactive fluid transport|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
 
 **Documentation:** Material model to use for Reaction terms. Valid values for this parameter are the names of models that are also valid for the &ldquo;Material models/Model name&rdquo; parameter. See the documentation for that for more information.
+::::
 
-(parameters:Material_20model/Compositing/Specific_20heat)=
-### __Parameter name:__ Specific heat
+::::{dropdown} __Parameter:__ {ref}`Specific heat<parameters:Material_20model/Compositing/Specific_20heat>`
+:name: parameters:Material_20model/Compositing/Specific_20heat
 **Default value:** unspecified
 
 **Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|entropy model|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|prescribed viscosity|reactive fluid transport|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
 
 **Documentation:** Material model to use for Specific heat. Valid values for this parameter are the names of models that are also valid for the &ldquo;Material models/Model name&rdquo; parameter. See the documentation for that for more information.
+::::
 
-(parameters:Material_20model/Compositing/Thermal_20conductivity)=
-### __Parameter name:__ Thermal conductivity
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivity<parameters:Material_20model/Compositing/Thermal_20conductivity>`
+:name: parameters:Material_20model/Compositing/Thermal_20conductivity
 **Default value:** unspecified
 
 **Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|entropy model|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|prescribed viscosity|reactive fluid transport|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
 
 **Documentation:** Material model to use for Thermal conductivity. Valid values for this parameter are the names of models that are also valid for the &ldquo;Material models/Model name&rdquo; parameter. See the documentation for that for more information.
+::::
 
-(parameters:Material_20model/Compositing/Thermal_20expansion_20coefficient)=
-### __Parameter name:__ Thermal expansion coefficient
+::::{dropdown} __Parameter:__ {ref}`Thermal expansion coefficient<parameters:Material_20model/Compositing/Thermal_20expansion_20coefficient>`
+:name: parameters:Material_20model/Compositing/Thermal_20expansion_20coefficient
 **Default value:** unspecified
 
 **Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|entropy model|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|prescribed viscosity|reactive fluid transport|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
 
 **Documentation:** Material model to use for Thermal expansion coefficient. Valid values for this parameter are the names of models that are also valid for the &ldquo;Material models/Model name&rdquo; parameter. See the documentation for that for more information.
+::::
 
-(parameters:Material_20model/Compositing/Viscosity)=
-### __Parameter name:__ Viscosity
+::::{dropdown} __Parameter:__ {ref}`Viscosity<parameters:Material_20model/Compositing/Viscosity>`
+:name: parameters:Material_20model/Compositing/Viscosity
 **Default value:** unspecified
 
 **Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|entropy model|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|prescribed viscosity|reactive fluid transport|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
 
 **Documentation:** Material model to use for Viscosity. Valid values for this parameter are the names of models that are also valid for the &ldquo;Material models/Model name&rdquo; parameter. See the documentation for that for more information.
+::::
 
 (parameters:Material_20model/Composition_20reaction_20model)=
 ## **Subsection:** Material model / Composition reaction model
-(parameters:Material_20model/Composition_20reaction_20model/Composition_20viscosity_20prefactor_201)=
-### __Parameter name:__ Composition viscosity prefactor 1
+::::{dropdown} __Parameter:__ {ref}`Composition viscosity prefactor 1<parameters:Material_20model/Composition_20reaction_20model/Composition_20viscosity_20prefactor_201>`
+:name: parameters:Material_20model/Composition_20reaction_20model/Composition_20viscosity_20prefactor_201
 **Default value:** 1.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** A linear dependency of viscosity on the first compositional field. Dimensionless prefactor. With a value of 1.0 (the default) the viscosity does not depend on the composition.
+::::
 
-(parameters:Material_20model/Composition_20reaction_20model/Composition_20viscosity_20prefactor_202)=
-### __Parameter name:__ Composition viscosity prefactor 2
+::::{dropdown} __Parameter:__ {ref}`Composition viscosity prefactor 2<parameters:Material_20model/Composition_20reaction_20model/Composition_20viscosity_20prefactor_202>`
+:name: parameters:Material_20model/Composition_20reaction_20model/Composition_20viscosity_20prefactor_202
 **Default value:** 1.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** A linear dependency of viscosity on the second compositional field. Dimensionless prefactor. With a value of 1.0 (the default) the viscosity does not depend on the composition.
+::::
 
-(parameters:Material_20model/Composition_20reaction_20model/Density_20differential_20for_20compositional_20field_201)=
-### __Parameter name:__ Density differential for compositional field 1
+::::{dropdown} __Parameter:__ {ref}`Density differential for compositional field 1<parameters:Material_20model/Composition_20reaction_20model/Density_20differential_20for_20compositional_20field_201>`
+:name: parameters:Material_20model/Composition_20reaction_20model/Density_20differential_20for_20compositional_20field_201
 **Default value:** 0.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the material model determines how many of them influence the density. The composition-dependence adds a term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: $\frac{\text{kg}}{\text{m}^3}$/unit change in composition.
+::::
 
-(parameters:Material_20model/Composition_20reaction_20model/Density_20differential_20for_20compositional_20field_202)=
-### __Parameter name:__ Density differential for compositional field 2
+::::{dropdown} __Parameter:__ {ref}`Density differential for compositional field 2<parameters:Material_20model/Composition_20reaction_20model/Density_20differential_20for_20compositional_20field_202>`
+:name: parameters:Material_20model/Composition_20reaction_20model/Density_20differential_20for_20compositional_20field_202
 **Default value:** 0.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the material model determines how many of them influence the density. The composition-dependence adds a term of the kind $+\Delta \rho \; c_2(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: $\frac{\text{kg}}{\text{m}^3}$/unit change in composition.
+::::
 
-(parameters:Material_20model/Composition_20reaction_20model/Reaction_20depth)=
-### __Parameter name:__ Reaction depth
+::::{dropdown} __Parameter:__ {ref}`Reaction depth<parameters:Material_20model/Composition_20reaction_20model/Reaction_20depth>`
+:name: parameters:Material_20model/Composition_20reaction_20model/Reaction_20depth
 **Default value:** 0.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Above this depth the compositional fields react: The first field gets converted to the second field. Units: $\text{m}$.
+::::
 
-(parameters:Material_20model/Composition_20reaction_20model/Reference_20density)=
-### __Parameter name:__ Reference density
+::::{dropdown} __Parameter:__ {ref}`Reference density<parameters:Material_20model/Composition_20reaction_20model/Reference_20density>`
+:name: parameters:Material_20model/Composition_20reaction_20model/Reference_20density
 **Default value:** 3300.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Reference density $\rho_0$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+::::
 
-(parameters:Material_20model/Composition_20reaction_20model/Reference_20specific_20heat)=
-### __Parameter name:__ Reference specific heat
+::::{dropdown} __Parameter:__ {ref}`Reference specific heat<parameters:Material_20model/Composition_20reaction_20model/Reference_20specific_20heat>`
+:name: parameters:Material_20model/Composition_20reaction_20model/Reference_20specific_20heat
 **Default value:** 1250.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the specific heat $C_p$. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+::::
 
-(parameters:Material_20model/Composition_20reaction_20model/Reference_20temperature)=
-### __Parameter name:__ Reference temperature
+::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Composition_20reaction_20model/Reference_20temperature>`
+:name: parameters:Material_20model/Composition_20reaction_20model/Reference_20temperature
 **Default value:** 293.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The reference temperature $T_0$. Units: $\text{K}$.
+::::
 
-(parameters:Material_20model/Composition_20reaction_20model/Thermal_20conductivity)=
-### __Parameter name:__ Thermal conductivity
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivity<parameters:Material_20model/Composition_20reaction_20model/Thermal_20conductivity>`
+:name: parameters:Material_20model/Composition_20reaction_20model/Thermal_20conductivity
 **Default value:** 4.7
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+::::
 
-(parameters:Material_20model/Composition_20reaction_20model/Thermal_20expansion_20coefficient)=
-### __Parameter name:__ Thermal expansion coefficient
+::::{dropdown} __Parameter:__ {ref}`Thermal expansion coefficient<parameters:Material_20model/Composition_20reaction_20model/Thermal_20expansion_20coefficient>`
+:name: parameters:Material_20model/Composition_20reaction_20model/Thermal_20expansion_20coefficient
 **Default value:** 2e-5
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal expansion coefficient $\alpha$. Units: $\frac{1}{\text{K}}$.
+::::
 
-(parameters:Material_20model/Composition_20reaction_20model/Thermal_20viscosity_20exponent)=
-### __Parameter name:__ Thermal viscosity exponent
+::::{dropdown} __Parameter:__ {ref}`Thermal viscosity exponent<parameters:Material_20model/Composition_20reaction_20model/Thermal_20viscosity_20exponent>`
+:name: parameters:Material_20model/Composition_20reaction_20model/Thermal_20viscosity_20exponent
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The temperature dependence of viscosity. Dimensionless exponent.
+::::
 
-(parameters:Material_20model/Composition_20reaction_20model/Viscosity)=
-### __Parameter name:__ Viscosity
+::::{dropdown} __Parameter:__ {ref}`Viscosity<parameters:Material_20model/Composition_20reaction_20model/Viscosity>`
+:name: parameters:Material_20model/Composition_20reaction_20model/Viscosity
 **Default value:** 5e24
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the constant viscosity. Units: $\frac{\text{kg}}{\text{m}\text{s}}$.
+::::
 
 (parameters:Material_20model/Depth_20dependent_20model)=
 ## **Subsection:** Material model / Depth dependent model
-(parameters:Material_20model/Depth_20dependent_20model/Base_20model)=
-### __Parameter name:__ Base model
+::::{dropdown} __Parameter:__ {ref}`Base model<parameters:Material_20model/Depth_20dependent_20model/Base_20model>`
+:name: parameters:Material_20model/Depth_20dependent_20model/Base_20model
 **Default value:** simple
 
 **Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|entropy model|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|prescribed viscosity|reactive fluid transport|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic ]
 
 **Documentation:** The name of a material model that will be modified by a depth dependent viscosity. Valid values for this parameter are the names of models that are also valid for the &ldquo;Material models/Model name&rdquo; parameter. See the documentation for that for more information.
+::::
 
-(parameters:Material_20model/Depth_20dependent_20model/Data_20directory)=
-### __Parameter name:__ Data directory
+::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Material_20model/Depth_20dependent_20model/Data_20directory>`
+:name: parameters:Material_20model/Depth_20dependent_20model/Data_20directory
 **Default value:** $ASPECT_SOURCE_DIR/data/material-model/rheology/
 
 **Pattern:** [DirectoryName]
 
 **Documentation:** The name of a directory that contains the model data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT. A trailing slash at the end of the directory path is optional; the plugin will automatically append a &rsquo;/&rsquo; when the parameters are parsed if it is missing.
+::::
 
-(parameters:Material_20model/Depth_20dependent_20model/Data_20file_20name)=
-### __Parameter name:__ Data file name
+::::{dropdown} __Parameter:__ {ref}`Data file name<parameters:Material_20model/Depth_20dependent_20model/Data_20file_20name>`
+:name: parameters:Material_20model/Depth_20dependent_20model/Data_20file_20name
 **Default value:** ascii_depth_profile.txt
 
 **Pattern:** [Anything]
 
 **Documentation:** The file name of the model data.
+::::
 
-(parameters:Material_20model/Depth_20dependent_20model/Depth_20dependence_20method)=
-### __Parameter name:__ Depth dependence method
+::::{dropdown} __Parameter:__ {ref}`Depth dependence method<parameters:Material_20model/Depth_20dependent_20model/Depth_20dependence_20method>`
+:name: parameters:Material_20model/Depth_20dependent_20model/Depth_20dependence_20method
 **Default value:** None
 
 **Pattern:** [Selection Function|File|List|None ]
 
 **Documentation:** Method that is used to specify how the viscosity should vary with depth.
+::::
 
-(parameters:Material_20model/Depth_20dependent_20model/Depth_20list)=
-### __Parameter name:__ Depth list
+::::{dropdown} __Parameter:__ {ref}`Depth list<parameters:Material_20model/Depth_20dependent_20model/Depth_20list>`
+:name: parameters:Material_20model/Depth_20dependent_20model/Depth_20list
 **Default value:**
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A comma-separated list of depth values for use with the &ldquo;List&rdquo; &ldquo;Depth dependence method&rdquo;. The list must be provided in order of increasing depth, and the last value must be greater than or equal to the maximal depth of the model. The depth list is interpreted as a layered viscosity structure and the depth values specify the maximum depths of each layer.
+::::
 
-(parameters:Material_20model/Depth_20dependent_20model/Reference_20viscosity)=
-### __Parameter name:__ Reference viscosity
+::::{dropdown} __Parameter:__ {ref}`Reference viscosity<parameters:Material_20model/Depth_20dependent_20model/Reference_20viscosity>`
+:name: parameters:Material_20model/Depth_20dependent_20model/Reference_20viscosity
 **Default value:** 1.7976931348623157e+308
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the constant reference viscosity $\eta_r$ that is used to scale the non-dimensional depth-dependent viscosity prefactor. Units: $\text{Pa}\text{s}$.
+::::
 
-(parameters:Material_20model/Depth_20dependent_20model/Scale_20factor)=
-### __Parameter name:__ Scale factor
+::::{dropdown} __Parameter:__ {ref}`Scale factor<parameters:Material_20model/Depth_20dependent_20model/Scale_20factor>`
+:name: parameters:Material_20model/Depth_20dependent_20model/Scale_20factor
 **Default value:** 1.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
+::::
 
-(parameters:Material_20model/Depth_20dependent_20model/Viscosity_20depth_20file)=
-### __Parameter name__: Viscosity depth file
+::::{dropdown} __Parameter:__ {ref}`Viscosity depth file<parameters:Material_20model/Depth_20dependent_20model/Viscosity_20depth_20file>`
+:name: parameters:Material_20model/Depth_20dependent_20model/Viscosity_20depth_20file
 **Alias:** [Data file name](parameters:Material_20model/Depth_20dependent_20model/Data_20file_20name)
 
 **Deprecation Status:** false
+::::
 
-(parameters:Material_20model/Depth_20dependent_20model/Viscosity_20list)=
-### __Parameter name:__ Viscosity list
+::::{dropdown} __Parameter:__ {ref}`Viscosity list<parameters:Material_20model/Depth_20dependent_20model/Viscosity_20list>`
+:name: parameters:Material_20model/Depth_20dependent_20model/Viscosity_20list
 **Default value:**
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A comma-separated list of viscosity values, corresponding to the depth values provided in &ldquo;Depth list&rdquo;. The number of viscosity values specified here must be the same as the number of depths provided in &ldquo;Depth list&rdquo;.
+::::
 
 (parameters:Material_20model/Depth_20dependent_20model/Viscosity_20depth_20function)=
 ## **Subsection:** Material model / Depth dependent model / Viscosity depth function
-(parameters:Material_20model/Depth_20dependent_20model/Viscosity_20depth_20function/Function_20constants)=
-### __Parameter name:__ Function constants
+::::{dropdown} __Parameter:__ {ref}`Function constants<parameters:Material_20model/Depth_20dependent_20model/Viscosity_20depth_20function/Function_20constants>`
+:name: parameters:Material_20model/Depth_20dependent_20model/Viscosity_20depth_20function/Function_20constants
 **Default value:**
 
 **Pattern:** [Anything]
@@ -579,427 +623,479 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 **Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form &lsquo;var1=value1, var2=value2, ...&rsquo;.
 
 A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
+::::
 
-(parameters:Material_20model/Depth_20dependent_20model/Viscosity_20depth_20function/Function_20expression)=
-### __Parameter name:__ Function expression
+::::{dropdown} __Parameter:__ {ref}`Function expression<parameters:Material_20model/Depth_20dependent_20model/Viscosity_20depth_20function/Function_20expression>`
+:name: parameters:Material_20model/Depth_20dependent_20model/Viscosity_20depth_20function/Function_20expression
 **Default value:** 1.0e21
 
 **Pattern:** [Anything]
 
 **Documentation:**
+::::
 
-(parameters:Material_20model/Depth_20dependent_20model/Viscosity_20depth_20function/Variable_20names)=
-### __Parameter name:__ Variable names
+::::{dropdown} __Parameter:__ {ref}`Variable names<parameters:Material_20model/Depth_20dependent_20model/Viscosity_20depth_20function/Variable_20names>`
+:name: parameters:Material_20model/Depth_20dependent_20model/Viscosity_20depth_20function/Variable_20names
 **Default value:** x,t
 
 **Pattern:** [Anything]
 
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
+::::
 
 (parameters:Material_20model/Depth_20dependent_20viscosity)=
 ## **Subsection:** Material model / Depth dependent viscosity
-(parameters:Material_20model/Depth_20dependent_20viscosity/Data_20directory)=
-### __Parameter name:__ Data directory
+::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Material_20model/Depth_20dependent_20viscosity/Data_20directory>`
+:name: parameters:Material_20model/Depth_20dependent_20viscosity/Data_20directory
 **Default value:** $ASPECT_SOURCE_DIR/data/material-model/rheology/
 
 **Pattern:** [DirectoryName]
 
 **Documentation:** The name of a directory that contains the model data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT. A trailing slash at the end of the directory path is optional; the plugin will automatically append a &rsquo;/&rsquo; when the parameters are parsed if it is missing.
+::::
 
-(parameters:Material_20model/Depth_20dependent_20viscosity/Data_20file_20name)=
-### __Parameter name:__ Data file name
+::::{dropdown} __Parameter:__ {ref}`Data file name<parameters:Material_20model/Depth_20dependent_20viscosity/Data_20file_20name>`
+:name: parameters:Material_20model/Depth_20dependent_20viscosity/Data_20file_20name
 **Default value:** ascii_depth_profile.txt
 
 **Pattern:** [Anything]
 
 **Documentation:** The file name of the model data.
+::::
 
-(parameters:Material_20model/Depth_20dependent_20viscosity/Scale_20factor)=
-### __Parameter name:__ Scale factor
+::::{dropdown} __Parameter:__ {ref}`Scale factor<parameters:Material_20model/Depth_20dependent_20viscosity/Scale_20factor>`
+:name: parameters:Material_20model/Depth_20dependent_20viscosity/Scale_20factor
 **Default value:** 1.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
+::::
 
 (parameters:Material_20model/Diffusion_20dislocation)=
 ## **Subsection:** Material model / Diffusion dislocation
-(parameters:Material_20model/Diffusion_20dislocation/Activation_20energies_20for_20diffusion_20creep)=
-### __Parameter name:__ Activation energies for diffusion creep
+::::{dropdown} __Parameter:__ {ref}`Activation energies for diffusion creep<parameters:Material_20model/Diffusion_20dislocation/Activation_20energies_20for_20diffusion_20creep>`
+:name: parameters:Material_20model/Diffusion_20dislocation/Activation_20energies_20for_20diffusion_20creep
 **Default value:** 375e3
 
 **Pattern:** [Anything]
 
 **Documentation:** List of activation energies, $E_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\joule\per\mole}.
+::::
 
-(parameters:Material_20model/Diffusion_20dislocation/Activation_20energies_20for_20dislocation_20creep)=
-### __Parameter name:__ Activation energies for dislocation creep
+::::{dropdown} __Parameter:__ {ref}`Activation energies for dislocation creep<parameters:Material_20model/Diffusion_20dislocation/Activation_20energies_20for_20dislocation_20creep>`
+:name: parameters:Material_20model/Diffusion_20dislocation/Activation_20energies_20for_20dislocation_20creep
 **Default value:** 530e3
 
 **Pattern:** [Anything]
 
 **Documentation:** List of activation energies, $E_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\joule\per\mole}.
+::::
 
-(parameters:Material_20model/Diffusion_20dislocation/Activation_20volumes_20for_20diffusion_20creep)=
-### __Parameter name:__ Activation volumes for diffusion creep
+::::{dropdown} __Parameter:__ {ref}`Activation volumes for diffusion creep<parameters:Material_20model/Diffusion_20dislocation/Activation_20volumes_20for_20diffusion_20creep>`
+:name: parameters:Material_20model/Diffusion_20dislocation/Activation_20volumes_20for_20diffusion_20creep
 **Default value:** 6e-6
 
 **Pattern:** [Anything]
 
 **Documentation:** List of activation volumes, $V_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\meter\cubed\per\mole}.
+::::
 
-(parameters:Material_20model/Diffusion_20dislocation/Activation_20volumes_20for_20dislocation_20creep)=
-### __Parameter name:__ Activation volumes for dislocation creep
+::::{dropdown} __Parameter:__ {ref}`Activation volumes for dislocation creep<parameters:Material_20model/Diffusion_20dislocation/Activation_20volumes_20for_20dislocation_20creep>`
+:name: parameters:Material_20model/Diffusion_20dislocation/Activation_20volumes_20for_20dislocation_20creep
 **Default value:** 1.4e-5
 
 **Pattern:** [Anything]
 
 **Documentation:** List of activation volumes, $V_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\meter\cubed\per\mole}.
+::::
 
-(parameters:Material_20model/Diffusion_20dislocation/Densities)=
-### __Parameter name:__ Densities
+::::{dropdown} __Parameter:__ {ref}`Densities<parameters:Material_20model/Diffusion_20dislocation/Densities>`
+:name: parameters:Material_20model/Diffusion_20dislocation/Densities
 **Default value:** 3300.
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of densities, $\rho$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\frac{\text{kg}}{\text{m}^3}$.
+::::
 
-(parameters:Material_20model/Diffusion_20dislocation/Effective_20viscosity_20coefficient)=
-### __Parameter name:__ Effective viscosity coefficient
+::::{dropdown} __Parameter:__ {ref}`Effective viscosity coefficient<parameters:Material_20model/Diffusion_20dislocation/Effective_20viscosity_20coefficient>`
+:name: parameters:Material_20model/Diffusion_20dislocation/Effective_20viscosity_20coefficient
 **Default value:** 1.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Scaling coefficient for effective viscosity.
+::::
 
-(parameters:Material_20model/Diffusion_20dislocation/Grain_20size)=
-### __Parameter name:__ Grain size
+::::{dropdown} __Parameter:__ {ref}`Grain size<parameters:Material_20model/Diffusion_20dislocation/Grain_20size>`
+:name: parameters:Material_20model/Diffusion_20dislocation/Grain_20size
 **Default value:** 1e-3
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The fixed grain size of the material. This grain size is only used if the parent material model does not provide its own (possibly variable) grain size when calling this rheology.Units: \si{\meter}.
+::::
 
-(parameters:Material_20model/Diffusion_20dislocation/Grain_20size_20exponents_20for_20diffusion_20creep)=
-### __Parameter name:__ Grain size exponents for diffusion creep
+::::{dropdown} __Parameter:__ {ref}`Grain size exponents for diffusion creep<parameters:Material_20model/Diffusion_20dislocation/Grain_20size_20exponents_20for_20diffusion_20creep>`
+:name: parameters:Material_20model/Diffusion_20dislocation/Grain_20size_20exponents_20for_20diffusion_20creep
 **Default value:** 3.
 
 **Pattern:** [Anything]
 
 **Documentation:** List of grain size exponents, $m_{\text{diffusion}}$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: None.
+::::
 
-(parameters:Material_20model/Diffusion_20dislocation/Heat_20capacity)=
-### __Parameter name:__ Heat capacity
+::::{dropdown} __Parameter:__ {ref}`Heat capacity<parameters:Material_20model/Diffusion_20dislocation/Heat_20capacity>`
+:name: parameters:Material_20model/Diffusion_20dislocation/Heat_20capacity
 **Default value:** 1.25e3
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the specific heat $C_p$. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+::::
 
-(parameters:Material_20model/Diffusion_20dislocation/Maximum_20strain_20rate_20ratio_20iterations)=
-### __Parameter name:__ Maximum strain rate ratio iterations
+::::{dropdown} __Parameter:__ {ref}`Maximum strain rate ratio iterations<parameters:Material_20model/Diffusion_20dislocation/Maximum_20strain_20rate_20ratio_20iterations>`
+:name: parameters:Material_20model/Diffusion_20dislocation/Maximum_20strain_20rate_20ratio_20iterations
 **Default value:** 40
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** Maximum number of iterations to find the correct diffusion/dislocation strain rate ratio.
+::::
 
-(parameters:Material_20model/Diffusion_20dislocation/Maximum_20viscosity)=
-### __Parameter name:__ Maximum viscosity
+::::{dropdown} __Parameter:__ {ref}`Maximum viscosity<parameters:Material_20model/Diffusion_20dislocation/Maximum_20viscosity>`
+:name: parameters:Material_20model/Diffusion_20dislocation/Maximum_20viscosity
 **Default value:** 1e28
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Upper cutoff for effective viscosity. Units: $\text{Pa}\text{s}$.
+::::
 
-(parameters:Material_20model/Diffusion_20dislocation/Minimum_20strain_20rate)=
-### __Parameter name:__ Minimum strain rate
+::::{dropdown} __Parameter:__ {ref}`Minimum strain rate<parameters:Material_20model/Diffusion_20dislocation/Minimum_20strain_20rate>`
+:name: parameters:Material_20model/Diffusion_20dislocation/Minimum_20strain_20rate
 **Default value:** 1.4e-20
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Stabilizes strain dependent viscosity. Units: \si{\per\second}.
+::::
 
-(parameters:Material_20model/Diffusion_20dislocation/Minimum_20viscosity)=
-### __Parameter name:__ Minimum viscosity
+::::{dropdown} __Parameter:__ {ref}`Minimum viscosity<parameters:Material_20model/Diffusion_20dislocation/Minimum_20viscosity>`
+:name: parameters:Material_20model/Diffusion_20dislocation/Minimum_20viscosity
 **Default value:** 1e17
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Lower cutoff for effective viscosity. Units: $\text{Pa}\text{s}$.
+::::
 
-(parameters:Material_20model/Diffusion_20dislocation/Prefactors_20for_20diffusion_20creep)=
-### __Parameter name:__ Prefactors for diffusion creep
+::::{dropdown} __Parameter:__ {ref}`Prefactors for diffusion creep<parameters:Material_20model/Diffusion_20dislocation/Prefactors_20for_20diffusion_20creep>`
+:name: parameters:Material_20model/Diffusion_20dislocation/Prefactors_20for_20diffusion_20creep
 **Default value:** 1.5e-15
 
 **Pattern:** [Anything]
 
 **Documentation:** List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\per\pascal\meter}$^{m_{\text{diffusion}}}$\si{\per\second}.
+::::
 
-(parameters:Material_20model/Diffusion_20dislocation/Prefactors_20for_20dislocation_20creep)=
-### __Parameter name:__ Prefactors for dislocation creep
+::::{dropdown} __Parameter:__ {ref}`Prefactors for dislocation creep<parameters:Material_20model/Diffusion_20dislocation/Prefactors_20for_20dislocation_20creep>`
+:name: parameters:Material_20model/Diffusion_20dislocation/Prefactors_20for_20dislocation_20creep
 **Default value:** 1.1e-16
 
 **Pattern:** [Anything]
 
 **Documentation:** List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\pascal}$^{-n_{\text{dislocation}}}$ \si{\per\second}.
+::::
 
-(parameters:Material_20model/Diffusion_20dislocation/Reference_20temperature)=
-### __Parameter name:__ Reference temperature
+::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Diffusion_20dislocation/Reference_20temperature>`
+:name: parameters:Material_20model/Diffusion_20dislocation/Reference_20temperature
 **Default value:** 293.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** For calculating density by thermal expansivity. Units: $\text{K}$.
+::::
 
-(parameters:Material_20model/Diffusion_20dislocation/Strain_20rate_20residual_20tolerance)=
-### __Parameter name:__ Strain rate residual tolerance
+::::{dropdown} __Parameter:__ {ref}`Strain rate residual tolerance<parameters:Material_20model/Diffusion_20dislocation/Strain_20rate_20residual_20tolerance>`
+:name: parameters:Material_20model/Diffusion_20dislocation/Strain_20rate_20residual_20tolerance
 **Default value:** 1e-10
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Tolerance for determining the correct stress and viscosity from the strain rate by internal iteration. The tolerance is expressed as the difference between the natural logarithm of the input strain rate and the strain rate at the current iteration. This determines that strain rate is correctly partitioned between diffusion and dislocation creep assuming that both mechanisms experience the same stress.
+::::
 
-(parameters:Material_20model/Diffusion_20dislocation/Stress_20exponents_20for_20diffusion_20creep)=
-### __Parameter name:__ Stress exponents for diffusion creep
+::::{dropdown} __Parameter:__ {ref}`Stress exponents for diffusion creep<parameters:Material_20model/Diffusion_20dislocation/Stress_20exponents_20for_20diffusion_20creep>`
+:name: parameters:Material_20model/Diffusion_20dislocation/Stress_20exponents_20for_20diffusion_20creep
 **Default value:** 1.
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of stress exponents, $n_{\text{diffusion}}$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. The stress exponent for diffusion creep is almost always equal to one. If only one value is given, then all use the same value.  Units: None.
+::::
 
-(parameters:Material_20model/Diffusion_20dislocation/Stress_20exponents_20for_20dislocation_20creep)=
-### __Parameter name:__ Stress exponents for dislocation creep
+::::{dropdown} __Parameter:__ {ref}`Stress exponents for dislocation creep<parameters:Material_20model/Diffusion_20dislocation/Stress_20exponents_20for_20dislocation_20creep>`
+:name: parameters:Material_20model/Diffusion_20dislocation/Stress_20exponents_20for_20dislocation_20creep
 **Default value:** 3.5
 
 **Pattern:** [Anything]
 
 **Documentation:** List of stress exponents, $n_{\text{dislocation}}$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value.  Units: None.
+::::
 
-(parameters:Material_20model/Diffusion_20dislocation/Thermal_20diffusivity)=
-### __Parameter name:__ Thermal diffusivity
+::::{dropdown} __Parameter:__ {ref}`Thermal diffusivity<parameters:Material_20model/Diffusion_20dislocation/Thermal_20diffusivity>`
+:name: parameters:Material_20model/Diffusion_20dislocation/Thermal_20diffusivity
 **Default value:** 0.8e-6
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Units: \si{\meter\squared\per\second}.
+::::
 
-(parameters:Material_20model/Diffusion_20dislocation/Thermal_20expansivities)=
-### __Parameter name:__ Thermal expansivities
+::::{dropdown} __Parameter:__ {ref}`Thermal expansivities<parameters:Material_20model/Diffusion_20dislocation/Thermal_20expansivities>`
+:name: parameters:Material_20model/Diffusion_20dislocation/Thermal_20expansivities
 **Default value:** 3.5e-5
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of thermal expansivities for background mantle and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value.  Units: $\frac{1}{\text{K}}$.
+::::
 
-(parameters:Material_20model/Diffusion_20dislocation/Viscosity_20averaging_20scheme)=
-### __Parameter name:__ Viscosity averaging scheme
+::::{dropdown} __Parameter:__ {ref}`Viscosity averaging scheme<parameters:Material_20model/Diffusion_20dislocation/Viscosity_20averaging_20scheme>`
+:name: parameters:Material_20model/Diffusion_20dislocation/Viscosity_20averaging_20scheme
 **Default value:** harmonic
 
 **Pattern:** [Selection arithmetic|harmonic|geometric|maximum composition ]
 
 **Documentation:** When more than one compositional field is present at a point with different viscosities, we need to come up with an average viscosity at that point.  Select a weighted harmonic, arithmetic, geometric, or maximum composition.
+::::
 
 (parameters:Material_20model/Drucker_20Prager)=
 ## **Subsection:** Material model / Drucker Prager
-(parameters:Material_20model/Drucker_20Prager/Reference_20density)=
-### __Parameter name:__ Reference density
+::::{dropdown} __Parameter:__ {ref}`Reference density<parameters:Material_20model/Drucker_20Prager/Reference_20density>`
+:name: parameters:Material_20model/Drucker_20Prager/Reference_20density
 **Default value:** 3300.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Reference density $\rho_0$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+::::
 
-(parameters:Material_20model/Drucker_20Prager/Reference_20specific_20heat)=
-### __Parameter name:__ Reference specific heat
+::::{dropdown} __Parameter:__ {ref}`Reference specific heat<parameters:Material_20model/Drucker_20Prager/Reference_20specific_20heat>`
+:name: parameters:Material_20model/Drucker_20Prager/Reference_20specific_20heat
 **Default value:** 1250.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the specific heat $C_p$. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+::::
 
-(parameters:Material_20model/Drucker_20Prager/Reference_20temperature)=
-### __Parameter name:__ Reference temperature
+::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Drucker_20Prager/Reference_20temperature>`
+:name: parameters:Material_20model/Drucker_20Prager/Reference_20temperature
 **Default value:** 293.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The reference temperature $T_0$. The reference temperature is used in the density calculation. Units: \si{\kelvin}.
+::::
 
-(parameters:Material_20model/Drucker_20Prager/Thermal_20conductivity)=
-### __Parameter name:__ Thermal conductivity
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivity<parameters:Material_20model/Drucker_20Prager/Thermal_20conductivity>`
+:name: parameters:Material_20model/Drucker_20Prager/Thermal_20conductivity
 **Default value:** 4.7
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal conductivity $k$. Units: \si{\watt\per\meter\per\kelvin}.
+::::
 
-(parameters:Material_20model/Drucker_20Prager/Thermal_20expansion_20coefficient)=
-### __Parameter name:__ Thermal expansion coefficient
+::::{dropdown} __Parameter:__ {ref}`Thermal expansion coefficient<parameters:Material_20model/Drucker_20Prager/Thermal_20expansion_20coefficient>`
+:name: parameters:Material_20model/Drucker_20Prager/Thermal_20expansion_20coefficient
 **Default value:** 2e-5
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal expansion coefficient $\alpha$. Units: $\frac{1}{\text{K}}$.
+::::
 
 (parameters:Material_20model/Drucker_20Prager/Viscosity)=
 ## **Subsection:** Material model / Drucker Prager / Viscosity
-(parameters:Material_20model/Drucker_20Prager/Viscosity/Angle_20of_20internal_20friction)=
-### __Parameter name:__ Angle of internal friction
+::::{dropdown} __Parameter:__ {ref}`Angle of internal friction<parameters:Material_20model/Drucker_20Prager/Viscosity/Angle_20of_20internal_20friction>`
+:name: parameters:Material_20model/Drucker_20Prager/Viscosity/Angle_20of_20internal_20friction
 **Default value:** 0.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the angle of internal friction $\phi$. For a value of zero, in 2d the von Mises criterion is retrieved. Angles higher than 30 degrees are harder to solve numerically. Units: degrees.
+::::
 
-(parameters:Material_20model/Drucker_20Prager/Viscosity/Cohesion)=
-### __Parameter name:__ Cohesion
+::::{dropdown} __Parameter:__ {ref}`Cohesion<parameters:Material_20model/Drucker_20Prager/Viscosity/Cohesion>`
+:name: parameters:Material_20model/Drucker_20Prager/Viscosity/Cohesion
 **Default value:** 2e7
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the cohesion $C$. Units: \si{\pascal}.
+::::
 
-(parameters:Material_20model/Drucker_20Prager/Viscosity/Maximum_20viscosity)=
-### __Parameter name:__ Maximum viscosity
+::::{dropdown} __Parameter:__ {ref}`Maximum viscosity<parameters:Material_20model/Drucker_20Prager/Viscosity/Maximum_20viscosity>`
+:name: parameters:Material_20model/Drucker_20Prager/Viscosity/Maximum_20viscosity
 **Default value:** 1e24
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the maximum viscosity cutoff $\eta_max$. Units: \si{\pascal\second}.
+::::
 
-(parameters:Material_20model/Drucker_20Prager/Viscosity/Minimum_20viscosity)=
-### __Parameter name:__ Minimum viscosity
+::::{dropdown} __Parameter:__ {ref}`Minimum viscosity<parameters:Material_20model/Drucker_20Prager/Viscosity/Minimum_20viscosity>`
+:name: parameters:Material_20model/Drucker_20Prager/Viscosity/Minimum_20viscosity
 **Default value:** 1e19
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the minimum viscosity cutoff $\eta_min$. Units: \si{\pascal\second}.
+::::
 
-(parameters:Material_20model/Drucker_20Prager/Viscosity/Reference_20strain_20rate)=
-### __Parameter name:__ Reference strain rate
+::::{dropdown} __Parameter:__ {ref}`Reference strain rate<parameters:Material_20model/Drucker_20Prager/Viscosity/Reference_20strain_20rate>`
+:name: parameters:Material_20model/Drucker_20Prager/Viscosity/Reference_20strain_20rate
 **Default value:** 1e-15
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the initial strain rate prescribed during the first nonlinear iteration $\dot{\epsilon}_ref$. Units: \si{\per\second}.
+::::
 
 (parameters:Material_20model/Entropy_20model)=
 ## **Subsection:** Material model / Entropy model
-(parameters:Material_20model/Entropy_20model/Angle_20of_20internal_20friction)=
-### __Parameter name:__ Angle of internal friction
+::::{dropdown} __Parameter:__ {ref}`Angle of internal friction<parameters:Material_20model/Entropy_20model/Angle_20of_20internal_20friction>`
+:name: parameters:Material_20model/Entropy_20model/Angle_20of_20internal_20friction
 **Default value:** 0.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the angle of internal friction, $\phi$.For a value of zero, in 2D the von Mises criterion is retrieved. Angles higher than 30 degrees are harder to solve numerically.Units: degrees.
+::::
 
-(parameters:Material_20model/Entropy_20model/Cohesion)=
-### __Parameter name:__ Cohesion
+::::{dropdown} __Parameter:__ {ref}`Cohesion<parameters:Material_20model/Entropy_20model/Cohesion>`
+:name: parameters:Material_20model/Entropy_20model/Cohesion
 **Default value:** 1e20
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the cohesion, $C$. The extremely large defaultcohesion value (1e20 Pa) prevents the viscous stress from exceeding the yield stress. Units: \si{\pascal}.
+::::
 
-(parameters:Material_20model/Entropy_20model/Data_20directory)=
-### __Parameter name:__ Data directory
+::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Material_20model/Entropy_20model/Data_20directory>`
+:name: parameters:Material_20model/Entropy_20model/Data_20directory
 **Default value:** $ASPECT_SOURCE_DIR/data/material-model/entropy-table/opxtable/
 
 **Pattern:** [DirectoryName]
 
 **Documentation:** The path to the model data. The path may also include the special text &rsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT.
+::::
 
-(parameters:Material_20model/Entropy_20model/Lateral_20viscosity_20file_20name)=
-### __Parameter name:__ Lateral viscosity file name
+::::{dropdown} __Parameter:__ {ref}`Lateral viscosity file name<parameters:Material_20model/Entropy_20model/Lateral_20viscosity_20file_20name>`
+:name: parameters:Material_20model/Entropy_20model/Lateral_20viscosity_20file_20name
 **Default value:** constant_lateral_vis_prefactor.txt
 
 **Pattern:** [Anything]
 
 **Documentation:** The file name of the lateral viscosity prefactor.
+::::
 
-(parameters:Material_20model/Entropy_20model/Material_20file_20name)=
-### __Parameter name:__ Material file name
+::::{dropdown} __Parameter:__ {ref}`Material file name<parameters:Material_20model/Entropy_20model/Material_20file_20name>`
+:name: parameters:Material_20model/Entropy_20model/Material_20file_20name
 **Default value:** material_table.txt
 
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The file name of the material data. The first material data file is intended for the background composition.
+::::
 
-(parameters:Material_20model/Entropy_20model/Maximum_20iteration_20for_20multicomponent_20equilibration)=
-### __Parameter name:__ Maximum iteration for multicomponent equilibration
+::::{dropdown} __Parameter:__ {ref}`Maximum iteration for multicomponent equilibration<parameters:Material_20model/Entropy_20model/Maximum_20iteration_20for_20multicomponent_20equilibration>`
+:name: parameters:Material_20model/Entropy_20model/Maximum_20iteration_20for_20multicomponent_20equilibration
 **Default value:** 50
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The maximum allowed number of iterations for the multicomponent equlibration to reach the tolerance value. If the maximum iteration is reached but thetemperature has not been equilibrated, the model run will abort.
+::::
 
-(parameters:Material_20model/Entropy_20model/Maximum_20lateral_20viscosity_20variation)=
-### __Parameter name:__ Maximum lateral viscosity variation
+::::{dropdown} __Parameter:__ {ref}`Maximum lateral viscosity variation<parameters:Material_20model/Entropy_20model/Maximum_20lateral_20viscosity_20variation>`
+:name: parameters:Material_20model/Entropy_20model/Maximum_20lateral_20viscosity_20variation
 **Default value:** 1e2
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The relative cutoff value for lateral viscosity variations caused by temperature deviations. The viscosity may vary laterally by this factor squared.
+::::
 
-(parameters:Material_20model/Entropy_20model/Maximum_20thermal_20conductivity)=
-### __Parameter name:__ Maximum thermal conductivity
+::::{dropdown} __Parameter:__ {ref}`Maximum thermal conductivity<parameters:Material_20model/Entropy_20model/Maximum_20thermal_20conductivity>`
+:name: parameters:Material_20model/Entropy_20model/Maximum_20thermal_20conductivity
 **Default value:** 1000
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The maximum thermal conductivity that is allowed in the model. Larger values will be cut off.
+::::
 
-(parameters:Material_20model/Entropy_20model/Maximum_20viscosity)=
-### __Parameter name:__ Maximum viscosity
+::::{dropdown} __Parameter:__ {ref}`Maximum viscosity<parameters:Material_20model/Entropy_20model/Maximum_20viscosity>`
+:name: parameters:Material_20model/Entropy_20model/Maximum_20viscosity
 **Default value:** 1e23
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The maximum viscosity that is allowed in the viscosity calculation. Larger values will be cut off.
+::::
 
-(parameters:Material_20model/Entropy_20model/Minimum_20viscosity)=
-### __Parameter name:__ Minimum viscosity
+::::{dropdown} __Parameter:__ {ref}`Minimum viscosity<parameters:Material_20model/Entropy_20model/Minimum_20viscosity>`
+:name: parameters:Material_20model/Entropy_20model/Minimum_20viscosity
 **Default value:** 1e19
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The minimum viscosity that is allowed in the viscosity calculation. Smaller values will be cut off.
+::::
 
-(parameters:Material_20model/Entropy_20model/Multicomponent_20equilibration_20tolerance)=
-### __Parameter name:__ Multicomponent equilibration tolerance
+::::{dropdown} __Parameter:__ {ref}`Multicomponent equilibration tolerance<parameters:Material_20model/Entropy_20model/Multicomponent_20equilibration_20tolerance>`
+:name: parameters:Material_20model/Entropy_20model/Multicomponent_20equilibration_20tolerance
 **Default value:** 1e-7
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** This is the maximum temperature difference between the different compositions when they are considered in equilibrium.
+::::
 
-(parameters:Material_20model/Entropy_20model/Pressure_20dependencies_20of_20thermal_20conductivity)=
-### __Parameter name:__ Pressure dependencies of thermal conductivity
+::::{dropdown} __Parameter:__ {ref}`Pressure dependencies of thermal conductivity<parameters:Material_20model/Entropy_20model/Pressure_20dependencies_20of_20thermal_20conductivity>`
+:name: parameters:Material_20model/Entropy_20model/Pressure_20dependencies_20of_20thermal_20conductivity
 **Default value:** 3.3e-10, 3.4e-10, 3.6e-10, 1.05e-10
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A list of values that determine the linear scaling of the thermal conductivity with pressure. Units: \si{\watt\per\meter\per\kelvin\per\pascal}.
+::::
 
-(parameters:Material_20model/Entropy_20model/Reference_20temperatures_20for_20thermal_20conductivity)=
-### __Parameter name:__ Reference temperatures for thermal conductivity
+::::{dropdown} __Parameter:__ {ref}`Reference temperatures for thermal conductivity<parameters:Material_20model/Entropy_20model/Reference_20temperatures_20for_20thermal_20conductivity>`
+:name: parameters:Material_20model/Entropy_20model/Reference_20temperatures_20for_20thermal_20conductivity
 **Default value:** 300, 300, 300, 1200
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A list of values of reference temperatures used to determine the temperature-dependence of the thermal conductivity. Units: $\text{K}$.
+::::
 
-(parameters:Material_20model/Entropy_20model/Reference_20thermal_20conductivities)=
-### __Parameter name:__ Reference thermal conductivities
+::::{dropdown} __Parameter:__ {ref}`Reference thermal conductivities<parameters:Material_20model/Entropy_20model/Reference_20thermal_20conductivities>`
+:name: parameters:Material_20model/Entropy_20model/Reference_20thermal_20conductivities
 **Default value:** 2.47, 3.81, 3.52, 4.9
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A list of base values of the thermal conductivity for each of the horizontal layers. Pressure- and temperature-dependence will be applied on top of this base value, according to the parameters &rsquo;Pressure dependencies of thermal conductivity&rsquo; and &rsquo;Reference temperatures for thermal conductivity&rsquo;. Units: $\frac{\text{W}}{\text{m}\text{K}}$
+::::
 
-(parameters:Material_20model/Entropy_20model/Reference_20viscosity)=
-### __Parameter name:__ Reference viscosity
+::::{dropdown} __Parameter:__ {ref}`Reference viscosity<parameters:Material_20model/Entropy_20model/Reference_20viscosity>`
+:name: parameters:Material_20model/Entropy_20model/Reference_20viscosity
 **Default value:** 1e22
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
@@ -1007,1171 +1103,1316 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Documentation:** The viscosity that is used in this model.
 
 Units: \si{\pascal\second}
+::::
 
-(parameters:Material_20model/Entropy_20model/Saturation_20prefactors)=
-### __Parameter name:__ Saturation prefactors
+::::{dropdown} __Parameter:__ {ref}`Saturation prefactors<parameters:Material_20model/Entropy_20model/Saturation_20prefactors>`
+:name: parameters:Material_20model/Entropy_20model/Saturation_20prefactors
 **Default value:** 0, 0, 0, 1
 
 **Pattern:** [List of <[Double 0...1 (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A list of values that indicate how a given layer should take into account the effects of saturation on the temperature-dependence of the thermal conductivity. This factor is multiplied with a saturation function based on the theory of Roufosse and Klemens, 1974. A value of 1 reproduces the formulation of Stackhouse et al. (2015), a value of 0 reproduces the formulation of Tosi et al., (2013). Units: none.
+::::
 
-(parameters:Material_20model/Entropy_20model/Thermal_20conductivity)=
-### __Parameter name:__ Thermal conductivity
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivity<parameters:Material_20model/Entropy_20model/Thermal_20conductivity>`
+:name: parameters:Material_20model/Entropy_20model/Thermal_20conductivity
 **Default value:** 4.7
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+::::
 
-(parameters:Material_20model/Entropy_20model/Thermal_20conductivity_20exponents)=
-### __Parameter name:__ Thermal conductivity exponents
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivity exponents<parameters:Material_20model/Entropy_20model/Thermal_20conductivity_20exponents>`
+:name: parameters:Material_20model/Entropy_20model/Thermal_20conductivity_20exponents
 **Default value:** 0.48, 0.56, 0.61, 1.0
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A list of exponents in the temperature-dependent term of the conductivity formulation. Note that this exponent is not used (and should have a value of 1) in the formulation of Stackhouse et al. (2015). Units: none.
+::::
 
-(parameters:Material_20model/Entropy_20model/Thermal_20conductivity_20formulation)=
-### __Parameter name:__ Thermal conductivity formulation
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivity formulation<parameters:Material_20model/Entropy_20model/Thermal_20conductivity_20formulation>`
+:name: parameters:Material_20model/Entropy_20model/Thermal_20conductivity_20formulation
 **Default value:** constant
 
 **Pattern:** [Selection constant|p-T-dependent ]
 
 **Documentation:** Which law should be used to compute the thermal conductivity. The &rsquo;constant&rsquo; law uses a constant value for the thermal conductivity. The &rsquo;p-T-dependent&rsquo; formulation uses equations from Stackhouse et al. (2015): First-principles calculations of the lattice thermal conductivity of the lower mantle (https://doi.org/10.1016/j.epsl.2015.06.050), and Tosi et al. (2013): Mantle dynamics with pressure- and temperature-dependent thermal expansivity and conductivity (https://doi.org/10.1016/j.pepi.2013.02.004) to compute the thermal conductivity in dependence of temperature and pressure. The thermal conductivity parameter sets can be chosen in such a way that either the Stackhouse or the Tosi relations are used. The conductivity description can consist of several layers with different sets of parameters. Note that the Stackhouse parametrization is only valid for the lower mantle (bridgmanite).
+::::
 
-(parameters:Material_20model/Entropy_20model/Thermal_20conductivity_20transition_20depths)=
-### __Parameter name:__ Thermal conductivity transition depths
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivity transition depths<parameters:Material_20model/Entropy_20model/Thermal_20conductivity_20transition_20depths>`
+:name: parameters:Material_20model/Entropy_20model/Thermal_20conductivity_20transition_20depths
 **Default value:** 410000, 520000, 660000
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A list of depth values that indicate where the transitions between the different conductivity parameter sets should occur (in most cases, these will be the depths of major phase transitions). Units: \si{\meter}.
+::::
 
 (parameters:Material_20model/Grain_20size_20model)=
 ## **Subsection:** Material model / Grain size model
-(parameters:Material_20model/Grain_20size_20model/ARKode_20initial_20step_20size)=
-### __Parameter name:__ ARKode initial step size
+::::{dropdown} __Parameter:__ {ref}`ARKode initial step size<parameters:Material_20model/Grain_20size_20model/ARKode_20initial_20step_20size>`
+:name: parameters:Material_20model/Grain_20size_20model/ARKode_20initial_20step_20size
 **Default value:** 1e-3
 
 **Pattern:** [Double 1e-12...1 (inclusive)]
 
 **Documentation:** The initial step size that the ODE solver uses when solving the grain size evolution equation. The step size is relative to the ASPECT time step, i.e. the default value of 1e-3 means the initial step size will be 1e-3 times the current ASPECT time step.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/ARKode_20minimum_20step_20size)=
-### __Parameter name:__ ARKode minimum step size
+::::{dropdown} __Parameter:__ {ref}`ARKode minimum step size<parameters:Material_20model/Grain_20size_20model/ARKode_20minimum_20step_20size>`
+:name: parameters:Material_20model/Grain_20size_20model/ARKode_20minimum_20step_20size
 **Default value:** 1e-6
 
 **Pattern:** [Double 1e-12...1 (inclusive)]
 
 **Documentation:** The minimum step size that the ODE solver uses when solving the grain size evolution equation. The step size is relative to the ASPECT time step, i.e. the default value of 1e-6 means the step size will never be smaller than 1e-6 times the current ASPECT time step.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Advect_20logarithm_20of_20grain_20size)=
-### __Parameter name:__ Advect logarithm of grain size
+::::{dropdown} __Parameter:__ {ref}`Advect logarithm of grain size<parameters:Material_20model/Grain_20size_20model/Advect_20logarithm_20of_20grain_20size>`
+:name: parameters:Material_20model/Grain_20size_20model/Advect_20logarithm_20of_20grain_20size
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** This option does not exist any more.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Angles_20of_20dilation)=
-### __Parameter name:__ Angles of dilation
+::::{dropdown} __Parameter:__ {ref}`Angles of dilation<parameters:Material_20model/Grain_20size_20model/Angles_20of_20dilation>`
+:name: parameters:Material_20model/Grain_20size_20model/Angles_20of_20dilation
 **Default value:** 0.
 
 **Pattern:** [Anything]
 
 **Documentation:** List of angles of plastic dilation, $\psi$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. For a value of zero, the von Mises flow rule is retrieved. The dilation angle should never exceed the internal friction angle.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Angles_20of_20internal_20friction)=
-### __Parameter name:__ Angles of internal friction
+::::{dropdown} __Parameter:__ {ref}`Angles of internal friction<parameters:Material_20model/Grain_20size_20model/Angles_20of_20internal_20friction>`
+:name: parameters:Material_20model/Grain_20size_20model/Angles_20of_20internal_20friction
 **Default value:** 0.
 
 **Pattern:** [Anything]
 
 **Documentation:** List of angles of internal friction, $\phi$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. For a value of zero, in 2d the von Mises criterion is retrieved. Angles higher than 30 degrees are harder to solve numerically. Units: degrees.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Average_20specific_20grain_20boundary_20energy)=
-### __Parameter name:__ Average specific grain boundary energy
+::::{dropdown} __Parameter:__ {ref}`Average specific grain boundary energy<parameters:Material_20model/Grain_20size_20model/Average_20specific_20grain_20boundary_20energy>`
+:name: parameters:Material_20model/Grain_20size_20model/Average_20specific_20grain_20boundary_20energy
 **Default value:** 1.0
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The average specific grain boundary energy $\gamma$. List must have one more entry than the Phase transition depths. Units: \si{\joule\per\meter\squared}.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Bilinear_20interpolation)=
-### __Parameter name:__ Bilinear interpolation
+::::{dropdown} __Parameter:__ {ref}`Bilinear interpolation<parameters:Material_20model/Grain_20size_20model/Bilinear_20interpolation>`
+:name: parameters:Material_20model/Grain_20size_20model/Bilinear_20interpolation
 **Default value:** true
 
 **Pattern:** [Bool]
 
 **Documentation:** This parameter determines whether to use bilinear interpolation to compute material properties (slower but more accurate).
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Cohesions)=
-### __Parameter name:__ Cohesions
+::::{dropdown} __Parameter:__ {ref}`Cohesions<parameters:Material_20model/Grain_20size_20model/Cohesions>`
+:name: parameters:Material_20model/Grain_20size_20model/Cohesions
 **Default value:** 1e20
 
 **Pattern:** [Anything]
 
 **Documentation:** List of cohesions, $C$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. The extremely large default cohesion value (1e20 Pa) prevents the viscous stress from exceeding the yield stress. Units: \si{\pascal}.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Data_20directory)=
-### __Parameter name:__ Data directory
+::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Material_20model/Grain_20size_20model/Data_20directory>`
+:name: parameters:Material_20model/Grain_20size_20model/Data_20directory
 **Default value:** $ASPECT_SOURCE_DIR/data/material-model/steinberger/
 
 **Pattern:** [DirectoryName]
 
 **Documentation:** The path to the model data. The path may also include the special text &rsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &rsquo;data/&rsquo; subdirectory of ASPECT.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Define_20transition_20by_20depth_20instead_20of_20pressure)=
-### __Parameter name:__ Define transition by depth instead of pressure
+::::{dropdown} __Parameter:__ {ref}`Define transition by depth instead of pressure<parameters:Material_20model/Grain_20size_20model/Define_20transition_20by_20depth_20instead_20of_20pressure>`
+:name: parameters:Material_20model/Grain_20size_20model/Define_20transition_20by_20depth_20instead_20of_20pressure
 **Default value:** true
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to list phase transitions by depth or pressure. If this parameter is true, then the input file will use Phase transitions depths and Phase transition widths to define the phase transition. If it is false, the parameter file will read in phase transition data from Phase transition pressures and Phase transition pressure widths.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Derivatives_20file_20names)=
-### __Parameter name:__ Derivatives file names
+::::{dropdown} __Parameter:__ {ref}`Derivatives file names<parameters:Material_20model/Grain_20size_20model/Derivatives_20file_20names>`
+:name: parameters:Material_20model/Grain_20size_20model/Derivatives_20file_20names
 **Default value:**
 
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The file names of the enthalpy derivatives data. List with as many components as active compositional fields (material data is assumed to be in order with the ordering of the fields).
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Diffusion_20activation_20energy)=
-### __Parameter name:__ Diffusion activation energy
+::::{dropdown} __Parameter:__ {ref}`Diffusion activation energy<parameters:Material_20model/Grain_20size_20model/Diffusion_20activation_20energy>`
+:name: parameters:Material_20model/Grain_20size_20model/Diffusion_20activation_20energy
 **Default value:** 3.35e5
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The activation energy for diffusion creep $E_{diff}$. List must have one more entry than the Phase transition depths. Units: $\frac{\text{J}}{//text{mol}}$.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Diffusion_20activation_20volume)=
-### __Parameter name:__ Diffusion activation volume
+::::{dropdown} __Parameter:__ {ref}`Diffusion activation volume<parameters:Material_20model/Grain_20size_20model/Diffusion_20activation_20volume>`
+:name: parameters:Material_20model/Grain_20size_20model/Diffusion_20activation_20volume
 **Default value:** 4e-6
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The activation volume for diffusion creep $V_{diff}$. List must have one more entry than the Phase transition depths. Units: $\frac{\text{m}^3}{\text{mol}}$.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Diffusion_20creep_20exponent)=
-### __Parameter name:__ Diffusion creep exponent
+::::{dropdown} __Parameter:__ {ref}`Diffusion creep exponent<parameters:Material_20model/Grain_20size_20model/Diffusion_20creep_20exponent>`
+:name: parameters:Material_20model/Grain_20size_20model/Diffusion_20creep_20exponent
 **Default value:** 1.
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The power-law exponent $n_{diff}$ for diffusion creep. List must have one more entry than the Phase transition depths. Units: none.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Diffusion_20creep_20grain_20size_20exponent)=
-### __Parameter name:__ Diffusion creep grain size exponent
+::::{dropdown} __Parameter:__ {ref}`Diffusion creep grain size exponent<parameters:Material_20model/Grain_20size_20model/Diffusion_20creep_20grain_20size_20exponent>`
+:name: parameters:Material_20model/Grain_20size_20model/Diffusion_20creep_20grain_20size_20exponent
 **Default value:** 3.
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The diffusion creep grain size exponent $p_{diff}$ that determines the dependence of viscosity on grain size. List must have one more entry than the Phase transition depths. Units: none.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Diffusion_20creep_20prefactor)=
-### __Parameter name:__ Diffusion creep prefactor
+::::{dropdown} __Parameter:__ {ref}`Diffusion creep prefactor<parameters:Material_20model/Grain_20size_20model/Diffusion_20creep_20prefactor>`
+:name: parameters:Material_20model/Grain_20size_20model/Diffusion_20creep_20prefactor
 **Default value:** 7.4e-15
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The prefactor for the diffusion creep law $A_{diff}$. List must have one more entry than the Phase transition depths. Units: $\frac{\text{m}^{\text{p}_{\text{diff}}}\text{Pa}^{-\text{n}_{\text{diff}}}}{\text{s}}$.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Dislocation_20activation_20energy)=
-### __Parameter name:__ Dislocation activation energy
+::::{dropdown} __Parameter:__ {ref}`Dislocation activation energy<parameters:Material_20model/Grain_20size_20model/Dislocation_20activation_20energy>`
+:name: parameters:Material_20model/Grain_20size_20model/Dislocation_20activation_20energy
 **Default value:** 4.8e5
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The activation energy for dislocation creep $E_{dis}$. List must have one more entry than the Phase transition depths. Units: $\frac{\text{J}}{\text{mol}}$.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Dislocation_20activation_20volume)=
-### __Parameter name:__ Dislocation activation volume
+::::{dropdown} __Parameter:__ {ref}`Dislocation activation volume<parameters:Material_20model/Grain_20size_20model/Dislocation_20activation_20volume>`
+:name: parameters:Material_20model/Grain_20size_20model/Dislocation_20activation_20volume
 **Default value:** 1.1e-5
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The activation volume for dislocation creep $V_{dis}$. List must have one more entry than the Phase transition depths. Units: $\frac{\text{m}^3}{\text{mol}}$.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Dislocation_20creep_20exponent)=
-### __Parameter name:__ Dislocation creep exponent
+::::{dropdown} __Parameter:__ {ref}`Dislocation creep exponent<parameters:Material_20model/Grain_20size_20model/Dislocation_20creep_20exponent>`
+:name: parameters:Material_20model/Grain_20size_20model/Dislocation_20creep_20exponent
 **Default value:** 3.5
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The power-law exponent $n_{dis}$ for dislocation creep. List must have one more entry than the Phase transition depths. Units: none.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Dislocation_20creep_20prefactor)=
-### __Parameter name:__ Dislocation creep prefactor
+::::{dropdown} __Parameter:__ {ref}`Dislocation creep prefactor<parameters:Material_20model/Grain_20size_20model/Dislocation_20creep_20prefactor>`
+:name: parameters:Material_20model/Grain_20size_20model/Dislocation_20creep_20prefactor
 **Default value:** 4.5e-15
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The prefactor for the dislocation creep law $A_{dis}$. List must have one more entry than the Phase transition depths. Units: $\frac{\text{Pa}^{\text{-n}_\text{dis}}}{\text{s}}$.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Dislocation_20viscosity_20iteration_20number)=
-### __Parameter name:__ Dislocation viscosity iteration number
+::::{dropdown} __Parameter:__ {ref}`Dislocation viscosity iteration number<parameters:Material_20model/Grain_20size_20model/Dislocation_20viscosity_20iteration_20number>`
+:name: parameters:Material_20model/Grain_20size_20model/Dislocation_20viscosity_20iteration_20number
 **Default value:** 100
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** We need to perform an iteration inside the computation of the dislocation viscosity, because it depends on the dislocation strain rate, which depends on the dislocation viscosity itself. This number determines the maximum number of iterations that are performed.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Dislocation_20viscosity_20iteration_20threshold)=
-### __Parameter name:__ Dislocation viscosity iteration threshold
+::::{dropdown} __Parameter:__ {ref}`Dislocation viscosity iteration threshold<parameters:Material_20model/Grain_20size_20model/Dislocation_20viscosity_20iteration_20threshold>`
+:name: parameters:Material_20model/Grain_20size_20model/Dislocation_20viscosity_20iteration_20threshold
 **Default value:** 1e-3
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** We need to perform an iteration inside the computation of the dislocation viscosity, because it depends on the dislocation strain rate, which depends on the dislocation viscosity itself. This number determines the termination accuracy, i.e. if the dislocation viscosity changes by less than this factor we terminate the iteration.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Geometric_20constant)=
-### __Parameter name:__ Geometric constant
+::::{dropdown} __Parameter:__ {ref}`Geometric constant<parameters:Material_20model/Grain_20size_20model/Geometric_20constant>`
+:name: parameters:Material_20model/Grain_20size_20model/Geometric_20constant
 **Default value:** 3.
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The geometric constant $c$ used in the paleowattmeter grain size reduction law. List must have one more entry than the Phase transition depths. Units: none.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Grain_20growth_20activation_20energy)=
-### __Parameter name:__ Grain growth activation energy
+::::{dropdown} __Parameter:__ {ref}`Grain growth activation energy<parameters:Material_20model/Grain_20size_20model/Grain_20growth_20activation_20energy>`
+:name: parameters:Material_20model/Grain_20size_20model/Grain_20growth_20activation_20energy
 **Default value:** 3.5e5
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The activation energy for grain growth $E_g$. List must have one more entry than the Phase transition depths. Units: \si{\joule\per\mole}.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Grain_20growth_20activation_20volume)=
-### __Parameter name:__ Grain growth activation volume
+::::{dropdown} __Parameter:__ {ref}`Grain growth activation volume<parameters:Material_20model/Grain_20size_20model/Grain_20growth_20activation_20volume>`
+:name: parameters:Material_20model/Grain_20size_20model/Grain_20growth_20activation_20volume
 **Default value:** 8e-6
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The activation volume for grain growth $V_g$. List must have one more entry than the Phase transition depths. Units: \si{\meter\cubed\per\mole}.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Grain_20growth_20exponent)=
-### __Parameter name:__ Grain growth exponent
+::::{dropdown} __Parameter:__ {ref}`Grain growth exponent<parameters:Material_20model/Grain_20size_20model/Grain_20growth_20exponent>`
+:name: parameters:Material_20model/Grain_20size_20model/Grain_20growth_20exponent
 **Default value:** 3.
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The exponent of the grain growth law $p_g$. This is an experimentally determined grain growth constant. List must have one more entry than the Phase transition depths. Units: none.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Grain_20growth_20rate_20constant)=
-### __Parameter name:__ Grain growth rate constant
+::::{dropdown} __Parameter:__ {ref}`Grain growth rate constant<parameters:Material_20model/Grain_20size_20model/Grain_20growth_20rate_20constant>`
+:name: parameters:Material_20model/Grain_20size_20model/Grain_20growth_20rate_20constant
 **Default value:** 1.5e-5
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The prefactor for the Ostwald ripening grain growth law $G_0$. This is dependent on water content, which is assumed to be 50 H/$10^6$ Si for the default value. List must have one more entry than the Phase transition depths. Units: \si{\meter}$^{p_g}$\si{\per\second}.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Grain_20size_20evolution_20formulation)=
-### __Parameter name:__ Grain size evolution formulation
+::::{dropdown} __Parameter:__ {ref}`Grain size evolution formulation<parameters:Material_20model/Grain_20size_20model/Grain_20size_20evolution_20formulation>`
+:name: parameters:Material_20model/Grain_20size_20model/Grain_20size_20evolution_20formulation
 **Default value:** paleowattmeter
 
 **Pattern:** [Selection paleowattmeter|paleopiezometer|pinned grain damage ]
 
 **Documentation:** A flag indicating whether the material model should use the paleowattmeter approach of Austin and Evans (2007) for grain size reduction in the dislocation creep regime, the paleopiezometer approach from Hall and Parmetier (2003), or the pinned grain damage approach from Mulyukova and Bercovici (2018).
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Lower_20mantle_20grain_20size_20scaling)=
-### __Parameter name:__ Lower mantle grain size scaling
+::::{dropdown} __Parameter:__ {ref}`Lower mantle grain size scaling<parameters:Material_20model/Grain_20size_20model/Lower_20mantle_20grain_20size_20scaling>`
+:name: parameters:Material_20model/Grain_20size_20model/Lower_20mantle_20grain_20size_20scaling
 **Default value:** 1.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** This option does not exist any more.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Material_20file_20format)=
-### __Parameter name:__ Material file format
+::::{dropdown} __Parameter:__ {ref}`Material file format<parameters:Material_20model/Grain_20size_20model/Material_20file_20format>`
+:name: parameters:Material_20model/Grain_20size_20model/Material_20file_20format
 **Default value:** perplex
 
 **Pattern:** [Selection perplex|hefesto ]
 
 **Documentation:** The material file format to be read in the property tables.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Material_20file_20names)=
-### __Parameter name:__ Material file names
+::::{dropdown} __Parameter:__ {ref}`Material file names<parameters:Material_20model/Grain_20size_20model/Material_20file_20names>`
+:name: parameters:Material_20model/Grain_20size_20model/Material_20file_20names
 **Default value:** pyr-ringwood88.txt
 
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The file names of the material data. List with as many components as active compositional fields (material data is assumed to be in order with the ordering of the fields).
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Maximum_20latent_20heat_20substeps)=
-### __Parameter name:__ Maximum latent heat substeps
+::::{dropdown} __Parameter:__ {ref}`Maximum latent heat substeps<parameters:Material_20model/Grain_20size_20model/Maximum_20latent_20heat_20substeps>`
+:name: parameters:Material_20model/Grain_20size_20model/Maximum_20latent_20heat_20substeps
 **Default value:** 1
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** The maximum number of substeps over the temperature pressure range to calculate the averaged enthalpy gradient over a cell.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Maximum_20specific_20heat)=
-### __Parameter name:__ Maximum specific heat
+::::{dropdown} __Parameter:__ {ref}`Maximum specific heat<parameters:Material_20model/Grain_20size_20model/Maximum_20specific_20heat>`
+:name: parameters:Material_20model/Grain_20size_20model/Maximum_20specific_20heat
 **Default value:** 6000.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The maximum specific heat that is allowed in the whole model domain. Units: J/kg/K.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Maximum_20temperature_20dependence_20of_20viscosity)=
-### __Parameter name:__ Maximum temperature dependence of viscosity
+::::{dropdown} __Parameter:__ {ref}`Maximum temperature dependence of viscosity<parameters:Material_20model/Grain_20size_20model/Maximum_20temperature_20dependence_20of_20viscosity>`
+:name: parameters:Material_20model/Grain_20size_20model/Maximum_20temperature_20dependence_20of_20viscosity
 **Default value:** 100.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The factor by which viscosity at adiabatic temperature and ambient temperature are allowed to differ (a value of x means that the viscosity can be x times higher or x times lower compared to the value at adiabatic temperature. This parameter is introduced to limit local viscosity contrasts, but still allow for a widely varying viscosity over the whole mantle range. Units: none.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Maximum_20thermal_20expansivity)=
-### __Parameter name:__ Maximum thermal expansivity
+::::{dropdown} __Parameter:__ {ref}`Maximum thermal expansivity<parameters:Material_20model/Grain_20size_20model/Maximum_20thermal_20expansivity>`
+:name: parameters:Material_20model/Grain_20size_20model/Maximum_20thermal_20expansivity
 **Default value:** 1e-3
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The maximum thermal expansivity that is allowed in the whole model domain. Units: 1/K.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Maximum_20viscosity)=
-### __Parameter name:__ Maximum viscosity
+::::{dropdown} __Parameter:__ {ref}`Maximum viscosity<parameters:Material_20model/Grain_20size_20model/Maximum_20viscosity>`
+:name: parameters:Material_20model/Grain_20size_20model/Maximum_20viscosity
 **Default value:** 1e26
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The maximum viscosity that is allowed in the whole model domain. Units: Pa \, s.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Maximum_20yield_20stress)=
-### __Parameter name:__ Maximum yield stress
+::::{dropdown} __Parameter:__ {ref}`Maximum yield stress<parameters:Material_20model/Grain_20size_20model/Maximum_20yield_20stress>`
+:name: parameters:Material_20model/Grain_20size_20model/Maximum_20yield_20stress
 **Default value:** 1e12
 
 **Pattern:** [Anything]
 
 **Documentation:** List of maximum yield stresses, for background material and compositional fields, , which limits the maximum value of the yield stress determined by the Drucker-Prager plasticity parameters. Default value is chosen so this is not automatically used. Values of 100e6--1000e6 $Pa$ have been used in previous models. Units: \si{\pascal}.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Minimum_20grain_20size)=
-### __Parameter name:__ Minimum grain size
+::::{dropdown} __Parameter:__ {ref}`Minimum grain size<parameters:Material_20model/Grain_20size_20model/Minimum_20grain_20size>`
+:name: parameters:Material_20model/Grain_20size_20model/Minimum_20grain_20size
 **Default value:** 1e-5
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The minimum grain size that is used for the material model. This parameter is introduced to limit local viscosity contrasts, but still allows for a widely varying viscosity over the whole mantle range. Units: \si{\meter}.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Minimum_20specific_20heat)=
-### __Parameter name:__ Minimum specific heat
+::::{dropdown} __Parameter:__ {ref}`Minimum specific heat<parameters:Material_20model/Grain_20size_20model/Minimum_20specific_20heat>`
+:name: parameters:Material_20model/Grain_20size_20model/Minimum_20specific_20heat
 **Default value:** 500.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The minimum specific heat that is allowed in the whole model domain. Units: J/kg/K.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Minimum_20thermal_20expansivity)=
-### __Parameter name:__ Minimum thermal expansivity
+::::{dropdown} __Parameter:__ {ref}`Minimum thermal expansivity<parameters:Material_20model/Grain_20size_20model/Minimum_20thermal_20expansivity>`
+:name: parameters:Material_20model/Grain_20size_20model/Minimum_20thermal_20expansivity
 **Default value:** 1e-5
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The minimum thermal expansivity that is allowed in the whole model domain. Units: 1/K.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Minimum_20viscosity)=
-### __Parameter name:__ Minimum viscosity
+::::{dropdown} __Parameter:__ {ref}`Minimum viscosity<parameters:Material_20model/Grain_20size_20model/Minimum_20viscosity>`
+:name: parameters:Material_20model/Grain_20size_20model/Minimum_20viscosity
 **Default value:** 1e18
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The minimum viscosity that is allowed in the whole model domain. Units: Pa \, s.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Phase_20transition_20Clapeyron_20slopes)=
-### __Parameter name:__ Phase transition Clapeyron slopes
+::::{dropdown} __Parameter:__ {ref}`Phase transition Clapeyron slopes<parameters:Material_20model/Grain_20size_20model/Phase_20transition_20Clapeyron_20slopes>`
+:name: parameters:Material_20model/Grain_20size_20model/Phase_20transition_20Clapeyron_20slopes
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of Clapeyron slopes for each phase transition. A positive Clapeyron slope indicates that the phase transition will occur in a greater depth, if the temperature is higher than the one given in Phase transition temperatures and in a smaller depth, if the temperature is smaller than the one given in Phase transition temperatures. For negative slopes the other way round. List must have the same number of entries as Phase transition depths. Units: \si{\pascal\per\kelvin}.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Phase_20transition_20depths)=
-### __Parameter name:__ Phase transition depths
+::::{dropdown} __Parameter:__ {ref}`Phase transition depths<parameters:Material_20model/Grain_20size_20model/Phase_20transition_20depths>`
+:name: parameters:Material_20model/Grain_20size_20model/Phase_20transition_20depths
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of depths where phase transitions occur. Values must monotonically increase. Units: \si{\meter}.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Phase_20transition_20pressure_20widths)=
-### __Parameter name:__ Phase transition pressure widths
+::::{dropdown} __Parameter:__ {ref}`Phase transition pressure widths<parameters:Material_20model/Grain_20size_20model/Phase_20transition_20pressure_20widths>`
+:name: parameters:Material_20model/Grain_20size_20model/Phase_20transition_20pressure_20widths
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of widths for each phase transition, in terms of pressure. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition pressures. Define transition by depth instead of pressure must be set to false to use this parameter. Units: \si{\pascal}.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Phase_20transition_20pressures)=
-### __Parameter name:__ Phase transition pressures
+::::{dropdown} __Parameter:__ {ref}`Phase transition pressures<parameters:Material_20model/Grain_20size_20model/Phase_20transition_20pressures>`
+:name: parameters:Material_20model/Grain_20size_20model/Phase_20transition_20pressures
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of pressures where phase transitions occur. Values must monotonically increase. Define transition by depth instead of pressure must be set to false to use this parameter. Units: \si{\pascal}.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Phase_20transition_20temperature_20lower_20limits)=
-### __Parameter name:__ Phase transition temperature lower limits
+::::{dropdown} __Parameter:__ {ref}`Phase transition temperature lower limits<parameters:Material_20model/Grain_20size_20model/Phase_20transition_20temperature_20lower_20limits>`
+:name: parameters:Material_20model/Grain_20size_20model/Phase_20transition_20temperature_20lower_20limits
 **Default value:** -1.7976931348623157e+308
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of lower temperature limits for each phase transition. Below this temperature the respective phase transition is deactivated. The default value means there is no lower limit for any phase transition. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: \si{\kelvin}.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Phase_20transition_20temperature_20upper_20limits)=
-### __Parameter name:__ Phase transition temperature upper limits
+::::{dropdown} __Parameter:__ {ref}`Phase transition temperature upper limits<parameters:Material_20model/Grain_20size_20model/Phase_20transition_20temperature_20upper_20limits>`
+:name: parameters:Material_20model/Grain_20size_20model/Phase_20transition_20temperature_20upper_20limits
 **Default value:** 1.7976931348623157e+308
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of upper temperature limits for each phase transition. Above this temperature the respective phase transition is deactivated. The default value means there is no upper limit for any phase transitions. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: \si{\kelvin}.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Phase_20transition_20temperatures)=
-### __Parameter name:__ Phase transition temperatures
+::::{dropdown} __Parameter:__ {ref}`Phase transition temperatures<parameters:Material_20model/Grain_20size_20model/Phase_20transition_20temperatures>`
+:name: parameters:Material_20model/Grain_20size_20model/Phase_20transition_20temperatures
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of temperatures where phase transitions occur. Higher or lower temperatures lead to phase transition occurring in smaller or greater depths than given in Phase transition depths, depending on the Clapeyron slope given in Phase transition Clapeyron slopes. List must have the same number of entries as Phase transition depths. Units: \si{\kelvin}.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Phase_20transition_20widths)=
-### __Parameter name:__ Phase transition widths
+::::{dropdown} __Parameter:__ {ref}`Phase transition widths<parameters:Material_20model/Grain_20size_20model/Phase_20transition_20widths>`
+:name: parameters:Material_20model/Grain_20size_20model/Phase_20transition_20widths
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of widths for each phase transition, in terms of depth. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition depths. Units: \si{\meter}.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Phase_20volume_20fraction)=
-### __Parameter name:__ Phase volume fraction
+::::{dropdown} __Parameter:__ {ref}`Phase volume fraction<parameters:Material_20model/Grain_20size_20model/Phase_20volume_20fraction>`
+:name: parameters:Material_20model/Grain_20size_20model/Phase_20volume_20fraction
 **Default value:** 0.4
 
 **Pattern:** [Double 0...1 (inclusive)]
 
 **Documentation:** The volume fraction of one of the phases in the two-phase damage model of Bercovici and Ricard (2012). The volume fraction of the other phase can be simply calculated by subtracting from one. This parameter is only used in the pinned state grain damage formulation.Units: none.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Plastic_20damper_20viscosity)=
-### __Parameter name:__ Plastic damper viscosity
+::::{dropdown} __Parameter:__ {ref}`Plastic damper viscosity<parameters:Material_20model/Grain_20size_20model/Plastic_20damper_20viscosity>`
+:name: parameters:Material_20model/Grain_20size_20model/Plastic_20damper_20viscosity
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Viscosity of the damper that acts in parallel with the plastic viscosity to produce mesh-independent behavior at sufficient resolutions. Units: \si{\pascal\second}
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Prefactors_20for_20yield_20stress)=
-### __Parameter name:__ Prefactors for yield stress
+::::{dropdown} __Parameter:__ {ref}`Prefactors for yield stress<parameters:Material_20model/Grain_20size_20model/Prefactors_20for_20yield_20stress>`
+:name: parameters:Material_20model/Grain_20size_20model/Prefactors_20for_20yield_20stress
 **Default value:** 1.0
 
 **Pattern:** [Anything]
 
 **Documentation:** List of prefactors for the yield stress, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. The prefactor is multiplied with the yield stress computed from the Drucker-Prager plasticity parameters. Default value is 1.0.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Reciprocal_20required_20strain)=
-### __Parameter name:__ Reciprocal required strain
+::::{dropdown} __Parameter:__ {ref}`Reciprocal required strain<parameters:Material_20model/Grain_20size_20model/Reciprocal_20required_20strain>`
+:name: parameters:Material_20model/Grain_20size_20model/Reciprocal_20required_20strain
 **Default value:** 10.
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** This parameter ($\lambda$) gives an estimate of the strain necessary to achieve a new grain size. List must have one more entry than the Phase transition depths.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Recrystallized_20grain_20size)=
-### __Parameter name:__ Recrystallized grain size
+::::{dropdown} __Parameter:__ {ref}`Recrystallized grain size<parameters:Material_20model/Grain_20size_20model/Recrystallized_20grain_20size>`
+:name: parameters:Material_20model/Grain_20size_20model/Recrystallized_20grain_20size
 **Default value:**
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The grain size $d_{ph}$ to that a phase will be reduced to when crossing a phase transition. When set to zero, grain size will not be reduced. List must have the same number of entries as Phase transition depths. Units: \si{\meter}.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Reference_20compressibility)=
-### __Parameter name:__ Reference compressibility
+::::{dropdown} __Parameter:__ {ref}`Reference compressibility<parameters:Material_20model/Grain_20size_20model/Reference_20compressibility>`
+:name: parameters:Material_20model/Grain_20size_20model/Reference_20compressibility
 **Default value:** 4e-12
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the reference compressibility. Units: $\frac{1}{\text{Pa}}$.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Reference_20density)=
-### __Parameter name:__ Reference density
+::::{dropdown} __Parameter:__ {ref}`Reference density<parameters:Material_20model/Grain_20size_20model/Reference_20density>`
+:name: parameters:Material_20model/Grain_20size_20model/Reference_20density
 **Default value:** 3300
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The reference density $\rho_0$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Reference_20specific_20heat)=
-### __Parameter name:__ Reference specific heat
+::::{dropdown} __Parameter:__ {ref}`Reference specific heat<parameters:Material_20model/Grain_20size_20model/Reference_20specific_20heat>`
+:name: parameters:Material_20model/Grain_20size_20model/Reference_20specific_20heat
 **Default value:** 1250.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the specific heat $cp$. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Reference_20temperature)=
-### __Parameter name:__ Reference temperature
+::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Grain_20size_20model/Reference_20temperature>`
+:name: parameters:Material_20model/Grain_20size_20model/Reference_20temperature
 **Default value:** 293.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The reference temperature $T_0$. Units: $\text{K}$.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Thermal_20conductivity)=
-### __Parameter name:__ Thermal conductivity
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivity<parameters:Material_20model/Grain_20size_20model/Thermal_20conductivity>`
+:name: parameters:Material_20model/Grain_20size_20model/Thermal_20conductivity
 **Default value:** 4.7
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Thermal_20expansion_20coefficient)=
-### __Parameter name:__ Thermal expansion coefficient
+::::{dropdown} __Parameter:__ {ref}`Thermal expansion coefficient<parameters:Material_20model/Grain_20size_20model/Thermal_20expansion_20coefficient>`
+:name: parameters:Material_20model/Grain_20size_20model/Thermal_20expansion_20coefficient
 **Default value:** 2e-5
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal expansion coefficient $\alpha$. Units: $\frac{1}{\text{K}}$.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Use_20Drucker_2dPrager_20rheology)=
-### __Parameter name:__ Use Drucker-Prager rheology
+::::{dropdown} __Parameter:__ {ref}`Use Drucker-Prager rheology<parameters:Material_20model/Grain_20size_20model/Use_20Drucker_2dPrager_20rheology>`
+:name: parameters:Material_20model/Grain_20size_20model/Use_20Drucker_2dPrager_20rheology
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** This parameter determines whether to apply plastic yielding according to a Drucker-Prager rheology after computing the viscosity from the (grain-size dependent) viscous creep flow laws (if true) or not (if false).
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Use_20adiabatic_20pressure_20for_20yield_20stress)=
-### __Parameter name:__ Use adiabatic pressure for yield stress
+::::{dropdown} __Parameter:__ {ref}`Use adiabatic pressure for yield stress<parameters:Material_20model/Grain_20size_20model/Use_20adiabatic_20pressure_20for_20yield_20stress>`
+:name: parameters:Material_20model/Grain_20size_20model/Use_20adiabatic_20pressure_20for_20yield_20stress
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to use the adiabatic pressure (if true) instead of the full (non-negative) pressure (if false) when calculating the yield stress. Using the adiabatic pressure (which is analogous to the depth-dependent von Mises model) can be useful to avoid the strong non-linearity associated with dynamic pressure variations affecting the yield strength, which can make the problem ill-posed. However, dynamic pressure can affect the localization of the strain rate and the resulting deformation, and neglecting it therefore changes the solution.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Use_20enthalpy_20for_20material_20properties)=
-### __Parameter name:__ Use enthalpy for material properties
+::::{dropdown} __Parameter:__ {ref}`Use enthalpy for material properties<parameters:Material_20model/Grain_20size_20model/Use_20enthalpy_20for_20material_20properties>`
+:name: parameters:Material_20model/Grain_20size_20model/Use_20enthalpy_20for_20material_20properties
 **Default value:** true
 
 **Pattern:** [Bool]
 
 **Documentation:** This parameter determines whether to use the enthalpy to calculate the thermal expansivity and specific heat (if true) or use the thermal expansivity and specific heat values from the material properties table directly (if false).
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Use_20paleowattmeter)=
-### __Parameter name:__ Use paleowattmeter
+::::{dropdown} __Parameter:__ {ref}`Use paleowattmeter<parameters:Material_20model/Grain_20size_20model/Use_20paleowattmeter>`
+:name: parameters:Material_20model/Grain_20size_20model/Use_20paleowattmeter
 **Default value:** default
 
 **Pattern:** [Selection true|false|default ]
 
 **Documentation:** A flag indicating whether the computation should use the paleowattmeter approach of Austin and Evans (2007) for grain size reduction in the dislocation creep regime (if true) or the paleopiezometer approach from Hall and Parmetier (2003) (if false). This parameter has been removed. Use &rsquo;Grain size evolution formulation&rsquo; instead.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Use_20plastic_20damper)=
-### __Parameter name:__ Use plastic damper
+::::{dropdown} __Parameter:__ {ref}`Use plastic damper<parameters:Material_20model/Grain_20size_20model/Use_20plastic_20damper>`
+:name: parameters:Material_20model/Grain_20size_20model/Use_20plastic_20damper
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to use a plastic damper when computing the Drucker-Prager plastic viscosity. The damper acts to stabilize the plastic shear band width and remove associated mesh-dependent behavior at sufficient resolutions.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Use_20table_20properties)=
-### __Parameter name:__ Use table properties
+::::{dropdown} __Parameter:__ {ref}`Use table properties<parameters:Material_20model/Grain_20size_20model/Use_20table_20properties>`
+:name: parameters:Material_20model/Grain_20size_20model/Use_20table_20properties
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** This parameter determines whether to use the table properties also for density, thermal expansivity and specific heat. If false the properties are generated as in the simple compressible plugin.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Viscosity)=
-### __Parameter name:__ Viscosity
+::::{dropdown} __Parameter:__ {ref}`Viscosity<parameters:Material_20model/Grain_20size_20model/Viscosity>`
+:name: parameters:Material_20model/Grain_20size_20model/Viscosity
 **Default value:** 5e24
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the constant viscosity. Units: $\text{Pa}\text{s}$.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Work_20fraction_20for_20boundary_20area_20change)=
-### __Parameter name:__ Work fraction for boundary area change
+::::{dropdown} __Parameter:__ {ref}`Work fraction for boundary area change<parameters:Material_20model/Grain_20size_20model/Work_20fraction_20for_20boundary_20area_20change>`
+:name: parameters:Material_20model/Grain_20size_20model/Work_20fraction_20for_20boundary_20area_20change
 **Default value:** 0.1
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The fraction $\chi$ of work done by dislocation creep to change the grain boundary area. List must have one more entry than the Phase transition depths. Units: \si{\joule\per\meter\squared}.
+::::
 
 (parameters:Material_20model/Grain_20size_20model/Grain_20damage_20partitioning)=
 ## **Subsection:** Material model / Grain size model / Grain damage partitioning
-(parameters:Material_20model/Grain_20size_20model/Grain_20damage_20partitioning/Grain_20size_20reduction_20work_20fraction_20exponent)=
-### __Parameter name:__ Grain size reduction work fraction exponent
+::::{dropdown} __Parameter:__ {ref}`Grain size reduction work fraction exponent<parameters:Material_20model/Grain_20size_20model/Grain_20damage_20partitioning/Grain_20size_20reduction_20work_20fraction_20exponent>`
+:name: parameters:Material_20model/Grain_20size_20model/Grain_20damage_20partitioning/Grain_20size_20reduction_20work_20fraction_20exponent
 **Default value:** 10
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** This parameter determines the variability in how much shear heating is partitioned into grain damage. A higher value suggests a wider temperature range over which the partitioning coefficient is high.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Grain_20damage_20partitioning/Maximum_20grain_20size_20reduction_20work_20fraction)=
-### __Parameter name:__ Maximum grain size reduction work fraction
+::::{dropdown} __Parameter:__ {ref}`Maximum grain size reduction work fraction<parameters:Material_20model/Grain_20size_20model/Grain_20damage_20partitioning/Maximum_20grain_20size_20reduction_20work_20fraction>`
+:name: parameters:Material_20model/Grain_20size_20model/Grain_20damage_20partitioning/Maximum_20grain_20size_20reduction_20work_20fraction
 **Default value:** 1e-1
 
 **Pattern:** [Double 0...1 (inclusive)]
 
 **Documentation:** This parameter determines the maximum value of the partitioning coefficient, which governs the amount of shear heating partitioned into grain damage in the pinned state limit.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Grain_20damage_20partitioning/Minimum_20grain_20size_20reduction_20work_20fraction)=
-### __Parameter name:__ Minimum grain size reduction work fraction
+::::{dropdown} __Parameter:__ {ref}`Minimum grain size reduction work fraction<parameters:Material_20model/Grain_20size_20model/Grain_20damage_20partitioning/Minimum_20grain_20size_20reduction_20work_20fraction>`
+:name: parameters:Material_20model/Grain_20size_20model/Grain_20damage_20partitioning/Minimum_20grain_20size_20reduction_20work_20fraction
 **Default value:** 1e-12
 
 **Pattern:** [Double 0...1 (inclusive)]
 
 **Documentation:** This parameter determines the minimum value of the partitioning coefficient, which governs the amount of shear heating partitioned into grain damage in the pinned state limit.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Grain_20damage_20partitioning/Temperature_20for_20maximum_20grain_20damage_20partitioning)=
-### __Parameter name:__ Temperature for maximum grain damage partitioning
+::::{dropdown} __Parameter:__ {ref}`Temperature for maximum grain damage partitioning<parameters:Material_20model/Grain_20size_20model/Grain_20damage_20partitioning/Temperature_20for_20maximum_20grain_20damage_20partitioning>`
+:name: parameters:Material_20model/Grain_20size_20model/Grain_20damage_20partitioning/Temperature_20for_20maximum_20grain_20damage_20partitioning
 **Default value:** 283
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** This parameter determines the temperature at which the computed coefficient of shear energy partitioned into grain damage is maximum. This is used in the pinned state limit of the grain size evolution. One choice of this parameter is the surface temperature of the seafloor, see Mulyukova and Bercovici (2018) for details.
+::::
 
-(parameters:Material_20model/Grain_20size_20model/Grain_20damage_20partitioning/Temperature_20for_20minimum_20grain_20damage_20partitioning)=
-### __Parameter name:__ Temperature for minimum grain damage partitioning
+::::{dropdown} __Parameter:__ {ref}`Temperature for minimum grain damage partitioning<parameters:Material_20model/Grain_20size_20model/Grain_20damage_20partitioning/Temperature_20for_20minimum_20grain_20damage_20partitioning>`
+:name: parameters:Material_20model/Grain_20size_20model/Grain_20damage_20partitioning/Temperature_20for_20minimum_20grain_20damage_20partitioning
 **Default value:** 1600
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** This parameter determines the temperature at which the computed coefficient of shear energy partitioned into grain damage is minimum. This is used in the pinned state limit of the grain size evolution. One choice of this parameter is the mantle temperature at the ridge axis, see Mulyukova and Bercovici (2018) for details.
+::::
 
 (parameters:Material_20model/Latent_20heat)=
 ## **Subsection:** Material model / Latent heat
-(parameters:Material_20model/Latent_20heat/Composition_20viscosity_20prefactor)=
-### __Parameter name:__ Composition viscosity prefactor
+::::{dropdown} __Parameter:__ {ref}`Composition viscosity prefactor<parameters:Material_20model/Latent_20heat/Composition_20viscosity_20prefactor>`
+:name: parameters:Material_20model/Latent_20heat/Composition_20viscosity_20prefactor
 **Default value:** 1.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** A linear dependency of viscosity on composition. Dimensionless prefactor.
+::::
 
-(parameters:Material_20model/Latent_20heat/Compressibility)=
-### __Parameter name:__ Compressibility
+::::{dropdown} __Parameter:__ {ref}`Compressibility<parameters:Material_20model/Latent_20heat/Compressibility>`
+:name: parameters:Material_20model/Latent_20heat/Compressibility
 **Default value:** 5.124e-12
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the compressibility $\kappa$. Units: $\frac{1}{\text{Pa}}$.
+::::
 
-(parameters:Material_20model/Latent_20heat/Corresponding_20phase_20for_20density_20jump)=
-### __Parameter name:__ Corresponding phase for density jump
+::::{dropdown} __Parameter:__ {ref}`Corresponding phase for density jump<parameters:Material_20model/Latent_20heat/Corresponding_20phase_20for_20density_20jump>`
+:name: parameters:Material_20model/Latent_20heat/Corresponding_20phase_20for_20density_20jump
 **Default value:**
 
 **Pattern:** [List of <[Integer range 0...2147483647 (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A list of phases, which correspond to the Phase transition density jumps. The density jumps occur only in the phase that is given by this phase value. 0 stands for the 1st compositional fields, 1 for the second compositional field and -1 for none of them. List must have the same number of entries as Phase transition depths. Units: \si{\pascal\per\kelvin}.
+::::
 
-(parameters:Material_20model/Latent_20heat/Define_20transition_20by_20depth_20instead_20of_20pressure)=
-### __Parameter name:__ Define transition by depth instead of pressure
+::::{dropdown} __Parameter:__ {ref}`Define transition by depth instead of pressure<parameters:Material_20model/Latent_20heat/Define_20transition_20by_20depth_20instead_20of_20pressure>`
+:name: parameters:Material_20model/Latent_20heat/Define_20transition_20by_20depth_20instead_20of_20pressure
 **Default value:** true
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to list phase transitions by depth or pressure. If this parameter is true, then the input file will use Phase transitions depths and Phase transition widths to define the phase transition. If it is false, the parameter file will read in phase transition data from Phase transition pressures and Phase transition pressure widths.
+::::
 
-(parameters:Material_20model/Latent_20heat/Density_20differential_20for_20compositional_20field_201)=
-### __Parameter name:__ Density differential for compositional field 1
+::::{dropdown} __Parameter:__ {ref}`Density differential for compositional field 1<parameters:Material_20model/Latent_20heat/Density_20differential_20for_20compositional_20field_201>`
+:name: parameters:Material_20model/Latent_20heat/Density_20differential_20for_20compositional_20field_201
 **Default value:** 0.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the density only depends on the first one in such a way that the density has an additional term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: $\frac{\text{kg}}{\text{m}^3}$/unit change in composition.
+::::
 
-(parameters:Material_20model/Latent_20heat/Maximum_20viscosity)=
-### __Parameter name:__ Maximum viscosity
+::::{dropdown} __Parameter:__ {ref}`Maximum viscosity<parameters:Material_20model/Latent_20heat/Maximum_20viscosity>`
+:name: parameters:Material_20model/Latent_20heat/Maximum_20viscosity
 **Default value:** 1e24
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Limit for the maximum viscosity in the model. Units: Pa \, s.
+::::
 
-(parameters:Material_20model/Latent_20heat/Minimum_20viscosity)=
-### __Parameter name:__ Minimum viscosity
+::::{dropdown} __Parameter:__ {ref}`Minimum viscosity<parameters:Material_20model/Latent_20heat/Minimum_20viscosity>`
+:name: parameters:Material_20model/Latent_20heat/Minimum_20viscosity
 **Default value:** 1e19
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Limit for the minimum viscosity in the model. Units: Pa \, s.
+::::
 
-(parameters:Material_20model/Latent_20heat/Phase_20transition_20Clapeyron_20slopes)=
-### __Parameter name:__ Phase transition Clapeyron slopes
+::::{dropdown} __Parameter:__ {ref}`Phase transition Clapeyron slopes<parameters:Material_20model/Latent_20heat/Phase_20transition_20Clapeyron_20slopes>`
+:name: parameters:Material_20model/Latent_20heat/Phase_20transition_20Clapeyron_20slopes
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of Clapeyron slopes for each phase transition. A positive Clapeyron slope indicates that the phase transition will occur in a greater depth, if the temperature is higher than the one given in Phase transition temperatures and in a smaller depth, if the temperature is smaller than the one given in Phase transition temperatures. For negative slopes the other way round. List must have the same number of entries as Phase transition depths. Units: \si{\pascal\per\kelvin}.
+::::
 
-(parameters:Material_20model/Latent_20heat/Phase_20transition_20density_20jumps)=
-### __Parameter name:__ Phase transition density jumps
+::::{dropdown} __Parameter:__ {ref}`Phase transition density jumps<parameters:Material_20model/Latent_20heat/Phase_20transition_20density_20jumps>`
+:name: parameters:Material_20model/Latent_20heat/Phase_20transition_20density_20jumps
 **Default value:**
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A list of density jumps at each phase transition. A positive value means that the density increases with depth. The corresponding entry in Corresponding phase for density jump determines if the density jump occurs in peridotite, eclogite or none of them.List must have the same number of entries as Phase transition depths. Units: $\frac{\text{kg}}{\text{m}^3}$.
+::::
 
-(parameters:Material_20model/Latent_20heat/Phase_20transition_20depths)=
-### __Parameter name:__ Phase transition depths
+::::{dropdown} __Parameter:__ {ref}`Phase transition depths<parameters:Material_20model/Latent_20heat/Phase_20transition_20depths>`
+:name: parameters:Material_20model/Latent_20heat/Phase_20transition_20depths
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of depths where phase transitions occur. Values must monotonically increase. Units: \si{\meter}.
+::::
 
-(parameters:Material_20model/Latent_20heat/Phase_20transition_20pressure_20widths)=
-### __Parameter name:__ Phase transition pressure widths
+::::{dropdown} __Parameter:__ {ref}`Phase transition pressure widths<parameters:Material_20model/Latent_20heat/Phase_20transition_20pressure_20widths>`
+:name: parameters:Material_20model/Latent_20heat/Phase_20transition_20pressure_20widths
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of widths for each phase transition, in terms of pressure. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition pressures. Define transition by depth instead of pressure must be set to false to use this parameter. Units: \si{\pascal}.
+::::
 
-(parameters:Material_20model/Latent_20heat/Phase_20transition_20pressures)=
-### __Parameter name:__ Phase transition pressures
+::::{dropdown} __Parameter:__ {ref}`Phase transition pressures<parameters:Material_20model/Latent_20heat/Phase_20transition_20pressures>`
+:name: parameters:Material_20model/Latent_20heat/Phase_20transition_20pressures
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of pressures where phase transitions occur. Values must monotonically increase. Define transition by depth instead of pressure must be set to false to use this parameter. Units: \si{\pascal}.
+::::
 
-(parameters:Material_20model/Latent_20heat/Phase_20transition_20temperature_20lower_20limits)=
-### __Parameter name:__ Phase transition temperature lower limits
+::::{dropdown} __Parameter:__ {ref}`Phase transition temperature lower limits<parameters:Material_20model/Latent_20heat/Phase_20transition_20temperature_20lower_20limits>`
+:name: parameters:Material_20model/Latent_20heat/Phase_20transition_20temperature_20lower_20limits
 **Default value:** -1.7976931348623157e+308
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of lower temperature limits for each phase transition. Below this temperature the respective phase transition is deactivated. The default value means there is no lower limit for any phase transition. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: \si{\kelvin}.
+::::
 
-(parameters:Material_20model/Latent_20heat/Phase_20transition_20temperature_20upper_20limits)=
-### __Parameter name:__ Phase transition temperature upper limits
+::::{dropdown} __Parameter:__ {ref}`Phase transition temperature upper limits<parameters:Material_20model/Latent_20heat/Phase_20transition_20temperature_20upper_20limits>`
+:name: parameters:Material_20model/Latent_20heat/Phase_20transition_20temperature_20upper_20limits
 **Default value:** 1.7976931348623157e+308
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of upper temperature limits for each phase transition. Above this temperature the respective phase transition is deactivated. The default value means there is no upper limit for any phase transitions. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: \si{\kelvin}.
+::::
 
-(parameters:Material_20model/Latent_20heat/Phase_20transition_20temperatures)=
-### __Parameter name:__ Phase transition temperatures
+::::{dropdown} __Parameter:__ {ref}`Phase transition temperatures<parameters:Material_20model/Latent_20heat/Phase_20transition_20temperatures>`
+:name: parameters:Material_20model/Latent_20heat/Phase_20transition_20temperatures
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of temperatures where phase transitions occur. Higher or lower temperatures lead to phase transition occurring in smaller or greater depths than given in Phase transition depths, depending on the Clapeyron slope given in Phase transition Clapeyron slopes. List must have the same number of entries as Phase transition depths. Units: \si{\kelvin}.
+::::
 
-(parameters:Material_20model/Latent_20heat/Phase_20transition_20widths)=
-### __Parameter name:__ Phase transition widths
+::::{dropdown} __Parameter:__ {ref}`Phase transition widths<parameters:Material_20model/Latent_20heat/Phase_20transition_20widths>`
+:name: parameters:Material_20model/Latent_20heat/Phase_20transition_20widths
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of widths for each phase transition, in terms of depth. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition depths. Units: \si{\meter}.
+::::
 
-(parameters:Material_20model/Latent_20heat/Reference_20density)=
-### __Parameter name:__ Reference density
+::::{dropdown} __Parameter:__ {ref}`Reference density<parameters:Material_20model/Latent_20heat/Reference_20density>`
+:name: parameters:Material_20model/Latent_20heat/Reference_20density
 **Default value:** 3300.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Reference density $\rho_0$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+::::
 
-(parameters:Material_20model/Latent_20heat/Reference_20specific_20heat)=
-### __Parameter name:__ Reference specific heat
+::::{dropdown} __Parameter:__ {ref}`Reference specific heat<parameters:Material_20model/Latent_20heat/Reference_20specific_20heat>`
+:name: parameters:Material_20model/Latent_20heat/Reference_20specific_20heat
 **Default value:** 1250.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the specific heat $C_p$. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+::::
 
-(parameters:Material_20model/Latent_20heat/Reference_20temperature)=
-### __Parameter name:__ Reference temperature
+::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Latent_20heat/Reference_20temperature>`
+:name: parameters:Material_20model/Latent_20heat/Reference_20temperature
 **Default value:** 293.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The reference temperature $T_0$. Units: $\text{K}$.
+::::
 
-(parameters:Material_20model/Latent_20heat/Thermal_20conductivity)=
-### __Parameter name:__ Thermal conductivity
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivity<parameters:Material_20model/Latent_20heat/Thermal_20conductivity>`
+:name: parameters:Material_20model/Latent_20heat/Thermal_20conductivity
 **Default value:** 2.38
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+::::
 
-(parameters:Material_20model/Latent_20heat/Thermal_20expansion_20coefficient)=
-### __Parameter name:__ Thermal expansion coefficient
+::::{dropdown} __Parameter:__ {ref}`Thermal expansion coefficient<parameters:Material_20model/Latent_20heat/Thermal_20expansion_20coefficient>`
+:name: parameters:Material_20model/Latent_20heat/Thermal_20expansion_20coefficient
 **Default value:** 4e-5
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal expansion coefficient $\beta$. Units: $\frac{1}{\text{K}}$.
+::::
 
-(parameters:Material_20model/Latent_20heat/Thermal_20viscosity_20exponent)=
-### __Parameter name:__ Thermal viscosity exponent
+::::{dropdown} __Parameter:__ {ref}`Thermal viscosity exponent<parameters:Material_20model/Latent_20heat/Thermal_20viscosity_20exponent>`
+:name: parameters:Material_20model/Latent_20heat/Thermal_20viscosity_20exponent
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The temperature dependence of viscosity. Dimensionless exponent.
+::::
 
-(parameters:Material_20model/Latent_20heat/Viscosity)=
-### __Parameter name:__ Viscosity
+::::{dropdown} __Parameter:__ {ref}`Viscosity<parameters:Material_20model/Latent_20heat/Viscosity>`
+:name: parameters:Material_20model/Latent_20heat/Viscosity
 **Default value:** 5e24
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the constant viscosity. Units: $\text{Pa}\text{s}$.
+::::
 
-(parameters:Material_20model/Latent_20heat/Viscosity_20prefactors)=
-### __Parameter name:__ Viscosity prefactors
+::::{dropdown} __Parameter:__ {ref}`Viscosity prefactors<parameters:Material_20model/Latent_20heat/Viscosity_20prefactors>`
+:name: parameters:Material_20model/Latent_20heat/Viscosity_20prefactors
 **Default value:** all:1
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of prefactors for the viscosity for each phase. The &ldquo;Viscosity&rdquo; parameter (modified by the &ldquo;Composition viscosity prefactor&rdquo;, depending on composition) will be multiplied by this factor to get the corresponding viscosity for each phase. List must have the same number of entries as there are phases, that is one more than &ldquo;Phase transition depths&rdquo; for each composition that is used in the model. Units: non-dimensional.
+::::
 
 (parameters:Material_20model/Latent_20heat_20melt)=
 ## **Subsection:** Material model / Latent heat melt
-(parameters:Material_20model/Latent_20heat_20melt/A1)=
-### __Parameter name:__ A1
+::::{dropdown} __Parameter:__ {ref}`A1<parameters:Material_20model/Latent_20heat_20melt/A1>`
+:name: parameters:Material_20model/Latent_20heat_20melt/A1
 **Default value:** 1085.7
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Constant parameter in the quadratic function that approximates the solidus of peridotite. Units: $^{\circ}C$.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/A2)=
-### __Parameter name:__ A2
+::::{dropdown} __Parameter:__ {ref}`A2<parameters:Material_20model/Latent_20heat_20melt/A2>`
+:name: parameters:Material_20model/Latent_20heat_20melt/A2
 **Default value:** 1.329e-7
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the linear pressure term in the quadratic function that approximates the solidus of peridotite. Units: $\frac{^{\circ}C}{\text{Pa}}$.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/A3)=
-### __Parameter name:__ A3
+::::{dropdown} __Parameter:__ {ref}`A3<parameters:Material_20model/Latent_20heat_20melt/A3>`
+:name: parameters:Material_20model/Latent_20heat_20melt/A3
 **Default value:** -5.1e-18
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the quadratic pressure term in the quadratic function that approximates the solidus of peridotite. Units: $\frac{^{\circ}C}{\text{Pa}^2}$.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/B1)=
-### __Parameter name:__ B1
+::::{dropdown} __Parameter:__ {ref}`B1<parameters:Material_20model/Latent_20heat_20melt/B1>`
+:name: parameters:Material_20model/Latent_20heat_20melt/B1
 **Default value:** 1475.0
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Constant parameter in the quadratic function that approximates the lherzolite liquidus used for calculating the fraction of peridotite-derived melt. Units: $^{\circ}C$.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/B2)=
-### __Parameter name:__ B2
+::::{dropdown} __Parameter:__ {ref}`B2<parameters:Material_20model/Latent_20heat_20melt/B2>`
+:name: parameters:Material_20model/Latent_20heat_20melt/B2
 **Default value:** 8.0e-8
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the linear pressure term in the quadratic function that approximates the  lherzolite liquidus used for calculating the fraction of peridotite-derived melt. Units: $\frac{^{\circ}C}{\text{Pa}}$.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/B3)=
-### __Parameter name:__ B3
+::::{dropdown} __Parameter:__ {ref}`B3<parameters:Material_20model/Latent_20heat_20melt/B3>`
+:name: parameters:Material_20model/Latent_20heat_20melt/B3
 **Default value:** -3.2e-18
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the quadratic pressure term in the quadratic function that approximates the  lherzolite liquidus used for calculating the fraction of peridotite-derived melt. Units: $\frac{^{\circ}C}{\text{Pa}^2}$.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/C1)=
-### __Parameter name:__ C1
+::::{dropdown} __Parameter:__ {ref}`C1<parameters:Material_20model/Latent_20heat_20melt/C1>`
+:name: parameters:Material_20model/Latent_20heat_20melt/C1
 **Default value:** 1780.0
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Constant parameter in the quadratic function that approximates the liquidus of peridotite. Units: $^{\circ}C$.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/C2)=
-### __Parameter name:__ C2
+::::{dropdown} __Parameter:__ {ref}`C2<parameters:Material_20model/Latent_20heat_20melt/C2>`
+:name: parameters:Material_20model/Latent_20heat_20melt/C2
 **Default value:** 4.50e-8
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the linear pressure term in the quadratic function that approximates the liquidus of peridotite. Units: $\frac{^{\circ}C}{\text{Pa}}$.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/C3)=
-### __Parameter name:__ C3
+::::{dropdown} __Parameter:__ {ref}`C3<parameters:Material_20model/Latent_20heat_20melt/C3>`
+:name: parameters:Material_20model/Latent_20heat_20melt/C3
 **Default value:** -2.0e-18
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the quadratic pressure term in the quadratic function that approximates the liquidus of peridotite. Units: $\frac{^{\circ}C}{\text{Pa}^2}$.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/Composition_20viscosity_20prefactor)=
-### __Parameter name:__ Composition viscosity prefactor
+::::{dropdown} __Parameter:__ {ref}`Composition viscosity prefactor<parameters:Material_20model/Latent_20heat_20melt/Composition_20viscosity_20prefactor>`
+:name: parameters:Material_20model/Latent_20heat_20melt/Composition_20viscosity_20prefactor
 **Default value:** 1.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** A linear dependency of viscosity on composition. Dimensionless prefactor.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/Compressibility)=
-### __Parameter name:__ Compressibility
+::::{dropdown} __Parameter:__ {ref}`Compressibility<parameters:Material_20model/Latent_20heat_20melt/Compressibility>`
+:name: parameters:Material_20model/Latent_20heat_20melt/Compressibility
 **Default value:** 5.124e-12
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the compressibility $\kappa$. Units: $\frac{1}{\text{Pa}}$.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/D1)=
-### __Parameter name:__ D1
+::::{dropdown} __Parameter:__ {ref}`D1<parameters:Material_20model/Latent_20heat_20melt/D1>`
+:name: parameters:Material_20model/Latent_20heat_20melt/D1
 **Default value:** 976.0
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Constant parameter in the quadratic function that approximates the solidus of pyroxenite. Units: $^{\circ}C$.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/D2)=
-### __Parameter name:__ D2
+::::{dropdown} __Parameter:__ {ref}`D2<parameters:Material_20model/Latent_20heat_20melt/D2>`
+:name: parameters:Material_20model/Latent_20heat_20melt/D2
 **Default value:** 1.329e-7
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the linear pressure term in the quadratic function that approximates the solidus of pyroxenite. Note that this factor is different from the value given in Sobolev, 2011, because they use the potential temperature whereas we use the absolute temperature. Units: $\frac{^{\circ}C}{\text{Pa}}$.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/D3)=
-### __Parameter name:__ D3
+::::{dropdown} __Parameter:__ {ref}`D3<parameters:Material_20model/Latent_20heat_20melt/D3>`
+:name: parameters:Material_20model/Latent_20heat_20melt/D3
 **Default value:** -5.1e-18
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the quadratic pressure term in the quadratic function that approximates the solidus of pyroxenite. Units: $\frac{^{\circ}C}{\text{Pa}^2}$.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/Density_20differential_20for_20compositional_20field_201)=
-### __Parameter name:__ Density differential for compositional field 1
+::::{dropdown} __Parameter:__ {ref}`Density differential for compositional field 1<parameters:Material_20model/Latent_20heat_20melt/Density_20differential_20for_20compositional_20field_201>`
+:name: parameters:Material_20model/Latent_20heat_20melt/Density_20differential_20for_20compositional_20field_201
 **Default value:** 0.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the density only depends on the first one in such a way that the density has an additional term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: $\frac{\text{kg}}{\text{m}^3}$/unit change in composition.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/E1)=
-### __Parameter name:__ E1
+::::{dropdown} __Parameter:__ {ref}`E1<parameters:Material_20model/Latent_20heat_20melt/E1>`
+:name: parameters:Material_20model/Latent_20heat_20melt/E1
 **Default value:** 663.8
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the linear depletion term in the quadratic function that approximates the melt fraction of pyroxenite. Units: $\frac{^{\circ}C}{\text{Pa}}$.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/E2)=
-### __Parameter name:__ E2
+::::{dropdown} __Parameter:__ {ref}`E2<parameters:Material_20model/Latent_20heat_20melt/E2>`
+:name: parameters:Material_20model/Latent_20heat_20melt/E2
 **Default value:** -611.4
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the quadratic depletion term in the quadratic function that approximates the melt fraction of pyroxenite. Units: $\frac{^{\circ}C}{\text{Pa}^2}$.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/Mass_20fraction_20cpx)=
-### __Parameter name:__ Mass fraction cpx
+::::{dropdown} __Parameter:__ {ref}`Mass fraction cpx<parameters:Material_20model/Latent_20heat_20melt/Mass_20fraction_20cpx>`
+:name: parameters:Material_20model/Latent_20heat_20melt/Mass_20fraction_20cpx
 **Default value:** 0.15
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Mass fraction of clinopyroxene in the peridotite to be molten. Units: non-dimensional.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/Maximum_20pyroxenite_20melt_20fraction)=
-### __Parameter name:__ Maximum pyroxenite melt fraction
+::::{dropdown} __Parameter:__ {ref}`Maximum pyroxenite melt fraction<parameters:Material_20model/Latent_20heat_20melt/Maximum_20pyroxenite_20melt_20fraction>`
+:name: parameters:Material_20model/Latent_20heat_20melt/Maximum_20pyroxenite_20melt_20fraction
 **Default value:** 0.5429
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Maximum melt fraction of pyroxenite in this parameterization. At higher temperatures peridotite begins to melt.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/Peridotite_20melting_20entropy_20change)=
-### __Parameter name:__ Peridotite melting entropy change
+::::{dropdown} __Parameter:__ {ref}`Peridotite melting entropy change<parameters:Material_20model/Latent_20heat_20melt/Peridotite_20melting_20entropy_20change>`
+:name: parameters:Material_20model/Latent_20heat_20melt/Peridotite_20melting_20entropy_20change
 **Default value:** -300.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The entropy change for the phase transition from solid to melt of peridotite. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/Pyroxenite_20melting_20entropy_20change)=
-### __Parameter name:__ Pyroxenite melting entropy change
+::::{dropdown} __Parameter:__ {ref}`Pyroxenite melting entropy change<parameters:Material_20model/Latent_20heat_20melt/Pyroxenite_20melting_20entropy_20change>`
+:name: parameters:Material_20model/Latent_20heat_20melt/Pyroxenite_20melting_20entropy_20change
 **Default value:** -400.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The entropy change for the phase transition from solid to melt of pyroxenite. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/Reference_20density)=
-### __Parameter name:__ Reference density
+::::{dropdown} __Parameter:__ {ref}`Reference density<parameters:Material_20model/Latent_20heat_20melt/Reference_20density>`
+:name: parameters:Material_20model/Latent_20heat_20melt/Reference_20density
 **Default value:** 3300.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Reference density $\rho_0$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/Reference_20specific_20heat)=
-### __Parameter name:__ Reference specific heat
+::::{dropdown} __Parameter:__ {ref}`Reference specific heat<parameters:Material_20model/Latent_20heat_20melt/Reference_20specific_20heat>`
+:name: parameters:Material_20model/Latent_20heat_20melt/Reference_20specific_20heat
 **Default value:** 1250.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the specific heat $C_p$. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/Reference_20temperature)=
-### __Parameter name:__ Reference temperature
+::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Latent_20heat_20melt/Reference_20temperature>`
+:name: parameters:Material_20model/Latent_20heat_20melt/Reference_20temperature
 **Default value:** 293.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The reference temperature $T_0$. Units: $\text{K}$.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/Relative_20density_20of_20melt)=
-### __Parameter name:__ Relative density of melt
+::::{dropdown} __Parameter:__ {ref}`Relative density of melt<parameters:Material_20model/Latent_20heat_20melt/Relative_20density_20of_20melt>`
+:name: parameters:Material_20model/Latent_20heat_20melt/Relative_20density_20of_20melt
 **Default value:** 0.9
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The relative density of melt compared to the solid material. This means, the density change upon melting is this parameter times the density of solid material.Units: non-dimensional.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/Thermal_20conductivity)=
-### __Parameter name:__ Thermal conductivity
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivity<parameters:Material_20model/Latent_20heat_20melt/Thermal_20conductivity>`
+:name: parameters:Material_20model/Latent_20heat_20melt/Thermal_20conductivity
 **Default value:** 2.38
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/Thermal_20expansion_20coefficient)=
-### __Parameter name:__ Thermal expansion coefficient
+::::{dropdown} __Parameter:__ {ref}`Thermal expansion coefficient<parameters:Material_20model/Latent_20heat_20melt/Thermal_20expansion_20coefficient>`
+:name: parameters:Material_20model/Latent_20heat_20melt/Thermal_20expansion_20coefficient
 **Default value:** 4e-5
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal expansion coefficient $\alpha_s$. Units: $\frac{1}{\text{K}}$.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/Thermal_20expansion_20coefficient_20of_20melt)=
-### __Parameter name:__ Thermal expansion coefficient of melt
+::::{dropdown} __Parameter:__ {ref}`Thermal expansion coefficient of melt<parameters:Material_20model/Latent_20heat_20melt/Thermal_20expansion_20coefficient_20of_20melt>`
+:name: parameters:Material_20model/Latent_20heat_20melt/Thermal_20expansion_20coefficient_20of_20melt
 **Default value:** 6.8e-5
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal expansion coefficient $\alpha_f$. Units: $\frac{1}{\text{K}}$.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/Thermal_20viscosity_20exponent)=
-### __Parameter name:__ Thermal viscosity exponent
+::::{dropdown} __Parameter:__ {ref}`Thermal viscosity exponent<parameters:Material_20model/Latent_20heat_20melt/Thermal_20viscosity_20exponent>`
+:name: parameters:Material_20model/Latent_20heat_20melt/Thermal_20viscosity_20exponent
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The temperature dependence of viscosity. Dimensionless exponent.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/Viscosity)=
-### __Parameter name:__ Viscosity
+::::{dropdown} __Parameter:__ {ref}`Viscosity<parameters:Material_20model/Latent_20heat_20melt/Viscosity>`
+:name: parameters:Material_20model/Latent_20heat_20melt/Viscosity
 **Default value:** 5e24
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the constant viscosity. Units: $\text{Pa}\text{s}$.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/beta)=
-### __Parameter name:__ beta
+::::{dropdown} __Parameter:__ {ref}`beta<parameters:Material_20model/Latent_20heat_20melt/beta>`
+:name: parameters:Material_20model/Latent_20heat_20melt/beta
 **Default value:** 1.5
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Exponent of the melting temperature in the melt fraction calculation. Units: non-dimensional.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/r1)=
-### __Parameter name:__ r1
+::::{dropdown} __Parameter:__ {ref}`r1<parameters:Material_20model/Latent_20heat_20melt/r1>`
+:name: parameters:Material_20model/Latent_20heat_20melt/r1
 **Default value:** 0.5
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Constant in the linear function that approximates the clinopyroxene reaction coefficient. Units: non-dimensional.
+::::
 
-(parameters:Material_20model/Latent_20heat_20melt/r2)=
-### __Parameter name:__ r2
+::::{dropdown} __Parameter:__ {ref}`r2<parameters:Material_20model/Latent_20heat_20melt/r2>`
+:name: parameters:Material_20model/Latent_20heat_20melt/r2
 **Default value:** 8e-11
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the linear pressure term in the linear function that approximates the clinopyroxene reaction coefficient. Units: $\frac{1}{\text{Pa}}$.
+::::
 
 (parameters:Material_20model/Melt_20boukare)=
 ## **Subsection:** Material model / Melt boukare
-(parameters:Material_20model/Melt_20boukare/Einstein_20temperatures)=
-### __Parameter name:__ Einstein temperatures
+::::{dropdown} __Parameter:__ {ref}`Einstein temperatures<parameters:Material_20model/Melt_20boukare/Einstein_20temperatures>`
+:name: parameters:Material_20model/Melt_20boukare/Einstein_20temperatures
 **Default value:** 418.1, 561.0, 297.6, 540.2, 505.75, 558.1, 558.1
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of Einstein temperatures for each different endmember.Units: K.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Endmember_20names)=
-### __Parameter name:__ Endmember names
+::::{dropdown} __Parameter:__ {ref}`Endmember names<parameters:Material_20model/Melt_20boukare/Endmember_20names>`
+:name: parameters:Material_20model/Melt_20boukare/Endmember_20names
 **Default value:** FeSiO3_bridgmanite, MgSiO3_bridgmanite, FeO_periclase, MgO_periclase, FeO_melt, MgO_melt, SiO2_melt
 
 **Pattern:** [List of <[MultipleSelection MgSiO3_bridgmanite|FeSiO3_bridgmanite|MgO_periclase|FeO_periclase|MgO_melt|FeO_melt|SiO2_melt ]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** Names of the endmember components used in the equation of state and the melting model, and whose parameters are determined by the other input parameters of this material model. The order the parameters are given in has to be the same as the order the endmember names are given in. Units: none.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Endmember_20states)=
-### __Parameter name:__ Endmember states
+::::{dropdown} __Parameter:__ {ref}`Endmember states<parameters:Material_20model/Melt_20boukare/Endmember_20states>`
+:name: parameters:Material_20model/Melt_20boukare/Endmember_20states
 **Default value:** solid, solid, solid, solid, melt, melt, melt
 
 **Pattern:** [List of <[MultipleSelection solid|melt ]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** States of the endmember components used in the equation of state and the melting model. For each endmember, this list has to define if they belong to the melt or to the solid. The order the states are given in has to be the same as the order the &rsquo;Endmember names&rsquo; are given in. Units: none.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Exponential_20melt_20weakening_20factor)=
-### __Parameter name:__ Exponential melt weakening factor
+::::{dropdown} __Parameter:__ {ref}`Exponential melt weakening factor<parameters:Material_20model/Melt_20boukare/Exponential_20melt_20weakening_20factor>`
+:name: parameters:Material_20model/Melt_20boukare/Exponential_20melt_20weakening_20factor
 **Default value:** 27
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The porosity dependence of the viscosity. Units: dimensionless.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Fe_20mantle_20melting_20temperature)=
-### __Parameter name:__ Fe mantle melting temperature
+::::{dropdown} __Parameter:__ {ref}`Fe mantle melting temperature<parameters:Material_20model/Melt_20boukare/Fe_20mantle_20melting_20temperature>`
+:name: parameters:Material_20model/Melt_20boukare/Fe_20mantle_20melting_20temperature
 **Default value:** 3424.5
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The melting temperature of one of the components in the melting model, the Fe mantle endmember.Units: K.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Fe_20number_20of_20moles)=
-### __Parameter name:__ Fe number of moles
+::::{dropdown} __Parameter:__ {ref}`Fe number of moles<parameters:Material_20model/Melt_20boukare/Fe_20number_20of_20moles>`
+:name: parameters:Material_20model/Melt_20boukare/Fe_20number_20of_20moles
 **Default value:** 0.48
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The number of moles of Fe atoms mixing on a pseudosite in the mantle lattice, This is needed because we use an empirical model fitting the full Boukare model, and can be changed to reflect partition coefficients from other sources.Units: none.
+::::
 
-(parameters:Material_20model/Melt_20boukare/First_20derivatives_20of_20the_20bulk_20modulus)=
-### __Parameter name:__ First derivatives of the bulk modulus
+::::{dropdown} __Parameter:__ {ref}`First derivatives of the bulk modulus<parameters:Material_20model/Melt_20boukare/First_20derivatives_20of_20the_20bulk_20modulus>`
+:name: parameters:Material_20model/Melt_20boukare/First_20derivatives_20of_20the_20bulk_20modulus
 **Default value:** 4.14, 4.14, 4.9, 3.95, 5.0802472229003905, 4.25, 4.25
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The pressure derivative of the bulk modulus at the reference temperature and reference pressure for each different endmember component.Units: none.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Include_20melting_20and_20freezing)=
-### __Parameter name:__ Include melting and freezing
+::::{dropdown} __Parameter:__ {ref}`Include melting and freezing<parameters:Material_20model/Melt_20boukare/Include_20melting_20and_20freezing>`
+:name: parameters:Material_20model/Melt_20boukare/Include_20melting_20and_20freezing
 **Default value:** true
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to include melting and freezing (according to a simplified linear melting approximation in the model (if true), or not (if false).
+::::
 
-(parameters:Material_20model/Melt_20boukare/Linear_20coefficients_20for_20specific_20heat_20polynomial)=
-### __Parameter name:__ Linear coefficients for specific heat polynomial
+::::{dropdown} __Parameter:__ {ref}`Linear coefficients for specific heat polynomial<parameters:Material_20model/Melt_20boukare/Linear_20coefficients_20for_20specific_20heat_20polynomial>`
+:name: parameters:Material_20model/Melt_20boukare/Linear_20coefficients_20for_20specific_20heat_20polynomial
 **Default value:** 6.36191292e-03, -3.31714290e-03, 3.36163516e-03, -6.35318887e-03, -2.41909947e-03, -2.41909947e-03, -2.41909947e-03
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The first of three coefficients that are used to compute the specific heat capacities for each different endmember at the reference temperature and reference pressure. This coefficient describes the linear part of the temperature dependence. Units: J/kg/K/K.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Melting_20time_20scale_20for_20operator_20splitting)=
-### __Parameter name:__ Melting time scale for operator splitting
+::::{dropdown} __Parameter:__ {ref}`Melting time scale for operator splitting<parameters:Material_20model/Melt_20boukare/Melting_20time_20scale_20for_20operator_20splitting>`
+:name: parameters:Material_20model/Melt_20boukare/Melting_20time_20scale_20for_20operator_20splitting
 **Default value:** 1e3
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
@@ -2179,251 +2420,282 @@ Units: \si{\pascal\second}
 **Documentation:** In case the operator splitting scheme is used, the porosity field can not be set to a new equilibrium melt fraction instantly, but the model has to provide a melting time scale instead. This time scale defines how fast melting happens, or more specifically, the parameter defines the time after which the deviation of the porosity from the equilibrium melt fraction will be reduced to a fraction of $1/e$. So if the melting time scale is small compared to the time step size, the reaction will be so fast that the porosity is very close to the equilibrium melt fraction after reactions are computed. Conversely, if the melting time scale is large compared to the time step size, almost no melting and freezing will occur.
 
 Also note that the melting time scale has to be larger than or equal to the reaction time step used in the operator splitting scheme, otherwise reactions can not be computed. If the model does not use operator splitting, this parameter is not used. Units: yr or s, depending on the &ldquo;Use years instead of seconds&rdquo; parameter.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Mg_20mantle_20melting_20temperature)=
-### __Parameter name:__ Mg mantle melting temperature
+::::{dropdown} __Parameter:__ {ref}`Mg mantle melting temperature<parameters:Material_20model/Melt_20boukare/Mg_20mantle_20melting_20temperature>`
+:name: parameters:Material_20model/Melt_20boukare/Mg_20mantle_20melting_20temperature
 **Default value:** 4821.2
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The melting temperature of one of the components in the melting model, the Mg mantle endmember.Units: K.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Mg_20number_20of_20moles)=
-### __Parameter name:__ Mg number of moles
+::::{dropdown} __Parameter:__ {ref}`Mg number of moles<parameters:Material_20model/Melt_20boukare/Mg_20number_20of_20moles>`
+:name: parameters:Material_20model/Melt_20boukare/Mg_20number_20of_20moles
 **Default value:** 0.62
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The number of moles of Mg atoms mixing on a pseudosite in the mantle lattice, This is needed because we use an empirical model fitting the full Boukare model, and can be changed to reflect partition coefficients from other sources.Units: none.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Molar_20masses)=
-### __Parameter name:__ Molar masses
+::::{dropdown} __Parameter:__ {ref}`Molar masses<parameters:Material_20model/Melt_20boukare/Molar_20masses>`
+:name: parameters:Material_20model/Melt_20boukare/Molar_20masses
 **Default value:** 0.1319287, 0.1003887, 0.0718444, 0.0403044, 0.0707624708, 0.048592178, 0.048592178
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** Molar masses of the different endmembersUnits: kg/mol.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Number_20of_20atoms)=
-### __Parameter name:__ Number of atoms
+::::{dropdown} __Parameter:__ {ref}`Number of atoms<parameters:Material_20model/Melt_20boukare/Number_20of_20atoms>`
+:name: parameters:Material_20model/Melt_20boukare/Number_20of_20atoms
 **Default value:** 5.0, 5.0, 2.0, 2.0, 2.092, 2.419, 2.419
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** Number of atoms per in the formula of each endmember.Units: none.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Reference_20bulk_20moduli)=
-### __Parameter name:__ Reference bulk moduli
+::::{dropdown} __Parameter:__ {ref}`Reference bulk moduli<parameters:Material_20model/Melt_20boukare/Reference_20bulk_20moduli>`
+:name: parameters:Material_20model/Melt_20boukare/Reference_20bulk_20moduli
 **Default value:** 2.81e11, 2.51e+11, 1.52e11, 1.616e11, 166652774642.11273, 2.317e11, 2.317e11
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of bulk moduli for each different endmember at the reference temperature and reference pressure.Units: Pa.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Reference_20bulk_20viscosity)=
-### __Parameter name:__ Reference bulk viscosity
+::::{dropdown} __Parameter:__ {ref}`Reference bulk viscosity<parameters:Material_20model/Melt_20boukare/Reference_20bulk_20viscosity>`
+:name: parameters:Material_20model/Melt_20boukare/Reference_20bulk_20viscosity
 **Default value:** 1e22
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the constant bulk viscosity $\xi_0$ of the solid matrix. This viscosity may be modified by both temperature and porosity dependencies. Units: $Pa \, s$.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Reference_20enthalpies)=
-### __Parameter name:__ Reference enthalpies
+::::{dropdown} __Parameter:__ {ref}`Reference enthalpies<parameters:Material_20model/Melt_20boukare/Reference_20enthalpies>`
+:name: parameters:Material_20model/Melt_20boukare/Reference_20enthalpies
 **Default value:** -1082910.0, -1442310.0, -262240.0, -601570.0, -195245.49100022088, -538009.8, -538009.8
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of enthalpies at the reference temperature and reference pressure for each different endmember component.Units: J/mol.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Reference_20entropies)=
-### __Parameter name:__ Reference entropies
+::::{dropdown} __Parameter:__ {ref}`Reference entropies<parameters:Material_20model/Melt_20boukare/Reference_20entropies>`
+:name: parameters:Material_20model/Melt_20boukare/Reference_20entropies
 **Default value:** 95.0, 62.6, 58.6, 26.5, 95.0299295525918, 64.9, 64.9
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of entropies at the reference temperature and reference pressure for each different endmember component.Units: J/K/mol.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Reference_20melt_20viscosity)=
-### __Parameter name:__ Reference melt viscosity
+::::{dropdown} __Parameter:__ {ref}`Reference melt viscosity<parameters:Material_20model/Melt_20boukare/Reference_20melt_20viscosity>`
+:name: parameters:Material_20model/Melt_20boukare/Reference_20melt_20viscosity
 **Default value:** 10
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the constant melt viscosity $\eta_f$. Units: $Pa \, s$.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Reference_20permeability)=
-### __Parameter name:__ Reference permeability
+::::{dropdown} __Parameter:__ {ref}`Reference permeability<parameters:Material_20model/Melt_20boukare/Reference_20permeability>`
+:name: parameters:Material_20model/Melt_20boukare/Reference_20permeability
 **Default value:** 1e-8
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Reference permeability of the solid host rock.Units: $m^2$.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Reference_20pressure)=
-### __Parameter name:__ Reference pressure
+::::{dropdown} __Parameter:__ {ref}`Reference pressure<parameters:Material_20model/Melt_20boukare/Reference_20pressure>`
+:name: parameters:Material_20model/Melt_20boukare/Reference_20pressure
 **Default value:** 1e11
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Reference pressure used to compute the material propertiesof the different endmember components.Units: Pa.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Reference_20shear_20viscosity)=
-### __Parameter name:__ Reference shear viscosity
+::::{dropdown} __Parameter:__ {ref}`Reference shear viscosity<parameters:Material_20model/Melt_20boukare/Reference_20shear_20viscosity>`
+:name: parameters:Material_20model/Melt_20boukare/Reference_20shear_20viscosity
 **Default value:** 5e20
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the constant viscosity $\eta_0$ of the solid matrix. This viscosity may be modified by both temperature and porosity dependencies. Units: $Pa \, s$.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Reference_20specific_20heat_20capacities)=
-### __Parameter name:__ Reference specific heat capacities
+::::{dropdown} __Parameter:__ {ref}`Reference specific heat capacities<parameters:Material_20model/Melt_20boukare/Reference_20specific_20heat_20capacities>`
+:name: parameters:Material_20model/Melt_20boukare/Reference_20specific_20heat_20capacities
 **Default value:** 139.546209, 161.546581, 52.0016403, 73.1147154, 79.5326013, 79.5326013, 79.5326013
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of specific heat capacities for each different endmember at the reference temperature and reference pressure.Units: J/kg/K.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Reference_20temperature)=
-### __Parameter name:__ Reference temperature
+::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Melt_20boukare/Reference_20temperature>`
+:name: parameters:Material_20model/Melt_20boukare/Reference_20temperature
 **Default value:** 298.15
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Reference temperature used to compute the material propertiesof the different endmember components.Units: K.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Reference_20thermal_20expansivities)=
-### __Parameter name:__ Reference thermal expansivities
+::::{dropdown} __Parameter:__ {ref}`Reference thermal expansivities<parameters:Material_20model/Melt_20boukare/Reference_20thermal_20expansivities>`
+:name: parameters:Material_20model/Melt_20boukare/Reference_20thermal_20expansivities
 **Default value:** 1.87e-05, 1.87e-05, 3.22e-05, 3.11e-05, 2.9614332469401705e-05, 2.06e-05, 2.06e-05
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of thermal expansivities for each different endmember at the reference temperature and reference pressure.Units: 1/K.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Reference_20volumes)=
-### __Parameter name:__ Reference volumes
+::::{dropdown} __Parameter:__ {ref}`Reference volumes<parameters:Material_20model/Melt_20boukare/Reference_20volumes>`
+:name: parameters:Material_20model/Melt_20boukare/Reference_20volumes
 **Default value:** 2.534e-05, 2.445e-05, 1.206e-05, 1.125e-05, 1.2325484447664221e-05, 1.218e-05, 1.218e-05
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** Reference volumes of the different endmembers.Units: $m^3$.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Second_20coefficients_20for_20specific_20heat_20polynomial)=
-### __Parameter name:__ Second coefficients for specific heat polynomial
+::::{dropdown} __Parameter:__ {ref}`Second coefficients for specific heat polynomial<parameters:Material_20model/Melt_20boukare/Second_20coefficients_20for_20specific_20heat_20polynomial>`
+:name: parameters:Material_20model/Melt_20boukare/Second_20coefficients_20for_20specific_20heat_20polynomial
 **Default value:** -4.13886524e+06, -3.57533814e+06, -1.19540964e+06, -7.33679285e+05, -1.61692272e+06, -1.61692272e+06, -1.61692272e+06
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The second of three coefficients that are used to compute the specific heat capacities for each different endmember at the reference temperature and reference pressure. This coefficient describes the part of the temperature dependence that scales as the inverse of the square of the temperature. Units: J K/kg.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Second_20derivatives_20of_20the_20bulk_20modulus)=
-### __Parameter name:__ Second derivatives of the bulk modulus
+::::{dropdown} __Parameter:__ {ref}`Second derivatives of the bulk modulus<parameters:Material_20model/Melt_20boukare/Second_20derivatives_20of_20the_20bulk_20modulus>`
+:name: parameters:Material_20model/Melt_20boukare/Second_20derivatives_20of_20the_20bulk_20modulus
 **Default value:** -1.6e-11, -1.6e-11, -3.2e-11, -2.4e-11, -3.9742163085937504e-11, -2.14e-11, -2.14e-11
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The second pressure derivative of the bulk modulus at the reference temperature and reference pressure for each different endmember component.Units: 1/Pa.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Thermal_20bulk_20viscosity_20exponent)=
-### __Parameter name:__ Thermal bulk viscosity exponent
+::::{dropdown} __Parameter:__ {ref}`Thermal bulk viscosity exponent<parameters:Material_20model/Melt_20boukare/Thermal_20bulk_20viscosity_20exponent>`
+:name: parameters:Material_20model/Melt_20boukare/Thermal_20bulk_20viscosity_20exponent
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The temperature dependence of the bulk viscosity. Dimensionless exponent. See the general documentation of this model for a formula that states the dependence of the viscosity on this factor, which is called $\beta$ there.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Thermal_20conductivity)=
-### __Parameter name:__ Thermal conductivity
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivity<parameters:Material_20model/Melt_20boukare/Thermal_20conductivity>`
+:name: parameters:Material_20model/Melt_20boukare/Thermal_20conductivity
 **Default value:** 4.7
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal conductivity $k$. Units: $W/m/K$.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Thermal_20viscosity_20exponent)=
-### __Parameter name:__ Thermal viscosity exponent
+::::{dropdown} __Parameter:__ {ref}`Thermal viscosity exponent<parameters:Material_20model/Melt_20boukare/Thermal_20viscosity_20exponent>`
+:name: parameters:Material_20model/Melt_20boukare/Thermal_20viscosity_20exponent
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The temperature dependence of the shear viscosity. Dimensionless exponent. See the general documentation of this model for a formula that states the dependence of the viscosity on this factor, which is called $\beta$ there.
+::::
 
-(parameters:Material_20model/Melt_20boukare/Third_20coefficients_20for_20specific_20heat_20polynomial)=
-### __Parameter name:__ Third coefficients for specific heat polynomial
+::::{dropdown} __Parameter:__ {ref}`Third coefficients for specific heat polynomial<parameters:Material_20model/Melt_20boukare/Third_20coefficients_20for_20specific_20heat_20polynomial>`
+:name: parameters:Material_20model/Melt_20boukare/Third_20coefficients_20for_20specific_20heat_20polynomial
 **Default value:** -464.775577, -1112.54791, 25.5067110, -592.994207, -562.222634, -562.222634, -562.222634
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The third of three coefficients that are used to compute the specific heat capacities for each different endmember at the reference temperature and reference pressure. This coefficient describes the part of the temperature dependence that scales as the inverse of the square root of the temperatureUnits: J/kg/sqrt(K).
+::::
 
 (parameters:Material_20model/Melt_20global)=
 ## **Subsection:** Material model / Melt global
-(parameters:Material_20model/Melt_20global/Depletion_20density_20change)=
-### __Parameter name:__ Depletion density change
+::::{dropdown} __Parameter:__ {ref}`Depletion density change<parameters:Material_20model/Melt_20global/Depletion_20density_20change>`
+:name: parameters:Material_20model/Melt_20global/Depletion_20density_20change
 **Default value:** 0.0
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The density contrast between material with a depletion of 1 and a depletion of zero. Negative values indicate lower densities of depleted material. Depletion is indicated by the compositional field with the name peridotite. Not used if this field does not exist in the model. Units: $\frac{\text{kg}}{\text{m}^3}$.
+::::
 
-(parameters:Material_20model/Melt_20global/Depletion_20solidus_20change)=
-### __Parameter name:__ Depletion solidus change
+::::{dropdown} __Parameter:__ {ref}`Depletion solidus change<parameters:Material_20model/Melt_20global/Depletion_20solidus_20change>`
+:name: parameters:Material_20model/Melt_20global/Depletion_20solidus_20change
 **Default value:** 200.0
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The solidus temperature change for a depletion of 100\%. For positive values, the solidus gets increased for a positive peridotite field (depletion) and lowered for a negative peridotite field (enrichment). Scaling with depletion is linear. Only active when fractional melting is used. Units: $\text{K}$.
+::::
 
-(parameters:Material_20model/Melt_20global/Exponential_20depletion_20strengthening_20factor)=
-### __Parameter name:__ Exponential depletion strengthening factor
+::::{dropdown} __Parameter:__ {ref}`Exponential depletion strengthening factor<parameters:Material_20model/Melt_20global/Exponential_20depletion_20strengthening_20factor>`
+:name: parameters:Material_20model/Melt_20global/Exponential_20depletion_20strengthening_20factor
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** $\alpha_F$: exponential dependency of viscosity on the depletion field $F$ (called peridotite). Dimensionless factor. With a value of 0.0 (the default) the viscosity does not depend on the depletion. The effective viscosity increasedue to depletion is defined as $std::exp( \alpha_F * F)$. Rationale: melting dehydrates the source rock by removing most of the volatiles,and makes it stronger. Hirth and Kohlstedt (1996) report typical values around a factor 100 to 1000 viscosity contrast between wet and dry rocks, although some experimental studies report a smaller (factor 10) contrast (e.g. Fei et al., 2013).
+::::
 
-(parameters:Material_20model/Melt_20global/Exponential_20melt_20weakening_20factor)=
-### __Parameter name:__ Exponential melt weakening factor
+::::{dropdown} __Parameter:__ {ref}`Exponential melt weakening factor<parameters:Material_20model/Melt_20global/Exponential_20melt_20weakening_20factor>`
+:name: parameters:Material_20model/Melt_20global/Exponential_20melt_20weakening_20factor
 **Default value:** 27.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The porosity dependence of the viscosity. Units: dimensionless.
+::::
 
-(parameters:Material_20model/Melt_20global/Include_20melting_20and_20freezing)=
-### __Parameter name:__ Include melting and freezing
+::::{dropdown} __Parameter:__ {ref}`Include melting and freezing<parameters:Material_20model/Melt_20global/Include_20melting_20and_20freezing>`
+:name: parameters:Material_20model/Melt_20global/Include_20melting_20and_20freezing
 **Default value:** true
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to include melting and freezing (according to a simplified linear melting approximation in the model (if true), or not (if false).
+::::
 
-(parameters:Material_20model/Melt_20global/Maximum_20Depletion_20viscosity_20change)=
-### __Parameter name:__ Maximum Depletion viscosity change
+::::{dropdown} __Parameter:__ {ref}`Maximum Depletion viscosity change<parameters:Material_20model/Melt_20global/Maximum_20Depletion_20viscosity_20change>`
+:name: parameters:Material_20model/Melt_20global/Maximum_20Depletion_20viscosity_20change
 **Default value:** 1.0e3
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** $\Delta \eta_{F,max}$: maximum depletion strengthening of viscosity. Rationale: melting dehydrates the source rock by removing most of the volatiles,and makes it stronger. Hirth and Kohlstedt (1996) report typical values around a factor 100 to 1000 viscosity contrast between wet and dry rocks, although some experimental studies report a smaller (factor 10) contrast (e.g. Fei et al., 2013).
+::::
 
-(parameters:Material_20model/Melt_20global/Melt_20bulk_20modulus_20derivative)=
-### __Parameter name:__ Melt bulk modulus derivative
+::::{dropdown} __Parameter:__ {ref}`Melt bulk modulus derivative<parameters:Material_20model/Melt_20global/Melt_20bulk_20modulus_20derivative>`
+:name: parameters:Material_20model/Melt_20global/Melt_20bulk_20modulus_20derivative
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the pressure derivative of the melt bulk modulus. Units: None.
+::::
 
-(parameters:Material_20model/Melt_20global/Melt_20compressibility)=
-### __Parameter name:__ Melt compressibility
+::::{dropdown} __Parameter:__ {ref}`Melt compressibility<parameters:Material_20model/Melt_20global/Melt_20compressibility>`
+:name: parameters:Material_20model/Melt_20global/Melt_20compressibility
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the compressibility of the melt. Units: $\frac{1}{\text{Pa}}$.
+::::
 
-(parameters:Material_20model/Melt_20global/Melting_20time_20scale_20for_20operator_20splitting)=
-### __Parameter name:__ Melting time scale for operator splitting
+::::{dropdown} __Parameter:__ {ref}`Melting time scale for operator splitting<parameters:Material_20model/Melt_20global/Melting_20time_20scale_20for_20operator_20splitting>`
+:name: parameters:Material_20model/Melt_20global/Melting_20time_20scale_20for_20operator_20splitting
 **Default value:** 1e3
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
@@ -2431,267 +2703,300 @@ Also note that the melting time scale has to be larger than or equal to the reac
 **Documentation:** In case the operator splitting scheme is used, the porosity field can not be set to a new equilibrium melt fraction instantly, but the model has to provide a melting time scale instead. This time scale defines how fast melting happens, or more specifically, the parameter defines the time after which the deviation of the porosity from the equilibrium melt fraction will be reduced to a fraction of $1/e$. So if the melting time scale is small compared to the time step size, the reaction will be so fast that the porosity is very close to the equilibrium melt fraction after reactions are computed. Conversely, if the melting time scale is large compared to the time step size, almost no melting and freezing will occur.
 
 Also note that the melting time scale has to be larger than or equal to the reaction time step used in the operator splitting scheme, otherwise reactions can not be computed. If the model does not use operator splitting, this parameter is not used. Units: yr or s, depending on the &ldquo;Use years instead of seconds&rdquo; parameter.
+::::
 
-(parameters:Material_20model/Melt_20global/Pressure_20solidus_20change)=
-### __Parameter name:__ Pressure solidus change
+::::{dropdown} __Parameter:__ {ref}`Pressure solidus change<parameters:Material_20model/Melt_20global/Pressure_20solidus_20change>`
+:name: parameters:Material_20model/Melt_20global/Pressure_20solidus_20change
 **Default value:** 6e-8
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The linear solidus temperature change with pressure. For positive values, the solidus gets increased for positive pressures. Units: $\frac{1}{\text{Pa}}$.
+::::
 
-(parameters:Material_20model/Melt_20global/Reference_20bulk_20viscosity)=
-### __Parameter name:__ Reference bulk viscosity
+::::{dropdown} __Parameter:__ {ref}`Reference bulk viscosity<parameters:Material_20model/Melt_20global/Reference_20bulk_20viscosity>`
+:name: parameters:Material_20model/Melt_20global/Reference_20bulk_20viscosity
 **Default value:** 1e22
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the constant bulk viscosity $\xi_0$ of the solid matrix. This viscosity may be modified by both temperature and porosity dependencies. Units: $\text{Pa}\text{s}$.
+::::
 
-(parameters:Material_20model/Melt_20global/Reference_20melt_20density)=
-### __Parameter name:__ Reference melt density
+::::{dropdown} __Parameter:__ {ref}`Reference melt density<parameters:Material_20model/Melt_20global/Reference_20melt_20density>`
+:name: parameters:Material_20model/Melt_20global/Reference_20melt_20density
 **Default value:** 2500.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Reference density of the melt/fluid$\rho_{f,0}$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+::::
 
-(parameters:Material_20model/Melt_20global/Reference_20melt_20viscosity)=
-### __Parameter name:__ Reference melt viscosity
+::::{dropdown} __Parameter:__ {ref}`Reference melt viscosity<parameters:Material_20model/Melt_20global/Reference_20melt_20viscosity>`
+:name: parameters:Material_20model/Melt_20global/Reference_20melt_20viscosity
 **Default value:** 10.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the constant melt viscosity $\eta_f$. Units: $\text{Pa}\text{s}$.
+::::
 
-(parameters:Material_20model/Melt_20global/Reference_20permeability)=
-### __Parameter name:__ Reference permeability
+::::{dropdown} __Parameter:__ {ref}`Reference permeability<parameters:Material_20model/Melt_20global/Reference_20permeability>`
+:name: parameters:Material_20model/Melt_20global/Reference_20permeability
 **Default value:** 1e-8
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Reference permeability of the solid host rock.Units: \si{\meter\squared}.
+::::
 
-(parameters:Material_20model/Melt_20global/Reference_20shear_20viscosity)=
-### __Parameter name:__ Reference shear viscosity
+::::{dropdown} __Parameter:__ {ref}`Reference shear viscosity<parameters:Material_20model/Melt_20global/Reference_20shear_20viscosity>`
+:name: parameters:Material_20model/Melt_20global/Reference_20shear_20viscosity
 **Default value:** 5e20
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the constant viscosity $\eta_0$ of the solid matrix. This viscosity may be modified by both temperature and porosity dependencies. Units: $\text{Pa}\text{s}$.
+::::
 
-(parameters:Material_20model/Melt_20global/Reference_20solid_20density)=
-### __Parameter name:__ Reference solid density
+::::{dropdown} __Parameter:__ {ref}`Reference solid density<parameters:Material_20model/Melt_20global/Reference_20solid_20density>`
+:name: parameters:Material_20model/Melt_20global/Reference_20solid_20density
 **Default value:** 3000.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Reference density of the solid $\rho_{s,0}$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+::::
 
-(parameters:Material_20model/Melt_20global/Reference_20specific_20heat)=
-### __Parameter name:__ Reference specific heat
+::::{dropdown} __Parameter:__ {ref}`Reference specific heat<parameters:Material_20model/Melt_20global/Reference_20specific_20heat>`
+:name: parameters:Material_20model/Melt_20global/Reference_20specific_20heat
 **Default value:** 1250.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the specific heat $C_p$. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+::::
 
-(parameters:Material_20model/Melt_20global/Reference_20temperature)=
-### __Parameter name:__ Reference temperature
+::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Melt_20global/Reference_20temperature>`
+:name: parameters:Material_20model/Melt_20global/Reference_20temperature
 **Default value:** 293.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The reference temperature $T_0$. The reference temperature is used in both the density and viscosity formulas. Units: $\text{K}$.
+::::
 
-(parameters:Material_20model/Melt_20global/Solid_20compressibility)=
-### __Parameter name:__ Solid compressibility
+::::{dropdown} __Parameter:__ {ref}`Solid compressibility<parameters:Material_20model/Melt_20global/Solid_20compressibility>`
+:name: parameters:Material_20model/Melt_20global/Solid_20compressibility
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the compressibility of the solid matrix. Units: $\frac{1}{\text{Pa}}$.
+::::
 
-(parameters:Material_20model/Melt_20global/Surface_20solidus)=
-### __Parameter name:__ Surface solidus
+::::{dropdown} __Parameter:__ {ref}`Surface solidus<parameters:Material_20model/Melt_20global/Surface_20solidus>`
+:name: parameters:Material_20model/Melt_20global/Surface_20solidus
 **Default value:** 1300.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Solidus for a pressure of zero. Units: $\text{K}$.
+::::
 
-(parameters:Material_20model/Melt_20global/Thermal_20bulk_20viscosity_20exponent)=
-### __Parameter name:__ Thermal bulk viscosity exponent
+::::{dropdown} __Parameter:__ {ref}`Thermal bulk viscosity exponent<parameters:Material_20model/Melt_20global/Thermal_20bulk_20viscosity_20exponent>`
+:name: parameters:Material_20model/Melt_20global/Thermal_20bulk_20viscosity_20exponent
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The temperature dependence of the bulk viscosity. Dimensionless exponent. See the general documentation of this model for a formula that states the dependence of the viscosity on this factor, which is called $\beta$ there.
+::::
 
-(parameters:Material_20model/Melt_20global/Thermal_20conductivity)=
-### __Parameter name:__ Thermal conductivity
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivity<parameters:Material_20model/Melt_20global/Thermal_20conductivity>`
+:name: parameters:Material_20model/Melt_20global/Thermal_20conductivity
 **Default value:** 4.7
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+::::
 
-(parameters:Material_20model/Melt_20global/Thermal_20expansion_20coefficient)=
-### __Parameter name:__ Thermal expansion coefficient
+::::{dropdown} __Parameter:__ {ref}`Thermal expansion coefficient<parameters:Material_20model/Melt_20global/Thermal_20expansion_20coefficient>`
+:name: parameters:Material_20model/Melt_20global/Thermal_20expansion_20coefficient
 **Default value:** 2e-5
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal expansion coefficient $\beta$. Units: $\frac{1}{\text{K}}$.
+::::
 
-(parameters:Material_20model/Melt_20global/Thermal_20viscosity_20exponent)=
-### __Parameter name:__ Thermal viscosity exponent
+::::{dropdown} __Parameter:__ {ref}`Thermal viscosity exponent<parameters:Material_20model/Melt_20global/Thermal_20viscosity_20exponent>`
+:name: parameters:Material_20model/Melt_20global/Thermal_20viscosity_20exponent
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The temperature dependence of the shear viscosity. Dimensionless exponent. See the general documentation of this model for a formula that states the dependence of the viscosity on this factor, which is called $\beta$ there.
+::::
 
 (parameters:Material_20model/Melt_20simple)=
 ## **Subsection:** Material model / Melt simple
-(parameters:Material_20model/Melt_20simple/A1)=
-### __Parameter name:__ A1
+::::{dropdown} __Parameter:__ {ref}`A1<parameters:Material_20model/Melt_20simple/A1>`
+:name: parameters:Material_20model/Melt_20simple/A1
 **Default value:** 1085.7
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Constant parameter in the quadratic function that approximates the solidus of peridotite. Units: $^{\circ}C$.
+::::
 
-(parameters:Material_20model/Melt_20simple/A2)=
-### __Parameter name:__ A2
+::::{dropdown} __Parameter:__ {ref}`A2<parameters:Material_20model/Melt_20simple/A2>`
+:name: parameters:Material_20model/Melt_20simple/A2
 **Default value:** 1.329e-7
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the linear pressure term in the quadratic function that approximates the solidus of peridotite. Units: $\frac{^{\circ}C}{\text{Pa}}$.
+::::
 
-(parameters:Material_20model/Melt_20simple/A3)=
-### __Parameter name:__ A3
+::::{dropdown} __Parameter:__ {ref}`A3<parameters:Material_20model/Melt_20simple/A3>`
+:name: parameters:Material_20model/Melt_20simple/A3
 **Default value:** -5.1e-18
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the quadratic pressure term in the quadratic function that approximates the solidus of peridotite. Units: $\frac{^{\circ}C}{\text{Pa}^2}$.
+::::
 
-(parameters:Material_20model/Melt_20simple/B1)=
-### __Parameter name:__ B1
+::::{dropdown} __Parameter:__ {ref}`B1<parameters:Material_20model/Melt_20simple/B1>`
+:name: parameters:Material_20model/Melt_20simple/B1
 **Default value:** 1475.0
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Constant parameter in the quadratic function that approximates the lherzolite liquidus used for calculating the fraction of peridotite-derived melt. Units: $^{\circ}C$.
+::::
 
-(parameters:Material_20model/Melt_20simple/B2)=
-### __Parameter name:__ B2
+::::{dropdown} __Parameter:__ {ref}`B2<parameters:Material_20model/Melt_20simple/B2>`
+:name: parameters:Material_20model/Melt_20simple/B2
 **Default value:** 8.0e-8
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the linear pressure term in the quadratic function that approximates the  lherzolite liquidus used for calculating the fraction of peridotite-derived melt. Units: $\frac{^{\circ}C}{\text{Pa}}$.
+::::
 
-(parameters:Material_20model/Melt_20simple/B3)=
-### __Parameter name:__ B3
+::::{dropdown} __Parameter:__ {ref}`B3<parameters:Material_20model/Melt_20simple/B3>`
+:name: parameters:Material_20model/Melt_20simple/B3
 **Default value:** -3.2e-18
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the quadratic pressure term in the quadratic function that approximates the  lherzolite liquidus used for calculating the fraction of peridotite-derived melt. Units: $\frac{^{\circ}C}{\text{Pa}^2}$.
+::::
 
-(parameters:Material_20model/Melt_20simple/C1)=
-### __Parameter name:__ C1
+::::{dropdown} __Parameter:__ {ref}`C1<parameters:Material_20model/Melt_20simple/C1>`
+:name: parameters:Material_20model/Melt_20simple/C1
 **Default value:** 1780.0
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Constant parameter in the quadratic function that approximates the liquidus of peridotite. Units: $^{\circ}C$.
+::::
 
-(parameters:Material_20model/Melt_20simple/C2)=
-### __Parameter name:__ C2
+::::{dropdown} __Parameter:__ {ref}`C2<parameters:Material_20model/Melt_20simple/C2>`
+:name: parameters:Material_20model/Melt_20simple/C2
 **Default value:** 4.50e-8
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the linear pressure term in the quadratic function that approximates the liquidus of peridotite. Units: $\frac{^{\circ}C}{\text{Pa}}$.
+::::
 
-(parameters:Material_20model/Melt_20simple/C3)=
-### __Parameter name:__ C3
+::::{dropdown} __Parameter:__ {ref}`C3<parameters:Material_20model/Melt_20simple/C3>`
+:name: parameters:Material_20model/Melt_20simple/C3
 **Default value:** -2.0e-18
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the quadratic pressure term in the quadratic function that approximates the liquidus of peridotite. Units: $\frac{^{\circ}C}{\text{Pa}^2}$.
+::::
 
-(parameters:Material_20model/Melt_20simple/Depletion_20density_20change)=
-### __Parameter name:__ Depletion density change
+::::{dropdown} __Parameter:__ {ref}`Depletion density change<parameters:Material_20model/Melt_20simple/Depletion_20density_20change>`
+:name: parameters:Material_20model/Melt_20simple/Depletion_20density_20change
 **Default value:** 0.0
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The density contrast between material with a depletion of 1 and a depletion of zero. Negative values indicate lower densities of depleted material. Depletion is indicated by the compositional field with the name peridotite. Not used if this field does not exist in the model. Units: $\frac{\text{kg}}{\text{m}^3}$.
+::::
 
-(parameters:Material_20model/Melt_20simple/Depletion_20solidus_20change)=
-### __Parameter name:__ Depletion solidus change
+::::{dropdown} __Parameter:__ {ref}`Depletion solidus change<parameters:Material_20model/Melt_20simple/Depletion_20solidus_20change>`
+:name: parameters:Material_20model/Melt_20simple/Depletion_20solidus_20change
 **Default value:** 200.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The solidus temperature change for a depletion of 100\%. For positive values, the solidus gets increased for a positive peridotite field (depletion) and lowered for a negative peridotite field (enrichment). Scaling with depletion is linear. Only active when fractional melting is used. Units: $\text{K}$.
+::::
 
-(parameters:Material_20model/Melt_20simple/Exponential_20melt_20weakening_20factor)=
-### __Parameter name:__ Exponential melt weakening factor
+::::{dropdown} __Parameter:__ {ref}`Exponential melt weakening factor<parameters:Material_20model/Melt_20simple/Exponential_20melt_20weakening_20factor>`
+:name: parameters:Material_20model/Melt_20simple/Exponential_20melt_20weakening_20factor
 **Default value:** 27.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The porosity dependence of the viscosity. Units: dimensionless.
+::::
 
-(parameters:Material_20model/Melt_20simple/Freezing_20rate)=
-### __Parameter name:__ Freezing rate
+::::{dropdown} __Parameter:__ {ref}`Freezing rate<parameters:Material_20model/Melt_20simple/Freezing_20rate>`
+:name: parameters:Material_20model/Melt_20simple/Freezing_20rate
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Freezing rate of melt when in subsolidus regions. If this parameter is set to a number larger than 0.0, it specifies the fraction of melt that will freeze per year (or per second, depending on the &ldquo;Use years instead of seconds&rdquo; parameter), as soon as the porosity exceeds the equilibrium melt fraction, and the equilibrium melt fraction falls below the depletion. In this case, melt will freeze according to the given rate until one of those conditions is not fulfilled anymore. The reasoning behind this is that there should not be more melt present than the equilibrium melt fraction, as melt production decreases with increasing depletion, but the freezing process of melt also reduces the depletion by the same amount, and as soon as the depletion falls below the equilibrium melt fraction, we expect that material should melt again (no matter how much melt is present). This is quite a simplification and not a realistic freezing parameterization, but without tracking the melt composition, there is no way to compute freezing rates accurately. If this parameter is set to zero, no freezing will occur. Note that freezing can never be faster than determined by the &ldquo;Melting time scale for operator splitting&rdquo;. The product of the &ldquo;Freezing rate&rdquo; and the &ldquo;Melting time scale for operator splitting&rdquo; defines how fast freezing occurs with respect to melting (if the product is 0.5, melting will occur twice as fast as freezing). Units: 1/yr or 1/s, depending on the &ldquo;Use years instead of seconds&rdquo; parameter.
+::::
 
-(parameters:Material_20model/Melt_20simple/Mass_20fraction_20cpx)=
-### __Parameter name:__ Mass fraction cpx
+::::{dropdown} __Parameter:__ {ref}`Mass fraction cpx<parameters:Material_20model/Melt_20simple/Mass_20fraction_20cpx>`
+:name: parameters:Material_20model/Melt_20simple/Mass_20fraction_20cpx
 **Default value:** 0.15
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Mass fraction of clinopyroxene in the peridotite to be molten. Units: non-dimensional.
+::::
 
-(parameters:Material_20model/Melt_20simple/Melt_20bulk_20modulus_20derivative)=
-### __Parameter name:__ Melt bulk modulus derivative
+::::{dropdown} __Parameter:__ {ref}`Melt bulk modulus derivative<parameters:Material_20model/Melt_20simple/Melt_20bulk_20modulus_20derivative>`
+:name: parameters:Material_20model/Melt_20simple/Melt_20bulk_20modulus_20derivative
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the pressure derivative of the melt bulk modulus. Units: None.
+::::
 
-(parameters:Material_20model/Melt_20simple/Melt_20compressibility)=
-### __Parameter name:__ Melt compressibility
+::::{dropdown} __Parameter:__ {ref}`Melt compressibility<parameters:Material_20model/Melt_20simple/Melt_20compressibility>`
+:name: parameters:Material_20model/Melt_20simple/Melt_20compressibility
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the compressibility of the melt. Units: $\frac{1}{\text{Pa}}$.
+::::
 
-(parameters:Material_20model/Melt_20simple/Melt_20extraction_20depth)=
-### __Parameter name:__ Melt extraction depth
+::::{dropdown} __Parameter:__ {ref}`Melt extraction depth<parameters:Material_20model/Melt_20simple/Melt_20extraction_20depth>`
+:name: parameters:Material_20model/Melt_20simple/Melt_20extraction_20depth
 **Default value:** 1000.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Depth above that melt will be extracted from the model, which is done by a negative reaction term proportional to the porosity field. Units: \si{\meter}.
+::::
 
-(parameters:Material_20model/Melt_20simple/Melting_20time_20scale_20for_20operator_20splitting)=
-### __Parameter name:__ Melting time scale for operator splitting
+::::{dropdown} __Parameter:__ {ref}`Melting time scale for operator splitting<parameters:Material_20model/Melt_20simple/Melting_20time_20scale_20for_20operator_20splitting>`
+:name: parameters:Material_20model/Melt_20simple/Melting_20time_20scale_20for_20operator_20splitting
 **Default value:** 1e3
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
@@ -2699,121 +3004,136 @@ Also note that the melting time scale has to be larger than or equal to the reac
 **Documentation:** Because the operator splitting scheme is used, the porosity field can not be set to a new equilibrium melt fraction instantly, but the model has to provide a melting time scale instead. This time scale defines how fast melting happens, or more specifically, the parameter defines the time after which the deviation of the porosity from the equilibrium melt fraction will be reduced to a fraction of $1/e$. So if the melting time scale is small compared to the time step size, the reaction will be so fast that the porosity is very close to the equilibrium melt fraction after reactions are computed. Conversely, if the melting time scale is large compared to the time step size, almost no melting and freezing will occur.
 
 Also note that the melting time scale has to be larger than or equal to the reaction time step used in the operator splitting scheme, otherwise reactions can not be computed. Units: yr or s, depending on the &ldquo;Use years instead of seconds&rdquo; parameter.
+::::
 
-(parameters:Material_20model/Melt_20simple/Peridotite_20melting_20entropy_20change)=
-### __Parameter name:__ Peridotite melting entropy change
+::::{dropdown} __Parameter:__ {ref}`Peridotite melting entropy change<parameters:Material_20model/Melt_20simple/Peridotite_20melting_20entropy_20change>`
+:name: parameters:Material_20model/Melt_20simple/Peridotite_20melting_20entropy_20change
 **Default value:** -300.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The entropy change for the phase transition from solid to melt of peridotite. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+::::
 
-(parameters:Material_20model/Melt_20simple/Reference_20bulk_20viscosity)=
-### __Parameter name:__ Reference bulk viscosity
+::::{dropdown} __Parameter:__ {ref}`Reference bulk viscosity<parameters:Material_20model/Melt_20simple/Reference_20bulk_20viscosity>`
+:name: parameters:Material_20model/Melt_20simple/Reference_20bulk_20viscosity
 **Default value:** 1e22
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the constant bulk viscosity $\xi_0$ of the solid matrix. This viscosity may be modified by both temperature and porosity dependencies. Units: $\text{Pa}\text{s}$.
+::::
 
-(parameters:Material_20model/Melt_20simple/Reference_20melt_20density)=
-### __Parameter name:__ Reference melt density
+::::{dropdown} __Parameter:__ {ref}`Reference melt density<parameters:Material_20model/Melt_20simple/Reference_20melt_20density>`
+:name: parameters:Material_20model/Melt_20simple/Reference_20melt_20density
 **Default value:** 2500.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Reference density of the melt/fluid$\rho_{f,0}$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+::::
 
-(parameters:Material_20model/Melt_20simple/Reference_20melt_20viscosity)=
-### __Parameter name:__ Reference melt viscosity
+::::{dropdown} __Parameter:__ {ref}`Reference melt viscosity<parameters:Material_20model/Melt_20simple/Reference_20melt_20viscosity>`
+:name: parameters:Material_20model/Melt_20simple/Reference_20melt_20viscosity
 **Default value:** 10.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the constant melt viscosity $\eta_f$. Units: $\text{Pa}\text{s}$.
+::::
 
-(parameters:Material_20model/Melt_20simple/Reference_20permeability)=
-### __Parameter name:__ Reference permeability
+::::{dropdown} __Parameter:__ {ref}`Reference permeability<parameters:Material_20model/Melt_20simple/Reference_20permeability>`
+:name: parameters:Material_20model/Melt_20simple/Reference_20permeability
 **Default value:** 1e-8
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Reference permeability of the solid host rock.Units: \si{\meter\squared}.
+::::
 
-(parameters:Material_20model/Melt_20simple/Reference_20shear_20viscosity)=
-### __Parameter name:__ Reference shear viscosity
+::::{dropdown} __Parameter:__ {ref}`Reference shear viscosity<parameters:Material_20model/Melt_20simple/Reference_20shear_20viscosity>`
+:name: parameters:Material_20model/Melt_20simple/Reference_20shear_20viscosity
 **Default value:** 5e20
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the constant viscosity $\eta_0$ of the solid matrix. This viscosity may be modified by both temperature and porosity dependencies. Units: $\text{Pa}\text{s}$.
+::::
 
-(parameters:Material_20model/Melt_20simple/Reference_20solid_20density)=
-### __Parameter name:__ Reference solid density
+::::{dropdown} __Parameter:__ {ref}`Reference solid density<parameters:Material_20model/Melt_20simple/Reference_20solid_20density>`
+:name: parameters:Material_20model/Melt_20simple/Reference_20solid_20density
 **Default value:** 3000.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Reference density of the solid $\rho_{s,0}$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+::::
 
-(parameters:Material_20model/Melt_20simple/Reference_20specific_20heat)=
-### __Parameter name:__ Reference specific heat
+::::{dropdown} __Parameter:__ {ref}`Reference specific heat<parameters:Material_20model/Melt_20simple/Reference_20specific_20heat>`
+:name: parameters:Material_20model/Melt_20simple/Reference_20specific_20heat
 **Default value:** 1250.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the specific heat $C_p$. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+::::
 
-(parameters:Material_20model/Melt_20simple/Reference_20temperature)=
-### __Parameter name:__ Reference temperature
+::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Melt_20simple/Reference_20temperature>`
+:name: parameters:Material_20model/Melt_20simple/Reference_20temperature
 **Default value:** 293.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The reference temperature $T_0$. The reference temperature is used in both the density and viscosity formulas. Units: $\text{K}$.
+::::
 
-(parameters:Material_20model/Melt_20simple/Solid_20compressibility)=
-### __Parameter name:__ Solid compressibility
+::::{dropdown} __Parameter:__ {ref}`Solid compressibility<parameters:Material_20model/Melt_20simple/Solid_20compressibility>`
+:name: parameters:Material_20model/Melt_20simple/Solid_20compressibility
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the compressibility of the solid matrix. Units: $\frac{1}{\text{Pa}}$.
+::::
 
-(parameters:Material_20model/Melt_20simple/Thermal_20bulk_20viscosity_20exponent)=
-### __Parameter name:__ Thermal bulk viscosity exponent
+::::{dropdown} __Parameter:__ {ref}`Thermal bulk viscosity exponent<parameters:Material_20model/Melt_20simple/Thermal_20bulk_20viscosity_20exponent>`
+:name: parameters:Material_20model/Melt_20simple/Thermal_20bulk_20viscosity_20exponent
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The temperature dependence of the bulk viscosity. Dimensionless exponent. See the general documentation of this model for a formula that states the dependence of the viscosity on this factor, which is called $\beta$ there.
+::::
 
-(parameters:Material_20model/Melt_20simple/Thermal_20conductivity)=
-### __Parameter name:__ Thermal conductivity
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivity<parameters:Material_20model/Melt_20simple/Thermal_20conductivity>`
+:name: parameters:Material_20model/Melt_20simple/Thermal_20conductivity
 **Default value:** 4.7
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+::::
 
-(parameters:Material_20model/Melt_20simple/Thermal_20expansion_20coefficient)=
-### __Parameter name:__ Thermal expansion coefficient
+::::{dropdown} __Parameter:__ {ref}`Thermal expansion coefficient<parameters:Material_20model/Melt_20simple/Thermal_20expansion_20coefficient>`
+:name: parameters:Material_20model/Melt_20simple/Thermal_20expansion_20coefficient
 **Default value:** 2e-5
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal expansion coefficient $\beta$. Units: $\frac{1}{\text{K}}$.
+::::
 
-(parameters:Material_20model/Melt_20simple/Thermal_20viscosity_20exponent)=
-### __Parameter name:__ Thermal viscosity exponent
+::::{dropdown} __Parameter:__ {ref}`Thermal viscosity exponent<parameters:Material_20model/Melt_20simple/Thermal_20viscosity_20exponent>`
+:name: parameters:Material_20model/Melt_20simple/Thermal_20viscosity_20exponent
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The temperature dependence of the shear viscosity. Dimensionless exponent. See the general documentation of this model for a formula that states the dependence of the viscosity on this factor, which is called $\beta$ there.
+::::
 
-(parameters:Material_20model/Melt_20simple/Use_20fractional_20melting)=
-### __Parameter name:__ Use fractional melting
+::::{dropdown} __Parameter:__ {ref}`Use fractional melting<parameters:Material_20model/Melt_20simple/Use_20fractional_20melting>`
+:name: parameters:Material_20model/Melt_20simple/Use_20fractional_20melting
 **Default value:** false
 
 **Pattern:** [Bool]
@@ -2821,117 +3141,131 @@ Also note that the melting time scale has to be larger than or equal to the reac
 **Documentation:** If fractional melting should be used (if true), including a solidus change based on depletion (in this case, the amount of melt that has migrated away from its origin), and freezing of melt when it has moved to a region with temperatures lower than the solidus; or if batch melting should be used (if false), assuming that the melt fraction only depends on temperature and pressure, and how much melt has already been generated at a given point, but not considering movement of melt in the melting parameterization.
 
 Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter is set to a value larger than 0.
+::::
 
-(parameters:Material_20model/Melt_20simple/Use_20full_20compressibility)=
-### __Parameter name:__ Use full compressibility
+::::{dropdown} __Parameter:__ {ref}`Use full compressibility<parameters:Material_20model/Melt_20simple/Use_20full_20compressibility>`
+:name: parameters:Material_20model/Melt_20simple/Use_20full_20compressibility
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** If the compressibility should be used everywhere in the code (if true), changing the volume of material when the density changes, or only in the momentum conservation and advection equations (if false).
+::::
 
-(parameters:Material_20model/Melt_20simple/beta)=
-### __Parameter name:__ beta
+::::{dropdown} __Parameter:__ {ref}`beta<parameters:Material_20model/Melt_20simple/beta>`
+:name: parameters:Material_20model/Melt_20simple/beta
 **Default value:** 1.5
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Exponent of the melting temperature in the melt fraction calculation. Units: non-dimensional.
+::::
 
-(parameters:Material_20model/Melt_20simple/r1)=
-### __Parameter name:__ r1
+::::{dropdown} __Parameter:__ {ref}`r1<parameters:Material_20model/Melt_20simple/r1>`
+:name: parameters:Material_20model/Melt_20simple/r1
 **Default value:** 0.5
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Constant in the linear function that approximates the clinopyroxene reaction coefficient. Units: non-dimensional.
+::::
 
-(parameters:Material_20model/Melt_20simple/r2)=
-### __Parameter name:__ r2
+::::{dropdown} __Parameter:__ {ref}`r2<parameters:Material_20model/Melt_20simple/r2>`
+:name: parameters:Material_20model/Melt_20simple/r2
 **Default value:** 8e-11
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the linear pressure term in the linear function that approximates the clinopyroxene reaction coefficient. Units: $\frac{1}{\text{Pa}}$.
+::::
 
 (parameters:Material_20model/Modified_20Tait_20model)=
 ## **Subsection:** Material model / Modified Tait model
-(parameters:Material_20model/Modified_20Tait_20model/Einstein_20temperature)=
-### __Parameter name:__ Einstein temperature
+::::{dropdown} __Parameter:__ {ref}`Einstein temperature<parameters:Material_20model/Modified_20Tait_20model/Einstein_20temperature>`
+:name: parameters:Material_20model/Modified_20Tait_20model/Einstein_20temperature
 **Default value:** 600.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The Einstein temperature at the reference pressure and temperature. Units: $\text{K}$.
+::::
 
-(parameters:Material_20model/Modified_20Tait_20model/Reference_20bulk_20modulus_20derivative)=
-### __Parameter name:__ Reference bulk modulus derivative
+::::{dropdown} __Parameter:__ {ref}`Reference bulk modulus derivative<parameters:Material_20model/Modified_20Tait_20model/Reference_20bulk_20modulus_20derivative>`
+:name: parameters:Material_20model/Modified_20Tait_20model/Reference_20bulk_20modulus_20derivative
 **Default value:** 4.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the first pressure derivative of the isothermal bulk modulus at the reference pressure and temperature. Units: None.
+::::
 
-(parameters:Material_20model/Modified_20Tait_20model/Reference_20density)=
-### __Parameter name:__ Reference density
+::::{dropdown} __Parameter:__ {ref}`Reference density<parameters:Material_20model/Modified_20Tait_20model/Reference_20density>`
+:name: parameters:Material_20model/Modified_20Tait_20model/Reference_20density
 **Default value:** 3300.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The density at the reference pressure and temperature. Units: $\frac{\text{kg}}{\text{m}^3}$.
+::::
 
-(parameters:Material_20model/Modified_20Tait_20model/Reference_20isothermal_20bulk_20modulus)=
-### __Parameter name:__ Reference isothermal bulk modulus
+::::{dropdown} __Parameter:__ {ref}`Reference isothermal bulk modulus<parameters:Material_20model/Modified_20Tait_20model/Reference_20isothermal_20bulk_20modulus>`
+:name: parameters:Material_20model/Modified_20Tait_20model/Reference_20isothermal_20bulk_20modulus
 **Default value:** 125e9
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The isothermal bulk modulus at the reference pressure and temperature. Units: \si{\pascal}.
+::::
 
-(parameters:Material_20model/Modified_20Tait_20model/Reference_20pressure)=
-### __Parameter name:__ Reference pressure
+::::{dropdown} __Parameter:__ {ref}`Reference pressure<parameters:Material_20model/Modified_20Tait_20model/Reference_20pressure>`
+:name: parameters:Material_20model/Modified_20Tait_20model/Reference_20pressure
 **Default value:** 1e5
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Reference pressure $P_0$. Units: \si{\pascal}.
+::::
 
-(parameters:Material_20model/Modified_20Tait_20model/Reference_20temperature)=
-### __Parameter name:__ Reference temperature
+::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Modified_20Tait_20model/Reference_20temperature>`
+:name: parameters:Material_20model/Modified_20Tait_20model/Reference_20temperature
 **Default value:** 298.15
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Reference temperature $T_0$. Units: $\text{K}$.
+::::
 
-(parameters:Material_20model/Modified_20Tait_20model/Reference_20thermal_20expansivity)=
-### __Parameter name:__ Reference thermal expansivity
+::::{dropdown} __Parameter:__ {ref}`Reference thermal expansivity<parameters:Material_20model/Modified_20Tait_20model/Reference_20thermal_20expansivity>`
+:name: parameters:Material_20model/Modified_20Tait_20model/Reference_20thermal_20expansivity
 **Default value:** 2e-5
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The thermal expansion coefficient at the reference pressure and temperature. Units: $\frac{1}{\text{K}}$.
+::::
 
-(parameters:Material_20model/Modified_20Tait_20model/Thermal_20conductivity)=
-### __Parameter name:__ Thermal conductivity
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivity<parameters:Material_20model/Modified_20Tait_20model/Thermal_20conductivity>`
+:name: parameters:Material_20model/Modified_20Tait_20model/Thermal_20conductivity
 **Default value:** 4.7
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the constant thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+::::
 
-(parameters:Material_20model/Modified_20Tait_20model/Viscosity)=
-### __Parameter name:__ Viscosity
+::::{dropdown} __Parameter:__ {ref}`Viscosity<parameters:Material_20model/Modified_20Tait_20model/Viscosity>`
+:name: parameters:Material_20model/Modified_20Tait_20model/Viscosity
 **Default value:** 1e21
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the constant viscosity $\eta_0$. Units: $\text{Pa}\text{s}$.
+::::
 
 (parameters:Material_20model/Modified_20Tait_20model/Reference_20heat_20capacity_20function)=
 ## **Subsection:** Material model / Modified Tait model / Reference heat capacity function
-(parameters:Material_20model/Modified_20Tait_20model/Reference_20heat_20capacity_20function/Function_20constants)=
-### __Parameter name:__ Function constants
+::::{dropdown} __Parameter:__ {ref}`Function constants<parameters:Material_20model/Modified_20Tait_20model/Reference_20heat_20capacity_20function/Function_20constants>`
+:name: parameters:Material_20model/Modified_20Tait_20model/Reference_20heat_20capacity_20function/Function_20constants
 **Default value:**
 
 **Pattern:** [Anything]
@@ -2939,379 +3273,425 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 **Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form &lsquo;var1=value1, var2=value2, ...&rsquo;.
 
 A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
+::::
 
-(parameters:Material_20model/Modified_20Tait_20model/Reference_20heat_20capacity_20function/Function_20expression)=
-### __Parameter name:__ Function expression
+::::{dropdown} __Parameter:__ {ref}`Function expression<parameters:Material_20model/Modified_20Tait_20model/Reference_20heat_20capacity_20function/Function_20expression>`
+:name: parameters:Material_20model/Modified_20Tait_20model/Reference_20heat_20capacity_20function/Function_20expression
 **Default value:** 1.25e3
 
 **Pattern:** [Anything]
 
 **Documentation:**
+::::
 
-(parameters:Material_20model/Modified_20Tait_20model/Reference_20heat_20capacity_20function/Variable_20names)=
-### __Parameter name:__ Variable names
+::::{dropdown} __Parameter:__ {ref}`Variable names<parameters:Material_20model/Modified_20Tait_20model/Reference_20heat_20capacity_20function/Variable_20names>`
+:name: parameters:Material_20model/Modified_20Tait_20model/Reference_20heat_20capacity_20function/Variable_20names
 **Default value:** x,t
 
 **Pattern:** [Anything]
 
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
+::::
 
 (parameters:Material_20model/Multicomponent)=
 ## **Subsection:** Material model / Multicomponent
-(parameters:Material_20model/Multicomponent/Densities)=
-### __Parameter name:__ Densities
+::::{dropdown} __Parameter:__ {ref}`Densities<parameters:Material_20model/Multicomponent/Densities>`
+:name: parameters:Material_20model/Multicomponent/Densities
 **Default value:** 3300.
 
 **Pattern:** [Anything]
 
 **Documentation:** List of densities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\kilogram\per\meter\cubed}.
+::::
 
-(parameters:Material_20model/Multicomponent/Heat_20capacities)=
-### __Parameter name:__ Heat capacities
+::::{dropdown} __Parameter:__ {ref}`Heat capacities<parameters:Material_20model/Multicomponent/Heat_20capacities>`
+:name: parameters:Material_20model/Multicomponent/Heat_20capacities
 **Default value:** 1250.
 
 **Pattern:** [Anything]
 
 **Documentation:** List of specific heats $C_p$ for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\joule\per\kelvin\per\kilogram}.
+::::
 
-(parameters:Material_20model/Multicomponent/Reference_20temperature)=
-### __Parameter name:__ Reference temperature
+::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Multicomponent/Reference_20temperature>`
+:name: parameters:Material_20model/Multicomponent/Reference_20temperature
 **Default value:** 293.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The reference temperature $T_0$. Units: $\text{K}$.
+::::
 
-(parameters:Material_20model/Multicomponent/Specific_20heats)=
-### __Parameter name__: Specific heats
+::::{dropdown} __Parameter:__ {ref}`Specific heats<parameters:Material_20model/Multicomponent/Specific_20heats>`
+:name: parameters:Material_20model/Multicomponent/Specific_20heats
 **Alias:** [Heat capacities](parameters:Material_20model/Multicomponent/Heat_20capacities)
 
 **Deprecation Status:** false
+::::
 
-(parameters:Material_20model/Multicomponent/Thermal_20conductivities)=
-### __Parameter name:__ Thermal conductivities
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivities<parameters:Material_20model/Multicomponent/Thermal_20conductivities>`
+:name: parameters:Material_20model/Multicomponent/Thermal_20conductivities
 **Default value:** 4.7
 
 **Pattern:** [Anything]
 
 **Documentation:** List of thermal conductivities for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+::::
 
-(parameters:Material_20model/Multicomponent/Thermal_20expansivities)=
-### __Parameter name:__ Thermal expansivities
+::::{dropdown} __Parameter:__ {ref}`Thermal expansivities<parameters:Material_20model/Multicomponent/Thermal_20expansivities>`
+:name: parameters:Material_20model/Multicomponent/Thermal_20expansivities
 **Default value:** 0.000040
 
 **Pattern:** [Anything]
 
 **Documentation:** List of thermal expansivities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\per\kelvin}.
+::::
 
-(parameters:Material_20model/Multicomponent/Viscosities)=
-### __Parameter name:__ Viscosities
+::::{dropdown} __Parameter:__ {ref}`Viscosities<parameters:Material_20model/Multicomponent/Viscosities>`
+:name: parameters:Material_20model/Multicomponent/Viscosities
 **Default value:** 1.e21
 
 **Pattern:** [Anything]
 
 **Documentation:** List of viscosities for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: $\text{Pa}\text{s}$.
+::::
 
-(parameters:Material_20model/Multicomponent/Viscosity_20averaging_20scheme)=
-### __Parameter name:__ Viscosity averaging scheme
+::::{dropdown} __Parameter:__ {ref}`Viscosity averaging scheme<parameters:Material_20model/Multicomponent/Viscosity_20averaging_20scheme>`
+:name: parameters:Material_20model/Multicomponent/Viscosity_20averaging_20scheme
 **Default value:** harmonic
 
 **Pattern:** [Selection arithmetic|harmonic|geometric|maximum composition ]
 
 **Documentation:** When more than one compositional field is present at a point with different viscosities, we need to come up with an average viscosity at that point.  Select a weighted harmonic, arithmetic, geometric, or maximum composition.
+::::
 
 (parameters:Material_20model/Multicomponent_20compressible)=
 ## **Subsection:** Material model / Multicomponent compressible
-(parameters:Material_20model/Multicomponent_20compressible/Define_20transition_20by_20depth_20instead_20of_20pressure)=
-### __Parameter name:__ Define transition by depth instead of pressure
+::::{dropdown} __Parameter:__ {ref}`Define transition by depth instead of pressure<parameters:Material_20model/Multicomponent_20compressible/Define_20transition_20by_20depth_20instead_20of_20pressure>`
+:name: parameters:Material_20model/Multicomponent_20compressible/Define_20transition_20by_20depth_20instead_20of_20pressure
 **Default value:** true
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to list phase transitions by depth or pressure. If this parameter is true, then the input file will use Phase transitions depths and Phase transition widths to define the phase transition. If it is false, the parameter file will read in phase transition data from Phase transition pressures and Phase transition pressure widths.
+::::
 
-(parameters:Material_20model/Multicomponent_20compressible/Enable_20phase_20transitions)=
-### __Parameter name:__ Enable phase transitions
+::::{dropdown} __Parameter:__ {ref}`Enable phase transitions<parameters:Material_20model/Multicomponent_20compressible/Enable_20phase_20transitions>`
+:name: parameters:Material_20model/Multicomponent_20compressible/Enable_20phase_20transitions
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to enable the use of phase transitions, which break the thermodynamic consistency of the equation of state for properties (heat capacity, thermal expansivity and compressibility) that are affected by the P-T-X dependence of the phase transition. Specifically, this means that latent heat and excess expansivity/compressibility of reactions are neglected.
+::::
 
-(parameters:Material_20model/Multicomponent_20compressible/Isochoric_20specific_20heats)=
-### __Parameter name:__ Isochoric specific heats
+::::{dropdown} __Parameter:__ {ref}`Isochoric specific heats<parameters:Material_20model/Multicomponent_20compressible/Isochoric_20specific_20heats>`
+:name: parameters:Material_20model/Multicomponent_20compressible/Isochoric_20specific_20heats
 **Default value:** 1250.
 
 **Pattern:** [Anything]
 
 **Documentation:** List of isochoric specific heats for background and compositional fields (N), for a total of N+1 values for models with no phase transitions (or models where the value does not change across any of the phase transitions). For models with phase transitions, the list needs to contain each field name, including the background, for a total of N+1 names, and for each of these names, specify the value for each phase (giving P_c+1 values for each field, with P_c being the number of phase transitions for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given, then all fields/phases use the same value. Units: \si{\joule\per\kelvin\per\kilogram}.
+::::
 
-(parameters:Material_20model/Multicomponent_20compressible/Isothermal_20bulk_20modulus_20pressure_20derivatives)=
-### __Parameter name:__ Isothermal bulk modulus pressure derivatives
+::::{dropdown} __Parameter:__ {ref}`Isothermal bulk modulus pressure derivatives<parameters:Material_20model/Multicomponent_20compressible/Isothermal_20bulk_20modulus_20pressure_20derivatives>`
+:name: parameters:Material_20model/Multicomponent_20compressible/Isothermal_20bulk_20modulus_20pressure_20derivatives
 **Default value:** 4.
 
 **Pattern:** [Anything]
 
 **Documentation:** List of isothermal bulk modulus pressure derivatives for background and compositional fields (N), for a total of N+1 values for models with no phase transitions (or models where the value does not change across any of the phase transitions). For models with phase transitions, the list needs to contain each field name, including the background, for a total of N+1 names, and for each of these names, specify the value for each phase (giving P_c+1 values for each field, with P_c being the number of phase transitions for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given, then all fields/phases use the same value. Units: [].
+::::
 
-(parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20Clapeyron_20slopes)=
-### __Parameter name:__ Phase transition Clapeyron slopes
+::::{dropdown} __Parameter:__ {ref}`Phase transition Clapeyron slopes<parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20Clapeyron_20slopes>`
+:name: parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20Clapeyron_20slopes
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of Clapeyron slopes for each phase transition. A positive Clapeyron slope indicates that the phase transition will occur in a greater depth, if the temperature is higher than the one given in Phase transition temperatures and in a smaller depth, if the temperature is smaller than the one given in Phase transition temperatures. For negative slopes the other way round. List must have the same number of entries as Phase transition depths. Units: \si{\pascal\per\kelvin}.
+::::
 
-(parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20depths)=
-### __Parameter name:__ Phase transition depths
+::::{dropdown} __Parameter:__ {ref}`Phase transition depths<parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20depths>`
+:name: parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20depths
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of depths where phase transitions occur. Values must monotonically increase. Units: \si{\meter}.
+::::
 
-(parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20pressure_20widths)=
-### __Parameter name:__ Phase transition pressure widths
+::::{dropdown} __Parameter:__ {ref}`Phase transition pressure widths<parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20pressure_20widths>`
+:name: parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20pressure_20widths
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of widths for each phase transition, in terms of pressure. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition pressures. Define transition by depth instead of pressure must be set to false to use this parameter. Units: \si{\pascal}.
+::::
 
-(parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20pressures)=
-### __Parameter name:__ Phase transition pressures
+::::{dropdown} __Parameter:__ {ref}`Phase transition pressures<parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20pressures>`
+:name: parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20pressures
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of pressures where phase transitions occur. Values must monotonically increase. Define transition by depth instead of pressure must be set to false to use this parameter. Units: \si{\pascal}.
+::::
 
-(parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20temperature_20lower_20limits)=
-### __Parameter name:__ Phase transition temperature lower limits
+::::{dropdown} __Parameter:__ {ref}`Phase transition temperature lower limits<parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20temperature_20lower_20limits>`
+:name: parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20temperature_20lower_20limits
 **Default value:** -1.7976931348623157e+308
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of lower temperature limits for each phase transition. Below this temperature the respective phase transition is deactivated. The default value means there is no lower limit for any phase transition. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: \si{\kelvin}.
+::::
 
-(parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20temperature_20upper_20limits)=
-### __Parameter name:__ Phase transition temperature upper limits
+::::{dropdown} __Parameter:__ {ref}`Phase transition temperature upper limits<parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20temperature_20upper_20limits>`
+:name: parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20temperature_20upper_20limits
 **Default value:** 1.7976931348623157e+308
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of upper temperature limits for each phase transition. Above this temperature the respective phase transition is deactivated. The default value means there is no upper limit for any phase transitions. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: \si{\kelvin}.
+::::
 
-(parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20temperatures)=
-### __Parameter name:__ Phase transition temperatures
+::::{dropdown} __Parameter:__ {ref}`Phase transition temperatures<parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20temperatures>`
+:name: parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20temperatures
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of temperatures where phase transitions occur. Higher or lower temperatures lead to phase transition occurring in smaller or greater depths than given in Phase transition depths, depending on the Clapeyron slope given in Phase transition Clapeyron slopes. List must have the same number of entries as Phase transition depths. Units: \si{\kelvin}.
+::::
 
-(parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20widths)=
-### __Parameter name:__ Phase transition widths
+::::{dropdown} __Parameter:__ {ref}`Phase transition widths<parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20widths>`
+:name: parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20widths
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of widths for each phase transition, in terms of depth. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition depths. Units: \si{\meter}.
+::::
 
-(parameters:Material_20model/Multicomponent_20compressible/Reference_20densities)=
-### __Parameter name:__ Reference densities
+::::{dropdown} __Parameter:__ {ref}`Reference densities<parameters:Material_20model/Multicomponent_20compressible/Reference_20densities>`
+:name: parameters:Material_20model/Multicomponent_20compressible/Reference_20densities
 **Default value:** 3300.
 
 **Pattern:** [Anything]
 
 **Documentation:** List of reference densities for background and compositional fields (N), for a total of N+1 values for models with no phase transitions (or models where the value does not change across any of the phase transitions). For models with phase transitions, the list needs to contain each field name, including the background, for a total of N+1 names, and for each of these names, specify the value for each phase (giving P_c+1 values for each field, with P_c being the number of phase transitions for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given, then all fields/phases use the same value. Units: \si{\kilogram\per\meter\cubed}.
+::::
 
-(parameters:Material_20model/Multicomponent_20compressible/Reference_20isothermal_20compressibilities)=
-### __Parameter name:__ Reference isothermal compressibilities
+::::{dropdown} __Parameter:__ {ref}`Reference isothermal compressibilities<parameters:Material_20model/Multicomponent_20compressible/Reference_20isothermal_20compressibilities>`
+:name: parameters:Material_20model/Multicomponent_20compressible/Reference_20isothermal_20compressibilities
 **Default value:** 4e-12
 
 **Pattern:** [Anything]
 
 **Documentation:** List of isothermal compressibilities for background and compositional fields (N), for a total of N+1 values for models with no phase transitions (or models where the value does not change across any of the phase transitions). For models with phase transitions, the list needs to contain each field name, including the background, for a total of N+1 names, and for each of these names, specify the value for each phase (giving P_c+1 values for each field, with P_c being the number of phase transitions for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given, then all fields/phases use the same value. Units: \si{\per\pascal}.
+::::
 
-(parameters:Material_20model/Multicomponent_20compressible/Reference_20temperatures)=
-### __Parameter name:__ Reference temperatures
+::::{dropdown} __Parameter:__ {ref}`Reference temperatures<parameters:Material_20model/Multicomponent_20compressible/Reference_20temperatures>`
+:name: parameters:Material_20model/Multicomponent_20compressible/Reference_20temperatures
 **Default value:** 298.15
 
 **Pattern:** [Anything]
 
 **Documentation:** List of reference temperatures $T_0$ for background and compositional fields (N), for a total of N+1 values for models with no phase transitions (or models where the value does not change across any of the phase transitions). For models with phase transitions, the list needs to contain each field name, including the background, for a total of N+1 names, and for each of these names, specify the value for each phase (giving P_c+1 values for each field, with P_c being the number of phase transitions for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given, then all fields/phases use the same value. Units: \si{\kelvin}.
+::::
 
-(parameters:Material_20model/Multicomponent_20compressible/Reference_20thermal_20expansivities)=
-### __Parameter name:__ Reference thermal expansivities
+::::{dropdown} __Parameter:__ {ref}`Reference thermal expansivities<parameters:Material_20model/Multicomponent_20compressible/Reference_20thermal_20expansivities>`
+:name: parameters:Material_20model/Multicomponent_20compressible/Reference_20thermal_20expansivities
 **Default value:** 4.e-5
 
 **Pattern:** [Anything]
 
 **Documentation:** List of reference thermal expansivities for background and compositional fields (N), for a total of N+1 values for models with no phase transitions (or models where the value does not change across any of the phase transitions). For models with phase transitions, the list needs to contain each field name, including the background, for a total of N+1 names, and for each of these names, specify the value for each phase (giving P_c+1 values for each field, with P_c being the number of phase transitions for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given, then all fields/phases use the same value. Units: \si{\per\kelvin}.
+::::
 
-(parameters:Material_20model/Multicomponent_20compressible/Thermal_20conductivities)=
-### __Parameter name:__ Thermal conductivities
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivities<parameters:Material_20model/Multicomponent_20compressible/Thermal_20conductivities>`
+:name: parameters:Material_20model/Multicomponent_20compressible/Thermal_20conductivities
 **Default value:** 4.7
 
 **Pattern:** [Anything]
 
 **Documentation:** List of thermal conductivities for background and compositional fields (N), for a total of N+1 values for models with no phase transitions (or models where the value does not change across any of the phase transitions). For models with phase transitions, the list needs to contain each field name, including the background, for a total of N+1 names, and for each of these names, specify the value for each phase (giving P_c+1 values for each field, with P_c being the number of phase transitions for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given, then all fields/phases use the same value. Units: \si{\watt\per\meter\per\kelvin}.
+::::
 
-(parameters:Material_20model/Multicomponent_20compressible/Viscosities)=
-### __Parameter name:__ Viscosities
+::::{dropdown} __Parameter:__ {ref}`Viscosities<parameters:Material_20model/Multicomponent_20compressible/Viscosities>`
+:name: parameters:Material_20model/Multicomponent_20compressible/Viscosities
 **Default value:** 1.e21
 
 **Pattern:** [Anything]
 
 **Documentation:** List of viscosities for background and compositional fields (N), for a total of N+1 values for models with no phase transitions (or models where the value does not change across any of the phase transitions). For models with phase transitions, the list needs to contain each field name, including the background, for a total of N+1 names, and for each of these names, specify the value for each phase (giving P_c+1 values for each field, with P_c being the number of phase transitions for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given, then all fields/phases use the same value. Units: \si{\pascal\second}.
+::::
 
-(parameters:Material_20model/Multicomponent_20compressible/Viscosity_20averaging_20scheme)=
-### __Parameter name:__ Viscosity averaging scheme
+::::{dropdown} __Parameter:__ {ref}`Viscosity averaging scheme<parameters:Material_20model/Multicomponent_20compressible/Viscosity_20averaging_20scheme>`
+:name: parameters:Material_20model/Multicomponent_20compressible/Viscosity_20averaging_20scheme
 **Default value:** harmonic
 
 **Pattern:** [Selection arithmetic|harmonic|geometric|maximum composition ]
 
 **Documentation:** When more than one compositional field is present at a point with different viscosities, we need to come up with an average viscosity at that point.  Select a weighted harmonic, arithmetic, geometric, or maximum composition.
+::::
 
 (parameters:Material_20model/Nondimensional_20model)=
 ## **Subsection:** Material model / Nondimensional model
-(parameters:Material_20model/Nondimensional_20model/Di)=
-### __Parameter name:__ Di
+::::{dropdown} __Parameter:__ {ref}`Di<parameters:Material_20model/Nondimensional_20model/Di>`
+:name: parameters:Material_20model/Nondimensional_20model/Di
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Dissipation number. Pick 0.0 for incompressible computations.
+::::
 
-(parameters:Material_20model/Nondimensional_20model/Ra)=
-### __Parameter name:__ Ra
+::::{dropdown} __Parameter:__ {ref}`Ra<parameters:Material_20model/Nondimensional_20model/Ra>`
+:name: parameters:Material_20model/Nondimensional_20model/Ra
 **Default value:** 1e4
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Rayleigh number Ra
+::::
 
-(parameters:Material_20model/Nondimensional_20model/Reference_20density)=
-### __Parameter name:__ Reference density
+::::{dropdown} __Parameter:__ {ref}`Reference density<parameters:Material_20model/Nondimensional_20model/Reference_20density>`
+:name: parameters:Material_20model/Nondimensional_20model/Reference_20density
 **Default value:** 1.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Reference density $\rho_0$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+::::
 
-(parameters:Material_20model/Nondimensional_20model/Reference_20specific_20heat)=
-### __Parameter name:__ Reference specific heat
+::::{dropdown} __Parameter:__ {ref}`Reference specific heat<parameters:Material_20model/Nondimensional_20model/Reference_20specific_20heat>`
+:name: parameters:Material_20model/Nondimensional_20model/Reference_20specific_20heat
 **Default value:** 1.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the specific heat $C_p$. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+::::
 
-(parameters:Material_20model/Nondimensional_20model/Use_20TALA)=
-### __Parameter name:__ Use TALA
+::::{dropdown} __Parameter:__ {ref}`Use TALA<parameters:Material_20model/Nondimensional_20model/Use_20TALA>`
+:name: parameters:Material_20model/Nondimensional_20model/Use_20TALA
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to use the TALA instead of the ALA approximation.
+::::
 
-(parameters:Material_20model/Nondimensional_20model/Viscosity_20depth_20prefactor)=
-### __Parameter name:__ Viscosity depth prefactor
+::::{dropdown} __Parameter:__ {ref}`Viscosity depth prefactor<parameters:Material_20model/Nondimensional_20model/Viscosity_20depth_20prefactor>`
+:name: parameters:Material_20model/Nondimensional_20model/Viscosity_20depth_20prefactor
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Exponential depth prefactor for viscosity.
+::::
 
-(parameters:Material_20model/Nondimensional_20model/Viscosity_20temperature_20prefactor)=
-### __Parameter name:__ Viscosity temperature prefactor
+::::{dropdown} __Parameter:__ {ref}`Viscosity temperature prefactor<parameters:Material_20model/Nondimensional_20model/Viscosity_20temperature_20prefactor>`
+:name: parameters:Material_20model/Nondimensional_20model/Viscosity_20temperature_20prefactor
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Exponential temperature prefactor for viscosity.
+::::
 
-(parameters:Material_20model/Nondimensional_20model/gamma)=
-### __Parameter name:__ gamma
+::::{dropdown} __Parameter:__ {ref}`gamma<parameters:Material_20model/Nondimensional_20model/gamma>`
+:name: parameters:Material_20model/Nondimensional_20model/gamma
 **Default value:** 1.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Grueneisen parameter
+::::
 
 (parameters:Material_20model/PerpleX_20lookup_20model)=
 ## **Subsection:** Material model / PerpleX lookup model
-(parameters:Material_20model/PerpleX_20lookup_20model/Maximum_20material_20pressure)=
-### __Parameter name:__ Maximum material pressure
+::::{dropdown} __Parameter:__ {ref}`Maximum material pressure<parameters:Material_20model/PerpleX_20lookup_20model/Maximum_20material_20pressure>`
+:name: parameters:Material_20model/PerpleX_20lookup_20model/Maximum_20material_20pressure
 **Default value:** 1.e12
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the maximum pressure used to query PerpleX. Units: \si{\pascal}.
+::::
 
-(parameters:Material_20model/PerpleX_20lookup_20model/Maximum_20material_20temperature)=
-### __Parameter name:__ Maximum material temperature
+::::{dropdown} __Parameter:__ {ref}`Maximum material temperature<parameters:Material_20model/PerpleX_20lookup_20model/Maximum_20material_20temperature>`
+:name: parameters:Material_20model/PerpleX_20lookup_20model/Maximum_20material_20temperature
 **Default value:** 6000.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the maximum temperature used to query PerpleX. Units: $\text{K}$.
+::::
 
-(parameters:Material_20model/PerpleX_20lookup_20model/Minimum_20material_20pressure)=
-### __Parameter name:__ Minimum material pressure
+::::{dropdown} __Parameter:__ {ref}`Minimum material pressure<parameters:Material_20model/PerpleX_20lookup_20model/Minimum_20material_20pressure>`
+:name: parameters:Material_20model/PerpleX_20lookup_20model/Minimum_20material_20pressure
 **Default value:** 1.e5
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the minimum pressure used to query PerpleX. Units: \si{\pascal}.
+::::
 
-(parameters:Material_20model/PerpleX_20lookup_20model/Minimum_20material_20temperature)=
-### __Parameter name:__ Minimum material temperature
+::::{dropdown} __Parameter:__ {ref}`Minimum material temperature<parameters:Material_20model/PerpleX_20lookup_20model/Minimum_20material_20temperature>`
+:name: parameters:Material_20model/PerpleX_20lookup_20model/Minimum_20material_20temperature
 **Default value:** 0.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the minimum temperature used to query PerpleX. Units: $\text{K}$.
+::::
 
-(parameters:Material_20model/PerpleX_20lookup_20model/PerpleX_20input_20file_20name)=
-### __Parameter name:__ PerpleX input file name
+::::{dropdown} __Parameter:__ {ref}`PerpleX input file name<parameters:Material_20model/PerpleX_20lookup_20model/PerpleX_20input_20file_20name>`
+:name: parameters:Material_20model/PerpleX_20lookup_20model/PerpleX_20input_20file_20name
 **Default value:** rock.dat
 
 **Pattern:** [Anything]
 
 **Documentation:** The name of the PerpleX input file (should end with .dat).
+::::
 
-(parameters:Material_20model/PerpleX_20lookup_20model/Thermal_20conductivity)=
-### __Parameter name:__ Thermal conductivity
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivity<parameters:Material_20model/PerpleX_20lookup_20model/Thermal_20conductivity>`
+:name: parameters:Material_20model/PerpleX_20lookup_20model/Thermal_20conductivity
 **Default value:** 4.7
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+::::
 
-(parameters:Material_20model/PerpleX_20lookup_20model/Viscosity)=
-### __Parameter name:__ Viscosity
+::::{dropdown} __Parameter:__ {ref}`Viscosity<parameters:Material_20model/PerpleX_20lookup_20model/Viscosity>`
+:name: parameters:Material_20model/PerpleX_20lookup_20model/Viscosity
 **Default value:** 5e24
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the viscosity $\eta$. Units: $\text{Pa}\text{s}$.
+::::
 
 (parameters:Material_20model/Prescribed_20viscosity)=
 ## **Subsection:** Material model / Prescribed viscosity
-(parameters:Material_20model/Prescribed_20viscosity/Base_20model)=
-### __Parameter name:__ Base model
+::::{dropdown} __Parameter:__ {ref}`Base model<parameters:Material_20model/Prescribed_20viscosity/Base_20model>`
+:name: parameters:Material_20model/Prescribed_20viscosity/Base_20model
 **Default value:** simple
 
 **Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|entropy model|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|prescribed viscosity|reactive fluid transport|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic ]
 
 **Documentation:** The name of a material model that will be modified by the prescribed viscosity material model. Valid values for this parameter are the names of models that are also valid for the &ldquo;Material models/Model name&rdquo; parameter. See the documentation for that for more information.
+::::
 
 (parameters:Material_20model/Prescribed_20viscosity/Indicator_20function)=
 ## **Subsection:** Material model / Prescribed viscosity / Indicator function
-(parameters:Material_20model/Prescribed_20viscosity/Indicator_20function/Function_20constants)=
-### __Parameter name:__ Function constants
+::::{dropdown} __Parameter:__ {ref}`Function constants<parameters:Material_20model/Prescribed_20viscosity/Indicator_20function/Function_20constants>`
+:name: parameters:Material_20model/Prescribed_20viscosity/Indicator_20function/Function_20constants
 **Default value:**
 
 **Pattern:** [Anything]
@@ -3319,9 +3699,10 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form &lsquo;var1=value1, var2=value2, ...&rsquo;.
 
 A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
+::::
 
-(parameters:Material_20model/Prescribed_20viscosity/Indicator_20function/Function_20expression)=
-### __Parameter name:__ Function expression
+::::{dropdown} __Parameter:__ {ref}`Function expression<parameters:Material_20model/Prescribed_20viscosity/Indicator_20function/Function_20expression>`
+:name: parameters:Material_20model/Prescribed_20viscosity/Indicator_20function/Function_20expression
 **Default value:** 0; 0; 0
 
 **Pattern:** [Anything]
@@ -3329,19 +3710,21 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Documentation:** The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as &lsquo;sin&rsquo; or &lsquo;cos&rsquo;. In addition, it may contain expressions like &lsquo;if(x>0, 1, -1)&rsquo; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
 
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+::::
 
-(parameters:Material_20model/Prescribed_20viscosity/Indicator_20function/Variable_20names)=
-### __Parameter name:__ Variable names
+::::{dropdown} __Parameter:__ {ref}`Variable names<parameters:Material_20model/Prescribed_20viscosity/Indicator_20function/Variable_20names>`
+:name: parameters:Material_20model/Prescribed_20viscosity/Indicator_20function/Variable_20names
 **Default value:** x,y,t
 
 **Pattern:** [Anything]
 
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
+::::
 
 (parameters:Material_20model/Prescribed_20viscosity/Viscosity_20function)=
 ## **Subsection:** Material model / Prescribed viscosity / Viscosity function
-(parameters:Material_20model/Prescribed_20viscosity/Viscosity_20function/Function_20constants)=
-### __Parameter name:__ Function constants
+::::{dropdown} __Parameter:__ {ref}`Function constants<parameters:Material_20model/Prescribed_20viscosity/Viscosity_20function/Function_20constants>`
+:name: parameters:Material_20model/Prescribed_20viscosity/Viscosity_20function/Function_20constants
 **Default value:**
 
 **Pattern:** [Anything]
@@ -3349,9 +3732,10 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form &lsquo;var1=value1, var2=value2, ...&rsquo;.
 
 A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
+::::
 
-(parameters:Material_20model/Prescribed_20viscosity/Viscosity_20function/Function_20expression)=
-### __Parameter name:__ Function expression
+::::{dropdown} __Parameter:__ {ref}`Function expression<parameters:Material_20model/Prescribed_20viscosity/Viscosity_20function/Function_20expression>`
+:name: parameters:Material_20model/Prescribed_20viscosity/Viscosity_20function/Function_20expression
 **Default value:** 0; 0; 0
 
 **Pattern:** [Anything]
@@ -3359,43 +3743,48 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Documentation:** The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as &lsquo;sin&rsquo; or &lsquo;cos&rsquo;. In addition, it may contain expressions like &lsquo;if(x>0, 1, -1)&rsquo; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
 
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+::::
 
-(parameters:Material_20model/Prescribed_20viscosity/Viscosity_20function/Variable_20names)=
-### __Parameter name:__ Variable names
+::::{dropdown} __Parameter:__ {ref}`Variable names<parameters:Material_20model/Prescribed_20viscosity/Viscosity_20function/Variable_20names>`
+:name: parameters:Material_20model/Prescribed_20viscosity/Viscosity_20function/Variable_20names
 **Default value:** x,y,t
 
 **Pattern:** [Anything]
 
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
+::::
 
 (parameters:Material_20model/Reactive_20Fluid_20Transport_20Model)=
 ## **Subsection:** Material model / Reactive Fluid Transport Model
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Base_20model)=
-### __Parameter name:__ Base model
+::::{dropdown} __Parameter:__ {ref}`Base model<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Base_20model>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Base_20model
 **Default value:** visco plastic
 
 **Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|entropy model|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|prescribed viscosity|reactive fluid transport|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic ]
 
 **Documentation:** The name of a material model incorporating the addition of fluids. Valid values for this parameter are the names of models that are also valid for the &ldquo;Material models/Model name&rdquo; parameter. See the documentation for that for more information.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Exponential_20fluid_20weakening_20factor)=
-### __Parameter name:__ Exponential fluid weakening factor
+::::{dropdown} __Parameter:__ {ref}`Exponential fluid weakening factor<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Exponential_20fluid_20weakening_20factor>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Exponential_20fluid_20weakening_20factor
 **Default value:** 27
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The porosity dependence of the viscosity. Units: dimensionless.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Fluid_20compressibility)=
-### __Parameter name:__ Fluid compressibility
+::::{dropdown} __Parameter:__ {ref}`Fluid compressibility<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Fluid_20compressibility>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Fluid_20compressibility
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the compressibility of the fluid. Units: $\frac{1}{\text{Pa}}$.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Fluid_20reaction_20time_20scale_20for_20operator_20splitting)=
-### __Parameter name:__ Fluid reaction time scale for operator splitting
+::::{dropdown} __Parameter:__ {ref}`Fluid reaction time scale for operator splitting<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Fluid_20reaction_20time_20scale_20for_20operator_20splitting>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Fluid_20reaction_20time_20scale_20for_20operator_20splitting
 **Default value:** 1e3
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
@@ -3403,203 +3792,228 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** In case the operator splitting scheme is used, the porosity field can not be set to a new equilibrium fluid fraction instantly, but the model has to provide a reaction time scale instead. This time scale defines how fast fluid release and absorption happen, or more specifically, the parameter defines the time after which the deviation of the porosity from the free fluid fraction that would be in equilibrium with the solid will be reduced to a fraction of $1/e$. So if the fluid reaction time scale is small compared to the time step size, the reaction will be so fast that the porosity is very close to this equilibrium value after reactions are computed. Conversely, if the fluid reaction time scale is large compared to the time step size, almost no fluid release and absorption will occur.
 
 Also note that the fluid reaction time scale has to be larger than or equal to the reaction time step used in the operator splitting scheme, otherwise reactions can not be computed. If the model does not use operator splitting, this parameter is not used. Units: yr or s, depending on the &ldquo;Use years instead of seconds&rdquo; parameter.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Fluid_2dsolid_20reaction_20scheme)=
-### __Parameter name:__ Fluid-solid reaction scheme
+::::{dropdown} __Parameter:__ {ref}`Fluid-solid reaction scheme<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Fluid_2dsolid_20reaction_20scheme>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Fluid_2dsolid_20reaction_20scheme
 **Default value:** no reaction
 
 **Pattern:** [Selection no reaction|zero solubility|tian approximation|katz2003 ]
 
 **Documentation:** Select what type of scheme to use for reactions between fluid and solid phases. The current available options are models where no reactions occur between the two phases, or the solid phase is insoluble (zero solubility) and all of the bound fluid is released into the fluid phase, tian approximation use polynomials to describe hydration and dehydration reactions for four different rock compositions as defined in Tian et al., 2019, or the Katz et. al. 2003 mantle melting model. If the Katz 2003 melting model is used, its parameters are declared in its own subsection.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Maximum_20compaction_20viscosity)=
-### __Parameter name:__ Maximum compaction viscosity
+::::{dropdown} __Parameter:__ {ref}`Maximum compaction viscosity<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Maximum_20compaction_20viscosity>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Maximum_20compaction_20viscosity
 **Default value:** 1.7976931348623157e+308
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Upper cutoff for the compaction viscosity. Units: $\text{Pa}\text{s}$.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Minimum_20compaction_20viscosity)=
-### __Parameter name:__ Minimum compaction viscosity
+::::{dropdown} __Parameter:__ {ref}`Minimum compaction viscosity<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Minimum_20compaction_20viscosity>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Minimum_20compaction_20viscosity
 **Default value:** 0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Lower cutoff for the compaction viscosity. Units: $\text{Pa}\text{s}$.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Reference_20fluid_20density)=
-### __Parameter name:__ Reference fluid density
+::::{dropdown} __Parameter:__ {ref}`Reference fluid density<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Reference_20fluid_20density>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Reference_20fluid_20density
 **Default value:** 2500
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Reference density of the melt/fluid$\rho_{f,0}$. Units: \si{\kilogram\per\meter\cubed}.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Reference_20fluid_20viscosity)=
-### __Parameter name:__ Reference fluid viscosity
+::::{dropdown} __Parameter:__ {ref}`Reference fluid viscosity<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Reference_20fluid_20viscosity>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Reference_20fluid_20viscosity
 **Default value:** 10
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the constant melt/fluid viscosity $\eta_f$. Units: $\text{Pa}\text{s}$.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Reference_20permeability)=
-### __Parameter name:__ Reference permeability
+::::{dropdown} __Parameter:__ {ref}`Reference permeability<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Reference_20permeability>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Reference_20permeability
 **Default value:** 1e-8
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Reference permeability of the solid host rock.Units: \si{\meter\squared}.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Reference_20temperature)=
-### __Parameter name:__ Reference temperature
+::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Reference_20temperature>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Reference_20temperature
 **Default value:** 293.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The reference temperature $T_0$ for the katz2003 reaction model. The reference temperature is used in both the density and viscosity formulas of this model. Units: \si{\kelvin}.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Shear_20to_20bulk_20viscosity_20ratio)=
-### __Parameter name:__ Shear to bulk viscosity ratio
+::::{dropdown} __Parameter:__ {ref}`Shear to bulk viscosity ratio<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Shear_20to_20bulk_20viscosity_20ratio>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Shear_20to_20bulk_20viscosity_20ratio
 **Default value:** 0.1
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Ratio between shear and bulk viscosity at the reference permeability $\phi_0=0.05$. The bulk viscosity additionally scales with $\phi_0/\phi$. The shear viscosity is read in from the base model. Units: dimensionless.
+::::
 
 (parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model)=
 ## **Subsection:** Material model / Reactive Fluid Transport Model / Katz 2003 model
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/A1)=
-### __Parameter name:__ A1
+::::{dropdown} __Parameter:__ {ref}`A1<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/A1>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/A1
 **Default value:** 1085.7
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Constant parameter in the quadratic function that approximates the solidus of peridotite. Units: $^{\circ}C$.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/A2)=
-### __Parameter name:__ A2
+::::{dropdown} __Parameter:__ {ref}`A2<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/A2>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/A2
 **Default value:** 1.329e-7
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the linear pressure term in the quadratic function that approximates the solidus of peridotite. Units: $\frac{^{\circ}C}{\text{Pa}}$.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/A3)=
-### __Parameter name:__ A3
+::::{dropdown} __Parameter:__ {ref}`A3<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/A3>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/A3
 **Default value:** -5.1e-18
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the quadratic pressure term in the quadratic function that approximates the solidus of peridotite. Units: $\frac{^{\circ}C}{\text{Pa}^2}$.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/B1)=
-### __Parameter name:__ B1
+::::{dropdown} __Parameter:__ {ref}`B1<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/B1>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/B1
 **Default value:** 1475.0
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Constant parameter in the quadratic function that approximates the lherzolite liquidus used for calculating the fraction of peridotite-derived melt. Units: $^{\circ}C$.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/B2)=
-### __Parameter name:__ B2
+::::{dropdown} __Parameter:__ {ref}`B2<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/B2>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/B2
 **Default value:** 8.0e-8
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the linear pressure term in the quadratic function that approximates the  lherzolite liquidus used for calculating the fraction of peridotite-derived melt. Units: $\frac{^{\circ}C}{\text{Pa}}$.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/B3)=
-### __Parameter name:__ B3
+::::{dropdown} __Parameter:__ {ref}`B3<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/B3>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/B3
 **Default value:** -3.2e-18
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the quadratic pressure term in the quadratic function that approximates the  lherzolite liquidus used for calculating the fraction of peridotite-derived melt. Units: $\frac{^{\circ}C}{\text{Pa}^2}$.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/C1)=
-### __Parameter name:__ C1
+::::{dropdown} __Parameter:__ {ref}`C1<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/C1>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/C1
 **Default value:** 1780.0
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Constant parameter in the quadratic function that approximates the liquidus of peridotite. Units: $^{\circ}C$.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/C2)=
-### __Parameter name:__ C2
+::::{dropdown} __Parameter:__ {ref}`C2<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/C2>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/C2
 **Default value:** 4.50e-8
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the linear pressure term in the quadratic function that approximates the liquidus of peridotite. Units: $\frac{^{\circ}C}{\text{Pa}}$.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/C3)=
-### __Parameter name:__ C3
+::::{dropdown} __Parameter:__ {ref}`C3<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/C3>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/C3
 **Default value:** -2.0e-18
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the quadratic pressure term in the quadratic function that approximates the liquidus of peridotite. Units: $\frac{^{\circ}C}{\text{Pa}^2}$.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Depletion_20solidus_20change)=
-### __Parameter name:__ Depletion solidus change
+::::{dropdown} __Parameter:__ {ref}`Depletion solidus change<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Depletion_20solidus_20change>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Depletion_20solidus_20change
 **Default value:** 200.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The solidus temperature change for a depletion of 100\%. For positive values, the solidus gets increased for a positive peridotite field (depletion) and lowered for a negative peridotite field (enrichment). Scaling with depletion is linear. Only active when fractional melting is used. Units: $\text{K}$.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Exponential_20melt_20weakening_20factor)=
-### __Parameter name:__ Exponential melt weakening factor
+::::{dropdown} __Parameter:__ {ref}`Exponential melt weakening factor<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Exponential_20melt_20weakening_20factor>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Exponential_20melt_20weakening_20factor
 **Default value:** 27.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The porosity dependence of the viscosity. Units: dimensionless.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Freezing_20rate)=
-### __Parameter name:__ Freezing rate
+::::{dropdown} __Parameter:__ {ref}`Freezing rate<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Freezing_20rate>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Freezing_20rate
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Freezing rate of melt when in subsolidus regions. If this parameter is set to a number larger than 0.0, it specifies the fraction of melt that will freeze per year (or per second, depending on the &ldquo;Use years instead of seconds&rdquo; parameter), as soon as the porosity exceeds the equilibrium melt fraction, and the equilibrium melt fraction falls below the depletion. In this case, melt will freeze according to the given rate until one of those conditions is not fulfilled anymore. The reasoning behind this is that there should not be more melt present than the equilibrium melt fraction, as melt production decreases with increasing depletion, but the freezing process of melt also reduces the depletion by the same amount, and as soon as the depletion falls below the equilibrium melt fraction, we expect that material should melt again (no matter how much melt is present). This is quite a simplification and not a realistic freezing parameterization, but without tracking the melt composition, there is no way to compute freezing rates accurately. If this parameter is set to zero, no freezing will occur. Note that freezing can never be faster than determined by the &ldquo;Melting time scale for operator splitting&rdquo;. The product of the &ldquo;Freezing rate&rdquo; and the &ldquo;Melting time scale for operator splitting&rdquo; defines how fast freezing occurs with respect to melting (if the product is 0.5, melting will occur twice as fast as freezing). Units: 1/yr or 1/s, depending on the &ldquo;Use years instead of seconds&rdquo; parameter.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Mass_20fraction_20cpx)=
-### __Parameter name:__ Mass fraction cpx
+::::{dropdown} __Parameter:__ {ref}`Mass fraction cpx<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Mass_20fraction_20cpx>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Mass_20fraction_20cpx
 **Default value:** 0.15
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Mass fraction of clinopyroxene in the peridotite to be molten. Units: non-dimensional.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Melt_20bulk_20modulus_20derivative)=
-### __Parameter name:__ Melt bulk modulus derivative
+::::{dropdown} __Parameter:__ {ref}`Melt bulk modulus derivative<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Melt_20bulk_20modulus_20derivative>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Melt_20bulk_20modulus_20derivative
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the pressure derivative of the melt bulk modulus. Units: None.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Melt_20compressibility)=
-### __Parameter name:__ Melt compressibility
+::::{dropdown} __Parameter:__ {ref}`Melt compressibility<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Melt_20compressibility>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Melt_20compressibility
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the compressibility of the melt. Units: $\frac{1}{\text{Pa}}$.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Melt_20extraction_20depth)=
-### __Parameter name:__ Melt extraction depth
+::::{dropdown} __Parameter:__ {ref}`Melt extraction depth<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Melt_20extraction_20depth>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Melt_20extraction_20depth
 **Default value:** 1000.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Depth above that melt will be extracted from the model, which is done by a negative reaction term proportional to the porosity field. Units: \si{\meter}.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Melting_20time_20scale_20for_20operator_20splitting)=
-### __Parameter name:__ Melting time scale for operator splitting
+::::{dropdown} __Parameter:__ {ref}`Melting time scale for operator splitting<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Melting_20time_20scale_20for_20operator_20splitting>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Melting_20time_20scale_20for_20operator_20splitting
 **Default value:** 1e3
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
@@ -3607,57 +4021,64 @@ Also note that the fluid reaction time scale has to be larger than or equal to t
 **Documentation:** Because the operator splitting scheme is used, the porosity field can not be set to a new equilibrium melt fraction instantly, but the model has to provide a melting time scale instead. This time scale defines how fast melting happens, or more specifically, the parameter defines the time after which the deviation of the porosity from the equilibrium melt fraction will be reduced to a fraction of $1/e$. So if the melting time scale is small compared to the time step size, the reaction will be so fast that the porosity is very close to the equilibrium melt fraction after reactions are computed. Conversely, if the melting time scale is large compared to the time step size, almost no melting and freezing will occur.
 
 Also note that the melting time scale has to be larger than or equal to the reaction time step used in the operator splitting scheme, otherwise reactions can not be computed. Units: yr or s, depending on the &ldquo;Use years instead of seconds&rdquo; parameter.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Peridotite_20melting_20entropy_20change)=
-### __Parameter name:__ Peridotite melting entropy change
+::::{dropdown} __Parameter:__ {ref}`Peridotite melting entropy change<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Peridotite_20melting_20entropy_20change>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Peridotite_20melting_20entropy_20change
 **Default value:** -300.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The entropy change for the phase transition from solid to melt of peridotite. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Reference_20bulk_20viscosity)=
-### __Parameter name:__ Reference bulk viscosity
+::::{dropdown} __Parameter:__ {ref}`Reference bulk viscosity<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Reference_20bulk_20viscosity>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Reference_20bulk_20viscosity
 **Default value:** 1e22
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the constant bulk viscosity $\xi_0$ of the solid matrix. This viscosity may be modified by both temperature and porosity dependencies. Units: $\text{Pa}\text{s}$.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Reference_20melt_20density)=
-### __Parameter name:__ Reference melt density
+::::{dropdown} __Parameter:__ {ref}`Reference melt density<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Reference_20melt_20density>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Reference_20melt_20density
 **Default value:** 2500.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Reference density of the melt/fluid$\rho_{f,0}$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Reference_20melt_20viscosity)=
-### __Parameter name:__ Reference melt viscosity
+::::{dropdown} __Parameter:__ {ref}`Reference melt viscosity<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Reference_20melt_20viscosity>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Reference_20melt_20viscosity
 **Default value:** 10.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the constant melt viscosity $\eta_f$. Units: $\text{Pa}\text{s}$.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Reference_20permeability)=
-### __Parameter name:__ Reference permeability
+::::{dropdown} __Parameter:__ {ref}`Reference permeability<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Reference_20permeability>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Reference_20permeability
 **Default value:** 1e-8
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Reference permeability of the solid host rock.Units: \si{\meter\squared}.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Thermal_20bulk_20viscosity_20exponent)=
-### __Parameter name:__ Thermal bulk viscosity exponent
+::::{dropdown} __Parameter:__ {ref}`Thermal bulk viscosity exponent<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Thermal_20bulk_20viscosity_20exponent>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Thermal_20bulk_20viscosity_20exponent
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The temperature dependence of the bulk viscosity. Dimensionless exponent. See the general documentation of this model for a formula that states the dependence of the viscosity on this factor, which is called $\beta$ there.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Use_20fractional_20melting)=
-### __Parameter name:__ Use fractional melting
+::::{dropdown} __Parameter:__ {ref}`Use fractional melting<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Use_20fractional_20melting>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Use_20fractional_20melting
 **Default value:** false
 
 **Pattern:** [Bool]
@@ -3665,799 +4086,897 @@ Also note that the melting time scale has to be larger than or equal to the reac
 **Documentation:** If fractional melting should be used (if true), including a solidus change based on depletion (in this case, the amount of melt that has migrated away from its origin), and freezing of melt when it has moved to a region with temperatures lower than the solidus; or if batch melting should be used (if false), assuming that the melt fraction only depends on temperature and pressure, and how much melt has already been generated at a given point, but not considering movement of melt in the melting parameterization.
 
 Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter is set to a value larger than 0.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/beta)=
-### __Parameter name:__ beta
+::::{dropdown} __Parameter:__ {ref}`beta<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/beta>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/beta
 **Default value:** 1.5
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Exponent of the melting temperature in the melt fraction calculation. Units: non-dimensional.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/r1)=
-### __Parameter name:__ r1
+::::{dropdown} __Parameter:__ {ref}`r1<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/r1>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/r1
 **Default value:** 0.5
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Constant in the linear function that approximates the clinopyroxene reaction coefficient. Units: non-dimensional.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/r2)=
-### __Parameter name:__ r2
+::::{dropdown} __Parameter:__ {ref}`r2<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/r2>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/r2
 **Default value:** 8e-11
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the linear pressure term in the linear function that approximates the clinopyroxene reaction coefficient. Units: $\frac{1}{\text{Pa}}$.
+::::
 
 (parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model)=
 ## **Subsection:** Material model / Reactive Fluid Transport Model / Tian 2019 model
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Maximum_20weight_20percent_20water_20in_20MORB)=
-### __Parameter name:__ Maximum weight percent water in MORB
+::::{dropdown} __Parameter:__ {ref}`Maximum weight percent water in MORB<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Maximum_20weight_20percent_20water_20in_20MORB>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Maximum_20weight_20percent_20water_20in_20MORB
 **Default value:** 2
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The maximum allowed weight percent that the sediment composition can hold.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Maximum_20weight_20percent_20water_20in_20gabbro)=
-### __Parameter name:__ Maximum weight percent water in gabbro
+::::{dropdown} __Parameter:__ {ref}`Maximum weight percent water in gabbro<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Maximum_20weight_20percent_20water_20in_20gabbro>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Maximum_20weight_20percent_20water_20in_20gabbro
 **Default value:** 1
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The maximum allowed weight percent that the sediment composition can hold.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Maximum_20weight_20percent_20water_20in_20peridotite)=
-### __Parameter name:__ Maximum weight percent water in peridotite
+::::{dropdown} __Parameter:__ {ref}`Maximum weight percent water in peridotite<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Maximum_20weight_20percent_20water_20in_20peridotite>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Maximum_20weight_20percent_20water_20in_20peridotite
 **Default value:** 8
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The maximum allowed weight percent that the sediment composition can hold.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Maximum_20weight_20percent_20water_20in_20sediment)=
-### __Parameter name:__ Maximum weight percent water in sediment
+::::{dropdown} __Parameter:__ {ref}`Maximum weight percent water in sediment<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Maximum_20weight_20percent_20water_20in_20sediment>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Maximum_20weight_20percent_20water_20in_20sediment
 **Default value:** 3
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The maximum allowed weight percent that the sediment composition can hold.
+::::
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Use_20adiabatic_20pressure_20for_20reactions)=
-### __Parameter name:__ Use adiabatic pressure for reactions
+::::{dropdown} __Parameter:__ {ref}`Use adiabatic pressure for reactions<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Use_20adiabatic_20pressure_20for_20reactions>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Use_20adiabatic_20pressure_20for_20reactions
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** If true, the adiabatic pressure is used in the Tian 2019 solubility model. If false, the full pressure is used instead. When simulating fully coupled fluid transport, setting this to true is recommended since the compaction pressure can lead to numerical instabilities when determining reaction rates.
+::::
 
 (parameters:Material_20model/Replace_20lithosphere_20viscosity)=
 ## **Subsection:** Material model / Replace lithosphere viscosity
-(parameters:Material_20model/Replace_20lithosphere_20viscosity/Base_20model)=
-### __Parameter name:__ Base model
+::::{dropdown} __Parameter:__ {ref}`Base model<parameters:Material_20model/Replace_20lithosphere_20viscosity/Base_20model>`
+:name: parameters:Material_20model/Replace_20lithosphere_20viscosity/Base_20model
 **Default value:** simple
 
 **Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|entropy model|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|prescribed viscosity|reactive fluid transport|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic ]
 
 **Documentation:** The name of a material model that will be modified by a replacingthe viscosity in the lithosphere by a constant value. Valid values for this parameter are the names of models that are also valid for the &ldquo;Material models/Model name&rdquo; parameter. See the documentation for more information.
+::::
 
-(parameters:Material_20model/Replace_20lithosphere_20viscosity/Data_20directory)=
-### __Parameter name:__ Data directory
+::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Material_20model/Replace_20lithosphere_20viscosity/Data_20directory>`
+:name: parameters:Material_20model/Replace_20lithosphere_20viscosity/Data_20directory
 **Default value:** $ASPECT_SOURCE_DIR/data/initial-temperature/lithosphere-mask/
 
 **Pattern:** [DirectoryName]
 
 **Documentation:** The path to the LAB depth data file
+::::
 
-(parameters:Material_20model/Replace_20lithosphere_20viscosity/Depth_20specification_20method)=
-### __Parameter name:__ Depth specification method
+::::{dropdown} __Parameter:__ {ref}`Depth specification method<parameters:Material_20model/Replace_20lithosphere_20viscosity/Depth_20specification_20method>`
+:name: parameters:Material_20model/Replace_20lithosphere_20viscosity/Depth_20specification_20method
 **Default value:** Value
 
 **Pattern:** [Selection File|Value ]
 
 **Documentation:** Method that is used to specify the depth of the lithosphere-asthenosphere boundary.
+::::
 
-(parameters:Material_20model/Replace_20lithosphere_20viscosity/LAB_20depth_20filename)=
-### __Parameter name:__ LAB depth filename
+::::{dropdown} __Parameter:__ {ref}`LAB depth filename<parameters:Material_20model/Replace_20lithosphere_20viscosity/LAB_20depth_20filename>`
+:name: parameters:Material_20model/Replace_20lithosphere_20viscosity/LAB_20depth_20filename
 **Default value:** LAB_CAM2016.txt
 
 **Pattern:** [FileName (Type: input)]
 
 **Documentation:** File from which the lithosphere-asthenosphere boundary depth data is read.
+::::
 
-(parameters:Material_20model/Replace_20lithosphere_20viscosity/Lithosphere_20viscosity)=
-### __Parameter name:__ Lithosphere viscosity
+::::{dropdown} __Parameter:__ {ref}`Lithosphere viscosity<parameters:Material_20model/Replace_20lithosphere_20viscosity/Lithosphere_20viscosity>`
+:name: parameters:Material_20model/Replace_20lithosphere_20viscosity/Lithosphere_20viscosity
 **Default value:** 1e23
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The viscosity within lithosphere, applied abovethe maximum lithosphere depth.
+::::
 
-(parameters:Material_20model/Replace_20lithosphere_20viscosity/Maximum_20lithosphere_20depth)=
-### __Parameter name:__ Maximum lithosphere depth
+::::{dropdown} __Parameter:__ {ref}`Maximum lithosphere depth<parameters:Material_20model/Replace_20lithosphere_20viscosity/Maximum_20lithosphere_20depth>`
+:name: parameters:Material_20model/Replace_20lithosphere_20viscosity/Maximum_20lithosphere_20depth
 **Default value:** 200000.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Units: \si{\meter}.The maximum depth of the lithosphere. The model will be NaNs below this depth.
+::::
 
 (parameters:Material_20model/Simple_20compressible_20model)=
 ## **Subsection:** Material model / Simple compressible model
-(parameters:Material_20model/Simple_20compressible_20model/Reference_20compressibility)=
-### __Parameter name:__ Reference compressibility
+::::{dropdown} __Parameter:__ {ref}`Reference compressibility<parameters:Material_20model/Simple_20compressible_20model/Reference_20compressibility>`
+:name: parameters:Material_20model/Simple_20compressible_20model/Reference_20compressibility
 **Default value:** 4e-12
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the reference compressibility. Units: $\frac{1}{\text{Pa}}$.
+::::
 
-(parameters:Material_20model/Simple_20compressible_20model/Reference_20density)=
-### __Parameter name:__ Reference density
+::::{dropdown} __Parameter:__ {ref}`Reference density<parameters:Material_20model/Simple_20compressible_20model/Reference_20density>`
+:name: parameters:Material_20model/Simple_20compressible_20model/Reference_20density
 **Default value:** 3300.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Reference density $\rho_0$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+::::
 
-(parameters:Material_20model/Simple_20compressible_20model/Reference_20specific_20heat)=
-### __Parameter name:__ Reference specific heat
+::::{dropdown} __Parameter:__ {ref}`Reference specific heat<parameters:Material_20model/Simple_20compressible_20model/Reference_20specific_20heat>`
+:name: parameters:Material_20model/Simple_20compressible_20model/Reference_20specific_20heat
 **Default value:** 1250.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the specific heat $C_p$. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+::::
 
-(parameters:Material_20model/Simple_20compressible_20model/Thermal_20conductivity)=
-### __Parameter name:__ Thermal conductivity
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivity<parameters:Material_20model/Simple_20compressible_20model/Thermal_20conductivity>`
+:name: parameters:Material_20model/Simple_20compressible_20model/Thermal_20conductivity
 **Default value:** 4.7
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+::::
 
-(parameters:Material_20model/Simple_20compressible_20model/Thermal_20expansion_20coefficient)=
-### __Parameter name:__ Thermal expansion coefficient
+::::{dropdown} __Parameter:__ {ref}`Thermal expansion coefficient<parameters:Material_20model/Simple_20compressible_20model/Thermal_20expansion_20coefficient>`
+:name: parameters:Material_20model/Simple_20compressible_20model/Thermal_20expansion_20coefficient
 **Default value:** 2e-5
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal expansion coefficient $\alpha$. Units: $\frac{1}{\text{K}}$.
+::::
 
-(parameters:Material_20model/Simple_20compressible_20model/Viscosity)=
-### __Parameter name:__ Viscosity
+::::{dropdown} __Parameter:__ {ref}`Viscosity<parameters:Material_20model/Simple_20compressible_20model/Viscosity>`
+:name: parameters:Material_20model/Simple_20compressible_20model/Viscosity
 **Default value:** 1000000000000000000000.000000
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the viscosity $\eta$. Units: $\text{Pa}\text{s}$.
+::::
 
 (parameters:Material_20model/Simple_20model)=
 ## **Subsection:** Material model / Simple model
-(parameters:Material_20model/Simple_20model/Composition_20viscosity_20prefactor)=
-### __Parameter name:__ Composition viscosity prefactor
+::::{dropdown} __Parameter:__ {ref}`Composition viscosity prefactor<parameters:Material_20model/Simple_20model/Composition_20viscosity_20prefactor>`
+:name: parameters:Material_20model/Simple_20model/Composition_20viscosity_20prefactor
 **Default value:** 1.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** A linear dependency of viscosity on the first compositional field. Dimensionless prefactor. With a value of 1.0 (the default) the viscosity does not depend on the composition. See the general documentation of this model for a formula that states the dependence of the viscosity on this factor, which is called $\xi$ there.
+::::
 
-(parameters:Material_20model/Simple_20model/Density_20differential_20for_20compositional_20field_201)=
-### __Parameter name:__ Density differential for compositional field 1
+::::{dropdown} __Parameter:__ {ref}`Density differential for compositional field 1<parameters:Material_20model/Simple_20model/Density_20differential_20for_20compositional_20field_201>`
+:name: parameters:Material_20model/Simple_20model/Density_20differential_20for_20compositional_20field_201
 **Default value:** 0.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the material model determines how many of them influence the density. The composition-dependence adds a term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: $\frac{\text{kg}}{\text{m}^3}$/unit change in composition.
+::::
 
-(parameters:Material_20model/Simple_20model/Maximum_20thermal_20prefactor)=
-### __Parameter name:__ Maximum thermal prefactor
+::::{dropdown} __Parameter:__ {ref}`Maximum thermal prefactor<parameters:Material_20model/Simple_20model/Maximum_20thermal_20prefactor>`
+:name: parameters:Material_20model/Simple_20model/Maximum_20thermal_20prefactor
 **Default value:** 1.0e2
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The maximum value of the viscosity prefactor associated with temperature dependence.
+::::
 
-(parameters:Material_20model/Simple_20model/Minimum_20thermal_20prefactor)=
-### __Parameter name:__ Minimum thermal prefactor
+::::{dropdown} __Parameter:__ {ref}`Minimum thermal prefactor<parameters:Material_20model/Simple_20model/Minimum_20thermal_20prefactor>`
+:name: parameters:Material_20model/Simple_20model/Minimum_20thermal_20prefactor
 **Default value:** 1.0e-2
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The minimum value of the viscosity prefactor associated with temperature dependence.
+::::
 
-(parameters:Material_20model/Simple_20model/Reference_20density)=
-### __Parameter name:__ Reference density
+::::{dropdown} __Parameter:__ {ref}`Reference density<parameters:Material_20model/Simple_20model/Reference_20density>`
+:name: parameters:Material_20model/Simple_20model/Reference_20density
 **Default value:** 3300.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Reference density $\rho_0$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+::::
 
-(parameters:Material_20model/Simple_20model/Reference_20specific_20heat)=
-### __Parameter name:__ Reference specific heat
+::::{dropdown} __Parameter:__ {ref}`Reference specific heat<parameters:Material_20model/Simple_20model/Reference_20specific_20heat>`
+:name: parameters:Material_20model/Simple_20model/Reference_20specific_20heat
 **Default value:** 1250.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the specific heat $C_p$. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+::::
 
-(parameters:Material_20model/Simple_20model/Reference_20temperature)=
-### __Parameter name:__ Reference temperature
+::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Simple_20model/Reference_20temperature>`
+:name: parameters:Material_20model/Simple_20model/Reference_20temperature
 **Default value:** 293.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The reference temperature $T_0$. The reference temperature is used in both the density and viscosity formulas. Units: $\text{K}$.
+::::
 
-(parameters:Material_20model/Simple_20model/Thermal_20conductivity)=
-### __Parameter name:__ Thermal conductivity
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivity<parameters:Material_20model/Simple_20model/Thermal_20conductivity>`
+:name: parameters:Material_20model/Simple_20model/Thermal_20conductivity
 **Default value:** 4.7
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+::::
 
-(parameters:Material_20model/Simple_20model/Thermal_20expansion_20coefficient)=
-### __Parameter name:__ Thermal expansion coefficient
+::::{dropdown} __Parameter:__ {ref}`Thermal expansion coefficient<parameters:Material_20model/Simple_20model/Thermal_20expansion_20coefficient>`
+:name: parameters:Material_20model/Simple_20model/Thermal_20expansion_20coefficient
 **Default value:** 2e-5
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal expansion coefficient $\alpha$. Units: $\frac{1}{\text{K}}$.
+::::
 
-(parameters:Material_20model/Simple_20model/Thermal_20viscosity_20exponent)=
-### __Parameter name:__ Thermal viscosity exponent
+::::{dropdown} __Parameter:__ {ref}`Thermal viscosity exponent<parameters:Material_20model/Simple_20model/Thermal_20viscosity_20exponent>`
+:name: parameters:Material_20model/Simple_20model/Thermal_20viscosity_20exponent
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The temperature dependence of viscosity. Dimensionless exponent. See the general documentation of this model for a formula that states the dependence of the viscosity on this factor, which is called $\beta$ there.
+::::
 
-(parameters:Material_20model/Simple_20model/Viscosity)=
-### __Parameter name:__ Viscosity
+::::{dropdown} __Parameter:__ {ref}`Viscosity<parameters:Material_20model/Simple_20model/Viscosity>`
+:name: parameters:Material_20model/Simple_20model/Viscosity
 **Default value:** 5e24
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the constant viscosity $\eta_0$. This viscosity may be modified by both temperature and compositional dependencies. Units: $\text{Pa}\text{s}$.
+::::
 
 (parameters:Material_20model/Simpler_20model)=
 ## **Subsection:** Material model / Simpler model
-(parameters:Material_20model/Simpler_20model/Reference_20density)=
-### __Parameter name:__ Reference density
+::::{dropdown} __Parameter:__ {ref}`Reference density<parameters:Material_20model/Simpler_20model/Reference_20density>`
+:name: parameters:Material_20model/Simpler_20model/Reference_20density
 **Default value:** 3300.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Reference density $\rho_0$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+::::
 
-(parameters:Material_20model/Simpler_20model/Reference_20specific_20heat)=
-### __Parameter name:__ Reference specific heat
+::::{dropdown} __Parameter:__ {ref}`Reference specific heat<parameters:Material_20model/Simpler_20model/Reference_20specific_20heat>`
+:name: parameters:Material_20model/Simpler_20model/Reference_20specific_20heat
 **Default value:** 1250.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the specific heat $C_p$. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+::::
 
-(parameters:Material_20model/Simpler_20model/Reference_20temperature)=
-### __Parameter name:__ Reference temperature
+::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Simpler_20model/Reference_20temperature>`
+:name: parameters:Material_20model/Simpler_20model/Reference_20temperature
 **Default value:** 293.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The reference temperature $T_0$. The reference temperature is used in both the density and viscosity formulas. Units: $\text{K}$.
+::::
 
-(parameters:Material_20model/Simpler_20model/Thermal_20conductivity)=
-### __Parameter name:__ Thermal conductivity
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivity<parameters:Material_20model/Simpler_20model/Thermal_20conductivity>`
+:name: parameters:Material_20model/Simpler_20model/Thermal_20conductivity
 **Default value:** 4.7
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+::::
 
-(parameters:Material_20model/Simpler_20model/Thermal_20expansion_20coefficient)=
-### __Parameter name:__ Thermal expansion coefficient
+::::{dropdown} __Parameter:__ {ref}`Thermal expansion coefficient<parameters:Material_20model/Simpler_20model/Thermal_20expansion_20coefficient>`
+:name: parameters:Material_20model/Simpler_20model/Thermal_20expansion_20coefficient
 **Default value:** 2e-5
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal expansion coefficient $\alpha$. Units: $\frac{1}{\text{K}}$.
+::::
 
-(parameters:Material_20model/Simpler_20model/Viscosity)=
-### __Parameter name:__ Viscosity
+::::{dropdown} __Parameter:__ {ref}`Viscosity<parameters:Material_20model/Simpler_20model/Viscosity>`
+:name: parameters:Material_20model/Simpler_20model/Viscosity
 **Default value:** 5000000000000000452984832.000000
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the viscosity $\eta$. Units: $\text{Pa}\text{s}$.
+::::
 
 (parameters:Material_20model/Steinberger_20model)=
 ## **Subsection:** Material model / Steinberger model
-(parameters:Material_20model/Steinberger_20model/Angles_20of_20dilation)=
-### __Parameter name:__ Angles of dilation
+::::{dropdown} __Parameter:__ {ref}`Angles of dilation<parameters:Material_20model/Steinberger_20model/Angles_20of_20dilation>`
+:name: parameters:Material_20model/Steinberger_20model/Angles_20of_20dilation
 **Default value:** 0.
 
 **Pattern:** [Anything]
 
 **Documentation:** List of angles of plastic dilation, $\psi$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. For a value of zero, the von Mises flow rule is retrieved. The dilation angle should never exceed the internal friction angle.
+::::
 
-(parameters:Material_20model/Steinberger_20model/Angles_20of_20internal_20friction)=
-### __Parameter name:__ Angles of internal friction
+::::{dropdown} __Parameter:__ {ref}`Angles of internal friction<parameters:Material_20model/Steinberger_20model/Angles_20of_20internal_20friction>`
+:name: parameters:Material_20model/Steinberger_20model/Angles_20of_20internal_20friction
 **Default value:** 0.
 
 **Pattern:** [Anything]
 
 **Documentation:** List of angles of internal friction, $\phi$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. For a value of zero, in 2d the von Mises criterion is retrieved. Angles higher than 30 degrees are harder to solve numerically. Units: degrees.
+::::
 
-(parameters:Material_20model/Steinberger_20model/Bilinear_20interpolation)=
-### __Parameter name:__ Bilinear interpolation
+::::{dropdown} __Parameter:__ {ref}`Bilinear interpolation<parameters:Material_20model/Steinberger_20model/Bilinear_20interpolation>`
+:name: parameters:Material_20model/Steinberger_20model/Bilinear_20interpolation
 **Default value:** true
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to use bilinear interpolation to compute material properties (slower but more accurate).
+::::
 
-(parameters:Material_20model/Steinberger_20model/Cohesions)=
-### __Parameter name:__ Cohesions
+::::{dropdown} __Parameter:__ {ref}`Cohesions<parameters:Material_20model/Steinberger_20model/Cohesions>`
+:name: parameters:Material_20model/Steinberger_20model/Cohesions
 **Default value:** 1e20
 
 **Pattern:** [Anything]
 
 **Documentation:** List of cohesions, $C$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. The extremely large default cohesion value (1e20 Pa) prevents the viscous stress from exceeding the yield stress. Units: \si{\pascal}.
+::::
 
-(parameters:Material_20model/Steinberger_20model/Composition_20viscosity_20prefactors)=
-### __Parameter name:__ Composition viscosity prefactors
+::::{dropdown} __Parameter:__ {ref}`Composition viscosity prefactors<parameters:Material_20model/Steinberger_20model/Composition_20viscosity_20prefactors>`
+:name: parameters:Material_20model/Steinberger_20model/Composition_20viscosity_20prefactors
 **Default value:** 1
 
 **Pattern:** [Anything]
 
 **Documentation:** List of N prefactors that are used to modify the reference viscosity, where N is either equal to one or the number of chemical components in the simulation. If only one value is given, then all components use the same value. Units: $\text{Pa}\text{s}$.
+::::
 
-(parameters:Material_20model/Steinberger_20model/Data_20directory)=
-### __Parameter name:__ Data directory
+::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Material_20model/Steinberger_20model/Data_20directory>`
+:name: parameters:Material_20model/Steinberger_20model/Data_20directory
 **Default value:** $ASPECT_SOURCE_DIR/data/material-model/steinberger/
 
 **Pattern:** [DirectoryName]
 
 **Documentation:** The path to the model data. The path may also include the special text &rsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT.
+::::
 
-(parameters:Material_20model/Steinberger_20model/Derivatives_20file_20names)=
-### __Parameter name:__ Derivatives file names
+::::{dropdown} __Parameter:__ {ref}`Derivatives file names<parameters:Material_20model/Steinberger_20model/Derivatives_20file_20names>`
+:name: parameters:Material_20model/Steinberger_20model/Derivatives_20file_20names
 **Default value:**
 
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The file names of the enthalpy derivatives data. List with as many components as active compositional fields (material data is assumed to be in order with the ordering of the fields).
+::::
 
-(parameters:Material_20model/Steinberger_20model/Latent_20heat)=
-### __Parameter name:__ Latent heat
+::::{dropdown} __Parameter:__ {ref}`Latent heat<parameters:Material_20model/Steinberger_20model/Latent_20heat>`
+:name: parameters:Material_20model/Steinberger_20model/Latent_20heat
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to include latent heat effects in the calculation of thermal expansivity and specific heat. If true, ASPECT follows the approach of Nakagawa et al. 2009, using pressure and temperature derivatives of the enthalpy to calculate the thermal expansivity and specific heat. If false, ASPECT uses the thermal expansivity and specific heat values from the material properties table.
+::::
 
-(parameters:Material_20model/Steinberger_20model/Lateral_20viscosity_20file_20name)=
-### __Parameter name:__ Lateral viscosity file name
+::::{dropdown} __Parameter:__ {ref}`Lateral viscosity file name<parameters:Material_20model/Steinberger_20model/Lateral_20viscosity_20file_20name>`
+:name: parameters:Material_20model/Steinberger_20model/Lateral_20viscosity_20file_20name
 **Default value:** temp-viscosity-prefactor.txt
 
 **Pattern:** [Anything]
 
 **Documentation:** The file name of the lateral viscosity data.
+::::
 
-(parameters:Material_20model/Steinberger_20model/Material_20file_20format)=
-### __Parameter name:__ Material file format
+::::{dropdown} __Parameter:__ {ref}`Material file format<parameters:Material_20model/Steinberger_20model/Material_20file_20format>`
+:name: parameters:Material_20model/Steinberger_20model/Material_20file_20format
 **Default value:** perplex
 
 **Pattern:** [Selection perplex|hefesto ]
 
 **Documentation:** The material file format to be read in the property tables.
+::::
 
-(parameters:Material_20model/Steinberger_20model/Material_20file_20names)=
-### __Parameter name:__ Material file names
+::::{dropdown} __Parameter:__ {ref}`Material file names<parameters:Material_20model/Steinberger_20model/Material_20file_20names>`
+:name: parameters:Material_20model/Steinberger_20model/Material_20file_20names
 **Default value:** pyr-ringwood88.txt
 
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The file names of the material data (material data is assumed to be in order with the ordering of the compositional fields). Note that there are three options on how many files need to be listed here: 1. If only one file is provided, it is used for the whole model domain, and compositional fields are ignored. 2. If there is one more file name than the number of compositional fields, then the first file is assumed to define a &lsquo;background composition&rsquo; that is modified by the compositional fields. If there are exactly as many files as compositional fields, the fields are assumed to represent the fractions of different materials and the average property is computed as a sum of the value of the compositional field times the material property of that field.
+::::
 
-(parameters:Material_20model/Steinberger_20model/Maximum_20latent_20heat_20substeps)=
-### __Parameter name:__ Maximum latent heat substeps
+::::{dropdown} __Parameter:__ {ref}`Maximum latent heat substeps<parameters:Material_20model/Steinberger_20model/Maximum_20latent_20heat_20substeps>`
+:name: parameters:Material_20model/Steinberger_20model/Maximum_20latent_20heat_20substeps
 **Default value:** 1
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** The maximum number of substeps over the temperature pressure range to calculate the averaged enthalpy gradient over a cell.
+::::
 
-(parameters:Material_20model/Steinberger_20model/Maximum_20lateral_20viscosity_20variation)=
-### __Parameter name:__ Maximum lateral viscosity variation
+::::{dropdown} __Parameter:__ {ref}`Maximum lateral viscosity variation<parameters:Material_20model/Steinberger_20model/Maximum_20lateral_20viscosity_20variation>`
+:name: parameters:Material_20model/Steinberger_20model/Maximum_20lateral_20viscosity_20variation
 **Default value:** 1e2
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The relative cutoff value for lateral viscosity variations caused by temperature deviations. The viscosity may vary laterally by this factor squared.
+::::
 
-(parameters:Material_20model/Steinberger_20model/Maximum_20thermal_20conductivity)=
-### __Parameter name:__ Maximum thermal conductivity
+::::{dropdown} __Parameter:__ {ref}`Maximum thermal conductivity<parameters:Material_20model/Steinberger_20model/Maximum_20thermal_20conductivity>`
+:name: parameters:Material_20model/Steinberger_20model/Maximum_20thermal_20conductivity
 **Default value:** 1000
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The maximum thermal conductivity that is allowed in the model. Larger values will be cut off.
+::::
 
-(parameters:Material_20model/Steinberger_20model/Maximum_20viscosity)=
-### __Parameter name:__ Maximum viscosity
+::::{dropdown} __Parameter:__ {ref}`Maximum viscosity<parameters:Material_20model/Steinberger_20model/Maximum_20viscosity>`
+:name: parameters:Material_20model/Steinberger_20model/Maximum_20viscosity
 **Default value:** 1e23
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The maximum viscosity that is allowed in the viscosity calculation. Larger values will be cut off.
+::::
 
-(parameters:Material_20model/Steinberger_20model/Maximum_20yield_20stress)=
-### __Parameter name:__ Maximum yield stress
+::::{dropdown} __Parameter:__ {ref}`Maximum yield stress<parameters:Material_20model/Steinberger_20model/Maximum_20yield_20stress>`
+:name: parameters:Material_20model/Steinberger_20model/Maximum_20yield_20stress
 **Default value:** 1e12
 
 **Pattern:** [Anything]
 
 **Documentation:** List of maximum yield stresses, for background material and compositional fields, , which limits the maximum value of the yield stress determined by the Drucker-Prager plasticity parameters. Default value is chosen so this is not automatically used. Values of 100e6--1000e6 $Pa$ have been used in previous models. Units: \si{\pascal}.
+::::
 
-(parameters:Material_20model/Steinberger_20model/Minimum_20viscosity)=
-### __Parameter name:__ Minimum viscosity
+::::{dropdown} __Parameter:__ {ref}`Minimum viscosity<parameters:Material_20model/Steinberger_20model/Minimum_20viscosity>`
+:name: parameters:Material_20model/Steinberger_20model/Minimum_20viscosity
 **Default value:** 1e19
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The minimum viscosity that is allowed in the viscosity calculation. Smaller values will be cut off.
+::::
 
-(parameters:Material_20model/Steinberger_20model/Number_20lateral_20average_20bands)=
-### __Parameter name:__ Number lateral average bands
+::::{dropdown} __Parameter:__ {ref}`Number lateral average bands<parameters:Material_20model/Steinberger_20model/Number_20lateral_20average_20bands>`
+:name: parameters:Material_20model/Steinberger_20model/Number_20lateral_20average_20bands
 **Default value:** 10
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** Number of bands to compute laterally averaged temperature within.
+::::
 
-(parameters:Material_20model/Steinberger_20model/Plastic_20damper_20viscosity)=
-### __Parameter name:__ Plastic damper viscosity
+::::{dropdown} __Parameter:__ {ref}`Plastic damper viscosity<parameters:Material_20model/Steinberger_20model/Plastic_20damper_20viscosity>`
+:name: parameters:Material_20model/Steinberger_20model/Plastic_20damper_20viscosity
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Viscosity of the damper that acts in parallel with the plastic viscosity to produce mesh-independent behavior at sufficient resolutions. Units: \si{\pascal\second}
+::::
 
-(parameters:Material_20model/Steinberger_20model/Prefactors_20for_20yield_20stress)=
-### __Parameter name:__ Prefactors for yield stress
+::::{dropdown} __Parameter:__ {ref}`Prefactors for yield stress<parameters:Material_20model/Steinberger_20model/Prefactors_20for_20yield_20stress>`
+:name: parameters:Material_20model/Steinberger_20model/Prefactors_20for_20yield_20stress
 **Default value:** 1.0
 
 **Pattern:** [Anything]
 
 **Documentation:** List of prefactors for the yield stress, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. The prefactor is multiplied with the yield stress computed from the Drucker-Prager plasticity parameters. Default value is 1.0.
+::::
 
-(parameters:Material_20model/Steinberger_20model/Pressure_20dependencies_20of_20thermal_20conductivity)=
-### __Parameter name:__ Pressure dependencies of thermal conductivity
+::::{dropdown} __Parameter:__ {ref}`Pressure dependencies of thermal conductivity<parameters:Material_20model/Steinberger_20model/Pressure_20dependencies_20of_20thermal_20conductivity>`
+:name: parameters:Material_20model/Steinberger_20model/Pressure_20dependencies_20of_20thermal_20conductivity
 **Default value:** 3.3e-10, 3.4e-10, 3.6e-10, 1.05e-10
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A list of values that determine the linear scaling of the thermal conductivity with pressure. Units: \si{\watt\per\meter\per\kelvin\per\pascal}.
+::::
 
-(parameters:Material_20model/Steinberger_20model/Radial_20viscosity_20file_20name)=
-### __Parameter name:__ Radial viscosity file name
+::::{dropdown} __Parameter:__ {ref}`Radial viscosity file name<parameters:Material_20model/Steinberger_20model/Radial_20viscosity_20file_20name>`
+:name: parameters:Material_20model/Steinberger_20model/Radial_20viscosity_20file_20name
 **Default value:** radial-visc.txt
 
 **Pattern:** [Anything]
 
 **Documentation:** The file name of the radial viscosity data.
+::::
 
-(parameters:Material_20model/Steinberger_20model/Reference_20temperatures_20for_20thermal_20conductivity)=
-### __Parameter name:__ Reference temperatures for thermal conductivity
+::::{dropdown} __Parameter:__ {ref}`Reference temperatures for thermal conductivity<parameters:Material_20model/Steinberger_20model/Reference_20temperatures_20for_20thermal_20conductivity>`
+:name: parameters:Material_20model/Steinberger_20model/Reference_20temperatures_20for_20thermal_20conductivity
 **Default value:** 300, 300, 300, 1200
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A list of values of reference temperatures used to determine the temperature-dependence of the thermal conductivity. Units: $\text{K}$.
+::::
 
-(parameters:Material_20model/Steinberger_20model/Reference_20thermal_20conductivities)=
-### __Parameter name:__ Reference thermal conductivities
+::::{dropdown} __Parameter:__ {ref}`Reference thermal conductivities<parameters:Material_20model/Steinberger_20model/Reference_20thermal_20conductivities>`
+:name: parameters:Material_20model/Steinberger_20model/Reference_20thermal_20conductivities
 **Default value:** 2.47, 3.81, 3.52, 4.9
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A list of base values of the thermal conductivity for each of the horizontal layers. Pressure- and temperature-dependence will be applied on top of this base value, according to the parameters &rsquo;Pressure dependencies of thermal conductivity&rsquo; and &rsquo;Reference temperatures for thermal conductivity&rsquo;. Units: $\frac{\text{W}}{\text{m}\text{K}}$
+::::
 
-(parameters:Material_20model/Steinberger_20model/Saturation_20prefactors)=
-### __Parameter name:__ Saturation prefactors
+::::{dropdown} __Parameter:__ {ref}`Saturation prefactors<parameters:Material_20model/Steinberger_20model/Saturation_20prefactors>`
+:name: parameters:Material_20model/Steinberger_20model/Saturation_20prefactors
 **Default value:** 0, 0, 0, 1
 
 **Pattern:** [List of <[Double 0...1 (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A list of values that indicate how a given layer should take into account the effects of saturation on the temperature-dependence of the thermal conductivity. This factor is multiplied with a saturation function based on the theory of Roufosse and Klemens, 1974. A value of 1 reproduces the formulation of Stackhouse et al. (2015), a value of 0 reproduces the formulation of Tosi et al., (2013). Units: none.
+::::
 
-(parameters:Material_20model/Steinberger_20model/Thermal_20conductivity)=
-### __Parameter name:__ Thermal conductivity
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivity<parameters:Material_20model/Steinberger_20model/Thermal_20conductivity>`
+:name: parameters:Material_20model/Steinberger_20model/Thermal_20conductivity
 **Default value:** 4.7
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+::::
 
-(parameters:Material_20model/Steinberger_20model/Thermal_20conductivity_20exponents)=
-### __Parameter name:__ Thermal conductivity exponents
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivity exponents<parameters:Material_20model/Steinberger_20model/Thermal_20conductivity_20exponents>`
+:name: parameters:Material_20model/Steinberger_20model/Thermal_20conductivity_20exponents
 **Default value:** 0.48, 0.56, 0.61, 1.0
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A list of exponents in the temperature-dependent term of the conductivity formulation. Note that this exponent is not used (and should have a value of 1) in the formulation of Stackhouse et al. (2015). Units: none.
+::::
 
-(parameters:Material_20model/Steinberger_20model/Thermal_20conductivity_20formulation)=
-### __Parameter name:__ Thermal conductivity formulation
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivity formulation<parameters:Material_20model/Steinberger_20model/Thermal_20conductivity_20formulation>`
+:name: parameters:Material_20model/Steinberger_20model/Thermal_20conductivity_20formulation
 **Default value:** constant
 
 **Pattern:** [Selection constant|p-T-dependent ]
 
 **Documentation:** Which law should be used to compute the thermal conductivity. The &rsquo;constant&rsquo; law uses a constant value for the thermal conductivity. The &rsquo;p-T-dependent&rsquo; formulation uses equations from Stackhouse et al. (2015): First-principles calculations of the lattice thermal conductivity of the lower mantle (https://doi.org/10.1016/j.epsl.2015.06.050), and Tosi et al. (2013): Mantle dynamics with pressure- and temperature-dependent thermal expansivity and conductivity (https://doi.org/10.1016/j.pepi.2013.02.004) to compute the thermal conductivity in dependence of temperature and pressure. The thermal conductivity parameter sets can be chosen in such a way that either the Stackhouse or the Tosi relations are used. The conductivity description can consist of several layers with different sets of parameters. Note that the Stackhouse parametrization is only valid for the lower mantle (bridgmanite).
+::::
 
-(parameters:Material_20model/Steinberger_20model/Thermal_20conductivity_20transition_20depths)=
-### __Parameter name:__ Thermal conductivity transition depths
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivity transition depths<parameters:Material_20model/Steinberger_20model/Thermal_20conductivity_20transition_20depths>`
+:name: parameters:Material_20model/Steinberger_20model/Thermal_20conductivity_20transition_20depths
 **Default value:** 410000, 520000, 660000
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A list of depth values that indicate where the transitions between the different conductivity parameter sets should occur (in most cases, these will be the depths of major phase transitions). Units: \si{\meter}.
+::::
 
-(parameters:Material_20model/Steinberger_20model/Use_20Drucker_2dPrager_20rheology)=
-### __Parameter name:__ Use Drucker-Prager rheology
+::::{dropdown} __Parameter:__ {ref}`Use Drucker-Prager rheology<parameters:Material_20model/Steinberger_20model/Use_20Drucker_2dPrager_20rheology>`
+:name: parameters:Material_20model/Steinberger_20model/Use_20Drucker_2dPrager_20rheology
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** This parameter determines whether to apply plastic yielding according to a Drucker-Prager rheology after computing the default steinberger viscosity (if true) or not (if false).
+::::
 
-(parameters:Material_20model/Steinberger_20model/Use_20lateral_20average_20temperature_20for_20viscosity)=
-### __Parameter name:__ Use lateral average temperature for viscosity
+::::{dropdown} __Parameter:__ {ref}`Use lateral average temperature for viscosity<parameters:Material_20model/Steinberger_20model/Use_20lateral_20average_20temperature_20for_20viscosity>`
+:name: parameters:Material_20model/Steinberger_20model/Use_20lateral_20average_20temperature_20for_20viscosity
 **Default value:** true
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to use the laterally averaged temperature instead of the adiabatic temperature as reference for the viscosity calculation. This ensures that the laterally averaged viscosities remain more or less constant over the model runtime. This behavior might or might not be desired.
+::::
 
-(parameters:Material_20model/Steinberger_20model/Use_20plastic_20damper)=
-### __Parameter name:__ Use plastic damper
+::::{dropdown} __Parameter:__ {ref}`Use plastic damper<parameters:Material_20model/Steinberger_20model/Use_20plastic_20damper>`
+:name: parameters:Material_20model/Steinberger_20model/Use_20plastic_20damper
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to use a plastic damper when computing the Drucker-Prager plastic viscosity. The damper acts to stabilize the plastic shear band width and remove associated mesh-dependent behavior at sufficient resolutions.
+::::
 
-(parameters:Material_20model/Steinberger_20model/Viscosity_20averaging_20scheme)=
-### __Parameter name:__ Viscosity averaging scheme
+::::{dropdown} __Parameter:__ {ref}`Viscosity averaging scheme<parameters:Material_20model/Steinberger_20model/Viscosity_20averaging_20scheme>`
+:name: parameters:Material_20model/Steinberger_20model/Viscosity_20averaging_20scheme
 **Default value:** harmonic
 
 **Pattern:** [Selection arithmetic|harmonic|geometric|maximum composition ]
 
 **Documentation:** Method to average viscosities over multiple compositional fields. One of arithmetic, harmonic, geometric or maximum composition.
+::::
 
 (parameters:Material_20model/Visco_20Plastic)=
 ## **Subsection:** Material model / Visco Plastic
-(parameters:Material_20model/Visco_20Plastic/Activation_20energies_20for_20Peierls_20creep)=
-### __Parameter name:__ Activation energies for Peierls creep
+::::{dropdown} __Parameter:__ {ref}`Activation energies for Peierls creep<parameters:Material_20model/Visco_20Plastic/Activation_20energies_20for_20Peierls_20creep>`
+:name: parameters:Material_20model/Visco_20Plastic/Activation_20energies_20for_20Peierls_20creep
 **Default value:** 320e3
 
 **Pattern:** [Anything]
 
 **Documentation:** List of activation energies, $E$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\joule\per\mole}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Activation_20energies_20for_20diffusion_20creep)=
-### __Parameter name:__ Activation energies for diffusion creep
+::::{dropdown} __Parameter:__ {ref}`Activation energies for diffusion creep<parameters:Material_20model/Visco_20Plastic/Activation_20energies_20for_20diffusion_20creep>`
+:name: parameters:Material_20model/Visco_20Plastic/Activation_20energies_20for_20diffusion_20creep
 **Default value:** 375e3
 
 **Pattern:** [Anything]
 
 **Documentation:** List of activation energies, $E_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\joule\per\mole}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Activation_20energies_20for_20dislocation_20creep)=
-### __Parameter name:__ Activation energies for dislocation creep
+::::{dropdown} __Parameter:__ {ref}`Activation energies for dislocation creep<parameters:Material_20model/Visco_20Plastic/Activation_20energies_20for_20dislocation_20creep>`
+:name: parameters:Material_20model/Visco_20Plastic/Activation_20energies_20for_20dislocation_20creep
 **Default value:** 530e3
 
 **Pattern:** [Anything]
 
 **Documentation:** List of activation energies, $E_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\joule\per\mole}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Activation_20volumes_20for_20Peierls_20creep)=
-### __Parameter name:__ Activation volumes for Peierls creep
+::::{dropdown} __Parameter:__ {ref}`Activation volumes for Peierls creep<parameters:Material_20model/Visco_20Plastic/Activation_20volumes_20for_20Peierls_20creep>`
+:name: parameters:Material_20model/Visco_20Plastic/Activation_20volumes_20for_20Peierls_20creep
 **Default value:** 1.4e-5
 
 **Pattern:** [Anything]
 
 **Documentation:** List of activation volumes, $V$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\meter\cubed\per\mole}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Activation_20volumes_20for_20diffusion_20creep)=
-### __Parameter name:__ Activation volumes for diffusion creep
+::::{dropdown} __Parameter:__ {ref}`Activation volumes for diffusion creep<parameters:Material_20model/Visco_20Plastic/Activation_20volumes_20for_20diffusion_20creep>`
+:name: parameters:Material_20model/Visco_20Plastic/Activation_20volumes_20for_20diffusion_20creep
 **Default value:** 6e-6
 
 **Pattern:** [Anything]
 
 **Documentation:** List of activation volumes, $V_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\meter\cubed\per\mole}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Activation_20volumes_20for_20dislocation_20creep)=
-### __Parameter name:__ Activation volumes for dislocation creep
+::::{dropdown} __Parameter:__ {ref}`Activation volumes for dislocation creep<parameters:Material_20model/Visco_20Plastic/Activation_20volumes_20for_20dislocation_20creep>`
+:name: parameters:Material_20model/Visco_20Plastic/Activation_20volumes_20for_20dislocation_20creep
 **Default value:** 1.4e-5
 
 **Pattern:** [Anything]
 
 **Documentation:** List of activation volumes, $V_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\meter\cubed\per\mole}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Adiabat_20temperature_20gradient_20for_20viscosity)=
-### __Parameter name:__ Adiabat temperature gradient for viscosity
+::::{dropdown} __Parameter:__ {ref}`Adiabat temperature gradient for viscosity<parameters:Material_20model/Visco_20Plastic/Adiabat_20temperature_20gradient_20for_20viscosity>`
+:name: parameters:Material_20model/Visco_20Plastic/Adiabat_20temperature_20gradient_20for_20viscosity
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Add an adiabatic temperature gradient to the temperature used in the flow law so that the activation volume is consistent with what one would use in a earth-like (compressible) model. Default is set so this is off. Note that this is a linear approximation of the real adiabatic gradient, which is okay for the upper mantle, but is not really accurate for the lower mantle. Using a pressure gradient of 32436 Pa/m, then a value of 0.3 K/km = 0.0003 K/m = 9.24e-09 K/Pa gives an earth-like adiabat.Units: \si{\kelvin\per\pascal}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Allow_20negative_20pressures_20in_20plasticity)=
-### __Parameter name:__ Allow negative pressures in plasticity
+::::{dropdown} __Parameter:__ {ref}`Allow negative pressures in plasticity<parameters:Material_20model/Visco_20Plastic/Allow_20negative_20pressures_20in_20plasticity>`
+:name: parameters:Material_20model/Visco_20Plastic/Allow_20negative_20pressures_20in_20plasticity
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to allow negative pressures to be used in the computation of plastic yield stresses and viscosities. Setting this parameter to true may be advantageous in models without gravity where the dynamic stresses are much higher than the lithostatic pressure. If false, the minimum pressure in the plasticity formulation will be set to zero.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Angles_20of_20dilation)=
-### __Parameter name:__ Angles of dilation
+::::{dropdown} __Parameter:__ {ref}`Angles of dilation<parameters:Material_20model/Visco_20Plastic/Angles_20of_20dilation>`
+:name: parameters:Material_20model/Visco_20Plastic/Angles_20of_20dilation
 **Default value:** 0.
 
 **Pattern:** [Anything]
 
 **Documentation:** List of angles of plastic dilation, $\psi$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. For a value of zero, the von Mises flow rule is retrieved. The dilation angle should never exceed the internal friction angle.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Angles_20of_20internal_20friction)=
-### __Parameter name:__ Angles of internal friction
+::::{dropdown} __Parameter:__ {ref}`Angles of internal friction<parameters:Material_20model/Visco_20Plastic/Angles_20of_20internal_20friction>`
+:name: parameters:Material_20model/Visco_20Plastic/Angles_20of_20internal_20friction
 **Default value:** 0.
 
 **Pattern:** [Anything]
 
 **Documentation:** List of angles of internal friction, $\phi$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. For a value of zero, in 2d the von Mises criterion is retrieved. Angles higher than 30 degrees are harder to solve numerically. Units: degrees.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Apply_20strict_20stress_20cutoff_20for_20Peierls_20creep)=
-### __Parameter name:__ Apply strict stress cutoff for Peierls creep
+::::{dropdown} __Parameter:__ {ref}`Apply strict stress cutoff for Peierls creep<parameters:Material_20model/Visco_20Plastic/Apply_20strict_20stress_20cutoff_20for_20Peierls_20creep>`
+:name: parameters:Material_20model/Visco_20Plastic/Apply_20strict_20stress_20cutoff_20for_20Peierls_20creep
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether the cutoff stresses for Peierls creep are used as the minimum stresses in the Peierls rheology
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Cohesion_20strain_20weakening_20factors)=
-### __Parameter name:__ Cohesion strain weakening factors
+::::{dropdown} __Parameter:__ {ref}`Cohesion strain weakening factors<parameters:Material_20model/Visco_20Plastic/Cohesion_20strain_20weakening_20factors>`
+:name: parameters:Material_20model/Visco_20Plastic/Cohesion_20strain_20weakening_20factors
 **Default value:** 1.
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of cohesion strain weakening factors for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value.  Units: None.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Cohesions)=
-### __Parameter name:__ Cohesions
+::::{dropdown} __Parameter:__ {ref}`Cohesions<parameters:Material_20model/Visco_20Plastic/Cohesions>`
+:name: parameters:Material_20model/Visco_20Plastic/Cohesions
 **Default value:** 1e20
 
 **Pattern:** [Anything]
 
 **Documentation:** List of cohesions, $C$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. The extremely large default cohesion value (1e20 Pa) prevents the viscous stress from exceeding the yield stress. Units: \si{\pascal}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Constant_20viscosity_20prefactors)=
-### __Parameter name:__ Constant viscosity prefactors
+::::{dropdown} __Parameter:__ {ref}`Constant viscosity prefactors<parameters:Material_20model/Visco_20Plastic/Constant_20viscosity_20prefactors>`
+:name: parameters:Material_20model/Visco_20Plastic/Constant_20viscosity_20prefactors
 **Default value:** 1.0
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of constant viscosity prefactors (i.e., multiplicative factors) for background material and compositional fields, for a total of N+1 where N is the number of all compositional fields or only those corresponding to chemical compositions. Units: none.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Cutoff_20stresses_20for_20Peierls_20creep)=
-### __Parameter name:__ Cutoff stresses for Peierls creep
+::::{dropdown} __Parameter:__ {ref}`Cutoff stresses for Peierls creep<parameters:Material_20model/Visco_20Plastic/Cutoff_20stresses_20for_20Peierls_20creep>`
+:name: parameters:Material_20model/Visco_20Plastic/Cutoff_20stresses_20for_20Peierls_20creep
 **Default value:** 0.0
 
 **Pattern:** [Anything]
 
 **Documentation:** List of the Stress thresholds below which the strain rate is solved for as a quadratic function of stress to aid with convergence when stress exponent n=0. Units: \si{\pascal}
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Data_20directory)=
-### __Parameter name:__ Data directory
+::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Material_20model/Visco_20Plastic/Data_20directory>`
+:name: parameters:Material_20model/Visco_20Plastic/Data_20directory
 **Default value:** $ASPECT_SOURCE_DIR/data/material-model/entropy-table/pyrtable
 
 **Pattern:** [DirectoryName]
 
 **Documentation:** The path to the model data. The path may also include the special text &rsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Define_20thermal_20conductivities)=
-### __Parameter name:__ Define thermal conductivities
+::::{dropdown} __Parameter:__ {ref}`Define thermal conductivities<parameters:Material_20model/Visco_20Plastic/Define_20thermal_20conductivities>`
+:name: parameters:Material_20model/Visco_20Plastic/Define_20thermal_20conductivities
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to directly define thermal conductivities for each compositional field instead of calculating the values through the specified thermal diffusivities, densities, and heat capacities.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Define_20transition_20by_20depth_20instead_20of_20pressure)=
-### __Parameter name:__ Define transition by depth instead of pressure
+::::{dropdown} __Parameter:__ {ref}`Define transition by depth instead of pressure<parameters:Material_20model/Visco_20Plastic/Define_20transition_20by_20depth_20instead_20of_20pressure>`
+:name: parameters:Material_20model/Visco_20Plastic/Define_20transition_20by_20depth_20instead_20of_20pressure
 **Default value:** true
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to list phase transitions by depth or pressure. If this parameter is true, then the input file will use Phase transitions depths and Phase transition widths to define the phase transition. If it is false, the parameter file will read in phase transition data from Phase transition pressures and Phase transition pressure widths.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Densities)=
-### __Parameter name:__ Densities
+::::{dropdown} __Parameter:__ {ref}`Densities<parameters:Material_20model/Visco_20Plastic/Densities>`
+:name: parameters:Material_20model/Visco_20Plastic/Densities
 **Default value:** 3300.
 
 **Pattern:** [Anything]
 
 **Documentation:** List of densities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\kilogram\per\meter\cubed}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Dynamic_20angles_20of_20internal_20friction)=
-### __Parameter name:__ Dynamic angles of internal friction
+::::{dropdown} __Parameter:__ {ref}`Dynamic angles of internal friction<parameters:Material_20model/Visco_20Plastic/Dynamic_20angles_20of_20internal_20friction>`
+:name: parameters:Material_20model/Visco_20Plastic/Dynamic_20angles_20of_20internal_20friction
 **Default value:** 2
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of dynamic angles of internal friction, $\phi$, for background material and compositional fields, for a total of N$+$1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. Dynamic angles of friction are used as the current friction angle when the effective strain rate is well above the &rsquo;dynamic characteristic strain rate&rsquo;. Units: \si{\degree}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Dynamic_20characteristic_20strain_20rate)=
-### __Parameter name:__ Dynamic characteristic strain rate
+::::{dropdown} __Parameter:__ {ref}`Dynamic characteristic strain rate<parameters:Material_20model/Visco_20Plastic/Dynamic_20characteristic_20strain_20rate>`
+:name: parameters:Material_20model/Visco_20Plastic/Dynamic_20characteristic_20strain_20rate
 **Default value:** 1e-12
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The characteristic strain rate value at which the angle of friction is equal to $\mu = (\mu_s+\mu_d)/2$. When the effective strain rate is very high, the dynamic angle of friction is taken, when it is very low, the static angle of internal friction is used. Around the dynamic characteristic strain rate, there is a smooth gradient from the static to the dynamic angle of internal friction. Units: \si{\per\second}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Dynamic_20friction_20smoothness_20exponent)=
-### __Parameter name:__ Dynamic friction smoothness exponent
+::::{dropdown} __Parameter:__ {ref}`Dynamic friction smoothness exponent<parameters:Material_20model/Visco_20Plastic/Dynamic_20friction_20smoothness_20exponent>`
+:name: parameters:Material_20model/Visco_20Plastic/Dynamic_20friction_20smoothness_20exponent
 **Default value:** 1
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** An exponential factor in the equation for the calculation of the friction angle when a static and a dynamic angle of internal friction are specified. A factor of 1 returns the equation to Equation (13) in {cite}`van_dinther_seismic_2013`. A factor between 0 and 1 makes the curve of the friction angle vs. the strain rate smoother, while a factor $>$ 1 makes the change between static and dynamic friction angle more steplike. Units: none.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Elastic_20damper_20viscosity)=
-### __Parameter name:__ Elastic damper viscosity
+::::{dropdown} __Parameter:__ {ref}`Elastic damper viscosity<parameters:Material_20model/Visco_20Plastic/Elastic_20damper_20viscosity>`
+:name: parameters:Material_20model/Visco_20Plastic/Elastic_20damper_20viscosity
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Viscosity of a viscous damper that acts in parallel with the elastic element to stabilize behavior. Units: $\text{Pa}\text{s}$
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Elastic_20shear_20moduli)=
-### __Parameter name:__ Elastic shear moduli
+::::{dropdown} __Parameter:__ {ref}`Elastic shear moduli<parameters:Material_20model/Visco_20Plastic/Elastic_20shear_20moduli>`
+:name: parameters:Material_20model/Visco_20Plastic/Elastic_20shear_20moduli
 **Default value:** 75.0e9
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of elastic shear moduli, $G$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. The default value of 75 GPa is representative of mantle rocks. Units: Pa.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/End_20plasticity_20strain_20weakening_20intervals)=
-### __Parameter name:__ End plasticity strain weakening intervals
+::::{dropdown} __Parameter:__ {ref}`End plasticity strain weakening intervals<parameters:Material_20model/Visco_20Plastic/End_20plasticity_20strain_20weakening_20intervals>`
+:name: parameters:Material_20model/Visco_20Plastic/End_20plasticity_20strain_20weakening_20intervals
 **Default value:** 1.
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of strain weakening interval final strains for the cohesion and friction angle parameters of the background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value.  Units: None.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/End_20prefactor_20strain_20weakening_20intervals)=
-### __Parameter name:__ End prefactor strain weakening intervals
+::::{dropdown} __Parameter:__ {ref}`End prefactor strain weakening intervals<parameters:Material_20model/Visco_20Plastic/End_20prefactor_20strain_20weakening_20intervals>`
+:name: parameters:Material_20model/Visco_20Plastic/End_20prefactor_20strain_20weakening_20intervals
 **Default value:** 1.
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of strain weakening interval final strains for the diffusion and dislocation prefactor parameters of the background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value.  Units: None.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Fixed_20elastic_20time_20step)=
-### __Parameter name:__ Fixed elastic time step
+::::{dropdown} __Parameter:__ {ref}`Fixed elastic time step<parameters:Material_20model/Visco_20Plastic/Fixed_20elastic_20time_20step>`
+:name: parameters:Material_20model/Visco_20Plastic/Fixed_20elastic_20time_20step
 **Default value:** 1.e3
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The fixed elastic time step $dte$. It is always used during the first timestep; afterwards on if &rsquo;Used fixed elastic time step&rsquo; is true. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Friction_20mechanism)=
-### __Parameter name:__ Friction mechanism
+::::{dropdown} __Parameter:__ {ref}`Friction mechanism<parameters:Material_20model/Visco_20Plastic/Friction_20mechanism>`
+:name: parameters:Material_20model/Visco_20Plastic/Friction_20mechanism
 **Default value:** none
 
 **Pattern:** [Selection none|dynamic friction|function ]
@@ -4469,375 +4988,422 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 \item &ldquo;dynamic friction&rdquo;: The friction angle is rate dependent.When &rsquo;dynamic angles of internal friction&rsquo; are specified, the friction angle will be weakened for high strain rates with: $\mu = \mu_d + \frac{\mu_s-\mu_d}{1+\frac{\dot{\epsilon}_{ii}}{\dot{\epsilon}_C}}^x$  where $\mu_s$ and $\mu_d$ are the friction angles at low and high strain rates, respectively. $\dot{\epsilon}_{ii}$ is the second invariant of the strain rate and $\dot{\epsilon}_C$ is the &rsquo;dynamic characteristic strain rate&rsquo; where $\mu = (\mu_s+\mu_d)/2$. The &rsquo;dynamic friction smoothness exponent&rsquo; x controls how smooth or step-like the change from $\mu_s$ to $\mu_d$ is. The equation is modified after Equation (13) in {cite}`van_dinther_seismic_2013`. $\mu_s$ and $\mu_d$ can be specified by setting &rsquo;Angles of internal friction&rsquo; and &rsquo;Dynamic angles of internal friction&rsquo;, respectively. This relationship is similar to rate-and-state friction constitutive relationships, which are applicable to the strength of rocks during earthquakes.
 
 \item &ldquo;function&rdquo;: Specify the friction angle as a function of space and time for each compositional field.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Friction_20strain_20weakening_20factors)=
-### __Parameter name:__ Friction strain weakening factors
+::::{dropdown} __Parameter:__ {ref}`Friction strain weakening factors<parameters:Material_20model/Visco_20Plastic/Friction_20strain_20weakening_20factors>`
+:name: parameters:Material_20model/Visco_20Plastic/Friction_20strain_20weakening_20factors
 **Default value:** 1.
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of friction strain weakening factors for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value.  Units: None.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Grain_20size)=
-### __Parameter name:__ Grain size
+::::{dropdown} __Parameter:__ {ref}`Grain size<parameters:Material_20model/Visco_20Plastic/Grain_20size>`
+:name: parameters:Material_20model/Visco_20Plastic/Grain_20size
 **Default value:** 1e-3
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The fixed grain size of the material. This grain size is only used if the parent material model does not provide its own (possibly variable) grain size when calling this rheology.Units: \si{\meter}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Grain_20size_20exponents_20for_20diffusion_20creep)=
-### __Parameter name:__ Grain size exponents for diffusion creep
+::::{dropdown} __Parameter:__ {ref}`Grain size exponents for diffusion creep<parameters:Material_20model/Visco_20Plastic/Grain_20size_20exponents_20for_20diffusion_20creep>`
+:name: parameters:Material_20model/Visco_20Plastic/Grain_20size_20exponents_20for_20diffusion_20creep
 **Default value:** 3.
 
 **Pattern:** [Anything]
 
 **Documentation:** List of grain size exponents, $m_{\text{diffusion}}$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: None.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Heat_20capacities)=
-### __Parameter name:__ Heat capacities
+::::{dropdown} __Parameter:__ {ref}`Heat capacities<parameters:Material_20model/Visco_20Plastic/Heat_20capacities>`
+:name: parameters:Material_20model/Visco_20Plastic/Heat_20capacities
 **Default value:** 1250.
 
 **Pattern:** [Anything]
 
 **Documentation:** List of specific heats $C_p$ for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\joule\per\kelvin\per\kilogram}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Include_20Grain_20Boundary_20Sliding)=
-### __Parameter name:__ Include Grain Boundary Sliding
+::::{dropdown} __Parameter:__ {ref}`Include Grain Boundary Sliding<parameters:Material_20model/Visco_20Plastic/Include_20Grain_20Boundary_20Sliding>`
+:name: parameters:Material_20model/Visco_20Plastic/Include_20Grain_20Boundary_20Sliding
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to include grain boundary sliding in the rheological formulation. If set to true, the grain boundary sliding parameters must be specified.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Include_20Peierls_20creep)=
-### __Parameter name:__ Include Peierls creep
+::::{dropdown} __Parameter:__ {ref}`Include Peierls creep<parameters:Material_20model/Visco_20Plastic/Include_20Peierls_20creep>`
+:name: parameters:Material_20model/Visco_20Plastic/Include_20Peierls_20creep
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to include Peierls creep in the rheological formulation.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Lower_20temperature_20for_20maximum_20strain_20weakening)=
-### __Parameter name:__ Lower temperature for maximum strain weakening
+::::{dropdown} __Parameter:__ {ref}`Lower temperature for maximum strain weakening<parameters:Material_20model/Visco_20Plastic/Lower_20temperature_20for_20maximum_20strain_20weakening>`
+:name: parameters:Material_20model/Visco_20Plastic/Lower_20temperature_20for_20maximum_20strain_20weakening
 **Default value:** 923.
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of lower temperature for maximum strain weakening for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\text{K}$.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Lower_20temperature_20for_20onset_20of_20strain_20weakening)=
-### __Parameter name:__ Lower temperature for onset of strain weakening
+::::{dropdown} __Parameter:__ {ref}`Lower temperature for onset of strain weakening<parameters:Material_20model/Visco_20Plastic/Lower_20temperature_20for_20onset_20of_20strain_20weakening>`
+:name: parameters:Material_20model/Visco_20Plastic/Lower_20temperature_20for_20onset_20of_20strain_20weakening
 **Default value:** 823.
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of lower temperature for onset of strain weakening for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\text{K}$.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Material_20file_20names)=
-### __Parameter name:__ Material file names
+::::{dropdown} __Parameter:__ {ref}`Material file names<parameters:Material_20model/Visco_20Plastic/Material_20file_20names>`
+:name: parameters:Material_20model/Visco_20Plastic/Material_20file_20names
 **Default value:** material_table_temperature_pressure_small.txt
 
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The file names of the material data (material data is assumed to be in order with the ordering of the compositional fields). Note that there are two options on how many files need to be listed here: 1. If only one file is provided, it is used for the whole model domain, and compositional fields are ignored. 2. If there is one more file name than the number of compositional fields, then the first file is assumed to define a &lsquo;background composition&rsquo; that is modified by the compositional fields. These data files need to have the same structure as the one necessary for equation of state plus a new column for the phase indexes, which amounts to 8 columns in total.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Maximum_20Peierls_20strain_20rate_20iterations)=
-### __Parameter name:__ Maximum Peierls strain rate iterations
+::::{dropdown} __Parameter:__ {ref}`Maximum Peierls strain rate iterations<parameters:Material_20model/Visco_20Plastic/Maximum_20Peierls_20strain_20rate_20iterations>`
+:name: parameters:Material_20model/Visco_20Plastic/Maximum_20Peierls_20strain_20rate_20iterations
 **Default value:** 40
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** Maximum number of iterations to find the correct Peierls strain rate.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Maximum_20viscosity)=
-### __Parameter name:__ Maximum viscosity
+::::{dropdown} __Parameter:__ {ref}`Maximum viscosity<parameters:Material_20model/Visco_20Plastic/Maximum_20viscosity>`
+:name: parameters:Material_20model/Visco_20Plastic/Maximum_20viscosity
 **Default value:** 1e28
 
 **Pattern:** [Anything]
 
 **Documentation:** Upper cutoff for effective viscosity. Units: $\text{Pa}\text{s}$. List with as many components as active compositional fields (material data is assumed to be in order with the ordering of the fields).
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Maximum_20yield_20stress)=
-### __Parameter name:__ Maximum yield stress
+::::{dropdown} __Parameter:__ {ref}`Maximum yield stress<parameters:Material_20model/Visco_20Plastic/Maximum_20yield_20stress>`
+:name: parameters:Material_20model/Visco_20Plastic/Maximum_20yield_20stress
 **Default value:** 1e12
 
 **Pattern:** [Anything]
 
 **Documentation:** List of maximum yield stresses, for background material and compositional fields, , which limits the maximum value of the yield stress determined by the Drucker-Prager plasticity parameters. Default value is chosen so this is not automatically used. Values of 100e6--1000e6 $Pa$ have been used in previous models. Units: \si{\pascal}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Minimum_20mass_20fraction_20bound_20water_20content_20for_20fugacity)=
-### __Parameter name:__ Minimum mass fraction bound water content for fugacity
+::::{dropdown} __Parameter:__ {ref}`Minimum mass fraction bound water content for fugacity<parameters:Material_20model/Visco_20Plastic/Minimum_20mass_20fraction_20bound_20water_20content_20for_20fugacity>`
+:name: parameters:Material_20model/Visco_20Plastic/Minimum_20mass_20fraction_20bound_20water_20content_20for_20fugacity
 **Default value:** 6.15e-6
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The minimum water content for the HK04 olivine hydration viscosity prefactor scheme. This acts as the cutoff between &rsquo;dry&rsquo; creep and &rsquo;wet&rsquo; creep for olivine, and the default value is chosen based on the value reported by Hirth & Kohlstaedt 2004. For a mass fraction of bound water beneath this value, this value is used instead to compute the water fugacity. Units: \si{\kg} / \si{\kg} %.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Minimum_20strain_20rate)=
-### __Parameter name:__ Minimum strain rate
+::::{dropdown} __Parameter:__ {ref}`Minimum strain rate<parameters:Material_20model/Visco_20Plastic/Minimum_20strain_20rate>`
+:name: parameters:Material_20model/Visco_20Plastic/Minimum_20strain_20rate
 **Default value:** 1.0e-20
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Stabilizes strain dependent viscosity. Units: \si{\per\second}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Minimum_20viscosity)=
-### __Parameter name:__ Minimum viscosity
+::::{dropdown} __Parameter:__ {ref}`Minimum viscosity<parameters:Material_20model/Visco_20Plastic/Minimum_20viscosity>`
+:name: parameters:Material_20model/Visco_20Plastic/Minimum_20viscosity
 **Default value:** 1e17
 
 **Pattern:** [Anything]
 
 **Documentation:** Lower cutoff for effective viscosity. Units: $\text{Pa}\text{s}$. List with as many components as active compositional fields (material data is assumed to be in order with the ordering of the fields).
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Peierls_20creep_20flow_20law)=
-### __Parameter name:__ Peierls creep flow law
+::::{dropdown} __Parameter:__ {ref}`Peierls creep flow law<parameters:Material_20model/Visco_20Plastic/Peierls_20creep_20flow_20law>`
+:name: parameters:Material_20model/Visco_20Plastic/Peierls_20creep_20flow_20law
 **Default value:** viscosity approximation
 
 **Pattern:** [Selection viscosity approximation|exact ]
 
 **Documentation:** Select what type of Peierls creep flow law to use. Currently, the available options are &rsquo;exact&rsquo;, which uses a Newton-Raphson iterative method to find the stress and then compute viscosity, and &rsquo;viscosity approximation&rsquo;, in which viscosity is an explicit function of the strain rate invariant, rather than stress.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Peierls_20fitting_20parameters)=
-### __Parameter name:__ Peierls fitting parameters
+::::{dropdown} __Parameter:__ {ref}`Peierls fitting parameters<parameters:Material_20model/Visco_20Plastic/Peierls_20fitting_20parameters>`
+:name: parameters:Material_20model/Visco_20Plastic/Peierls_20fitting_20parameters
 **Default value:** 0.17
 
 **Pattern:** [Anything]
 
 **Documentation:** List of fitting parameters $\gamma$ between stress $\sigma$ and the Peierls stress $\sigma_{\text{peierls}}$ for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: none
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Peierls_20glide_20parameters_20p)=
-### __Parameter name:__ Peierls glide parameters p
+::::{dropdown} __Parameter:__ {ref}`Peierls glide parameters p<parameters:Material_20model/Visco_20Plastic/Peierls_20glide_20parameters_20p>`
+:name: parameters:Material_20model/Visco_20Plastic/Peierls_20glide_20parameters_20p
 **Default value:** 0.5
 
 **Pattern:** [Anything]
 
 **Documentation:** List of the first Peierls creep glide parameters, $p$, for background and compositional fields for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: none
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Peierls_20glide_20parameters_20q)=
-### __Parameter name:__ Peierls glide parameters q
+::::{dropdown} __Parameter:__ {ref}`Peierls glide parameters q<parameters:Material_20model/Visco_20Plastic/Peierls_20glide_20parameters_20q>`
+:name: parameters:Material_20model/Visco_20Plastic/Peierls_20glide_20parameters_20q
 **Default value:** 1.0
 
 **Pattern:** [Anything]
 
 **Documentation:** List of the second Peierls creep glide parameters, $q$, for background and compositional fields for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: none
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Peierls_20strain_20rate_20residual_20tolerance)=
-### __Parameter name:__ Peierls strain rate residual tolerance
+::::{dropdown} __Parameter:__ {ref}`Peierls strain rate residual tolerance<parameters:Material_20model/Visco_20Plastic/Peierls_20strain_20rate_20residual_20tolerance>`
+:name: parameters:Material_20model/Visco_20Plastic/Peierls_20strain_20rate_20residual_20tolerance
 **Default value:** 1e-10
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Tolerance for the iterative solve to find the correct Peierls creep strain rate. The tolerance is expressed as the difference between the natural logarithm of the input strain rate and the strain rate at the current iteration.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Peierls_20stresses)=
-### __Parameter name:__ Peierls stresses
+::::{dropdown} __Parameter:__ {ref}`Peierls stresses<parameters:Material_20model/Visco_20Plastic/Peierls_20stresses>`
+:name: parameters:Material_20model/Visco_20Plastic/Peierls_20stresses
 **Default value:** 5.e9
 
 **Pattern:** [Anything]
 
 **Documentation:** List of stress limits for Peierls creep $\sigma_{\text{peierls}}$ for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\pascal}
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Phase_20transition_20Clapeyron_20slopes)=
-### __Parameter name:__ Phase transition Clapeyron slopes
+::::{dropdown} __Parameter:__ {ref}`Phase transition Clapeyron slopes<parameters:Material_20model/Visco_20Plastic/Phase_20transition_20Clapeyron_20slopes>`
+:name: parameters:Material_20model/Visco_20Plastic/Phase_20transition_20Clapeyron_20slopes
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of Clapeyron slopes for each phase transition. A positive Clapeyron slope indicates that the phase transition will occur in a greater depth, if the temperature is higher than the one given in Phase transition temperatures and in a smaller depth, if the temperature is smaller than the one given in Phase transition temperatures. For negative slopes the other way round. List must have the same number of entries as Phase transition depths. Units: \si{\pascal\per\kelvin}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Phase_20transition_20depths)=
-### __Parameter name:__ Phase transition depths
+::::{dropdown} __Parameter:__ {ref}`Phase transition depths<parameters:Material_20model/Visco_20Plastic/Phase_20transition_20depths>`
+:name: parameters:Material_20model/Visco_20Plastic/Phase_20transition_20depths
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of depths where phase transitions occur. Values must monotonically increase. Units: \si{\meter}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Phase_20transition_20indicators)=
-### __Parameter name:__ Phase transition indicators
+::::{dropdown} __Parameter:__ {ref}`Phase transition indicators<parameters:Material_20model/Visco_20Plastic/Phase_20transition_20indicators>`
+:name: parameters:Material_20model/Visco_20Plastic/Phase_20transition_20indicators
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of phase indicators in a look-up table for each phase transition. This parameter selectively assign different rheologies to specific phases, rather than having a unique rheology for each phase in the table. For example, if the table has phases 0, 1, and 2, and one only want a distinct rheology for phase 2, then only phase 2 is needed in the list of indicator. And phases 0, 1 will just be assigned the rheology of the base phase.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Phase_20transition_20pressure_20widths)=
-### __Parameter name:__ Phase transition pressure widths
+::::{dropdown} __Parameter:__ {ref}`Phase transition pressure widths<parameters:Material_20model/Visco_20Plastic/Phase_20transition_20pressure_20widths>`
+:name: parameters:Material_20model/Visco_20Plastic/Phase_20transition_20pressure_20widths
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of widths for each phase transition, in terms of pressure. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition pressures. Define transition by depth instead of pressure must be set to false to use this parameter. Units: \si{\pascal}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Phase_20transition_20pressures)=
-### __Parameter name:__ Phase transition pressures
+::::{dropdown} __Parameter:__ {ref}`Phase transition pressures<parameters:Material_20model/Visco_20Plastic/Phase_20transition_20pressures>`
+:name: parameters:Material_20model/Visco_20Plastic/Phase_20transition_20pressures
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of pressures where phase transitions occur. Values must monotonically increase. Define transition by depth instead of pressure must be set to false to use this parameter. Units: \si{\pascal}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Phase_20transition_20temperature_20lower_20limits)=
-### __Parameter name:__ Phase transition temperature lower limits
+::::{dropdown} __Parameter:__ {ref}`Phase transition temperature lower limits<parameters:Material_20model/Visco_20Plastic/Phase_20transition_20temperature_20lower_20limits>`
+:name: parameters:Material_20model/Visco_20Plastic/Phase_20transition_20temperature_20lower_20limits
 **Default value:** -1.7976931348623157e+308
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of lower temperature limits for each phase transition. Below this temperature the respective phase transition is deactivated. The default value means there is no lower limit for any phase transition. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: \si{\kelvin}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Phase_20transition_20temperature_20upper_20limits)=
-### __Parameter name:__ Phase transition temperature upper limits
+::::{dropdown} __Parameter:__ {ref}`Phase transition temperature upper limits<parameters:Material_20model/Visco_20Plastic/Phase_20transition_20temperature_20upper_20limits>`
+:name: parameters:Material_20model/Visco_20Plastic/Phase_20transition_20temperature_20upper_20limits
 **Default value:** 1.7976931348623157e+308
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of upper temperature limits for each phase transition. Above this temperature the respective phase transition is deactivated. The default value means there is no upper limit for any phase transitions. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: \si{\kelvin}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Phase_20transition_20temperatures)=
-### __Parameter name:__ Phase transition temperatures
+::::{dropdown} __Parameter:__ {ref}`Phase transition temperatures<parameters:Material_20model/Visco_20Plastic/Phase_20transition_20temperatures>`
+:name: parameters:Material_20model/Visco_20Plastic/Phase_20transition_20temperatures
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of temperatures where phase transitions occur. Higher or lower temperatures lead to phase transition occurring in smaller or greater depths than given in Phase transition depths, depending on the Clapeyron slope given in Phase transition Clapeyron slopes. List must have the same number of entries as Phase transition depths. Units: \si{\kelvin}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Phase_20transition_20widths)=
-### __Parameter name:__ Phase transition widths
+::::{dropdown} __Parameter:__ {ref}`Phase transition widths<parameters:Material_20model/Visco_20Plastic/Phase_20transition_20widths>`
+:name: parameters:Material_20model/Visco_20Plastic/Phase_20transition_20widths
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of widths for each phase transition, in terms of depth. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition depths. Units: \si{\meter}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Plastic_20damper_20viscosity)=
-### __Parameter name:__ Plastic damper viscosity
+::::{dropdown} __Parameter:__ {ref}`Plastic damper viscosity<parameters:Material_20model/Visco_20Plastic/Plastic_20damper_20viscosity>`
+:name: parameters:Material_20model/Visco_20Plastic/Plastic_20damper_20viscosity
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Viscosity of the damper that acts in parallel with the plastic viscosity to produce mesh-independent behavior at sufficient resolutions. Units: \si{\pascal\second}
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Prefactor_20strain_20weakening_20factors)=
-### __Parameter name:__ Prefactor strain weakening factors
+::::{dropdown} __Parameter:__ {ref}`Prefactor strain weakening factors<parameters:Material_20model/Visco_20Plastic/Prefactor_20strain_20weakening_20factors>`
+:name: parameters:Material_20model/Visco_20Plastic/Prefactor_20strain_20weakening_20factors
 **Default value:** 1.
 
 **Pattern:** [List of <[Double 0...1 (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of viscous strain weakening factors for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value.  Units: None.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Prefactors_20for_20Frank_20Kamenetskii)=
-### __Parameter name:__ Prefactors for Frank Kamenetskii
+::::{dropdown} __Parameter:__ {ref}`Prefactors for Frank Kamenetskii<parameters:Material_20model/Visco_20Plastic/Prefactors_20for_20Frank_20Kamenetskii>`
+:name: parameters:Material_20model/Visco_20Plastic/Prefactors_20for_20Frank_20Kamenetskii
 **Default value:** 1.e21
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A viscosity prefactor for the viscosity approximation, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value.  Units: None
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Prefactors_20for_20Peierls_20creep)=
-### __Parameter name:__ Prefactors for Peierls creep
+::::{dropdown} __Parameter:__ {ref}`Prefactors for Peierls creep<parameters:Material_20model/Visco_20Plastic/Prefactors_20for_20Peierls_20creep>`
+:name: parameters:Material_20model/Visco_20Plastic/Prefactors_20for_20Peierls_20creep
 **Default value:** 1.4e-19
 
 **Pattern:** [Anything]
 
 **Documentation:** List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\pascal}$^{-n_{\text{peierls}}}$ \si{\per\second}
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Prefactors_20for_20diffusion_20creep)=
-### __Parameter name:__ Prefactors for diffusion creep
+::::{dropdown} __Parameter:__ {ref}`Prefactors for diffusion creep<parameters:Material_20model/Visco_20Plastic/Prefactors_20for_20diffusion_20creep>`
+:name: parameters:Material_20model/Visco_20Plastic/Prefactors_20for_20diffusion_20creep
 **Default value:** 1.5e-15
 
 **Pattern:** [Anything]
 
 **Documentation:** List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\per\pascal\meter}$^{m_{\text{diffusion}}}$\si{\per\second}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Prefactors_20for_20dislocation_20creep)=
-### __Parameter name:__ Prefactors for dislocation creep
+::::{dropdown} __Parameter:__ {ref}`Prefactors for dislocation creep<parameters:Material_20model/Visco_20Plastic/Prefactors_20for_20dislocation_20creep>`
+:name: parameters:Material_20model/Visco_20Plastic/Prefactors_20for_20dislocation_20creep
 **Default value:** 1.1e-16
 
 **Pattern:** [Anything]
 
 **Documentation:** List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\pascal}$^{-n_{\text{dislocation}}}$ \si{\per\second}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Prefactors_20for_20yield_20stress)=
-### __Parameter name:__ Prefactors for yield stress
+::::{dropdown} __Parameter:__ {ref}`Prefactors for yield stress<parameters:Material_20model/Visco_20Plastic/Prefactors_20for_20yield_20stress>`
+:name: parameters:Material_20model/Visco_20Plastic/Prefactors_20for_20yield_20stress
 **Default value:** 1.0
 
 **Pattern:** [Anything]
 
 **Documentation:** List of prefactors for the yield stress, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. The prefactor is multiplied with the yield stress computed from the Drucker-Prager plasticity parameters. Default value is 1.0.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Pressure_20prefactors_20for_20Frank_20Kamenetskii)=
-### __Parameter name:__ Pressure prefactors for Frank Kamenetskii
+::::{dropdown} __Parameter:__ {ref}`Pressure prefactors for Frank Kamenetskii<parameters:Material_20model/Visco_20Plastic/Pressure_20prefactors_20for_20Frank_20Kamenetskii>`
+:name: parameters:Material_20model/Visco_20Plastic/Pressure_20prefactors_20for_20Frank_20Kamenetskii
 **Default value:** 0.0
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A prefactor for the pressure term in the viscosity approximation, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: None
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Reference_20pressures_20for_20Frank_20Kamenetskii)=
-### __Parameter name:__ Reference pressures for Frank Kamenetskii
+::::{dropdown} __Parameter:__ {ref}`Reference pressures for Frank Kamenetskii<parameters:Material_20model/Visco_20Plastic/Reference_20pressures_20for_20Frank_20Kamenetskii>`
+:name: parameters:Material_20model/Visco_20Plastic/Reference_20pressures_20for_20Frank_20Kamenetskii
 **Default value:** 1.7976931348623157e+308
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A reference pressure in the viscosity approximation which specifies where the FK pressure dependence goes to 0.Given for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: Pa
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Reference_20strain_20rate)=
-### __Parameter name:__ Reference strain rate
+::::{dropdown} __Parameter:__ {ref}`Reference strain rate<parameters:Material_20model/Visco_20Plastic/Reference_20strain_20rate>`
+:name: parameters:Material_20model/Visco_20Plastic/Reference_20strain_20rate
 **Default value:** 1.0e-15
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Reference strain rate for first time step. Units: \si{\per\second}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Reference_20temperature)=
-### __Parameter name:__ Reference temperature
+::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Visco_20Plastic/Reference_20temperature>`
+:name: parameters:Material_20model/Visco_20Plastic/Reference_20temperature
 **Default value:** 293.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The reference temperature $T_0$. Units: \si{\kelvin}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Reference_20temperatures_20for_20Frank_20Kamenetskii)=
-### __Parameter name:__ Reference temperatures for Frank Kamenetskii
+::::{dropdown} __Parameter:__ {ref}`Reference temperatures for Frank Kamenetskii<parameters:Material_20model/Visco_20Plastic/Reference_20temperatures_20for_20Frank_20Kamenetskii>`
+:name: parameters:Material_20model/Visco_20Plastic/Reference_20temperatures_20for_20Frank_20Kamenetskii
 **Default value:** 1.7976931348623157e+308
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A reference temperature in the viscosity approximation which specifies where the FK temperature dependence goes to 0. Given for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: K
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Specific_20heats)=
-### __Parameter name__: Specific heats
+::::{dropdown} __Parameter:__ {ref}`Specific heats<parameters:Material_20model/Visco_20Plastic/Specific_20heats>`
+:name: parameters:Material_20model/Visco_20Plastic/Specific_20heats
 **Alias:** [Heat capacities](parameters:Material_20model/Visco_20Plastic/Heat_20capacities)
 
 **Deprecation Status:** false
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Stabilization_20time_20scale_20factor)=
-### __Parameter name:__ Stabilization time scale factor
+::::{dropdown} __Parameter:__ {ref}`Stabilization time scale factor<parameters:Material_20model/Visco_20Plastic/Stabilization_20time_20scale_20factor>`
+:name: parameters:Material_20model/Visco_20Plastic/Stabilization_20time_20scale_20factor
 **Default value:** 1.
 
 **Pattern:** [Double 1...MAX_DOUBLE (inclusive)]
 
 **Documentation:** A stabilization factor for the elastic stresses that influences how fast elastic stresses adjust to deformation. This value is equal to the elastic time step divided by the computational time step. The default value of 1.0 may lead to oscillatory motion. Increasing this factor to 2.0 can reduce oscillations while preserving an immediate elastic response. In complex models the factor can be increased further to improve convergence behaviour. As the stabilization factor increases, the effective viscosity gets smaller, and is balanced by an increasing body force term. For composite rheologies that use this formulation of elasticity, setting an infinite shear modulus only recovers the nonelastic part of the rheology if this stabilization factor is equal to 1.0.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Start_20plasticity_20strain_20weakening_20intervals)=
-### __Parameter name:__ Start plasticity strain weakening intervals
+::::{dropdown} __Parameter:__ {ref}`Start plasticity strain weakening intervals<parameters:Material_20model/Visco_20Plastic/Start_20plasticity_20strain_20weakening_20intervals>`
+:name: parameters:Material_20model/Visco_20Plastic/Start_20plasticity_20strain_20weakening_20intervals
 **Default value:** 0.
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of strain weakening interval initial strains for the cohesion and friction angle parameters of the background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: None.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Start_20prefactor_20strain_20weakening_20intervals)=
-### __Parameter name:__ Start prefactor strain weakening intervals
+::::{dropdown} __Parameter:__ {ref}`Start prefactor strain weakening intervals<parameters:Material_20model/Visco_20Plastic/Start_20prefactor_20strain_20weakening_20intervals>`
+:name: parameters:Material_20model/Visco_20Plastic/Start_20prefactor_20strain_20weakening_20intervals
 **Default value:** 0.
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of strain weakening interval initial strains for the diffusion and dislocation prefactor parameters of the background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value.  Units: None.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Strain_20healing_20mechanism)=
-### __Parameter name:__ Strain healing mechanism
+::::{dropdown} __Parameter:__ {ref}`Strain healing mechanism<parameters:Material_20model/Visco_20Plastic/Strain_20healing_20mechanism>`
+:name: parameters:Material_20model/Visco_20Plastic/Strain_20healing_20mechanism
 **Default value:** no healing
 
 **Pattern:** [Selection no healing|temperature dependent ]
@@ -4847,25 +5413,28 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 \item &ldquo;no healing&rdquo;: No strain healing is applied.
 
 \item &ldquo;temperature dependent&rdquo;: Purely temperature dependent strain healing applied to plastic yielding and viscosity terms, similar to the temperature-dependent Frank Kamenetskii formulation, computes strain healing as removing strain as a function of temperature, time, and a user-defined healing rate and prefactor as done in Fuchs and Becker, 2019, for mantle convection
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Strain_20healing_20temperature_20dependent_20prefactor)=
-### __Parameter name:__ Strain healing temperature dependent prefactor
+::::{dropdown} __Parameter:__ {ref}`Strain healing temperature dependent prefactor<parameters:Material_20model/Visco_20Plastic/Strain_20healing_20temperature_20dependent_20prefactor>`
+:name: parameters:Material_20model/Visco_20Plastic/Strain_20healing_20temperature_20dependent_20prefactor
 **Default value:** 15.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor for temperature dependent strain healing. Units: None
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Strain_20healing_20temperature_20dependent_20recovery_20rate)=
-### __Parameter name:__ Strain healing temperature dependent recovery rate
+::::{dropdown} __Parameter:__ {ref}`Strain healing temperature dependent recovery rate<parameters:Material_20model/Visco_20Plastic/Strain_20healing_20temperature_20dependent_20recovery_20rate>`
+:name: parameters:Material_20model/Visco_20Plastic/Strain_20healing_20temperature_20dependent_20recovery_20rate
 **Default value:** 1.e-15
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Recovery rate prefactor for temperature dependent strain healing. Units: $1/s$
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Strain_20weakening_20mechanism)=
-### __Parameter name:__ Strain weakening mechanism
+::::{dropdown} __Parameter:__ {ref}`Strain weakening mechanism<parameters:Material_20model/Visco_20Plastic/Strain_20weakening_20mechanism>`
+:name: parameters:Material_20model/Visco_20Plastic/Strain_20weakening_20mechanism
 **Default value:** default
 
 **Pattern:** [Selection none|finite strain tensor|total strain|plastic weakening with plastic strain only|plastic weakening with total strain only|plastic weakening with plastic strain and viscous weakening with viscous strain|viscous weakening with viscous strain only|default ]
@@ -4889,195 +5458,219 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 \item &ldquo;default&rdquo;: The default option has the same behavior as &ldquo;none&rdquo;, but is there to make sure that the original parameters for specifying the strain weakening mechanism (&ldquo;Use plastic/viscous strain weakening&rdquo;) are still allowed, but to guarantee that one uses either the old parameter names or the new ones, never both.
 
 If a compositional field named &rsquo;noninitial\_plastic\_strain&rsquo; is included in the parameter file, this field will automatically be excluded from from volume fraction calculation and track the cumulative plastic strain with the initial plastic strain values removed.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Stress_20exponents_20for_20Peierls_20creep)=
-### __Parameter name:__ Stress exponents for Peierls creep
+::::{dropdown} __Parameter:__ {ref}`Stress exponents for Peierls creep<parameters:Material_20model/Visco_20Plastic/Stress_20exponents_20for_20Peierls_20creep>`
+:name: parameters:Material_20model/Visco_20Plastic/Stress_20exponents_20for_20Peierls_20creep
 **Default value:** 2.0
 
 **Pattern:** [Anything]
 
 **Documentation:** List of stress exponents, $n_{\text{peierls}}$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value.  Units: None.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Stress_20exponents_20for_20diffusion_20creep)=
-### __Parameter name:__ Stress exponents for diffusion creep
+::::{dropdown} __Parameter:__ {ref}`Stress exponents for diffusion creep<parameters:Material_20model/Visco_20Plastic/Stress_20exponents_20for_20diffusion_20creep>`
+:name: parameters:Material_20model/Visco_20Plastic/Stress_20exponents_20for_20diffusion_20creep
 **Default value:** 1.
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of stress exponents, $n_{\text{diffusion}}$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. The stress exponent for diffusion creep is almost always equal to one. If only one value is given, then all use the same value.  Units: None.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Stress_20exponents_20for_20dislocation_20creep)=
-### __Parameter name:__ Stress exponents for dislocation creep
+::::{dropdown} __Parameter:__ {ref}`Stress exponents for dislocation creep<parameters:Material_20model/Visco_20Plastic/Stress_20exponents_20for_20dislocation_20creep>`
+:name: parameters:Material_20model/Visco_20Plastic/Stress_20exponents_20for_20dislocation_20creep
 **Default value:** 3.5
 
 **Pattern:** [Anything]
 
 **Documentation:** List of stress exponents, $n_{\text{dislocation}}$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value.  Units: None.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Stress_20limiter_20exponents)=
-### __Parameter name:__ Stress limiter exponents
+::::{dropdown} __Parameter:__ {ref}`Stress limiter exponents<parameters:Material_20model/Visco_20Plastic/Stress_20limiter_20exponents>`
+:name: parameters:Material_20model/Visco_20Plastic/Stress_20limiter_20exponents
 **Default value:** 1.0
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of stress limiter exponents, $n_{\text{lim}}$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. Units: none.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Thermal_20conductivities)=
-### __Parameter name:__ Thermal conductivities
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivities<parameters:Material_20model/Visco_20Plastic/Thermal_20conductivities>`
+:name: parameters:Material_20model/Visco_20Plastic/Thermal_20conductivities
 **Default value:** 3.0
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of thermal conductivities, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Thermal_20diffusivities)=
-### __Parameter name:__ Thermal diffusivities
+::::{dropdown} __Parameter:__ {ref}`Thermal diffusivities<parameters:Material_20model/Visco_20Plastic/Thermal_20diffusivities>`
+:name: parameters:Material_20model/Visco_20Plastic/Thermal_20diffusivities
 **Default value:** 0.8e-6
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of thermal diffusivities, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value.  Units: \si{\meter\squared\per\second}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Thermal_20expansivities)=
-### __Parameter name:__ Thermal expansivities
+::::{dropdown} __Parameter:__ {ref}`Thermal expansivities<parameters:Material_20model/Visco_20Plastic/Thermal_20expansivities>`
+:name: parameters:Material_20model/Visco_20Plastic/Thermal_20expansivities
 **Default value:** 0.000035
 
 **Pattern:** [Anything]
 
 **Documentation:** List of thermal expansivities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\per\kelvin}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Upper_20temperature_20for_20maximum_20strain_20weakening)=
-### __Parameter name:__ Upper temperature for maximum strain weakening
+::::{dropdown} __Parameter:__ {ref}`Upper temperature for maximum strain weakening<parameters:Material_20model/Visco_20Plastic/Upper_20temperature_20for_20maximum_20strain_20weakening>`
+:name: parameters:Material_20model/Visco_20Plastic/Upper_20temperature_20for_20maximum_20strain_20weakening
 **Default value:** 1023.
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of upper temperatures for maximum strain weakening for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\text{K}$.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Upper_20temperature_20for_20onset_20of_20strain_20weakening)=
-### __Parameter name:__ Upper temperature for onset of strain weakening
+::::{dropdown} __Parameter:__ {ref}`Upper temperature for onset of strain weakening<parameters:Material_20model/Visco_20Plastic/Upper_20temperature_20for_20onset_20of_20strain_20weakening>`
+:name: parameters:Material_20model/Visco_20Plastic/Upper_20temperature_20for_20onset_20of_20strain_20weakening
 **Default value:** 1123.
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of upper temperatures for onset of strain weakeningfor background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\text{K}$.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Use_20adiabatic_20pressure_20in_20creep_20viscosity)=
-### __Parameter name:__ Use adiabatic pressure in creep viscosity
+::::{dropdown} __Parameter:__ {ref}`Use adiabatic pressure in creep viscosity<parameters:Material_20model/Visco_20Plastic/Use_20adiabatic_20pressure_20in_20creep_20viscosity>`
+:name: parameters:Material_20model/Visco_20Plastic/Use_20adiabatic_20pressure_20in_20creep_20viscosity
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to use the adiabatic pressure instead of the full pressure (default) when calculating viscous creep. This may be helpful in models where the full pressure has an unusually large negative value arising from large negative dynamic pressure, resulting in solver convergence issue and in some cases a viscosity of zero.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Use_20adiabatic_20pressure_20in_20plasticity)=
-### __Parameter name:__ Use adiabatic pressure in plasticity
+::::{dropdown} __Parameter:__ {ref}`Use adiabatic pressure in plasticity<parameters:Material_20model/Visco_20Plastic/Use_20adiabatic_20pressure_20in_20plasticity>`
+:name: parameters:Material_20model/Visco_20Plastic/Use_20adiabatic_20pressure_20in_20plasticity
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to use the adiabatic pressure instead of the full pressure when calculating plastic yield stress. This may be helpful in models where the full pressure has unusually large variations, resulting in solver convergence issues. Be aware that this setting will change the plastic shear band angle.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Use_20dominant_20phase_20for_20viscosity)=
-### __Parameter name:__ Use dominant phase for viscosity
+::::{dropdown} __Parameter:__ {ref}`Use dominant phase for viscosity<parameters:Material_20model/Visco_20Plastic/Use_20dominant_20phase_20for_20viscosity>`
+:name: parameters:Material_20model/Visco_20Plastic/Use_20dominant_20phase_20for_20viscosity
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to look up the dominant phase for each composition in its respective material data file to calculate viscosity. This allows each phase to have distinct rheological parameterizations.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Use_20fixed_20elastic_20time_20step)=
-### __Parameter name:__ Use fixed elastic time step
+::::{dropdown} __Parameter:__ {ref}`Use fixed elastic time step<parameters:Material_20model/Visco_20Plastic/Use_20fixed_20elastic_20time_20step>`
+:name: parameters:Material_20model/Visco_20Plastic/Use_20fixed_20elastic_20time_20step
 **Default value:** unspecified
 
 **Pattern:** [Selection true|false|unspecified ]
 
 **Documentation:** Select whether the material time scale in the viscoelastic constitutive relationship uses the regular numerical time step or a separate fixed elastic time step throughout the model run. The fixed elastic time step is always used during the initial time step. If a fixed elastic time step is used throughout the model run, a stress averaging scheme is applied to account for differences with the numerical time step. An alternative approach is to limit the maximum time step size so that it is equal to the elastic time step. The default value of this parameter is &rsquo;unspecified&rsquo;, which throws an exception during runtime. In order for the model to run the user must select &rsquo;true&rsquo; or &rsquo;false&rsquo;.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Use_20plastic_20damper)=
-### __Parameter name:__ Use plastic damper
+::::{dropdown} __Parameter:__ {ref}`Use plastic damper<parameters:Material_20model/Visco_20Plastic/Use_20plastic_20damper>`
+:name: parameters:Material_20model/Visco_20Plastic/Use_20plastic_20damper
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to use a plastic damper when computing the Drucker-Prager plastic viscosity. The damper acts to stabilize the plastic shear band width and remove associated mesh-dependent behavior at sufficient resolutions.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Use_20temperature_20activated_20strain_20softening)=
-### __Parameter name:__ Use temperature activated strain softening
+::::{dropdown} __Parameter:__ {ref}`Use temperature activated strain softening<parameters:Material_20model/Visco_20Plastic/Use_20temperature_20activated_20strain_20softening>`
+:name: parameters:Material_20model/Visco_20Plastic/Use_20temperature_20activated_20strain_20softening
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether viscous strain softening factor depends on temperature
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Viscosity_20averaging_20scheme)=
-### __Parameter name:__ Viscosity averaging scheme
+::::{dropdown} __Parameter:__ {ref}`Viscosity averaging scheme<parameters:Material_20model/Visco_20Plastic/Viscosity_20averaging_20scheme>`
+:name: parameters:Material_20model/Visco_20Plastic/Viscosity_20averaging_20scheme
 **Default value:** harmonic
 
 **Pattern:** [Selection arithmetic|harmonic|geometric|maximum composition ]
 
 **Documentation:** When more than one compositional field is present at a point with different viscosities, we need to come up with an average viscosity at that point.  Select a weighted harmonic, arithmetic, geometric, or maximum composition.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Viscosity_20prefactor_20scheme)=
-### __Parameter name:__ Viscosity prefactor scheme
+::::{dropdown} __Parameter:__ {ref}`Viscosity prefactor scheme<parameters:Material_20model/Visco_20Plastic/Viscosity_20prefactor_20scheme>`
+:name: parameters:Material_20model/Visco_20Plastic/Viscosity_20prefactor_20scheme
 **Default value:** none
 
 **Pattern:** [Selection none|HK04 olivine hydration ]
 
 **Documentation:** Select what type of viscosity multiplicative prefactor scheme to apply. Allowed entries are &rsquo;none&rsquo;, and &rsquo;HK04 olivine hydration&rsquo;. HK04 olivine hydration calculates the viscosity change due to hydrogen incorporation into olivine following Hirth & Kohlstaedt 2004 (10.1029/138GM06). none does not modify the viscosity. Units: none.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Viscosity_20ratios_20for_20Frank_20Kamenetskii)=
-### __Parameter name:__ Viscosity ratios for Frank Kamenetskii
+::::{dropdown} __Parameter:__ {ref}`Viscosity ratios for Frank Kamenetskii<parameters:Material_20model/Visco_20Plastic/Viscosity_20ratios_20for_20Frank_20Kamenetskii>`
+:name: parameters:Material_20model/Visco_20Plastic/Viscosity_20ratios_20for_20Frank_20Kamenetskii
 **Default value:** 15.
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** An adjusted viscosity ratio, $E$, for the viscosity approximation, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: None
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Viscous_20flow_20law)=
-### __Parameter name:__ Viscous flow law
+::::{dropdown} __Parameter:__ {ref}`Viscous flow law<parameters:Material_20model/Visco_20Plastic/Viscous_20flow_20law>`
+:name: parameters:Material_20model/Visco_20Plastic/Viscous_20flow_20law
 **Default value:** composite
 
 **Pattern:** [Selection diffusion|dislocation|frank kamenetskii|composite|minimum diffusion dislocation ]
 
 **Documentation:** Select what type of viscosity law to use between the options diffusion, dislocation, frank kamenetskii, composite and the minimum of diffusion and dislocation. Soon there will be an option to select a specific flow law for each assigned composition, When the full strain rate is used to compute each viscosity instead of the properly partitioned diffusion and dislocation creep strain rates, it is recommended to take the minimum of the creep viscosities instead of their composite.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Water_20fugacity_20exponents_20for_20diffusion_20creep)=
-### __Parameter name:__ Water fugacity exponents for diffusion creep
+::::{dropdown} __Parameter:__ {ref}`Water fugacity exponents for diffusion creep<parameters:Material_20model/Visco_20Plastic/Water_20fugacity_20exponents_20for_20diffusion_20creep>`
+:name: parameters:Material_20model/Visco_20Plastic/Water_20fugacity_20exponents_20for_20diffusion_20creep
 **Default value:** 0.0
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of water fugacity exponents for diffusion creep for background material and compositional fields, for a total of N+1 where N is the number of all compositional fields or only those corresponding to chemical compositions. This is only applied when using the Viscosity prefactor scheme &rsquo;HK04 olivine hydration&rsquo;. Note, the water fugacity exponent required by ASPECT for diffusion creep is r/n, where n is the stress exponent for diffusion creep, which typically is 1. Units: none.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Water_20fugacity_20exponents_20for_20dislocation_20creep)=
-### __Parameter name:__ Water fugacity exponents for dislocation creep
+::::{dropdown} __Parameter:__ {ref}`Water fugacity exponents for dislocation creep<parameters:Material_20model/Visco_20Plastic/Water_20fugacity_20exponents_20for_20dislocation_20creep>`
+:name: parameters:Material_20model/Visco_20Plastic/Water_20fugacity_20exponents_20for_20dislocation_20creep
 **Default value:** 0.0
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of water fugacity exponents for dislocation creep for background material and compositional fields, for a total of N+1 where N is the number of all compositional fields or only those corresponding to chemical compositions. This is only applied when using the Viscosity prefactor scheme &rsquo;HK04 olivine hydration&rsquo;. Note, the water fugacity exponent required by ASPECT for dislocation creep is r/n, where n is the stress exponent for dislocation creep, which typically is 3.5. Units: none.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Yield_20mechanism)=
-### __Parameter name:__ Yield mechanism
+::::{dropdown} __Parameter:__ {ref}`Yield mechanism<parameters:Material_20model/Visco_20Plastic/Yield_20mechanism>`
+:name: parameters:Material_20model/Visco_20Plastic/Yield_20mechanism
 **Default value:** drucker
 
 **Pattern:** [Selection drucker|limiter ]
 
 **Documentation:** Select what type of yield mechanism to use between Drucker Prager and stress limiter options.
+::::
 
 (parameters:Material_20model/Visco_20Plastic/Friction_20function)=
 ## **Subsection:** Material model / Visco Plastic / Friction function
-(parameters:Material_20model/Visco_20Plastic/Friction_20function/Coordinate_20system)=
-### __Parameter name:__ Coordinate system
+::::{dropdown} __Parameter:__ {ref}`Coordinate system<parameters:Material_20model/Visco_20Plastic/Friction_20function/Coordinate_20system>`
+:name: parameters:Material_20model/Visco_20Plastic/Friction_20function/Coordinate_20system
 **Default value:** cartesian
 
 **Pattern:** [Selection cartesian|spherical|depth ]
 
 **Documentation:** A selection that determines the assumed coordinate system for the function variables. Allowed values are &lsquo;cartesian&rsquo;, &lsquo;spherical&rsquo;, and &lsquo;depth&rsquo;. &lsquo;spherical&rsquo; coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. &lsquo;depth&rsquo; will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Friction_20function/Function_20constants)=
-### __Parameter name:__ Function constants
+::::{dropdown} __Parameter:__ {ref}`Function constants<parameters:Material_20model/Visco_20Plastic/Friction_20function/Function_20constants>`
+:name: parameters:Material_20model/Visco_20Plastic/Friction_20function/Function_20constants
 **Default value:**
 
 **Pattern:** [Anything]
@@ -5085,9 +5678,10 @@ If a compositional field named &rsquo;noninitial\_plastic\_strain&rsquo; is incl
 **Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form &lsquo;var1=value1, var2=value2, ...&rsquo;.
 
 A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Friction_20function/Function_20expression)=
-### __Parameter name:__ Function expression
+::::{dropdown} __Parameter:__ {ref}`Function expression<parameters:Material_20model/Visco_20Plastic/Friction_20function/Function_20expression>`
+:name: parameters:Material_20model/Visco_20Plastic/Friction_20function/Function_20expression
 **Default value:** 0
 
 **Pattern:** [Anything]
@@ -5095,165 +5689,186 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Documentation:** The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as &lsquo;sin&rsquo; or &lsquo;cos&rsquo;. In addition, it may contain expressions like &lsquo;if(x>0, 1, -1)&rsquo; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
 
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Friction_20function/Variable_20names)=
-### __Parameter name:__ Variable names
+::::{dropdown} __Parameter:__ {ref}`Variable names<parameters:Material_20model/Visco_20Plastic/Friction_20function/Variable_20names>`
+:name: parameters:Material_20model/Visco_20Plastic/Friction_20function/Variable_20names
 **Default value:** x,y,t
 
 **Pattern:** [Anything]
 
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
+::::
 
 (parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding)=
 ## **Subsection:** Material model / Visco Plastic / Grain boundary sliding
-(parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Activation_20energies_20for_20grain_20boundary_20sliding)=
-### __Parameter name:__ Activation energies for grain boundary sliding
+::::{dropdown} __Parameter:__ {ref}`Activation energies for grain boundary sliding<parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Activation_20energies_20for_20grain_20boundary_20sliding>`
+:name: parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Activation_20energies_20for_20grain_20boundary_20sliding
 **Default value:** 49
 
 **Pattern:** [Anything]
 
 **Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001for T > 262 k.Units: \si{\joule\per\mole}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Activation_20volumes_20for_20grain_20boundary_20sliding)=
-### __Parameter name:__ Activation volumes for grain boundary sliding
+::::{dropdown} __Parameter:__ {ref}`Activation volumes for grain boundary sliding<parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Activation_20volumes_20for_20grain_20boundary_20sliding>`
+:name: parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Activation_20volumes_20for_20grain_20boundary_20sliding
 **Default value:** 13e-6
 
 **Pattern:** [Anything]
 
 **Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001.Units: \si{\meter\cubed\per\mole}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Grain_20size)=
-### __Parameter name:__ Grain size
+::::{dropdown} __Parameter:__ {ref}`Grain size<parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Grain_20size>`
+:name: parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Grain_20size
 **Default value:** 26e-6
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001.Units: \si{\meter}.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Grain_20size_20exponents_20for_20grain_20boundary_20sliding)=
-### __Parameter name:__ Grain size exponents for grain boundary sliding
+::::{dropdown} __Parameter:__ {ref}`Grain size exponents for grain boundary sliding<parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Grain_20size_20exponents_20for_20grain_20boundary_20sliding>`
+:name: parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Grain_20size_20exponents_20for_20grain_20boundary_20sliding
 **Default value:** 1.4.
 
 **Pattern:** [Anything]
 
 **Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001.
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Prefactors_20for_20grain_20boundary_20sliding)=
-### __Parameter name:__ Prefactors for grain boundary sliding
+::::{dropdown} __Parameter:__ {ref}`Prefactors for grain boundary sliding<parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Prefactors_20for_20grain_20boundary_20sliding>`
+:name: parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Prefactors_20for_20grain_20boundary_20sliding
 **Default value:** 3.9e-19.2
 
 **Pattern:** [Anything]
 
 **Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001
+::::
 
-(parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Stress_20exponents_20for_20grain_20boundary_20sliding)=
-### __Parameter name:__ Stress exponents for grain boundary sliding
+::::{dropdown} __Parameter:__ {ref}`Stress exponents for grain boundary sliding<parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Stress_20exponents_20for_20grain_20boundary_20sliding>`
+:name: parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Stress_20exponents_20for_20grain_20boundary_20sliding
 **Default value:** 1.8
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001.
+::::
 
 (parameters:Material_20model/Viscoelastic)=
 ## **Subsection:** Material model / Viscoelastic
-(parameters:Material_20model/Viscoelastic/Densities)=
-### __Parameter name:__ Densities
+::::{dropdown} __Parameter:__ {ref}`Densities<parameters:Material_20model/Viscoelastic/Densities>`
+:name: parameters:Material_20model/Viscoelastic/Densities
 **Default value:** 3300.
 
 **Pattern:** [Anything]
 
 **Documentation:** List of densities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\kilogram\per\meter\cubed}.
+::::
 
-(parameters:Material_20model/Viscoelastic/Elastic_20damper_20viscosity)=
-### __Parameter name:__ Elastic damper viscosity
+::::{dropdown} __Parameter:__ {ref}`Elastic damper viscosity<parameters:Material_20model/Viscoelastic/Elastic_20damper_20viscosity>`
+:name: parameters:Material_20model/Viscoelastic/Elastic_20damper_20viscosity
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Viscosity of a viscous damper that acts in parallel with the elastic element to stabilize behavior. Units: $\text{Pa}\text{s}$
+::::
 
-(parameters:Material_20model/Viscoelastic/Elastic_20shear_20moduli)=
-### __Parameter name:__ Elastic shear moduli
+::::{dropdown} __Parameter:__ {ref}`Elastic shear moduli<parameters:Material_20model/Viscoelastic/Elastic_20shear_20moduli>`
+:name: parameters:Material_20model/Viscoelastic/Elastic_20shear_20moduli
 **Default value:** 75.0e9
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of elastic shear moduli, $G$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. The default value of 75 GPa is representative of mantle rocks. Units: Pa.
+::::
 
-(parameters:Material_20model/Viscoelastic/Fixed_20elastic_20time_20step)=
-### __Parameter name:__ Fixed elastic time step
+::::{dropdown} __Parameter:__ {ref}`Fixed elastic time step<parameters:Material_20model/Viscoelastic/Fixed_20elastic_20time_20step>`
+:name: parameters:Material_20model/Viscoelastic/Fixed_20elastic_20time_20step
 **Default value:** 1.e3
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The fixed elastic time step $dte$. It is always used during the first timestep; afterwards on if &rsquo;Used fixed elastic time step&rsquo; is true. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+::::
 
-(parameters:Material_20model/Viscoelastic/Heat_20capacities)=
-### __Parameter name:__ Heat capacities
+::::{dropdown} __Parameter:__ {ref}`Heat capacities<parameters:Material_20model/Viscoelastic/Heat_20capacities>`
+:name: parameters:Material_20model/Viscoelastic/Heat_20capacities
 **Default value:** 1250.
 
 **Pattern:** [Anything]
 
 **Documentation:** List of specific heats $C_p$ for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\joule\per\kelvin\per\kilogram}.
+::::
 
-(parameters:Material_20model/Viscoelastic/Reference_20temperature)=
-### __Parameter name:__ Reference temperature
+::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Viscoelastic/Reference_20temperature>`
+:name: parameters:Material_20model/Viscoelastic/Reference_20temperature
 **Default value:** 293.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The reference temperature $T_0$. Units: \si{\kelvin}.
+::::
 
-(parameters:Material_20model/Viscoelastic/Specific_20heats)=
-### __Parameter name__: Specific heats
+::::{dropdown} __Parameter:__ {ref}`Specific heats<parameters:Material_20model/Viscoelastic/Specific_20heats>`
+:name: parameters:Material_20model/Viscoelastic/Specific_20heats
 **Alias:** [Heat capacities](parameters:Material_20model/Viscoelastic/Heat_20capacities)
 
 **Deprecation Status:** false
+::::
 
-(parameters:Material_20model/Viscoelastic/Stabilization_20time_20scale_20factor)=
-### __Parameter name:__ Stabilization time scale factor
+::::{dropdown} __Parameter:__ {ref}`Stabilization time scale factor<parameters:Material_20model/Viscoelastic/Stabilization_20time_20scale_20factor>`
+:name: parameters:Material_20model/Viscoelastic/Stabilization_20time_20scale_20factor
 **Default value:** 1.
 
 **Pattern:** [Double 1...MAX_DOUBLE (inclusive)]
 
 **Documentation:** A stabilization factor for the elastic stresses that influences how fast elastic stresses adjust to deformation. This value is equal to the elastic time step divided by the computational time step. The default value of 1.0 may lead to oscillatory motion. Increasing this factor to 2.0 can reduce oscillations while preserving an immediate elastic response. In complex models the factor can be increased further to improve convergence behaviour. As the stabilization factor increases, the effective viscosity gets smaller, and is balanced by an increasing body force term. For composite rheologies that use this formulation of elasticity, setting an infinite shear modulus only recovers the nonelastic part of the rheology if this stabilization factor is equal to 1.0.
+::::
 
-(parameters:Material_20model/Viscoelastic/Thermal_20conductivities)=
-### __Parameter name:__ Thermal conductivities
+::::{dropdown} __Parameter:__ {ref}`Thermal conductivities<parameters:Material_20model/Viscoelastic/Thermal_20conductivities>`
+:name: parameters:Material_20model/Viscoelastic/Thermal_20conductivities
 **Default value:** 4.7
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of thermal conductivities for background mantle and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+::::
 
-(parameters:Material_20model/Viscoelastic/Thermal_20expansivities)=
-### __Parameter name:__ Thermal expansivities
+::::{dropdown} __Parameter:__ {ref}`Thermal expansivities<parameters:Material_20model/Viscoelastic/Thermal_20expansivities>`
+:name: parameters:Material_20model/Viscoelastic/Thermal_20expansivities
 **Default value:** 0.000035
 
 **Pattern:** [Anything]
 
 **Documentation:** List of thermal expansivities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\per\kelvin}.
+::::
 
-(parameters:Material_20model/Viscoelastic/Use_20fixed_20elastic_20time_20step)=
-### __Parameter name:__ Use fixed elastic time step
+::::{dropdown} __Parameter:__ {ref}`Use fixed elastic time step<parameters:Material_20model/Viscoelastic/Use_20fixed_20elastic_20time_20step>`
+:name: parameters:Material_20model/Viscoelastic/Use_20fixed_20elastic_20time_20step
 **Default value:** unspecified
 
 **Pattern:** [Selection true|false|unspecified ]
 
 **Documentation:** Select whether the material time scale in the viscoelastic constitutive relationship uses the regular numerical time step or a separate fixed elastic time step throughout the model run. The fixed elastic time step is always used during the initial time step. If a fixed elastic time step is used throughout the model run, a stress averaging scheme is applied to account for differences with the numerical time step. An alternative approach is to limit the maximum time step size so that it is equal to the elastic time step. The default value of this parameter is &rsquo;unspecified&rsquo;, which throws an exception during runtime. In order for the model to run the user must select &rsquo;true&rsquo; or &rsquo;false&rsquo;.
+::::
 
-(parameters:Material_20model/Viscoelastic/Viscosities)=
-### __Parameter name:__ Viscosities
+::::{dropdown} __Parameter:__ {ref}`Viscosities<parameters:Material_20model/Viscoelastic/Viscosities>`
+:name: parameters:Material_20model/Viscoelastic/Viscosities
 **Default value:** 1.e21
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of viscosities for background mantle and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\text{Pa}\text{s}$.
+::::
 
-(parameters:Material_20model/Viscoelastic/Viscosity_20averaging_20scheme)=
-### __Parameter name:__ Viscosity averaging scheme
+::::{dropdown} __Parameter:__ {ref}`Viscosity averaging scheme<parameters:Material_20model/Viscoelastic/Viscosity_20averaging_20scheme>`
+:name: parameters:Material_20model/Viscoelastic/Viscosity_20averaging_20scheme
 **Default value:** harmonic
 
 **Pattern:** [Selection arithmetic|harmonic|geometric|maximum composition  ]
 
 **Documentation:** When more than one compositional field is present at a point with different viscosities, we need to come up with an average viscosity at that point.  Select a weighted harmonic, arithmetic, geometric, or maximum composition.
+::::
