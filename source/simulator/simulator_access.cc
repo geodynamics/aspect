@@ -904,6 +904,15 @@ namespace aspect
 
 
   template <int dim>
+  const PrescribedSolution::Manager<dim> &
+  SimulatorAccess<dim>::get_prescribed_solution () const
+  {
+    return simulator->prescribed_solution_manager;
+  }
+
+
+
+  template <int dim>
   RotationProperties<dim>
   SimulatorAccess<dim>::compute_net_angular_momentum(const bool use_constant_density,
                                                      const LinearAlgebra::BlockVector &solution,
