@@ -15,7 +15,7 @@ if test ! -f $ASPECT ; then
 fi
 
 
-# first thing: run ASPECT so that it produces the parameters.json file that
+# run ASPECT so that it produces the parameters.json file that
 # documents all parameters and that we can use for the documentation
 echo Creating parameters.json
 rm -f output/parameters.json
@@ -28,16 +28,6 @@ echo Convert parameters to markdown files
 
 # The jsontomarkdown script currently can leave spaces at the ends of lines.  
 ./contrib/utilities/indent
-
-# next, generate the output file that is used to create the
-# connection graph between all plugins and the core of ASPECT
-echo Creating plugin graph
-$ASPECT --output-plugin-graph doc/manual/empty.prm >plugin_graph.dot 2>/dev/null \
-    || { echo "Running ASPECT for the plugin graph failed"; exit 1; }
-
-neato plugin_graph.dot -Tsvg -o plugin_graph.svg \
-    || { echo "Can't run neato"; cat plugin_graph.dot; exit 1; }
-mv plugin_graph.svg plugin_graph.dot doc/sphinx/user/extending/images/ || echo "ERROR: could not move plugin_graph.*"
 
 popd
 echo done
