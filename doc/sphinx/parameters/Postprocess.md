@@ -5,8 +5,8 @@
 ## **Subsection:** Postprocess
 
 
-(parameters:Postprocess/List_20of_20postprocessors)=
-### __Parameter name:__ List of postprocessors
+::::{dropdown} __Parameter:__ {ref}`List of postprocessors<parameters:Postprocess/List_20of_20postprocessors>`
+:name: parameters:Postprocess/List_20of_20postprocessors
 **Default value:**
 
 **Pattern:** [MultipleSelection ODE statistics|Stokes residual|basic statistics|boundary densities|boundary pressures|boundary strain rate residual statistics|boundary velocity residual statistics|command|composition statistics|composition velocity statistics|core statistics|crystal preferred orientation|current surface|depth average|domain volume statistics|dynamic topography|entropy statistics|entropy viscosity statistics|fluid velocity statistics|geoid|global statistics|gravity calculation|heat flux densities|heat flux map|heat flux statistics|heating statistics|load balance statistics|mass flux statistics|material statistics|matrix statistics|maximum depth of field|melt statistics|memory statistics|mobility statistics|particle count statistics|particle distribution score|particle distribution statistics|particles|point values|pressure statistics|rotation statistics|sea level|spherical velocity statistics|temperature statistics|timing statistics|topography|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization|volume of fluid statistics ]
@@ -148,147 +148,164 @@ It is worth comparing this postprocessor with the visualization postprocessor ca
 &lsquo;visualization&rsquo;: A postprocessor that takes the solution and writes it into files that can be read by a graphical visualization program. Additional run time parameters are read from the parameter subsection &rsquo;Visualization&rsquo;.
 
 &lsquo;volume of fluid statistics&rsquo;: A postprocessor that computes some statistics about the volume-of-fluid fields.
+::::
 
-(parameters:Postprocess/Run_20postprocessors_20on_20nonlinear_20iterations)=
-### __Parameter name:__ Run postprocessors on nonlinear iterations
+::::{dropdown} __Parameter:__ {ref}`Run postprocessors on nonlinear iterations<parameters:Postprocess/Run_20postprocessors_20on_20nonlinear_20iterations>`
+:name: parameters:Postprocess/Run_20postprocessors_20on_20nonlinear_20iterations
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether or not the postprocessors should be executed after each of the nonlinear iterations done within one time step. As this is mainly an option for the purposes of debugging, it is not supported when the &rsquo;Time between graphical output&rsquo; is larger than zero, or when the postprocessor is not intended to be run more than once per timestep.
+::::
 
 (parameters:Postprocess/Boundary_20strain_20rate_20residual_20statistics)=
 ## **Subsection:** Postprocess / Boundary strain rate residual statistics
-(parameters:Postprocess/Boundary_20strain_20rate_20residual_20statistics/Data_20directory)=
-### __Parameter name:__ Data directory
+::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Postprocess/Boundary_20strain_20rate_20residual_20statistics/Data_20directory>`
+:name: parameters:Postprocess/Boundary_20strain_20rate_20residual_20statistics/Data_20directory
 **Default value:** $ASPECT_SOURCE_DIR/data/postprocess/boundary-strain-rate-residual/
 
 **Pattern:** [DirectoryName]
 
 **Documentation:** The name of a directory that contains the ascii data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT.
+::::
 
-(parameters:Postprocess/Boundary_20strain_20rate_20residual_20statistics/Data_20file_20name)=
-### __Parameter name:__ Data file name
+::::{dropdown} __Parameter:__ {ref}`Data file name<parameters:Postprocess/Boundary_20strain_20rate_20residual_20statistics/Data_20file_20name>`
+:name: parameters:Postprocess/Boundary_20strain_20rate_20residual_20statistics/Data_20file_20name
 **Default value:** box_3d_boundary_strain_rate.txt
 
 **Pattern:** [Anything]
 
 **Documentation:** The file name of the input surface strain rate an ascii data. The file has one column in addition to the coordinate columns corresponding to the second invariant of strain rate.
+::::
 
-(parameters:Postprocess/Boundary_20strain_20rate_20residual_20statistics/Scale_20factor)=
-### __Parameter name:__ Scale factor
+::::{dropdown} __Parameter:__ {ref}`Scale factor<parameters:Postprocess/Boundary_20strain_20rate_20residual_20statistics/Scale_20factor>`
+:name: parameters:Postprocess/Boundary_20strain_20rate_20residual_20statistics/Scale_20factor
 **Default value:** 1.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model.
+::::
 
 (parameters:Postprocess/Boundary_20velocity_20residual_20statistics)=
 ## **Subsection:** Postprocess / Boundary velocity residual statistics
-(parameters:Postprocess/Boundary_20velocity_20residual_20statistics/Data_20directory)=
-### __Parameter name:__ Data directory
+::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Postprocess/Boundary_20velocity_20residual_20statistics/Data_20directory>`
+:name: parameters:Postprocess/Boundary_20velocity_20residual_20statistics/Data_20directory
 **Default value:** $ASPECT_SOURCE_DIR/data/boundary-velocity/gplates/
 
 **Pattern:** [DirectoryName]
 
 **Documentation:** The name of a directory that contains the GPlates model or the ascii data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT.
+::::
 
-(parameters:Postprocess/Boundary_20velocity_20residual_20statistics/Data_20file_20name)=
-### __Parameter name:__ Data file name
+::::{dropdown} __Parameter:__ {ref}`Data file name<parameters:Postprocess/Boundary_20velocity_20residual_20statistics/Data_20file_20name>`
+:name: parameters:Postprocess/Boundary_20velocity_20residual_20statistics/Data_20file_20name
 **Default value:** current_day.gpml
 
 **Pattern:** [Anything]
 
 **Documentation:** The file name of the input velocity as a GPlates model or an ascii data. For the GPlates model, provide file in the same format as described in the &rsquo;gplates&rsquo; boundary velocity plugin. For the ascii data, provide file in the same format as described in  &rsquo;ascii data&rsquo; initial composition plugin.
+::::
 
-(parameters:Postprocess/Boundary_20velocity_20residual_20statistics/Scale_20factor)=
-### __Parameter name:__ Scale factor
+::::{dropdown} __Parameter:__ {ref}`Scale factor<parameters:Postprocess/Boundary_20velocity_20residual_20statistics/Scale_20factor>`
+:name: parameters:Postprocess/Boundary_20velocity_20residual_20statistics/Scale_20factor
 **Default value:** 1.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/year set this factor to 0.01.
+::::
 
-(parameters:Postprocess/Boundary_20velocity_20residual_20statistics/Use_20ascii_20data)=
-### __Parameter name:__ Use ascii data
+::::{dropdown} __Parameter:__ {ref}`Use ascii data<parameters:Postprocess/Boundary_20velocity_20residual_20statistics/Use_20ascii_20data>`
+:name: parameters:Postprocess/Boundary_20velocity_20residual_20statistics/Use_20ascii_20data
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Use ascii data files (e.g., GPS) for computing residual velocities instead of GPlates data.
+::::
 
-(parameters:Postprocess/Boundary_20velocity_20residual_20statistics/Use_20spherical_20unit_20vectors)=
-### __Parameter name:__ Use spherical unit vectors
+::::{dropdown} __Parameter:__ {ref}`Use spherical unit vectors<parameters:Postprocess/Boundary_20velocity_20residual_20statistics/Use_20spherical_20unit_20vectors>`
+:name: parameters:Postprocess/Boundary_20velocity_20residual_20statistics/Use_20spherical_20unit_20vectors
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Specify velocity as r, phi, and theta components instead of x, y, and z. Positive velocities point up, east, and north (in 3d) or out and clockwise (in 2d). This setting only makes sense for spherical geometries.GPlates data is always interpreted to be in east and north directions and is not affected by this parameter.
+::::
 
 (parameters:Postprocess/Command)=
 ## **Subsection:** Postprocess / Command
-(parameters:Postprocess/Command/Command)=
-### __Parameter name:__ Command
+::::{dropdown} __Parameter:__ {ref}`Command<parameters:Postprocess/Command/Command>`
+:name: parameters:Postprocess/Command/Command
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** Command to execute.
+::::
 
-(parameters:Postprocess/Command/Run_20on_20all_20processes)=
-### __Parameter name:__ Run on all processes
+::::{dropdown} __Parameter:__ {ref}`Run on all processes<parameters:Postprocess/Command/Run_20on_20all_20processes>`
+:name: parameters:Postprocess/Command/Run_20on_20all_20processes
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to run command from all processes (true), or only on process 0 (false).
+::::
 
-(parameters:Postprocess/Command/Terminate_20on_20failure)=
-### __Parameter name:__ Terminate on failure
+::::{dropdown} __Parameter:__ {ref}`Terminate on failure<parameters:Postprocess/Command/Terminate_20on_20failure>`
+:name: parameters:Postprocess/Command/Terminate_20on_20failure
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Select whether ASPECT should terminate if the command returns a non-zero exit status.
+::::
 
 (parameters:Postprocess/Composition_20velocity_20statistics)=
 ## **Subsection:** Postprocess / Composition velocity statistics
-(parameters:Postprocess/Composition_20velocity_20statistics/Names_20of_20selected_20compositional_20fields)=
-### __Parameter name:__ Names of selected compositional fields
+::::{dropdown} __Parameter:__ {ref}`Names of selected compositional fields<parameters:Postprocess/Composition_20velocity_20statistics/Names_20of_20selected_20compositional_20fields>`
+:name: parameters:Postprocess/Composition_20velocity_20statistics/Names_20of_20selected_20compositional_20fields
 **Default value:**
 
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A list of names for each of the compositional fields that you want to compute the combined RMS velocity for.
+::::
 
 (parameters:Postprocess/Crystal_20Preferred_20Orientation)=
 ## **Subsection:** Postprocess / Crystal Preferred Orientation
-(parameters:Postprocess/Crystal_20Preferred_20Orientation/Compress_20cpo_20data_20files)=
-### __Parameter name:__ Compress cpo data files
+::::{dropdown} __Parameter:__ {ref}`Compress cpo data files<parameters:Postprocess/Crystal_20Preferred_20Orientation/Compress_20cpo_20data_20files>`
+:name: parameters:Postprocess/Crystal_20Preferred_20Orientation/Compress_20cpo_20data_20files
 **Default value:** true
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to compress the raw and weighted cpo data output files with zlib.
+::::
 
-(parameters:Postprocess/Crystal_20Preferred_20Orientation/Random_20number_20seed)=
-### __Parameter name:__ Random number seed
+::::{dropdown} __Parameter:__ {ref}`Random number seed<parameters:Postprocess/Crystal_20Preferred_20Orientation/Random_20number_20seed>`
+:name: parameters:Postprocess/Crystal_20Preferred_20Orientation/Random_20number_20seed
 **Default value:** 1
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** The seed used to generate random numbers. This will make sure that results are reproducible as long as the problem is run with the same amount of MPI processes. It is implemented as final seed = random number seed + MPI Rank.
+::::
 
-(parameters:Postprocess/Crystal_20Preferred_20Orientation/Temporary_20output_20location)=
-### __Parameter name:__ Temporary output location
+::::{dropdown} __Parameter:__ {ref}`Temporary output location<parameters:Postprocess/Crystal_20Preferred_20Orientation/Temporary_20output_20location>`
+:name: parameters:Postprocess/Crystal_20Preferred_20Orientation/Temporary_20output_20location
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** On large clusters it can be advantageous to first write the output to a temporary file on a local file system and later move this file to a network file system. If this variable is set to a non-empty string it will be interpreted as a temporary storage location.
+::::
 
-(parameters:Postprocess/Crystal_20Preferred_20Orientation/Time_20between_20data_20output)=
-### __Parameter name:__ Time between data output
+::::{dropdown} __Parameter:__ {ref}`Time between data output<parameters:Postprocess/Crystal_20Preferred_20Orientation/Time_20between_20data_20output>`
+:name: parameters:Postprocess/Crystal_20Preferred_20Orientation/Time_20between_20data_20output
 **Default value:** 1e8
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
@@ -296,45 +313,50 @@ It is worth comparing this postprocessor with the visualization postprocessor ca
 **Documentation:** The time interval between each generation of output files. A value of zero indicates that output should be generated every time step.
 
 Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+::::
 
-(parameters:Postprocess/Crystal_20Preferred_20Orientation/Write_20in_20background_20thread)=
-### __Parameter name:__ Write in background thread
+::::{dropdown} __Parameter:__ {ref}`Write in background thread<parameters:Postprocess/Crystal_20Preferred_20Orientation/Write_20in_20background_20thread>`
+:name: parameters:Postprocess/Crystal_20Preferred_20Orientation/Write_20in_20background_20thread
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** File operations can potentially take a long time, blocking the progress of the rest of the model run. Setting this variable to &lsquo;true&rsquo; moves this process into background threads, while the rest of the model continues.
+::::
 
-(parameters:Postprocess/Crystal_20Preferred_20Orientation/Write_20out_20draw_20volume_20weighted_20cpo_20data)=
-### __Parameter name:__ Write out draw volume weighted cpo data
+::::{dropdown} __Parameter:__ {ref}`Write out draw volume weighted cpo data<parameters:Postprocess/Crystal_20Preferred_20Orientation/Write_20out_20draw_20volume_20weighted_20cpo_20data>`
+:name: parameters:Postprocess/Crystal_20Preferred_20Orientation/Write_20out_20draw_20volume_20weighted_20cpo_20data
 **Default value:** olivine Euler angles,enstatite Euler angles
 
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A list containing the what part of the random draw volume weighted particle cpo data needs to be written out after the particle id. after using a random draw volume weighting. The random draw volume weigthing uses a uniform random distribution This writes out the raw cpo data files for each MPI process. It can write out the following data: olivine volume fraction, olivine rotation matrix, olivine Euler angles, enstatite volume fraction, enstatite rotation matrix, enstatite Euler angles.
 Note that the rotation matrix and Euler angles both contain the same information, but in a different format. Euler angles are recommended over the rotation matrix since they only require to write 3 values instead of 9. If the list is empty, this file will not be written. Furthermore, the entries will be written out in the order given, and if entries are entered multiple times, they will be written out multiple times.
+::::
 
-(parameters:Postprocess/Crystal_20Preferred_20Orientation/Write_20out_20raw_20cpo_20data)=
-### __Parameter name:__ Write out raw cpo data
+::::{dropdown} __Parameter:__ {ref}`Write out raw cpo data<parameters:Postprocess/Crystal_20Preferred_20Orientation/Write_20out_20raw_20cpo_20data>`
+:name: parameters:Postprocess/Crystal_20Preferred_20Orientation/Write_20out_20raw_20cpo_20data
 **Default value:** olivine volume fraction,olivine Euler angles,enstatite volume fraction,enstatite Euler angles
 
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A list containing what particle cpo data needs to be written out after the particle id. This writes out the raw cpo data files for each MPI process. It can write out the following data: olivine volume fraction, olivine rotation matrix, olivine Euler angles, enstatite volume fraction, enstatite rotation matrix, enstatite Euler angles.
 Note that the rotation matrix and Euler angles both contain the same information, but in a different format. Euler angles are recommended over the rotation matrix since they only require to write 3 values instead of 9. If the list is empty, this file will not be written.Furthermore, the entries will be written out in the order given, and if entries are entered multiple times, they will be written out multiple times.
+::::
 
 (parameters:Postprocess/Depth_20average)=
 ## **Subsection:** Postprocess / Depth average
-(parameters:Postprocess/Depth_20average/Depth_20boundaries_20of_20zones)=
-### __Parameter name:__ Depth boundaries of zones
+::::{dropdown} __Parameter:__ {ref}`Depth boundaries of zones<parameters:Postprocess/Depth_20average/Depth_20boundaries_20of_20zones>`
+:name: parameters:Postprocess/Depth_20average/Depth_20boundaries_20of_20zones
 **Default value:**
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The depth boundaries of zones within which we are to compute averages. By default this list is empty and we subdivide the entire domain into equidistant depth zones and compute averages within each of these zones. If this list is not empty it has to contain one more entry than the &rsquo;Number of zones&rsquo; parameter, representing the upper and lower depth boundary of each zone. It is not necessary to cover the whole depth-range (i.e. you can select to only average in a single layer by choosing 2 arbitrary depths as the boundaries of that layer).
+::::
 
-(parameters:Postprocess/Depth_20average/List_20of_20output_20variables)=
-### __Parameter name:__ List of output variables
+::::{dropdown} __Parameter:__ {ref}`List of output variables<parameters:Postprocess/Depth_20average/List_20of_20output_20variables>`
+:name: parameters:Postprocess/Depth_20average/List_20of_20output_20variables
 **Default value:** all
 
 **Pattern:** [MultipleSelection all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|velocity magnitude|sinking velocity|rising velocity|Vs|Vp|log viscosity|viscosity|vertical heat flux|vertical mass flux|composition mass ]
@@ -345,457 +367,513 @@ Specifically, the sinking velocity is defined as the scalar product of the veloc
 
 List of options:
 all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|velocity magnitude|sinking velocity|rising velocity|Vs|Vp|log viscosity|viscosity|vertical heat flux|vertical mass flux|composition mass
+::::
 
-(parameters:Postprocess/Depth_20average/Number_20of_20zones)=
-### __Parameter name:__ Number of zones
+::::{dropdown} __Parameter:__ {ref}`Number of zones<parameters:Postprocess/Depth_20average/Number_20of_20zones>`
+:name: parameters:Postprocess/Depth_20average/Number_20of_20zones
 **Default value:** 10
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** The number of zones in depth direction within which we are to compute averages. By default, we subdivide the entire domain into 10 depth zones and compute temperature and other averages within each of these zones. However, if you have a very coarse mesh, it may not make much sense to subdivide the domain into so many zones and you may wish to choose less than this default. It may also make computations slightly faster. On the other hand, if you have an extremely highly resolved mesh, choosing more zones might also make sense.
+::::
 
-(parameters:Postprocess/Depth_20average/Output_20format)=
-### __Parameter name:__ Output format
+::::{dropdown} __Parameter:__ {ref}`Output format<parameters:Postprocess/Depth_20average/Output_20format>`
+:name: parameters:Postprocess/Depth_20average/Output_20format
 **Default value:** gnuplot, txt
 
 **Pattern:** [MultipleSelection none|dx|ucd|gnuplot|povray|eps|gmv|tecplot|vtk|vtu|hdf5|svg|deal.II intermediate|txt ]
 
 **Documentation:** A list of formats in which the output shall be produced. The format in which the output is generated also determines the extension of the file into which data is written. The list of possible output formats that can be given here is documented in the appendix of the manual where the current parameter is described. By default the output is written as gnuplot file (for plotting), and as a simple text file.
+::::
 
-(parameters:Postprocess/Depth_20average/Time_20between_20graphical_20output)=
-### __Parameter name:__ Time between graphical output
+::::{dropdown} __Parameter:__ {ref}`Time between graphical output<parameters:Postprocess/Depth_20average/Time_20between_20graphical_20output>`
+:name: parameters:Postprocess/Depth_20average/Time_20between_20graphical_20output
 **Default value:** 1e8
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The time interval between each generation of graphical output files. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+::::
 
 (parameters:Postprocess/Dynamic_20core_20statistics)=
 ## **Subsection:** Postprocess / Dynamic core statistics
-(parameters:Postprocess/Dynamic_20core_20statistics/Excess_20entropy_20only)=
-### __Parameter name:__ Excess entropy only
+::::{dropdown} __Parameter:__ {ref}`Excess entropy only<parameters:Postprocess/Dynamic_20core_20statistics/Excess_20entropy_20only>`
+:name: parameters:Postprocess/Dynamic_20core_20statistics/Excess_20entropy_20only
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Output the excess entropy only instead the each entropy terms.
+::::
 
 (parameters:Postprocess/Dynamic_20topography)=
 ## **Subsection:** Postprocess / Dynamic topography
-(parameters:Postprocess/Dynamic_20topography/Density_20above)=
-### __Parameter name:__ Density above
+::::{dropdown} __Parameter:__ {ref}`Density above<parameters:Postprocess/Dynamic_20topography/Density_20above>`
+:name: parameters:Postprocess/Dynamic_20topography/Density_20above
 **Default value:** 0.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. This value depends on the density of material that is moved up or down, i.e. crustal rock, and the density of the material that is displaced (generally water or air). While the density of crustal rock is part of the material model, this parameter &lsquo;Density above&rsquo; allows the user to specify the density value of material that is displaced above the solid surface. By default this material is assumed to be air, with a density of 0. Units: $\frac{\text{kg}}{\text{m}^3}$.
+::::
 
-(parameters:Postprocess/Dynamic_20topography/Density_20below)=
-### __Parameter name:__ Density below
+::::{dropdown} __Parameter:__ {ref}`Density below<parameters:Postprocess/Dynamic_20topography/Density_20below>`
+:name: parameters:Postprocess/Dynamic_20topography/Density_20below
 **Default value:** 9900.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. This value depends on the density of material that is moved up or down, i.e. mantle above CMB, and the density of the material that is displaced (generally outer core material). While the density of mantle rock is part of the material model, this parameter &lsquo;Density below&rsquo; allows the user to specify the density value of material that is displaced below the solid surface. By default this material is assumed to be outer core material with a density of 9900. Units: $\frac{\text{kg}}{\text{m}^3}$.
+::::
 
-(parameters:Postprocess/Dynamic_20topography/Output_20bottom)=
-### __Parameter name:__ Output bottom
+::::{dropdown} __Parameter:__ {ref}`Output bottom<parameters:Postprocess/Dynamic_20topography/Output_20bottom>`
+:name: parameters:Postprocess/Dynamic_20topography/Output_20bottom
 **Default value:** true
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to output a file containing the bottom (i.e., CMB) dynamic topography.
+::::
 
-(parameters:Postprocess/Dynamic_20topography/Output_20surface)=
-### __Parameter name:__ Output surface
+::::{dropdown} __Parameter:__ {ref}`Output surface<parameters:Postprocess/Dynamic_20topography/Output_20surface>`
+:name: parameters:Postprocess/Dynamic_20topography/Output_20surface
 **Default value:** true
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to output a file containing the surface dynamic topography.
+::::
 
 (parameters:Postprocess/Geoid)=
 ## **Subsection:** Postprocess / Geoid
-(parameters:Postprocess/Geoid/Also_20output_20the_20gravity_20anomaly)=
-### __Parameter name__: Also output the gravity anomaly
+::::{dropdown} __Parameter:__ {ref}`Also output the gravity anomaly<parameters:Postprocess/Geoid/Also_20output_20the_20gravity_20anomaly>`
+:name: parameters:Postprocess/Geoid/Also_20output_20the_20gravity_20anomaly
 **Alias:** [Output gravity anomaly](parameters:Postprocess/Geoid/Output_20gravity_20anomaly)
 
 **Deprecation Status:** false
+::::
 
-(parameters:Postprocess/Geoid/Also_20output_20the_20spherical_20harmonic_20coefficients_20of_20CMB_20dynamic_20topography_20contribution)=
-### __Parameter name__: Also output the spherical harmonic coefficients of CMB dynamic topography contribution
+::::{dropdown} __Parameter:__ {ref}`Also output the spherical harmonic coefficients of CMB dynamic topography contribution<parameters:Postprocess/Geoid/Also_20output_20the_20spherical_20harmonic_20coefficients_20of_20CMB_20dynamic_20topography_20contribution>`
+:name: parameters:Postprocess/Geoid/Also_20output_20the_20spherical_20harmonic_20coefficients_20of_20CMB_20dynamic_20topography_20contribution
 **Alias:** [Output CMB topography contribution coefficients](parameters:Postprocess/Geoid/Output_20CMB_20topography_20contribution_20coefficients)
 
 **Deprecation Status:** false
+::::
 
-(parameters:Postprocess/Geoid/Also_20output_20the_20spherical_20harmonic_20coefficients_20of_20density_20anomaly_20contribution)=
-### __Parameter name__: Also output the spherical harmonic coefficients of density anomaly contribution
+::::{dropdown} __Parameter:__ {ref}`Also output the spherical harmonic coefficients of density anomaly contribution<parameters:Postprocess/Geoid/Also_20output_20the_20spherical_20harmonic_20coefficients_20of_20density_20anomaly_20contribution>`
+:name: parameters:Postprocess/Geoid/Also_20output_20the_20spherical_20harmonic_20coefficients_20of_20density_20anomaly_20contribution
 **Alias:** [Output density anomaly contribution coefficients](parameters:Postprocess/Geoid/Output_20density_20anomaly_20contribution_20coefficients)
 
 **Deprecation Status:** false
+::::
 
-(parameters:Postprocess/Geoid/Also_20output_20the_20spherical_20harmonic_20coefficients_20of_20geoid_20anomaly)=
-### __Parameter name__: Also output the spherical harmonic coefficients of geoid anomaly
+::::{dropdown} __Parameter:__ {ref}`Also output the spherical harmonic coefficients of geoid anomaly<parameters:Postprocess/Geoid/Also_20output_20the_20spherical_20harmonic_20coefficients_20of_20geoid_20anomaly>`
+:name: parameters:Postprocess/Geoid/Also_20output_20the_20spherical_20harmonic_20coefficients_20of_20geoid_20anomaly
 **Alias:** [Output geoid anomaly coefficients](parameters:Postprocess/Geoid/Output_20geoid_20anomaly_20coefficients)
 
 **Deprecation Status:** false
+::::
 
-(parameters:Postprocess/Geoid/Also_20output_20the_20spherical_20harmonic_20coefficients_20of_20surface_20dynamic_20topography_20contribution)=
-### __Parameter name__: Also output the spherical harmonic coefficients of surface dynamic topography contribution
+::::{dropdown} __Parameter:__ {ref}`Also output the spherical harmonic coefficients of surface dynamic topography contribution<parameters:Postprocess/Geoid/Also_20output_20the_20spherical_20harmonic_20coefficients_20of_20surface_20dynamic_20topography_20contribution>`
+:name: parameters:Postprocess/Geoid/Also_20output_20the_20spherical_20harmonic_20coefficients_20of_20surface_20dynamic_20topography_20contribution
 **Alias:** [Output surface topography contribution coefficients](parameters:Postprocess/Geoid/Output_20surface_20topography_20contribution_20coefficients)
 
 **Deprecation Status:** false
+::::
 
-(parameters:Postprocess/Geoid/Density_20above)=
-### __Parameter name:__ Density above
+::::{dropdown} __Parameter:__ {ref}`Density above<parameters:Postprocess/Geoid/Density_20above>`
+:name: parameters:Postprocess/Geoid/Density_20above
 **Default value:** 0.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The density value above the surface boundary.
+::::
 
-(parameters:Postprocess/Geoid/Density_20below)=
-### __Parameter name:__ Density below
+::::{dropdown} __Parameter:__ {ref}`Density below<parameters:Postprocess/Geoid/Density_20below>`
+:name: parameters:Postprocess/Geoid/Density_20below
 **Default value:** 9900.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The density value below the CMB boundary.
+::::
 
-(parameters:Postprocess/Geoid/Include_20CMB_20topography_20contribution)=
-### __Parameter name:__ Include CMB topography contribution
+::::{dropdown} __Parameter:__ {ref}`Include CMB topography contribution<parameters:Postprocess/Geoid/Include_20CMB_20topography_20contribution>`
+:name: parameters:Postprocess/Geoid/Include_20CMB_20topography_20contribution
 **Default value:** true
 
 **Pattern:** [Bool]
 
 **Documentation:** Option to include the contribution from CMB topography on geoid. The default is true.
+::::
 
-(parameters:Postprocess/Geoid/Include_20surface_20topography_20contribution)=
-### __Parameter name:__ Include surface topography contribution
+::::{dropdown} __Parameter:__ {ref}`Include surface topography contribution<parameters:Postprocess/Geoid/Include_20surface_20topography_20contribution>`
+:name: parameters:Postprocess/Geoid/Include_20surface_20topography_20contribution
 **Default value:** true
 
 **Pattern:** [Bool]
 
 **Documentation:** Option to include the contribution from surface topography on geoid. The default is true.
+::::
 
-(parameters:Postprocess/Geoid/Maximum_20degree)=
-### __Parameter name:__ Maximum degree
+::::{dropdown} __Parameter:__ {ref}`Maximum degree<parameters:Postprocess/Geoid/Maximum_20degree>`
+:name: parameters:Postprocess/Geoid/Maximum_20degree
 **Default value:** 20
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** This parameter can be a random positive integer. However, the value normally should not exceed the maximum degree of the initial perturbed temperature field. For example, if the initial temperature uses S40RTS, the maximum degree should not be larger than 40.
+::::
 
-(parameters:Postprocess/Geoid/Minimum_20degree)=
-### __Parameter name:__ Minimum degree
+::::{dropdown} __Parameter:__ {ref}`Minimum degree<parameters:Postprocess/Geoid/Minimum_20degree>`
+:name: parameters:Postprocess/Geoid/Minimum_20degree
 **Default value:** 2
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** This parameter normally is set to 2 since the perturbed gravitational potential at degree 1 always vanishes in a reference frame with the planetary center of mass same as the center of figure.
+::::
 
-(parameters:Postprocess/Geoid/Output_20CMB_20topography_20contribution_20coefficients)=
-### __Parameter name:__ Output CMB topography contribution coefficients
+::::{dropdown} __Parameter:__ {ref}`Output CMB topography contribution coefficients<parameters:Postprocess/Geoid/Output_20CMB_20topography_20contribution_20coefficients>`
+:name: parameters:Postprocess/Geoid/Output_20CMB_20topography_20contribution_20coefficients
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Option to output the spherical harmonic coefficients of the CMB topography contribution to the maximum degree. The default is false.
+::::
 
-(parameters:Postprocess/Geoid/Output_20data_20in_20geographical_20coordinates)=
-### __Parameter name:__ Output data in geographical coordinates
+::::{dropdown} __Parameter:__ {ref}`Output data in geographical coordinates<parameters:Postprocess/Geoid/Output_20data_20in_20geographical_20coordinates>`
+:name: parameters:Postprocess/Geoid/Output_20data_20in_20geographical_20coordinates
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Option to output the geoid anomaly in geographical coordinates (latitude and longitude). The default is false, so the postprocessor will output the data in geocentric coordinates (x,y,z) as normally.
+::::
 
-(parameters:Postprocess/Geoid/Output_20density_20anomaly_20contribution_20coefficients)=
-### __Parameter name:__ Output density anomaly contribution coefficients
+::::{dropdown} __Parameter:__ {ref}`Output density anomaly contribution coefficients<parameters:Postprocess/Geoid/Output_20density_20anomaly_20contribution_20coefficients>`
+:name: parameters:Postprocess/Geoid/Output_20density_20anomaly_20contribution_20coefficients
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Option to output the spherical harmonic coefficients of the density anomaly contribution to the maximum degree. The default is false.
+::::
 
-(parameters:Postprocess/Geoid/Output_20geoid_20anomaly_20coefficients)=
-### __Parameter name:__ Output geoid anomaly coefficients
+::::{dropdown} __Parameter:__ {ref}`Output geoid anomaly coefficients<parameters:Postprocess/Geoid/Output_20geoid_20anomaly_20coefficients>`
+:name: parameters:Postprocess/Geoid/Output_20geoid_20anomaly_20coefficients
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Option to output the spherical harmonic coefficients of the geoid anomaly up to the maximum degree. The default is false, so the postprocessor will only output the geoid anomaly in grid format.
+::::
 
-(parameters:Postprocess/Geoid/Output_20gravity_20anomaly)=
-### __Parameter name:__ Output gravity anomaly
+::::{dropdown} __Parameter:__ {ref}`Output gravity anomaly<parameters:Postprocess/Geoid/Output_20gravity_20anomaly>`
+:name: parameters:Postprocess/Geoid/Output_20gravity_20anomaly
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Option to output the free-air gravity anomaly up to the maximum degree. The unit of the output is in SI, hence $m/s^2$ ($1mgal = 10^-5 m/s^2$). The default is false.
+::::
 
-(parameters:Postprocess/Geoid/Output_20surface_20topography_20contribution_20coefficients)=
-### __Parameter name:__ Output surface topography contribution coefficients
+::::{dropdown} __Parameter:__ {ref}`Output surface topography contribution coefficients<parameters:Postprocess/Geoid/Output_20surface_20topography_20contribution_20coefficients>`
+:name: parameters:Postprocess/Geoid/Output_20surface_20topography_20contribution_20coefficients
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Option to output the spherical harmonic coefficients of the surface topography contribution to the maximum degree. The default is false.
+::::
 
 (parameters:Postprocess/Global_20statistics)=
 ## **Subsection:** Postprocess / Global statistics
-(parameters:Postprocess/Global_20statistics/Write_20statistics_20for_20each_20nonlinear_20iteration)=
-### __Parameter name:__ Write statistics for each nonlinear iteration
+::::{dropdown} __Parameter:__ {ref}`Write statistics for each nonlinear iteration<parameters:Postprocess/Global_20statistics/Write_20statistics_20for_20each_20nonlinear_20iteration>`
+:name: parameters:Postprocess/Global_20statistics/Write_20statistics_20for_20each_20nonlinear_20iteration
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to put every nonlinear iteration into a separate line in the statistics file (if true), or to output only one line per time step that contains the total number of iterations of the Stokes and advection linear system solver.
+::::
 
 (parameters:Postprocess/Gravity_20calculation)=
 ## **Subsection:** Postprocess / Gravity calculation
-(parameters:Postprocess/Gravity_20calculation/List_20of_20latitude)=
-### __Parameter name:__ List of latitude
+::::{dropdown} __Parameter:__ {ref}`List of latitude<parameters:Postprocess/Gravity_20calculation/List_20of_20latitude>`
+:name: parameters:Postprocess/Gravity_20calculation/List_20of_20latitude
 **Default value:**
 
 **Pattern:** [List of <[Double -90...90 (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** Parameter for the list of points sampling scheme: List of satellite latitude coordinates.
+::::
 
-(parameters:Postprocess/Gravity_20calculation/List_20of_20longitude)=
-### __Parameter name:__ List of longitude
+::::{dropdown} __Parameter:__ {ref}`List of longitude<parameters:Postprocess/Gravity_20calculation/List_20of_20longitude>`
+:name: parameters:Postprocess/Gravity_20calculation/List_20of_20longitude
 **Default value:**
 
 **Pattern:** [List of <[Double -180...180 (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** Parameter for the list of points sampling scheme: List of satellite longitude coordinates.
+::::
 
-(parameters:Postprocess/Gravity_20calculation/List_20of_20radius)=
-### __Parameter name:__ List of radius
+::::{dropdown} __Parameter:__ {ref}`List of radius<parameters:Postprocess/Gravity_20calculation/List_20of_20radius>`
+:name: parameters:Postprocess/Gravity_20calculation/List_20of_20radius
 **Default value:**
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** Parameter for the list of points sampling scheme: List of satellite radius coordinates. Just specify one radius if all points values have the same radius. If not, make sure there are as many radius as longitude and latitude
+::::
 
-(parameters:Postprocess/Gravity_20calculation/Maximum_20latitude)=
-### __Parameter name:__ Maximum latitude
+::::{dropdown} __Parameter:__ {ref}`Maximum latitude<parameters:Postprocess/Gravity_20calculation/Maximum_20latitude>`
+:name: parameters:Postprocess/Gravity_20calculation/Maximum_20latitude
 **Default value:** 90
 
 **Pattern:** [Double -90...90 (inclusive)]
 
 **Documentation:** Parameter for the uniform distribution sampling scheme: Gravity may be calculated for a sets of points along the latitude between a minimum and maximum latitude.
+::::
 
-(parameters:Postprocess/Gravity_20calculation/Maximum_20longitude)=
-### __Parameter name:__ Maximum longitude
+::::{dropdown} __Parameter:__ {ref}`Maximum longitude<parameters:Postprocess/Gravity_20calculation/Maximum_20longitude>`
+:name: parameters:Postprocess/Gravity_20calculation/Maximum_20longitude
 **Default value:** 180.
 
 **Pattern:** [Double -180...180 (inclusive)]
 
 **Documentation:** Parameter for the uniform distribution sampling scheme: Gravity may be calculated for a sets of points along the longitude between a minimum and maximum longitude.
+::::
 
-(parameters:Postprocess/Gravity_20calculation/Maximum_20radius)=
-### __Parameter name:__ Maximum radius
+::::{dropdown} __Parameter:__ {ref}`Maximum radius<parameters:Postprocess/Gravity_20calculation/Maximum_20radius>`
+:name: parameters:Postprocess/Gravity_20calculation/Maximum_20radius
 **Default value:** 0.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Parameter for the map sampling scheme: Maximum radius can be defined in or outside the model.
+::::
 
-(parameters:Postprocess/Gravity_20calculation/Minimum_20latitude)=
-### __Parameter name:__ Minimum latitude
+::::{dropdown} __Parameter:__ {ref}`Minimum latitude<parameters:Postprocess/Gravity_20calculation/Minimum_20latitude>`
+:name: parameters:Postprocess/Gravity_20calculation/Minimum_20latitude
 **Default value:** -90.
 
 **Pattern:** [Double -90...90 (inclusive)]
 
 **Documentation:** Parameter for the uniform distribution sampling scheme: Gravity may be calculated for a sets of points along the latitude between a minimum and maximum latitude.
+::::
 
-(parameters:Postprocess/Gravity_20calculation/Minimum_20longitude)=
-### __Parameter name:__ Minimum longitude
+::::{dropdown} __Parameter:__ {ref}`Minimum longitude<parameters:Postprocess/Gravity_20calculation/Minimum_20longitude>`
+:name: parameters:Postprocess/Gravity_20calculation/Minimum_20longitude
 **Default value:** -180.
 
 **Pattern:** [Double -180...180 (inclusive)]
 
 **Documentation:** Parameter for the uniform distribution sampling scheme: Gravity may be calculated for a sets of points along the longitude between a minimum and maximum longitude.
+::::
 
-(parameters:Postprocess/Gravity_20calculation/Minimum_20radius)=
-### __Parameter name:__ Minimum radius
+::::{dropdown} __Parameter:__ {ref}`Minimum radius<parameters:Postprocess/Gravity_20calculation/Minimum_20radius>`
+:name: parameters:Postprocess/Gravity_20calculation/Minimum_20radius
 **Default value:** 0.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Parameter for the map sampling scheme: Minimum radius may be defined in or outside the model. Prescribe a minimum radius for a sampling coverage at a specific height.
+::::
 
-(parameters:Postprocess/Gravity_20calculation/Number_20points_20fibonacci_20spiral)=
-### __Parameter name:__ Number points fibonacci spiral
+::::{dropdown} __Parameter:__ {ref}`Number points fibonacci spiral<parameters:Postprocess/Gravity_20calculation/Number_20points_20fibonacci_20spiral>`
+:name: parameters:Postprocess/Gravity_20calculation/Number_20points_20fibonacci_20spiral
 **Default value:** 200
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** Parameter for the fibonacci spiral sampling scheme: This specifies the desired number of satellites per radius layer. The default value is 200. Note that sampling becomes more uniform with increasing number of satellites
+::::
 
-(parameters:Postprocess/Gravity_20calculation/Number_20points_20latitude)=
-### __Parameter name:__ Number points latitude
+::::{dropdown} __Parameter:__ {ref}`Number points latitude<parameters:Postprocess/Gravity_20calculation/Number_20points_20latitude>`
+:name: parameters:Postprocess/Gravity_20calculation/Number_20points_20latitude
 **Default value:** 1
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** Parameter for the map sampling scheme: This specifies the number of points along the latitude (e.g. gravity map) between a minimum and maximum latitude.
+::::
 
-(parameters:Postprocess/Gravity_20calculation/Number_20points_20longitude)=
-### __Parameter name:__ Number points longitude
+::::{dropdown} __Parameter:__ {ref}`Number points longitude<parameters:Postprocess/Gravity_20calculation/Number_20points_20longitude>`
+:name: parameters:Postprocess/Gravity_20calculation/Number_20points_20longitude
 **Default value:** 1
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** Parameter for the map sampling scheme: This specifies the number of points along the longitude (e.g. gravity map) between a minimum and maximum longitude.
+::::
 
-(parameters:Postprocess/Gravity_20calculation/Number_20points_20radius)=
-### __Parameter name:__ Number points radius
+::::{dropdown} __Parameter:__ {ref}`Number points radius<parameters:Postprocess/Gravity_20calculation/Number_20points_20radius>`
+:name: parameters:Postprocess/Gravity_20calculation/Number_20points_20radius
 **Default value:** 1
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** Parameter for the map sampling scheme: This specifies the number of points along the radius (e.g. depth profile) between a minimum and maximum radius.
+::::
 
-(parameters:Postprocess/Gravity_20calculation/Precision_20in_20gravity_20output)=
-### __Parameter name:__ Precision in gravity output
+::::{dropdown} __Parameter:__ {ref}`Precision in gravity output<parameters:Postprocess/Gravity_20calculation/Precision_20in_20gravity_20output>`
+:name: parameters:Postprocess/Gravity_20calculation/Precision_20in_20gravity_20output
 **Default value:** 12
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** Set the precision of gravity acceleration, potential and gradients in the gravity output and statistics file.
+::::
 
-(parameters:Postprocess/Gravity_20calculation/Quadrature_20degree_20increase)=
-### __Parameter name:__ Quadrature degree increase
+::::{dropdown} __Parameter:__ {ref}`Quadrature degree increase<parameters:Postprocess/Gravity_20calculation/Quadrature_20degree_20increase>`
+:name: parameters:Postprocess/Gravity_20calculation/Quadrature_20degree_20increase
 **Default value:** 0
 
 **Pattern:** [Integer range -1...2147483647 (inclusive)]
 
 **Documentation:** Quadrature degree increase over the velocity element degree may be required when gravity is calculated near the surface or inside the model. An increase in the quadrature element adds accuracy to the gravity solution from noise due to the model grid.
+::::
 
-(parameters:Postprocess/Gravity_20calculation/Reference_20density)=
-### __Parameter name:__ Reference density
+::::{dropdown} __Parameter:__ {ref}`Reference density<parameters:Postprocess/Gravity_20calculation/Reference_20density>`
+:name: parameters:Postprocess/Gravity_20calculation/Reference_20density
 **Default value:** 3300.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Gravity anomalies may be computed using density anomalies relative to a reference density.
+::::
 
-(parameters:Postprocess/Gravity_20calculation/Sampling_20scheme)=
-### __Parameter name:__ Sampling scheme
+::::{dropdown} __Parameter:__ {ref}`Sampling scheme<parameters:Postprocess/Gravity_20calculation/Sampling_20scheme>`
+:name: parameters:Postprocess/Gravity_20calculation/Sampling_20scheme
 **Default value:** map
 
 **Pattern:** [Selection map|list|list of points|fibonacci spiral ]
 
 **Documentation:** Choose the sampling scheme. By default, the map produces a grid of equally angled points between a minimum and maximum radius, longitude, and latitude. A list of points contains the specific coordinates of the satellites. The fibonacci spiral sampling scheme produces a uniformly distributed map on the surface of sphere defined by a minimum and/or maximum radius.
+::::
 
-(parameters:Postprocess/Gravity_20calculation/Time_20between_20gravity_20output)=
-### __Parameter name:__ Time between gravity output
+::::{dropdown} __Parameter:__ {ref}`Time between gravity output<parameters:Postprocess/Gravity_20calculation/Time_20between_20gravity_20output>`
+:name: parameters:Postprocess/Gravity_20calculation/Time_20between_20gravity_20output
 **Default value:** 1e8
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The time interval between each generation of gravity output files. A value of 0 indicates that output should be generated in each time step. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+::::
 
-(parameters:Postprocess/Gravity_20calculation/Time_20steps_20between_20gravity_20output)=
-### __Parameter name:__ Time steps between gravity output
+::::{dropdown} __Parameter:__ {ref}`Time steps between gravity output<parameters:Postprocess/Gravity_20calculation/Time_20steps_20between_20gravity_20output>`
+:name: parameters:Postprocess/Gravity_20calculation/Time_20steps_20between_20gravity_20output
 **Default value:** 2147483647
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** The maximum number of time steps between each generation of gravity output files.
+::::
 
 (parameters:Postprocess/Memory_20statistics)=
 ## **Subsection:** Postprocess / Memory statistics
-(parameters:Postprocess/Memory_20statistics/Output_20peak_20virtual_20memory_20_28VmPeak_29)=
-### __Parameter name:__ Output peak virtual memory (VmPeak)
+::::{dropdown} __Parameter:__ {ref}`Output peak virtual memory (VmPeak)<parameters:Postprocess/Memory_20statistics/Output_20peak_20virtual_20memory_20_28VmPeak_29>`
+:name: parameters:Postprocess/Memory_20statistics/Output_20peak_20virtual_20memory_20_28VmPeak_29
 **Default value:** true
 
 **Pattern:** [Bool]
 
 **Documentation:** If set to &rsquo;true&rsquo;, also output the peak virtual memory usage (computed as the maximum over all processors).
+::::
 
 (parameters:Postprocess/Particle_20distribution_20score)=
 ## **Subsection:** Postprocess / Particle distribution score
-(parameters:Postprocess/Particle_20distribution_20score/Granularity)=
-### __Parameter name:__ Granularity
+::::{dropdown} __Parameter:__ {ref}`Granularity<parameters:Postprocess/Particle_20distribution_20score/Granularity>`
+:name: parameters:Postprocess/Particle_20distribution_20score/Granularity
 **Default value:** 2
 
 **Pattern:** [Integer range 2...2147483647 (inclusive)]
 
 **Documentation:** This parameter determines how many bins this postprocessor sorts particles into. The ideal value for granularity depends on the maximum number of particles in the cell. Generally higher values lead to more accuracy.
+::::
 
 (parameters:Postprocess/Particle_20distribution_20statistics)=
 ## **Subsection:** Postprocess / Particle distribution statistics
-(parameters:Postprocess/Particle_20distribution_20statistics/KDE_20granularity)=
-### __Parameter name:__ KDE granularity
+::::{dropdown} __Parameter:__ {ref}`KDE granularity<parameters:Postprocess/Particle_20distribution_20statistics/KDE_20granularity>`
+:name: parameters:Postprocess/Particle_20distribution_20statistics/KDE_20granularity
 **Default value:** 2
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** The granularity parameter determines how many discrete inputs exist for the probability density function generated by the kernel density estimator. The domain of the function is multidimensional so the granularity value determines the range of inputs in each dimension. For example, a granularity value of 2 results in a PDF which is defined for the inputs 0-1 in each of its dimensions.
+::::
 
-(parameters:Postprocess/Particle_20distribution_20statistics/Kernel_20bandwidth)=
-### __Parameter name:__ Kernel bandwidth
+::::{dropdown} __Parameter:__ {ref}`Kernel bandwidth<parameters:Postprocess/Particle_20distribution_20statistics/Kernel_20bandwidth>`
+:name: parameters:Postprocess/Particle_20distribution_20statistics/Kernel_20bandwidth
 **Default value:** 0.3
 
 **Pattern:** [Double 0.001...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The bandwidth parameter sets the bandwidth used for the kernel function. The size of the bandwidth determines the output of the kernel function each, time it is called. Larger bandwidth result in a point-density function which has more smoothing because there is more overlap between the domains of the individual kernel functions. The opposite is true for smaller bandwidth values.
+::::
 
-(parameters:Postprocess/Particle_20distribution_20statistics/Kernel_20function)=
-### __Parameter name:__ Kernel function
+::::{dropdown} __Parameter:__ {ref}`Kernel function<parameters:Postprocess/Particle_20distribution_20statistics/Kernel_20function>`
+:name: parameters:Postprocess/Particle_20distribution_20statistics/Kernel_20function
 **Default value:** Uniform
 
 **Pattern:** [Selection Uniform|Gaussian|Triangular|CutOffFunctionW1 ]
 
 **Documentation:** The kernel smoothing function to use for kernel density estimation.
+::::
 
-(parameters:Postprocess/Particle_20distribution_20statistics/Use_20KDE_20per_20particle)=
-### __Parameter name:__ Use KDE per particle
+::::{dropdown} __Parameter:__ {ref}`Use KDE per particle<parameters:Postprocess/Particle_20distribution_20statistics/Use_20KDE_20per_20particle>`
+:name: parameters:Postprocess/Particle_20distribution_20statistics/Use_20KDE_20per_20particle
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** If &lsquo;KDE_per_particle&lsquo; is true, the point-density function is defined at the position of every particle in the cell. If it is false, the point-density-function is defined on a regular grid throughout the cell.
+::::
 
 (parameters:Postprocess/Particles)=
 ## **Subsection:** Postprocess / Particles
-(parameters:Postprocess/Particles/Data_20output_20format)=
-### __Parameter name:__ Data output format
+::::{dropdown} __Parameter:__ {ref}`Data output format<parameters:Postprocess/Particles/Data_20output_20format>`
+:name: parameters:Postprocess/Particles/Data_20output_20format
 **Default value:** vtu
 
 **Pattern:** [MultipleSelection none|dx|ucd|gnuplot|povray|eps|gmv|tecplot|vtk|vtu|hdf5|svg|deal.II intermediate|ascii ]
 
 **Documentation:** A comma separated list of file formats to be used for graphical output. The list of possible output formats that can be given here is documented in the appendix of the manual where the current parameter is described.
+::::
 
-(parameters:Postprocess/Particles/Exclude_20output_20properties)=
-### __Parameter name:__ Exclude output properties
+::::{dropdown} __Parameter:__ {ref}`Exclude output properties<parameters:Postprocess/Particles/Exclude_20output_20properties>`
+:name: parameters:Postprocess/Particles/Exclude_20output_20properties
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A comma separated list of particle properties that should *not* be output. If this list contains the entry &lsquo;all&rsquo;, only the id of particles will be provided in graphical output files.
+::::
 
-(parameters:Postprocess/Particles/Number_20of_20grouped_20files)=
-### __Parameter name:__ Number of grouped files
+::::{dropdown} __Parameter:__ {ref}`Number of grouped files<parameters:Postprocess/Particles/Number_20of_20grouped_20files>`
+:name: parameters:Postprocess/Particles/Number_20of_20grouped_20files
 **Default value:** 16
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** VTU file output supports grouping files from several CPUs into a given number of files using MPI I/O when writing on a parallel filesystem. Select 0 for no grouping. This will disable parallel file output and instead write one file per processor. A value of 1 will generate one big file containing the whole solution, while a larger value will create that many files (at most as many as there are MPI ranks).
+::::
 
-(parameters:Postprocess/Particles/Temporary_20output_20location)=
-### __Parameter name:__ Temporary output location
+::::{dropdown} __Parameter:__ {ref}`Temporary output location<parameters:Postprocess/Particles/Temporary_20output_20location>`
+:name: parameters:Postprocess/Particles/Temporary_20output_20location
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** On large clusters it can be advantageous to first write the output to a temporary file on a local file system and later move this file to a network file system. If this variable is set to a non-empty string it will be interpreted as a temporary storage location.
+::::
 
-(parameters:Postprocess/Particles/Time_20between_20data_20output)=
-### __Parameter name:__ Time between data output
+::::{dropdown} __Parameter:__ {ref}`Time between data output<parameters:Postprocess/Particles/Time_20between_20data_20output>`
+:name: parameters:Postprocess/Particles/Time_20between_20data_20output
 **Default value:** 1e8
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
@@ -803,147 +881,164 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 **Documentation:** The time interval between each generation of output files. A value of zero indicates that output should be generated every time step.
 
 Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+::::
 
-(parameters:Postprocess/Particles/Write_20in_20background_20thread)=
-### __Parameter name:__ Write in background thread
+::::{dropdown} __Parameter:__ {ref}`Write in background thread<parameters:Postprocess/Particles/Write_20in_20background_20thread>`
+:name: parameters:Postprocess/Particles/Write_20in_20background_20thread
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** File operations can potentially take a long time, blocking the progress of the rest of the model run. Setting this variable to &lsquo;true&rsquo; moves this process into a background thread, while the rest of the model continues.
+::::
 
 (parameters:Postprocess/Point_20values)=
 ## **Subsection:** Postprocess / Point values
-(parameters:Postprocess/Point_20values/Evaluation_20points)=
-### __Parameter name:__ Evaluation points
+::::{dropdown} __Parameter:__ {ref}`Evaluation points<parameters:Postprocess/Point_20values/Evaluation_20points>`
+:name: parameters:Postprocess/Point_20values/Evaluation_20points
 **Default value:**
 
 **Pattern:** [List of <[List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 2...2 (inclusive)]> of length 0...4294967295 (inclusive) separated by <;>]
 
 **Documentation:** The list of points at which the solution should be evaluated. Points need to be separated by semicolons, and coordinates of each point need to be separated by commas.
+::::
 
-(parameters:Postprocess/Point_20values/Time_20between_20point_20values_20output)=
-### __Parameter name:__ Time between point values output
+::::{dropdown} __Parameter:__ {ref}`Time between point values output<parameters:Postprocess/Point_20values/Time_20between_20point_20values_20output>`
+:name: parameters:Postprocess/Point_20values/Time_20between_20point_20values_20output
 **Default value:** 0.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The time interval between each generation of point values output. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+::::
 
-(parameters:Postprocess/Point_20values/Use_20natural_20coordinates)=
-### __Parameter name:__ Use natural coordinates
+::::{dropdown} __Parameter:__ {ref}`Use natural coordinates<parameters:Postprocess/Point_20values/Use_20natural_20coordinates>`
+:name: parameters:Postprocess/Point_20values/Use_20natural_20coordinates
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether or not the Evaluation points are specified in the natural coordinates of the geometry model, e.g. radius, lon, lat for the chunk model. Currently, natural coordinates for the spherical shell and sphere geometries are not supported.
+::::
 
 (parameters:Postprocess/Rotation_20statistics)=
 ## **Subsection:** Postprocess / Rotation statistics
-(parameters:Postprocess/Rotation_20statistics/Output_20full_20moment_20of_20inertia_20tensor)=
-### __Parameter name:__ Output full moment of inertia tensor
+::::{dropdown} __Parameter:__ {ref}`Output full moment of inertia tensor<parameters:Postprocess/Rotation_20statistics/Output_20full_20moment_20of_20inertia_20tensor>`
+:name: parameters:Postprocess/Rotation_20statistics/Output_20full_20moment_20of_20inertia_20tensor
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to write the full moment of inertia tensor into the statistics output instead of its norm for the current rotation axis. This is a second-order symmetric tensor with 6 components in 3d. In 2d this option has no effect, because the rotation axis is fixed and thus the moment of inertia is always a scalar.
+::::
 
-(parameters:Postprocess/Rotation_20statistics/Use_20constant_20density_20of_20one)=
-### __Parameter name:__ Use constant density of one
+::::{dropdown} __Parameter:__ {ref}`Use constant density of one<parameters:Postprocess/Rotation_20statistics/Use_20constant_20density_20of_20one>`
+:name: parameters:Postprocess/Rotation_20statistics/Use_20constant_20density_20of_20one
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to use a constant density of one for the computation of the angular momentum and moment of inertia. This is an approximation that assumes that the &rsquo;volumetric&rsquo; rotation is equal to the &rsquo;mass&rsquo; rotation. If this parameter is true this postprocessor computes &rsquo;net rotation&rsquo; instead of &rsquo;angular momentum&rsquo;.
+::::
 
 (parameters:Postprocess/Sea_20level)=
 ## **Subsection:** Postprocess / Sea level
-(parameters:Postprocess/Sea_20level/Data_20directory_20ice_20height)=
-### __Parameter name:__ Data directory ice height
+::::{dropdown} __Parameter:__ {ref}`Data directory ice height<parameters:Postprocess/Sea_20level/Data_20directory_20ice_20height>`
+:name: parameters:Postprocess/Sea_20level/Data_20directory_20ice_20height
 **Default value:** $ASPECT_SOURCE_DIR/data/postprocess/sea-level/
 
 **Pattern:** [DirectoryName]
 
 **Documentation:** The name of a directory that contains the ice height [m] ascii data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT.
+::::
 
-(parameters:Postprocess/Sea_20level/Data_20directory_20topography)=
-### __Parameter name:__ Data directory topography
+::::{dropdown} __Parameter:__ {ref}`Data directory topography<parameters:Postprocess/Sea_20level/Data_20directory_20topography>`
+:name: parameters:Postprocess/Sea_20level/Data_20directory_20topography
 **Default value:** $ASPECT_SOURCE_DIR/data/postprocess/sea-level/
 
 **Pattern:** [DirectoryName]
 
 **Documentation:** The name of a directory that contains the topography ascii data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT.
+::::
 
-(parameters:Postprocess/Sea_20level/Data_20file_20name_20ice_20height)=
-### __Parameter name:__ Data file name ice height
+::::{dropdown} __Parameter:__ {ref}`Data file name ice height<parameters:Postprocess/Sea_20level/Data_20file_20name_20ice_20height>`
+:name: parameters:Postprocess/Sea_20level/Data_20file_20name_20ice_20height
 **Default value:** shell_3d_ice_top.0.txt
 
 **Pattern:** [Anything]
 
 **Documentation:** The file name of the ice height ascii data. For the ascii data, provide file in the same format as described in &rsquo;ascii data&rsquo; initial composition plugin.
+::::
 
-(parameters:Postprocess/Sea_20level/Data_20file_20name_20topography)=
-### __Parameter name:__ Data file name topography
+::::{dropdown} __Parameter:__ {ref}`Data file name topography<parameters:Postprocess/Sea_20level/Data_20file_20name_20topography>`
+:name: parameters:Postprocess/Sea_20level/Data_20file_20name_20topography
 **Default value:** shell_3d_topo_top.0.txt
 
 **Pattern:** [Anything]
 
 **Documentation:** The file name of the topography ascii data. For the ascii data, provide file in the same format as described in &rsquo;ascii data&rsquo; initial composition plugin.
+::::
 
-(parameters:Postprocess/Sea_20level/Ice_20density)=
-### __Parameter name:__ Ice density
+::::{dropdown} __Parameter:__ {ref}`Ice density<parameters:Postprocess/Sea_20level/Ice_20density>`
+:name: parameters:Postprocess/Sea_20level/Ice_20density
 **Default value:** 931
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The density of ice [kg/m3]
+::::
 
-(parameters:Postprocess/Sea_20level/Output_20to_20file)=
-### __Parameter name:__ Output to file
+::::{dropdown} __Parameter:__ {ref}`Output to file<parameters:Postprocess/Sea_20level/Output_20to_20file>`
+:name: parameters:Postprocess/Sea_20level/Output_20to_20file
 **Default value:** false
 
 **Pattern:** [List of <[Bool]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** Whether or not to write sea level to a text file named named &rsquo;sea_level.NNNNN&rsquo; in the output directory
+::::
 
-(parameters:Postprocess/Sea_20level/Time_20between_20text_20output)=
-### __Parameter name:__ Time between text output
+::::{dropdown} __Parameter:__ {ref}`Time between text output<parameters:Postprocess/Sea_20level/Time_20between_20text_20output>`
+:name: parameters:Postprocess/Sea_20level/Time_20between_20text_20output
 **Default value:** 0.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The time interval between each generation of text output files. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+::::
 
-(parameters:Postprocess/Sea_20level/Water_20density)=
-### __Parameter name:__ Water density
+::::{dropdown} __Parameter:__ {ref}`Water density<parameters:Postprocess/Sea_20level/Water_20density>`
+:name: parameters:Postprocess/Sea_20level/Water_20density
 **Default value:** 1000
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The density of water [kg/m3]
+::::
 
 (parameters:Postprocess/Topography)=
 ## **Subsection:** Postprocess / Topography
-(parameters:Postprocess/Topography/Output_20to_20file)=
-### __Parameter name:__ Output to file
+::::{dropdown} __Parameter:__ {ref}`Output to file<parameters:Postprocess/Topography/Output_20to_20file>`
+:name: parameters:Postprocess/Topography/Output_20to_20file
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether or not to write topography to a text file named named &rsquo;topography.NNNNN&rsquo; in the output directory
+::::
 
-(parameters:Postprocess/Topography/Time_20between_20text_20output)=
-### __Parameter name:__ Time between text output
+::::{dropdown} __Parameter:__ {ref}`Time between text output<parameters:Postprocess/Topography/Time_20between_20text_20output>`
+:name: parameters:Postprocess/Topography/Time_20between_20text_20output
 **Default value:** 0.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The time interval between each generation of text output files. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+::::
 
 (parameters:Postprocess/Visualization)=
 ## **Subsection:** Postprocess / Visualization
-(parameters:Postprocess/Visualization/Filter_20output)=
-### __Parameter name:__ Filter output
+::::{dropdown} __Parameter:__ {ref}`Filter output<parameters:Postprocess/Visualization/Filter_20output>`
+:name: parameters:Postprocess/Visualization/Filter_20output
 **Default value:** false
 
 **Pattern:** [Bool]
@@ -952,9 +1047,10 @@ Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set;
  :::{warning}
 Setting this flag to true will result in visualization output that does not accurately represent discontinuous fields. This may be because you are using a discontinuous finite element for the pressure, temperature, or compositional variables, or because you use a visualization postprocessor that outputs quantities as discontinuous fields (e.g., the strain rate, viscosity, etc.). These will then all be visualized as *continuous* quantities even though, internally, ASPECT considers them as discontinuous fields.
 :::
+::::
 
-(parameters:Postprocess/Visualization/Interpolate_20output)=
-### __Parameter name:__ Interpolate output
+::::{dropdown} __Parameter:__ {ref}`Interpolate output<parameters:Postprocess/Visualization/Interpolate_20output>`
+:name: parameters:Postprocess/Visualization/Interpolate_20output
 **Default value:** true
 
 **Pattern:** [Bool]
@@ -966,9 +1062,10 @@ The effect of using this option can be seen in the following picture showing a v
 \begin{center}  \includegraphics[width=0.5\textwidth]{viz/parameters/build-patches}\end{center}Here, the left picture shows one visualization cell per computational cell (i.e., the option is switched off), and the right picture shows the same simulation with the option switched on (which is the default). The images show the same data, demonstrating that interpolating the solution onto bilinear shape functions as is commonly done in visualizing data loses information.
 
 Of course, activating this option also greatly increases the amount of data ASPECT will write to disk: approximately by a factor of 4 in 2d, and a factor of 8 in 3d, when using quadratic elements for the velocity, and correspondingly more for even higher order elements.
+::::
 
-(parameters:Postprocess/Visualization/List_20of_20output_20variables)=
-### __Parameter name:__ List of output variables
+::::{dropdown} __Parameter:__ {ref}`List of output variables<parameters:Postprocess/Visualization/List_20of_20output_20variables>`
+:name: parameters:Postprocess/Visualization/List_20of_20output_20variables
 **Default value:**
 
 **Pattern:** [MultipleSelection ISA rotation timescale|Vp anomaly|Vs anomaly|adiabat|artificial viscosity|artificial viscosity composition|boundary indicators|boundary strain rate residual|boundary velocity residual|compositional vector|darcy velocity|density anomaly|depth|depth including mesh deformation|dynamic topography|entropy average|error indicator|geoid|grain lag angle|gravity|heat flux map|heating|material properties|maximum horizontal compressive stress|melt fraction|melt material properties|named additional outputs|nonadiabatic pressure|nonadiabatic temperature|particle count|partition|principal stress|shear stress|spd factor|spherical velocity components|strain rate|strain rate tensor|stress|stress residual|stress second invariant|surface dynamic topography|surface elevation|surface strain rate tensor|surface stress|temperature anomaly|vertical heat flux|volume of fluid values|volumetric strain rate ]
@@ -1208,89 +1305,100 @@ Physical units: None.
 &lsquo;volumetric strain rate&rsquo;: A visualization output object that generates output for the volumetric strain rate, i.e., for the quantity $\nabla\cdot\mathbf u = \textrm{div}\; \mathbf u = \textrm{trace}\; \varepsilon(\mathbf u)$. This should be zero (in some average sense) in incompressible convection models, but can be non-zero in compressible models and models with melt transport.
 
 Physical units: $\frac{1}{\text{s}}$.
+::::
 
-(parameters:Postprocess/Visualization/Number_20of_20grouped_20files)=
-### __Parameter name:__ Number of grouped files
+::::{dropdown} __Parameter:__ {ref}`Number of grouped files<parameters:Postprocess/Visualization/Number_20of_20grouped_20files>`
+:name: parameters:Postprocess/Visualization/Number_20of_20grouped_20files
 **Default value:** 16
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** VTU file output supports grouping files from several CPUs into a given number of files using MPI I/O when writing on a parallel filesystem. Select 0 for no grouping. This will disable parallel file output and instead write one file per processor. A value of 1 will generate one big file containing the whole solution, while a larger value will create that many files (at most as many as there are MPI ranks).
+::::
 
-(parameters:Postprocess/Visualization/Output_20base_20variables_20on_20mesh_20surface)=
-### __Parameter name:__ Output base variables on mesh surface
+::::{dropdown} __Parameter:__ {ref}`Output base variables on mesh surface<parameters:Postprocess/Visualization/Output_20base_20variables_20on_20mesh_20surface>`
+:name: parameters:Postprocess/Visualization/Output_20base_20variables_20on_20mesh_20surface
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether or not to also output the base variables velocity, fluid pressure (when present), fluid velocity (when present), pressure, temperature and compositional fields (when present) on the surface of the mesh. The mesh surface includes not only the top boundary, but all boundaries of the domain.
+::::
 
-(parameters:Postprocess/Visualization/Output_20format)=
-### __Parameter name:__ Output format
+::::{dropdown} __Parameter:__ {ref}`Output format<parameters:Postprocess/Visualization/Output_20format>`
+:name: parameters:Postprocess/Visualization/Output_20format
 **Default value:** vtu
 
 **Pattern:** [Selection none|dx|ucd|gnuplot|povray|eps|gmv|tecplot|vtk|vtu|hdf5|svg|deal.II intermediate|parallel deal.II intermediate ]
 
 **Documentation:** The file format to be used for graphical output. The list of possible output formats that can be given here is documented in the appendix of the manual where the current parameter is described.
+::::
 
-(parameters:Postprocess/Visualization/Output_20mesh_20displacement)=
-### __Parameter name:__ Output mesh displacement
+::::{dropdown} __Parameter:__ {ref}`Output mesh displacement<parameters:Postprocess/Visualization/Output_20mesh_20displacement>`
+:name: parameters:Postprocess/Visualization/Output_20mesh_20displacement
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** For computations with deforming meshes, ASPECT uses an Arbitrary-Lagrangian-Eulerian formulation to handle deforming the domain. The displacement vector from the reference configuration may be written as an output field by setting this parameter to true.
+::::
 
-(parameters:Postprocess/Visualization/Output_20mesh_20velocity)=
-### __Parameter name:__ Output mesh velocity
+::::{dropdown} __Parameter:__ {ref}`Output mesh velocity<parameters:Postprocess/Visualization/Output_20mesh_20velocity>`
+:name: parameters:Postprocess/Visualization/Output_20mesh_20velocity
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** For computations with deforming meshes, ASPECT uses an Arbitrary-Lagrangian-Eulerian formulation to handle deforming the domain, so the mesh has its own velocity field.  This may be written as an output field by setting this parameter to true.
+::::
 
-(parameters:Postprocess/Visualization/Output_20undeformed_20mesh)=
-### __Parameter name:__ Output undeformed mesh
+::::{dropdown} __Parameter:__ {ref}`Output undeformed mesh<parameters:Postprocess/Visualization/Output_20undeformed_20mesh>`
+:name: parameters:Postprocess/Visualization/Output_20undeformed_20mesh
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** For computations with deforming meshes, ASPECT uses an Arbitrary-Lagrangian-Eulerian formulation to handle deforming the domain. By default, we output the deformed mesh. If this setting is set to true, the mesh will be written in the reference state without deformation instead. If you output the mesh displacement, you can obtain the deformed mesh by using the &rsquo;warp by vector&rsquo; ParaView filter.
+::::
 
-(parameters:Postprocess/Visualization/Point_2dwise_20stress_20and_20strain)=
-### __Parameter name:__ Point-wise stress and strain
+::::{dropdown} __Parameter:__ {ref}`Point-wise stress and strain<parameters:Postprocess/Visualization/Point_2dwise_20stress_20and_20strain>`
+:name: parameters:Postprocess/Visualization/Point_2dwise_20stress_20and_20strain
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** If set to true, quantities related to stress and strain are computed in each vertex. Otherwise, an average per cell is computed.
+::::
 
-(parameters:Postprocess/Visualization/Temporary_20output_20location)=
-### __Parameter name:__ Temporary output location
+::::{dropdown} __Parameter:__ {ref}`Temporary output location<parameters:Postprocess/Visualization/Temporary_20output_20location>`
+:name: parameters:Postprocess/Visualization/Temporary_20output_20location
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** On large clusters it can be advantageous to first write the output to a temporary file on a local file system and later move this file to a network file system. If this variable is set to a non-empty string it will be interpreted as a temporary storage location.
+::::
 
-(parameters:Postprocess/Visualization/Time_20between_20graphical_20output)=
-### __Parameter name:__ Time between graphical output
+::::{dropdown} __Parameter:__ {ref}`Time between graphical output<parameters:Postprocess/Visualization/Time_20between_20graphical_20output>`
+:name: parameters:Postprocess/Visualization/Time_20between_20graphical_20output
 **Default value:** 1e8
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The time interval between each generation of graphical output files. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+::::
 
-(parameters:Postprocess/Visualization/Time_20steps_20between_20graphical_20output)=
-### __Parameter name:__ Time steps between graphical output
+::::{dropdown} __Parameter:__ {ref}`Time steps between graphical output<parameters:Postprocess/Visualization/Time_20steps_20between_20graphical_20output>`
+:name: parameters:Postprocess/Visualization/Time_20steps_20between_20graphical_20output
 **Default value:** 2147483647
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** The maximum number of time steps between each generation of graphical output files.
+::::
 
-(parameters:Postprocess/Visualization/Write_20higher_20order_20output)=
-### __Parameter name:__ Write higher order output
+::::{dropdown} __Parameter:__ {ref}`Write higher order output<parameters:Postprocess/Visualization/Write_20higher_20order_20output>`
+:name: parameters:Postprocess/Visualization/Write_20higher_20order_20output
 **Default value:** false
 
 **Pattern:** [Bool]
@@ -1299,75 +1407,83 @@ Physical units: $\frac{1}{\text{s}}$.
 The effect of using this option can be seen in the following picture:
 
 \begin{center}  \includegraphics[width=0.5\textwidth]{viz/parameters/higher-order-output}\end{center}The top figure shows the plain output without interpolation or higher order output. The middle figure shows output that was interpolated as discussed for the &ldquo;Interpolate output&rdquo; option. The bottom panel shows higher order output that achieves better accuracy than the interpolated output at a lower memory cost.
+::::
 
-(parameters:Postprocess/Visualization/Write_20in_20background_20thread)=
-### __Parameter name:__ Write in background thread
+::::{dropdown} __Parameter:__ {ref}`Write in background thread<parameters:Postprocess/Visualization/Write_20in_20background_20thread>`
+:name: parameters:Postprocess/Visualization/Write_20in_20background_20thread
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** File operations can potentially take a long time, blocking the progress of the rest of the model run. Setting this variable to &lsquo;true&rsquo; moves this process into a background thread, while the rest of the model continues.
+::::
 
 (parameters:Postprocess/Visualization/Artificial_20viscosity_20composition)=
 ## **Subsection:** Postprocess / Visualization / Artificial viscosity composition
-(parameters:Postprocess/Visualization/Artificial_20viscosity_20composition/Name_20of_20compositional_20field)=
-### __Parameter name:__ Name of compositional field
+::::{dropdown} __Parameter:__ {ref}`Name of compositional field<parameters:Postprocess/Visualization/Artificial_20viscosity_20composition/Name_20of_20compositional_20field>`
+:name: parameters:Postprocess/Visualization/Artificial_20viscosity_20composition/Name_20of_20compositional_20field
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** The name of the compositional field whose output should be visualized.
+::::
 
 (parameters:Postprocess/Visualization/Compositional_20fields_20as_20vectors)=
 ## **Subsection:** Postprocess / Visualization / Compositional fields as vectors
-(parameters:Postprocess/Visualization/Compositional_20fields_20as_20vectors/Names_20of_20fields)=
-### __Parameter name:__ Names of fields
+::::{dropdown} __Parameter:__ {ref}`Names of fields<parameters:Postprocess/Visualization/Compositional_20fields_20as_20vectors/Names_20of_20fields>`
+:name: parameters:Postprocess/Visualization/Compositional_20fields_20as_20vectors/Names_20of_20fields
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** A list of sets of compositional fields which should be output as vectors. Sets are separated from each other by semicolons and vector components within each set are separated by commas (e.g. $vec1_x$, $vec1_y$ ; $vec2_x$, $vec2_y$) where each name must be a defined named compositional field. If only one name is given in a set, it is interpreted as the first in a sequence of dim consecutive compositional fields.
+::::
 
-(parameters:Postprocess/Visualization/Compositional_20fields_20as_20vectors/Names_20of_20vectors)=
-### __Parameter name:__ Names of vectors
+::::{dropdown} __Parameter:__ {ref}`Names of vectors<parameters:Postprocess/Visualization/Compositional_20fields_20as_20vectors/Names_20of_20vectors>`
+:name: parameters:Postprocess/Visualization/Compositional_20fields_20as_20vectors/Names_20of_20vectors
 **Default value:**
 
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** Names of vectors as they will appear in the output.
+::::
 
 (parameters:Postprocess/Visualization/Density_20anomaly)=
 ## **Subsection:** Postprocess / Visualization / Density anomaly
-(parameters:Postprocess/Visualization/Density_20anomaly/Average_20density_20scheme)=
-### __Parameter name:__ Average density scheme
+::::{dropdown} __Parameter:__ {ref}`Average density scheme<parameters:Postprocess/Visualization/Density_20anomaly/Average_20density_20scheme>`
+:name: parameters:Postprocess/Visualization/Density_20anomaly/Average_20density_20scheme
 **Default value:** reference profile
 
 **Pattern:** [Selection reference profile|lateral average ]
 
 **Documentation:** Scheme to compute the average density-depth profile. The reference profile option evaluates the conditions along the reference adiabat according to the material model. The lateral average option instead calculates a lateral average from subdivision of the mesh. The lateral average option may produce spurious results where there are sharp density changes.
+::::
 
-(parameters:Postprocess/Visualization/Density_20anomaly/Number_20of_20depth_20slices)=
-### __Parameter name:__ Number of depth slices
+::::{dropdown} __Parameter:__ {ref}`Number of depth slices<parameters:Postprocess/Visualization/Density_20anomaly/Number_20of_20depth_20slices>`
+:name: parameters:Postprocess/Visualization/Density_20anomaly/Number_20of_20depth_20slices
 **Default value:** 20
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** Number of depth slices used to define average density.
+::::
 
 (parameters:Postprocess/Visualization/Heat_20flux_20map)=
 ## **Subsection:** Postprocess / Visualization / Heat flux map
-(parameters:Postprocess/Visualization/Heat_20flux_20map/Output_20point_20wise_20heat_20flux)=
-### __Parameter name:__ Output point wise heat flux
+::::{dropdown} __Parameter:__ {ref}`Output point wise heat flux<parameters:Postprocess/Visualization/Heat_20flux_20map/Output_20point_20wise_20heat_20flux>`
+:name: parameters:Postprocess/Visualization/Heat_20flux_20map/Output_20point_20wise_20heat_20flux
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** A boolean flag that controls whether to output the heat flux map as a point wise value, or as a cell-wise averaged value. The point wise output is more accurate, but it currently omits prescribed heat flux values at boundaries and advective heat flux that is caused by velocities non-tangential to boundaries. If you do not use these two features it is recommended to switch this setting on to benefit from the increased output resolution.
+::::
 
 (parameters:Postprocess/Visualization/Material_20properties)=
 ## **Subsection:** Postprocess / Visualization / Material properties
-(parameters:Postprocess/Visualization/Material_20properties/List_20of_20material_20properties)=
-### __Parameter name:__ List of material properties
+::::{dropdown} __Parameter:__ {ref}`List of material properties<parameters:Postprocess/Visualization/Material_20properties/List_20of_20material_20properties>`
+:name: parameters:Postprocess/Visualization/Material_20properties/List_20of_20material_20properties
 **Default value:** density,thermal expansivity,specific heat,viscosity
 
 **Pattern:** [MultipleSelection viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal diffusivity|compressibility|entropy derivative temperature|entropy derivative pressure|reaction terms|melt fraction ]
@@ -1375,157 +1491,176 @@ The effect of using this option can be seen in the following picture:
 **Documentation:** A comma separated list of material properties that should be written whenever writing graphical output. By default, the material properties will always contain the density, thermal expansivity, specific heat and viscosity. The following material properties are available:
 
 viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal diffusivity|compressibility|entropy derivative temperature|entropy derivative pressure|reaction terms|melt fraction
+::::
 
 (parameters:Postprocess/Visualization/Melt_20fraction)=
 ## **Subsection:** Postprocess / Visualization / Melt fraction
-(parameters:Postprocess/Visualization/Melt_20fraction/A1)=
-### __Parameter name:__ A1
+::::{dropdown} __Parameter:__ {ref}`A1<parameters:Postprocess/Visualization/Melt_20fraction/A1>`
+:name: parameters:Postprocess/Visualization/Melt_20fraction/A1
 **Default value:** 1085.7
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Constant parameter in the quadratic function that approximates the solidus of peridotite. Units: $^\circ\text{C}$.
+::::
 
-(parameters:Postprocess/Visualization/Melt_20fraction/A2)=
-### __Parameter name:__ A2
+::::{dropdown} __Parameter:__ {ref}`A2<parameters:Postprocess/Visualization/Melt_20fraction/A2>`
+:name: parameters:Postprocess/Visualization/Melt_20fraction/A2
 **Default value:** 1.329e-7
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the linear pressure term in the quadratic function that approximates the solidus of peridotite. $\frac{^\circ\text{C}}{\text{Pa}}$.
+::::
 
-(parameters:Postprocess/Visualization/Melt_20fraction/A3)=
-### __Parameter name:__ A3
+::::{dropdown} __Parameter:__ {ref}`A3<parameters:Postprocess/Visualization/Melt_20fraction/A3>`
+:name: parameters:Postprocess/Visualization/Melt_20fraction/A3
 **Default value:** -5.1e-18
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the quadratic pressure term in the quadratic function that approximates the solidus of peridotite. $\frac{^\circ\text{C}}{\text{Pa}^2}$.
+::::
 
-(parameters:Postprocess/Visualization/Melt_20fraction/B1)=
-### __Parameter name:__ B1
+::::{dropdown} __Parameter:__ {ref}`B1<parameters:Postprocess/Visualization/Melt_20fraction/B1>`
+:name: parameters:Postprocess/Visualization/Melt_20fraction/B1
 **Default value:** 1475.0
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Constant parameter in the quadratic function that approximates the lherzolite liquidus used for calculating the fraction of peridotite-derived melt. Units: $^\circ\text{C}$.
+::::
 
-(parameters:Postprocess/Visualization/Melt_20fraction/B2)=
-### __Parameter name:__ B2
+::::{dropdown} __Parameter:__ {ref}`B2<parameters:Postprocess/Visualization/Melt_20fraction/B2>`
+:name: parameters:Postprocess/Visualization/Melt_20fraction/B2
 **Default value:** 8.0e-8
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the linear pressure term in the quadratic function that approximates the  lherzolite liquidus used for calculating the fraction of peridotite-derived melt. $\frac{^\circ\text{C}}{\text{Pa}}$.
+::::
 
-(parameters:Postprocess/Visualization/Melt_20fraction/B3)=
-### __Parameter name:__ B3
+::::{dropdown} __Parameter:__ {ref}`B3<parameters:Postprocess/Visualization/Melt_20fraction/B3>`
+:name: parameters:Postprocess/Visualization/Melt_20fraction/B3
 **Default value:** -3.2e-18
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the quadratic pressure term in the quadratic function that approximates the  lherzolite liquidus used for calculating the fraction of peridotite-derived melt. $\frac{^\circ\text{C}}{\text{Pa}^2}$.
+::::
 
-(parameters:Postprocess/Visualization/Melt_20fraction/C1)=
-### __Parameter name:__ C1
+::::{dropdown} __Parameter:__ {ref}`C1<parameters:Postprocess/Visualization/Melt_20fraction/C1>`
+:name: parameters:Postprocess/Visualization/Melt_20fraction/C1
 **Default value:** 1780.0
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Constant parameter in the quadratic function that approximates the liquidus of peridotite. Units: $^\circ\text{C}$.
+::::
 
-(parameters:Postprocess/Visualization/Melt_20fraction/C2)=
-### __Parameter name:__ C2
+::::{dropdown} __Parameter:__ {ref}`C2<parameters:Postprocess/Visualization/Melt_20fraction/C2>`
+:name: parameters:Postprocess/Visualization/Melt_20fraction/C2
 **Default value:** 4.50e-8
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the linear pressure term in the quadratic function that approximates the liquidus of peridotite. $\frac{^\circ\text{C}}{\text{Pa}}$.
+::::
 
-(parameters:Postprocess/Visualization/Melt_20fraction/C3)=
-### __Parameter name:__ C3
+::::{dropdown} __Parameter:__ {ref}`C3<parameters:Postprocess/Visualization/Melt_20fraction/C3>`
+:name: parameters:Postprocess/Visualization/Melt_20fraction/C3
 **Default value:** -2.0e-18
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the quadratic pressure term in the quadratic function that approximates the liquidus of peridotite. $\frac{^\circ\text{C}}{\text{Pa}^2}$.
+::::
 
-(parameters:Postprocess/Visualization/Melt_20fraction/D1)=
-### __Parameter name:__ D1
+::::{dropdown} __Parameter:__ {ref}`D1<parameters:Postprocess/Visualization/Melt_20fraction/D1>`
+:name: parameters:Postprocess/Visualization/Melt_20fraction/D1
 **Default value:** 976.0
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Constant parameter in the quadratic function that approximates the solidus of pyroxenite. Units: $^\circ\text{C}$.
+::::
 
-(parameters:Postprocess/Visualization/Melt_20fraction/D2)=
-### __Parameter name:__ D2
+::::{dropdown} __Parameter:__ {ref}`D2<parameters:Postprocess/Visualization/Melt_20fraction/D2>`
+:name: parameters:Postprocess/Visualization/Melt_20fraction/D2
 **Default value:** 1.329e-7
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the linear pressure term in the quadratic function that approximates the solidus of pyroxenite. Note that this factor is different from the value given in Sobolev, 2011, because they use the potential temperature whereas we use the absolute temperature. $\frac{^\circ\text{C}}{\text{Pa}}$.
+::::
 
-(parameters:Postprocess/Visualization/Melt_20fraction/D3)=
-### __Parameter name:__ D3
+::::{dropdown} __Parameter:__ {ref}`D3<parameters:Postprocess/Visualization/Melt_20fraction/D3>`
+:name: parameters:Postprocess/Visualization/Melt_20fraction/D3
 **Default value:** -5.1e-18
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the quadratic pressure term in the quadratic function that approximates the solidus of pyroxenite. $\frac{^\circ\text{C}}{\text{Pa}^2}$.
+::::
 
-(parameters:Postprocess/Visualization/Melt_20fraction/E1)=
-### __Parameter name:__ E1
+::::{dropdown} __Parameter:__ {ref}`E1<parameters:Postprocess/Visualization/Melt_20fraction/E1>`
+:name: parameters:Postprocess/Visualization/Melt_20fraction/E1
 **Default value:** 663.8
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the linear depletion term in the quadratic function that approximates the melt fraction of pyroxenite. $\frac{^\circ\text{C}}{\text{Pa}}$.
+::::
 
-(parameters:Postprocess/Visualization/Melt_20fraction/E2)=
-### __Parameter name:__ E2
+::::{dropdown} __Parameter:__ {ref}`E2<parameters:Postprocess/Visualization/Melt_20fraction/E2>`
+:name: parameters:Postprocess/Visualization/Melt_20fraction/E2
 **Default value:** -611.4
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the quadratic depletion term in the quadratic function that approximates the melt fraction of pyroxenite. $\frac{^\circ\text{C}}{\text{Pa}^2}$.
+::::
 
-(parameters:Postprocess/Visualization/Melt_20fraction/Mass_20fraction_20cpx)=
-### __Parameter name:__ Mass fraction cpx
+::::{dropdown} __Parameter:__ {ref}`Mass fraction cpx<parameters:Postprocess/Visualization/Melt_20fraction/Mass_20fraction_20cpx>`
+:name: parameters:Postprocess/Visualization/Melt_20fraction/Mass_20fraction_20cpx
 **Default value:** 0.15
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Mass fraction of clinopyroxene in the peridotite to be molten. Units: non-dimensional.
+::::
 
-(parameters:Postprocess/Visualization/Melt_20fraction/beta)=
-### __Parameter name:__ beta
+::::{dropdown} __Parameter:__ {ref}`beta<parameters:Postprocess/Visualization/Melt_20fraction/beta>`
+:name: parameters:Postprocess/Visualization/Melt_20fraction/beta
 **Default value:** 1.5
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Exponent of the melting temperature in the melt fraction calculation. Units: non-dimensional.
+::::
 
-(parameters:Postprocess/Visualization/Melt_20fraction/r1)=
-### __Parameter name:__ r1
+::::{dropdown} __Parameter:__ {ref}`r1<parameters:Postprocess/Visualization/Melt_20fraction/r1>`
+:name: parameters:Postprocess/Visualization/Melt_20fraction/r1
 **Default value:** 0.5
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Constant in the linear function that approximates the clinopyroxene reaction coefficient. Units: non-dimensional.
+::::
 
-(parameters:Postprocess/Visualization/Melt_20fraction/r2)=
-### __Parameter name:__ r2
+::::{dropdown} __Parameter:__ {ref}`r2<parameters:Postprocess/Visualization/Melt_20fraction/r2>`
+:name: parameters:Postprocess/Visualization/Melt_20fraction/r2
 **Default value:** 8e-11
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the linear pressure term in the linear function that approximates the clinopyroxene reaction coefficient. Units: $\frac{1}{\text{Pa}}$.
+::::
 
 (parameters:Postprocess/Visualization/Melt_20material_20properties)=
 ## **Subsection:** Postprocess / Visualization / Melt material properties
-(parameters:Postprocess/Visualization/Melt_20material_20properties/List_20of_20properties)=
-### __Parameter name:__ List of properties
+::::{dropdown} __Parameter:__ {ref}`List of properties<parameters:Postprocess/Visualization/Melt_20material_20properties/List_20of_20properties>`
+:name: parameters:Postprocess/Visualization/Melt_20material_20properties/List_20of_20properties
 **Default value:** compaction viscosity,permeability
 
 **Pattern:** [MultipleSelection compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gradient|is melt cell|darcy coefficient|darcy coefficient no cutoff|compaction length ]
@@ -1533,93 +1668,104 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 **Documentation:** A comma separated list of melt properties that should be written whenever writing graphical output. The following material properties are available:
 
 compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gradient|is melt cell|darcy coefficient|darcy coefficient no cutoff|compaction length
+::::
 
 (parameters:Postprocess/Visualization/Principal_20stress)=
 ## **Subsection:** Postprocess / Visualization / Principal stress
-(parameters:Postprocess/Visualization/Principal_20stress/Use_20deviatoric_20stress)=
-### __Parameter name:__ Use deviatoric stress
+::::{dropdown} __Parameter:__ {ref}`Use deviatoric stress<parameters:Postprocess/Visualization/Principal_20stress/Use_20deviatoric_20stress>`
+:name: parameters:Postprocess/Visualization/Principal_20stress/Use_20deviatoric_20stress
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to use the deviatoric stress tensor instead of the full stress tensor to compute principal stress directions and values.
+::::
 
 (parameters:Postprocess/Visualization/Temperature_20anomaly)=
 ## **Subsection:** Postprocess / Visualization / Temperature anomaly
-(parameters:Postprocess/Visualization/Temperature_20anomaly/Number_20of_20depth_20slices)=
-### __Parameter name:__ Number of depth slices
+::::{dropdown} __Parameter:__ {ref}`Number of depth slices<parameters:Postprocess/Visualization/Temperature_20anomaly/Number_20of_20depth_20slices>`
+:name: parameters:Postprocess/Visualization/Temperature_20anomaly/Number_20of_20depth_20slices
 **Default value:** 20
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** Number of depth slices used to define average temperature.
+::::
 
-(parameters:Postprocess/Visualization/Temperature_20anomaly/Use_20maximal_20temperature_20for_20bottom)=
-### __Parameter name:__ Use maximal temperature for bottom
+::::{dropdown} __Parameter:__ {ref}`Use maximal temperature for bottom<parameters:Postprocess/Visualization/Temperature_20anomaly/Use_20maximal_20temperature_20for_20bottom>`
+:name: parameters:Postprocess/Visualization/Temperature_20anomaly/Use_20maximal_20temperature_20for_20bottom
 **Default value:** true
 
 **Pattern:** [Bool]
 
 **Documentation:** If true, use the specified boundary temperatures as average temperatures at the surface. If false, extrapolate the temperature gradient between the first and second cells to the surface. This option will only work for models with a fixed surface temperature.
+::::
 
-(parameters:Postprocess/Visualization/Temperature_20anomaly/Use_20minimal_20temperature_20for_20surface)=
-### __Parameter name:__ Use minimal temperature for surface
+::::{dropdown} __Parameter:__ {ref}`Use minimal temperature for surface<parameters:Postprocess/Visualization/Temperature_20anomaly/Use_20minimal_20temperature_20for_20surface>`
+:name: parameters:Postprocess/Visualization/Temperature_20anomaly/Use_20minimal_20temperature_20for_20surface
 **Default value:** true
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to use the minimal specified boundary temperature as the bottom boundary temperature. This option will only work for models with a fixed bottom boundary temperature.
+::::
 
 (parameters:Postprocess/Visualization/Volume_20of_20Fluid)=
 ## **Subsection:** Postprocess / Visualization / Volume of Fluid
-(parameters:Postprocess/Visualization/Volume_20of_20Fluid/Output_20interface_20normals)=
-### __Parameter name:__ Output interface normals
+::::{dropdown} __Parameter:__ {ref}`Output interface normals<parameters:Postprocess/Visualization/Volume_20of_20Fluid/Output_20interface_20normals>`
+:name: parameters:Postprocess/Visualization/Volume_20of_20Fluid/Output_20interface_20normals
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Include the internal data for the interface normal on the unit cells.
+::::
 
-(parameters:Postprocess/Visualization/Volume_20of_20Fluid/Output_20interface_20reconstruction_20contour)=
-### __Parameter name:__ Output interface reconstruction contour
+::::{dropdown} __Parameter:__ {ref}`Output interface reconstruction contour<parameters:Postprocess/Visualization/Volume_20of_20Fluid/Output_20interface_20reconstruction_20contour>`
+:name: parameters:Postprocess/Visualization/Volume_20of_20Fluid/Output_20interface_20reconstruction_20contour
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Include fields defined such that the 0 contour is the fluid interface.
+::::
 
 (parameters:Postprocess/Visualization/Vp_20anomaly)=
 ## **Subsection:** Postprocess / Visualization / Vp anomaly
-(parameters:Postprocess/Visualization/Vp_20anomaly/Average_20velocity_20scheme)=
-### __Parameter name:__ Average velocity scheme
+::::{dropdown} __Parameter:__ {ref}`Average velocity scheme<parameters:Postprocess/Visualization/Vp_20anomaly/Average_20velocity_20scheme>`
+:name: parameters:Postprocess/Visualization/Vp_20anomaly/Average_20velocity_20scheme
 **Default value:** reference profile
 
 **Pattern:** [Selection reference profile|lateral average ]
 
 **Documentation:** Scheme to compute the average velocity-depth profile. The reference profile option evaluates the conditions along the reference adiabat according to the material model. The lateral average option instead calculates a lateral average from subdivision of the mesh. The lateral average option may produce spurious results where there are sharp velocity changes.
+::::
 
-(parameters:Postprocess/Visualization/Vp_20anomaly/Number_20of_20depth_20slices)=
-### __Parameter name:__ Number of depth slices
+::::{dropdown} __Parameter:__ {ref}`Number of depth slices<parameters:Postprocess/Visualization/Vp_20anomaly/Number_20of_20depth_20slices>`
+:name: parameters:Postprocess/Visualization/Vp_20anomaly/Number_20of_20depth_20slices
 **Default value:** 50
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** Number of depth slices used to define average seismic compressional wave velocities from which anomalies are calculated. Units: non-dimensional.
+::::
 
 (parameters:Postprocess/Visualization/Vs_20anomaly)=
 ## **Subsection:** Postprocess / Visualization / Vs anomaly
-(parameters:Postprocess/Visualization/Vs_20anomaly/Average_20velocity_20scheme)=
-### __Parameter name:__ Average velocity scheme
+::::{dropdown} __Parameter:__ {ref}`Average velocity scheme<parameters:Postprocess/Visualization/Vs_20anomaly/Average_20velocity_20scheme>`
+:name: parameters:Postprocess/Visualization/Vs_20anomaly/Average_20velocity_20scheme
 **Default value:** reference profile
 
 **Pattern:** [Selection reference profile|lateral average ]
 
 **Documentation:** Scheme to compute the average velocity-depth profile. The reference profile option evaluates the conditions along the reference adiabat according to the material model. The lateral average option instead calculates a lateral average from subdivision of the mesh. The lateral average option may produce spurious results where there are sharp velocity changes.
+::::
 
-(parameters:Postprocess/Visualization/Vs_20anomaly/Number_20of_20depth_20slices)=
-### __Parameter name:__ Number of depth slices
+::::{dropdown} __Parameter:__ {ref}`Number of depth slices<parameters:Postprocess/Visualization/Vs_20anomaly/Number_20of_20depth_20slices>`
+:name: parameters:Postprocess/Visualization/Vs_20anomaly/Number_20of_20depth_20slices
 **Default value:** 50
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** Number of depth slices used to define average seismic shear wave velocities from which anomalies are calculated. Units: non-dimensional.
+::::

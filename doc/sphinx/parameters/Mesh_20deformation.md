@@ -5,8 +5,8 @@
 ## **Subsection:** Mesh deformation
 
 
-(parameters:Mesh_20deformation/Additional_20tangential_20mesh_20velocity_20boundary_20indicators)=
-### __Parameter name:__ Additional tangential mesh velocity boundary indicators
+::::{dropdown} __Parameter:__ {ref}`Additional tangential mesh velocity boundary indicators<parameters:Mesh_20deformation/Additional_20tangential_20mesh_20velocity_20boundary_20indicators>`
+:name: parameters:Mesh_20deformation/Additional_20tangential_20mesh_20velocity_20boundary_20indicators
 **Default value:**
 
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
@@ -14,9 +14,10 @@
 **Documentation:** A comma separated list of names denoting those boundaries where there the mesh is allowed to move tangential to the boundary. All tangential mesh movements along those boundaries that have tangential material velocity boundary conditions are allowed by default, this parameters allows to generate mesh movements along other boundaries that are open, or have prescribed material velocities or tractions.
 
 The names of the boundaries listed here can either be numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
+::::
 
-(parameters:Mesh_20deformation/Mesh_20deformation_20boundary_20indicators)=
-### __Parameter name:__ Mesh deformation boundary indicators
+::::{dropdown} __Parameter:__ {ref}`Mesh deformation boundary indicators<parameters:Mesh_20deformation/Mesh_20deformation_20boundary_20indicators>`
+:name: parameters:Mesh_20deformation/Mesh_20deformation_20boundary_20indicators
 **Default value:**
 
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
@@ -36,37 +37,41 @@ Using this definition, the plugin then solves for one time step, i.e., using as 
 This surface velocity is used to deform the surface and as a boundary condition for solving the Laplace equation to determine the mesh velocity in the domain interior. Diffusion can be applied every timestep, mimicking surface processes of erosion and deposition, or at a user-defined timestep interval to purely smooth the surface topography to avoid too great a distortion of mesh elements when a free surface is also used.
 
 &lsquo;free surface&rsquo;: A plugin that computes the deformation of surface vertices according to the solution of the flow problem. In particular this means if the surface of the domain is left open to flow, this flow will carry the mesh with it. The implementation was described in {cite}`rose_freesurface`, with the stabilization of the free surface originally described in {cite}`kaus:etal:2010`.
+::::
 
 (parameters:Mesh_20deformation/Ascii_20data_20model)=
 ## **Subsection:** Mesh deformation / Ascii data model
-(parameters:Mesh_20deformation/Ascii_20data_20model/Data_20directory)=
-### __Parameter name:__ Data directory
+::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Mesh_20deformation/Ascii_20data_20model/Data_20directory>`
+:name: parameters:Mesh_20deformation/Ascii_20data_20model/Data_20directory
 **Default value:** $ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/test/
 
 **Pattern:** [DirectoryName]
 
 **Documentation:** The name of a directory that contains the model data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT. A trailing slash at the end of the directory path is optional; the plugin will automatically append a &rsquo;/&rsquo; when the parameters are parsed if it is missing.
+::::
 
-(parameters:Mesh_20deformation/Ascii_20data_20model/Data_20file_20name)=
-### __Parameter name:__ Data file name
+::::{dropdown} __Parameter:__ {ref}`Data file name<parameters:Mesh_20deformation/Ascii_20data_20model/Data_20file_20name>`
+:name: parameters:Mesh_20deformation/Ascii_20data_20model/Data_20file_20name
 **Default value:** box_3d_%s.0.txt
 
 **Pattern:** [Anything]
 
 **Documentation:** The file name of the model data.
+::::
 
-(parameters:Mesh_20deformation/Ascii_20data_20model/Scale_20factor)=
-### __Parameter name:__ Scale factor
+::::{dropdown} __Parameter:__ {ref}`Scale factor<parameters:Mesh_20deformation/Ascii_20data_20model/Scale_20factor>`
+:name: parameters:Mesh_20deformation/Ascii_20data_20model/Scale_20factor
 **Default value:** 1.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
+::::
 
 (parameters:Mesh_20deformation/Boundary_20function)=
 ## **Subsection:** Mesh deformation / Boundary function
-(parameters:Mesh_20deformation/Boundary_20function/Function_20constants)=
-### __Parameter name:__ Function constants
+::::{dropdown} __Parameter:__ {ref}`Function constants<parameters:Mesh_20deformation/Boundary_20function/Function_20constants>`
+:name: parameters:Mesh_20deformation/Boundary_20function/Function_20constants
 **Default value:**
 
 **Pattern:** [Anything]
@@ -74,9 +79,10 @@ This surface velocity is used to deform the surface and as a boundary condition 
 **Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form &lsquo;var1=value1, var2=value2, ...&rsquo;.
 
 A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
+::::
 
-(parameters:Mesh_20deformation/Boundary_20function/Function_20expression)=
-### __Parameter name:__ Function expression
+::::{dropdown} __Parameter:__ {ref}`Function expression<parameters:Mesh_20deformation/Boundary_20function/Function_20expression>`
+:name: parameters:Mesh_20deformation/Boundary_20function/Function_20expression
 **Default value:** 0; 0
 
 **Pattern:** [Anything]
@@ -84,47 +90,53 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Documentation:** The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as &lsquo;sin&rsquo; or &lsquo;cos&rsquo;. In addition, it may contain expressions like &lsquo;if(x>0, 1, -1)&rsquo; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
 
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+::::
 
-(parameters:Mesh_20deformation/Boundary_20function/Variable_20names)=
-### __Parameter name:__ Variable names
+::::{dropdown} __Parameter:__ {ref}`Variable names<parameters:Mesh_20deformation/Boundary_20function/Variable_20names>`
+:name: parameters:Mesh_20deformation/Boundary_20function/Variable_20names
 **Default value:** x,y,t
 
 **Pattern:** [Anything]
 
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
+::::
 
 (parameters:Mesh_20deformation/Diffusion)=
 ## **Subsection:** Mesh deformation / Diffusion
-(parameters:Mesh_20deformation/Diffusion/Hillslope_20transport_20coefficient)=
-### __Parameter name:__ Hillslope transport coefficient
+::::{dropdown} __Parameter:__ {ref}`Hillslope transport coefficient<parameters:Mesh_20deformation/Diffusion/Hillslope_20transport_20coefficient>`
+:name: parameters:Mesh_20deformation/Diffusion/Hillslope_20transport_20coefficient
 **Default value:** 1e-6
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The hillslope transport coefficient $\kappa$ used to diffuse the free surface, either as a  stabilization step or to mimic erosional and depositional processes. Units: $\si{m^2/s}$.
+::::
 
-(parameters:Mesh_20deformation/Diffusion/Time_20steps_20between_20diffusion)=
-### __Parameter name:__ Time steps between diffusion
+::::{dropdown} __Parameter:__ {ref}`Time steps between diffusion<parameters:Mesh_20deformation/Diffusion/Time_20steps_20between_20diffusion>`
+:name: parameters:Mesh_20deformation/Diffusion/Time_20steps_20between_20diffusion
 **Default value:** 1
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** The number of time steps between each application of diffusion.
+::::
 
 (parameters:Mesh_20deformation/Free_20surface)=
 ## **Subsection:** Mesh deformation / Free surface
-(parameters:Mesh_20deformation/Free_20surface/Free_20surface_20stabilization_20theta)=
-### __Parameter name:__ Free surface stabilization theta
+::::{dropdown} __Parameter:__ {ref}`Free surface stabilization theta<parameters:Mesh_20deformation/Free_20surface/Free_20surface_20stabilization_20theta>`
+:name: parameters:Mesh_20deformation/Free_20surface/Free_20surface_20stabilization_20theta
 **Default value:** 0.5
 
 **Pattern:** [Double 0...1 (inclusive)]
 
 **Documentation:** Theta parameter described in {cite}`kaus:etal:2010`. An unstabilized free surface can overshoot its equilibrium position quite easily and generate unphysical results.  One solution is to use a quasi-implicit correction term to the forces near the free surface.  This parameter describes how much the free surface is stabilized with this term, where zero is no stabilization, and one is fully implicit.
+::::
 
-(parameters:Mesh_20deformation/Free_20surface/Surface_20velocity_20projection)=
-### __Parameter name:__ Surface velocity projection
+::::{dropdown} __Parameter:__ {ref}`Surface velocity projection<parameters:Mesh_20deformation/Free_20surface/Surface_20velocity_20projection>`
+:name: parameters:Mesh_20deformation/Free_20surface/Surface_20velocity_20projection
 **Default value:** normal
 
 **Pattern:** [Selection normal|vertical ]
 
 **Documentation:** After each time step the free surface must be advected in the direction of the velocity field. Mass conservation requires that the mesh velocity is in the normal direction of the surface. However, for steep topography or large curvature, advection in the normal direction can become ill-conditioned, and instabilities in the mesh can form. Projection of the mesh velocity onto the local vertical direction can preserve the mesh quality better, but at the cost of slightly poorer mass conservation of the domain.
+::::

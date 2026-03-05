@@ -5,8 +5,8 @@
 ## **Subsection:** Boundary convective heating model
 
 
-(parameters:Boundary_20convective_20heating_20model/Convective_20heating_20boundary_20indicators)=
-### __Parameter name:__ Convective heating boundary indicators
+::::{dropdown} __Parameter:__ {ref}`Convective heating boundary indicators<parameters:Boundary_20convective_20heating_20model/Convective_20heating_20boundary_20indicators>`
+:name: parameters:Boundary_20convective_20heating_20model/Convective_20heating_20boundary_20indicators
 **Default value:**
 
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
@@ -16,9 +16,10 @@
 The names of the boundaries listed here can either be numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
 
 This parameter only describes which boundaries have a fixed convective flux (i.e. Robin boundary condictions), but not what conditions should hold on these boundaries. The latter piece of information needs to be implemented in a plugin in the BoundaryConvectiveHeating group, unless an existing implementation in this group already provides what you want.
+::::
 
-(parameters:Boundary_20convective_20heating_20model/List_20of_20boundary_20heat_20flux_20model_20names)=
-### __Parameter name:__ List of boundary heat flux model names
+::::{dropdown} __Parameter:__ {ref}`List of boundary heat flux model names<parameters:Boundary_20convective_20heating_20model/List_20of_20boundary_20heat_20flux_20model_20names>`
+:name: parameters:Boundary_20convective_20heating_20model/List_20of_20boundary_20heat_20flux_20model_20names
 **Default value:**
 
 **Pattern:** [MultipleSelection function ]
@@ -32,9 +33,10 @@ The following boundary heat flux models are available:
 The formula you describe in the mentioned section is a scalar value for the heat flux that is assumed to be the flux normal to the boundary, and that has the unit W/(m$^2$) (in 3d) or W/m (in 2d). Negative fluxes are interpreted as the flow of heat into the domain, and positive fluxes are interpreted as heat flowing out of the domain.
 
 The symbol $t$ indicating time that may appear in the formulas for the prescribed heat flux is interpreted as having units seconds unless the global parameter &ldquo;Use years instead of seconds&rdquo; has been set.
+::::
 
-(parameters:Boundary_20convective_20heating_20model/List_20of_20boundary_20temperature_20model_20names)=
-### __Parameter name:__ List of boundary temperature model names
+::::{dropdown} __Parameter:__ {ref}`List of boundary temperature model names<parameters:Boundary_20convective_20heating_20model/List_20of_20boundary_20temperature_20model_20names>`
+:name: parameters:Boundary_20convective_20heating_20model/List_20of_20boundary_20temperature_20model_20names
 **Default value:**
 
 **Pattern:** [MultipleSelection ascii data|box|box with lithosphere boundary indicators|constant|dynamic core|function|initial temperature|spherical constant ]
@@ -66,9 +68,10 @@ The format of these functions follows the syntax understood by the muparser libr
 Because this class simply takes what the initial temperature had described, this class can not know certain pieces of information such as the minimal and maximal temperature on the boundary. For operations that require this, for example in post-processing, this boundary temperature model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section &ldquo;Boundary temperature model/Initial temperature&rdquo;.
 
 &lsquo;spherical constant&rsquo;: A model in which the temperature is chosen constant on the inner and outer boundaries of a spherical shell, ellipsoidal chunk or chunk. Parameters are read from subsection &rsquo;Spherical constant&rsquo;.
+::::
 
-(parameters:Boundary_20convective_20heating_20model/List_20of_20heat_20transfer_20coefficient_20model_20names)=
-### __Parameter name:__ List of heat transfer coefficient model names
+::::{dropdown} __Parameter:__ {ref}`List of heat transfer coefficient model names<parameters:Boundary_20convective_20heating_20model/List_20of_20heat_20transfer_20coefficient_20model_20names>`
+:name: parameters:Boundary_20convective_20heating_20model/List_20of_20heat_20transfer_20coefficient_20model_20names
 **Default value:**
 
 **Pattern:** [MultipleSelection function ]
@@ -82,19 +85,21 @@ The following heat transfer coefficient models are available:
 The formula you describe in the mentioned section is a scalar value for the heat transfer coefficient across the boundary that has the unit W/(m$^2$)/K (in 3d) or W/m/K (in 2d). The heat flux across the boundary is then computed as the sum of a term that is proportional to the product of the heat transfer coefficient and the difference between the temperature given by the boundary temperature model and the current temperature at the boundary and a term that prescribes a fixed heat flux across the boundary.
 
 The symbol $t$ indicating time that may appear in the formulas for the prescribed heat flux is interpreted as having units seconds unless the global parameter &ldquo;Use years instead of seconds&rdquo; has been set.
+::::
 
 (parameters:Boundary_20convective_20heating_20model/Function)=
 ## **Subsection:** Boundary convective heating model / Function
-(parameters:Boundary_20convective_20heating_20model/Function/Coordinate_20system)=
-### __Parameter name:__ Coordinate system
+::::{dropdown} __Parameter:__ {ref}`Coordinate system<parameters:Boundary_20convective_20heating_20model/Function/Coordinate_20system>`
+:name: parameters:Boundary_20convective_20heating_20model/Function/Coordinate_20system
 **Default value:** cartesian
 
 **Pattern:** [Selection cartesian|spherical|depth ]
 
 **Documentation:** A selection that determines the assumed coordinate system for the function variables. Allowed values are &lsquo;cartesian&rsquo;, &lsquo;spherical&rsquo;, and &lsquo;depth&rsquo;. &lsquo;spherical&rsquo; coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. &lsquo;depth&rsquo; will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
+::::
 
-(parameters:Boundary_20convective_20heating_20model/Function/Function_20constants)=
-### __Parameter name:__ Function constants
+::::{dropdown} __Parameter:__ {ref}`Function constants<parameters:Boundary_20convective_20heating_20model/Function/Function_20constants>`
+:name: parameters:Boundary_20convective_20heating_20model/Function/Function_20constants
 **Default value:**
 
 **Pattern:** [Anything]
@@ -102,9 +107,10 @@ The symbol $t$ indicating time that may appear in the formulas for the prescribe
 **Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form &lsquo;var1=value1, var2=value2, ...&rsquo;.
 
 A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
+::::
 
-(parameters:Boundary_20convective_20heating_20model/Function/Function_20expression)=
-### __Parameter name:__ Function expression
+::::{dropdown} __Parameter:__ {ref}`Function expression<parameters:Boundary_20convective_20heating_20model/Function/Function_20expression>`
+:name: parameters:Boundary_20convective_20heating_20model/Function/Function_20expression
 **Default value:** 0
 
 **Pattern:** [Anything]
@@ -112,11 +118,13 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Documentation:** The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as &lsquo;sin&rsquo; or &lsquo;cos&rsquo;. In addition, it may contain expressions like &lsquo;if(x>0, 1, -1)&rsquo; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
 
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+::::
 
-(parameters:Boundary_20convective_20heating_20model/Function/Variable_20names)=
-### __Parameter name:__ Variable names
+::::{dropdown} __Parameter:__ {ref}`Variable names<parameters:Boundary_20convective_20heating_20model/Function/Variable_20names>`
+:name: parameters:Boundary_20convective_20heating_20model/Function/Variable_20names
 **Default value:** x,y,t
 
 **Pattern:** [Anything]
 
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
+::::

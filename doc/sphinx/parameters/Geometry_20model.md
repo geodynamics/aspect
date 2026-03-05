@@ -5,8 +5,8 @@
 ## **Subsection:** Geometry model
 
 
-(parameters:Geometry_20model/Model_20name)=
-### __Parameter name:__ Model name
+::::{dropdown} __Parameter:__ {ref}`Model name<parameters:Geometry_20model/Model_20name>`
+:name: parameters:Geometry_20model/Model_20name
 **Default value:** unspecified
 
 **Pattern:** [Selection box|box with lithosphere boundary indicators|chunk|chunk with lithosphere boundary indicators|ellipsoidal chunk|sphere|spherical shell|unspecified ]
@@ -50,509 +50,571 @@ Despite the name, this geometry does not imply the use of a spherical coordinate
 The model assigns boundary indicators as follows: In 2d, inner and outer boundaries get boundary indicators zero and one, and if the opening angle set in the input file is less than 360, then left and right boundaries are assigned indicators two and three. These boundaries can also be referenced using the symbolic names &lsquo;inner&rsquo;, &lsquo;outer&rsquo; and (if applicable) &lsquo;left&rsquo;, &lsquo;right&rsquo;.
 
 In 3d, inner and outer indicators are treated as in 2d. If the opening angle is chosen as 90 degrees, i.e., the domain is the intersection of a spherical shell and the first octant, then indicator 2 is at the face $x=0$, 3 at $y=0$, and 4 at $z=0$. These last three boundaries can then also be referred to as &lsquo;east&rsquo;, &lsquo;west&rsquo; and &lsquo;south&rsquo; symbolically in input files.
+::::
 
 (parameters:Geometry_20model/Box)=
 ## **Subsection:** Geometry model / Box
-(parameters:Geometry_20model/Box/Box_20origin_20X_20coordinate)=
-### __Parameter name:__ Box origin X coordinate
+::::{dropdown} __Parameter:__ {ref}`Box origin X coordinate<parameters:Geometry_20model/Box/Box_20origin_20X_20coordinate>`
+:name: parameters:Geometry_20model/Box/Box_20origin_20X_20coordinate
 **Default value:** 0.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** X coordinate of box origin. Units: \si{\meter}.
+::::
 
-(parameters:Geometry_20model/Box/Box_20origin_20Y_20coordinate)=
-### __Parameter name:__ Box origin Y coordinate
+::::{dropdown} __Parameter:__ {ref}`Box origin Y coordinate<parameters:Geometry_20model/Box/Box_20origin_20Y_20coordinate>`
+:name: parameters:Geometry_20model/Box/Box_20origin_20Y_20coordinate
 **Default value:** 0.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Y coordinate of box origin. Units: \si{\meter}.
+::::
 
-(parameters:Geometry_20model/Box/Box_20origin_20Z_20coordinate)=
-### __Parameter name:__ Box origin Z coordinate
+::::{dropdown} __Parameter:__ {ref}`Box origin Z coordinate<parameters:Geometry_20model/Box/Box_20origin_20Z_20coordinate>`
+:name: parameters:Geometry_20model/Box/Box_20origin_20Z_20coordinate
 **Default value:** 0.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Z coordinate of box origin. This value is ignored if the simulation is in 2d. Units: \si{\meter}.
+::::
 
-(parameters:Geometry_20model/Box/X_20extent)=
-### __Parameter name:__ X extent
+::::{dropdown} __Parameter:__ {ref}`X extent<parameters:Geometry_20model/Box/X_20extent>`
+:name: parameters:Geometry_20model/Box/X_20extent
 **Default value:** 1.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Extent of the box in x-direction. Units: \si{\meter}.
+::::
 
-(parameters:Geometry_20model/Box/X_20periodic)=
-### __Parameter name:__ X periodic
+::::{dropdown} __Parameter:__ {ref}`X periodic<parameters:Geometry_20model/Box/X_20periodic>`
+:name: parameters:Geometry_20model/Box/X_20periodic
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether the box should be periodic in X direction
+::::
 
-(parameters:Geometry_20model/Box/X_20repetitions)=
-### __Parameter name:__ X repetitions
+::::{dropdown} __Parameter:__ {ref}`X repetitions<parameters:Geometry_20model/Box/X_20repetitions>`
+:name: parameters:Geometry_20model/Box/X_20repetitions
 **Default value:** 1
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** Number of cells in X direction.
+::::
 
-(parameters:Geometry_20model/Box/Y_20extent)=
-### __Parameter name:__ Y extent
+::::{dropdown} __Parameter:__ {ref}`Y extent<parameters:Geometry_20model/Box/Y_20extent>`
+:name: parameters:Geometry_20model/Box/Y_20extent
 **Default value:** 1.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Extent of the box in y-direction. Units: \si{\meter}.
+::::
 
-(parameters:Geometry_20model/Box/Y_20periodic)=
-### __Parameter name:__ Y periodic
+::::{dropdown} __Parameter:__ {ref}`Y periodic<parameters:Geometry_20model/Box/Y_20periodic>`
+:name: parameters:Geometry_20model/Box/Y_20periodic
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether the box should be periodic in Y direction
+::::
 
-(parameters:Geometry_20model/Box/Y_20repetitions)=
-### __Parameter name:__ Y repetitions
+::::{dropdown} __Parameter:__ {ref}`Y repetitions<parameters:Geometry_20model/Box/Y_20repetitions>`
+:name: parameters:Geometry_20model/Box/Y_20repetitions
 **Default value:** 1
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** Number of cells in Y direction.
+::::
 
-(parameters:Geometry_20model/Box/Z_20extent)=
-### __Parameter name:__ Z extent
+::::{dropdown} __Parameter:__ {ref}`Z extent<parameters:Geometry_20model/Box/Z_20extent>`
+:name: parameters:Geometry_20model/Box/Z_20extent
 **Default value:** 1.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Extent of the box in z-direction. This value is ignored if the simulation is in 2d. Units: \si{\meter}.
+::::
 
-(parameters:Geometry_20model/Box/Z_20periodic)=
-### __Parameter name:__ Z periodic
+::::{dropdown} __Parameter:__ {ref}`Z periodic<parameters:Geometry_20model/Box/Z_20periodic>`
+:name: parameters:Geometry_20model/Box/Z_20periodic
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether the box should be periodic in Z direction
+::::
 
-(parameters:Geometry_20model/Box/Z_20repetitions)=
-### __Parameter name:__ Z repetitions
+::::{dropdown} __Parameter:__ {ref}`Z repetitions<parameters:Geometry_20model/Box/Z_20repetitions>`
+:name: parameters:Geometry_20model/Box/Z_20repetitions
 **Default value:** 1
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** Number of cells in Z direction.
+::::
 
 (parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators)=
 ## **Subsection:** Geometry model / Box with lithosphere boundary indicators
-(parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Box_20origin_20X_20coordinate)=
-### __Parameter name:__ Box origin X coordinate
+::::{dropdown} __Parameter:__ {ref}`Box origin X coordinate<parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Box_20origin_20X_20coordinate>`
+:name: parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Box_20origin_20X_20coordinate
 **Default value:** 0.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** X coordinate of box origin. Units: \si{\meter}.
+::::
 
-(parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Box_20origin_20Y_20coordinate)=
-### __Parameter name:__ Box origin Y coordinate
+::::{dropdown} __Parameter:__ {ref}`Box origin Y coordinate<parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Box_20origin_20Y_20coordinate>`
+:name: parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Box_20origin_20Y_20coordinate
 **Default value:** 0.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Y coordinate of box origin. Units: \si{\meter}.
+::::
 
-(parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Box_20origin_20Z_20coordinate)=
-### __Parameter name:__ Box origin Z coordinate
+::::{dropdown} __Parameter:__ {ref}`Box origin Z coordinate<parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Box_20origin_20Z_20coordinate>`
+:name: parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Box_20origin_20Z_20coordinate
 **Default value:** 0.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Z coordinate of box origin. This value is ignored if the simulation is in 2d. Units: \si{\meter}.
+::::
 
-(parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Lithospheric_20thickness)=
-### __Parameter name:__ Lithospheric thickness
+::::{dropdown} __Parameter:__ {ref}`Lithospheric thickness<parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Lithospheric_20thickness>`
+:name: parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Lithospheric_20thickness
 **Default value:** 0.2
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The thickness of the lithosphere used to create additional boundary indicators to set specific boundary conditions for the lithosphere.
+::::
 
-(parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Use_20merged_20grids)=
-### __Parameter name:__ Use merged grids
+::::{dropdown} __Parameter:__ {ref}`Use merged grids<parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Use_20merged_20grids>`
+:name: parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Use_20merged_20grids
 **Default value:** true
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to make the grid by gluing together two boxes, or just use one chunk to make the grid. Using two grids glued together is a safer option, since it forces the boundary conditions to be always applied to the same depth, but using one grid allows for a more flexible usage of the adaptive refinement. Note that if there is no cell boundary exactly on the boundary between the lithosphere and the mantle, the velocity boundary will not be exactly at that depth. Therefore, using a merged grid is generally recommended over using one grid.When using one grid, the parameter for lower repetitions is used and the upper repetitions are ignored.
+::::
 
-(parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/X_20extent)=
-### __Parameter name:__ X extent
+::::{dropdown} __Parameter:__ {ref}`X extent<parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/X_20extent>`
+:name: parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/X_20extent
 **Default value:** 1.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Extent of the box in x-direction. Units: \si{\meter}.
+::::
 
-(parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/X_20periodic)=
-### __Parameter name:__ X periodic
+::::{dropdown} __Parameter:__ {ref}`X periodic<parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/X_20periodic>`
+:name: parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/X_20periodic
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether the box should be periodic in X direction.
+::::
 
-(parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/X_20periodic_20lithosphere)=
-### __Parameter name:__ X periodic lithosphere
+::::{dropdown} __Parameter:__ {ref}`X periodic lithosphere<parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/X_20periodic_20lithosphere>`
+:name: parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/X_20periodic_20lithosphere
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether the box should be periodic in X direction in the lithosphere.
+::::
 
-(parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/X_20repetitions)=
-### __Parameter name:__ X repetitions
+::::{dropdown} __Parameter:__ {ref}`X repetitions<parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/X_20repetitions>`
+:name: parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/X_20repetitions
 **Default value:** 1
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** Number of cells in X direction of the lower box. The same number of repetitions will be used in the upper box.
+::::
 
-(parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Y_20extent)=
-### __Parameter name:__ Y extent
+::::{dropdown} __Parameter:__ {ref}`Y extent<parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Y_20extent>`
+:name: parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Y_20extent
 **Default value:** 1.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Extent of the box in y-direction. Units: \si{\meter}.
+::::
 
-(parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Y_20periodic)=
-### __Parameter name:__ Y periodic
+::::{dropdown} __Parameter:__ {ref}`Y periodic<parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Y_20periodic>`
+:name: parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Y_20periodic
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether the box should be periodic in Y direction.
+::::
 
-(parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Y_20periodic_20lithosphere)=
-### __Parameter name:__ Y periodic lithosphere
+::::{dropdown} __Parameter:__ {ref}`Y periodic lithosphere<parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Y_20periodic_20lithosphere>`
+:name: parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Y_20periodic_20lithosphere
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether the box should be periodic in Y direction in the lithosphere. This value is ignored if the simulation is in 2d.
+::::
 
-(parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Y_20repetitions)=
-### __Parameter name:__ Y repetitions
+::::{dropdown} __Parameter:__ {ref}`Y repetitions<parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Y_20repetitions>`
+:name: parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Y_20repetitions
 **Default value:** 1
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** Number of cells in Y direction of the lower box. If the simulation is in 3d, the same number of repetitions will be used in the upper box.
+::::
 
-(parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Y_20repetitions_20lithosphere)=
-### __Parameter name:__ Y repetitions lithosphere
+::::{dropdown} __Parameter:__ {ref}`Y repetitions lithosphere<parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Y_20repetitions_20lithosphere>`
+:name: parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Y_20repetitions_20lithosphere
 **Default value:** 1
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** Number of cells in Y direction in the lithosphere. This value is ignored if the simulation is in 3d.
+::::
 
-(parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Z_20extent)=
-### __Parameter name:__ Z extent
+::::{dropdown} __Parameter:__ {ref}`Z extent<parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Z_20extent>`
+:name: parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Z_20extent
 **Default value:** 1.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Extent of the box in z-direction. This value is ignored if the simulation is in 2d. Units: \si{\meter}.
+::::
 
-(parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Z_20periodic)=
-### __Parameter name:__ Z periodic
+::::{dropdown} __Parameter:__ {ref}`Z periodic<parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Z_20periodic>`
+:name: parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Z_20periodic
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether the box should be periodic in Z direction. This value is ignored if the simulation is in 2d.
+::::
 
-(parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Z_20repetitions)=
-### __Parameter name:__ Z repetitions
+::::{dropdown} __Parameter:__ {ref}`Z repetitions<parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Z_20repetitions>`
+:name: parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Z_20repetitions
 **Default value:** 1
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** Number of cells in Z direction of the lower box. This value is ignored if the simulation is in 2d.
+::::
 
-(parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Z_20repetitions_20lithosphere)=
-### __Parameter name:__ Z repetitions lithosphere
+::::{dropdown} __Parameter:__ {ref}`Z repetitions lithosphere<parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Z_20repetitions_20lithosphere>`
+:name: parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Z_20repetitions_20lithosphere
 **Default value:** 1
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** Number of cells in Z direction in the lithosphere. This value is ignored if the simulation is in 2d.
+::::
 
 (parameters:Geometry_20model/Chunk)=
 ## **Subsection:** Geometry model / Chunk
-(parameters:Geometry_20model/Chunk/Chunk_20inner_20radius)=
-### __Parameter name:__ Chunk inner radius
+::::{dropdown} __Parameter:__ {ref}`Chunk inner radius<parameters:Geometry_20model/Chunk/Chunk_20inner_20radius>`
+:name: parameters:Geometry_20model/Chunk/Chunk_20inner_20radius
 **Default value:** 0.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Radius at the bottom surface of the chunk. Units: \si{\meter}.
+::::
 
-(parameters:Geometry_20model/Chunk/Chunk_20maximum_20latitude)=
-### __Parameter name:__ Chunk maximum latitude
+::::{dropdown} __Parameter:__ {ref}`Chunk maximum latitude<parameters:Geometry_20model/Chunk/Chunk_20maximum_20latitude>`
+:name: parameters:Geometry_20model/Chunk/Chunk_20maximum_20latitude
 **Default value:** 1.
 
 **Pattern:** [Double -90...90 (inclusive)]
 
 **Documentation:** Maximum latitude of the chunk. This value is ignored if the simulation is in 2d. Units: degrees.
+::::
 
-(parameters:Geometry_20model/Chunk/Chunk_20maximum_20longitude)=
-### __Parameter name:__ Chunk maximum longitude
+::::{dropdown} __Parameter:__ {ref}`Chunk maximum longitude<parameters:Geometry_20model/Chunk/Chunk_20maximum_20longitude>`
+:name: parameters:Geometry_20model/Chunk/Chunk_20maximum_20longitude
 **Default value:** 1.
 
 **Pattern:** [Double -180...360 (inclusive)]
 
 **Documentation:** Maximum longitude of the chunk. Units: degrees.
+::::
 
-(parameters:Geometry_20model/Chunk/Chunk_20minimum_20latitude)=
-### __Parameter name:__ Chunk minimum latitude
+::::{dropdown} __Parameter:__ {ref}`Chunk minimum latitude<parameters:Geometry_20model/Chunk/Chunk_20minimum_20latitude>`
+:name: parameters:Geometry_20model/Chunk/Chunk_20minimum_20latitude
 **Default value:** 0.
 
 **Pattern:** [Double -90...90 (inclusive)]
 
 **Documentation:** Minimum latitude of the chunk. This value is ignored if the simulation is in 2d. Units: degrees.
+::::
 
-(parameters:Geometry_20model/Chunk/Chunk_20minimum_20longitude)=
-### __Parameter name:__ Chunk minimum longitude
+::::{dropdown} __Parameter:__ {ref}`Chunk minimum longitude<parameters:Geometry_20model/Chunk/Chunk_20minimum_20longitude>`
+:name: parameters:Geometry_20model/Chunk/Chunk_20minimum_20longitude
 **Default value:** 0.
 
 **Pattern:** [Double -180...360 (inclusive)]
 
 **Documentation:** Minimum longitude of the chunk. Units: degrees.
+::::
 
-(parameters:Geometry_20model/Chunk/Chunk_20outer_20radius)=
-### __Parameter name:__ Chunk outer radius
+::::{dropdown} __Parameter:__ {ref}`Chunk outer radius<parameters:Geometry_20model/Chunk/Chunk_20outer_20radius>`
+:name: parameters:Geometry_20model/Chunk/Chunk_20outer_20radius
 **Default value:** 1.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Radius at the top surface of the chunk. Units: \si{\meter}.
+::::
 
-(parameters:Geometry_20model/Chunk/Latitude_20repetitions)=
-### __Parameter name:__ Latitude repetitions
+::::{dropdown} __Parameter:__ {ref}`Latitude repetitions<parameters:Geometry_20model/Chunk/Latitude_20repetitions>`
+:name: parameters:Geometry_20model/Chunk/Latitude_20repetitions
 **Default value:** 1
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** Number of cells in latitude. This value is ignored if the simulation is in 2d
+::::
 
-(parameters:Geometry_20model/Chunk/Longitude_20repetitions)=
-### __Parameter name:__ Longitude repetitions
+::::{dropdown} __Parameter:__ {ref}`Longitude repetitions<parameters:Geometry_20model/Chunk/Longitude_20repetitions>`
+:name: parameters:Geometry_20model/Chunk/Longitude_20repetitions
 **Default value:** 1
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** Number of cells in longitude.
+::::
 
-(parameters:Geometry_20model/Chunk/Radius_20repetitions)=
-### __Parameter name:__ Radius repetitions
+::::{dropdown} __Parameter:__ {ref}`Radius repetitions<parameters:Geometry_20model/Chunk/Radius_20repetitions>`
+:name: parameters:Geometry_20model/Chunk/Radius_20repetitions
 **Default value:** 1
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** Number of cells in radius.
+::::
 
 (parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators)=
 ## **Subsection:** Geometry model / Chunk with lithosphere boundary indicators
-(parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20inner_20radius)=
-### __Parameter name:__ Chunk inner radius
+::::{dropdown} __Parameter:__ {ref}`Chunk inner radius<parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20inner_20radius>`
+:name: parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20inner_20radius
 **Default value:** 0.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Radius at the bottom surface of the chunk. Units: \si{\meter}.
+::::
 
-(parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20maximum_20latitude)=
-### __Parameter name:__ Chunk maximum latitude
+::::{dropdown} __Parameter:__ {ref}`Chunk maximum latitude<parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20maximum_20latitude>`
+:name: parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20maximum_20latitude
 **Default value:** 1.
 
 **Pattern:** [Double -90...90 (inclusive)]
 
 **Documentation:** Maximum latitude of the chunk. This value is ignored if the simulation is in 2d. Units: degrees.
+::::
 
-(parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20maximum_20longitude)=
-### __Parameter name:__ Chunk maximum longitude
+::::{dropdown} __Parameter:__ {ref}`Chunk maximum longitude<parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20maximum_20longitude>`
+:name: parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20maximum_20longitude
 **Default value:** 1.
 
 **Pattern:** [Double -180...360 (inclusive)]
 
 **Documentation:** Maximum longitude of the chunk. Units: degrees.
+::::
 
-(parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20middle_20boundary_20radius)=
-### __Parameter name:__ Chunk middle boundary radius
+::::{dropdown} __Parameter:__ {ref}`Chunk middle boundary radius<parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20middle_20boundary_20radius>`
+:name: parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20middle_20boundary_20radius
 **Default value:** 1
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Radius at the top surface of the lower chunk, where it merges with the upper chunk. Units: \si{\meter}.
+::::
 
-(parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20minimum_20latitude)=
-### __Parameter name:__ Chunk minimum latitude
+::::{dropdown} __Parameter:__ {ref}`Chunk minimum latitude<parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20minimum_20latitude>`
+:name: parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20minimum_20latitude
 **Default value:** 0.
 
 **Pattern:** [Double -90...90 (inclusive)]
 
 **Documentation:** Minimum latitude of the chunk. This value is ignored if the simulation is in 2d. Units: degrees.
+::::
 
-(parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20minimum_20longitude)=
-### __Parameter name:__ Chunk minimum longitude
+::::{dropdown} __Parameter:__ {ref}`Chunk minimum longitude<parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20minimum_20longitude>`
+:name: parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20minimum_20longitude
 **Default value:** 0.
 
 **Pattern:** [Double -180...360 (inclusive)]
 
 **Documentation:** Minimum longitude of the chunk. Units: degrees.
+::::
 
-(parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20outer_20radius)=
-### __Parameter name:__ Chunk outer radius
+::::{dropdown} __Parameter:__ {ref}`Chunk outer radius<parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20outer_20radius>`
+:name: parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20outer_20radius
 **Default value:** 1.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Radius at the top surface of the chunk. Units: \si{\meter}.
+::::
 
-(parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Inner_20chunk_20radius_20repetitions)=
-### __Parameter name:__ Inner chunk radius repetitions
+::::{dropdown} __Parameter:__ {ref}`Inner chunk radius repetitions<parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Inner_20chunk_20radius_20repetitions>`
+:name: parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Inner_20chunk_20radius_20repetitions
 **Default value:** 1
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** Number of cells in radial direction for the lower chunk.
+::::
 
-(parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Latitude_20repetitions)=
-### __Parameter name:__ Latitude repetitions
+::::{dropdown} __Parameter:__ {ref}`Latitude repetitions<parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Latitude_20repetitions>`
+:name: parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Latitude_20repetitions
 **Default value:** 1
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** Number of cells in latitude. This value is ignored if the simulation is in 2d
+::::
 
-(parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Longitude_20repetitions)=
-### __Parameter name:__ Longitude repetitions
+::::{dropdown} __Parameter:__ {ref}`Longitude repetitions<parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Longitude_20repetitions>`
+:name: parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Longitude_20repetitions
 **Default value:** 1
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** Number of cells in longitude.
+::::
 
-(parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Outer_20chunk_20radius_20repetitions)=
-### __Parameter name:__ Outer chunk radius repetitions
+::::{dropdown} __Parameter:__ {ref}`Outer chunk radius repetitions<parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Outer_20chunk_20radius_20repetitions>`
+:name: parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Outer_20chunk_20radius_20repetitions
 **Default value:** 1
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** Number of cells in radial direction for the upper chunk.
+::::
 
-(parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Use_20merged_20grids)=
-### __Parameter name:__ Use merged grids
+::::{dropdown} __Parameter:__ {ref}`Use merged grids<parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Use_20merged_20grids>`
+:name: parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Use_20merged_20grids
 **Default value:** true
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to make the grid by gluing together two boxes, or just use one chunk to make the grid. Using two grids glued together is a safer option, since it forces the boundary conditions to be always applied to the same depth, but using one grid allows for a more flexible usage of the adaptive refinement. Note that if there is no cell boundary exactly on the boundary between the lithosphere and the mantle, the velocity boundary will not be exactly at that depth. Therefore, using a merged grid is generally recommended over using one grid. When using one grid, the parameter for lower repetitions is used and the upper repetitions are ignored.
+::::
 
 (parameters:Geometry_20model/Ellipsoidal_20chunk)=
 ## **Subsection:** Geometry model / Ellipsoidal chunk
-(parameters:Geometry_20model/Ellipsoidal_20chunk/Depth)=
-### __Parameter name:__ Depth
+::::{dropdown} __Parameter:__ {ref}`Depth<parameters:Geometry_20model/Ellipsoidal_20chunk/Depth>`
+:name: parameters:Geometry_20model/Ellipsoidal_20chunk/Depth
 **Default value:** 500000.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Bottom depth of model region.
+::::
 
-(parameters:Geometry_20model/Ellipsoidal_20chunk/Depth_20subdivisions)=
-### __Parameter name:__ Depth subdivisions
+::::{dropdown} __Parameter:__ {ref}`Depth subdivisions<parameters:Geometry_20model/Ellipsoidal_20chunk/Depth_20subdivisions>`
+:name: parameters:Geometry_20model/Ellipsoidal_20chunk/Depth_20subdivisions
 **Default value:** 1
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** The number of subdivisions of the coarse (initial) mesh in depth.
+::::
 
-(parameters:Geometry_20model/Ellipsoidal_20chunk/East_2dWest_20subdivisions)=
-### __Parameter name:__ East-West subdivisions
+::::{dropdown} __Parameter:__ {ref}`East-West subdivisions<parameters:Geometry_20model/Ellipsoidal_20chunk/East_2dWest_20subdivisions>`
+:name: parameters:Geometry_20model/Ellipsoidal_20chunk/East_2dWest_20subdivisions
 **Default value:** 1
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** The number of subdivisions of the coarse (initial) mesh in the East-West direction.
+::::
 
-(parameters:Geometry_20model/Ellipsoidal_20chunk/Eccentricity)=
-### __Parameter name:__ Eccentricity
+::::{dropdown} __Parameter:__ {ref}`Eccentricity<parameters:Geometry_20model/Ellipsoidal_20chunk/Eccentricity>`
+:name: parameters:Geometry_20model/Ellipsoidal_20chunk/Eccentricity
 **Default value:** 8.1819190842622e-2
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Eccentricity of the ellipsoid. Zero is a perfect sphere, default (8.1819190842622e-2) is WGS84.
+::::
 
-(parameters:Geometry_20model/Ellipsoidal_20chunk/NE_20corner)=
-### __Parameter name:__ NE corner
+::::{dropdown} __Parameter:__ {ref}`NE corner<parameters:Geometry_20model/Ellipsoidal_20chunk/NE_20corner>`
+:name: parameters:Geometry_20model/Ellipsoidal_20chunk/NE_20corner
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** Longitude:latitude in degrees of the North-East corner point of model region.The North-East direction is positive. If one of the three corners is not provided the missing corner value will be calculated so all faces are parallel.
+::::
 
-(parameters:Geometry_20model/Ellipsoidal_20chunk/NW_20corner)=
-### __Parameter name:__ NW corner
+::::{dropdown} __Parameter:__ {ref}`NW corner<parameters:Geometry_20model/Ellipsoidal_20chunk/NW_20corner>`
+:name: parameters:Geometry_20model/Ellipsoidal_20chunk/NW_20corner
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** Longitude:latitude in degrees of the North-West corner point of model region. The North-East direction is positive. If one of the three corners is not provided the missing corner value will be calculated so all faces are parallel.
+::::
 
-(parameters:Geometry_20model/Ellipsoidal_20chunk/North_2dSouth_20subdivisions)=
-### __Parameter name:__ North-South subdivisions
+::::{dropdown} __Parameter:__ {ref}`North-South subdivisions<parameters:Geometry_20model/Ellipsoidal_20chunk/North_2dSouth_20subdivisions>`
+:name: parameters:Geometry_20model/Ellipsoidal_20chunk/North_2dSouth_20subdivisions
 **Default value:** 1
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** The number of subdivisions of the coarse (initial) mesh in the North-South direction.
+::::
 
-(parameters:Geometry_20model/Ellipsoidal_20chunk/SE_20corner)=
-### __Parameter name:__ SE corner
+::::{dropdown} __Parameter:__ {ref}`SE corner<parameters:Geometry_20model/Ellipsoidal_20chunk/SE_20corner>`
+:name: parameters:Geometry_20model/Ellipsoidal_20chunk/SE_20corner
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** Longitude:latitude in degrees of the South-East corner point of model region. The North-East direction is positive. If one of the three corners is not provided the missing corner value will be calculated so all faces are parallel.
+::::
 
-(parameters:Geometry_20model/Ellipsoidal_20chunk/SW_20corner)=
-### __Parameter name:__ SW corner
+::::{dropdown} __Parameter:__ {ref}`SW corner<parameters:Geometry_20model/Ellipsoidal_20chunk/SW_20corner>`
+:name: parameters:Geometry_20model/Ellipsoidal_20chunk/SW_20corner
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** Longitude:latitude in degrees of the South-West corner point of model region. The North-East direction is positive. If one of the three corners is not provided the missing corner value will be calculated so all faces are parallel.
+::::
 
-(parameters:Geometry_20model/Ellipsoidal_20chunk/Semi_2dmajor_20axis)=
-### __Parameter name:__ Semi-major axis
+::::{dropdown} __Parameter:__ {ref}`Semi-major axis<parameters:Geometry_20model/Ellipsoidal_20chunk/Semi_2dmajor_20axis>`
+:name: parameters:Geometry_20model/Ellipsoidal_20chunk/Semi_2dmajor_20axis
 **Default value:** 6378137.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The semi-major axis (a) of an ellipsoid. This is the radius for a sphere (eccentricity=0). Default WGS84 semi-major axis.
+::::
 
 (parameters:Geometry_20model/Initial_20topography_20model)=
 ## **Subsection:** Geometry model / Initial topography model
-(parameters:Geometry_20model/Initial_20topography_20model/Model_20name)=
-### __Parameter name:__ Model name
+::::{dropdown} __Parameter:__ {ref}`Model name<parameters:Geometry_20model/Initial_20topography_20model/Model_20name>`
+:name: parameters:Geometry_20model/Initial_20topography_20model/Model_20name
 **Default value:** zero topography
 
 **Pattern:** [Selection ascii data|function|prm polygon|zero topography ]
@@ -566,45 +628,50 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 &lsquo;prm polygon&rsquo;: An initial topography model that defines the initial topography as constant inside each of a set of polygonal parts of the surface. The polygons, and their associated surface elevation, are defined in the &lsquo;Geometry model/Initial topography/Prm polygon&rsquo; section.
 
 &lsquo;zero topography&rsquo;: Implementation of a model in which the initial topography is zero.
+::::
 
 (parameters:Geometry_20model/Initial_20topography_20model/Ascii_20data_20model)=
 ## **Subsection:** Geometry model / Initial topography model / Ascii data model
-(parameters:Geometry_20model/Initial_20topography_20model/Ascii_20data_20model/Data_20directory)=
-### __Parameter name:__ Data directory
+::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Geometry_20model/Initial_20topography_20model/Ascii_20data_20model/Data_20directory>`
+:name: parameters:Geometry_20model/Initial_20topography_20model/Ascii_20data_20model/Data_20directory
 **Default value:** $ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/test/
 
 **Pattern:** [DirectoryName]
 
 **Documentation:** The name of a directory that contains the model data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT. A trailing slash at the end of the directory path is optional; the plugin will automatically append a &rsquo;/&rsquo; when the parameters are parsed if it is missing.
+::::
 
-(parameters:Geometry_20model/Initial_20topography_20model/Ascii_20data_20model/Data_20file_20name)=
-### __Parameter name:__ Data file name
+::::{dropdown} __Parameter:__ {ref}`Data file name<parameters:Geometry_20model/Initial_20topography_20model/Ascii_20data_20model/Data_20file_20name>`
+:name: parameters:Geometry_20model/Initial_20topography_20model/Ascii_20data_20model/Data_20file_20name
 **Default value:** box_2d_%s.0.txt
 
 **Pattern:** [Anything]
 
 **Documentation:** The file name of the model data.
+::::
 
-(parameters:Geometry_20model/Initial_20topography_20model/Ascii_20data_20model/Scale_20factor)=
-### __Parameter name:__ Scale factor
+::::{dropdown} __Parameter:__ {ref}`Scale factor<parameters:Geometry_20model/Initial_20topography_20model/Ascii_20data_20model/Scale_20factor>`
+:name: parameters:Geometry_20model/Initial_20topography_20model/Ascii_20data_20model/Scale_20factor
 **Default value:** 1.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
+::::
 
 (parameters:Geometry_20model/Initial_20topography_20model/Function)=
 ## **Subsection:** Geometry model / Initial topography model / Function
-(parameters:Geometry_20model/Initial_20topography_20model/Function/Coordinate_20system)=
-### __Parameter name:__ Coordinate system
+::::{dropdown} __Parameter:__ {ref}`Coordinate system<parameters:Geometry_20model/Initial_20topography_20model/Function/Coordinate_20system>`
+:name: parameters:Geometry_20model/Initial_20topography_20model/Function/Coordinate_20system
 **Default value:** cartesian
 
 **Pattern:** [Selection cartesian|spherical ]
 
 **Documentation:** A selection that determines the assumed coordinate system for the function variables. Allowed values are &lsquo;cartesian&rsquo; and &lsquo;spherical&rsquo;. &lsquo;spherical&rsquo; coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle.
+::::
 
-(parameters:Geometry_20model/Initial_20topography_20model/Function/Function_20constants)=
-### __Parameter name:__ Function constants
+::::{dropdown} __Parameter:__ {ref}`Function constants<parameters:Geometry_20model/Initial_20topography_20model/Function/Function_20constants>`
+:name: parameters:Geometry_20model/Initial_20topography_20model/Function/Function_20constants
 **Default value:**
 
 **Pattern:** [Anything]
@@ -612,9 +679,10 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 **Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form &lsquo;var1=value1, var2=value2, ...&rsquo;.
 
 A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
+::::
 
-(parameters:Geometry_20model/Initial_20topography_20model/Function/Function_20expression)=
-### __Parameter name:__ Function expression
+::::{dropdown} __Parameter:__ {ref}`Function expression<parameters:Geometry_20model/Initial_20topography_20model/Function/Function_20expression>`
+:name: parameters:Geometry_20model/Initial_20topography_20model/Function/Function_20expression
 **Default value:** 0
 
 **Pattern:** [Anything]
@@ -622,47 +690,52 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Documentation:** The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as &lsquo;sin&rsquo; or &lsquo;cos&rsquo;. In addition, it may contain expressions like &lsquo;if(x>0, 1, -1)&rsquo; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
 
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+::::
 
-(parameters:Geometry_20model/Initial_20topography_20model/Function/Maximum_20topography_20value)=
-### __Parameter name:__ Maximum topography value
+::::{dropdown} __Parameter:__ {ref}`Maximum topography value<parameters:Geometry_20model/Initial_20topography_20model/Function/Maximum_20topography_20value>`
+:name: parameters:Geometry_20model/Initial_20topography_20model/Function/Maximum_20topography_20value
 **Default value:** 2000.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The maximum value the topography given by the function can take.
+::::
 
-(parameters:Geometry_20model/Initial_20topography_20model/Function/Variable_20names)=
-### __Parameter name:__ Variable names
+::::{dropdown} __Parameter:__ {ref}`Variable names<parameters:Geometry_20model/Initial_20topography_20model/Function/Variable_20names>`
+:name: parameters:Geometry_20model/Initial_20topography_20model/Function/Variable_20names
 **Default value:** x,y,t
 
 **Pattern:** [Anything]
 
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
+::::
 
 (parameters:Geometry_20model/Initial_20topography_20model/Prm_20polygon)=
 ## **Subsection:** Geometry model / Initial topography model / Prm polygon
-(parameters:Geometry_20model/Initial_20topography_20model/Prm_20polygon/Topography_20parameters)=
-### __Parameter name:__ Topography parameters
+::::{dropdown} __Parameter:__ {ref}`Topography parameters<parameters:Geometry_20model/Initial_20topography_20model/Prm_20polygon/Topography_20parameters>`
+:name: parameters:Geometry_20model/Initial_20topography_20model/Prm_20polygon/Topography_20parameters
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** Set the topography height and the polygon which should be set to that height. The format is : "The topography height $\textgreater$ The point list describing a polygon \& The next topography height $\textgreater$ the next point list describing a polygon." The format for the point list describing the polygon is "x1,y1;x2,y2". For example for two triangular areas of 100 and -100 meters high set: &rsquo;100 $\textgreater$ 0,0;5,5;0,10 \& -100 $\textgreater$ 10,10;10,15;20,15&rsquo;. Units of the height are always in meters. The units of the coordinates are dependent on the geometry model. In the box model they are in meters, in the chunks they are in degrees, etc. Please refer to the manual of the individual geometry model to so see how the topography is implemented.
+::::
 
 (parameters:Geometry_20model/Sphere)=
 ## **Subsection:** Geometry model / Sphere
-(parameters:Geometry_20model/Sphere/Radius)=
-### __Parameter name:__ Radius
+::::{dropdown} __Parameter:__ {ref}`Radius<parameters:Geometry_20model/Sphere/Radius>`
+:name: parameters:Geometry_20model/Sphere/Radius
 **Default value:** 6371000.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Radius of the sphere. Units: \si{\meter}.
+::::
 
 (parameters:Geometry_20model/Spherical_20shell)=
 ## **Subsection:** Geometry model / Spherical shell
-(parameters:Geometry_20model/Spherical_20shell/Cells_20along_20circumference)=
-### __Parameter name:__ Cells along circumference
+::::{dropdown} __Parameter:__ {ref}`Cells along circumference<parameters:Geometry_20model/Spherical_20shell/Cells_20along_20circumference>`
+:name: parameters:Geometry_20model/Spherical_20shell/Cells_20along_20circumference
 **Default value:** 0
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
@@ -672,25 +745,28 @@ If the function you are describing represents a vector-valued function with mult
 In 3d, the number of cells is computed differently and does not have an easy interpretation. Valid values for this parameter in 3d are 0 (let this class choose), 6, 12 and 96. Other possible values may be discussed in the documentation of the deal.II function GridGenerator::hyper_shell. The parameter is best left at its default in 3d.
 
 In either case, this parameter is ignored unless the opening angle of the domain is 360 degrees. This parameter is also ignored when using a custom mesh subdivision scheme.
+::::
 
-(parameters:Geometry_20model/Spherical_20shell/Custom_20mesh_20subdivision)=
-### __Parameter name:__ Custom mesh subdivision
+::::{dropdown} __Parameter:__ {ref}`Custom mesh subdivision<parameters:Geometry_20model/Spherical_20shell/Custom_20mesh_20subdivision>`
+:name: parameters:Geometry_20model/Spherical_20shell/Custom_20mesh_20subdivision
 **Default value:** none
 
 **Pattern:** [Selection none|list of radial values|number of slices ]
 
 **Documentation:** Choose how the spherical shell mesh is generated. By default, a coarse mesh is generated with respect to the inner and outer radius, and an initial number of cells along circumference. In the other cases, a surface mesh is first generated and refined as desired, before it is extruded radially following the specified subdivision scheme.
+::::
 
-(parameters:Geometry_20model/Spherical_20shell/Initial_20lateral_20refinement)=
-### __Parameter name:__ Initial lateral refinement
+::::{dropdown} __Parameter:__ {ref}`Initial lateral refinement<parameters:Geometry_20model/Spherical_20shell/Initial_20lateral_20refinement>`
+:name: parameters:Geometry_20model/Spherical_20shell/Initial_20lateral_20refinement
 **Default value:** 0
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** Initial lateral refinement for the custom mesh subdivision schemes.The number of refinement steps performed on the initial coarse surface mesh, before the surface is extruded radially. This parameter allows the user more control over the ratio between radial and lateral refinement of the mesh.
+::::
 
-(parameters:Geometry_20model/Spherical_20shell/Inner_20radius)=
-### __Parameter name:__ Inner radius
+::::{dropdown} __Parameter:__ {ref}`Inner radius<parameters:Geometry_20model/Spherical_20shell/Inner_20radius>`
+:name: parameters:Geometry_20model/Spherical_20shell/Inner_20radius
 **Default value:** 3481000.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
@@ -700,33 +776,37 @@ In either case, this parameter is ignored unless the opening angle of the domain
 :::{note}
 The default value of 3,481,000 m equals the radius of a sphere with equal volume as Earth (i.e., 6371 km) minus the average depth of the core-mantle boundary (i.e., 2890 km).
 :::
+::::
 
-(parameters:Geometry_20model/Spherical_20shell/List_20of_20radial_20values)=
-### __Parameter name:__ List of radial values
+::::{dropdown} __Parameter:__ {ref}`List of radial values<parameters:Geometry_20model/Spherical_20shell/List_20of_20radial_20values>`
+:name: parameters:Geometry_20model/Spherical_20shell/List_20of_20radial_20values
 **Default value:**
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of radial values for the custom mesh scheme. Units: $\si{m}$. A list of radial values subdivides the spherical shell at specified radii. The list must be strictly ascending, and the first value must be greater than the inner radius while the last must be less than the outer radius.
+::::
 
-(parameters:Geometry_20model/Spherical_20shell/Number_20of_20slices)=
-### __Parameter name:__ Number of slices
+::::{dropdown} __Parameter:__ {ref}`Number of slices<parameters:Geometry_20model/Spherical_20shell/Number_20of_20slices>`
+:name: parameters:Geometry_20model/Spherical_20shell/Number_20of_20slices
 **Default value:** 1
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** Number of slices for the custom mesh subdivision scheme. The number of slices subdivides the spherical shell into N slices of equal thickness. Must be greater than 0.
+::::
 
-(parameters:Geometry_20model/Spherical_20shell/Opening_20angle)=
-### __Parameter name:__ Opening angle
+::::{dropdown} __Parameter:__ {ref}`Opening angle<parameters:Geometry_20model/Spherical_20shell/Opening_20angle>`
+:name: parameters:Geometry_20model/Spherical_20shell/Opening_20angle
 **Default value:** 360.
 
 **Pattern:** [Double 0...360 (inclusive)]
 
 **Documentation:** Opening angle in degrees of the section of the shell that we want to build. The only opening angles that are allowed for this geometry are 90, 180, and 360 in 2d; and 90 and 360 in 3d. Units: degrees.
+::::
 
-(parameters:Geometry_20model/Spherical_20shell/Outer_20radius)=
-### __Parameter name:__ Outer radius
+::::{dropdown} __Parameter:__ {ref}`Outer radius<parameters:Geometry_20model/Spherical_20shell/Outer_20radius>`
+:name: parameters:Geometry_20model/Spherical_20shell/Outer_20radius
 **Default value:** 6336000.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
@@ -736,11 +816,13 @@ The default value of 3,481,000 m equals the radius of a sphere with equal volume
 :::{note}
 The default value of 6,336,000 m equals the radius of a sphere with equal volume as Earth (i.e., 6371 km) minus the average depth of the mantle-crust interface (i.e., 35 km).
 :::
+::::
 
-(parameters:Geometry_20model/Spherical_20shell/Phi_20periodic)=
-### __Parameter name:__ Phi periodic
+::::{dropdown} __Parameter:__ {ref}`Phi periodic<parameters:Geometry_20model/Spherical_20shell/Phi_20periodic>`
+:name: parameters:Geometry_20model/Spherical_20shell/Phi_20periodic
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether the shell should be periodic in the phi direction.
+::::
