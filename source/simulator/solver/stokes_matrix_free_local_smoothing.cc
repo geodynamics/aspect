@@ -1522,12 +1522,27 @@ namespace aspect
             if (this->get_parameters().n_expensive_stokes_solver_steps > 0)
               solver_controls.push_back(solver_control_expensive);
 
-            Utilities::throw_linear_solver_failure_exception("iterative Stokes solver",
-                                                             "StokesMatrixFreeHandlerLocalSmoothingImplementation::solve",
-                                                             solver_controls,
-                                                             exc,
-                                                             this->get_mpi_communicator(),
-                                                             this->get_parameters().output_directory+"solver_history.txt");
+            // when linear failure is allowed, we need to have the following steps other than throwing failure
+            switch (this->get_parameters().linear_solver_failure_strategy)
+              {
+                case Parameters<dim>::LinearSolverFailureStrategy::continue_with_nonlinear_solver:
+                {
+                  this->get_pcout() << " linear solver failed (GMG), continuing" << std::endl;
+                  break;
+                }
+                case Parameters<dim>::LinearSolverFailureStrategy::abort:
+                {
+                  Utilities::throw_linear_solver_failure_exception("iterative Stokes solver",
+                                                                   "StokesMatrixFreeHandlerLocalSmoothingImplementation::solve",
+                                                                   solver_controls,
+                                                                   exc,
+                                                                   this->get_mpi_communicator(),
+                                                                   this->get_parameters().output_directory+"solver_history.txt");
+                  break;
+                }
+                default:
+                  AssertThrow(false, ExcNotImplemented());
+              }
           }
       }
 
