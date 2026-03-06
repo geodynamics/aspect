@@ -235,6 +235,7 @@ namespace aspect
     timestep_number (numbers::invalid_unsigned_int),
     nonlinear_iteration (numbers::invalid_unsigned_int),
     nonlinear_solver_failures (0),
+    linear_solver_failures (0),
 
     triangulation (mpi_communicator, smoothing_flags<dim>(parameters.stokes_gmg_type == Parameters<dim>::StokesGMGType::global_coarsening), settings(parameters)),
 
@@ -2325,6 +2326,9 @@ namespace aspect
     // we disable automatic summary printing so that it won't happen when
     // throwing an exception. Therefore, we have to do this manually here:
     computing_timer.print_summary ();
+
+    if (linear_solver_failures > 0)
+      pcout << "\nWARNING: During this computation " << linear_solver_failures << " linear solver failures occurred!" << std::endl;
 
     if (nonlinear_solver_failures > 0)
       pcout << "\nWARNING: During this computation " << nonlinear_solver_failures << " nonlinear solver failures occurred!" << std::endl;

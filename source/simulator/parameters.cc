@@ -284,6 +284,13 @@ namespace aspect
                        "iterations, in other words, if it is set to something other than "
                        "`single Advection, single Stokes' or `single Advection, no Stokes'.");
 
+    prm.declare_entry ("Linear solver failure strategy", "abort",
+                       Patterns::Selection("continue with nonlinear solver|abort"),
+                       "Select the strategy on what to do if the linear solver scheme fails to "
+                       "converge. The options are:\n"
+                       "`continue with nonlinear solver`: ignore error and continue with the nonlinear solver\n"
+                       "`abort`: abort with an error message");
+
     prm.declare_entry ("Pressure normalization", "surface",
                        Patterns::Selection ("surface|volume|no"),
                        "If and how to normalize the pressure after the solution step. "
@@ -1629,6 +1636,13 @@ namespace aspect
     }
     nonlinear_solver_failure_strategy = NonlinearSolverFailureStrategy::parse(
                                           prm.get("Nonlinear solver failure strategy"));
+    linear_solver_failure_strategy = LinearSolverFailureStrategy::parse(
+                                       prm.get("Linear solver failure strategy"));
+    if (linear_solver_failure_strategy ==
+        Parameters<dim>::LinearSolverFailureStrategy::continue_with_nonlinear_solver)
+      AssertThrow(Parameters<dim>::solve_Stokes_iteratively(nonlinear_solver) == true,
+                  ExcMessage("You are not allowed to select the linear solver failure strategy 'continue' "
+                             "with a solver scheme that does not iterate the Stokes equations."));
 
     prm.enter_subsection ("Solver parameters");
     {

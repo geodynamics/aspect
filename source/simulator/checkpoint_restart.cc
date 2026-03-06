@@ -750,6 +750,8 @@ namespace aspect
     ar &pre_refinement_step;
     ar &last_pressure_normalization_adjustment;
     ar &total_walltime_until_last_snapshot;
+    ar &nonlinear_solver_failures;
+    ar &linear_solver_failures;
 
     ar &statistics;
 

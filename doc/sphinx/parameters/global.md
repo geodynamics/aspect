@@ -56,6 +56,17 @@ For more information, see the section in the manual that discusses the general m
 **Documentation:** The end time of the simulation. The default value is a number so that when converted from years to seconds it is approximately equal to the largest number representable in floating point arithmetic. For all practical purposes, this equals infinity. Units: Years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Linear solver failure strategy<parameters:Linear_20solver_20failure_20strategy>`
+:name: parameters:Linear_20solver_20failure_20strategy
+**Default value:** abort
+
+**Pattern:** [Selection continue with nonlinear solver|abort ]
+
+**Documentation:** Select the strategy on what to do if the linear solver scheme fails to converge. The options are:
+&lsquo;continue with nonlinear solver&lsquo;: ignore error and continue with the nonlinear solver
+&lsquo;abort&lsquo;: abort with an error message
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Max nonlinear iterations<parameters:Max_20nonlinear_20iterations>`
 :name: parameters:Max_20nonlinear_20iterations
 **Default value:** 10
