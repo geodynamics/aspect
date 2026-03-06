@@ -97,6 +97,15 @@ jobs:
         cd doc
         export OMPI_MCA_btl="self,vader"
         ./update_parameters.sh $GITHUB_WORKSPACE/build/aspect
+        git diff > changes-parameters.diff
+    - name: archive parameter documentation results
+      uses: actions/upload-artifact@v7
+      with:
+        name: changes-parameters.diff
+        path: changes-parameters.diff
+    - name: check parameter documentation
+      run: |
+        git diff --exit-code
 
   tests:
     #linux build including tests

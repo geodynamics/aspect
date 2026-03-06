@@ -89,11 +89,12 @@ and the links are working
 - compile aspect, make sure you have a symlink in the main directory for the next step
   - make sure the WorldBuilder is using the included version
 
-- update parameters and documentation:
+- update parameters, plugin graph, and documentation:
 
   ```
-  cd doc && ./update_parameters.sh && cd sphinx && make html && cd ../.. && \
+  cd doc && ./update_parameters.sh && ./update_plugin_graph.sh && cd sphinx && make html && cd ../.. && \
   git add doc/sphinx/parameters && \
+  git add doc/sphinx/user/extending/images && \
   git commit -m "release task: update manual"
   ```
 
