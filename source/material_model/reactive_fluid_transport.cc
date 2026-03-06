@@ -191,7 +191,8 @@ namespace aspect
               for (unsigned int q=0; q<out.n_evaluation_points(); ++q)
                 {
                   const double porosity = std::max(in.composition[q][porosity_idx],0.0);
-                  out.viscosities[q] *= (1.0 - porosity) * std::exp(- alpha_phi * porosity);
+                  const double weakened_viscosity = out.viscosities[q] * (1.0 - porosity) * std::exp(- alpha_phi * porosity);
+                  out.viscosities[q] = std::max(weakened_viscosity, min_weakened_viscosity);
                 }
             }
 
@@ -377,6 +378,10 @@ namespace aspect
                              boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
                              Patterns::Double (0),
                              "Upper cutoff for the compaction viscosity. Units: $\\text{Pa}\\text{s}$.");
+          prm.declare_entry ("Minimum weakened viscosity", "1e17",
+                             Patterns::Double (0),
+                             "Lower cutoff for the viscosity of the solid phase in the presence of fluids. "
+                             "Units: $\\text{Pa}\\text{s}$.");
           prm.declare_entry ("Reference fluid viscosity", "10",
                              Patterns::Double (0),
                              "The value of the constant melt/fluid viscosity $\\eta_f$. Units: $\\text{Pa}\\text{s}$.");
@@ -448,6 +453,7 @@ namespace aspect
           shear_to_bulk_viscosity_ratio     = prm.get_double ("Shear to bulk viscosity ratio");
           max_compaction_viscosity          = prm.get_double ("Maximum compaction viscosity");
           min_compaction_viscosity          = prm.get_double ("Minimum compaction viscosity");
+          min_weakened_viscosity            = prm.get_double ("Minimum weakened viscosity");
           eta_f                             = prm.get_double ("Reference fluid viscosity");
           reference_permeability            = prm.get_double ("Reference permeability");
           alpha_phi                         = prm.get_double ("Exponential fluid weakening factor");

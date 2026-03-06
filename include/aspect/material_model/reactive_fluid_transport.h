@@ -164,6 +164,7 @@ namespace aspect
         double shear_to_bulk_viscosity_ratio;
         double min_compaction_viscosity;
         double max_compaction_viscosity;
+        double min_weakened_viscosity;
         double reference_permeability;
         double alpha_phi;
         double reference_T;

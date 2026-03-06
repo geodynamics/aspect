@@ -1,0 +1,4 @@
+Added: A parameter to the reactive fluid transport model that limits
+the amount of fluid weakening on the solid viscosity.
+<br>
+(Daniel Douglas, 2026/03/05)
