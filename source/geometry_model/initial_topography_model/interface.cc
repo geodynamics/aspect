@@ -130,20 +130,6 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
-  namespace internal
-  {
-    namespace Plugins
-    {
-      template <>
-      std::list<internal::Plugins::PluginList<InitialTopographyModel::Interface<2>>::PluginInfo> *
-      internal::Plugins::PluginList<InitialTopographyModel::Interface<2>>::plugins = nullptr;
-
-      template <>
-      std::list<internal::Plugins::PluginList<InitialTopographyModel::Interface<3>>::PluginInfo> *
-      internal::Plugins::PluginList<InitialTopographyModel::Interface<3>>::plugins = nullptr;
-    }
-  }
-
   namespace InitialTopographyModel
   {
 #define INSTANTIATE(dim) \

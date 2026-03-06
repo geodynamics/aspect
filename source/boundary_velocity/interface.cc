@@ -444,19 +444,6 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
-  namespace internal
-  {
-    namespace Plugins
-    {
-      template <>
-      std::list<internal::Plugins::PluginList<BoundaryVelocity::Interface<2>>::PluginInfo> *
-      internal::Plugins::PluginList<BoundaryVelocity::Interface<2>>::plugins = nullptr;
-      template <>
-      std::list<internal::Plugins::PluginList<BoundaryVelocity::Interface<3>>::PluginInfo> *
-      internal::Plugins::PluginList<BoundaryVelocity::Interface<3>>::plugins = nullptr;
-    }
-  }
-
   namespace BoundaryVelocity
   {
 #define INSTANTIATE(dim) \

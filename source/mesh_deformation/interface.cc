@@ -1666,19 +1666,6 @@ namespace aspect
 // explicit instantiation of the functions we implement in this file
 namespace aspect
 {
-  namespace internal
-  {
-    namespace Plugins
-    {
-      template <>
-      std::list<internal::Plugins::PluginList<MeshDeformation::Interface<2>>::PluginInfo> *
-      internal::Plugins::PluginList<MeshDeformation::Interface<2>>::plugins = nullptr;
-      template <>
-      std::list<internal::Plugins::PluginList<MeshDeformation::Interface<3>>::PluginInfo> *
-      internal::Plugins::PluginList<MeshDeformation::Interface<3>>::plugins = nullptr;
-    }
-  }
-
   namespace MeshDeformation
   {
 #define INSTANTIATE(dim) \
