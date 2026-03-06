@@ -38,7 +38,7 @@ namespace aspect
   template <int dim>
   void f(const aspect::SimulatorAccess<dim> &simulator_access,
          aspect::Assemblers::Manager<dim> &,
-         std::string averaging_parameter)
+         const std::string &averaging_parameter)
   {
 
     std::cout << std::endl << "Testing ViscoPlastic derivatives against analytical derivatives for averaging parameter " << averaging_parameter << std::endl;
@@ -126,11 +126,8 @@ namespace aspect
     // initialize the material we want to test.
     aspect::ParameterHandler prm;
 
-    const aspect::MaterialModel::ViscoPlastic<dim> &const_material_model = dynamic_cast<const aspect::MaterialModel::ViscoPlastic<dim> &>(simulator_access.get_material_model());
-    aspect::MaterialModel::ViscoPlastic<dim> &material_model = const_cast<aspect::MaterialModel::ViscoPlastic<dim> &>(const_material_model);
-
+    aspect::MaterialModel::ViscoPlastic<dim> material_model;
     material_model.declare_parameters(prm);
-
     prm.enter_subsection("Material model");
     {
       prm.enter_subsection ("Visco Plastic");
@@ -141,17 +138,17 @@ namespace aspect
       prm.leave_subsection();
     }
     prm.leave_subsection();
-
-    const_cast<aspect::MaterialModel::Interface<dim> &>(simulator_access.get_material_model()).parse_parameters(prm);
+    material_model.initialize_simulator(simulator_access.get_simulator());
+    material_model.parse_parameters(prm);
+    material_model.initialize();
 
     out_base.additional_outputs.push_back(std::make_unique<MaterialModelDerivatives<dim>> (5));
 
-    simulator_access.get_material_model().evaluate(in_base, out_base);
+    material_model.evaluate(in_base, out_base);
 
     // set up additional output for the derivatives
     const std::shared_ptr<MaterialModelDerivatives<dim>> derivatives
       = out_base.template get_additional_output_object<MaterialModelDerivatives<dim>>();
-    double temp;
 
     // have a bool so we know whether the test has succeed or not.
     bool Error = false;
@@ -164,14 +161,14 @@ namespace aspect
     in_dviscositydpressure.pressure[3] *= finite_difference_factor;
     in_dviscositydpressure.pressure[4] *= finite_difference_factor;
 
-    simulator_access.get_material_model().evaluate(in_dviscositydpressure, out_dviscositydpressure);
+    material_model.evaluate(in_dviscositydpressure, out_dviscositydpressure);
 
     for (unsigned int i = 0; i < 5; i++)
       {
         // prevent division by zero. If it is zero, the test has passed, because or
         // the finite difference and the analytical result match perfectly, or (more
         // likely) the material model in independent of this variable.
-        temp = (out_dviscositydpressure.viscosities[i] - out_base.viscosities[i]);
+        double temp = (out_dviscositydpressure.viscosities[i] - out_base.viscosities[i]);
         if (in_base.pressure[i] != 0)
           {
             temp /= (in_base.pressure[i] * finite_difference_accuracy);
@@ -203,14 +200,14 @@ namespace aspect
           }
 
 
-        simulator_access.get_material_model().evaluate(in_dviscositydstrainrate, out_dviscositydstrainrate);
+        material_model.evaluate(in_dviscositydstrainrate, out_dviscositydstrainrate);
 
         for (unsigned int i = 0; i < 5; i++)
           {
             // prevent division by zero. If it is zero, the test has passed, because or
             // the finite difference and the analytical result match perfectly, or (more
             // likely) the material model in independent of this variable.
-            temp = out_dviscositydstrainrate.viscosities[i] - out_base.viscosities[i];
+            double temp = out_dviscositydstrainrate.viscosities[i] - out_base.viscosities[i];
             if (temp != 0)
               {
                 temp /= std::fabs(in_dviscositydstrainrate.strain_rate[i][strain_rate_indices]) * finite_difference_accuracy;
@@ -240,7 +237,7 @@ namespace aspect
   template <>
   void f(const aspect::SimulatorAccess<3> &,
          aspect::Assemblers::Manager<3> &,
-         std::string )
+         const std::string &)
   {
     AssertThrow(false,dealii::ExcInternalError());
   }
@@ -268,6 +265,13 @@ namespace aspect
                                               std::placeholders::_1,
                                               std::placeholders::_2,
                                               "maximum composition"));
+    signals.set_assemblers.connect ([](const aspect::SimulatorAccess<dim> &,
+                                       aspect::Assemblers::Manager<dim> &)
+    {
+      // No need to actually run an ASPECT timestep. Goodbye.
+      std::exit(0);
+    });
+
   }
 
   ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>,
