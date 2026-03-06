@@ -219,7 +219,7 @@ namespace aspect
                       // Limit the porosity to be no smaller than 1e-8 when
                       // calculating fluid effects on viscosities.
                       porosity = std::max(porosity,1e-8);
-                      fluid_out->compaction_viscosities[q] = std::max(std::min(out.viscosities[q] * shear_to_bulk_viscosity_ratio * phi_0/porosity, max_compaction_visc), min_compaction_visc);
+                      fluid_out->compaction_viscosities[q] = std::max(std::min(out.viscosities[q] * shear_to_bulk_viscosity_ratio * phi_0/porosity, max_compaction_viscosity), min_compaction_viscosity);
                     }
                 }
             }
@@ -446,8 +446,8 @@ namespace aspect
 
           reference_rho_f                   = prm.get_double ("Reference fluid density");
           shear_to_bulk_viscosity_ratio     = prm.get_double ("Shear to bulk viscosity ratio");
-          max_compaction_visc               = prm.get_double ("Maximum compaction viscosity");
-          min_compaction_visc               = prm.get_double ("Minimum compaction viscosity");
+          max_compaction_viscosity          = prm.get_double ("Maximum compaction viscosity");
+          min_compaction_viscosity          = prm.get_double ("Minimum compaction viscosity");
           eta_f                             = prm.get_double ("Reference fluid viscosity");
           reference_permeability            = prm.get_double ("Reference permeability");
           alpha_phi                         = prm.get_double ("Exponential fluid weakening factor");
