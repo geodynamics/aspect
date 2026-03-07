@@ -371,19 +371,6 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
-  namespace internal
-  {
-    namespace Plugins
-    {
-      template <>
-      std::list<internal::Plugins::PluginList<Postprocess::Interface<2>>::PluginInfo> *
-      internal::Plugins::PluginList<Postprocess::Interface<2>>::plugins = nullptr;
-      template <>
-      std::list<internal::Plugins::PluginList<Postprocess::Interface<3>>::PluginInfo> *
-      internal::Plugins::PluginList<Postprocess::Interface<3>>::plugins = nullptr;
-    }
-  }
-
   namespace Postprocess
   {
 #define INSTANTIATE(dim) \
