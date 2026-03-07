@@ -1,0 +1,114 @@
+# This parameter file sets up a model to test the interfacing between
+# the surface processes code LandLab and ASPECT. The model prescribes
+# uniform uplift within the ASPECT model (1 cm/yr), which is then used
+# to uplift the LandLab model. The LandLab model erodes the topography
+# using Hillslope Diffusion and Stream power.
+set Dimension                              = 3
+
+
+set Use years instead of seconds           = true
+set End time                               = 2000e3
+set Maximum time step                      = 10e1
+
+
+#set Nonlinear solver scheme                = single Advection, no Stokes
+set Nonlinear solver scheme = no Advection, no Stokes
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Output directory                       = output-spherical-landlab
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+
+    set Inner radius = 3481e3
+    set Outer radius = 6371e3
+
+  end
+end
+
+# Temperature effects are ignored
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 273
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names                   = initial temperature
+end
+
+# Free slip on all boundaries
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators                    = top: Landlab
+
+  subsection Landlab
+    set MPI ranks for Landlab = 1
+    set Script name           = spherical_landlab
+    set Script argument       =
+    set Script path           =
+  end
+end
+
+# Vertical gravity
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 1
+  end
+end
+
+# One material with unity properties
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 0
+    set Viscosity                     = 1
+  end
+end
+
+# We also have to specify that we want to use the Boussinesq
+# approximation (assuming the density in the temperature
+# equation to be constant, and incompressibility).
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+# We here use a globally refined mesh without
+# adaptive mesh refinement.
+subsection Mesh refinement
+  set Initial global refinement                = 0
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, topography, velocity statistics
+
+  subsection Topography
+    set Output to file           = true
+    set Time between text output = 50e3
+  end
+
+  subsection Visualization
+    set Time between graphical output = 50e3
+    set Output mesh velocity          = true
+    set Output mesh displacement      = true
+    set Output undeformed mesh        = false
+    set Interpolate output            = false
+  end
+
+end
