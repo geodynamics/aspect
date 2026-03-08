@@ -1,0 +1,41 @@
+#########################################################
+# This is modified from the composition_passive.prm
+# parameter file by prescribing the compositional solution
+# from initial compositional fields.
+
+include $ASPECT_SOURCE_DIR/cookbooks/composition_passive/composition_passive.prm
+
+# Modify the original cookbook to end earlier
+set Start time                             = 0
+set End time                               = 0.1
+set Use years instead of seconds           = false
+
+# Modify the original cookbook to have coarser meshes
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+  set Time steps between mesh refinement = 0
+end
+
+# The next section prescribes the composition inside the domain
+# using a spatially and temporally varying function. An indicator
+# function selects the region where the composition is constrained.
+subsection Prescribed solution
+    set List of model names = initial composition
+    subsection Initial composition
+        subsection Indicator function
+            set Variable names = x, y
+            set Function expression = (x<1) ? 1:0
+        end
+    end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Interpolate output = false
+    set Time between graphical output = 0.1
+    set Output format = gnuplot
+  end
+end

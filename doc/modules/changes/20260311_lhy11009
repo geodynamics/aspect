@@ -1,0 +1,5 @@
+Added: a new instance of 'initial composition' in the prescribed solution plugin system.
+This plugin prescribes compositional fields from the initial composition model within a
+region defined by an indicator function.
+<br>
+(Haoyuan Li, 2026/03/11)
