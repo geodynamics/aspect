@@ -97,6 +97,16 @@ namespace aspect
         unsigned int n_landlab_ranks;
 
         /**
+         * The MPI communicator for the Landlab simulation.
+         */
+        MPI_Comm landlab_communicator;
+
+        /**
+         * Whether this rank is one of the ranks that runs the Landlab simulation.
+         */
+        bool this_rank_runs_landlab;
+
+        /**
          * The path to the Landlab Python module.
          */
         std::string script_path;

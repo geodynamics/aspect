@@ -1,0 +1,52 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+importing 'mesh_deformation_external_landlab_02' ...
+importing 'mesh_deformation_external_landlab_02' ...
+mesh_deformation_external_landlab_02.py
+mesh_deformation_external_landlab_02.py
+Python: comm size = 2, communication test = 2
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 64 (on 3 levels)
+Number of degrees of freedom: 3,041 (2,187+125+729)
+
+Number of mesh deformation degrees of freedom: 375
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+update_until: end_time = 0.0
+update_until: end_time = 0.0
+   Solving mesh displacement system... 0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_external_landlab_02/solution/solution-00000
+     Topography min/max:       0 m, 0 m
+
+*** Timestep 1:  t=0.0005 seconds, dt=0.0005 seconds
+update_until: end_time = 0.0005
+update_until: end_time = 0.0005
+   Solving mesh displacement system... 0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_external_landlab_02/solution/solution-00001
+     Topography min/max:       0 m, 0 m
+
+*** Timestep 2:  t=0.001 seconds, dt=0.0005 seconds
+update_until: end_time = 0.001
+update_until: end_time = 0.001
+   Solving mesh displacement system... 0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_external_landlab_02/solution/solution-00002
+     Topography min/max:       0 m, 0 m
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
