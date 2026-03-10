@@ -154,7 +154,7 @@ namespace aspect
           // outputs into the prescribed field before we assemble and solve the equation
           if (parameters.temperature_method == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
             {
-              TimerOutput::Scope timer (computing_timer, "Interpolate prescribed temperature");
+              TimerScope timer (computing_timer, "Interpolate prescribed temperature");
 
               interpolate_material_output_into_advection_field({adv_field});
 
@@ -177,7 +177,7 @@ namespace aspect
         {
           const AdvectionField adv_field (AdvectionField::temperature());
 
-          TimerOutput::Scope timer (computing_timer, "Interpolate prescribed temperature");
+          TimerScope timer (computing_timer, "Interpolate prescribed temperature");
 
           interpolate_material_output_into_advection_field({adv_field});
 
@@ -273,7 +273,7 @@ namespace aspect
               // outputs into the prescribed field before we assemble and solve the equation
               if (method == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
                 {
-                  TimerOutput::Scope timer (computing_timer, "Interpolate prescribed composition");
+                  TimerScope timer (computing_timer, "Interpolate prescribed composition");
 
                   interpolate_material_output_into_advection_field({adv_field});
 
@@ -373,7 +373,7 @@ namespace aspect
 
     if (fields_interpolated_from_material_output.size() > 0)
       {
-        TimerOutput::Scope timer (computing_timer, "Interpolate prescribed composition");
+        TimerScope timer (computing_timer, "Interpolate prescribed composition");
 
         interpolate_material_output_into_advection_field(fields_interpolated_from_material_output);
 
@@ -946,7 +946,7 @@ namespace aspect
     assemble_and_solve_composition();
 
     {
-      TimerOutput::Scope timer (computing_timer, "Interpolate Stokes solution");
+      TimerScope timer (computing_timer, "Interpolate Stokes solution");
 
       // Assign Stokes solution
       LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.system_partitioning, mpi_communicator);
@@ -1227,7 +1227,7 @@ namespace aspect
 
     // Assign Stokes solution
     {
-      TimerOutput::Scope timer (computing_timer, "Interpolate Stokes solution");
+      TimerScope timer (computing_timer, "Interpolate Stokes solution");
 
       LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.system_partitioning, mpi_communicator);
 

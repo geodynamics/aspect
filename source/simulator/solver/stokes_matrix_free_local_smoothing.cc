@@ -1984,7 +1984,7 @@ namespace aspect
   template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::build_preconditioner()
   {
-    TimerOutput::Scope timer (this->get_computing_timer(), "Build Stokes preconditioner");
+    TimerScope timer (this->get_computing_timer(), "Build Stokes preconditioner");
 
     for (unsigned int level=0; level < this->get_triangulation().n_global_levels(); ++level)
       {

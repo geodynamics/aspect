@@ -34,7 +34,7 @@ namespace aspect
 
     LinearAlgebra::BlockVector initial_solution;
 
-    TimerOutput::Scope timer (sim.computing_timer, "Reconstruct VolumeOfFluid interfaces");
+    TimerScope timer (sim.computing_timer, "Reconstruct VolumeOfFluid interfaces");
 
     initial_solution.reinit(sim.system_rhs, false);
 
@@ -432,7 +432,7 @@ namespace aspect
 
     LinearAlgebra::BlockVector initial_solution;
 
-    TimerOutput::Scope timer (sim.computing_timer, "Compute VolumeOfFluid compositions");
+    TimerScope timer (sim.computing_timer, "Compute VolumeOfFluid compositions");
 
     initial_solution.reinit(sim.system_rhs, false);
 

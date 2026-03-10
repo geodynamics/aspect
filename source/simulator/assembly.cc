@@ -472,7 +472,7 @@ namespace aspect
     else
       AssertThrow(false, ExcNotImplemented());
 
-    TimerOutput::Scope timer (computing_timer, "Build Stokes preconditioner");
+    TimerScope timer (computing_timer, "Build Stokes preconditioner");
     pcout << "   Rebuilding Stokes preconditioner..." << std::flush;
 
     // first assemble the raw matrices necessary for the preconditioner
@@ -770,8 +770,8 @@ namespace aspect
         timer_section_name += " rhs";
       }
 
-    TimerOutput::Scope timer (computing_timer,
-                              timer_section_name);
+    TimerScope timer (computing_timer,
+                      timer_section_name);
 
     if (rebuild_stokes_matrix == true)
       system_matrix = 0;
@@ -901,9 +901,9 @@ namespace aspect
                                                  LinearAlgebra::PreconditionILU &preconditioner,
                                                  const double diagonal_strengthening)
   {
-    TimerOutput::Scope timer (computing_timer, (advection_field.is_temperature() ?
-                                                "Build temperature preconditioner" :
-                                                "Build composition preconditioner"));
+    TimerScope timer (computing_timer, (advection_field.is_temperature() ?
+                                        "Build temperature preconditioner" :
+                                        "Build composition preconditioner"));
 
     const unsigned int block_idx = advection_field.block_index(introspection);
 
@@ -1215,9 +1215,9 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::assemble_advection_system (const AdvectionField &advection_field)
   {
-    TimerOutput::Scope timer (computing_timer, (advection_field.is_temperature() ?
-                                                "Assemble temperature system" :
-                                                "Assemble composition system"));
+    TimerScope timer (computing_timer, (advection_field.is_temperature() ?
+                                        "Assemble temperature system" :
+                                        "Assemble composition system"));
 
     const unsigned int block_idx = advection_field.block_index(introspection);
     const unsigned int sparsity_block_idx = advection_field.sparsity_pattern_block_index(introspection);

@@ -1607,7 +1607,7 @@ namespace aspect
     if (time_step == 0)
       return;
 
-    TimerOutput::Scope timer (computing_timer, "Solve composition reactions");
+    TimerScope timer (computing_timer, "Solve composition reactions");
 
     // we need some temporary vectors to store our updates to composition and temperature in
     // while we do the time stepping, before we copy them over to the solution vector in the end

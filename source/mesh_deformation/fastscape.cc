@@ -316,7 +316,7 @@ namespace aspect
       if (this->get_timestep_number() == 0)
         return;
 
-      TimerOutput::Scope timer_section(this->get_computing_timer(), "FastScape plugin");
+      TimerScope timer_section(this->get_computing_timer(), "FastScape plugin");
 
       const unsigned int current_timestep = this->get_timestep_number ();
       const double aspect_timestep_in_years = this->get_timestep() / year_in_seconds;
@@ -891,7 +891,7 @@ namespace aspect
               ExcInternalError());
 
 
-      TimerOutput::Scope timer_section(this->get_computing_timer(), "Execute FastScape");
+      TimerScope timer_section(this->get_computing_timer(), "Execute FastScape");
 
       // Because on the first timestep we will create an initial VTK file before running FastScape
       // and a second after, we first set the visualization step to zero.

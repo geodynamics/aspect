@@ -538,7 +538,7 @@ namespace aspect
                                                                    const unsigned int dir,
                                                                    const bool update_from_old)
   {
-    TimerOutput::Scope timer (sim.computing_timer, "Assemble volume of fluid system");
+    TimerScope timer (sim.computing_timer, "Assemble volume of fluid system");
 
     const unsigned int block0_idx = field_struct_for_field_index(0).volume_fraction.block_index;
     const unsigned int block_idx = field.volume_fraction.block_index;

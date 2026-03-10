@@ -33,7 +33,7 @@ namespace aspect
   {
     const unsigned int block_idx = field.volume_fraction.block_index;
 
-    TimerOutput::Scope timer (sim.computing_timer, "Solve volume of fluid system");
+    TimerScope timer (sim.computing_timer, "Solve volume of fluid system");
     this->get_pcout() << "   Solving volume of fluid system... " << std::flush;
 
     const double tolerance = std::max(1e-50,

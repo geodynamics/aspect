@@ -444,9 +444,9 @@ namespace aspect
     // first build without diagonal strengthening:
     build_advection_preconditioner(advection_field, preconditioner, 0.);
 
-    TimerOutput::Scope timer (computing_timer, (advection_field.is_temperature() ?
-                                                "Solve temperature system" :
-                                                "Solve composition system"));
+    TimerScope timer (computing_timer, (advection_field.is_temperature() ?
+                                        "Solve temperature system" :
+                                        "Solve composition system"));
     if (advection_field.is_temperature())
       {
         pcout << "   Solving temperature system... " << std::flush;
@@ -564,7 +564,7 @@ namespace aspect
   std::pair<double,double>
   Simulator<dim>::solve_stokes (LinearAlgebra::BlockVector &solution_vector)
   {
-    TimerOutput::Scope timer (computing_timer, "Solve Stokes system");
+    TimerScope timer (computing_timer, "Solve Stokes system");
 
     const std::string name = [&]() -> std::string
     {

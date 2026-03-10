@@ -253,7 +253,7 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::interpolate_particle_properties (const std::vector<AdvectionField> &advection_fields)
   {
-    TimerOutput::Scope timer (computing_timer, "Particles: Interpolate");
+    TimerScope timer (computing_timer, "Particles: Interpolate");
 
     // below, we would want to call VectorTools::interpolate on the
     // entire FESystem. there currently is no way to restrict the

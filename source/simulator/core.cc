@@ -270,7 +270,7 @@ namespace aspect
       }
 
     // now that we have output set up, we can start timer sections
-    TimerOutput::Scope timer (computing_timer, "Initialization");
+    TimerScope timer (computing_timer, "Initialization");
 
 
     // if any plugin wants access to the Simulator by deriving from SimulatorAccess, initialize it and
@@ -655,7 +655,7 @@ namespace aspect
     // constraints. Of course we need to force assembly too.
     if (rebuild_sparsity_and_matrices)
       {
-        TimerOutput::Scope timer (computing_timer, "Setup matrices");
+        TimerScope timer (computing_timer, "Setup matrices");
 
         rebuild_sparsity_and_matrices = false;
         setup_system_matrix (introspection.index_sets.system_partitioning);
@@ -1468,7 +1468,7 @@ namespace aspect
   {
     signals.edit_parameters_pre_setup_dofs(*this, parameters);
 
-    TimerOutput::Scope timer (computing_timer, "Setup dof systems");
+    TimerScope timer (computing_timer, "Setup dof systems");
 
     dof_handler.distribute_dofs(finite_element);
 
@@ -1649,7 +1649,7 @@ namespace aspect
   void
   Simulator<dim>::postprocess ()
   {
-    TimerOutput::Scope timer (computing_timer, "Postprocessing");
+    TimerScope timer (computing_timer, "Postprocessing");
     pcout << "   Postprocessing:" << std::endl;
 
     // run all the postprocessing routines and then write
@@ -1707,7 +1707,7 @@ namespace aspect
 
 
     {
-      TimerOutput::Scope timer (computing_timer, "Refine mesh structure, part 1");
+      TimerScope timer (computing_timer, "Refine mesh structure, part 1");
 
       Vector<float> estimated_error_per_cell (triangulation.n_active_cells());
       mesh_refinement_manager.execute (estimated_error_per_cell);
@@ -1823,7 +1823,7 @@ namespace aspect
     setup_dofs ();
 
     {
-      TimerOutput::Scope timer (computing_timer, "Refine mesh structure, part 2");
+      TimerScope timer (computing_timer, "Refine mesh structure, part 2");
 
       LinearAlgebra::BlockVector distributed_system;
       LinearAlgebra::BlockVector old_distributed_system;
@@ -2180,7 +2180,7 @@ namespace aspect
 
     if (parameters.resume_computation == false)
       {
-        TimerOutput::Scope timer (computing_timer, "Setup initial conditions");
+        TimerScope timer (computing_timer, "Setup initial conditions");
 
         timestep_number           = 0;
         time_step = old_time_step = 0;

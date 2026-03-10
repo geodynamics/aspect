@@ -563,7 +563,7 @@ namespace aspect
     {
       AssertThrow(sim.parameters.mesh_deformation_enabled, ExcInternalError());
 
-      TimerOutput::Scope timer (sim.computing_timer, "Mesh deformation");
+      TimerScope timer (sim.computing_timer, "Mesh deformation");
 
       old_mesh_displacements = mesh_displacements;
 
@@ -1558,7 +1558,7 @@ namespace aspect
       if (this->simulator_is_past_initialization() == false ||
           this->get_timestep_number() == 0)
         {
-          TimerOutput::Scope timer (sim.computing_timer, "Mesh deformation initialize");
+          TimerScope timer (sim.computing_timer, "Mesh deformation initialize");
 
           make_initial_constraints();
           if (this->is_stokes_matrix_free())

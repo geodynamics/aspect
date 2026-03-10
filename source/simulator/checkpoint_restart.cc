@@ -251,7 +251,7 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::create_snapshot()
   {
-    TimerOutput::Scope timer (computing_timer, "Create snapshot");
+    TimerScope timer (computing_timer, "Create snapshot");
 
     // Take elapsed time from timer so that we can serialize it:
     total_walltime_until_last_snapshot += wall_timer.wall_time();
