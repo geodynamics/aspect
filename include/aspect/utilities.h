@@ -32,6 +32,7 @@
 #include <deal.II/base/function_lib.h>
 #include <deal.II/dofs/dof_handler.h>
 #include <deal.II/fe/component_mask.h>
+#include <deal.II/lac/solver_control.h>
 
 #include <aspect/coordinate_systems.h>
 #include <aspect/structured_data.h>

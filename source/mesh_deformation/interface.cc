@@ -26,6 +26,7 @@
 #include <aspect/simulator.h>
 #include <aspect/simulator/solver/matrix_free_operators.h>
 #include <aspect/simulator/solver/stokes_matrix_free.h>
+#include <aspect/linear_algebra_types.h>
 
 #include <deal.II/dofs/dof_renumbering.h>
 #include <deal.II/dofs/dof_accessor.h>
