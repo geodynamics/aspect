@@ -39,6 +39,7 @@
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 #include <aspect/material_model/rheology/elasticity.h>
 #include <aspect/time_stepping/repeat_on_nonlinear_fail.h>
+#include <aspect/linear_algebra_types.h>
 
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
