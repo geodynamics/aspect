@@ -344,15 +344,6 @@ namespace aspect
                 melt_out->compaction_viscosities[i] *= visc_temperature_dependence;
               }
           }
-
-        if (this->include_melt_transport() && in.requests_property(MaterialProperties::viscosity))
-          {
-            for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
-              {
-                const double porosity = std::min(1.0, std::max(in.composition[i][porosity_idx],0.0));
-                out.viscosities[i] *= std::exp(- alpha_phi * porosity);
-              }
-          }
       }
 
 

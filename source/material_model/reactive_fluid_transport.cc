@@ -180,22 +180,22 @@ namespace aspect
     {
       base_model->evaluate(in,out);
 
+      const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+
+      // Modify the viscosity from the base model based on the presence of fluid.
+      if (in.requests_property(MaterialProperties::viscosity))
+        {
+          // Scale the base model viscosity value based on the porosity.
+          for (unsigned int q=0; q<out.n_evaluation_points(); ++q)
+            {
+              const double porosity = std::max(in.composition[q][porosity_idx],0.0);
+              const double weakened_viscosity = out.viscosities[q] * (1.0 - porosity) * std::exp(- alpha_phi * porosity);
+              out.viscosities[q] = std::max(weakened_viscosity, min_weakened_viscosity);
+            }
+        }
+
       if (fluid_solid_reaction_scheme != katz2003)
         {
-          const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-
-          // Modify the viscosity from the base model based on the presence of fluid.
-          if (in.requests_property(MaterialProperties::viscosity))
-            {
-              // Scale the base model viscosity value based on the porosity.
-              for (unsigned int q=0; q<out.n_evaluation_points(); ++q)
-                {
-                  const double porosity = std::max(in.composition[q][porosity_idx],0.0);
-                  const double weakened_viscosity = out.viscosities[q] * (1.0 - porosity) * std::exp(- alpha_phi * porosity);
-                  out.viscosities[q] = std::max(weakened_viscosity, min_weakened_viscosity);
-                }
-            }
-
           // Fill the melt outputs if they exist. Note that the MeltOutputs class was originally
           // designed for two-phase flow material models in ASPECT that model the flow of melt,
           // but can be reused for a geofluid of arbitrary composition.
