@@ -15,7 +15,7 @@ developers are:
 * Daniel Douglas (Boston College, USA)
 * Menno Fraters (University of Graz, Austria)
 * Rene Gassmoeller (GEOMAR Helmholtz Centre for Ocean Research, Germany)
-* Anne Glerum (Geoforschungszentrum Potsdam, Germany)
+* Anne Glerum (GFZ Helmholtz Centre for Geosciences, Germany)
 * Timo Heister (Clemson University, USA)
 * Bob Myhill (University of Bristol, UK)
 * John Naliboff (New Mexico Tech, USA)
