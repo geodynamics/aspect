@@ -102,7 +102,7 @@ jobs:
       uses: actions/upload-artifact@v7
       with:
         name: changes-parameters.diff
-        path: changes-parameters.diff
+        path: doc/changes-parameters.diff
     - name: check parameter documentation
       run: |
         git diff --exit-code
