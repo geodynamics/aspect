@@ -878,17 +878,13 @@ namespace aspect
      * this in the Newton paper (Fraters et al., Geophysical Journal
      * International, 2019) where we derived a factor of
      * $\frac{2\eta(\varepsilon(\mathbf u))}{\left[1-\frac{b:a}{\|a\| \|b\|} \right]^2\|a\|\|b\|}$,
-     * which we reset to a maximum of one, and if it is smaller then one,
+     * which we reset to a maximum of one, and if it is smaller than one,
      * a safety_factor scales the value to make sure that 1-alpha won't get to
      * close to zero. However, as later pointed out by Yimin Jin, the computation
      * is wrong, see https://github.com/geodynamics/aspect/issues/5555. Instead,
      * the function now computes the factor as
-     * $(2 \eta) / (a:b + b:a)$, again capped at a maximal value of 1,
-     * and using a safety factor from below.
-     *
-     * In practice, $a$ and $b$ are almost always parallel to each other,
-     * and $a:b + b:a = 2a:b$, in which case one can drop the factor
-     * of $2$ everywhere in the computations.
+     * $\frac{2\eta(\varepsilon(\mathbf u))}{\left[1-\frac{b:a}{\|a\| \|b\|} \right]\|a\|\|b\|}$,
+     * again capped at a maximal value of 1, and using a safety factor from below.
      */
     template <int dim>
     double compute_spd_factor(const double eta,
