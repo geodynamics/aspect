@@ -32,6 +32,7 @@
 #include <deal.II/base/function_lib.h>
 #include <deal.II/dofs/dof_handler.h>
 #include <deal.II/fe/component_mask.h>
+#include <deal.II/numerics/kdtree.h>
 
 #include <aspect/coordinate_systems.h>
 #include <aspect/structured_data.h>
@@ -799,6 +800,140 @@ namespace aspect
      * entries.
      */
     bool has_unique_entries (const std::vector<std::string> &strings);
+
+
+
+
+    /**
+     * UnstructuredDataLookup reads in files containing input data in ascii format.
+     * Note the required format of the input data: The first lines may contain
+     * any number of comments if they begin with '#', but one of these lines
+     * needs to contain the number of columns and lines in the file:
+     * '#POINTS: TOTALNUMBERDATALINES NUMBERCOORDCOLUMNS NUMBERDATACOLUMNS'.
+     * For example '# POINTS: 5 4 3' would be 5 lines of data, 4 columns of coordinates,
+     * and 3 columns of data. The comments can optionally be followed by a
+     * single line, which does not start with '#', containing the names of
+     * the data columns.
+     * The order of the following data columns has to be
+     * 'coordinates data' with @p querydim coordinate columns and @p components
+     * data columns. @p querydim and @p components need to
+     * match NUMBERCOORDCOLUMNS NUMBERDATACOLUMNS, respectivily.
+     * The coordinates do not need to be equidistant.
+     */
+    template <int querydim>
+    class UnstructuredDataLookup
+    {
+      public:
+
+        /**
+         * The following are member variables and functions of the class
+         */
+        unsigned int n_data_files;
+
+        std::vector< Point<querydim> > coordinate_values;
+
+        std::vector< std::vector<double> > data;
+
+
+        // Create an instance of a kdtree object as a member variable of the class
+        KDTree<querydim> coordinate_kdtree;
+
+
+        virtual void initialize (const MPI_Comm &comm,
+                                 std::string datadirectory,
+                                 std::vector<std::string> file_name_list);
+
+
+
+        /**
+         * Constructor that explicitly prescribes the number of data columns
+         * in the data file. If a list of data components is provided in the
+         * data file it is checked that the length of this list is consistent
+         * with this number of components. This constructor is mostly provided
+         * for backwards compatibility. Not prescribing the number of components
+         * and instead reading them from the input file allows for more
+         * flexible files.
+         */
+        UnstructuredDataLookup(const unsigned int components);
+
+        /**
+         * This constructor relies on the list of column names at the beginning
+         * of the model file to determine the number of data components,
+         * therefore when using this constructor it is necessary to provide
+         * this list in the first uncommented line of the data file.
+         */
+        UnstructuredDataLookup();
+
+        /**
+         * Loads a data text file. Throws an exception if the file does not
+         * exist, if the data file format is incorrect or if the file grid
+         * changes over model runtime.
+         */
+        void
+        load_file(const std::string &filename,
+                  const MPI_Comm &communicator);
+
+
+        /**
+         * Returns the data (e.g., velocity, temperature, etc. - according
+         * to the used plugin) for the n closest points to the target point.
+         * The function returns a vector of pairs of < data_return , Euclidean distance >,
+         * where data_return is a vector containing all the data properties
+         * associated with a single line in the file -- all the data columns.
+         * The Euclidean distance is the distance that the data points
+         * are from the target point.
+         */
+        std::vector< std::pair<std::vector<double>, double> >
+        get_data (const Point<querydim> &target_point, const unsigned int n_points) const;
+
+        /**
+         * Returns a vector that contains the names of all data columns in the
+         * order of their appearance in the data file (and their order in the
+         * memory data table). Returns an empty vector if no names are provided
+         * or the file is not read in yet.
+         */
+        std::vector<std::string>
+        get_column_names() const;
+
+        /**
+         * Returns the column index of a column with the given name
+         * @p column_name. Throws an exception if no such
+         * column exists or no names were provided in the file.
+         */
+        unsigned int
+        get_column_index_from_name(const std::string &column_name) const;
+
+        /**
+         * Returns a string that contains the name of the column with index
+         * @p column_index. Throws an exception if no such
+         * column exists or no name was provided in the file.
+         */
+        std::string
+        get_column_name_from_index(const unsigned int column_index) const;
+
+
+      private:
+        /**
+         * The number of data components read in (=columns in the data file).
+         */
+        unsigned int components;
+
+        /**
+         * The names of the data components in the columns of the read file.
+         * Does not contain any strings if none are provided in the first
+         * uncommented line of the file.
+         */
+        std::vector<std::string> data_component_names;
+
+        /**
+         * Number of points in the data as specified in the data file.
+         * This is declared in the header as "#POINTS:", and
+         * must have three compnents:
+         * TOTAL_NUMBER_DATA_LINES NUMBER_COORD_COLUMNS NUMBER_DATA_COLUMNS.
+         */
+        std::vector<int> point_dimensions;
+
+    };
 
 
 
