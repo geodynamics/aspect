@@ -232,7 +232,15 @@ namespace aspect
 
           const ArrayView<const double> data = PythonHelper::numpy_to_array_view(pValue);
           for (size_t i=0; i<data.size(); ++i)
-            velocities[i][dim-1] = data[i];
+            {
+              const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(this->evaluation_points[i]);
+
+              Tensor<1,dim> topography_direction;
+              if (gravity.norm() > 0.0)
+                topography_direction = -gravity / gravity.norm();
+
+              velocities[i] = topography_direction * data[i];
+            }
 
           Py_DECREF(pValue);
         }
@@ -246,6 +254,7 @@ namespace aspect
         //const auto &mapping = this->get_mapping();
         std::vector<Point<dim>> real_evaluation_points(this->evaluation_points.size());
         std::vector<std::vector<double>> data(this->evaluation_points.size(), std::vector<double>(dim, 0.0));
+
         for (unsigned int i=0; i<this->evaluation_points.size(); ++i)
           {
             real_evaluation_points[i] = this->evaluation_points[i];  // TODO: use mapping to compute real position
@@ -289,15 +298,19 @@ namespace aspect
       std::vector<Tensor<1,dim>> initial_deformation(this->evaluation_points.size(), Tensor<1,dim>());
       if (this_rank_runs_landlab)
         {
-          Tensor<1,dim> topography_direction;
-          topography_direction[dim-1] = 1.0;
-
           PyObject *pArgs = PyTuple_Pack(1, PyLong_FromLong(-1L));
           PyObject *pValue = call_python_function(pModule, "get_initial_topography", pArgs);
           Py_DECREF(pArgs);
           ArrayView<double> data = PythonHelper::numpy_to_array_view(pValue);
           for (size_t i=0; i<data.size(); ++i)
-            initial_deformation[i] = data[i] * topography_direction;
+            {
+              const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(this->evaluation_points[i]);
+              Tensor<1,dim> topography_direction;
+              if (gravity.norm() > 0.0)
+                topography_direction = -gravity / gravity.norm();
+
+              initial_deformation[i] = data[i] * topography_direction;
+            }
           Py_DECREF(pValue);
         }
 
