@@ -1,4 +1,13 @@
-The Geodynamic World Builder is currently maintained and developed by Menno Fraters. 
+The development of the Geodynamic World Builder is currently lead by Menno Fraters.
+
+The following people currently serve as GWB developers -- people who have and are providing substantial technical contributions to the Geodynamic World Builder:
+
+- Juliane Dannberg (GEOMAR Helmholtz Centre for Ocean Research, Germany)
+- Daniel Douglas (Boston College, USA)
+- Menno Fraters (University of Graz, Austria)
+- Rene Gassmoeller (GEOMAR Helmholtz Centre for Ocean Research, Germany)
+- Timo Heister (Clemson University, USA)
+- Arushi Saxena (UC Davis, USA)
 
 There have been contributions on the development from:
   Wolfgang Bangerth,
@@ -8,9 +17,11 @@ There have been contributions on the development from:
   Rebecca Fildes,
   Rene Gassmoeller,
   Timo Heister,
+  Oliver Henke-Seemann,
   Lorraine Hwang,
   Haoyuan Li,
   Chris Mills,
+  Sabatino Santangelo,
   Arushi Saxena,
   Wim Spakman,
   Cedric Thieulot 

@@ -1,5 +1,5 @@
 World Builder Grid Visualization tool.
-This program loads a world builder file and generates a visualization on a structured grid based on information specified in a separate .grid configuration file.
+This program loads a World Builder file and generates a visualization on a structured grid based on information specified in a separate .grid configuration file.
 
 Usage:
 (..path..)bin/gwb-grid [-j N] [--filtered] [--by-tag] example.wb example.grid

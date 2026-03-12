@@ -1,0 +1,12 @@
+{
+  "version":"1.1",
+  "features":
+  [
+    {"model":"continental plate", "name":"plate", "coordinates":[[-1e3,-1e3],[201e3,-1e3],[201e3,201e3],[-1e3,201e3]],
+     "temperature models":[
+      {"model":"chapman", "max depth":20e3, "top temperature":293.15, "top heat flux":0.055, "thermal conductivity":2.5, "heat generation per unit volume":1e-6}, 
+      {"model":"chapman", "min depth":20e3, "max depth":40e3, "top temperature":653.15, "top heat flux":0.035, "thermal conductivity":2.5, "heat generation per unit volume":0.4e-6}, 
+      {"model":"chapman", "min depth":40e3, "max depth":120e3, "top temperature":901.15, "top heat flux":0.027, "thermal conductivity":3.0, "heat generation per unit volume":0.02e-6}]
+    }
+  ]
+}

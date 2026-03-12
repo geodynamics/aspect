@@ -165,18 +165,18 @@ namespace WorldBuilder
      * register it. Because this is a library, we need some extra measures
      * to ensure that the static variable is actually initialized.
      */
-#define WB_REGISTER_COORDINATE_SYSTEM(klass,name) \
-  class klass##Factory : public ObjectFactory { \
+#define WB_REGISTER_COORDINATE_SYSTEM(classname,name) \
+  class classname##Factory : public ObjectFactory { \
     public: \
-      klass##Factory() \
+      classname##Factory() \
       { \
-        Interface::registerType(#name, klass::declare_entries, this); \
+        Interface::registerType(#name, classname::declare_entries, this); \
       } \
       std::unique_ptr<Interface> create(World *world) override final { \
-        return std::unique_ptr<Interface>(new klass(world)); \
+        return std::unique_ptr<Interface>(new classname(world)); \
       } \
   }; \
-  static klass##Factory global_##klass##Factory;
+  static classname##Factory global_##classname##Factory;
 
   } // namespace CoordinateSystems
 } // namespace WorldBuilder

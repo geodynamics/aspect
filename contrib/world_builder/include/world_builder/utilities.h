@@ -70,6 +70,17 @@ namespace WorldBuilder
     polygon_contains_point_implementation(const std::vector<Point<2> > &point_list,
                                           const Point<2> &point);
 
+    /**
+     * computes Bary center of a polygon.
+     */
+    Point<2> polygon_bary_center(const std::vector<Point<2> > &point_list);
+
+    /**
+     * return a vector with a polygon where the points have been scaled according to
+     * the provided scaling factor.
+     */
+    std::vector<Point<2>> get_scaled_polygon(const std::vector<Point<2>> &polygon, double scaling_factor);
+
 
     /**
      * Given a 2d point, a semi-major axis, and an eccentricity, computes where
@@ -386,7 +397,7 @@ namespace WorldBuilder
      * when determining the location with respect to the curved plane.
      * \param spline_x the spline representing the x coordinate.
      * \param spline_y the spline representing the y coordinate.
-     * \param global_x_list This is a list of one dimensional coorindates, with zero or the
+     * \param global_x_list This is a list of one dimensional coordinates, with zero or the
      * amount of coordinates entries, used for interpolation. An empty list is interpreted
      * as a list filled with {0,1,2,...,number of coordinates}. Filling this list with other
      * values changes the returned section fraction. It allows for, for example, adding

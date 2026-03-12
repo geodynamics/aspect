@@ -40,6 +40,10 @@ namespace WorldBuilder
       {
         class Interface;
       }  // namespace Temperature
+      namespace Velocity
+      {
+        class Interface;
+      }  // namespace Velocity
     }  // namespace FaultModels
     namespace SubductingPlateModels
     {
@@ -55,6 +59,10 @@ namespace WorldBuilder
       {
         class Interface;
       }  // namespace Temperature
+      namespace Velocity
+      {
+        class Interface;
+      }  // namespace Velocity
     }  // namespace SubductingPlateModels
   }  // namespace Features
 
@@ -62,14 +70,15 @@ namespace WorldBuilder
   namespace Objects
   {
     // todo update function
-    template<class A, class B, class C>
-    Segment<A,B,C>::Segment(const double default_length_,
-                            const WorldBuilder::Point<2> &default_thickness_,
-                            const WorldBuilder::Point<2> &default_top_truncation_,
-                            const WorldBuilder::Point<2> &default_angle_,
-                            const std::vector<std::shared_ptr<A> > temperature_systems_,
-                            const std::vector<std::shared_ptr<B> > composition_systems_,
-                            const std::vector<std::shared_ptr<C> > grains_systems_)
+    template<class A, class B, class C, class D>
+    Segment<A,B,C,D>::Segment(const double default_length_,
+                              const WorldBuilder::Point<2> &default_thickness_,
+                              const WorldBuilder::Point<2> &default_top_truncation_,
+                              const WorldBuilder::Point<2> &default_angle_,
+                              const std::vector<std::shared_ptr<A> > temperature_systems_,
+                              const std::vector<std::shared_ptr<B> > composition_systems_,
+                              const std::vector<std::shared_ptr<C> > grains_systems_,
+                              const std::vector<std::shared_ptr<D> > velocity_systems_)
       :
       value_length(default_length_),
       default_length(default_length_),
@@ -78,12 +87,13 @@ namespace WorldBuilder
       value_angle(default_angle_),
       temperature_systems(std::move(temperature_systems_)),
       composition_systems(std::move(composition_systems_)),
-      grains_systems(std::move(grains_systems_))
+      grains_systems(std::move(grains_systems_)),
+      velocity_systems(std::move(velocity_systems_))
     {
     }
 
-    template<class A, class B, class C>
-    Segment<A,B,C>::Segment(Segment const &other)
+    template<class A, class B, class C, class D>
+    Segment<A,B,C,D>::Segment(Segment const &other)
       :
       value_length(other.value_length),
       default_length(other.default_length),
@@ -92,12 +102,13 @@ namespace WorldBuilder
       value_angle(other.value_angle),
       temperature_systems(other.temperature_systems),
       composition_systems(other.composition_systems),
-      grains_systems(other.grains_systems)
+      grains_systems(other.grains_systems),
+      velocity_systems(other.velocity_systems)
     {
     }
 
-    template<class A, class B, class C>
-    Segment<A,B,C>::~Segment ()
+    template<class A, class B, class C, class D>
+    Segment<A,B,C,D>::~Segment ()
       = default;
 
 
@@ -106,14 +117,14 @@ namespace WorldBuilder
     * Note that the variable with this name has to be loaded before this function is called.
     */
     template class
-    Segment<Features::SubductingPlateModels::Temperature::Interface,Features::SubductingPlateModels::Composition::Interface,Features::SubductingPlateModels::Grains::Interface>;
+    Segment<Features::SubductingPlateModels::Temperature::Interface,Features::SubductingPlateModels::Composition::Interface,Features::SubductingPlateModels::Grains::Interface,Features::SubductingPlateModels::Velocity::Interface>;
 
     /**
     * Todo: Returns a vector of pointers to the Point<3> Type based on the provided name.
     * Note that the variable with this name has to be loaded before this function is called.
     */
     template class
-    Segment<Features::FaultModels::Temperature::Interface,Features::FaultModels::Composition::Interface,Features::FaultModels::Grains::Interface>;
+    Segment<Features::FaultModels::Temperature::Interface,Features::FaultModels::Composition::Interface,Features::FaultModels::Grains::Interface,Features::FaultModels::Velocity::Interface>;
 
     /**
     * Todo: Returns a vector of pointers to the Point<3> Type based on the provided name.

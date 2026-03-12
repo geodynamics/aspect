@@ -19,7 +19,9 @@
 
 #include "world_builder/wrapper_c.h"
 
+#include "world_builder/assert.h"
 #include "world_builder/world.h"
+#include <vector>
 
 extern "C" {
   /**
@@ -27,7 +29,9 @@ extern "C" {
    * to it. This pointer can then be used to call the temperature and composition
    * functions. When done call the release world function to destroy the object.
    */
-  void create_world(void **ptr_ptr_world, const char *world_builder_file, const bool *has_output_dir_, const char *output_dir_, const unsigned long random_number_seed)
+  void create_world(void **ptr_ptr_world, const char *world_builder_file,
+                    const bool *has_output_dir_, const char *output_dir_,
+                    const unsigned long random_number_seed)
   {
     bool has_output_dir = false;
 
@@ -42,67 +46,135 @@ extern "C" {
         output_dir = *output_dir_;
       }
 
-    WorldBuilder::World *a = new WorldBuilder::World(std::string(world_builder_file), has_output_dir, output_dir,random_number_seed);
+    WorldBuilder::World *a =
+      new WorldBuilder::World(std::string(world_builder_file), has_output_dir,
+                              output_dir, random_number_seed);
 
     *ptr_ptr_world = reinterpret_cast<void *>(a);
   }
 
-
-  /**
-   * This function return the temperature at a specific location given x, z, depth and
-   * gravity.
-   */
-  void temperature_2d(void *ptr_ptr_world, double x, double z, double depth, double *temperature)
+  unsigned int properties_output_size(void *ptr_ptr_world,const unsigned int properties_[][3],
+                                      const unsigned int n_properties)
   {
-    WorldBuilder::World *a = reinterpret_cast<WorldBuilder::World *>(ptr_ptr_world);
-    const std::array<double,2> position = {{x,z}};
-    *temperature = a->temperature(position,depth);
+    WorldBuilder::World *a =
+      reinterpret_cast<WorldBuilder::World *>(ptr_ptr_world);
+    std::vector<std::array<unsigned int, 3>> properties(n_properties);
+    for (size_t i = 0; i < n_properties; ++i)
+      {
+        properties[i][0] = properties_[i][0];
+        properties[i][1] = properties_[i][1];
+        properties[i][2] = properties_[i][2];
+      }
+    return a->properties_output_size(properties);
   }
 
+  void properties_2d(void *ptr_ptr_world, const double x, const double z,
+                     const double depth, const unsigned int properties_[][3],
+                     const unsigned int n_properties, double values[])
+  {
+    WorldBuilder::World *a =
+      reinterpret_cast<WorldBuilder::World *>(ptr_ptr_world);
+    const std::array<double, 2> position = {{x, z}};
+    std::vector<std::array<unsigned int, 3>> properties(n_properties);
+    for (size_t i = 0; i < n_properties; ++i)
+      {
+        properties[i][0] = properties_[i][0];
+        properties[i][1] = properties_[i][1];
+        properties[i][2] = properties_[i][2];
+      }
+    std::vector<double> returned_values = a->properties(position, depth, properties);
+    for (unsigned i = 0; i < returned_values.size(); ++i)
+      {
+        values[i] = returned_values[i];
+      }
+  }
 
-  /**
-   * This function return the temperature at a specific location given x, y, z, depth and
-   * gravity.
-   */
-  void temperature_3d(void *ptr_ptr_world, double x, double y, double z, double depth, double *temperature)
+  void properties_3d(void *ptr_ptr_world,
+                     const double x,
+                     const double y,
+                     const double z,
+                     const double depth,
+                     const unsigned int properties_[][3],
+                     const unsigned int n_properties,
+                     double values[])
   {
     WorldBuilder::World *a = reinterpret_cast<WorldBuilder::World *>(ptr_ptr_world);
     const std::array<double,3> position = {{x,y,z}};
-    *temperature = a->temperature(position,depth);
+    std::vector<std::array<unsigned int,3>> properties(n_properties);
+    for (size_t i = 0; i < n_properties; ++i)
+      {
+        properties[i][0] = properties_[i][0];
+        properties[i][1] = properties_[i][1];
+        properties[i][2] = properties_[i][2];
+      }
+    std::vector<double> returned_values = a->properties(position, depth, properties);
+    for (unsigned i = 0; i < returned_values.size(); ++i)
+      {
+        values[i] = returned_values[i];
+      }
   }
 
-
   /**
-   * This function return the composition at a specific location given x, z, depth and
-   * composition number.
+   * This function return the temperature at a specific location given x, z, depth
+   * and gravity.
    */
-  void composition_2d(void *ptr_ptr_world, double x, double z, double depth, unsigned int composition_number, double *composition)
+  void temperature_2d(void *ptr_ptr_world, double x, double z, double depth,
+                      double *temperature)
   {
-    WorldBuilder::World *a = reinterpret_cast<WorldBuilder::World *>(ptr_ptr_world);
-    const std::array<double,2> position = {{x,z}};
-    *composition = a->composition(position,depth,composition_number);
+    WorldBuilder::World *a =
+      reinterpret_cast<WorldBuilder::World *>(ptr_ptr_world);
+    const std::array<double, 2> position = {{x, z}};
+    *temperature = a->temperature(position, depth);
   }
 
-
   /**
-   * This function return the composition at a specific location given x, y, z, depth and
-   * composition number.
+   * This function return the temperature at a specific location given x, y, z,
+   * depth and gravity.
    */
-  void composition_3d(void *ptr_ptr_world, double x, double y, double z, double depth, unsigned int composition_number, double *composition)
+  void temperature_3d(void *ptr_ptr_world, double x, double y, double z,
+                      double depth, double *temperature)
   {
-    WorldBuilder::World *a = reinterpret_cast<WorldBuilder::World *>(ptr_ptr_world);
-    const std::array<double,3> position = {{x,y,z}};
-    *composition = a->composition(position,depth,composition_number);
+    WorldBuilder::World *a =
+      reinterpret_cast<WorldBuilder::World *>(ptr_ptr_world);
+    const std::array<double, 3> position = {{x, y, z}};
+    *temperature = a->temperature(position, depth);
   }
 
+  /**
+   * This function return the composition at a specific location given x, z, depth
+   * and composition number.
+   */
+  void composition_2d(void *ptr_ptr_world, double x, double z, double depth,
+                      unsigned int composition_number, double *composition)
+  {
+    WorldBuilder::World *a =
+      reinterpret_cast<WorldBuilder::World *>(ptr_ptr_world);
+    const std::array<double, 2> position = {{x, z}};
+    *composition = a->composition(position, depth, composition_number);
+  }
 
   /**
-   * The destructor for the world builder class. Call this function when done with the
-   * world builder.
+   * This function return the composition at a specific location given x, y, z,
+   * depth and composition number.
+   */
+  void composition_3d(void *ptr_ptr_world, double x, double y, double z,
+                      double depth, unsigned int composition_number,
+                      double *composition)
+  {
+    WorldBuilder::World *a =
+      reinterpret_cast<WorldBuilder::World *>(ptr_ptr_world);
+    const std::array<double, 3> position = {{x, y, z}};
+    *composition = a->composition(position, depth, composition_number);
+  }
+
+  /**
+   * The destructor for the world builder class. Call this function when done with
+   * the world builder.
    */
   void release_world(void *ptr_ptr_world)
   {
-    WorldBuilder::World *a = reinterpret_cast<WorldBuilder::World *>(ptr_ptr_world);
+    WorldBuilder::World *a =
+      reinterpret_cast<WorldBuilder::World *>(ptr_ptr_world);
     delete a;
   }
 }
