@@ -472,7 +472,7 @@ namespace aspect
     else
       AssertThrow(false, ExcNotImplemented());
 
-    computing_timer.enter_subsection("Build Stokes preconditioner");
+    TimerScope timer (computing_timer, "Build Stokes preconditioner");
     pcout << "   Rebuilding Stokes preconditioner..." << std::flush;
 
     // first assemble the raw matrices necessary for the preconditioner
@@ -588,8 +588,6 @@ namespace aspect
     rebuild_stokes_preconditioner = false;
 
     pcout << std::endl;
-
-    computing_timer.leave_subsection("Build Stokes preconditioner");
   }
 
 
@@ -772,7 +770,8 @@ namespace aspect
         timer_section_name += " rhs";
       }
 
-    computing_timer.enter_subsection(timer_section_name);
+    TimerScope timer (computing_timer,
+                      timer_section_name);
 
     if (rebuild_stokes_matrix == true)
       system_matrix = 0;
@@ -892,8 +891,6 @@ namespace aspect
 
     // record that we have just rebuilt the matrix
     rebuild_stokes_matrix = false;
-
-    computing_timer.leave_subsection(timer_section_name);
   }
 
 
@@ -904,9 +901,9 @@ namespace aspect
                                                  LinearAlgebra::PreconditionILU &preconditioner,
                                                  const double diagonal_strengthening)
   {
-    computing_timer.enter_subsection(advection_field.is_temperature() ?
-                                     "Build temperature preconditioner" :
-                                     "Build composition preconditioner");
+    TimerScope timer (computing_timer, (advection_field.is_temperature() ?
+                                        "Build temperature preconditioner" :
+                                        "Build composition preconditioner"));
 
     const unsigned int block_idx = advection_field.block_index(introspection);
 
@@ -915,10 +912,6 @@ namespace aspect
     data.ilu_atol = diagonal_strengthening;
 
     preconditioner.initialize (system_matrix.block(block_idx, block_idx), data);
-
-    computing_timer.leave_subsection(advection_field.is_temperature() ?
-                                     "Build temperature preconditioner" :
-                                     "Build composition preconditioner");
   }
 
 
@@ -1222,9 +1215,9 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::assemble_advection_system (const AdvectionField &advection_field)
   {
-    computing_timer.enter_subsection(advection_field.is_temperature() ?
-                                     "Assemble temperature system" :
-                                     "Assemble composition system");
+    TimerScope timer (computing_timer, (advection_field.is_temperature() ?
+                                        "Assemble temperature system" :
+                                        "Assemble composition system"));
 
     const unsigned int block_idx = advection_field.block_index(introspection);
     const unsigned int sparsity_block_idx = advection_field.sparsity_pattern_block_index(introspection);
@@ -1331,10 +1324,6 @@ namespace aspect
 
     system_matrix.compress(VectorOperation::add);
     system_rhs.compress(VectorOperation::add);
-
-    computing_timer.leave_subsection(advection_field.is_temperature() ?
-                                     "Assemble temperature system" :
-                                     "Assemble composition system");
   }
 }
 

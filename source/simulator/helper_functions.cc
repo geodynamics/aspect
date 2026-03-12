@@ -1607,7 +1607,7 @@ namespace aspect
     if (time_step == 0)
       return;
 
-    computing_timer.enter_subsection("Solve composition reactions");
+    TimerScope timer (computing_timer, "Solve composition reactions");
 
     // we need some temporary vectors to store our updates to composition and temperature in
     // while we do the time stepping, before we copy them over to the solution vector in the end
@@ -1914,8 +1914,6 @@ namespace aspect
           << average_iteration_count
           << " substep(s)."
           << std::endl;
-
-    computing_timer.leave_subsection("Solve composition reactions");
   }
 
 

@@ -131,9 +131,9 @@ namespace aspect
                                          Particles::ParticleHandler<dim> &to_particle_handler) const
     {
       {
-        this->get_computing_timer().enter_subsection("Particles: Copy");
+        TimerScope timer_section(this->get_computing_timer(), "Particles: Copy");
+
         to_particle_handler.copy_from(from_particle_handler);
-        this->get_computing_timer().leave_subsection("Particles: Copy");
       }
     }
 
@@ -829,9 +829,8 @@ namespace aspect
     void
     Manager<dim>::generate_particles()
     {
-      this->get_computing_timer().enter_subsection("Particles: Generate");
+      TimerScope timer_section(this->get_computing_timer(), "Particles: Generate");
       generator->generate_particles(*particle_handler);
-      this->get_computing_timer().leave_subsection("Particles: Generate");
     }
 
 
@@ -843,7 +842,7 @@ namespace aspect
       // TODO: Change this loop over all cells to use the WorkStream interface
       if (property_manager->get_n_property_components() > 0)
         {
-          this->get_computing_timer().enter_subsection("Particles: Initialize properties");
+          TimerScope timer_section(this->get_computing_timer(), "Particles: Initialize properties");
 
           particle_handler->get_property_pool().reserve(2 * particle_handler->n_locally_owned_particles());
 
@@ -854,12 +853,9 @@ namespace aspect
 
           if (dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
             {
-              this->get_computing_timer().enter_subsection("Particles: Exchange ghosts");
+              TimerScope timer_section(this->get_computing_timer(), "Particles: Exchange ghosts");
               particle_handler->exchange_ghost_particles();
-              this->get_computing_timer().leave_subsection("Particles: Exchange ghosts");
             }
-
-          this->get_computing_timer().leave_subsection("Particles: Initialize properties");
         }
     }
 
@@ -873,7 +869,7 @@ namespace aspect
 
       if (property_manager->get_n_property_components() > 0)
         {
-          this->get_computing_timer().enter_subsection("Particles: Update properties");
+          TimerScope timer_section(this->get_computing_timer(), "Particles: Update properties");
 
           Assert(dealii::internal::FEPointEvaluation::is_fast_path_supported(this->get_mapping()) == true,
                  ExcMessage("The particle system was optimized for deal.II mappings that support the fast evaluation path "
@@ -922,8 +918,6 @@ namespace aspect
                   }
 
               }
-
-          this->get_computing_timer().leave_subsection("Particles: Update properties");
         }
     }
 
@@ -935,7 +929,7 @@ namespace aspect
     {
       {
         // TODO: Change this loop over all cells to use the WorkStream interface
-        this->get_computing_timer().enter_subsection("Particles: Advect");
+        TimerScope timer_section(this->get_computing_timer(), "Particles: Advect");
 
         Assert(dealii::internal::FEPointEvaluation::is_fast_path_supported(this->get_mapping()) == true,
                ExcMessage("The particle system was optimized for deal.II mappings that support the fast evaluation path "
@@ -961,16 +955,12 @@ namespace aspect
                                          *evaluator);
                 }
             }
-
-        this->get_computing_timer().leave_subsection("Particles: Advect");
       }
 
       {
-        this->get_computing_timer().enter_subsection("Particles: Sort");
+        TimerScope timer_section(this->get_computing_timer(), "Particles: Sort");
         // Find the cells that the particles moved to
         particle_handler->sort_particles_into_subdomains_and_cells();
-
-        this->get_computing_timer().leave_subsection("Particles: Sort");
       }
     }
 
@@ -998,9 +988,8 @@ namespace aspect
       // ghost particles.
       if (dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
         {
-          this->get_computing_timer().enter_subsection("Particles: Exchange ghosts");
+          TimerScope timer_section(this->get_computing_timer(), "Particles: Exchange ghosts");
           particle_handler->exchange_ghost_particles();
-          this->get_computing_timer().leave_subsection("Particles: Exchange ghosts");
         }
       this->get_pcout() << " done." << std::endl;
     }
@@ -1325,7 +1314,7 @@ namespace aspect
           }
 
 
-        this->get_computing_timer().enter_subsection("Particles: Initialization");
+        TimerScope timer_section(this->get_computing_timer(), "Particles: Initialization");
 
         // Create a generator object depending on what the parameters specify
         generator = Generator::create_particle_generator<dim> (prm);
@@ -1359,7 +1348,6 @@ namespace aspect
         interpolator->parse_parameters(prm);
         interpolator->initialize();
 
-        this->get_computing_timer().leave_subsection("Particles: Initialization");
       }
       prm.leave_subsection ();
     }
