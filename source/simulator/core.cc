@@ -247,13 +247,8 @@ namespace aspect
     pressure_scaling (numbers::signaling_nan<double>()),
 
     rebuild_stokes_matrix (true),
-    assemble_newton_stokes_matrix (true),
-    assemble_newton_stokes_system (Parameters<dim>::is_defect_correction(parameters.nonlinear_solver)
-                                   ?
-                                   true
-                                   :
-                                   false),
-    rebuild_stokes_preconditioner (true)
+    rebuild_stokes_preconditioner (true),
+    assemble_newton_stokes_system (false)
   {
     wall_timer.start();
 
@@ -439,8 +434,8 @@ namespace aspect
         melt_handler->initialize();
       }
 
-    // If the solver type is a Newton or defect correction type of solver, we need to set make sure
-    // assemble_newton_stokes_system set to true.
+    // Initialize the Newton handler for all defect correction solver schemes
+    // (defect correction Picard and Newton solvers)
     if (Parameters<dim>::is_defect_correction(parameters.nonlinear_solver))
       {
         assemble_newton_stokes_system = true;

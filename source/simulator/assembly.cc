@@ -757,18 +757,17 @@ namespace aspect
 
     if (assemble_newton_stokes_system)
       {
-        if (!assemble_newton_stokes_matrix && !stokes_matrix_free)
+        if (!rebuild_stokes_matrix && !stokes_matrix_free)
           timer_section_name += " rhs";
-        else if (assemble_newton_stokes_matrix && newton_handler->parameters.newton_derivative_scaling_factor == 0)
+        else if (rebuild_stokes_matrix && newton_handler->parameters.newton_derivative_scaling_factor == 0)
           timer_section_name += " Picard";
-        else if (assemble_newton_stokes_matrix && newton_handler->parameters.newton_derivative_scaling_factor != 0)
+        else if (rebuild_stokes_matrix && newton_handler->parameters.newton_derivative_scaling_factor != 0)
           timer_section_name += " Newton";
       }
 
     if (stokes_matrix_free)
       {
         rebuild_stokes_matrix = false;
-        assemble_newton_stokes_matrix = false;
         timer_section_name += " rhs";
       }
 
@@ -868,7 +867,6 @@ namespace aspect
                             parameters.include_melt_transport,
                             use_reference_density_profile,
                             rebuild_stokes_matrix,
-                            assemble_newton_stokes_matrix,
                             parameters.use_bfbt),
          internal::Assembly::CopyData::
          StokesSystem<dim> (stokes_dofs_per_cell,

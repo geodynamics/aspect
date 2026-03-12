@@ -611,15 +611,21 @@ namespace aspect
         dcr.switch_initial_residual = dcr.initial_residual;
         dcr.residual_old = dcr.initial_residual;
         dcr.residual = dcr.initial_residual;
-        assemble_newton_stokes_system = assemble_newton_stokes_matrix = false;
-      }
-    else
-      assemble_newton_stokes_system = assemble_newton_stokes_matrix = true;
 
-    // Make sure we use the correct assemblers for first and all other iterations
-    // We solve the normal system in the first iteration, and the defect correction
-    // system in all other iterations.
-    if (nonlinear_iteration <= 1)
+        // Ensure we always begin by solving the normal Stokes system
+        // even for defect correction / Newton solvers
+        assemble_newton_stokes_system = false;
+        rebuild_stokes_matrix = true;
+      }
+    else if (nonlinear_iteration == 1)
+      {
+        // Switch to solving the defect correction system
+        // and use the correct assemblers and constraints
+        assemble_newton_stokes_system = true;
+        rebuild_stokes_matrix = true;
+      }
+
+    if (nonlinear_iteration <=1)
       {
         set_assemblers();
         compute_current_constraints ();
@@ -635,11 +641,16 @@ namespace aspect
     if (stokes_matrix_depends_on_solution()
         ||
         nonlinear_iteration == 0)
-      rebuild_stokes_matrix = rebuild_stokes_preconditioner = assemble_newton_stokes_matrix = true;
+      {
+        rebuild_stokes_matrix = true;
+        rebuild_stokes_preconditioner = true;
+      }
     else if (parameters.enable_prescribed_dilation)
-      // The dilation requires the Stokes matrix (which is on the rhs
-      // in the Newton solver) to be updated.
-      rebuild_stokes_matrix = true;
+      {
+        // The dilation requires the Stokes matrix (which is on the rhs
+        // in the Newton solver) to be updated.
+        rebuild_stokes_matrix = true;
+      }
 
     assemble_stokes_system();
 
@@ -710,11 +721,16 @@ namespace aspect
         if (stokes_matrix_depends_on_solution()
             ||
             (nonlinear_iteration == 0 && boundary_velocity_manager.get_prescribed_boundary_velocity_indicators().size() > 0))
-          rebuild_stokes_matrix = rebuild_stokes_preconditioner = assemble_newton_stokes_matrix = true;
+          {
+            rebuild_stokes_matrix = true;
+            rebuild_stokes_preconditioner = true;
+          }
         else if (parameters.enable_prescribed_dilation)
-          // The dilation requires the Stokes matrix (which is on the rhs
-          // in the Newton solver) to be updated.
-          rebuild_stokes_matrix = true;
+          {
+            // The dilation requires the Stokes matrix (which is on the rhs
+            // in the Newton solver) to be updated.
+            rebuild_stokes_matrix = true;
+          }
 
         assemble_stokes_system();
 
