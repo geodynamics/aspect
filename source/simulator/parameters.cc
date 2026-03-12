@@ -2246,9 +2246,8 @@ namespace aspect
       const unsigned int number_of_particle_fields =
         std::count(compositional_field_methods.begin(),compositional_field_methods.end(),AdvectionFieldMethod::particles);
 
-      AssertThrow ((x_mapped_particle_properties.size() == number_of_particle_fields)
-                   || (x_mapped_particle_properties.size() == 0),
-                   ExcMessage ("The list of names for the mapped particle property fields needs to either be empty or have a length equal to "
+      AssertThrow (x_mapped_particle_properties.size() == number_of_particle_fields,
+                   ExcMessage ("The list of names for the mapped particle property fields needs to have a length equal to "
                                "the number of compositional fields that are interpolated from particle properties."));
 
       if (std::find(compositional_field_methods.begin(), compositional_field_methods.end(), AdvectionFieldMethod::fem_darcy_field)

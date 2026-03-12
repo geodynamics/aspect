@@ -68,6 +68,18 @@ namespace aspect
         AssertThrow((stress_field_indices.size() == 2*SymmetricTensor<2,dim>::n_independent_components),
                     ExcMessage("The number of stress tensor element fields in the 'elastic stress' plugin does not equal twice the number of independent components."));
 
+        // Make sure that the stress components are mapped to the corresponding particle properties
+        const std::vector<std::pair<std::string, unsigned int>> property_information = this->get_property_information();
+        for (unsigned int i = 0; i < 2 * SymmetricTensor<2, dim>::n_independent_components; ++i)
+          {
+            const auto it = this->get_parameters().mapped_particle_properties.find(stress_field_indices[i]);
+            AssertThrow(it != this->get_parameters().mapped_particle_properties.end() &&
+                        it->second.first == property_information[i].first && it->second.second == 0,
+                        ExcMessage("If the particle property <elastic stress> is requested, then there must be 3+3 (or 6+6) compositional fields "
+                                   "mapped to particle properties with the name ve_stress_* in 2D (or 3D). Please read the documentation of "
+                                   "this particle property for details."));
+          }
+
         // Get the indices of all compositions that do not correspond to stress tensor elements.
         std::vector<unsigned int> all_field_indices(this->n_compositional_fields());
         std::iota (std::begin(all_field_indices), std::end(all_field_indices), 0);
