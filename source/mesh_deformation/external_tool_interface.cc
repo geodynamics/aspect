@@ -176,13 +176,18 @@ namespace aspect
                               cell_data.reference_point_ptrs[cell_index]));
 
               const std::vector< Point< dim >> &support_points = mesh_dof_handler.get_fe().get_unit_support_points();
-              for (unsigned int i=0; i<unit_points.size(); ++i)
+              for (unsigned int j=0; j<support_points.size(); ++j)
                 {
-                  const unsigned int point_index = local_values[n_components*i];
-                  const unsigned int rank = local_values[n_components*i+1];
+                  // skip all DoFs in the interior
+                  const bool is_boundary_dof = boundary_dofs.is_element(cell_dof_indices[j]);
+                  if (!is_boundary_dof)
+                    continue;
 
-                  for (unsigned int j=0; j<support_points.size(); ++j)
+                  for (unsigned int i=0; i<unit_points.size(); ++i)
                     {
+                      const unsigned int point_index = local_values[n_components*i];
+                      const unsigned int rank = local_values[n_components*i+1];
+
                       const double distance_sq = unit_points[i].distance_square(support_points[j]);
                       if (distance_sq < squared_distances[cell_dof_indices[j]])
                         {
