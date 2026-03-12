@@ -1522,7 +1522,7 @@ namespace aspect
             if (this->get_parameters().n_expensive_stokes_solver_steps > 0)
               solver_controls.push_back(solver_control_expensive);
 
-            // when linear failure is allowed, we need to have the following steps other than throwing failure
+            // Determine whether to warn or throw an exception due to linear solver failure
             switch (this->get_parameters().linear_solver_failure_strategy)
               {
                 case Parameters<dim>::LinearSolverFailureStrategy::continue_with_nonlinear_solver:
