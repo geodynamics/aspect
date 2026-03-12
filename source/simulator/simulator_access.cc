@@ -902,6 +902,16 @@ namespace aspect
   }
 
 
+  template <int dim>
+  const PrescribedSolution::Manager<dim> &
+  SimulatorAccess<dim>::get_prescribed_solution () const
+  {
+    return simulator->prescribed_solution_manager;
+  }
+
+
+
+
 
   template <int dim>
   RotationProperties<dim>

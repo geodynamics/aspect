@@ -1,0 +1,38 @@
+Invalid MIT-MAGIC-COOKIE-1 key
+Authorization required, but no authorization protocol specified
+
+Invalid MIT-MAGIC-COOKIE-1 key
+Authorization required, but no authorization protocol specified
+
+Invalid MIT-MAGIC-COOKIE-1 key
+Authorization required, but no authorization protocol specified
+
+Invalid MIT-MAGIC-COOKIE-1 key
+Authorization required, but no authorization protocol specified
+
+
+Number of active cells: 128 (on 4 levels)
+Number of degrees of freedom: 1,836 (1,122+153+561)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 19+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:        2.96e-12 m/s, 1.43e-11 m/s
+     Temperature min/avg/max:  273 K, 1555 K, 2014 K
+     Writing graphical output: output-prescribed_solution_post_process/solution/solution-00000
+
+*** Timestep 1:  t=1 seconds, dt=1 seconds
+   Solving temperature system... 8 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:        1.6e+05 m/s, 3.8e+05 m/s
+     Temperature min/avg/max:  273 K, 1643 K, 2073 K
+     Writing graphical output: output-prescribed_solution_post_process/solution/solution-00001
+
+Termination requested by criterion: end time
+
+
+
