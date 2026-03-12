@@ -1,0 +1,69 @@
+
+Warning in line <7> of file <input string>: You are using the deprecated spelling <Use years in output instead of seconds> of the parameter <Use years instead of seconds>.
+Number of active cells: 128 (on 3 levels)
+Number of degrees of freedom: 4,641 (1,122+153+561+561+561+561+561+561)
+
+Number of mesh deformation degrees of freedom: 306
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Skipping noninitial_plastic_strain composition solve because RHS is zero.
+   Solving plastic_strain system ... 0 iterations.
+   Solving crust_upper system ... 0 iterations.
+   Solving crust_lower system ... 0 iterations.
+   Solving mantle_lithosphere system ... 0 iterations.
+   Initial Newton Stokes residual = 3.15642e+14, v = 2.69221e+14, p = 1.64772e+14
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 10+ linear solver failed, continuing
+      Newton system information: Norm of the rhs: 3.15642e+14
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 10+ linear solver failed, continuing
+      Newton system information: Norm of the rhs: 2.24527e+12, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.00711336
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 10+ linear solver failed, continuing
+      Newton system information: Norm of the rhs: 7.46151e+11, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.00236392
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 10+ linear solver failed, continuing
+      Newton system information: Norm of the rhs: 3.16576e+11, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.00100296
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 10+ linear solver failed, continuing
+      Newton system information: Norm of the rhs: 1.46522e+11, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.000464204
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 10+ linear solver failed, continuing
+      Newton system information: Norm of the rhs: 8.6475e+10, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 0.000273966
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 10+ linear solver failed, continuing
+      Newton system information: Norm of the rhs: 3.9815e+10, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 0.00012614
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 10+ linear solver failed, continuing
+      Newton system information: Norm of the rhs: 3.25672e+10, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 0.000103178
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 10+ linear solver failed, continuing
+      Newton system information: Norm of the rhs: 1.90812e+10, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 6.04522e-05
+
+
+   Postprocessing:
+
+Termination requested by criterion: end time
+
+
+
