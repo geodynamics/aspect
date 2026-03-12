@@ -85,7 +85,7 @@ namespace aspect
 
       this_rank_runs_landlab = (rank < n_landlab_ranks);
       const int color = this_rank_runs_landlab?1:0;
-      int ierr = MPI_Comm_split(this->get_mpi_communicator(), color, rank, &landlab_communicator);
+      const int ierr = MPI_Comm_split(this->get_mpi_communicator(), color, rank, &landlab_communicator);
       AssertThrow(ierr == MPI_SUCCESS, ExcMessage("Failed to split MPI communicator for Landlab simulation"));
 
       if (this_rank_runs_landlab)
