@@ -231,6 +231,7 @@ namespace aspect
           Py_DECREF(pArgs);
 
           const ArrayView<const double> data = PythonHelper::numpy_to_array_view(pValue);
+          const double one_over_dt = 1.0 / ((this->get_timestep() > 0.0) ? this->get_timestep() : 1.0);
           for (size_t i=0; i<data.size(); ++i)
             {
               const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(this->evaluation_points[i]);
@@ -239,7 +240,7 @@ namespace aspect
               if (gravity.norm() > 0.0)
                 topography_direction = -gravity / gravity.norm();
 
-              velocities[i] = topography_direction * data[i];
+              velocities[i] = topography_direction * data[i] * one_over_dt;
             }
 
           Py_DECREF(pValue);
@@ -254,12 +255,13 @@ namespace aspect
         //const auto &mapping = this->get_mapping();
         std::vector<Point<dim>> real_evaluation_points(this->evaluation_points.size());
         std::vector<std::vector<double>> data(this->evaluation_points.size(), std::vector<double>(dim, 0.0));
+        const double one_over_dt = 1.0 / ((this->get_timestep() > 0.0) ? this->get_timestep() : 1.0);
 
         for (unsigned int i=0; i<this->evaluation_points.size(); ++i)
           {
             real_evaluation_points[i] = this->evaluation_points[i];  // TODO: use mapping to compute real position
             for (unsigned int c=0; c<dim; ++c)
-              data[i][c] = velocities[i][c];
+              data[i][c] = velocities[i][c] * one_over_dt;
           }
 
         const std::vector<std::string> data_component_names(dim, "velocity");
