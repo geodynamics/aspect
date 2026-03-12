@@ -43,11 +43,14 @@ namespace aspect
 
       template <int dim>
       double
-      CompositionalViscosityPrefactors<dim>::compute_viscosity (const MaterialModel::MaterialModelInputs<dim> &in,
-                                                                const double base_viscosity,
-                                                                const unsigned int composition_index,
-                                                                const unsigned int q,
-                                                                const ModifiedFlowLaws &modified_flow_laws) const
+      CompositionalViscosityPrefactors<dim>::compute_viscosity(
+        const double temperature,
+        const double pressure,
+        const double bound_fluid_fraction,
+        const double base_viscosity,
+        const unsigned int composition_index,
+        const ModifiedFlowLaws &modified_flow_laws) const
+
       {
         double factored_viscosities = base_viscosity;
         switch (viscosity_prefactor_scheme)
@@ -62,28 +65,13 @@ namespace aspect
               // We calculate the atomic H/Si ppm (C_OH) at each point to compute the water fugacity of
               // olivine assuming a composition of 90 mol% Forsterite and 10 mol% Fayalite from Hirth
               // and Kohlstaedt 2004 10.1029/138GM06.
-              const double temperature_for_fugacity = (this->simulator_is_past_initialization())
-                                                      ?
-                                                      in.temperature[q]
-                                                      :
-                                                      this->get_adiabatic_conditions().temperature(in.position[q]);
-              AssertThrow(temperature_for_fugacity != 0, ExcMessage(
-                            "The temperature used in the calculation for determining the water fugacity is zero. "
-                            "This is not allowed, because this value is used to divide through. It is probably "
-                            "being caused by the temperature being zero somewhere in the model. The relevant "
-                            "values for debugging are: temperature (" + Utilities::to_string(in.temperature[q]) +
-                            "), and adiabatic temperature ("
-                            + Utilities::to_string(this->get_adiabatic_conditions().temperature(in.position[q])) +
-                            "). If the adiabatic temperature is 0, double check that you are correctly defining an "
-                            " 'Adiabatic conditions model'."));
 
-              const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
-              const double mass_fraction_H2O = std::max(minimum_mass_fraction_water_for_dry_creep[composition_index], in.composition[q][bound_fluid_idx]); // mass fraction of bound water
+              const double mass_fraction_H2O = std::max(minimum_mass_fraction_water_for_dry_creep[composition_index], bound_fluid_fraction); // mass fraction of bound water
               const double mass_fraction_olivine = 1 - mass_fraction_H2O; // mass fraction of olivine
               const double COH = (mass_fraction_H2O/molar_mass_H2O) / (mass_fraction_olivine/molar_mass_olivine) * 1e6; // COH in H / Si ppm
               const double point_water_fugacity = COH / A_H2O *
-                                                  std::exp((activation_energy_H2O + in.pressure[q]*activation_volume_H2O)/
-                                                           (constants::gas_constant * temperature_for_fugacity));
+                                                  std::exp((activation_energy_H2O + pressure*activation_volume_H2O)/
+                                                           (constants::gas_constant * temperature));
               const double r = modified_flow_laws == diffusion
                                ?
                                -diffusion_water_fugacity_exponents[composition_index]
