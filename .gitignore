@@ -58,6 +58,7 @@
 /tests/*.x.prm
 /tests/lib*.so
 /Testing
+/**/__pycache__/
 
 # used for clion:
 
