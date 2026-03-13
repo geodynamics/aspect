@@ -1264,7 +1264,7 @@ namespace aspect
         = sim.parameters.linear_stokes_solver_tolerance
           * ((this->simulator_is_past_initialization()) ? 1.0 : 1e-5);
 
-      SolverControl solver_control_mf(5 * rhs.size(),
+      SolverControl solver_control_mf(200,
                                       tolerance * rhs.l2_norm());
       SolverCG<dealii::LinearAlgebra::distributed::Vector<double>> cg(solver_control_mf);
 

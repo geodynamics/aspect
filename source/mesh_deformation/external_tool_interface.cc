@@ -24,6 +24,7 @@
 
 #include <deal.II/numerics/vector_tools_evaluate.h>
 
+
 /*
 TODO:
 - initial topography from external tool: for now compute_initial_deformation_on_boundary(), later refactor
@@ -104,7 +105,9 @@ namespace aspect
       // so we need to use a simple mapping instead of the one stored in the Simulator. The latter
       // would produce the deformed mesh. We currently always use a Q1 mapping when mesh deformation
       // is enabled, so a Q1 mapping is the right choice.
-      static MappingQ<dim> mapping(1);
+      // TODO: if the mesh is cartesian, we could just use a Q1 mapping, but we need a higher order
+      // mapping for spherical meshes. Which order should we pick?
+      static MappingQ<dim> mapping(4);
       remote_point_evaluator = std::make_unique<Utilities::MPI::RemotePointEvaluation<dim, dim>>();
       remote_point_evaluator->reinit(this->evaluation_points, this->get_triangulation(), mapping);
 
