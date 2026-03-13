@@ -108,6 +108,18 @@ namespace aspect
       remote_point_evaluator = std::make_unique<Utilities::MPI::RemotePointEvaluation<dim, dim>>();
       remote_point_evaluator->reinit(this->evaluation_points, this->get_triangulation(), mapping);
 
+      if (!remote_point_evaluator->all_points_found())
+        {
+          this->get_pcout() << "WARNING: not all evaluation points were found inside the domain!" << std::endl;
+          this->get_pcout() << "Evaluation points not found:" << std::endl;
+          for (unsigned int p=0; p<evaluation_points.size(); ++p)
+            {
+              if (!remote_point_evaluator->point_found(p))
+                {
+                  this->get_pcout() << "Point " << p << ": " << evaluation_points[p] << std::endl;
+                }
+            }
+        }
 
       // Create a mapping from evaluation points to support points. Note that one evaluation point can map to
       // multiple support points.
