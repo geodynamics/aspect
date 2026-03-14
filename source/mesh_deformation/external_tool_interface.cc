@@ -21,6 +21,7 @@
 
 #include <aspect/mesh_deformation/external_tool_interface.h>
 #include <aspect/simulator_signals.h>
+#include <aspect/geometry_model/interface.h>
 
 #include <deal.II/numerics/vector_tools_evaluate.h>
 
@@ -102,12 +103,11 @@ namespace aspect
       this->evaluation_points = evaluation_points;
 
       // Set up RemotePointEvaluation. The evaluation points are given in reference coordinates,
-      // so we need to use a simple mapping instead of the one stored in the Simulator. The latter
-      // would produce the deformed mesh. We currently always use a Q1 mapping when mesh deformation
-      // is enabled, so a Q1 mapping is the right choice.
-      // TODO: if the mesh is cartesian, we could just use a Q1 mapping, but we need a higher order
-      // mapping for spherical meshes. Which order should we pick?
-      static MappingQ<dim> mapping(4);
+      // so we need to use a simple mapping instead of the MappingQEulerian stored in the Simulator. The latter
+      // would produce the deformed mesh. We pick a high order mapping for curved meshes (sphere, shell),
+      // in order to find evaluation points on the surface of the sphere/shell. For cartesian meshes, we
+      // can use a Q1 mapping.
+      static MappingQ<dim> mapping(this->get_geometry_model().has_curved_elements() ? 4 : 1);
       remote_point_evaluator = std::make_unique<Utilities::MPI::RemotePointEvaluation<dim, dim>>();
       remote_point_evaluator->reinit(this->evaluation_points, this->get_triangulation(), mapping);
 
