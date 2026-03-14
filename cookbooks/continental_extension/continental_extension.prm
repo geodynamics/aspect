@@ -294,8 +294,8 @@ subsection Material model
     # values below, relative to previous versions of the cookbook, are now consistent with the correct
     # scaling procedure outlined in Dannberg et al. (2017).
     set Prefactors for dislocation creep          = background: 7.37e-15, \
-                                                    crust_upper: 1.37e-26, \
-                                                    crust_lower: 5.71e-23, \
+                                                    crust_upper: 8.57e-28, \
+                                                    crust_lower: 7.13e-18, \
                                                     mantle_lithosphere: 7.37e-15
 
     set Stress exponents for dislocation creep    = background: 3.5, \
