@@ -444,6 +444,15 @@ namespace aspect
                                const double      outer_radius);
 #endif
 
+  // deal.II 9.8 made ReferenceCell a template class, whereas older versions
+  // had it as a non-template class. This is a problem.
+  // Rather than litter our own code base with #ifdefs, we can just define the
+  // templated class variant here for older deal.II versions, and then we can
+  // use the same code in all versions.
+#if !DEAL_II_VERSION_GTE(9,8,0)
+  template <int dim> using ReferenceCell = dealii::ReferenceCell;
+#endif
+
 }
 
 #endif

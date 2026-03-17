@@ -138,16 +138,16 @@ namespace aspect
           local_matrix (finite_element.dofs_per_cell,
                         finite_element.dofs_per_cell),
           local_rhs (finite_element.dofs_per_cell),
-          local_face_rhs (Assemblers::n_interface_matrices(finite_element.reference_cell()),
+          local_face_rhs (Assemblers::n_interface_matrices<dim>(finite_element.reference_cell()),
                           Vector<double>(finite_element.dofs_per_cell)),
-          local_face_matrices_ext_ext(Assemblers::n_interface_matrices(finite_element.reference_cell()),
+          local_face_matrices_ext_ext(Assemblers::n_interface_matrices<dim>(finite_element.reference_cell()),
                                       FullMatrix<double>(finite_element.dofs_per_cell,
                                                          finite_element.dofs_per_cell)),
-          face_contributions_mask(Assemblers::n_interface_matrices(finite_element.reference_cell()),
+          face_contributions_mask(Assemblers::n_interface_matrices<dim>(finite_element.reference_cell()),
                                   false),
 
           local_dof_indices (finite_element.dofs_per_cell),
-          neighbor_dof_indices(Assemblers::n_interface_matrices(finite_element.reference_cell()),
+          neighbor_dof_indices(Assemblers::n_interface_matrices<dim>(finite_element.reference_cell()),
                                std::vector<types::global_dof_index>(finite_element.dofs_per_cell))
         {}
 
