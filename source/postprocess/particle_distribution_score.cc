@@ -31,14 +31,10 @@ namespace aspect
     std::pair<std::string,std::string>
     ParticleDistributionScore<dim>::execute (TableHandler &statistics)
     {
+      // These need to be vectors to account for multiple particle managers.
       std::vector<double> local_min_scores(this->n_particle_managers(),std::numeric_limits<double>::max());
       std::vector<double> local_max_scores(this->n_particle_managers(),0);
       std::vector<std::vector<double>> cell_scores(this->n_particle_managers());
-
-
-      //double local_min_score = std::numeric_limits<double>::max();
-      //double local_max_score = 0;
-      //std::vector<double> cell_scores;
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         {
@@ -140,57 +136,57 @@ namespace aspect
         }
 
       if (this->n_particle_managers()==1)
-      {
-        // Calculate the mean and standard deviation of cell scores across all processors
-        const std::pair<double, double> mean_and_standard_deviation =
-          Utilities::MPI::mean_and_standard_deviation(cell_scores[0].begin(),
-                                                      cell_scores[0].end(),
-                                                      this->get_mpi_communicator());
+        {
+          // Calculate the mean and standard deviation of cell scores across all processors
+          const std::pair<double, double> mean_and_standard_deviation =
+            Utilities::MPI::mean_and_standard_deviation(cell_scores[0].begin(),
+                                                        cell_scores[0].end(),
+                                                        this->get_mpi_communicator());
 
-        // get final values for min and max score from all processors
-        const double global_max_score = Utilities::MPI::max (local_max_scores[0], this->get_mpi_communicator());
-        const double global_min_score = Utilities::MPI::min (local_min_scores[0], this->get_mpi_communicator());
+          // get final values for min and max score from all processors
+          const double global_max_score = Utilities::MPI::max (local_max_scores[0], this->get_mpi_communicator());
+          const double global_min_score = Utilities::MPI::min (local_min_scores[0], this->get_mpi_communicator());
 
-        // write to statistics file
-        statistics.add_value ("Minimal particle distribution score: ", global_min_score);
-        statistics.add_value ("Average particle distribution score: ", mean_and_standard_deviation.first);
-        statistics.add_value ("Maximal particle distribution score: ", global_max_score);
-        statistics.add_value ("Cell Score Standard Deviation: ", mean_and_standard_deviation.second);
+          // write to statistics file
+          statistics.add_value ("Minimal particle distribution score: ", global_min_score);
+          statistics.add_value ("Average particle distribution score: ", mean_and_standard_deviation.first);
+          statistics.add_value ("Maximal particle distribution score: ", global_max_score);
+          statistics.add_value ("Cell Score Standard Deviation: ", mean_and_standard_deviation.second);
 
-        std::ostringstream output;
-        output << global_min_score << '/' << mean_and_standard_deviation.first << '/' << global_max_score << '/' << mean_and_standard_deviation.second;
+          std::ostringstream output;
+          output << global_min_score << '/' << mean_and_standard_deviation.first << '/' << global_max_score << '/' << mean_and_standard_deviation.second;
 
-        return std::pair<std::string, std::string> ("Particle distribution score min/avg/max/stdev:",
-                                                    output.str());
-      } 
-      else 
-      {
-        std::ostringstream output;
+          return std::pair<std::string, std::string> ("Particle Distribution Score (min/avg/max/stdev):",
+                                                      output.str());
+        }
+      else // Handle using multiple particle managers
+        {
+          std::ostringstream output;
 
-        for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
-          {
-            // Calculate the mean and standard deviation of cell scores across all processors
-            const std::pair<double, double> mean_and_standard_deviation =
-              Utilities::MPI::mean_and_standard_deviation(cell_scores[particle_manager_index].begin(),
-                                                          cell_scores[particle_manager_index].end(),
-                                                          this->get_mpi_communicator());
+          for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
+            {
+              // Calculate the mean and standard deviation of cell scores across all processors
+              const std::pair<double, double> mean_and_standard_deviation =
+                Utilities::MPI::mean_and_standard_deviation(cell_scores[particle_manager_index].begin(),
+                                                            cell_scores[particle_manager_index].end(),
+                                                            this->get_mpi_communicator());
 
-            // get final values for min and max score from all processors
-            const double global_max_score = Utilities::MPI::max (local_max_scores[particle_manager_index], this->get_mpi_communicator());
-            const double global_min_score = Utilities::MPI::min (local_min_scores[particle_manager_index], this->get_mpi_communicator());
+              // get final values for min and max score from all processors
+              const double global_max_score = Utilities::MPI::max (local_max_scores[particle_manager_index], this->get_mpi_communicator());
+              const double global_min_score = Utilities::MPI::min (local_min_scores[particle_manager_index], this->get_mpi_communicator());
 
-            // write to statistics file
-            std::string particle_manager_index_prefix = "Particle Manager" + std::to_string(particle_manager_index);
-            statistics.add_value (particle_manager_index_prefix+"Minimal particle distribution score: ", global_min_score);
-            statistics.add_value (particle_manager_index_prefix+"Average particle distribution score: ", mean_and_standard_deviation.first);
-            statistics.add_value (particle_manager_index_prefix+"Maximal particle distribution score: ", global_max_score);
-            statistics.add_value (particle_manager_index_prefix+"Cell Score Standard Deviation: ", mean_and_standard_deviation.second);
-            output << "Particle Manager index " << particle_manager_index << ": " << global_min_score << '/' << mean_and_standard_deviation.first << '/' << global_max_score << '/' << mean_and_standard_deviation.second << ", ";
-          }
+              // write to statistics file
+              std::string particle_manager_index_prefix = "Particle Manager " + std::to_string(particle_manager_index) + " ";
+              statistics.add_value (particle_manager_index_prefix+"Minimal particle distribution score: ", global_min_score);
+              statistics.add_value (particle_manager_index_prefix+"Average particle distribution score: ", mean_and_standard_deviation.first);
+              statistics.add_value (particle_manager_index_prefix+"Maximal particle distribution score: ", global_max_score);
+              statistics.add_value (particle_manager_index_prefix+"Cell Score Standard Deviation: ", mean_and_standard_deviation.second);
+              output << "Particle Manager Index " << particle_manager_index << ": " << global_min_score << '/' << mean_and_standard_deviation.first << '/' << global_max_score << '/' << mean_and_standard_deviation.second << ", ";
+            }
 
-          return std::pair<std::string, std::string> ("Particle distribution score min/avg/max/stdev: (per particle manager index)",
-                                            output.str());
-      }
+          return std::pair<std::string, std::string> ("Particle Distribution Score (min/avg/max/stdev): ",
+                                                      output.str());
+        }
 
     }
 
@@ -218,50 +214,50 @@ namespace aspect
       Table<dim,unsigned int> buckets;
       buckets.reinit(bucket_sizes);
 
-        // sort the particles within the current cell
-        const typename Particle::ParticleHandler<dim>::particle_iterator_range particle_range =
-          this->get_particle_manager(particle_manager_index).get_particle_handler().particles_in_cell(cell);
+      // sort the particles within the current cell
+      const typename Particle::ParticleHandler<dim>::particle_iterator_range particle_range =
+        this->get_particle_manager(particle_manager_index).get_particle_handler().particles_in_cell(cell);
 
-        for (const auto &particle: particle_range)
-          {
-            const double particle_x = particle.get_reference_location()[0];
-            const double particle_y = particle.get_reference_location()[1];
+      for (const auto &particle: particle_range)
+        {
+          const double particle_x = particle.get_reference_location()[0];
+          const double particle_y = particle.get_reference_location()[1];
 
-            const double x_ratio = (particle_x) / (bucket_width);
-            const double y_ratio = (particle_y) / (bucket_width);
+          const double x_ratio = (particle_x) / (bucket_width);
+          const double y_ratio = (particle_y) / (bucket_width);
 
-            unsigned int x_index = static_cast<unsigned int>(std::floor(x_ratio));
-            unsigned int y_index = static_cast<unsigned int>(std::floor(y_ratio));
+          unsigned int x_index = static_cast<unsigned int>(std::floor(x_ratio));
+          unsigned int y_index = static_cast<unsigned int>(std::floor(y_ratio));
 
-            /*
-            If a particle is exactly on the boundary of two cells its
-            reference location will equal 1, and if this is the case,
-            the "x/y/z_index" will be outside of the range of the table without
-            these checks. The table has a number of entries equal to "granularity" in each dimension,
-            and the table is indexed at 0, so if the "x/y/z_indez" equals "granularity" it
-            will be out of range.
-            */
-            if (x_index == granularity)
-              x_index = granularity-1;
-            if (y_index == granularity)
-              y_index = granularity-1;
+          /*
+          If a particle is exactly on the boundary of two cells its
+          reference location will equal 1, and if this is the case,
+          the "x/y/z_index" will be outside of the range of the table without
+          these checks. The table has a number of entries equal to "granularity" in each dimension,
+          and the table is indexed at 0, so if the "x/y/z_indez" equals "granularity" it
+          will be out of range.
+          */
+          if (x_index == granularity)
+            x_index = granularity-1;
+          if (y_index == granularity)
+            y_index = granularity-1;
 
-            TableIndices<dim> entry_index;
-            entry_index[0] = x_index;
-            entry_index[1] = y_index;
-            if (dim == 3)
-              {
-                const double particle_z = particle.get_reference_location()[2];
-                const double z_ratio = (particle_z) / (bucket_width);
-                unsigned int z_index = static_cast<unsigned int>(std::floor(z_ratio));
-                if (z_index == granularity)
-                  z_index = granularity-1;
-                entry_index[2] = z_index;
-              }
+          TableIndices<dim> entry_index;
+          entry_index[0] = x_index;
+          entry_index[1] = y_index;
+          if (dim == 3)
+            {
+              const double particle_z = particle.get_reference_location()[2];
+              const double z_ratio = (particle_z) / (bucket_width);
+              unsigned int z_index = static_cast<unsigned int>(std::floor(z_ratio));
+              if (z_index == granularity)
+                z_index = granularity-1;
+              entry_index[2] = z_index;
+            }
 
-            ++buckets(entry_index);
-          }
-      
+          ++buckets(entry_index);
+        }
+
 
       return buckets;
     }

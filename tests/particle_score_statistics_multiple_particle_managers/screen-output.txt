@@ -1,0 +1,521 @@
+-----------------------------------------------------------------------------
+--                             This is ASPECT                              --
+-- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
+-----------------------------------------------------------------------------
+--     . version 3.1.0-pre (particle_distribution_postprocessor_multiplemanagers, 6b87380d8)
+--     . using deal.II 9.7.1
+--     .       with 32 bit indices
+--     .       with vectorization level 1 (SSE2, 2 doubles, 128 bits)
+--     . using Trilinos 16.2.0
+--     . using p4est 2.8.7
+--     . using Geodynamic World Builder 1.0.0
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&cbfheatflux=1&mf=1&particles=1&sha=6b87380d8&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 40 (on 2 levels)
+Number of degrees of freedom: 678 (410+63+205)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+
+Number of active cells: 160 (on 3 levels)
+Number of degrees of freedom: 2,392 (1,458+205+729)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+
+Number of active cells: 256 (on 4 levels)
+Number of degrees of freedom: 3,736 (2,282+313+1,141)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9249 K, 1.125 K
+     Heat fluxes through boundary parts:                                         0.001275 W, 0.001275 W, 0.04583 W, -0.04792 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00000
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00000
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0/0/0, Particle Manager index 1: 0.0781893/0.0781893/0.0781893/3.47624e-16, 
+
+*** Timestep 1:  t=0.03 seconds, dt=0.03 seconds
+   Solving temperature system... 9 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9249 K, 1.126 K
+     Heat fluxes through boundary parts:                                         0.001357 W, 0.001357 W, 0.04583 W, -0.04791 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00001
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00001
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0/0/0, Particle Manager index 1: 0.0781893/0.0781893/0.0781893/3.47624e-16, 
+
+*** Timestep 2:  t=0.06 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9249 K, 1.127 K
+     Heat fluxes through boundary parts:                                         0.001365 W, 0.001365 W, 0.04583 W, -0.04791 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00002
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00002
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0/0/0, Particle Manager index 1: 0.0781893/0.0781893/0.0781893/3.47624e-16, 
+
+*** Timestep 3:  t=0.09 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9249 K, 1.128 K
+     Heat fluxes through boundary parts:                                         0.001373 W, 0.001373 W, 0.04583 W, -0.04791 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00003
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00003
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.00207194/0.09375/0.010673, Particle Manager index 1: 0.0781893/0.0781893/0.0781893/3.47624e-16, 
+
+*** Timestep 4:  t=0.12 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9249 K, 1.13 K
+     Heat fluxes through boundary parts:                                         0.001381 W, 0.001381 W, 0.04583 W, -0.04791 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00004
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00004
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.00212615/0.09375/0.0108426, Particle Manager index 1: 0.0123457/0.0763889/0.0781893/0.00868586, 
+
+*** Timestep 5:  t=0.15 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9248 K, 1.132 K
+     Heat fluxes through boundary parts:                                         0.001389 W, 0.001389 W, 0.04583 W, -0.0479 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00005
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00005
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.00205828/0.09375/0.010377, Particle Manager index 1: 0.0123457/0.0763889/0.0781893/0.00916215, 
+
+*** Timestep 6:  t=0.18 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9248 K, 1.134 K
+     Heat fluxes through boundary parts:                                         0.001398 W, 0.001398 W, 0.04583 W, -0.0479 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00006
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00006
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.00198727/0.09375/0.00952574, Particle Manager index 1: 0.0123457/0.0766659/0.12/0.00979959, 
+
+*** Timestep 7:  t=0.21 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9248 K, 1.137 K
+     Heat fluxes through boundary parts:                                         0.001406 W, 0.001406 W, 0.04582 W, -0.0479 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00007
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00007
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.00212286/0.09375/0.0100007, Particle Manager index 1: 0.030303/0.0833276/0.407407/0.0335664, 
+
+*** Timestep 8:  t=0.24 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9248 K, 1.14 K
+     Heat fluxes through boundary parts:                                         0.001415 W, 0.001415 W, 0.04582 W, -0.0479 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00008
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00008
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.00660579/0.208333/0.0309119, Particle Manager index 1: 0.030303/0.0828968/0.407407/0.033064, 
+
+*** Timestep 9:  t=0.27 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9248 K, 1.143 K
+     Heat fluxes through boundary parts:                                         0.001424 W, 0.001424 W, 0.04582 W, -0.04789 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00009
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00009
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.00639279/0.166667/0.0286508, Particle Manager index 1: 0.030303/0.083154/0.407407/0.0332826, 
+
+*** Timestep 10:  t=0.3 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9248 K, 1.149 K
+     Heat fluxes through boundary parts:                                         0.001432 W, 0.001432 W, 0.04582 W, -0.04789 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00010
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00010
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.00661198/0.239583/0.0300891, Particle Manager index 1: 0.030303/0.0839256/0.407407/0.0368031, 
+
+*** Timestep 11:  t=0.33 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9247 K, 1.153 K
+     Heat fluxes through boundary parts:                                         0.00144 W, 0.00144 W, 0.04582 W, -0.04789 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00011
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00011
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.00686507/0.28125/0.0314837, Particle Manager index 1: 0.0452675/0.0822127/0.277778/0.0235955, 
+
+*** Timestep 12:  t=0.36 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9247 K, 1.156 K
+     Heat fluxes through boundary parts:                                         0.001447 W, 0.001447 W, 0.04582 W, -0.04788 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00012
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00012
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.00717971/0.28125/0.0320116, Particle Manager index 1: 0.0452675/0.0834875/0.341564/0.0290465, 
+
+*** Timestep 13:  t=0.39 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9247 K, 1.157 K
+     Heat fluxes through boundary parts:                                         0.001455 W, 0.001455 W, 0.04582 W, -0.04788 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00013
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00013
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.00812962/0.28125/0.0362854, Particle Manager index 1: 0.0452675/0.0846214/0.341564/0.0338249, 
+
+*** Timestep 14:  t=0.42 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9247 K, 1.16 K
+     Heat fluxes through boundary parts:                                         0.001462 W, 0.001462 W, 0.04581 W, -0.04788 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00014
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00014
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.00673639/0.239583/0.0307978, Particle Manager index 1: 0.0185185/0.0819602/0.407407/0.033096, 
+
+*** Timestep 15:  t=0.45 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9247 K, 1.163 K
+     Heat fluxes through boundary parts:                                         0.001469 W, 0.001469 W, 0.04581 W, -0.04788 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00015
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00015
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.00698507/0.213333/0.031226, Particle Manager index 1: 0.0185185/0.0828087/0.506173/0.0429421, 
+
+*** Timestep 16:  t=0.48 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9246 K, 1.166 K
+     Heat fluxes through boundary parts:                                         0.001475 W, 0.001475 W, 0.04581 W, -0.04787 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00016
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00016
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.00740961/0.208333/0.0306582, Particle Manager index 1: 0.0123457/0.0822875/0.539095/0.0424824, 
+
+*** Timestep 17:  t=0.51 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9246 K, 1.169 K
+     Heat fluxes through boundary parts:                                         0.001482 W, 0.001482 W, 0.04581 W, -0.04787 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00017
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00017
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.008058/0.201646/0.031314, Particle Manager index 1: 0.0123457/0.0820291/0.539095/0.0405678, 
+
+*** Timestep 18:  t=0.54 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9246 K, 1.172 K
+     Heat fluxes through boundary parts:                                         0.001489 W, 0.001489 W, 0.04581 W, -0.04787 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00018
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00018
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.00877577/0.34375/0.0366183, Particle Manager index 1: 0.0123457/0.0835974/0.341564/0.0322338, 
+
+*** Timestep 19:  t=0.57 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9246 K, 1.175 K
+     Heat fluxes through boundary parts:                                         0.001496 W, 0.001496 W, 0.04581 W, -0.04787 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00019
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00019
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.0082557/0.28/0.0336851, Particle Manager index 1: 0.0123457/0.083044/0.341564/0.0295056, 
+
+*** Timestep 20:  t=0.6 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9246 K, 1.177 K
+     Heat fluxes through boundary parts:                                         0.001502 W, 0.001502 W, 0.04581 W, -0.04786 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00020
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00020
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.00898487/0.28/0.0369412, Particle Manager index 1: 0.0123457/0.0831726/0.341564/0.0280006, 
+
+*** Timestep 21:  t=0.63 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9245 K, 1.179 K
+     Heat fluxes through boundary parts:                                         0.001507 W, 0.001507 W, 0.04581 W, -0.04786 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00021
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00021
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.00912534/0.28/0.0373626, Particle Manager index 1: 0.0123457/0.0819104/0.38292/0.0341013, 
+
+*** Timestep 22:  t=0.66 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9245 K, 1.181 K
+     Heat fluxes through boundary parts:                                         0.001511 W, 0.001511 W, 0.0458 W, -0.04786 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00022
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00022
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.00954689/0.28/0.0384691, Particle Manager index 1: 0.0185185/0.0825695/0.38292/0.0336344, 
+
+*** Timestep 23:  t=0.69 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9245 K, 1.182 K
+     Heat fluxes through boundary parts:                                         0.001513 W, 0.001513 W, 0.0458 W, -0.04786 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00023
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00023
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.00986195/0.28/0.0392974, Particle Manager index 1: 0.0185185/0.0842519/0.38292/0.0366255, 
+
+*** Timestep 24:  t=0.72 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9245 K, 1.184 K
+     Heat fluxes through boundary parts:                                         0.001515 W, 0.001515 W, 0.0458 W, -0.04785 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00024
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00024
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.00898219/0.260417/0.034067, Particle Manager index 1: 0.0185185/0.0855485/0.38292/0.0396271, 
+
+*** Timestep 25:  t=0.75 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9245 K, 1.184 K
+     Heat fluxes through boundary parts:                                         0.001515 W, 0.001515 W, 0.0458 W, -0.04785 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00025
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00025
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.00864363/0.22/0.0318665, Particle Manager index 1: 0.0123457/0.0865503/0.506173/0.0440378, 
+
+*** Timestep 26:  t=0.78 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9244 K, 1.184 K
+     Heat fluxes through boundary parts:                                         0.001515 W, 0.001515 W, 0.0458 W, -0.04785 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00026
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00026
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.00894716/0.22/0.0324947, Particle Manager index 1: 0.0123457/0.0844704/0.341564/0.0346123, 
+
+*** Timestep 27:  t=0.81 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9244 K, 1.184 K
+     Heat fluxes through boundary parts:                                         0.001513 W, 0.001513 W, 0.0458 W, -0.04784 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00027
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00027
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.0104321/0.333333/0.0400875, Particle Manager index 1: 0.00826446/0.0854833/0.341564/0.0377802, 
+
+*** Timestep 28:  t=0.84 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9244 K, 1.184 K
+     Heat fluxes through boundary parts:                                         0.00151 W, 0.00151 W, 0.0458 W, -0.04784 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00028
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00028
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.0118293/0.333333/0.0436915, Particle Manager index 1: 0.0185185/0.0863028/0.341564/0.0383799, 
+
+*** Timestep 29:  t=0.87 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9244 K, 1.183 K
+     Heat fluxes through boundary parts:                                         0.001507 W, 0.001507 W, 0.04579 W, -0.04784 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00029
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00029
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.0104861/0.291667/0.0376136, Particle Manager index 1: 0.0185185/0.0834217/0.341564/0.0314644, 
+
+*** Timestep 30:  t=0.9 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9244 K, 1.181 K
+     Heat fluxes through boundary parts:                                         0.001502 W, 0.001502 W, 0.04579 W, -0.04783 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00030
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00030
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.00942849/0.239583/0.0330379, Particle Manager index 1: 0/0.0822483/0.341564/0.0311167, 
+
+*** Timestep 31:  t=0.93 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9243 K, 1.18 K
+     Heat fluxes through boundary parts:                                         0.001498 W, 0.001498 W, 0.04579 W, -0.04783 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00031
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00031
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.0101825/0.229167/0.0349538, Particle Manager index 1: 0/0.0826585/0.341564/0.0324799, 
+
+*** Timestep 32:  t=0.96 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9243 K, 1.178 K
+     Heat fluxes through boundary parts:                                         0.001493 W, 0.001493 W, 0.04579 W, -0.04783 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00032
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00032
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.00935344/0.1875/0.0317102, Particle Manager index 1: 0/0.0834311/0.341564/0.0324967, 
+
+*** Timestep 33:  t=0.99 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9243 K, 1.176 K
+     Heat fluxes through boundary parts:                                         0.001488 W, 0.001488 W, 0.04579 W, -0.04782 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00033
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00033
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.00919859/0.197917/0.0311336, Particle Manager index 1: 0/0.0844764/0.341564/0.0368501, 
+
+*** Timestep 34:  t=1 seconds, dt=0.01 seconds
+   Solving temperature system... 7 iterations.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:                                                          0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                                                    0 K, 0.9243 K, 1.175 K
+     Heat fluxes through boundary parts:                                         0.001485 W, 0.001485 W, 0.04579 W, -0.04782 W
+     Writing graphical output:                                                   output-multiple-managers/solution/solution-00034
+     Writing particle output:                                                    output-multiple-managers/particles/particles-00034
+     Particle distribution score min/avg/max/stdev: (per particle manager index) Particle Manager index 0: 0/0.00898619/0.197917/0.0302435, Particle Manager index 1: 0/0.0842755/0.341564/0.0345468, 
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      1.35s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble temperature system      |        37 |      0.42s |        31% |
+| Build temperature preconditioner |        37 |     0.025s |       1.9% |
+| Initialization                   |         1 |    0.0963s |       7.1% |
+| Interpolate Stokes solution      |        37 |    0.0525s |       3.9% |
+| Particles: Advect                |       140 |      0.12s |       8.9% |
+| Particles: Copy                  |        74 |   0.00402s |       0.3% |
+| Particles: Generate              |         6 |   0.00227s |      0.17% |
+| Particles: Initialization        |         2 |  0.000216s |         0% |
+| Particles: Initialize properties |         6 |  0.000633s |         0% |
+| Particles: Sort                  |       140 |    0.0206s |       1.5% |
+| Postprocessing                   |        35 |     0.456s |        34% |
+| Refine mesh structure, part 1    |         2 |    0.0103s |      0.76% |
+| Refine mesh structure, part 2    |         2 |   0.00885s |      0.66% |
+| Setup dof systems                |         3 |    0.0332s |       2.5% |
+| Setup initial conditions         |         3 |    0.0126s |      0.93% |
+| Setup matrices                   |         3 |   0.00553s |      0.41% |
+| Solve temperature system         |        37 |    0.0164s |       1.2% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 1s
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&cbfheatflux=1&mf=1&particles=1&sha=6b87380d8&src=code
+-----------------------------------------------------------------------------
