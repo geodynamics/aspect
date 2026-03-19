@@ -85,7 +85,7 @@ namespace aspect
                                           "Terminate the simulation gracefully when a file with a specified "
                                           "name appears in the output directory. This allows the user to "
                                           "gracefully exit the simulation at any time by simply creating "
-                                          "such a file using, for example, \\texttt{touch output/terminate}. "
+                                          "such a file using, for example, \\texttt{touch output/terminate-aspect}. "
                                           "The file's location is chosen to be in the output directory, "
                                           "rather than in a generic location such as the ASPECT directory, "
                                           "so that one can run multiple simulations at the same time (which "
