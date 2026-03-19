@@ -43,6 +43,7 @@ DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 #include <aspect/global.h>
+#include <aspect/linear_algebra_types.h>
 #include <aspect/simulator_access.h>
 #include <aspect/lateral_averaging.h>
 #include <aspect/simulator_signals.h>

@@ -28,6 +28,7 @@
 
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/numerics/data_out.h>
+#include <deal.II/lac/solver_control.h>
 
 #include <boost/signals2.hpp>
 

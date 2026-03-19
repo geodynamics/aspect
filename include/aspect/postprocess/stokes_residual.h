@@ -26,7 +26,7 @@
 #include <aspect/simulator_access.h>
 
 #include <deal.II/base/data_out_base.h>
-
+#include <deal.II/lac/solver_control.h>
 
 namespace aspect
 {
