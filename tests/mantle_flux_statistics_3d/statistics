@@ -1,0 +1,22 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Plume volume flux at 500 km (km^3/yr)
+# 9: Slab volume flux at 500 km (km^3/yr)
+# 10: Plume temperature anomaly flux at 500 km (K km^3/yr)
+# 11: Slab temperature anomaly flux at 500 km (K km^3/yr)
+# 12: Plume thermal buoyancy mass flux at 500 km (kg/yr)
+# 13: Slab thermal buoyancy mass flux at 500 km (kg/yr)
+# 14: Plume thermal buoyancy force rate at 500 km (N/yr)
+# 15: Slab thermal buoyancy force rate at 500 km (N/yr)
+# 16: Number of plumes at 500 km
+# 17: Number of slabs at 500 km
+# 18: Total slab length at 500 km (km)
+# 19: Mean slab length at 500 km (km)
+# 20: Mean plume radius at 500 km (km)
+# 21: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 768 21760 6930 0 5.70565490e+03 5.70565490e+03 1.12377906e+06 1.12377906e+06 1.47162094e+14 1.49515577e+14 1.47162094e+15 1.49515577e+15 1 1 2.86225431e+03 2.86225431e+03 9.20833613e+02 output-mantle_flux_statistics_3d/solution/solution-00000 
