@@ -232,6 +232,20 @@ astyle --options=astyle.rc my_plugin.cc my_plugin.h
 You NEED to use astyle version 2.04 for correct results (older versions or 2.05 will not work)!
 :::
 
+### Parameter documentation
+
+We keep documentation about all ASPECT input parameters in our [parameter
+documentation](https://aspect-documentation.readthedocs.io/en/latest/parameters/index.html).
+If your pull request introduces new parameters or updates existing ones, our
+automatic testers will notice and report the difference. You can update the
+parameter documentation by either (i) run `make parameters` in your build
+directory, check the modifications to the documentation and add the changes to
+your pull request, or (ii) download the tester artifact
+`changes-parameters.diff`, apply the changes to your local repository with `git
+apply changes-parameters.diff`, and then add the changes to the pull request.
+We insist on these changes to keep the online documentation always consistent
+with the latest development version of ASPECT.
+
 ### Changelog entries
 
 If your new pull request creates a change that is noticeable to ASPECT users,
