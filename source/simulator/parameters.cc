@@ -1672,6 +1672,7 @@ namespace aspect
         if (convert_to_years == true)
           reaction_time_step *= year_in_seconds;
         reaction_steps_per_advection_step = prm.get_integer ("Reaction time steps per advection step");
+        apply_reaction_solve_at_end_of_time_step = prm.get_bool ("Apply reaction solve at end of time step");
       }
       prm.leave_subsection ();
       prm.enter_subsection ("Diffusion solver parameters");
