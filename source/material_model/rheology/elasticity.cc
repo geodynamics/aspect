@@ -602,7 +602,7 @@ namespace aspect
       }
 
       // The following function computes the reaction rates for the operator
-      // splitting step that at the beginning of the new timestep $t+dtc$ updates the
+      // splitting step that at the end of the  timestep $t$ updates the
       // stored compositions $tau^{0\mathrm{adv}}$ at time $t$ to $tau^{t}$.
       // This update consists of the stress change resulting from system evolution,
       // but does not advect or rotate the stress tensor. Advection is done by
@@ -633,11 +633,10 @@ namespace aspect
         if (this->get_timestep_number() == 0)
           return;
 
-        // At the moment when the reaction rates are required (at the beginning of the timestep),
-        // the solution vector 'solution' holds the stress from the previous timestep,
-        // advected into the new position of the previous timestep, so $\tau^{t}_{0adv}$.
-        // This is the same as the vector 'old_solution' holds. At later moments during the current timestep,
-        // 'solution' will hold the current_linearization_point instead of the solution of the previous timestep.
+        // At the moment when the reaction rates are required (at the end of the timestep),
+        // the solution vector 'solution' holds the stress from the previous timestep
+        // advected and rotated into the new position of the current timestep, so $\tau^{t}_{0adv}$.
+        // The vector 'old_solution' holds the full deviatoric stress solution of the previous timestep.
         //
         // In case fields are used to track the stresses, MaterialModelInputs are based on 'solution'
         // when calling the MaterialModel for the reaction rates. When particles are used, MaterialModelInputs
@@ -686,18 +685,19 @@ namespace aspect
 
             for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
               {
-                // Get $\tau^{0adv}$ of the previous timestep t from the compositional fields.
-                // This stress includes the rotation and advection of the previous timestep,
+                // Get $\tau^{0adv}$ from the compositional fields.
+                // This stress includes the rotation and advection of the current timestep,
                 // i.e., the reaction term (which prescribes the change in stress due to rotation
-                // over the previous timestep) has already been applied during the previous timestep.
+                // over the timestep) has already been applied during the current timestep.
                 const SymmetricTensor<2, dim> stress_0_t (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index],
                                                           &in.composition[i][stress_start_index]+n_independent_components));
 
-                // Get the old stress that is used to interpolate to timestep $t+\Delta t_c$. It is stored on the
+                // Get the old stress that is used to interpolate to the current computational time step
+                // if it differs from the elastic time step. It is stored on the
                 // second set of n_independent_components fields, e.g. in 2D on field 3, 4 and 5.
-                // The old stress was advected into the previous timestep, but not rotated.
-                // Below we update it to full stress of the previous timestep, so that it can be
-                // advected into the current timestep.
+                // The old stress was advected into the current timestep, but not rotated.
+                // Below we update it to full stress of the current timestep after using it to
+                // compute the full stress.
                 const SymmetricTensor<2, dim>  stress_old (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index+n_independent_components],
                                                            &in.composition[i][stress_start_index+n_independent_components]+n_independent_components));
 
@@ -720,16 +720,11 @@ namespace aspect
                            + (1. - timestep_ratio) * (1. - effective_creep_viscosity / elastic_viscosity) * stress_old;
 
                 // Fill reaction rates.
-                // During this timestep, the reaction rates will be multiplied
+                // The reaction rates will be multiplied
                 // with the current timestep size to turn the rate of change into a change.
-                // However, this update belongs
-                // to the previous timestep. Therefore we divide by the
-                // current timestep and multiply with the previous one.
-                // When multiplied with the current timestep, this will give
-                // (rate * previous_dt / current_dt) * current_dt = rate * previous_dt = previous_change.
-                // previous_change = stress_t - stress_0_t.
-                // To compute the rate we should return to the operator splitting scheme,
-                // we therefore divide the change in stress by the current timestep current_dt (= dtc).
+                // The change in stress is the difference between the fully updated stress
+                // and the advected and rotated stress. Dividing by the current time step
+                // size (= dtc) gives the rate of change.
                 const double dtc = timestep_ratio * elastic_timestep();
 
                 const SymmetricTensor<2, dim> stress_update = (stress_t - stress_0_t) / dtc;
@@ -739,9 +734,11 @@ namespace aspect
                                                                        &reaction_rate_out->reaction_rates[i][stress_start_index]+n_independent_components);
 
                 // Also update the second set of stresses, stress_old, with the newly computed stress,
-                // which in the rest of the timestep will serve as the old stress advected but not rotated
-                // into the current timestep. This function fill_reaction_rates is only called at the
-                // beginning of the timestep, and so this update only happens once.
+                // which in the next timestep will serve as the old stress advected but not rotated
+                // into the current timestep. For fields, this function fill_reaction_rates is only
+                // called at the end of the timestep, and so this update only happens once.
+                // For particles, this function is called each time they have been restored to their
+                // original position from the beginning of the time step.
                 const SymmetricTensor<2, dim> stress_old_update = (stress_t - stress_old) / dtc;
 
                 Utilities::Tensors::unroll_symmetric_tensor_into_array(stress_old_update,
