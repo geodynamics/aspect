@@ -489,22 +489,6 @@ namespace aspect
           if (this->convert_output_to_years() == true)
             melting_time_scale *= year_in_seconds;
 
-          if (this->get_parameters().use_operator_splitting)
-            {
-              if (this->get_parameters().reaction_solver_type == Parameters<dim>::ReactionSolverType::fixed_step)
-                AssertThrow(melting_time_scale >= this->get_parameters().reaction_time_step,
-                            ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step)
-                                       + " in the operator splitting scheme is too large to compute melting rates! "
-                                       "You have to choose it in such a way that it is smaller than the 'Melting time scale for "
-                                       "operator splitting' chosen in the material model, which is currently "
-                                       + Utilities::to_string(melting_time_scale) + "."));
-              AssertThrow(melting_time_scale > 0,
-                          ExcMessage("The Melting time scale for operator splitting must be larger than 0!"));
-              AssertThrow(this->introspection().compositional_name_exists("porosity"),
-                          ExcMessage("Material model Melt global with melt transport only "
-                                     "works if there is a compositional field called porosity."));
-            }
-
           if (this->include_melt_transport())
             {
               AssertThrow(this->introspection().compositional_name_exists("porosity"),
@@ -516,6 +500,34 @@ namespace aspect
                               ExcMessage("Material model Melt global only works if there is a "
                                          "compositional field called peridotite."));
                 }
+            }
+
+          if (this->get_parameters().use_operator_splitting)
+            {
+              AssertThrow(this->introspection().compositional_name_exists("porosity"),
+                          ExcMessage("Material model Melt global with melt transport only "
+                                     "works if there is a compositional field called porosity."));
+
+              AssertThrow(this->get_parameters().reaction_solver_type[this->introspection().compositional_index_for_name("porosity")] ==
+                          this->get_parameters().reaction_solver_type[this->introspection().compositional_index_for_name("peridotite")],
+                          ExcMessage("The reaction solver types for the operator splitting scheme need to be the same for "
+                                     "the fields `porosity' and `peridotite'."));
+
+              if (this->get_parameters().reaction_solver_type[this->introspection().compositional_index_for_name("porosity")] == Parameters<dim>::ReactionSolverType::fixed_step)
+                {
+                  AssertThrow(melting_time_scale >= this->get_parameters().reaction_time_step[this->introspection().compositional_index_for_name("porosity")],
+                              ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step[0])
+                                         + " in the operator splitting scheme is too large to compute melting rates! "
+                                         "You have to choose it in such a way that it is smaller than the 'Melting time scale for "
+                                         "operator splitting' chosen in the material model, which is currently "
+                                         + Utilities::to_string(melting_time_scale) + "."));
+                  AssertThrow(this->get_parameters().reaction_time_step[this->introspection().compositional_index_for_name("porosity")] ==
+                              this->get_parameters().reaction_time_step[this->introspection().compositional_index_for_name("peridotite")],
+                              ExcMessage("The reaction time steps for the operator splitting scheme need to be the same for "
+                                         "the fields `porosity' and `peridotite'."));
+                }
+              AssertThrow(melting_time_scale > 0,
+                          ExcMessage("The Melting time scale for operator splitting must be larger than 0!"));
             }
 
         }
