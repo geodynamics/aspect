@@ -639,9 +639,9 @@ namespace aspect
                            "`Reaction solver relative tolerance'. "
                            "However, in some cases we have instantaneous reactions, where we know the "
                            "new value of a compositional field (and the reaction rate would be "
-                           "infinite), or reaction where we need to know or be able to control the step "
+                           "infinite), or reactions where we need to know or be able to control the step "
                            "size we use to compute the reactions. In theses cases, it is appropriate "
-                           "to use the `fixed step' scheme, a method that a forward Euler scheme and a "
+                           "to use the `fixed step' scheme, a method that uses a forward Euler scheme and a "
                            "fixed number of steps given by the `Reaction time step' and "
                            "`Reaction time steps per advection step' parameters. ");
 
