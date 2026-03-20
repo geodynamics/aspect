@@ -678,6 +678,14 @@ namespace aspect
                            "this criterion and the ``Reaction time step'', whichever yields the "
                            "smaller time step. "
                            "Units: none.");
+
+        prm.declare_entry ("Apply reaction solve at end of time step", "false",
+                           Patterns::Bool (),
+                           "Whether the reaction solve should be done at the beginning of a time step "
+                           "(if set to false, default) or at the end of a time step (if true). "
+                           "This is only used if the parameter ``Use operator splitting'' is set "
+                           "to true. "
+                           "Units: none.");
       }
       prm.leave_subsection ();
       prm.enter_subsection ("Diffusion solver parameters");

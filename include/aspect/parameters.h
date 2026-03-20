@@ -614,6 +614,7 @@ namespace aspect
     double                         ARKode_relative_tolerance;
     double                         reaction_time_step;
     unsigned int                   reaction_steps_per_advection_step;
+    bool                           apply_reaction_solve_at_end_of_time_step;
 
     // subsection: Diffusion solver parameters
     double                         diffusion_length_scale;
