@@ -612,22 +612,30 @@ namespace aspect
                       ExcMessage("The freezing rate is not taken into account in models with fractional melting. "
                                  "Changing its value from the default of 0.0 is not allowed."));
 
-        if (this->get_parameters().reaction_solver_type == Parameters<dim>::ReactionSolverType::fixed_step)
+        const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+        const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
+
+        if (this->get_parameters().reaction_solver_type[porosity_idx] == Parameters<dim>::ReactionSolverType::fixed_step)
           {
-            AssertThrow(melting_time_scale >= this->get_parameters().reaction_time_step,
-                        ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step)
+            AssertThrow(melting_time_scale >= this->get_parameters().reaction_time_step[porosity_idx],
+                        ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step[porosity_idx])
                                    + " in the operator splitting scheme is too large to compute melting rates! "
                                    "You have to choose it in such a way that it is smaller than the 'Melting time scale for "
                                    "operator splitting' chosen in the material model, which is currently "
                                    + Utilities::to_string(melting_time_scale) + "."));
 
-            AssertThrow(freezing_rate * this->get_parameters().reaction_time_step <= 1.0,
-                        ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step)
+            AssertThrow(freezing_rate * this->get_parameters().reaction_time_step[porosity_idx] <= 1.0,
+                        ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step[porosity_idx])
                                    + " in the operator splitting scheme is too large to compute freezing rates! "
                                    "You have to choose it in such a way that it is smaller than the inverse of the "
                                    "'Freezing rate' chosen in the material model, which is currently "
                                    + Utilities::to_string(1.0/freezing_rate) + "."));
           }
+
+        AssertThrow(this->get_parameters().reaction_solver_type[peridotite_idx] == this->get_parameters().reaction_solver_type[porosity_idx] &&
+                    this->get_parameters().reaction_time_step[peridotite_idx] == this->get_parameters().reaction_time_step[porosity_idx],
+                    ExcMessage("Reaction model `Katz 2003 mantle melting' only "
+                               "works if the reaction solver type and timestep are equal for the fields `porosity' and `bound_fluid'."));
       }
     }
   }
