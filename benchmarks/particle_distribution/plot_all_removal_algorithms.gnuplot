@@ -3,6 +3,7 @@ plot "output_removal/output-cutoff-w1/statistics" using 2:23 title "deal.ii-cuto
      "output_removal/output-gaussian/statistics" using 2:23 title "gaussian", \
      "output_removal/output-triangular/statistics" using 2:23 title "triangular", \
      "output_removal/output-uniform/statistics" using 2:23 title "uniform", \
+     "output_removal/output-epanechnikov/statistics" using 2:23 title "epanechnikov", \
      "output_removal/output-random/statistics" using 2:23 title "random"
 set style data linespoints
 set xl "Time"
@@ -19,6 +20,7 @@ plot "output_removal/output-cutoff-w1-constant-velocity/statistics" using 2:23 t
      "output_removal/output-gaussian-constant-velocity/statistics" using 2:23 title "gaussian constant V", \
      "output_removal/output-triangular-constant-velocity/statistics" using 2:23 title "triangular constant V", \
      "output_removal/output-uniform-constant-velocity/statistics" using 2:23 title "uniform constant V", \
+     "output_removal/output-epanechnikov-constant-velocity/statistics" using 2:23 title "epanechnikov constant V", \
      "output_removal/output-random-constant-velocity/statistics" using 2:23 title "random constant V"
 set style data linespoints
 set xl "Time"
@@ -35,6 +37,7 @@ plot "output_removal/output-cutoff-w1/statistics" using 2:21 title "deal.ii-cuto
      "output_removal/output-gaussian/statistics" using 2:21 title "gaussian", \
      "output_removal/output-triangular/statistics" using 2:21 title "triangular", \
      "output_removal/output-uniform/statistics" using 2:21 title "uniform", \
+     "output_removal/output-epanechnikov/statistics" using 2:21 title "epanechnikov", \
      "output_removal/output-random/statistics" using 2:21 title "random"
 set style data linespoints
 set xl "Time"
@@ -51,6 +54,7 @@ plot "output_removal/output-cutoff-w1-constant-velocity/statistics" using 2:21 t
      "output_removal/output-gaussian-constant-velocity/statistics" using 2:21 title "gaussian constant V", \
      "output_removal/output-triangular-constant-velocity/statistics" using 2:21 title "triangular constant V", \
      "output_removal/output-uniform-constant-velocity/statistics" using 2:21 title "uniform constant V", \
+     "output_removal/output-epanechnikov-constant-velocity/statistics" using 2:21 title "epanechnikov", \
      "output_removal/output-random-constant-velocity/statistics" using 2:21 title "random constant V"
 set style data linespoints
 set xl "Time"
@@ -67,6 +71,7 @@ plot "output_removal/output-cutoff-w1/statistics" using 2:22 title "deal.ii-cuto
      "output_removal/output-gaussian/statistics" using 2:22 title "gaussian", \
      "output_removal/output-triangular/statistics" using 2:22 title "triangular", \
      "output_removal/output-uniform/statistics" using 2:22 title "uniform", \
+     "output_removal/output-epanechnikov/statistics" using 2:22 title "epanechnikov", \
      "output_removal/output-random/statistics" using 2:22 title "random"
 set style data linespoints
 set xl "Time"
@@ -83,6 +88,7 @@ plot "output_removal/output-cutoff-w1-constant-velocity/statistics" using 2:22 t
      "output_removal/output-gaussian-constant-velocity/statistics" using 2:22 title "gaussian constant V", \
      "output_removal/output-triangular-constant-velocity/statistics" using 2:22 title "triangular constant V", \
      "output_removal/output-uniform-constant-velocity/statistics" using 2:22 title "uniform constant V", \
+     "output_removal/output-epanechnikov-constant-velocity/statistics" using 2:22 title "epanechnikov", \
      "output_removal/output-random-constant-velocity/statistics" using 2:22 title "random constant V"
 set style data linespoints
 set xl "Time"
