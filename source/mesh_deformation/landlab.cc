@@ -230,7 +230,17 @@ namespace aspect
         {
           // Build a dictionary with solution values for each variable to pass to Python:
           PyObject *pDict = PyDict_New();
-          const std::vector<std::string> variable_names = { "x velocity", "y velocity", "z velocity" };
+          std::vector<std::string> variable_names = { "x velocity", "y velocity"};
+          if (dim == 3)
+            variable_names.push_back("z velocity");
+
+          variable_names.push_back("pressure");
+          variable_names.push_back("temperature");
+
+          // Add compositional fields to the variable names and variable data:
+          for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+            variable_names.push_back(this->introspection().name_for_compositional_index(c));
+
           std::vector<std::vector<double>> variable_data(variable_names.size(),  std::vector<double>(current_solution_at_points.size(), 0.0));
           for (unsigned int i=0; i<variable_names.size(); ++i)
             {
