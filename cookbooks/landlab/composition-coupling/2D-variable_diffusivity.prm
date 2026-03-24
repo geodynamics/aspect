@@ -1,0 +1,181 @@
+# This cookbook is used as a test to ensure that FastScape is properly working with ASPECT.
+# It consists of a 2.5 km high central mountain block that is eroded through the use of
+# hillslope diffusion and the Stream Power Law. Within ASPECT, the model is based off
+# convection-box-3d. However, it is set up in a way that nothing happens in the geodynamic model.
+
+# At the top, we define the number of space dimensions we would like to
+# work in:
+set Dimension                              = 2
+set Use years instead of seconds           = true
+set End time                               = 10e6
+set Maximum time step                      = 10000
+set Output directory                       = test-variable-diffusivity
+set Pressure normalization                 = no
+set Surface pressure                       = 0
+set Resume computation                     = false
+set Nonlinear solver scheme                = iterated Advection and Stokes
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block AMG
+  end
+end
+
+subsection Discretization
+  set Composition polynomial degree           = 2
+  set Stokes velocity polynomial degree       = 2
+  set Temperature polynomial degree           = 2
+  set Use discontinuous composition discretization = true
+end
+
+# A box that has an initial 60x60 km mountain block that is 2.5 km above the initial model surface.
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 100e3
+    set Y extent = 25e3
+
+    set X repetitions = 4
+    set Y repetitions = 1
+  end
+end
+
+# We do not consider temperature in this setup
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 273
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = initial temperature
+end
+
+# X Set all boundaries except the top to freeslip.
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom:function, left:function, right:function #, front:function, back:function
+  subsection Function
+    set Coordinate system   = cartesian
+    set Variable names      = x,y,t
+    set Function constants  = uplift_rate=0, cm=0.0
+    set Function expression = 0; uplift_rate * cm
+  end
+end
+
+# subsection Boundary traction model
+#   set Prescribed traction boundary indicators = right: initial lithostatic pressure, left: initial lithostatic pressure
+#   subsection Initial lithostatic pressure
+#     set Number of integration points = 10000
+#     set Representative point         = 0.0, 0.0
+#   end
+# end
+
+# Here we setup the top boundary with fastscape.
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: Landlab
+  set Additional tangential mesh velocity boundary indicators = left, right
+
+  subsection Landlab
+    set MPI ranks for Landlab = 1
+    # set Script name           = 2D-rectangular_topography
+    set Script name           = variable-diffusivity
+    set Script argument       =
+    set Script path           =
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1e-100
+  end
+end
+
+# Dimensionless
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 1
+    set Viscosity                     = 1
+  end
+end
+
+# We also have to specify that we want to use the Boussinesq
+# approximation (assuming the density in the temperature
+# equation to be constant, and incompressibility).
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Compositional field methods =  field, field
+  set Types of fields =  chemical composition,  chemical composition
+  set Names of fields = strong, weak
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Coordinate system   =  cartesian
+    set Variable names      =  x,y,t
+    set Function expression = if(x>=50e3, 0.0, 1.0); if(x<=50e3, 0.0, 1.0)
+  end
+end
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators         = bottom, top
+  set List of model names                           =  initial composition
+  set Allow fixed composition on outflow boundaries = true
+end
+
+
+# We set a maximum surface refinement level of 4 using the max/minimum refinement level.
+# This will make it so that the ASPECT surface refinement is the same as what we set
+# for our maximum surface refinement level for FastScape.
+subsection Mesh refinement
+  set Initial global refinement                = 3
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+#   set Strategy                                 = minimum refinement function, maximum refinement function
+
+#   subsection Maximum refinement function
+#     set Coordinate system   = cartesian
+#     set Variable names      = x,y,z
+#     set Function expression = if(y>=21000, 4, 2)
+#   end
+
+#   subsection Minimum refinement function
+#     set Coordinate system   = cartesian
+#     set Variable names      = x,y,z
+#     set Function expression = if(y>=21000, 4, 2)
+#   end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, topography, velocity statistics, composition statistics
+
+  subsection Topography
+    set Output to file = true
+    set Time between text output = 50e3
+  end
+
+  subsection Visualization
+    set Time between graphical output = 50e3
+    set Output mesh velocity = true
+    set Output mesh displacement = true
+    set Output undeformed mesh = false
+    set Interpolate output = false
+  end
+
+end

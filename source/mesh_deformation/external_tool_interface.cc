@@ -282,7 +282,7 @@ namespace aspect
                          "and if the evaluator has not been invalidated by a mesh "
                          "refinement step."));
 
-      // All components are evaluted (velocity, pressure, temperature, and N compositional fields).
+      // All components are evaluated (velocity, pressure, temperature, and N compositional fields).
       const unsigned int n_components = this->introspection().n_components;
       std::vector<std::vector<double>> solution_at_points (evaluation_points.size(), std::vector<double>(n_components, 0.0));
 
