@@ -24,6 +24,7 @@
 #include <aspect/material_model/equation_of_state/interface.h>
 #include <aspect/material_model/thermal_conductivity/constant.h>
 #include <aspect/material_model/thermal_conductivity/tosi_stackhouse.h>
+#include <aspect/material_model/thermal_conductivity/lookup.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/utilities.h>
 #include <aspect/lateral_averaging.h>
@@ -278,7 +279,6 @@ namespace aspect
 
       // Evaluate the equation of state properties over all evaluation points
       equation_of_state.evaluate(eos_in, eos_outputs);
-      thermal_conductivity->evaluate(in, out);
 
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
@@ -314,8 +314,24 @@ namespace aspect
             }
 
           MaterialUtilities::fill_averaged_equation_of_state_outputs(eos_outputs[i], mass_fractions, volume_fractions[i], i, out);
+
+	  // If a field called "depletion" exist, do density scaling using its value
+          const std::vector<double> &composition = in.composition[i];
+          if (this->introspection().compositional_name_exists("depletion"))
+            {
+              const unsigned int depletion_index = this->introspection().compositional_index_for_name("depletion");
+              if (composition[depletion_index] >= 0.2) 
+                {
+                  out.densities[i] = out.densities[i] * (1.0 - 0.04 * (composition[depletion_index] - 0.2));
+                }
+            }
+
           fill_prescribed_outputs(i, volume_fractions[i], in, out);
         }
+
+      // Evaluate thermal conductivity only here, because it is dependent on density due to lookup model
+      thermal_conductivity->evaluate(in, out);
+
 
       // fill additional outputs if they exist
       equation_of_state.fill_additional_outputs(in, volume_fractions, out);
@@ -404,7 +420,7 @@ namespace aspect
           // Thermal conductivity parameters
           ThermalConductivity::Constant<dim>::declare_parameters (prm);
           prm.declare_entry ("Thermal conductivity formulation", "constant",
-                             Patterns::Selection("constant|p-T-dependent"),
+                             Patterns::Selection("constant|p-T-dependent|lookup"),
                              "Which law should be used to compute the thermal conductivity. "
                              "The 'constant' law uses a constant value for the thermal "
                              "conductivity. The 'p-T-dependent' formulation uses equations "
@@ -421,6 +437,7 @@ namespace aspect
                              "different sets of parameters. Note that the Stackhouse "
                              "parametrization is only valid for the lower mantle (bridgmanite).");
           ThermalConductivity::TosiStackhouse<dim>::declare_parameters (prm);
+	  ThermalConductivity::Lookup<dim>::declare_parameters (prm);
 
           // Table lookup parameters
           EquationOfState::ThermodynamicTableLookup<dim>::declare_parameters(prm);
@@ -469,7 +486,13 @@ namespace aspect
               if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(thermal_conductivity.get()))
                 sim->initialize_simulator (this->get_simulator());
             }
-          else
+          else if (prm.get ("Thermal conductivity formulation") == "lookup")
+            {
+              thermal_conductivity = std::make_unique<ThermalConductivity::Lookup<dim>>();
+              if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(thermal_conductivity.get()))
+                sim->initialize_simulator (this->get_simulator());
+            }
+	  else
             AssertThrow(false, ExcMessage("Not a valid thermal conductivity formulation"));
 
           thermal_conductivity->parse_parameters(prm);
@@ -534,7 +557,7 @@ namespace aspect
         this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
         this->model_dependence.compressibility = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
         this->model_dependence.specific_heat = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
-        this->model_dependence.thermal_conductivity = NonlinearDependence::none;
+        this->model_dependence.thermal_conductivity = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
       }
     }
 
