@@ -988,6 +988,24 @@ namespace aspect
                          "If 0 and time between checkpoint is not specified, "
                          "checkpointing will not be performed. "
                          "Units: None.");
+      prm.declare_entry ("Number of checkpoints to keep", "3",
+                         Patterns::Integer (1),
+                         "The number of checkpoint slots to rotate through in the "
+                         "output/restart directory. "
+                         "Units: None.");
+      prm.declare_entry ("Resume checkpoint", "0",
+                         Patterns::Integer (0),
+                         "If nonzero, resume from the checkpoint with this slot id "
+                         "inside output/restart. This overrides Resume time and the "
+                         "last good checkpoint selection. "
+                         "Units: None.");
+      prm.declare_entry ("Resume time", "-1",
+                         Patterns::Double (-1),
+                         "If non-negative, resume from the checkpoint whose saved model "
+                         "time is closest to this value. This option is ignored when "
+                         "Resume checkpoint is set. "
+                         "Units: Years if the 'Use years instead "
+                         "of seconds' parameter is set; seconds otherwise.");
     }
     prm.leave_subsection ();
 
@@ -1905,6 +1923,16 @@ namespace aspect
     {
       checkpoint_time_secs = prm.get_integer ("Time between checkpoint");
       checkpoint_steps     = prm.get_integer ("Steps between checkpoint");
+      n_checkpoints_to_keep = prm.get_integer ("Number of checkpoints to keep");
+      resume_checkpoint_id  = prm.get_integer ("Resume checkpoint");
+      resume_time           = prm.get_double ("Resume time");
+      if (convert_to_years && resume_time >= 0.)
+        resume_time *= year_in_seconds;
+
+      AssertThrow(!(resume_checkpoint_id != 0 && resume_time >= 0.),
+                  ExcMessage("The parameters 'Resume checkpoint' and 'Resume time' "
+                             "can not be used at the same time. Please set at most one "
+                             "of them."));
 
 #ifndef DEAL_II_WITH_ZLIB
       AssertThrow ((checkpoint_time_secs == 0)

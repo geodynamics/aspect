@@ -894,6 +894,15 @@ namespace aspect
       unsigned int determine_last_good_snapshot() const;
 
       /**
+       * Determine which snapshot to resume from based on the checkpointing
+       * configuration. This may be the explicitly requested checkpoint id, the
+       * checkpoint closest to a requested resume time, or the last good
+       * checkpoint. It will return numbers::invalid_unsigned_int if no usable
+       * snapshot exists.
+       */
+      unsigned int determine_resume_snapshot() const;
+
+      /**
        * Save the state of this program to a set of files in the output
        * directory. In reality, however, only some variables are stored (in
        * particular the mesh, the solution vectors, etc) whereas others can
