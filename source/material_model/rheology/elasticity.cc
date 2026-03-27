@@ -203,9 +203,9 @@ namespace aspect
         // The operator split should happen at the end of the timestep,
         // as it adds the dynamic stress update from the current time step.
         if (this->get_parameters().use_operator_splitting)
-          AssertThrow(this->get_parameters().apply_reaction_solve_at_end_of_time_step == true,
+          AssertThrow(this->get_parameters().reaction_strategy == Parameters<dim>::ReactionStrategy::after_nonlinear_solver,
                       ExcMessage("The operator splitting scheme used to update the stresses should be applied at the end of each "
-                                 "time step by setting 'Apply reaction solve at end of time step' to true."));
+                                 "time step by setting 'Reaction solve strategy' to 'after nonlinear solver'."));
 
         // Check that 3+3 in 2D or 6+6 in 3D stress fields exist.
         AssertThrow((this->introspection().get_number_of_fields_of_type(CompositionalFieldDescription::stress) == 2*SymmetricTensor<2,dim>::n_independent_components),
