@@ -200,7 +200,8 @@ namespace aspect
           AssertThrow(!this->get_parameters().use_operator_splitting,
                       ExcMessage("If stresses are tracked on particles, the stress update is applied by the particle property 'elastic stress' "
                                  "and operator splitting should not be turned on. "));
-        // The operator split should happen at the end of the timestep, as it add the dynamic stress update from the current time step.
+        // The operator split should happen at the end of the timestep,
+        // as it adds the dynamic stress update from the current time step.
         if (this->get_parameters().use_operator_splitting)
           AssertThrow(this->get_parameters().apply_reaction_solve_at_end_of_time_step == true,
                       ExcMessage("The operator splitting scheme used to update the stresses should be applied at the end of each "
