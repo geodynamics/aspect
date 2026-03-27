@@ -679,12 +679,13 @@ namespace aspect
                            "smaller time step. "
                            "Units: none.");
 
-        prm.declare_entry ("Apply reaction solve at end of time step", "false",
-                           Patterns::Bool (),
-                           "Whether the reaction solve should be done at the beginning of a time step "
-                           "(if set to false, default) or at the end of a time step (if true). "
-                           "This is only used if the parameter ``Use operator splitting'' is set "
-                           "to true. "
+        prm.declare_entry ("Reaction solve strategy", "before nonlinear solver",
+                           Patterns::Selection("before nonlinear solver|after nonlinear solver"),
+                           "Whether the reaction solve should be done before the nonlinear solver "
+                           "(default) or after the nonlinear solver. The latter strategy should be "
+                           "used when ``Enable elasticity'' is set to true. "
+                           "The strategy parameter is only considered if the parameter "
+                           "``Use operator splitting'' is set to true. "
                            "Units: none.");
       }
       prm.leave_subsection ();
@@ -1672,7 +1673,7 @@ namespace aspect
         if (convert_to_years == true)
           reaction_time_step *= year_in_seconds;
         reaction_steps_per_advection_step = prm.get_integer ("Reaction time steps per advection step");
-        apply_reaction_solve_at_end_of_time_step = prm.get_bool ("Apply reaction solve at end of time step");
+        reaction_strategy = ReactionStrategy::parse(prm.get("Reaction solve strategy"));
       }
       prm.leave_subsection ();
       prm.enter_subsection ("Diffusion solver parameters");

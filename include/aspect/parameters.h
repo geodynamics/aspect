@@ -475,6 +475,33 @@ namespace aspect
     };
 
     /**
+     * This enum represents the different choices for when to
+     * apply operator splitting. See @p reaction_strategy.
+     */
+    struct ReactionStrategy
+    {
+      enum Kind
+      {
+        before_nonlinear_solver,
+        after_nonlinear_solver
+      };
+
+      static
+      Kind
+      parse(const std::string &input)
+      {
+        if (input == "before nonlinear solver")
+          return before_nonlinear_solver;
+        else if (input == "after nonlinear solver")
+          return after_nonlinear_solver;
+        else
+          AssertThrow(false, ExcNotImplemented());
+
+        return Kind();
+      }
+    };
+
+    /**
      * Use the struct aspect::CompositionalFieldDescription
      */
     using CompositionalFieldDescription DEAL_II_DEPRECATED = aspect::CompositionalFieldDescription;
@@ -615,6 +642,7 @@ namespace aspect
     double                         reaction_time_step;
     unsigned int                   reaction_steps_per_advection_step;
     bool                           apply_reaction_solve_at_end_of_time_step;
+    typename ReactionStrategy::Kind reaction_strategy;
 
     // subsection: Diffusion solver parameters
     double                         diffusion_length_scale;

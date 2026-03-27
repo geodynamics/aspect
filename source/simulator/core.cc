@@ -1972,9 +1972,9 @@ namespace aspect
         signals.post_mesh_deformation(*this);
       }
 
-    // Compute the reactions of compositional fields and temperature in case of operator splitting.
-    // Only if specifically requested, do we compute the reactions at the end of the time step instead.
-    if (parameters.use_operator_splitting && !parameters.apply_reaction_solve_at_end_of_time_step)
+    // Compute the reactions of compositional fields and temperature in case of operator splitting
+    // before the nonlinear solver instead of after.
+    if (parameters.use_operator_splitting && parameters.reaction_strategy == Parameters<dim>::ReactionStrategy::before_nonlinear_solver)
       compute_reactions ();
 
     try
@@ -2117,6 +2117,11 @@ namespace aspect
               AssertThrow(false, ExcNotImplemented());
           }
       }
+
+    // Compute the reactions of compositional fields and temperature here after
+    // the nonlinear solver instead of before.
+    if (parameters.use_operator_splitting && parameters.reaction_strategy == Parameters<dim>::ReactionStrategy::after_nonlinear_solver)
+      compute_reactions ();
   }
 
 
@@ -2263,13 +2268,6 @@ namespace aspect
         time_stepping_manager.update();
 
         const double new_time_step_size = time_stepping_manager.get_next_time_step_size();
-
-        // Compute the reactions of compositional fields and temperature here after
-        // the time step solve loop instead of at the beginning of the next time step
-        // if requested by the user.
-        if (parameters.use_operator_splitting &&
-            parameters.apply_reaction_solve_at_end_of_time_step)
-          compute_reactions ();
 
         // if we postprocess nonlinear iterations, this function is called within
         // solve_timestep () in the individual solver schemes
