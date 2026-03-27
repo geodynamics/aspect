@@ -173,6 +173,16 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm) override;
 
+        template <class Archive>
+        void
+        serialize (Archive &ar, const unsigned int version);
+
+        void
+        save (std::map<std::string, std::string> &status_strings) const override;
+
+        void
+        load (const std::map<std::string, std::string> &status_strings) override;
+
       private:
 
         /**
