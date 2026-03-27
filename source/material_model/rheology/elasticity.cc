@@ -608,7 +608,9 @@ namespace aspect
       // This update consists of the stress change resulting from system evolution,
       // but does not advect or rotate the stress tensor. Advection is done by
       // solving the advection equation and the stress tensor is rotated through
-      // the source term (reaction_terms) of that same equation.
+      // the source term (reaction_terms) of that same equation. Or, in case stresses
+      // are tracked on particles, by advection of the particles and the updating
+      // of the their properties with the reaction_terms.
       template <int dim>
       void
       Elasticity<dim>::fill_reaction_rates (const MaterialModel::MaterialModelInputs<dim> &in,
@@ -634,20 +636,16 @@ namespace aspect
         if (this->get_timestep_number() == 0)
           return;
 
-        // At the moment when the reaction rates are required (at the end of the timestep),
+        // At the moment when the reaction rates are required (after the nonlinear solver loop),
         // the solution vector 'solution' holds the stress from the previous timestep
         // advected and rotated into the new position of the current timestep, so $\tau^{t}_{0adv}$.
-        // The vector 'old_solution' holds the full deviatoric stress solution of the previous timestep.
         //
         // In case fields are used to track the stresses, MaterialModelInputs are based on 'solution'
         // when calling the MaterialModel for the reaction rates. When particles are used, MaterialModelInputs
-        // for this function are filled with the old_solution (including for the strain rate), except for the
+        // for this function are filled with the solution (including for the strain rate), except for the
         // compositions that represent the stress tensor components, these are taken directly from the
         // particles in the property plugin by default (although this can be changed from the input file).
-        // As the particles are restored to their pre-advection location at the beginning of each nonlinear iteration,
-        // their values and positions correspond to the old solution.
-        // This means that in both cases we can use 'in' to get to the $\tau^{t}_{0adv}$ and velocity/strain rate of the
-        // previous timestep.
+        // This means that in both cases we can use 'in' to get to the $\tau^{t}_{0adv}$ and velocity/strain rate.
         // TODO The additional outputs include the reaction rates, so we also have to fill the reaction_rates
         // if additional_outputs are requested.
         if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 &&
