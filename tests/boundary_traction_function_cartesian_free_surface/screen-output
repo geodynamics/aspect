@@ -99,7 +99,7 @@ Number of mesh deformation degrees of freedom: 9,288
 
 
 *** Timestep 1:  t=2.5 years, dt=2.5 years
-   Solving mesh displacement system... 4 iterations.
+   Solving mesh displacement system... 5 iterations.
    Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 1 iterations.
@@ -109,7 +109,7 @@ Number of mesh deformation degrees of freedom: 9,288
    Solving ve_stress_yy_old system ... 1 iterations.
    Solving ve_stress_xy_old system ... 1 iterations.
    Solving Stokes system (GMG)... 101+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.41957e-16, 8.73173e-08, 8.73173e-08, 1.43995e-07, 0, 0, 0, 1.35446e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.41955e-16, 8.73173e-08, 8.73173e-08, 1.43995e-07, 0, 0, 0, 1.35446e-05
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1.35446e-05
 
    Solving temperature system... 0 iterations.
@@ -144,7 +144,7 @@ Number of mesh deformation degrees of freedom: 9,288
    Solving ve_stress_yy_old system ... 1 iterations.
    Solving ve_stress_xy_old system ... 1 iterations.
    Solving Stokes system (GMG)... 115+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.37372e-16, 4.05723e-07, 4.05723e-07, 3.7722e-07, 0, 0, 0, 8.08465e-06
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.25774e-16, 4.05723e-07, 4.05723e-07, 3.7722e-07, 0, 0, 0, 8.08465e-06
       Relative nonlinear residual (total system) after nonlinear iteration 1: 8.08465e-06
 
 
