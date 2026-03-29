@@ -191,7 +191,7 @@ namespace aspect
             {
               // Create constant value to use for AV
               const double A_o = 1.1e5*std::exp(-530000/(8.314*in.temperature[q]));
-              const double n = 3; //n=3 for test against VPST, n=3.5 for D-Rex
+              const double n = 3.5; //n=3 for test against VPSC, n=3.5 for D-Rex in ASPECT
               // The values of A_o and 0.73 were picked so that Gamma = 3.5322e-15[1/(s*Pa^n)] if T=1600K and d=1000 microns
               const double Gamma = (A_o/(std::pow(grain_size,0.73)));
 
