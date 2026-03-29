@@ -215,7 +215,7 @@ namespace aspect
               const Tensor<2,3> R = euler_angles_to_rotation_matrix(phi1, theta, phi2);
 
               // Compute Hill Parameters FGHLMN from the eigenvalues of a,b,c axis
-               // CPO2Hill v3 model:
+              // CPO2Hill v3 model:
               const double F = Utilities::fixed_power<2>(eigvalue_a1)*CnI_F[0] + eigvalue_a1*CnI_F[1] + eigvalue_a2*CnI_F[2] + (1/eigvalue_a3)*CnI_F[3] + Utilities::fixed_power<2>(eigvalue_b1)*CnI_F[4] + eigvalue_b1*CnI_F[5] + eigvalue_b2*CnI_F[6] + (1/eigvalue_b3)*CnI_F[7] + Utilities::fixed_power<2>(eigvalue_c1)*CnI_F[8] + eigvalue_c1*CnI_F[9] + eigvalue_c2*CnI_F[10] + (1/eigvalue_c3)*CnI_F[11] + CnI_F[12];
               const double G = Utilities::fixed_power<2>(eigvalue_a1)*CnI_G[0] + eigvalue_a1*CnI_G[1] + eigvalue_a2*CnI_G[2] + (1/eigvalue_a3)*CnI_G[3] + Utilities::fixed_power<2>(eigvalue_b1)*CnI_G[4] + eigvalue_b1*CnI_G[5] + eigvalue_b2*CnI_G[6] + (1/eigvalue_b3)*CnI_G[7] + Utilities::fixed_power<2>(eigvalue_c1)*CnI_G[8] + eigvalue_c1*CnI_G[9] + eigvalue_c2*CnI_G[10] + (1/eigvalue_c3)*CnI_G[11] + CnI_G[12];
               const double H = Utilities::fixed_power<2>(eigvalue_a1)*CnI_H[0] + eigvalue_a1*CnI_H[1] + eigvalue_a2*CnI_H[2] + (1/eigvalue_a3)*CnI_H[3] + Utilities::fixed_power<2>(eigvalue_b1)*CnI_H[4] + eigvalue_b1*CnI_H[5] + eigvalue_b2*CnI_H[6] + (1/eigvalue_b3)*CnI_H[7] + Utilities::fixed_power<2>(eigvalue_c1)*CnI_H[8] + eigvalue_c1*CnI_H[9] + eigvalue_c2*CnI_H[10] + (1/eigvalue_c3)*CnI_H[11] + CnI_H[12];
@@ -427,7 +427,7 @@ namespace aspect
         {
           EquationOfState::LinearizedIncompressible<dim>::declare_parameters (prm);
 
-           prm.declare_entry ("Coefficients and intercept for F", "0.5920219168461529, -0.831936049, -0.000937583, -0.00029648, 0.380413345, -0.533048795, 0.46835862365145753, -0.000965503, -1.249340274, 1.0748554477472438, -0.167662132, 0.003358407, 0.5215020195972386",
+          prm.declare_entry ("Coefficients and intercept for F", "0.5920219168461529, -0.831936049, -0.000937583, -0.00029648, 0.380413345, -0.533048795, 0.46835862365145753, -0.000965503, -1.249340274, 1.0748554477472438, -0.167662132, 0.003358407, 0.5215020195972386",
                              Patterns::List(Patterns::Double()),
                              "12 Coefficients and 1 intercept to compute the Hill Parameter F "
                              "according to the linear regression relation provided in the cookbook documentation. "
@@ -452,7 +452,7 @@ namespace aspect
           prm.declare_entry ("Coefficients and intercept for N", "7.872922986831338, -7.933513948, -2.588175191, 0.029843804645040883, 7.605864624755694, -5.469451775, -0.347688637, 0.06395131, -1.78763278, 2.2550636824173584, 3.023166891521831, -0.102862765, 3.6958741003498234",
                              Patterns::List(Patterns::Double()),
                              "12 Coefficients and 1 intercept to compute the Hill Parameter N in the same way as above.");
-                             
+
           prm.declare_entry ("Reference viscosity", "1e9",
                              Patterns::Double(),
                              "Magnitude of reference viscosity.");
