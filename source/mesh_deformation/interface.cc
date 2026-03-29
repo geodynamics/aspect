@@ -1234,7 +1234,7 @@ namespace aspect
               // because we want to use the Chebyshev iteration as a solver.
               smoother_data[0].smoothing_range = 1e-3;
               smoother_data[0].degree = numbers::invalid_unsigned_int;
-              smoother_data[0].eig_cg_n_iterations = mg_matrices[0].m();
+              smoother_data[0].eig_cg_n_iterations = 50;
             }
           mg_matrices[level].compute_diagonal();
           smoother_data[level].preconditioner =
