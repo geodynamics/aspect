@@ -19,28 +19,28 @@
 # 19: Number of advected particles (Particle system 2)
 # 20: Particle file name
 # 21: Particle file name (2)
-# 22: Particle Manager 0 Minimal particle distribution score: 
-# 23: Particle Manager 0 Average particle distribution score: 
-# 24: Particle Manager 0 Maximal particle distribution score: 
-# 25: Particle Manager 0 Cell Score Standard Deviation: 
-# 26: Particle Manager 1 Minimal particle distribution score: 
-# 27: Particle Manager 1 Average particle distribution score: 
-# 28: Particle Manager 1 Maximal particle distribution score: 
-# 29: Particle Manager 1 Cell Score Standard Deviation: 
-# 30: Particle Manager 0 Minimum PDF standard deviation: 
-# 31: Particle Manager 0 Mean of PDF standard deviation: 
-# 32: Particle Manager 0 Maximum PDF standard deviation: 
-# 33: Particle Manager 0 Mean of PDF minimum values: 
-# 34: Particle Manager 0 Mean PDF maximum values: 
-# 35: Particle Manager 0 Minimum of PDF minimum values: 
-# 36: Particle Manager 0 Maximum of PDF maximum values: 
-# 37: Particle Manager 1 Minimum PDF standard deviation: 
-# 38: Particle Manager 1 Mean of PDF standard deviation: 
-# 39: Particle Manager 1 Maximum PDF standard deviation: 
-# 40: Particle Manager 1 Mean of PDF minimum values: 
-# 41: Particle Manager 1 Mean PDF maximum values: 
-# 42: Particle Manager 1 Minimum of PDF minimum values: 
-# 43: Particle Manager 1 Maximum of PDF maximum values: 
+# 22: Minimal particle distribution score: 
+# 23: Average particle distribution score: 
+# 24: Maximal particle distribution score: 
+# 25: Cell Score Standard Deviation: 
+# 26: Particles 2: Minimal particle distribution score: 
+# 27: Particles 2: Average particle distribution score: 
+# 28: Particles 2: Maximal particle distribution score: 
+# 29: Particles 2: Cell Score Standard Deviation: 
+# 30: Minimum PDF standard deviation: 
+# 31: Mean of PDF standard deviation: 
+# 32: Maximum PDF standard deviation: 
+# 33: Mean of PDF minimum values: 
+# 34: Mean PDF maximum values: 
+# 35: Minimum of PDF minimum values: 
+# 36: Maximum of PDF maximum values: 
+# 37: Particles 2: Minimum PDF standard deviation: 
+# 38: Particles 2: Mean of PDF standard deviation: 
+# 39: Particles 2: Maximum PDF standard deviation: 
+# 40: Particles 2: Mean of PDF minimum values: 
+# 41: Particles 2: Mean PDF maximum values: 
+# 42: Particles 2: Minimum of PDF minimum values: 
+# 43: Particles 2: Maximum of PDF maximum values: 
  0 0.000000000000e+00 0.000000000000e+00 256 2595 1141 0 1.00000000e-01 1.00000000e-01 0.00000000e+00 9.24913194e-01 1.12500000e+00 1.27458333e-03 1.27458333e-03 4.58333333e-02 -4.79166667e-02 output-particle_score_statistics_multiple_particle_managers/solution/solution-00000 4096 2304 output-particle_score_statistics_multiple_particle_managers/particles/particles-00000 output-particle_score_statistics_multiple_particle_managers/particles-2/particles-2-00000 0.0000 0.0000 0.0000 0.0000 0.0782 0.0782 0.0782 0.0000 0.0000 0.0000 0.0000 0.0593 0.0593 0.0455 0.1000 0.0000 0.0000 0.0000 0.0790 0.0790 0.0606 0.1333 
  1 3.000000000000e-02 3.000000000000e-02 256 2595 1141 9 1.00000000e-01 1.00000000e-01 0.00000000e+00 9.24900437e-01 1.12572330e+00 1.35711100e-03 1.35711100e-03 4.58319987e-02 -4.79140039e-02 output-particle_score_statistics_multiple_particle_managers/solution/solution-00001 4096 2304 output-particle_score_statistics_multiple_particle_managers/particles/particles-00001 output-particle_score_statistics_multiple_particle_managers/particles-2/particles-2-00001 0.0000 0.0000 0.0000 0.0000 0.0782 0.0782 0.0782 0.0000 0.0000 0.0001 0.0078 0.0593 0.0595 0.0455 0.1000 0.0000 0.0064 0.0222 0.0663 0.0790 0.0444 0.1333 
  2 6.000000000000e-02 3.000000000000e-02 256 2595 1141 8 1.00000000e-01 1.00000000e-01 0.00000000e+00 9.24887213e-01 1.12670358e+00 1.36531473e-03 1.36531473e-03 4.58306632e-02 -4.79113389e-02 output-particle_score_statistics_multiple_particle_managers/solution/solution-00002 4096 2304 output-particle_score_statistics_multiple_particle_managers/particles/particles-00002 output-particle_score_statistics_multiple_particle_managers/particles-2/particles-2-00002 0.0000 0.0000 0.0000 0.0000 0.0782 0.0782 0.0782 0.0000 0.0000 0.0001 0.0078 0.0593 0.0595 0.0455 0.1000 0.0051 0.0131 0.0222 0.0529 0.0790 0.0444 0.1333 
