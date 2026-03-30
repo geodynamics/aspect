@@ -35,6 +35,8 @@ namespace aspect
       std::vector<double> local_min_scores(this->n_particle_managers(),std::numeric_limits<double>::max());
       std::vector<double> local_max_scores(this->n_particle_managers(),0);
       std::vector<std::vector<double>> cell_scores(this->n_particle_managers());
+      // We need the granularity as a double because we are using it to divide "bucket_width," another double 
+      const double granularity_double = static_cast<double>(granularity);
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         {
@@ -58,21 +60,13 @@ namespace aspect
                   if (particles_in_cell > 0)
                     {
                       const double particles_in_cell_double = static_cast<double>(particles_in_cell);
-                      const double granularity_double = static_cast<double>(granularity);
                       const double ideal_n_particles_per_bucket = particles_in_cell_double/(Utilities::fixed_power<dim>(granularity_double));
 
-                      /*
-                      The "buckets_ideal" table contains doubles because the ideal
-                      number of particles per bucket will not always be an integer.
-                      */
-                      Table<dim,double> buckets_ideal;
                       TableIndices<dim> bucket_sizes;
                       for (unsigned int i=0; i<dim; ++i)
                         bucket_sizes[i] = granularity;
 
-                      buckets_ideal.reinit(bucket_sizes);
                       const double bucket_width = 1.0/granularity_double;
-                      buckets_ideal.fill(ideal_n_particles_per_bucket);
 
                       const Table<dim,unsigned int> buckets_actual
                         = sort_particles_into_buckets(cell,particle_manager_index,bucket_width);
@@ -101,16 +95,14 @@ namespace aspect
                                   for (unsigned int z=0; z<granularity; ++z)
                                     {
                                       entry_index[2] = z;
-                                      const double value_ideal = buckets_ideal(entry_index);
                                       const double value_actual = static_cast<double>(buckets_actual(entry_index));
-                                      actual_error_squared += (value_ideal - value_actual)*(value_ideal - value_actual);
+                                      actual_error_squared += (ideal_n_particles_per_bucket - value_actual)*(ideal_n_particles_per_bucket - value_actual);
                                     }
                                 }
                               else
                                 {
-                                  const double value_ideal = buckets_ideal(entry_index);
                                   const double value_actual = static_cast<double>(buckets_actual(entry_index));
-                                  actual_error_squared += (value_ideal - value_actual)*(value_ideal - value_actual);
+                                  actual_error_squared += (ideal_n_particles_per_bucket - value_actual)*(ideal_n_particles_per_bucket - value_actual);
                                 }
                             }
                         }
@@ -135,59 +127,30 @@ namespace aspect
             }
         }
 
-      if (this->n_particle_managers()==1)
-        {
-          // Calculate the mean and standard deviation of cell scores across all processors
-          const std::pair<double, double> mean_and_standard_deviation =
-            Utilities::MPI::mean_and_standard_deviation(cell_scores[0].begin(),
-                                                        cell_scores[0].end(),
-                                                        this->get_mpi_communicator());
-
-          // get final values for min and max score from all processors
-          const double global_max_score = Utilities::MPI::max (local_max_scores[0], this->get_mpi_communicator());
-          const double global_min_score = Utilities::MPI::min (local_min_scores[0], this->get_mpi_communicator());
-
-          // write to statistics file
-          statistics.add_value ("Minimal particle distribution score: ", global_min_score);
-          statistics.add_value ("Average particle distribution score: ", mean_and_standard_deviation.first);
-          statistics.add_value ("Maximal particle distribution score: ", global_max_score);
-          statistics.add_value ("Cell Score Standard Deviation: ", mean_and_standard_deviation.second);
-
-          std::ostringstream output;
-          output << global_min_score << '/' << mean_and_standard_deviation.first << '/' << global_max_score << '/' << mean_and_standard_deviation.second;
-
-          return std::pair<std::string, std::string> ("Particle Distribution Score (min/avg/max/stdev):",
-                                                      output.str());
-        }
-      else // Handle using multiple particle managers
-        {
-          std::ostringstream output;
-
-          for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
-            {
-              // Calculate the mean and standard deviation of cell scores across all processors
-              const std::pair<double, double> mean_and_standard_deviation =
-                Utilities::MPI::mean_and_standard_deviation(cell_scores[particle_manager_index].begin(),
-                                                            cell_scores[particle_manager_index].end(),
-                                                            this->get_mpi_communicator());
-
-              // get final values for min and max score from all processors
-              const double global_max_score = Utilities::MPI::max (local_max_scores[particle_manager_index], this->get_mpi_communicator());
-              const double global_min_score = Utilities::MPI::min (local_min_scores[particle_manager_index], this->get_mpi_communicator());
-
-              // write to statistics file
-              std::string particle_manager_index_prefix = "Particle Manager " + std::to_string(particle_manager_index) + " ";
-              statistics.add_value (particle_manager_index_prefix+"Minimal particle distribution score: ", global_min_score);
-              statistics.add_value (particle_manager_index_prefix+"Average particle distribution score: ", mean_and_standard_deviation.first);
-              statistics.add_value (particle_manager_index_prefix+"Maximal particle distribution score: ", global_max_score);
-              statistics.add_value (particle_manager_index_prefix+"Cell Score Standard Deviation: ", mean_and_standard_deviation.second);
-              output << "Particle Manager Index " << particle_manager_index << ": " << global_min_score << '/' << mean_and_standard_deviation.first << '/' << global_max_score << '/' << mean_and_standard_deviation.second << ", ";
-            }
-
-          return std::pair<std::string, std::string> ("Particle Distribution Score (min/avg/max/stdev): ",
-                                                      output.str());
-        }
-
+        std::ostringstream output;
+        for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
+          {
+            // Calculate the mean and standard deviation of cell scores across all processors
+            const std::pair<double, double> mean_and_standard_deviation =
+              Utilities::MPI::mean_and_standard_deviation(cell_scores[particle_manager_index].begin(),
+                                                          cell_scores[particle_manager_index].end(),
+                                                          this->get_mpi_communicator());
+            // get final values for min and max score from all processors
+            const double global_max_score = Utilities::MPI::max (local_max_scores[particle_manager_index], this->get_mpi_communicator());
+            const double global_min_score = Utilities::MPI::min (local_min_scores[particle_manager_index], this->get_mpi_communicator());
+            // write to statistics file for all particle managers
+            const std::string particle_manager_index_prefix = (particle_manager_index == 0) ? "" : "Particles " + std::to_string(particle_manager_index+1) + ": ";
+            statistics.add_value (particle_manager_index_prefix+"Minimal particle distribution score: ", global_min_score);
+            statistics.add_value (particle_manager_index_prefix+"Average particle distribution score: ", mean_and_standard_deviation.first);
+            statistics.add_value (particle_manager_index_prefix+"Maximal particle distribution score: ", global_max_score);
+            statistics.add_value (particle_manager_index_prefix+"Cell Score Standard Deviation: ", mean_and_standard_deviation.second);
+          
+          // write screen output for the first particle manager
+          if (particle_manager_index == 0)
+            output << global_min_score << '/' << mean_and_standard_deviation.first << '/' << global_max_score << '/' << mean_and_standard_deviation.second;
+          }
+        return std::pair<std::string, std::string> ("Particle distribution score min/avg/max/stdev: ",
+                                                    output.str());
     }
 
 
