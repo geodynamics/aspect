@@ -271,7 +271,7 @@ namespace aspect
       }
 
     // now that we have output set up, we can start timer sections
-    computing_timer.enter_subsection("Initialization");
+    TimerScope timer (computing_timer, "Initialization");
 
 
     // if any plugin wants access to the Simulator by deriving from SimulatorAccess, initialize it and
@@ -591,8 +591,6 @@ namespace aspect
     // now that all member variables have been set up, also
     // connect the functions that will actually do the assembly
     set_assemblers();
-
-    computing_timer.leave_subsection("Initialization");
   }
 
 
@@ -658,14 +656,12 @@ namespace aspect
     // constraints. Of course we need to force assembly too.
     if (rebuild_sparsity_and_matrices)
       {
-        computing_timer.enter_subsection("Setup matrices");
+        TimerScope timer (computing_timer, "Setup matrices");
 
         rebuild_sparsity_and_matrices = false;
         setup_system_matrix (introspection.index_sets.system_partitioning);
         setup_system_preconditioner (introspection.index_sets.system_partitioning);
         rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
-
-        computing_timer.leave_subsection("Setup matrices");
       }
 
     // notify different system components that we started the next time step
@@ -1473,7 +1469,7 @@ namespace aspect
   {
     signals.edit_parameters_pre_setup_dofs(*this, parameters);
 
-    computing_timer.enter_subsection("Setup dof systems");
+    TimerScope timer (computing_timer, "Setup dof systems");
 
     dof_handler.distribute_dofs(finite_element);
 
@@ -1582,8 +1578,6 @@ namespace aspect
     // Setup matrix-free dofs
     if (stokes_matrix_free)
       stokes_matrix_free->setup_dofs();
-
-    computing_timer.leave_subsection("Setup dof systems");
   }
 
 
@@ -1656,7 +1650,7 @@ namespace aspect
   void
   Simulator<dim>::postprocess ()
   {
-    computing_timer.enter_subsection("Postprocessing");
+    TimerScope timer (computing_timer, "Postprocessing");
     pcout << "   Postprocessing:" << std::endl;
 
     // run all the postprocessing routines and then write
@@ -1690,8 +1684,6 @@ namespace aspect
 
     // finally, write the entire set of current results to disk
     output_statistics();
-
-    computing_timer.leave_subsection("Postprocessing");
   }
 
 
@@ -1716,7 +1708,7 @@ namespace aspect
 
 
     {
-      computing_timer.enter_subsection("Refine mesh structure, part 1");
+      TimerScope timer (computing_timer, "Refine mesh structure, part 1");
 
       Vector<float> estimated_error_per_cell (triangulation.n_active_cells());
       mesh_refinement_manager.execute (estimated_error_per_cell);
@@ -1816,7 +1808,6 @@ namespace aspect
       if (!mesh_changed)
         {
           pcout << "Skipping mesh refinement, because the mesh did not change.\n" << std::endl;
-          computing_timer.leave_subsection("Refine mesh structure, part 1");
           return;
         }
 
@@ -1828,14 +1819,12 @@ namespace aspect
       triangulation.execute_coarsening_and_refinement ();
       if (MappingQCache<dim> *map = dynamic_cast<MappingQCache<dim>*>(&(*mapping)))
         map->initialize(MappingQGeneric<dim>(4), triangulation);
-
-      computing_timer.leave_subsection("Refine mesh structure, part 1");
     } // leave the timed section
 
     setup_dofs ();
 
     {
-      computing_timer.enter_subsection("Refine mesh structure, part 2");
+      TimerScope timer (computing_timer, "Refine mesh structure, part 2");
 
       LinearAlgebra::BlockVector distributed_system;
       LinearAlgebra::BlockVector old_distributed_system;
@@ -1920,8 +1909,6 @@ namespace aspect
 
       // calculate global volume after refining mesh
       global_volume = GridTools::volume (triangulation, *mapping);
-
-      computing_timer.leave_subsection("Refine mesh structure, part 2");
     }
   }
 
@@ -2194,7 +2181,7 @@ namespace aspect
 
     if (parameters.resume_computation == false)
       {
-        computing_timer.enter_subsection("Setup initial conditions");
+        TimerScope timer (computing_timer, "Setup initial conditions");
 
         timestep_number           = 0;
         time_step = old_time_step = 0;
@@ -2213,8 +2200,6 @@ namespace aspect
 
             signals.post_set_initial_state (*this);
           }
-
-        computing_timer.leave_subsection("Setup initial conditions");
       }
 
     // Start the principal loop over time steps. At this point, everything

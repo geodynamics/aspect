@@ -23,6 +23,7 @@
 
 #include <deal.II/base/config.h>
 #include <deal.II/base/mpi.h>
+#include <deal.II/base/timer.h>
 
 // C++11 related includes.
 #include <functional>
@@ -443,6 +444,51 @@ namespace aspect
                                const double      inner_radius,
                                const double      outer_radius);
 #endif
+
+
+  /**
+   * A replacement class for TimerOutput::Scope that should avoid
+   * the deadlocking issues we have had for the latter.
+   *
+   * This class is modeled after the pattern used in deal.II's
+   * TimerOutput::Scope class but really just calls TimerOutput::enter_scope()
+   * in the constructor and TimerOutput::leave_scope() in the destructor whereas
+   * TimerOutput::Scope also checks whether there are pending exceptions
+   * in the destructor and only calls leave_scope() if there are not.
+   */
+  class TimerScope
+  {
+    public:
+      /**
+       * Constructor that calls TimerOutput::enter_scope() with the given scope name.
+       */
+      TimerScope(dealii::TimerOutput &timer_,
+                 const std::string   &section_name_)
+        : timer(timer_)
+        , section_name(section_name_)
+      {
+        timer.enter_subsection(section_name);
+      }
+
+      /**
+       * Destructor that calls TimerOutput::leave_scope().
+       */
+      ~TimerScope()
+      {
+        timer.leave_subsection(section_name);
+      }
+
+    private:
+      /**
+       * Reference to the TimerOutput object
+       */
+      dealii::TimerOutput &timer;
+
+      /**
+       * Name of the section we need to exit
+       */
+      const std::string section_name;
+  };
 
 }
 

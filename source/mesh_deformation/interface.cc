@@ -564,7 +564,7 @@ namespace aspect
     {
       AssertThrow(sim.parameters.mesh_deformation_enabled, ExcInternalError());
 
-      this->get_computing_timer().enter_subsection("Mesh deformation");
+      TimerScope timer (sim.computing_timer, "Mesh deformation");
 
       old_mesh_displacements = mesh_displacements;
 
@@ -585,8 +585,6 @@ namespace aspect
 
       // After changing the mesh we need to rebuild things
       sim.rebuild_stokes_matrix = sim.rebuild_stokes_preconditioner = true;
-
-      this->get_computing_timer().leave_subsection("Mesh deformation");
     }
 
 
@@ -1561,15 +1559,13 @@ namespace aspect
       if (this->simulator_is_past_initialization() == false ||
           this->get_timestep_number() == 0)
         {
-          this->get_computing_timer().enter_subsection("Mesh deformation initialize");
+          TimerScope timer (sim.computing_timer, "Mesh deformation initialize");
 
           make_initial_constraints();
           if (this->is_stokes_matrix_free())
             compute_mesh_displacements_gmg();
           else
             compute_mesh_displacements();
-
-          this->get_computing_timer().leave_subsection("Mesh deformation initialize");
         }
 
       if (this->is_stokes_matrix_free())
