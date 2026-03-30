@@ -357,7 +357,7 @@ namespace aspect
         // Create the ReactionRateOutputs that are necessary for the operator splitting
         // step (either on the fields or directly on the particles)
         // that sets both sets of stresses to the total stress of the
-        // previous timestep.
+        // current timestep after the nonlinear solver is done.
         if (out.template has_additional_output_object<ReactionRateOutputs<dim>>() == false &&
             (this->get_parameters().use_operator_splitting || (this->get_parameters().mapped_particle_properties).count(this->introspection().compositional_index_for_name("ve_stress_xx"))))
           {
@@ -425,7 +425,7 @@ namespace aspect
                 // (the force term goes into the rhs of the momentum equation).
                 // This happens after the advection equations have been solved, and hence in.composition
                 // contains the rotated and advected stresses $tau^{0adv}$.
-                // Only at the beginning of the next timestep do we add the stress update of the
+                // Only after the nonlinear solver loop do we add the stress update of the
                 // current timestep to the stress stored in the compositional fields, giving
                 // $\tau{t+\Delta t_c}$ with $t+\Delta t_c$ being the current timestep.
                 const SymmetricTensor<2,dim> stress_0_advected (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index],
@@ -467,7 +467,7 @@ namespace aspect
                                                                    in.strain_rate[i], stress_0_advected, stress_old, effective_creep_viscosity, average_elastic_shear_moduli[i]);
                   }
 
-                // Apply the stress update to get the total stress of timestep t.
+                // Apply the stress update to get the total stress of timestep $t+\Delta t_c$.
                 const SymmetricTensor<2, dim> stress = 2. * effective_creep_viscosity * deviatoric_strain_rate + viscosity_ratio * stress_0_advected +
                                                        (1. - timestep_ratio) * (1. - viscosity_ratio) * stress_old;
 
@@ -520,7 +520,7 @@ namespace aspect
 
             const double elastic_viscosity = calculate_elastic_viscosity(average_elastic_shear_moduli[i]);
 
-            // Apply the stress update to get the total deviatoric stress of timestep t.
+            // Apply the stress update to get the total deviatoric stress of timestep $t+\Delta t_c$.
             elastic_additional_out->deviatoric_stress[i] = 2. * eta * deviatoric_strain_rate + eta / elastic_viscosity * stress_0_advected + (1. - timestep_ratio) * (1. - eta / elastic_viscosity) * stress_old;
             elastic_additional_out->elastic_shear_moduli[i] = average_elastic_shear_moduli[i];
             elastic_additional_out->elastic_viscosity[i] = elastic_viscosity;
@@ -603,8 +603,8 @@ namespace aspect
       }
 
       // The following function computes the reaction rates for the operator
-      // splitting step that at the end of the  timestep $t$ updates the
-      // stored compositions $tau^{0\mathrm{adv}}$ at time $t$ to $tau^{t}$.
+      // splitting step that at the end of the timestep $t+\Delta t_c$ updates the
+      // stored compositions $tau^{0\mathrm{adv}}$ at time $t+\Delta t_c$ to $tau^{t+\Delta t_c}$.
       // This update consists of the stress change resulting from system evolution,
       // but does not advect or rotate the stress tensor. Advection is done by
       // solving the advection equation and the stress tensor is rotated through
@@ -638,14 +638,14 @@ namespace aspect
 
         // At the moment when the reaction rates are required (after the nonlinear solver loop),
         // the solution vector 'solution' holds the stress from the previous timestep
-        // advected and rotated into the new position of the current timestep, so $\tau^{t}_{0adv}$.
+        // advected and rotated into the new position of the current timestep, so $\tau^{t+\Delta t_c}_{0adv}$.
         //
         // In case fields are used to track the stresses, MaterialModelInputs are based on 'solution'
         // when calling the MaterialModel for the reaction rates. When particles are used, MaterialModelInputs
         // for this function are filled with the solution (including for the strain rate), except for the
         // compositions that represent the stress tensor components, these are taken directly from the
         // particles in the property plugin by default (although this can be changed from the input file).
-        // This means that in both cases we can use 'in' to get to the $\tau^{t}_{0adv}$ and velocity/strain rate.
+        // This means that in both cases we can use 'in' to get to the $\tau^{t+\Delta t_c}_{0adv}$ and velocity/strain rate.
         // TODO The additional outputs include the reaction rates, so we also have to fill the reaction_rates
         // if additional_outputs are requested.
         if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 &&
@@ -700,7 +700,7 @@ namespace aspect
                 const SymmetricTensor<2, dim>  stress_old (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index+n_independent_components],
                                                            &in.composition[i][stress_start_index+n_independent_components]+n_independent_components));
 
-                // $\eta^{t}_{effcreep}$. This viscosity has been calculated with the timestep_ratio dtc/dte.
+                // $\eta^{t+\Delta t_c}_{effcreep}$. This viscosity has been calculated with the timestep_ratio dtc/dte.
                 const double effective_creep_viscosity = effective_creep_viscosities[i];
 
                 // $\eta_{el} = G \Delta t_c$.
@@ -712,7 +712,7 @@ namespace aspect
                 // The ratio between the computational and elastic timestep $\frac{\Delta t_c} / {\Delta t_{el}}$.
                 const double timestep_ratio = calculate_timestep_ratio();
 
-                // Compute the total stress at time t.
+                // Compute the total stress at time $t+\Delta t_c$.
                 const SymmetricTensor<2, dim>
                 stress_t = 2. * effective_creep_viscosity * Utilities::Tensors::consistent_deviator(in.strain_rate[i])
                            + effective_creep_viscosity / elastic_viscosity * stress_0_t
@@ -893,8 +893,8 @@ namespace aspect
           {
             // Get the compositional fields from the previous timestep $t$.
             // The 'old_solution' has been updated to the full stress tensor
-            // of time $t$ by the operator splitting step at the beginning
-            // of the current timestep.
+            // of time $t$ by the operator splitting step after the nonlinear
+            // solver loop of the previous timestep.
             std::vector<double> old_solution_values(this->get_fe().dofs_per_cell);
             in.current_cell->get_dof_values(this->get_old_solution(),
                                             old_solution_values.begin(),
@@ -936,8 +936,7 @@ namespace aspect
             // which include the stresses stored on the particles.
             // The computation of the reaction terms (during which this function is called) happens
             // after the particles have been restored to their position and values
-            // at the beginning of the timestep (i.e., the position and values of the previous timestep) and after they
-            // have been updated to the full stress of the previous timestep by the reaction rates.
+            // at the beginning of the timestep (i.e., the position and values of the previous timestep).
             for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
               stress_t[i] = Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index],
                                                                          &in.composition[i][stress_start_index]+n_independent_components);
