@@ -37,7 +37,7 @@ namespace aspect
       std::vector<std::vector<double>> cell_scores(this->n_particle_managers());
 
       for (auto &scores: cell_scores)
-              scores.reserve(this->get_triangulation().n_active_cells());      
+        scores.reserve(this->get_triangulation().n_active_cells());
 
       // We need the granularity as a double because we are using it to divide "bucket_width," another double
       const double granularity_double = static_cast<double>(granularity);
