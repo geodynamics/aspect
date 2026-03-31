@@ -2138,9 +2138,9 @@ namespace aspect
     // start-up
     if (parameters.resume_computation == true)
       {
-        last_checkpoint_id = determine_last_good_snapshot();
+        last_checkpoint_id = determine_resume_snapshot();
         AssertThrow(last_checkpoint_id != numbers::invalid_unsigned_int,
-                    ExcMessage("You requested to restart the simulation from the last checkpoint but no written checkpoint has been found."));
+                    ExcMessage("You requested to restart the simulation from a checkpoint, but no matching written checkpoint has been found."));
 
         resume_from_snapshot();
         // we need to remove additional_refinement_times that are in the past

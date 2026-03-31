@@ -1,0 +1,109 @@
+-----------------------------------------------------------------------------
+--                             This is ASPECT                              --
+-- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
+-----------------------------------------------------------------------------
+--     . version 3.1.0-pre (pr/checkpoint_retention_and_resume_selection, 775cd597c)
+--     . using deal.II 9.7.0
+--     .       with 32 bit indices
+--     .       with vectorization level 1 (SSE2, 2 doubles, 128 bits)
+--     . using Trilinos 16.1.0
+--     . using p4est 2.3.6
+--     . using Geodynamic World Builder 1.0.0
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&sha=775cd597c&src=code
+-----------------------------------------------------------------------------
+*** Resuming from snapshot output1.tmp/restart/03/
+
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 13,764 (9,539+4,225)
+
+*** Timestep 6:  t=6.89231e+06 seconds, dt=1.27893e+06 seconds
+   Solving temperature system... 19 iterations.
+   Solving Stokes system (direct)... done.
+
+   Postprocessing:
+     Writing graphical output: output1.tmp/solution/solution-00006
+
+*** Timestep 7:  t=8.23159e+06 seconds, dt=1.33928e+06 seconds
+   Solving temperature system... 19 iterations.
+   Solving Stokes system (direct)... done.
+
+   Postprocessing:
+     Writing graphical output: output1.tmp/solution/solution-00007
+
+*** Snapshot output1.tmp/restart/04/ created!
+
+*** Timestep 8:  t=9.63611e+06 seconds, dt=1.40452e+06 seconds
+   Solving temperature system... 20 iterations.
+   Solving Stokes system (direct)... done.
+
+   Postprocessing:
+     Writing graphical output: output1.tmp/solution/solution-00008
+
+*** Timestep 9:  t=1.11115e+07 seconds, dt=1.4754e+06 seconds
+   Solving temperature system... 20 iterations.
+   Solving Stokes system (direct)... done.
+
+   Postprocessing:
+     Writing graphical output: output1.tmp/solution/solution-00009
+
+*** Snapshot output1.tmp/restart/05/ created!
+
+*** Timestep 10:  t=1.26639e+07 seconds, dt=1.55237e+06 seconds
+   Solving temperature system... 20 iterations.
+   Solving Stokes system (direct)... done.
+
+   Postprocessing:
+     Writing graphical output: output1.tmp/solution/solution-00010
+
+Number of active cells: 982 (on 6 levels)
+Number of degrees of freedom: 13,282 (9,204+4,078)
+
+*** Timestep 11:  t=1.43001e+07 seconds, dt=1.63621e+06 seconds
+   Solving temperature system... 21 iterations.
+   Solving Stokes system (direct)... done.
+
+   Postprocessing:
+     Writing graphical output: output1.tmp/solution/solution-00011
+
+*** Snapshot output1.tmp/restart/01/ created!
+
+*** Timestep 12:  t=1.60287e+07 seconds, dt=1.7286e+06 seconds
+   Solving temperature system... 22 iterations.
+   Solving Stokes system (direct)... done.
+
+   Postprocessing:
+     Writing graphical output: output1.tmp/solution/solution-00012
+
+Termination requested by criterion: end step
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      1.59s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         7 |      0.22s |        14% |
+| Assemble temperature system      |         7 |     0.307s |        19% |
+| Build temperature preconditioner |         7 |    0.0166s |         1% |
+| Create snapshot                  |         3 |    0.0272s |       1.7% |
+| Initialization                   |         1 |      0.13s |       8.2% |
+| Postprocessing                   |         7 |    0.0562s |       3.5% |
+| Refine mesh structure, part 1    |         1 |    0.0382s |       2.4% |
+| Refine mesh structure, part 2    |         1 |   0.00186s |      0.12% |
+| Setup dof systems                |         2 |    0.0122s |      0.76% |
+| Setup matrices                   |         2 |    0.0216s |       1.4% |
+| Solve Stokes system              |         7 |     0.684s |        43% |
+| Solve temperature system         |         7 |    0.0184s |       1.2% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 3s
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&sha=775cd597c&src=code
+-----------------------------------------------------------------------------

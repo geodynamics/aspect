@@ -36,7 +36,10 @@
 
 #include <deal.II/fe/mapping_q_cache.h>
 
+#include <cmath>
 #include <cstring>
+#include <fstream>
+#include <limits>
 
 #ifdef DEAL_II_WITH_ZLIB
 #  include <zlib.h>
@@ -47,6 +50,63 @@ namespace aspect
 
   namespace
   {
+    struct CheckpointMetadata
+    {
+      double time = numbers::signaling_nan<double>();
+      unsigned int timestep_number = numbers::invalid_unsigned_int;
+    };
+
+    template <int dim>
+    unsigned int checkpoint_id_width(const Parameters<dim> &parameters)
+    {
+      return std::max(2U, static_cast<unsigned int>(std::to_string(parameters.n_checkpoints_to_keep).size()));
+    }
+
+    template <int dim>
+    std::string checkpoint_path_from_id(const Parameters<dim> &parameters,
+                                        const unsigned int checkpoint_id)
+    {
+      return parameters.output_directory
+             + "restart/"
+             + Utilities::int_to_string(checkpoint_id, checkpoint_id_width(parameters))
+             + "/";
+    }
+
+    void write_checkpoint_metadata(const std::string &checkpoint_path,
+                                   const double time,
+                                   const unsigned int timestep_number)
+    {
+      std::ofstream metadata_out(checkpoint_path + "metadata.txt");
+      metadata_out.precision(17);
+      metadata_out << "time " << time << '\n'
+                   << "timestep_number " << timestep_number << '\n';
+      metadata_out.close();
+
+      AssertThrow(static_cast<bool>(metadata_out),
+                  ExcMessage("Writing of the checkpoint metadata file <"
+                             + checkpoint_path + "metadata.txt> failed."));
+    }
+
+    CheckpointMetadata read_checkpoint_metadata(const std::string &checkpoint_path)
+    {
+      std::ifstream metadata_in(checkpoint_path + "metadata.txt");
+      AssertThrow(static_cast<bool>(metadata_in),
+                  ExcMessage("Could not open checkpoint metadata file <"
+                             + checkpoint_path + "metadata.txt>."));
+
+      CheckpointMetadata metadata;
+      std::string time_label;
+      std::string timestep_label;
+      metadata_in >> time_label >> metadata.time >> timestep_label >> metadata.timestep_number;
+      AssertThrow(static_cast<bool>(metadata_in)
+                  && time_label == "time"
+                  && timestep_label == "timestep_number",
+                  ExcMessage("Could not parse checkpoint metadata file <"
+                             + checkpoint_path + "metadata.txt>."));
+
+      return metadata;
+    }
+
     /**
      * Save a few of the critical parameters of the current run in the
      * checkpoint file. We will load them again later during
@@ -257,11 +317,10 @@ namespace aspect
     total_walltime_until_last_snapshot += wall_timer.wall_time();
     wall_timer.restart();
 
-    const unsigned int n_checkpoints_to_keep = 3;
     // This will rotate from 01 to n_checkpoints_to_keep including:
-    const unsigned int checkpoint_id = (last_checkpoint_id % n_checkpoints_to_keep) + 1;
+    const unsigned int checkpoint_id = (last_checkpoint_id % parameters.n_checkpoints_to_keep) + 1;
 
-    const std::string checkpoint_path = parameters.output_directory + "restart/" + Utilities::int_to_string(checkpoint_id, 2) + "/";
+    const std::string checkpoint_path = checkpoint_path_from_id(parameters, checkpoint_id);
     Utilities::create_directory(checkpoint_path, mpi_communicator, true);
 
     const unsigned int my_id = Utilities::MPI::this_mpi_process (mpi_communicator);
@@ -381,6 +440,8 @@ namespace aspect
     last_checkpoint_id = checkpoint_id;
     if (my_id == 0)
       {
+        write_checkpoint_metadata(checkpoint_path, time, timestep_number);
+
         std::ofstream f (parameters.output_directory + "restart/last_good_checkpoint.txt");
         f << last_checkpoint_id;
         f.close();
@@ -404,12 +465,71 @@ namespace aspect
         if (f)
           {
             f >> last_checkpoint_id;
-            AssertThrow((last_checkpoint_id > 0) && (last_checkpoint_id < 100),
+            AssertThrow(last_checkpoint_id > 0,
                         ExcMessage("Could not parse the last good checkpoint from last_good_checkpoint.txt"));
           }
       }
 
     return Utilities::MPI::broadcast(mpi_communicator, last_checkpoint_id, 0);
+  }
+
+
+
+  template <int dim>
+  unsigned int Simulator<dim>::determine_resume_snapshot() const
+  {
+    if (parameters.resume_checkpoint_id != 0)
+      {
+        AssertThrow(parameters.resume_checkpoint_id <= parameters.n_checkpoints_to_keep,
+                    ExcMessage("The requested value for 'Resume checkpoint' is larger than the configured "
+                               "'Number of checkpoints to keep'."));
+
+        const unsigned int checkpoint_id = parameters.resume_checkpoint_id;
+        const std::string checkpoint_path = checkpoint_path_from_id(parameters, checkpoint_id);
+        if (Utilities::fexists(checkpoint_path + "mesh", mpi_communicator)
+            && Utilities::fexists(checkpoint_path + "resume.z", mpi_communicator))
+          return checkpoint_id;
+
+        return numbers::invalid_unsigned_int;
+      }
+
+    if (parameters.resume_time >= 0.)
+      {
+        const unsigned int last_good_checkpoint_id = determine_last_good_snapshot();
+        unsigned int best_checkpoint_id = numbers::invalid_unsigned_int;
+        double best_time_distance = std::numeric_limits<double>::max();
+
+        for (unsigned int checkpoint_id = 1; checkpoint_id <= parameters.n_checkpoints_to_keep; ++checkpoint_id)
+          {
+            const std::string checkpoint_path = checkpoint_path_from_id(parameters, checkpoint_id);
+            if (!Utilities::fexists(checkpoint_path + "metadata.txt", mpi_communicator))
+              continue;
+
+            if (!Utilities::fexists(checkpoint_path + "mesh", mpi_communicator)
+                || !Utilities::fexists(checkpoint_path + "resume.z", mpi_communicator))
+              continue;
+
+            const CheckpointMetadata metadata = read_checkpoint_metadata(checkpoint_path);
+            const double time_distance = std::abs(metadata.time - parameters.resume_time);
+
+            const bool is_better_time_distance = (time_distance < best_time_distance);
+            const bool is_equal_time_distance = (time_distance == best_time_distance);
+            const bool should_prefer_this_checkpoint_on_tie =
+              (best_checkpoint_id == numbers::invalid_unsigned_int
+               || checkpoint_id == last_good_checkpoint_id);
+
+            if (is_better_time_distance
+                || (is_equal_time_distance && should_prefer_this_checkpoint_on_tie))
+              {
+                best_checkpoint_id = checkpoint_id;
+                best_time_distance = time_distance;
+              }
+          }
+
+        return best_checkpoint_id;
+      }
+
+    return determine_last_good_snapshot();
   }
 
 
@@ -432,7 +552,7 @@ namespace aspect
 
     // Then start with the actual deserialization.
 
-    const std::string checkpoint_path = parameters.output_directory + "restart/" + Utilities::int_to_string(last_checkpoint_id, 2) + "/";
+    const std::string checkpoint_path = checkpoint_path_from_id(parameters, last_checkpoint_id);
 
     // First check existence of the two restart files
     AssertThrow (Utilities::fexists(checkpoint_path + "mesh", mpi_communicator),
@@ -660,6 +780,7 @@ namespace aspect
 {
 #define INSTANTIATE(dim) \
   template unsigned int Simulator<dim>::determine_last_good_snapshot() const; \
+  template unsigned int Simulator<dim>::determine_resume_snapshot() const; \
   template void Simulator<dim>::create_snapshot(); \
   template void Simulator<dim>::resume_from_snapshot();
 
