@@ -2,7 +2,7 @@
 Number of active cells: 12,288 (on 7 levels)
 Number of degrees of freedom: 161,540 (99,330+12,545+49,665)
 
-Number of mesh deformation degrees of freedom: 25,090
+Number of mesh deformation degrees of freedom: 99,330
    Solving mesh displacement system... 0 iterations.
    Added initial topography to grid
 
@@ -21,31 +21,31 @@ Number of mesh deformation degrees of freedom: 25,090
 
 *** Timestep 1:  t=1000 years, dt=1000 years
    Solving mesh surface diffusion
-   Solving mesh displacement system... 9 iterations.
+   Solving mesh displacement system... 15 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 26+0 iterations.
 
    Postprocessing:
-     Topography min/max:                 305.1 m, 2.5e+04 m
+     Topography min/max:                 324.1 m, 2.5e+04 m
      Writing graphical output:           output-hill_diffusion_simple_shear_amg/solution/solution-00001
      RMS, max velocity:                  1.1e-09 m/year, 3.17e-09 m/year
      Temperature min/avg/max:            1613 K, 1613 K, 1613 K
-     Heat fluxes through boundary parts: -2.763e-11 W, 1.676e-11 W, -7.053e-12 W, -2.01e-11 W
+     Heat fluxes through boundary parts: -3.061e-11 W, 1.041e-11 W, 1.019e-11 W, 8.341e-12 W
 
 *** Timestep 2:  t=2000 years, dt=1000 years
    Solving mesh surface diffusion
-   Solving mesh displacement system... 9 iterations.
+   Solving mesh displacement system... 15 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 23+0 iterations.
+   Solving Stokes system (AMG)... 24+0 iterations.
 
    Postprocessing:
-     Topography min/max:                 486.4 m, 2.499e+04 m
+     Topography min/max:                 497.6 m, 2.499e+04 m
      Writing graphical output:           output-hill_diffusion_simple_shear_amg/solution/solution-00002
      RMS, max velocity:                  1.1e-09 m/year, 3.17e-09 m/year
      Temperature min/avg/max:            1613 K, 1613 K, 1613 K
-     Heat fluxes through boundary parts: 6.245e-11 W, 7.048e-12 W, 3.142e-10 W, -4.121e-11 W
+     Heat fluxes through boundary parts: 4.446e-11 W, 7.848e-12 W, 3.372e-10 W, -4.732e-11 W
 
 Termination requested by criterion: end time
 

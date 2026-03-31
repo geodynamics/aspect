@@ -437,6 +437,24 @@ namespace aspect
         void compute_mesh_displacements_gmg ();
 
         /**
+         * Return the polynomial degree to use for the mesh mapping.
+         *
+         * If the parameter ``Mesh deformation mapping order'' is set to
+         * ``auto'', this function chooses an order based on the geometry and
+         * mesh deformation finite element degree. Otherwise, it returns the
+         * user-provided explicit value.
+         */
+        unsigned int get_mapping_degree () const;
+
+        /**
+         * Compute mesh displacements using GMG solver
+         * for a specific mesh deformation finite element degree.
+         * This is the implementation called by compute_mesh_displacements_gmg().
+         */
+        template <unsigned int mesh_deformation_fe_degree>
+        void compute_mesh_displacements_gmg_for_degree();
+
+        /**
          * Set up the vector with initial displacements of the mesh
          * due to the initial topography, as supplied by the initial
          * topography plugin based on the surface coordinates of the
@@ -610,6 +628,16 @@ namespace aspect
          * et. al. 2010 for more details.
          */
         double surface_theta;
+
+        /**
+         * Whether mapping order selection is automatic (``auto'').
+         */
+        bool use_automatic_mapping_order;
+
+        /**
+         * Explicit mapping order used when automatic selection is disabled.
+         */
+        unsigned int explicit_mapping_order;
 
         /**
          * If required, store a mapping for each multigrid level.
