@@ -35,6 +35,10 @@ namespace aspect
       std::vector<double> local_min_scores(this->n_particle_managers(),std::numeric_limits<double>::max());
       std::vector<double> local_max_scores(this->n_particle_managers(),0);
       std::vector<std::vector<double>> cell_scores(this->n_particle_managers());
+
+      for (auto &scores: cell_scores)
+              scores.reserve(this->get_triangulation().n_active_cells());      
+
       // We need the granularity as a double because we are using it to divide "bucket_width," another double
       const double granularity_double = static_cast<double>(granularity);
 
@@ -55,17 +59,12 @@ namespace aspect
 
               for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
                 {
-                  unsigned int particles_in_cell = this->get_particle_manager(particle_manager_index).get_particle_handler().n_particles_in_cell(cell);
+                  const unsigned int particles_in_cell = this->get_particle_manager(particle_manager_index).get_particle_handler().n_particles_in_cell(cell);
 
                   if (particles_in_cell > 0)
                     {
                       const double particles_in_cell_double = static_cast<double>(particles_in_cell);
                       const double ideal_n_particles_per_bucket = particles_in_cell_double/(Utilities::fixed_power<dim>(granularity_double));
-
-                      TableIndices<dim> bucket_sizes;
-                      for (unsigned int i=0; i<dim; ++i)
-                        bucket_sizes[i] = granularity;
-
                       const double bucket_width = 1.0/granularity_double;
 
                       const Table<dim,unsigned int> buckets_actual
