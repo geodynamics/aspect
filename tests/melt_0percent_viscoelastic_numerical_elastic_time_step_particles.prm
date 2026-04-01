@@ -34,15 +34,15 @@ end
 
 # Track compositional fields with active particles
 subsection Compositional fields
-  set Number of fields = 8
-  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old, porosity, bound_fluid
-  set Types of fields  = stress, stress, stress, stress, stress, stress, porosity, generic
-  set Compositional field methods = particles, particles, particles, particles, particles, particles, field, field
-  set Mapped particle properties  = ve_stress_xx:ve_stress_xx, ve_stress_yy:ve_stress_yy, ve_stress_xy:ve_stress_xy, ve_stress_xx_old:ve_stress_xx_old, ve_stress_yy_old:ve_stress_yy_old, ve_stress_xy_old:ve_stress_xy_old
+  set Number of fields = 5
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, porosity, bound_fluid
+  set Types of fields  = stress, stress, stress, porosity, generic
+  set Compositional field methods = particles, particles, particles, field, field
+  set Mapped particle properties  = ve_stress_xx:ve_stress_xx, ve_stress_yy:ve_stress_yy, ve_stress_xy:ve_stress_xy
 end
 
 # Spatial domain of different compositional fields:
-# ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old, porosity, bound_fluid
+# ve_stress_xx, ve_stress_yy, ve_stress_xy, porosity, bound_fluid
 subsection Initial composition model
   set List of model names = function
 
@@ -52,19 +52,16 @@ subsection Initial composition model
                               0;\
                               0;\
                               0;\
-                              0;\
-                              0;\
-                              0;\
-			      0;
+			                        0;
   end
 end
 
 subsection Discretization
-  set Use discontinuous composition discretization = true, true, true, true, true, true, false, false
+  set Use discontinuous composition discretization = true, true, true, false, false
   subsection Stabilization parameters
-    set Use limiter for discontinuous composition solution = false, false, false, false, false, false, false, false
-    set Global composition maximum =  1.e11,  1.e11,  1.e11,  1.e11,  1.e11,  1.e11, 1.0, 1.0
-    set Global composition minimum = -1.e11, -1.e11, -1.e11, -1.e11, -1.e11, -1.e11, 0.0, 0.0
+    set Use limiter for discontinuous composition solution = false, false, false, false, false
+    set Global composition maximum =  1.e11,  1.e11,  1.e11, 1.0, 1.0
+    set Global composition minimum = -1.e11, -1.e11, -1.e11, 0.0, 0.0
   end
 end
 

@@ -6,15 +6,17 @@ synchronization (and subsequent output) will be skipped
 to avoid a possible deadlock.
 
 
-Exception 'ExcMessage("The viscoelastic material model and the visco-plastic material model with elasticity enabled require " "that no elastic damping is applied.")' on rank 0 on processing: 
+Exception 'ExcMessage ("The string for property <" + options.property_name + "> does not have the expected format. " + "Check that the string is either a " + "comma separated list of `<double>' or " + "`<key1> : <double>|<double>|..., " + "<key2> : <double>|... , ... '. " + "If the string looks correct, " + "it is likely that the length of the " + "list of keys passed to " + "parse_map_to_double_array does not " + "match the length of the " + "comma separated property list.")' on rank 0 on processing: 
 
-An error occurred in file <elasticity.cc> in function
+An error occurred in file <utilities.cc> in function
 (line in output replaced by default.sh script)
-The violated condition was: 
-    elastic_damper_viscosity == 0.
 Additional information: 
-    The viscoelastic material model and the visco-plastic material model
-    with elasticity enabled require that no elastic damping is applied.
+    The string for property <Densities> does not have the expected format.
+    Check that the string is either a comma separated list of `<double>'
+    or `<key1> : <double>|<double>|..., <key2> : <double>|... , ... '. If
+    the string looks correct, it is likely that the length of the list of
+    keys passed to parse_map_to_double_array does not match the length of
+    the comma separated property list.
 
 Stacktrace:
 (rest of the output replaced by default.sh script)

@@ -28,8 +28,3 @@ subsection Postprocess
     set Output format = txt
   end
 end
-
-# Number and name of compositional fields
-subsection Compositional fields
-  set Types of fields  = stress, stress, stress, stress, stress, stress, chemical composition
-end

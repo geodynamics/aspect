@@ -19,17 +19,8 @@
 # 19: Minimal value for composition ve_stress_xy
 # 20: Maximal value for composition ve_stress_xy
 # 21: Global mass for composition ve_stress_xy
-# 22: Minimal value for composition ve_stress_xx_old
-# 23: Maximal value for composition ve_stress_xx_old
-# 24: Global mass for composition ve_stress_xx_old
-# 25: Minimal value for composition ve_stress_yy_old
-# 26: Maximal value for composition ve_stress_yy_old
-# 27: Global mass for composition ve_stress_yy_old
-# 28: Minimal value for composition ve_stress_xy_old
-# 29: Maximal value for composition ve_stress_xy_old
-# 30: Global mass for composition ve_stress_xy_old
-# 31: Number of advected particles
-# 32: Particle file name
-0 0.000000000000e+00 0.000000000000e+00 400 3803 441 21600 2 0 53 54 54 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00  0.00000000e+00 11971 output-viscoelastic_numerical_elastic_time_step_particles/particles/particles-00000 
-1 1.000000000000e+03 1.000000000000e+03 400 3803 441 21600 1 0  1  2  2 4.79487529e+06 4.79488757e+06 4.79488153e+16 -4.79488746e+06 -4.79487576e+06 -4.79488154e+16 -6.27992546e+00 6.55133748e+00 -3.49507743e+07 4.79487529e+06 4.79488757e+06 4.79488153e+16 -4.79488746e+06 -4.79487576e+06 -4.79488154e+16 -6.27884043e+00 6.55024829e+00 -3.50274975e+07 11972                                                                                  "" 
-2 2.000000000000e+03 1.000000000000e+03 400 3803 441 21600 1 0  1  2  2 8.43959103e+06 8.43960965e+06 8.43960077e+16 -8.43961061e+06 -8.43959187e+06 -8.43960078e+16 -9.00062426e+00 1.00016013e+01  7.10018809e+07 8.43959103e+06 8.43960965e+06 8.43960077e+16 -8.43961061e+06 -8.43959187e+06 -8.43960078e+16 -8.99650314e+00 9.99685199e+00  7.08613992e+07 11968                                                                                  "" 
+# 22: Number of advected particles
+# 23: Particle file name
+0 0.000000000000e+00 0.000000000000e+00 400 3803 441 10800 2 0 53 54 54 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00  0.00000000e+00 11971 output-viscoelastic_numerical_elastic_time_step_particles/particles/particles-00000 
+1 1.000000000000e+03 1.000000000000e+03 400 3803 441 10800 1 0  1  2  2 4.79487529e+06 4.79488757e+06 4.79488153e+16 -4.79488746e+06 -4.79487576e+06 -4.79488154e+16 -6.27992546e+00 6.55133748e+00 -3.49507743e+07 11972                                                                                  "" 
+2 2.000000000000e+03 1.000000000000e+03 400 3803 441 10800 1 0  1  2  2 8.43959103e+06 8.43960965e+06 8.43960077e+16 -8.43961061e+06 -8.43959187e+06 -8.43960078e+16 -9.00062426e+00 1.00016013e+01  7.10018809e+07 11968                                                                                  "" 
