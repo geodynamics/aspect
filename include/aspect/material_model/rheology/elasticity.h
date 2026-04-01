@@ -234,6 +234,16 @@ namespace aspect
                                               const double shear_modulus) const;
 
           /**
+          * Whether the unrotated viscoelastic stress is required in order to update the
+          * stress values. This is the case if the elastic time step is not equal to the
+          * computational time step of ASPECT, either because a fixed elastic time step
+          * was requested, or because a fixed stabilization factor was chosen for the
+          * elastic time scale.
+          */
+          bool
+          require_unrotated_viscoelastic_stress() const;
+
+          /**
            * Compute the elastic time step.
            */
           double
