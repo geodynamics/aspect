@@ -39,6 +39,13 @@ namespace aspect
       struct CoreData
       {
         /**
+         * Default constructor. Initialize everything to invalid values,
+         * and set is_initialized to false. The values will be updated
+         * in the first call of update() in DynamicCore class.
+         */
+        CoreData ();
+
+        /**
          * Energy for specific heat, radioactive heating, gravitational contribution,
          * adiabatic contribution, and latent heat. These variables are updated each time step.
          */

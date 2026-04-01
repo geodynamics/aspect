@@ -38,11 +38,41 @@ namespace aspect
 {
   namespace BoundaryTemperature
   {
+    namespace internal
+    {
+      CoreData::CoreData ()
+        : Qs(numbers::signaling_nan<double>()),
+          Qr(numbers::signaling_nan<double>()),
+          Qg(numbers::signaling_nan<double>()),
+          Qk(numbers::signaling_nan<double>()),
+          Ql(numbers::signaling_nan<double>()),
+          Es(numbers::signaling_nan<double>()),
+          Er(numbers::signaling_nan<double>()),
+          Eg(numbers::signaling_nan<double>()),
+          Ek(numbers::signaling_nan<double>()),
+          El(numbers::signaling_nan<double>()),
+          Eh(numbers::signaling_nan<double>()),
+          Ri(numbers::signaling_nan<double>()),
+          Ti(numbers::signaling_nan<double>()),
+          Xi(numbers::signaling_nan<double>()),
+          Q(numbers::signaling_nan<double>()),
+          H(numbers::signaling_nan<double>()),
+          dt(numbers::signaling_nan<double>()),
+          dR_dt(numbers::signaling_nan<double>()),
+          dT_dt(numbers::signaling_nan<double>()),
+          dX_dt(numbers::signaling_nan<double>()),
+          Q_OES(numbers::signaling_nan<double>()),
+          is_initialized(false)
+      {}
+    }
+
     template <int dim>
     DynamicCore<dim>::DynamicCore()
+      :
+      // leave the core_data variable in its uninitialized state
+      core_data()
     {
       is_first_call = true;
-      core_data.is_initialized = false;
     }
 
 
@@ -106,6 +136,7 @@ namespace aspect
               core_data.dX_dt = init_dX_dt;
               update_core_data();
               core_data.is_initialized = true;
+
               std::stringstream output;
               output<<std::setiosflags(std::ios::left)
                     <<"   Dynamic core initialized as:"<<std::endl
@@ -697,6 +728,7 @@ namespace aspect
       Assert (numbers::is_finite(D), ExcInternalError());
       Assert (numbers::is_finite(Rho_cen), ExcInternalError());
       Assert (numbers::is_finite(Rc), ExcInternalError());
+      Assert (numbers::is_finite(core_data.H), ExcInternalError());
 
       double It = numbers::signaling_nan<double>();
       if (D>L)
