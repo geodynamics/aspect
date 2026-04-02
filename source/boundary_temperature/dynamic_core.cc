@@ -41,8 +41,8 @@ namespace aspect
     template <int dim>
     DynamicCore<dim>::DynamicCore()
     {
+      core_data = {};
       is_first_call = true;
-      core_data.is_initialized = false;
     }
 
 
@@ -51,8 +51,7 @@ namespace aspect
     void
     DynamicCore<dim>::update()
     {
-      core_data.dt = this->get_timestep();
-      core_data.H  = get_radioheating_rate();
+      bool resumed_from_checkpoint = false;
 
       // It's a bit tricky here.
       // Didn't use the initialize() function instead because the postprocess is initialized after boundary temperature.
@@ -64,9 +63,16 @@ namespace aspect
 
           const Postprocess::CoreStatistics<dim> &core_statistics
             = this->get_postprocess_manager().template get_matching_active_plugin<const Postprocess::CoreStatistics<dim>>();
-          // The restart data is stored in 'core statistics' postprocessor.
-          // If restart from checkpoint, extract data from there.
-          core_data = core_statistics.get_core_data();
+          resumed_from_checkpoint = core_data.is_initialized;
+          if (!resumed_from_checkpoint)
+            {
+              const auto &legacy_core_data = core_statistics.get_core_data();
+              if (legacy_core_data.is_initialized)
+                {
+                  core_data = legacy_core_data;
+                  resumed_from_checkpoint = true;
+                }
+            }
 
           // Read data of other energy source
           read_data_OES();
@@ -89,10 +95,7 @@ namespace aspect
           else
             dTa   = 0.;
 
-          // Setup initial core data from prm input.
-          // If resumed from checkpoint, core_data is read from postprocess instead of set from prm file.
-          // (The boundary_temperature doesn't seem to support restart/resume, the data has to passed and
-          // stored in the postprocessor 'core statistics')
+          // Setup initial core data from prm input unless it was restored from a checkpoint.
           if (!core_data.is_initialized)
             {
               core_data.Ti = inner_temperature + dTa;
@@ -118,6 +121,12 @@ namespace aspect
             }
           is_first_call = false;
         }
+
+      core_data.dt = this->get_timestep();
+      core_data.H  = get_radioheating_rate();
+
+      if (resumed_from_checkpoint)
+        update_core_data();
 
       // Calculate core mantle boundary heat flow
       {
@@ -527,6 +536,52 @@ namespace aspect
     DynamicCore<dim>::get_core_data() const
     {
       return core_data;
+    }
+
+
+
+    template <int dim>
+    template <class Archive>
+    void
+    DynamicCore<dim>::serialize (Archive &ar, const unsigned int)
+    {
+      ar &(core_data.Ti);
+      ar &(core_data.Ri);
+      ar &(core_data.Xi);
+      ar &(core_data.Q);
+      ar &(core_data.dR_dt);
+      ar &(core_data.dT_dt);
+      ar &(core_data.dX_dt);
+      ar &(core_data.is_initialized);
+    }
+
+
+
+    template <int dim>
+    void
+    DynamicCore<dim>::save (std::map<std::string, std::string> &status_strings) const
+    {
+      std::ostringstream os;
+      {
+        aspect::oarchive oa (os);
+        oa << (*this);
+      }
+
+      status_strings["DynamicCore"] = os.str();
+    }
+
+
+
+    template <int dim>
+    void
+    DynamicCore<dim>::load (const std::map<std::string, std::string> &status_strings)
+    {
+      if (status_strings.find("DynamicCore") != status_strings.end())
+        {
+          std::istringstream is (status_strings.find("DynamicCore")->second);
+          aspect::iarchive ia (is);
+          ia >> (*this);
+        }
     }
 
 

@@ -35,7 +35,7 @@ namespace aspect
     template <int dim>
     CoreStatistics<dim>::CoreStatistics()
     {
-      core_data.is_initialized = false;
+      core_data = {};
     }
 
 
