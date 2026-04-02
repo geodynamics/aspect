@@ -467,13 +467,15 @@ namespace aspect
          * (regarding the core cooling rated Tc/dt) for a given core-mantle boundary (CMB)
          * temperature @p Tc
          */
-        void get_specific_heating(const double Tc, double &Qs, double &Es) const;
+        std::pair<double,double>
+        get_specific_heating(const double Tc) const;
 
         /**
          * Calculate energy (@p Qr) and entropy (@p Er) change rate factor (regarding the
          * radioactive heating rate H) for a given CMB temperature @p Tc
          */
-        void get_radio_heating(const double Tc, double &Qr, double &Er) const;
+        std::pair<double,double>
+        get_radio_heating(const double Tc) const;
 
         /**
          * Calculate energy (@p Qg) and entropy (@p Eg) change rate factor
@@ -481,26 +483,30 @@ namespace aspect
          * @p Tc (CMB temperature), @p r (inner core radius), and @p X
          * (light element concentration)
          */
-        void get_gravity_heating(const double Tc, const double r, const double X, double &Qg, double &Eg) const;
+        std::pair<double,double>
+        get_gravity_heating(const double Tc, const double r, const double X) const;
 
         /**
-         * Calculate energy (@p Qk) and entropy (@p Ek) change rate factor
+         * Calculate entropy (@p Ek) and energy (@p Qk) change rate factor
          * (regarding the core cooling rate Tc/dt) for a given @p Tc (CMB temperature)
          */
-        void get_adiabatic_heating(const double Tc, double &Ek, double &Qk) const;
+        std::pair<double,double>
+        get_adiabatic_heating(const double Tc) const;
 
         /**
-         * Calculate energy (@p Ql) and entropy (@p El) change rate factor
+         * Calculate entropy (@p El) and energy (@p Ql) change rate factor
          * (regarding the inner core growth rate dR/dt) for a given @p Tc (CMB temperature)
          * and @p r (inner core radius)
          */
-        void get_latent_heating(const double Tc, const double r, double &El, double &Ql) const;
+        std::pair<double,double>
+        get_latent_heating(const double Tc, const double r) const;
 
         /**
          * Calculate entropy of heat of solution @p Eh for a given @p Tc (CMB temperature),
          * @p r (inner core radius), and @p X (light element concentration)
          */
-        void get_heat_solution(const double Tc, const double r, const double X, double &Eh) const;
+        double
+        get_heat_solution(const double Tc, const double r, const double X) const;
 
         /**
          * return radiogenic heating rate at the current time

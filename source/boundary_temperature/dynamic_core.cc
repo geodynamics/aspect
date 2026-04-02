@@ -512,12 +512,12 @@ namespace aspect
     void
     DynamicCore<dim>::update_core_data()
     {
-      get_specific_heating(core_data.Ti,core_data.Qs,core_data.Es);
-      get_radio_heating(core_data.Ti,core_data.Qr,core_data.Er);
-      get_gravity_heating(core_data.Ti,core_data.Ri,core_data.Xi,core_data.Qg,core_data.Eg);
-      get_adiabatic_heating(core_data.Ti,core_data.Ek,core_data.Qk);
-      get_latent_heating(core_data.Ti,core_data.Ri,core_data.El,core_data.Ql);
-      get_heat_solution(core_data.Ti,core_data.Ri,core_data.Xi,core_data.Eh);
+      std::tie(core_data.Qs,core_data.Es) = get_specific_heating(core_data.Ti);
+      std::tie(core_data.Qr,core_data.Er) = get_radio_heating(core_data.Ti);
+      std::tie(core_data.Qg,core_data.Eg) = get_gravity_heating(core_data.Ti,core_data.Ri,core_data.Xi);
+      std::tie(core_data.Ek,core_data.Qk) = get_adiabatic_heating(core_data.Ti);
+      std::tie(core_data.El,core_data.Ql) = get_latent_heating(core_data.Ti,core_data.Ri);
+      core_data.Eh                        = get_heat_solution(core_data.Ti,core_data.Ri,core_data.Xi);
     }
 
 
@@ -660,51 +660,83 @@ namespace aspect
 
 
     template <int dim>
-    void
+    std::pair<double,double>
     DynamicCore<dim>::
-    get_specific_heating(const double Tc, double &Qs,double &Es) const
+    get_specific_heating(const double Tc) const
     {
+      // The object is initialized with invalid values. Make sure that
+      // by the time we get here, everything we need has been set to
+      // reasonable values.
+      Assert (numbers::is_finite(Tc), ExcInternalError());
+      Assert (numbers::is_finite(L), ExcInternalError());
+      Assert (numbers::is_finite(D), ExcInternalError());
+      Assert (numbers::is_finite(Rho_cen), ExcInternalError());
+      Assert (numbers::is_finite(Rc), ExcInternalError());
+
       const double A = std::sqrt(1./(Utilities::fixed_power<-2>(L)+Utilities::fixed_power<-2>(D)));
       const double Is = 4.*numbers::PI*get_T(Tc,0.)*Rho_cen*(-Utilities::fixed_power<2>(A)*Rc/2.*std::exp(-Utilities::fixed_power<2>(Rc/A))+Utilities::fixed_power<3>(A)*std::sqrt(numbers::PI)/4.*std::erf(Rc/A));
 
-      Qs = -Cp/Tc*Is;
-      Es = Cp/Tc*(Mc-Is/Tc);
+      const double Qs = -Cp/Tc*Is;
+      const double Es = Cp/Tc*(Mc-Is/Tc);
+
+      return { Qs, Es };
     }
 
 
 
     template <int dim>
-    void
+    std::pair<double,double>
     DynamicCore<dim>::
-    get_radio_heating(const double Tc, double &Qr, double &Er) const
+    get_radio_heating(const double Tc) const
     {
+      // The object is initialized with invalid values. Make sure that
+      // by the time we get here, everything we need has been set to
+      // reasonable values.
+      Assert (numbers::is_finite(Tc), ExcInternalError());
+      Assert (numbers::is_finite(L), ExcInternalError());
+      Assert (numbers::is_finite(D), ExcInternalError());
+      Assert (numbers::is_finite(Rho_cen), ExcInternalError());
+      Assert (numbers::is_finite(Rc), ExcInternalError());
+
       double It = numbers::signaling_nan<double>();
       if (D>L)
         {
-          const double B = std::sqrt(1/(1/Utilities::fixed_power<2>(L)-1/Utilities::fixed_power<2>(D)));
-          It = 4*numbers::PI*Rho_cen/get_T(Tc,0)*(-Utilities::fixed_power<2>(B)*Rc/2*std::exp(-Utilities::fixed_power<2>(Rc/B))+Utilities::fixed_power<3>(B)/std::sqrt(numbers::PI)/4*std::erf(Rc/B));
+          const double B = std::sqrt(1./(1./Utilities::fixed_power<2>(L)-1./Utilities::fixed_power<2>(D)));
+          It = 4*numbers::PI*Rho_cen/get_T(Tc,0)*(-Utilities::fixed_power<2>(B)*Rc/2*std::exp(-Utilities::fixed_power<2>(Rc/B))
+                                                  + Utilities::fixed_power<3>(B)/std::sqrt(numbers::PI)/4*std::erf(Rc/B));
         }
       else
         {
           const double B = std::sqrt(1/(Utilities::fixed_power<-2>(D)-Utilities::fixed_power<-2>(L)));
-          It = 4*numbers::PI*Rho_cen/get_T(Tc,0)*(Utilities::fixed_power<2>(B)*Rc/2*std::exp(Utilities::fixed_power<2>(Rc/B))-Utilities::fixed_power<2>(B)*fun_Sn(B,Rc,100)/2);
+          It = 4*numbers::PI*Rho_cen/get_T(Tc,0)*(Utilities::fixed_power<2>(B)*Rc/2*std::exp(Utilities::fixed_power<2>(Rc/B))
+                                                  - Utilities::fixed_power<2>(B)*fun_Sn(B,Rc,100)/2);
         }
 
-      Qr = Mc*core_data.H;
-      Er = (Mc/Tc-It)*core_data.H;
+      const double Qr = Mc*core_data.H;
+      const double Er = (Mc/Tc-It)*core_data.H;
+      return { Qr, Er };
     }
 
 
 
     template <int dim>
-    void
+    double
     DynamicCore<dim>::
-    get_heat_solution(const double Tc, const double r, const double X, double &Eh) const
+    get_heat_solution(const double Tc, const double r, const double X) const
     {
+      // The object is initialized with invalid values. Make sure that
+      // by the time we get here, everything we need has been set to
+      // reasonable values.
+      Assert (numbers::is_finite(Tc), ExcInternalError());
+      Assert (numbers::is_finite(r), ExcInternalError());
+      Assert (numbers::is_finite(X), ExcInternalError());
+      Assert (numbers::is_finite(L), ExcInternalError());
+      Assert (numbers::is_finite(Rc), ExcInternalError());
+
       if (r==Rc)
         {
           // No energy change rate if the inner core is fully frozen.
-          Eh = 0.;
+          return 0.;
         }
       else
         {
@@ -722,17 +754,28 @@ namespace aspect
               It -= 4*numbers::PI*Rho_cen/get_T(Tc,0)*(Utilities::fixed_power<2>(B)*r/2*std::exp(Utilities::fixed_power<2>(r/B))-Utilities::fixed_power<2>(B)*fun_Sn(B,r,100)/2);
             }
           const double Cc = 4*numbers::PI*Utilities::fixed_power<2>(r)*get_rho(r)*X/(Mc-get_mass(r));
-          Eh = Rh*(It-(Mc-get_mass(r))/get_T(Tc,r))*Cc;
+          return Rh*(It-(Mc-get_mass(r))/get_T(Tc,r))*Cc;
         }
     }
 
 
 
     template <int dim>
-    void
+    std::pair<double,double>
     DynamicCore<dim>::
-    get_gravity_heating(const double Tc, const double r, const double X, double &Qg, double &Eg) const
+    get_gravity_heating(const double Tc, const double r, const double X) const
     {
+      // The object is initialized with invalid values. Make sure that
+      // by the time we get here, everything we need has been set to
+      // reasonable values.
+      Assert (numbers::is_finite(Tc), ExcInternalError());
+      Assert (numbers::is_finite(r), ExcInternalError());
+      Assert (numbers::is_finite(X), ExcInternalError());
+      Assert (numbers::is_finite(Rc), ExcInternalError());
+      Assert (numbers::is_finite(L), ExcInternalError());
+      Assert (numbers::is_finite(Beta_c), ExcInternalError());
+
+      double Qg;
       if (r==Rc)
         Qg = 0.;
       else
@@ -747,29 +790,47 @@ namespace aspect
                 -(Mc-get_mass(r))*get_gravity_potential(r))*Beta_c*Cc;
         }
 
-      Eg = Qg/Tc;
+      const double Eg = Qg/Tc;
+
+      return { Qg, Eg };
     }
 
 
 
     template <int dim>
-    void
+    std::pair<double,double>
     DynamicCore<dim>::
-    get_adiabatic_heating(const double Tc, double &Ek, double &Qk) const
+    get_adiabatic_heating(const double Tc) const
     {
-      Ek = 16*numbers::PI*k_c*Utilities::fixed_power<5>(Rc)/5/Utilities::fixed_power<4>(D);
-      Qk = 8*numbers::PI*Utilities::fixed_power<3>(Rc)*k_c*Tc/Utilities::fixed_power<2>(D);
+      // The object is initialized with invalid values. Make sure that
+      // by the time we get here, everything we need has been set to
+      // reasonable values.
+      Assert (numbers::is_finite(Tc), ExcInternalError());
+      Assert (numbers::is_finite(Rc), ExcInternalError());
+      Assert (numbers::is_finite(D), ExcInternalError());
+
+      const double Ek = 16*numbers::PI*k_c*Utilities::fixed_power<5>(Rc)/5/Utilities::fixed_power<4>(D);
+      const double Qk = 8*numbers::PI*Utilities::fixed_power<3>(Rc)*k_c*Tc/Utilities::fixed_power<2>(D);
+      return { Ek, Qk };
     }
 
 
 
     template <int dim>
-    void
+    std::pair<double,double>
     DynamicCore<dim>::
-    get_latent_heating(const double Tc, const double r, double &El, double &Ql) const
+    get_latent_heating(const double Tc, const double r) const
     {
-      Ql = 4.*numbers::PI*Utilities::fixed_power<2>(r)*Lh*get_rho(r);
-      El = Ql*(get_T(Tc,r)-Tc)/(Tc*get_T(Tc,r));
+      // The object is initialized with invalid values. Make sure that
+      // by the time we get here, everything we need has been set to
+      // reasonable values.
+      Assert (numbers::is_finite(Tc), ExcInternalError());
+      Assert (numbers::is_finite(r), ExcInternalError());
+      Assert (numbers::is_finite(Lh), ExcInternalError());
+
+      const double Ql = 4.*numbers::PI*Utilities::fixed_power<2>(r)*Lh*get_rho(r);
+      const double El = Ql*(get_T(Tc,r)-Tc)/(Tc*get_T(Tc,r));
+      return { El, Ql };
     }
 
 
