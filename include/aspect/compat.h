@@ -64,6 +64,22 @@ namespace aspect
 #endif
 
 
+#if !DEAL_II_VERSION_GTE(9,7,0)
+  /**
+   * A type alias for the SmartPointer class that makes sure the new
+   * name of the class, ObserverPointer, can be used in all versions of
+   * deal.II. The SmartPointer class was renamed to ObserverPointer in
+   * deal.II 9.7.
+   */
+  template <typename T, typename P = void>
+  using ObserverPointer = dealii::SmartPointer<T, P>;
+
+  /**
+   * Same for the transition from Subscriptor to EnableObserverPointer.
+   */
+  using EnableObserverPointer = dealii::Subscriptor;
+#endif
+
 
 // deal.II versions up to 9.5 had a poorly designed interface of the
 // SphericalManifold class that made it impossible for us to use.
