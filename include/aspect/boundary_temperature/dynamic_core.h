@@ -466,6 +466,9 @@ namespace aspect
          * Calculate energy (@p Qs) and entropy (@p Es) change rate factor
          * (regarding the core cooling rated Tc/dt) for a given core-mantle boundary (CMB)
          * temperature @p Tc
+         *
+         * @return A pair of (Qs, Es), i.e., the energy change rate factor first
+         * and the entropy change rate factor second.
          */
         std::pair<double,double>
         compute_specific_heating(const double Tc) const;
@@ -473,6 +476,9 @@ namespace aspect
         /**
          * Calculate energy (@p Qr) and entropy (@p Er) change rate factor (regarding the
          * radioactive heating rate H) for a given CMB temperature @p Tc
+         *
+         * @return A pair of (Qr, Er), i.e., the energy change rate factor first
+         * and the entropy change rate factor second.
          */
         std::pair<double,double>
         compute_radio_heating(const double Tc) const;
@@ -482,6 +488,9 @@ namespace aspect
          * (regarding the inner core growth rate dR/dt) for a given
          * @p Tc (CMB temperature), @p r (inner core radius), and @p X
          * (light element concentration)
+         *
+         * @return A pair of (Qg, Eg), i.e., the energy change rate factor first
+         * and the entropy change rate factor second.
          */
         std::pair<double,double>
         compute_gravity_heating(const double Tc, const double r, const double X) const;
@@ -489,6 +498,9 @@ namespace aspect
         /**
          * Calculate entropy (@p Ek) and energy (@p Qk) change rate factor
          * (regarding the core cooling rate Tc/dt) for a given @p Tc (CMB temperature)
+         *
+         * @return A pair of (Ek, Qk), i.e., the entropy change rate factor first
+         * and the energy change rate factor second.
          */
         std::pair<double,double>
         compute_adiabatic_heating(const double Tc) const;
@@ -497,6 +509,9 @@ namespace aspect
          * Calculate entropy (@p El) and energy (@p Ql) change rate factor
          * (regarding the inner core growth rate dR/dt) for a given @p Tc (CMB temperature)
          * and @p r (inner core radius)
+         *
+         * @return A pair of (El, Ql), i.e., the entropy change rate factor first
+         * and the energy change rate factor second.
          */
         std::pair<double,double>
         compute_latent_heating(const double Tc, const double r) const;
