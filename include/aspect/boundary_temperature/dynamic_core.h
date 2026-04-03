@@ -496,22 +496,22 @@ namespace aspect
         compute_gravity_heating(const double Tc, const double r, const double X) const;
 
         /**
-         * Calculate entropy (@p Ek) and energy (@p Qk) change rate factor
+         * Calculate energy (@p Qk) and entropy (@p Ek) change rate factor
          * (regarding the core cooling rate Tc/dt) for a given @p Tc (CMB temperature)
          *
-         * @return A pair of (Ek, Qk), i.e., the entropy change rate factor first
-         * and the energy change rate factor second.
+         * @return A pair of (Qk, Ek), i.e., the energy change rate factor first
+         * and the entropy change rate factor second.
          */
         std::pair<double,double>
         compute_adiabatic_heating(const double Tc) const;
 
         /**
-         * Calculate entropy (@p El) and energy (@p Ql) change rate factor
+         * Calculate energy (@p Ql) and entropy (@p El) change rate factor
          * (regarding the inner core growth rate dR/dt) for a given @p Tc (CMB temperature)
          * and @p r (inner core radius)
          *
-         * @return A pair of (El, Ql), i.e., the entropy change rate factor first
-         * and the energy change rate factor second.
+         * @return A pair of (Ql, El), i.e., the energy change rate factor first
+         * and the entropy change rate factor second.
          */
         std::pair<double,double>
         compute_latent_heating(const double Tc, const double r) const;

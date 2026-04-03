@@ -515,8 +515,8 @@ namespace aspect
       std::tie(core_data.Qs,core_data.Es) = compute_specific_heating(core_data.Ti);
       std::tie(core_data.Qr,core_data.Er) = compute_radio_heating(core_data.Ti);
       std::tie(core_data.Qg,core_data.Eg) = compute_gravity_heating(core_data.Ti,core_data.Ri,core_data.Xi);
-      std::tie(core_data.Ek,core_data.Qk) = compute_adiabatic_heating(core_data.Ti);
-      std::tie(core_data.El,core_data.Ql) = compute_latent_heating(core_data.Ti,core_data.Ri);
+      std::tie(core_data.Qk,core_data.Ek) = compute_adiabatic_heating(core_data.Ti);
+      std::tie(core_data.Ql,core_data.El) = compute_latent_heating(core_data.Ti,core_data.Ri);
       core_data.Eh                        = compute_heat_solution(core_data.Ti,core_data.Ri,core_data.Xi);
     }
 
@@ -811,7 +811,7 @@ namespace aspect
 
       const double Ek = 16*numbers::PI*k_c*Utilities::fixed_power<5>(Rc)/5/Utilities::fixed_power<4>(D);
       const double Qk = 8*numbers::PI*Utilities::fixed_power<3>(Rc)*k_c*Tc/Utilities::fixed_power<2>(D);
-      return { Ek, Qk };
+      return { Qk, Ek };
     }
 
 
@@ -830,7 +830,7 @@ namespace aspect
 
       const double Ql = 4.*numbers::PI*Utilities::fixed_power<2>(r)*Lh*compute_rho(r);
       const double El = Ql*(compute_T(Tc,r)-Tc)/(Tc*compute_T(Tc,r));
-      return { El, Ql };
+      return { Ql, El };
     }
 
 
