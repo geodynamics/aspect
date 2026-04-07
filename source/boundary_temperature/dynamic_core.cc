@@ -52,7 +52,7 @@ namespace aspect
     DynamicCore<dim>::update()
     {
       core_data.dt = this->get_timestep();
-      core_data.H  = get_radioheating_rate();
+      core_data.H  = compute_radioheating_rate();
 
       // It's a bit tricky here.
       // Didn't use the initialize() function instead because the postprocess is initialized after boundary temperature.
@@ -75,8 +75,8 @@ namespace aspect
             Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model());
 
           Rc = spherical_shell_geometry.inner_radius();
-          Mc = get_mass(Rc);
-          P_Core = get_pressure(0);
+          Mc = compute_mass(Rc);
+          P_Core = compute_pressure(0);
 
           // If the material model is incompressible, we have to get correction for the real core temperature
           if (this->get_adiabatic_conditions().is_initialized() && !this->get_material_model().is_compressible())
@@ -96,8 +96,8 @@ namespace aspect
           if (!core_data.is_initialized)
             {
               core_data.Ti = inner_temperature + dTa;
-              core_data.Ri = get_initial_Ri(core_data.Ti);
-              core_data.Xi = get_X(core_data.Ri);
+              core_data.Ri = compute_initial_Ri(core_data.Ti);
+              core_data.Xi = compute_X(core_data.Ri);
 
               core_data.Q = 0.;
               core_data.dt = 0.;
@@ -207,7 +207,7 @@ namespace aspect
         core_data.Q = average_CMB_heatflux_density * 4. * numbers::PI * Rc * Rc;
       }
 
-      core_data.Q_OES = get_OES(this->get_time());
+      core_data.Q_OES = compute_OES(this->get_time());
 
       if ((core_data.Q + core_data.Q_OES) * core_data.dt!=0.)
         {
@@ -299,7 +299,7 @@ namespace aspect
 
     template <int dim>
     double
-    DynamicCore<dim>::get_OES(const double time) const
+    DynamicCore<dim>::compute_OES(const double time) const
     {
       // The core evolution is quite slow, so the time units used here is billion years.
       const double t = time / (1.e9*year_in_seconds);
@@ -321,12 +321,12 @@ namespace aspect
 
     template <int dim>
     double
-    DynamicCore<dim>::get_initial_Ri(const double T) const
+    DynamicCore<dim>::compute_initial_Ri(const double T) const
     {
       double r0 = 0.;
       double r1 = Rc;
-      const double dT0 = get_T(T,r0) - get_solidus(get_X(r0),get_pressure(r0));
-      const double dT1 = get_T(T,r1) - get_solidus(get_X(r1),get_pressure(r1));
+      const double dT0 = compute_T(T,r0) - compute_solidus(compute_X(r0),compute_pressure(r0));
+      const double dT1 = compute_T(T,r1) - compute_solidus(compute_X(r1),compute_pressure(r1));
 
       if (dT0<=0. && dT1<=0.)
         return Rc;
@@ -335,7 +335,7 @@ namespace aspect
       for (unsigned int i=0; i<max_steps; ++i)
         {
           const double rm = (r0+r1)/2.;
-          const double dTm = get_T(T,rm) - get_solidus(get_X(rm),get_pressure(rm));
+          const double dTm = compute_T(T,rm) - compute_solidus(compute_X(rm),compute_pressure(rm));
           if (dTm == 0.)
             return rm;
           if (dTm*dT0 < 0.)
@@ -372,7 +372,7 @@ namespace aspect
       //    Gravitational contribution                Qg*dR/dt
       //    Latent heat                               Ql*dR/dt
       //    So that         Q+Qs*dT/dt+Qr+Qg*dR/dt*Ql*dR/dt=0
-      // 3. The light component composition X depends on inner core radius (See function get_X() ),
+      // 3. The light component composition X depends on inner core radius (See function compute_X() ),
       //    and core solidus may dependent on X as well
       // This becomes a small nonlinear problem. Directly iterating through the above three system doesn't
       // converge well. Instead, we solve the inner core radius by bisection method.
@@ -384,9 +384,9 @@ namespace aspect
       double R_0 = 0.;
       double R_1 = core_data.Ri;
       double R_2 = Rc;
-      double dT0 = get_dT(R_0);
-      double dT1 = get_dT(R_1);
-      double dT2 = get_dT(R_2);
+      double dT0 = compute_dT(R_0);
+      double dT1 = compute_dT(R_1);
+      double dT2 = compute_dT(R_2);
 
       // If the temperature difference at the core-mantle boundary and at the
       // inner-outer core boundary have the same sign, we have a fully molten or fully solid core.
@@ -430,15 +430,15 @@ namespace aspect
 
               // Update R_1 and recalculate dT1
               R_1 = (R_0 + R_2) / 2.;
-              dT1 = get_dT(R_1);
+              dT1 = compute_dT(R_1);
               ++steps;
             }
         }
 
       // Calculate new R,T,X
       R = R_1;
-      T = get_Tc(R);
-      X = get_X(R);
+      T = compute_Tc(R);
+      X = compute_X(R);
 
       // Check the signs of dT at the boundaries to classify the solution
       if (dT0<0. && dT2>0.)
@@ -478,7 +478,7 @@ namespace aspect
 
     template <int dim>
     double
-    DynamicCore<dim>::get_Tc(const double r) const
+    DynamicCore<dim>::compute_Tc(const double r) const
     {
       // Using all Q values from last step.
       // Qs & Qr is constant, while Qg & Ql depends on inner core radius Ri
@@ -492,18 +492,18 @@ namespace aspect
 
     template <int dim>
     double
-    DynamicCore<dim>::get_Ts(const double r) const
+    DynamicCore<dim>::compute_Ts(const double r) const
     {
-      return get_solidus(get_X(r),get_pressure(r));
+      return compute_solidus(compute_X(r),compute_pressure(r));
     }
 
 
 
     template <int dim>
     double
-    DynamicCore<dim>::get_dT(const double r) const
+    DynamicCore<dim>::compute_dT(const double r) const
     {
-      return get_T(get_Tc(r),r) - get_Ts(r);
+      return compute_T(compute_Tc(r),r) - compute_Ts(r);
     }
 
 
@@ -512,12 +512,12 @@ namespace aspect
     void
     DynamicCore<dim>::update_core_data()
     {
-      get_specific_heating(core_data.Ti,core_data.Qs,core_data.Es);
-      get_radio_heating(core_data.Ti,core_data.Qr,core_data.Er);
-      get_gravity_heating(core_data.Ti,core_data.Ri,core_data.Xi,core_data.Qg,core_data.Eg);
-      get_adiabatic_heating(core_data.Ti,core_data.Ek,core_data.Qk);
-      get_latent_heating(core_data.Ti,core_data.Ri,core_data.El,core_data.Ql);
-      get_heat_solution(core_data.Ti,core_data.Ri,core_data.Xi,core_data.Eh);
+      std::tie(core_data.Qs,core_data.Es) = compute_specific_heating(core_data.Ti);
+      std::tie(core_data.Qr,core_data.Er) = compute_radio_heating(core_data.Ti);
+      std::tie(core_data.Qg,core_data.Eg) = compute_gravity_heating(core_data.Ti,core_data.Ri,core_data.Xi);
+      std::tie(core_data.Qk,core_data.Ek) = compute_adiabatic_heating(core_data.Ti);
+      std::tie(core_data.Ql,core_data.El) = compute_latent_heating(core_data.Ti,core_data.Ri);
+      core_data.Eh                        = compute_heat_solution(core_data.Ti,core_data.Ri,core_data.Xi);
     }
 
 
@@ -533,7 +533,7 @@ namespace aspect
 
     template <int dim>
     double
-    DynamicCore<dim>::get_solidus(const double X, const double pressure) const
+    DynamicCore<dim>::compute_solidus(const double X, const double pressure) const
     {
       if (use_bw11)
         {
@@ -569,7 +569,7 @@ namespace aspect
 
     template <int dim>
     double
-    DynamicCore<dim>::get_X(const double r) const
+    DynamicCore<dim>::compute_X(const double r) const
     {
       const double xi_3 = Utilities::fixed_power<3>(r/Rc);
       return X_init/(1-xi_3+Delta*xi_3);
@@ -580,7 +580,7 @@ namespace aspect
     template <int dim>
     double
     DynamicCore<dim>::
-    get_mass(const double r) const
+    compute_mass(const double r) const
     {
       return 4.*numbers::PI*Rho_cen*(-Utilities::fixed_power<2>(L)/2.*r*std::exp(-Utilities::fixed_power<2>(r/L))+Utilities::fixed_power<3>(L)/4.*std::sqrt(numbers::PI)*std::erf(r/L));
     }
@@ -609,7 +609,7 @@ namespace aspect
     template <int dim>
     double
     DynamicCore<dim>::
-    get_pressure(const double r) const
+    compute_pressure(const double r) const
     {
       return P_CMB-(4*numbers::PI*constants::big_g*Utilities::fixed_power<2>(Rho_cen))/3
              *((3*Utilities::fixed_power<2>(r)/10.-Utilities::fixed_power<2>(L)/5)*std::exp(-Utilities::fixed_power<2>(r/L))
@@ -621,7 +621,7 @@ namespace aspect
     template <int dim>
     double
     DynamicCore<dim>::
-    get_rho(const double r) const
+    compute_rho(const double r) const
     {
       return Rho_cen*std::exp(-Utilities::fixed_power<2>(r/L));
     }
@@ -631,7 +631,7 @@ namespace aspect
     template <int dim>
     double
     DynamicCore<dim>::
-    get_g(const double r) const
+    compute_g(const double r) const
     {
       return (4*numbers::PI/3)*constants::big_g*Rho_cen*r*(1-3*Utilities::fixed_power<2>(r)/(5*Utilities::fixed_power<2>(L)));
     }
@@ -641,7 +641,7 @@ namespace aspect
     template <int dim>
     double
     DynamicCore<dim>::
-    get_T(const double Tc, const double r) const
+    compute_T(const double Tc, const double r) const
     {
       return Tc*std::exp((Utilities::fixed_power<2>(Rc)-Utilities::fixed_power<2>(r))/Utilities::fixed_power<2>(D));
     }
@@ -651,7 +651,7 @@ namespace aspect
     template <int dim>
     double
     DynamicCore<dim>::
-    get_gravity_potential(const double r) const
+    compute_gravity_potential(const double r) const
     {
       return 2./3.*numbers::PI*constants::big_g*Rho_cen*(Utilities::fixed_power<2>(r)*(1.-3.*Utilities::fixed_power<2>(r)
                                                          /(10.*Utilities::fixed_power<2>(L)))-Utilities::fixed_power<2>(Rc)*(1.-3.*Utilities::fixed_power<2>(Rc)/(10.*Utilities::fixed_power<2>(L))));
@@ -660,116 +660,61 @@ namespace aspect
 
 
     template <int dim>
-    void
+    std::pair<double,double>
     DynamicCore<dim>::
-    get_specific_heating(const double Tc, double &Qs,double &Es) const
+    compute_specific_heating(const double Tc) const
     {
-      const double A = std::sqrt(1./(Utilities::fixed_power<-2>(L)+Utilities::fixed_power<-2>(D)));
-      const double Is = 4.*numbers::PI*get_T(Tc,0.)*Rho_cen*(-Utilities::fixed_power<2>(A)*Rc/2.*std::exp(-Utilities::fixed_power<2>(Rc/A))+Utilities::fixed_power<3>(A)*std::sqrt(numbers::PI)/4.*std::erf(Rc/A));
+      // The object is initialized with invalid values. Make sure that
+      // by the time we get here, everything we need has been set to
+      // reasonable values.
+      Assert (numbers::is_finite(Tc), ExcInternalError());
+      Assert (numbers::is_finite(L), ExcInternalError());
+      Assert (numbers::is_finite(D), ExcInternalError());
+      Assert (numbers::is_finite(Rho_cen), ExcInternalError());
+      Assert (numbers::is_finite(Rc), ExcInternalError());
 
-      Qs = -Cp/Tc*Is;
-      Es = Cp/Tc*(Mc-Is/Tc);
+      const double A = std::sqrt(1./(Utilities::fixed_power<-2>(L)+Utilities::fixed_power<-2>(D)));
+      const double Is = 4.*numbers::PI*compute_T(Tc,0.)*Rho_cen*(-Utilities::fixed_power<2>(A)*Rc/2.*std::exp(-Utilities::fixed_power<2>(Rc/A))+Utilities::fixed_power<3>(A)*std::sqrt(numbers::PI)/4.*std::erf(Rc/A));
+
+      const double Qs = -Cp/Tc*Is;
+      const double Es = Cp/Tc*(Mc-Is/Tc);
+
+      return { Qs, Es };
     }
 
 
 
     template <int dim>
-    void
+    std::pair<double,double>
     DynamicCore<dim>::
-    get_radio_heating(const double Tc, double &Qr, double &Er) const
+    compute_radio_heating(const double Tc) const
     {
+      // The object is initialized with invalid values. Make sure that
+      // by the time we get here, everything we need has been set to
+      // reasonable values.
+      Assert (numbers::is_finite(Tc), ExcInternalError());
+      Assert (numbers::is_finite(L), ExcInternalError());
+      Assert (numbers::is_finite(D), ExcInternalError());
+      Assert (numbers::is_finite(Rho_cen), ExcInternalError());
+      Assert (numbers::is_finite(Rc), ExcInternalError());
+
       double It = numbers::signaling_nan<double>();
       if (D>L)
         {
-          const double B = std::sqrt(1/(1/Utilities::fixed_power<2>(L)-1/Utilities::fixed_power<2>(D)));
-          It = 4*numbers::PI*Rho_cen/get_T(Tc,0)*(-Utilities::fixed_power<2>(B)*Rc/2*std::exp(-Utilities::fixed_power<2>(Rc/B))+Utilities::fixed_power<3>(B)/std::sqrt(numbers::PI)/4*std::erf(Rc/B));
+          const double B = std::sqrt(1./(1./Utilities::fixed_power<2>(L)-1./Utilities::fixed_power<2>(D)));
+          It = 4*numbers::PI*Rho_cen/compute_T(Tc,0)*(-Utilities::fixed_power<2>(B)*Rc/2*std::exp(-Utilities::fixed_power<2>(Rc/B))
+                                                      + Utilities::fixed_power<3>(B)/std::sqrt(numbers::PI)/4*std::erf(Rc/B));
         }
       else
         {
           const double B = std::sqrt(1/(Utilities::fixed_power<-2>(D)-Utilities::fixed_power<-2>(L)));
-          It = 4*numbers::PI*Rho_cen/get_T(Tc,0)*(Utilities::fixed_power<2>(B)*Rc/2*std::exp(Utilities::fixed_power<2>(Rc/B))-Utilities::fixed_power<2>(B)*fun_Sn(B,Rc,100)/2);
+          It = 4*numbers::PI*Rho_cen/compute_T(Tc,0)*(Utilities::fixed_power<2>(B)*Rc/2*std::exp(Utilities::fixed_power<2>(Rc/B))
+                                                      - Utilities::fixed_power<2>(B)*fun_Sn(B,Rc,100)/2);
         }
 
-      Qr = Mc*core_data.H;
-      Er = (Mc/Tc-It)*core_data.H;
-    }
-
-
-
-    template <int dim>
-    void
-    DynamicCore<dim>::
-    get_heat_solution(const double Tc, const double r, const double X, double &Eh) const
-    {
-      if (r==Rc)
-        {
-          // No energy change rate if the inner core is fully frozen.
-          Eh = 0.;
-        }
-      else
-        {
-          double It = numbers::signaling_nan<double>();
-          if (D>L)
-            {
-              const double B = std::sqrt(1./(1./Utilities::fixed_power<2>(L)-1./Utilities::fixed_power<2>(D)));
-              It = 4*numbers::PI*Rho_cen/get_T(Tc,0)*(-Utilities::fixed_power<2>(B)*Rc/2*std::exp(-Utilities::fixed_power<2>(Rc/B))+Utilities::fixed_power<3>(B)/std::sqrt(numbers::PI)/4*std::erf(Rc/B));
-              It -= 4*numbers::PI*Rho_cen/get_T(Tc,0)*(-Utilities::fixed_power<2>(B)*r/2*std::exp(-Utilities::fixed_power<2>(r/B))+Utilities::fixed_power<3>(B)/std::sqrt(numbers::PI)/4*std::erf(r/B));
-            }
-          else
-            {
-              const double B = std::sqrt(1./(Utilities::fixed_power<-2>(D)-Utilities::fixed_power<-2>(L)));
-              It = 4*numbers::PI*Rho_cen/get_T(Tc,0)*(Utilities::fixed_power<2>(B)*Rc/2*std::exp(Utilities::fixed_power<2>(Rc/B))-Utilities::fixed_power<2>(B)*fun_Sn(B,Rc,100)/2);
-              It -= 4*numbers::PI*Rho_cen/get_T(Tc,0)*(Utilities::fixed_power<2>(B)*r/2*std::exp(Utilities::fixed_power<2>(r/B))-Utilities::fixed_power<2>(B)*fun_Sn(B,r,100)/2);
-            }
-          const double Cc = 4*numbers::PI*Utilities::fixed_power<2>(r)*get_rho(r)*X/(Mc-get_mass(r));
-          Eh = Rh*(It-(Mc-get_mass(r))/get_T(Tc,r))*Cc;
-        }
-    }
-
-
-
-    template <int dim>
-    void
-    DynamicCore<dim>::
-    get_gravity_heating(const double Tc, const double r, const double X, double &Qg, double &Eg) const
-    {
-      if (r==Rc)
-        Qg = 0.;
-      else
-        {
-          const double Cc = 4*numbers::PI*Utilities::fixed_power<2>(r)*get_rho(r)*X/(Mc-get_mass(r));
-          const double C_2 = 3./16.*Utilities::fixed_power<2>(L) - 0.5*Utilities::fixed_power<2>(Rc)*(1.-3./10.*Utilities::fixed_power<2>(Rc/L));
-          Qg = (8./3.*Utilities::fixed_power<2>(numbers::PI*Rho_cen)*constants::big_g*(
-                  ((3./20.*Utilities::fixed_power<5>(Rc)-Utilities::fixed_power<2>(L)*Utilities::fixed_power<3>(Rc)/8.-C_2*Utilities::fixed_power<2>(L)*Rc)*std::exp(-Utilities::fixed_power<2>(Rc/L))
-                   +C_2/2.*Utilities::fixed_power<3>(L)*std::sqrt(numbers::PI)*std::erf(Rc/L))
-                  -((3./20.*Utilities::fixed_power<5>(r)-Utilities::fixed_power<2>(L)*Utilities::fixed_power<3>(r)/8.-C_2*Utilities::fixed_power<2>(L)*r)*std::exp(-Utilities::fixed_power<2>(r/L))
-                    +C_2/2.*Utilities::fixed_power<3>(L)*std::sqrt(numbers::PI)*std::erf(r/L)))
-                -(Mc-get_mass(r))*get_gravity_potential(r))*Beta_c*Cc;
-        }
-
-      Eg = Qg/Tc;
-    }
-
-
-
-    template <int dim>
-    void
-    DynamicCore<dim>::
-    get_adiabatic_heating(const double Tc, double &Ek, double &Qk) const
-    {
-      Ek = 16*numbers::PI*k_c*Utilities::fixed_power<5>(Rc)/5/Utilities::fixed_power<4>(D);
-      Qk = 8*numbers::PI*Utilities::fixed_power<3>(Rc)*k_c*Tc/Utilities::fixed_power<2>(D);
-    }
-
-
-
-    template <int dim>
-    void
-    DynamicCore<dim>::
-    get_latent_heating(const double Tc, const double r, double &El, double &Ql) const
-    {
-      Ql = 4.*numbers::PI*Utilities::fixed_power<2>(r)*Lh*get_rho(r);
-      El = Ql*(get_T(Tc,r)-Tc)/(Tc*get_T(Tc,r));
+      const double Qr = Mc*core_data.H;
+      const double Er = (Mc/Tc-It)*core_data.H;
+      return { Qr, Er };
     }
 
 
@@ -777,7 +722,123 @@ namespace aspect
     template <int dim>
     double
     DynamicCore<dim>::
-    get_radioheating_rate() const
+    compute_heat_solution(const double Tc, const double r, const double X) const
+    {
+      // The object is initialized with invalid values. Make sure that
+      // by the time we get here, everything we need has been set to
+      // reasonable values.
+      Assert (numbers::is_finite(Tc), ExcInternalError());
+      Assert (numbers::is_finite(r), ExcInternalError());
+      Assert (numbers::is_finite(X), ExcInternalError());
+      Assert (numbers::is_finite(L), ExcInternalError());
+      Assert (numbers::is_finite(Rc), ExcInternalError());
+
+      if (r==Rc)
+        {
+          // No energy change rate if the inner core is fully frozen.
+          return 0.;
+        }
+      else
+        {
+          double It = numbers::signaling_nan<double>();
+          if (D>L)
+            {
+              const double B = std::sqrt(1./(1./Utilities::fixed_power<2>(L)-1./Utilities::fixed_power<2>(D)));
+              It = 4*numbers::PI*Rho_cen/compute_T(Tc,0)*(-Utilities::fixed_power<2>(B)*Rc/2*std::exp(-Utilities::fixed_power<2>(Rc/B))+Utilities::fixed_power<3>(B)/std::sqrt(numbers::PI)/4*std::erf(Rc/B));
+              It -= 4*numbers::PI*Rho_cen/compute_T(Tc,0)*(-Utilities::fixed_power<2>(B)*r/2*std::exp(-Utilities::fixed_power<2>(r/B))+Utilities::fixed_power<3>(B)/std::sqrt(numbers::PI)/4*std::erf(r/B));
+            }
+          else
+            {
+              const double B = std::sqrt(1./(Utilities::fixed_power<-2>(D)-Utilities::fixed_power<-2>(L)));
+              It = 4*numbers::PI*Rho_cen/compute_T(Tc,0)*(Utilities::fixed_power<2>(B)*Rc/2*std::exp(Utilities::fixed_power<2>(Rc/B))-Utilities::fixed_power<2>(B)*fun_Sn(B,Rc,100)/2);
+              It -= 4*numbers::PI*Rho_cen/compute_T(Tc,0)*(Utilities::fixed_power<2>(B)*r/2*std::exp(Utilities::fixed_power<2>(r/B))-Utilities::fixed_power<2>(B)*fun_Sn(B,r,100)/2);
+            }
+          const double Cc = 4*numbers::PI*Utilities::fixed_power<2>(r)*compute_rho(r)*X/(Mc-compute_mass(r));
+          return Rh*(It-(Mc-compute_mass(r))/compute_T(Tc,r))*Cc;
+        }
+    }
+
+
+
+    template <int dim>
+    std::pair<double,double>
+    DynamicCore<dim>::
+    compute_gravity_heating(const double Tc, const double r, const double X) const
+    {
+      // The object is initialized with invalid values. Make sure that
+      // by the time we get here, everything we need has been set to
+      // reasonable values.
+      Assert (numbers::is_finite(Tc), ExcInternalError());
+      Assert (numbers::is_finite(r), ExcInternalError());
+      Assert (numbers::is_finite(X), ExcInternalError());
+      Assert (numbers::is_finite(Rc), ExcInternalError());
+      Assert (numbers::is_finite(L), ExcInternalError());
+      Assert (numbers::is_finite(Beta_c), ExcInternalError());
+
+      double Qg;
+      if (r==Rc)
+        Qg = 0.;
+      else
+        {
+          const double Cc = 4*numbers::PI*Utilities::fixed_power<2>(r)*compute_rho(r)*X/(Mc-compute_mass(r));
+          const double C_2 = 3./16.*Utilities::fixed_power<2>(L) - 0.5*Utilities::fixed_power<2>(Rc)*(1.-3./10.*Utilities::fixed_power<2>(Rc/L));
+          Qg = (8./3.*Utilities::fixed_power<2>(numbers::PI*Rho_cen)*constants::big_g*(
+                  ((3./20.*Utilities::fixed_power<5>(Rc)-Utilities::fixed_power<2>(L)*Utilities::fixed_power<3>(Rc)/8.-C_2*Utilities::fixed_power<2>(L)*Rc)*std::exp(-Utilities::fixed_power<2>(Rc/L))
+                   +C_2/2.*Utilities::fixed_power<3>(L)*std::sqrt(numbers::PI)*std::erf(Rc/L))
+                  -((3./20.*Utilities::fixed_power<5>(r)-Utilities::fixed_power<2>(L)*Utilities::fixed_power<3>(r)/8.-C_2*Utilities::fixed_power<2>(L)*r)*std::exp(-Utilities::fixed_power<2>(r/L))
+                    +C_2/2.*Utilities::fixed_power<3>(L)*std::sqrt(numbers::PI)*std::erf(r/L)))
+                -(Mc-compute_mass(r))*compute_gravity_potential(r))*Beta_c*Cc;
+        }
+
+      const double Eg = Qg/Tc;
+
+      return { Qg, Eg };
+    }
+
+
+
+    template <int dim>
+    std::pair<double,double>
+    DynamicCore<dim>::
+    compute_adiabatic_heating(const double Tc) const
+    {
+      // The object is initialized with invalid values. Make sure that
+      // by the time we get here, everything we need has been set to
+      // reasonable values.
+      Assert (numbers::is_finite(Tc), ExcInternalError());
+      Assert (numbers::is_finite(Rc), ExcInternalError());
+      Assert (numbers::is_finite(D), ExcInternalError());
+
+      const double Ek = 16*numbers::PI*k_c*Utilities::fixed_power<5>(Rc)/5/Utilities::fixed_power<4>(D);
+      const double Qk = 8*numbers::PI*Utilities::fixed_power<3>(Rc)*k_c*Tc/Utilities::fixed_power<2>(D);
+      return { Qk, Ek };
+    }
+
+
+
+    template <int dim>
+    std::pair<double,double>
+    DynamicCore<dim>::
+    compute_latent_heating(const double Tc, const double r) const
+    {
+      // The object is initialized with invalid values. Make sure that
+      // by the time we get here, everything we need has been set to
+      // reasonable values.
+      Assert (numbers::is_finite(Tc), ExcInternalError());
+      Assert (numbers::is_finite(r), ExcInternalError());
+      Assert (numbers::is_finite(Lh), ExcInternalError());
+
+      const double Ql = 4.*numbers::PI*Utilities::fixed_power<2>(r)*Lh*compute_rho(r);
+      const double El = Ql*(compute_T(Tc,r)-Tc)/(Tc*compute_T(Tc,r));
+      return { Ql, El };
+    }
+
+
+
+    template <int dim>
+    double
+    DynamicCore<dim>::
+    compute_radioheating_rate() const
     {
       const double time = this->get_time()+0.5*this->get_timestep();
 

@@ -362,7 +362,7 @@ namespace aspect
         };
         std::vector<struct str_data_OES> data_OES;
         void read_data_OES();
-        double get_OES(double t) const;
+        double compute_OES(double t) const;
 
         /**
          * Solve core energy balance for each time step.
@@ -376,7 +376,7 @@ namespace aspect
          *    Gravitational contribution                Qg*dR/dt
          *    Latent heat                               Ql*dR/dt
          *    So that         Q+Qs*dT/dt+Qr+Qg*dR/dt*Ql*dR/dt=0
-         * 3. The light component composition X depends on inner core radius (See function get_X() ),
+         * 3. The light component composition X depends on inner core radius (See function compute_X() ),
          *    and core solidus may dependent on X as well.
          *    This becomes a small nonlinear problem. Directly iterate through the above three equations doesn't
          *    converge well. Alternatively we solve the inner core radius using the bisection method.
@@ -394,42 +394,42 @@ namespace aspect
          * Compute the difference between solidus and adiabatic temperature at inner
          * core boundary for a given inner core radius @p r.
          */
-        double get_dT(const double r) const;
+        double compute_dT(const double r) const;
 
         /**
          * Use energy balance to calculate core mantle boundary temperature
          * with a given inner core radius @p r.
          */
-        double get_Tc(const double r) const;
+        double compute_Tc(const double r) const;
 
         /**
          * Get the solidus temperature at inner core boundary
          * with a given inner core radius @p r.
          */
-        double get_Ts(const double r) const;
+        double compute_Ts(const double r) const;
 
         /**
          * Compute the core solidus at a given light element concentration @p X (in wt.%)
          * and pressure @p pressure.
          */
-        double get_solidus(const double X, const double pressure) const;
+        double compute_solidus(const double X, const double pressure) const;
 
         /**
          * Get initial inner core radius with given initial core mantle temperature
          * @p T.
          */
-        double get_initial_Ri(const double T) const;
+        double compute_initial_Ri(const double T) const;
 
         /**
          * Get the light element concentration (in wt.%) in the outer core from given
          * inner core radius @p r.
          */
-        double get_X(const double r) const;
+        double compute_X(const double r) const;
 
         /**
          * Compute the core mass inside a certain radius @p r.
          */
-        double get_mass(const double r) const;
+        double compute_mass(const double r) const;
 
         /**
          * Calculate Sn(B,R), referring to \cite NPB+04 .
@@ -439,73 +439,94 @@ namespace aspect
         /**
          * Calculate density at given radius @p r.
          */
-        double get_rho(const double r) const;
+        double compute_rho(const double r) const;
 
         /**
          * Calculate gravitational acceleration at given radius @p r.
          */
-        double get_g(const double r) const;
+        double compute_g(const double r) const;
 
         /**
          * Calculate the core temperature at given radius @p r and
          * temperature at CMB @p Tc.
          */
-        double get_T(const double Tc, const double r) const;
+        double compute_T(const double Tc, const double r) const;
 
         /**
          * Calculate pressure at given radius @p r
          */
-        double get_pressure(const double r) const;
+        double compute_pressure(const double r) const;
 
         /**
          * Calculate the gravitational potential at given radius @p r
          */
-        double get_gravity_potential(const double r) const;
+        double compute_gravity_potential(const double r) const;
 
         /**
          * Calculate energy (@p Qs) and entropy (@p Es) change rate factor
          * (regarding the core cooling rated Tc/dt) for a given core-mantle boundary (CMB)
          * temperature @p Tc
+         *
+         * @return A pair of (Qs, Es), i.e., the energy change rate factor first
+         * and the entropy change rate factor second.
          */
-        void get_specific_heating(const double Tc, double &Qs, double &Es) const;
+        std::pair<double,double>
+        compute_specific_heating(const double Tc) const;
 
         /**
          * Calculate energy (@p Qr) and entropy (@p Er) change rate factor (regarding the
          * radioactive heating rate H) for a given CMB temperature @p Tc
+         *
+         * @return A pair of (Qr, Er), i.e., the energy change rate factor first
+         * and the entropy change rate factor second.
          */
-        void get_radio_heating(const double Tc, double &Qr, double &Er) const;
+        std::pair<double,double>
+        compute_radio_heating(const double Tc) const;
 
         /**
          * Calculate energy (@p Qg) and entropy (@p Eg) change rate factor
          * (regarding the inner core growth rate dR/dt) for a given
          * @p Tc (CMB temperature), @p r (inner core radius), and @p X
          * (light element concentration)
+         *
+         * @return A pair of (Qg, Eg), i.e., the energy change rate factor first
+         * and the entropy change rate factor second.
          */
-        void get_gravity_heating(const double Tc, const double r, const double X, double &Qg, double &Eg) const;
+        std::pair<double,double>
+        compute_gravity_heating(const double Tc, const double r, const double X) const;
 
         /**
          * Calculate energy (@p Qk) and entropy (@p Ek) change rate factor
          * (regarding the core cooling rate Tc/dt) for a given @p Tc (CMB temperature)
+         *
+         * @return A pair of (Qk, Ek), i.e., the energy change rate factor first
+         * and the entropy change rate factor second.
          */
-        void get_adiabatic_heating(const double Tc, double &Ek, double &Qk) const;
+        std::pair<double,double>
+        compute_adiabatic_heating(const double Tc) const;
 
         /**
          * Calculate energy (@p Ql) and entropy (@p El) change rate factor
          * (regarding the inner core growth rate dR/dt) for a given @p Tc (CMB temperature)
          * and @p r (inner core radius)
+         *
+         * @return A pair of (Ql, El), i.e., the energy change rate factor first
+         * and the entropy change rate factor second.
          */
-        void get_latent_heating(const double Tc, const double r, double &El, double &Ql) const;
+        std::pair<double,double>
+        compute_latent_heating(const double Tc, const double r) const;
 
         /**
          * Calculate entropy of heat of solution @p Eh for a given @p Tc (CMB temperature),
          * @p r (inner core radius), and @p X (light element concentration)
          */
-        void get_heat_solution(const double Tc, const double r, const double X, double &Eh) const;
+        double
+        compute_heat_solution(const double Tc, const double r, const double X) const;
 
         /**
          * return radiogenic heating rate at the current time
          */
-        double get_radioheating_rate() const;
+        double compute_radioheating_rate() const;
 
         /**
          * Update the data of the core dynamic simulation, the data will be used
