@@ -585,23 +585,40 @@ namespace aspect
 
         std::uint32_t compression_header[4];
         ifs.read(reinterpret_cast<char *>(compression_header), 4 * sizeof(compression_header[0]));
-        Assert(compression_header[0]==1, ExcInternalError());
+        AssertThrow(ifs,
+                    ExcMessage("Checkpoint file <" + checkpoint_path + "resume.z> ended before "
+                               "the compression header could be read."));
+        AssertThrow(compression_header[0] == 1,
+                    ExcMessage("Checkpoint file <" + checkpoint_path + "resume.z> has an "
+                               "unsupported compression header."));
+        AssertThrow(compression_header[1] > 0,
+                    ExcMessage("Checkpoint file <" + checkpoint_path + "resume.z> contains "
+                               "an empty uncompressed payload."));
+        AssertThrow(compression_header[3] > 0,
+                    ExcMessage("Checkpoint file <" + checkpoint_path + "resume.z> contains "
+                               "an empty compressed payload."));
 
         std::vector<char> compressed(compression_header[3]);
         std::vector<char> uncompressed(compression_header[1]);
-        ifs.read(&compressed[0],compression_header[3]);
+        ifs.read(compressed.data(), compression_header[3]);
+        AssertThrow(ifs,
+                    ExcMessage("Checkpoint file <" + checkpoint_path + "resume.z> ended before "
+                               "the compressed restart payload could be read."));
         uLongf uncompressed_size = compression_header[1];
 
-        const int err = uncompress(reinterpret_cast<Bytef *>(&uncompressed[0]), &uncompressed_size,
-                                   reinterpret_cast<Bytef *>(&compressed[0]), compression_header[3]);
+        const int err = uncompress(reinterpret_cast<Bytef *>(uncompressed.data()), &uncompressed_size,
+                                   reinterpret_cast<const Bytef *>(compressed.data()), compression_header[3]);
         AssertThrow (err == Z_OK,
                      ExcMessage (std::string("Uncompressing the data buffer resulted in an error with code <")
                                  +
                                  Utilities::int_to_string(err)));
+        AssertThrow(uncompressed_size == compression_header[1],
+                    ExcMessage("Checkpoint file <" + checkpoint_path + "resume.z> decompressed "
+                               "to an unexpected size."));
 
         {
           std::istringstream ss;
-          ss.str(std::string (&uncompressed[0], uncompressed_size));
+          ss.str(std::string (uncompressed.data(), uncompressed_size));
 
           aspect::iarchive ia (ss);
           load_and_check_critical_parameters(this->parameters, ia);
