@@ -385,12 +385,15 @@ namespace aspect
 #ifdef DEAL_II_WITH_ZLIB
       if (my_id == 0)
         {
-          uLongf compressed_data_length = compressBound (oss.str().length());
-          std::vector<char *> compressed_data (compressed_data_length);
-          int err = compress2 (reinterpret_cast<Bytef *>(&compressed_data[0]),
+          const std::string serialized_data = oss.str();
+          const uLong serialized_data_length = serialized_data.size();
+
+          uLongf compressed_data_length = compressBound(serialized_data_length);
+          std::vector<Bytef> compressed_data(compressed_data_length);
+          int err = compress2 (compressed_data.data(),
                                &compressed_data_length,
-                               reinterpret_cast<const Bytef *>(oss.str().data()),
-                               oss.str().length(),
+                               reinterpret_cast<const Bytef *>(serialized_data.data()),
+                               serialized_data_length,
                                Z_BEST_COMPRESSION);
           (void)err;
           Assert (err == Z_OK, ExcInternalError());
@@ -398,14 +401,15 @@ namespace aspect
           // build compression header
           const std::uint32_t compression_header[4]
             = { 1,                                   /* number of blocks */
-                static_cast<std::uint32_t>(oss.str().length()), /* size of block */
-                static_cast<std::uint32_t>(oss.str().length()), /* size of last block */
+                static_cast<std::uint32_t>(serialized_data_length), /* size of block */
+                static_cast<std::uint32_t>(serialized_data_length), /* size of last block */
                 static_cast<std::uint32_t>(compressed_data_length)
               }; /* list of compressed sizes of blocks */
 
           std::ofstream f (checkpoint_path + "/resume.z");
           f.write(reinterpret_cast<const char *>(compression_header), 4 * sizeof(compression_header[0]));
-          f.write(reinterpret_cast<char *>(&compressed_data[0]), compressed_data_length);
+          f.write(reinterpret_cast<const char *>(compressed_data.data()),
+                  compressed_data_length);
           f.close();
 
           // We check the fail state of the stream _after_ closing the file to
