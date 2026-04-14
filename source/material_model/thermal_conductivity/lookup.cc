@@ -54,13 +54,13 @@ namespace aspect
                   // The volume_fractions vector has N+1 values as it has background included, so take that into account 
                   const std::string &field_name = chemical_field_names[j - 1];
                   // Check if this composition has a specific name and apply scaling
-                  if (field_name == "1_asth_M" || field_name == "2_oc_SHB" || field_name == "5_cont_LM" || field_name == "9_wcont_LM")
+                  if (field_name == "1_pyrolite_M" || field_name == "2_harzb_LM" || field_name == "7_wcont_LM")
                     scale_factor = 7673.33 * std::pow(temperature, -1.366) + 2.967e-4 * temperature;
-                  else if (field_name == "7_cont_UC" || field_name == "8_cont_LC" || field_name == "10_wcont_UC" || field_name == "11_wcont_LC")
+                  else if (field_name == "5_cont_UC" || field_name == "6_cont_LC" || field_name == "8_wcont_UC" || field_name == "9_wcont_LC")
                     scale_factor = (temperature < 846.0) ? 567.3 / temperature - 0.062 : 0.732 - 1.35e-4 * temperature;
-                  else if (field_name == "3_oc_C")
+                  else if (field_name == "3_oc_UC")
                     scale_factor = 0.515 + 1.74 * std::exp(-temperature / 326.5);
-                  else if (field_name == "6_gabb_LC")
+                  else if (field_name == "4_oc_LC")
                     scale_factor = 0.2586 + 253.37 / temperature;
                 }  
                 thermal_diffusivity += volume_fractions[j] * 1e-6 * scale_factor;
