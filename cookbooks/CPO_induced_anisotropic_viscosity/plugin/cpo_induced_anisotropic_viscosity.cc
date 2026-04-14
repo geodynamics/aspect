@@ -339,10 +339,10 @@ namespace aspect
 
                   const Tensor<2,dim> S_CPO= R * stress * transpose(R);
 
-                  double Jhill = 1./2. * (F*Utilities::fixed_power<2>(S_CPO[1][1]-S_CPO[2][2]) + G*Utilities::fixed_power<2>(S_CPO[2][2]-S_CPO[0][0]) + H*Utilities::fixed_power<2>(S_CPO[0][0]-S_CPO[1][1]) + 2*L*Utilities::fixed_power<2>(S_CPO[1][2]) + 2*M*Utilities::fixed_power<2>(S_CPO[0][2]) + 2*N*Utilities::fixed_power<2>(S_CPO[0][1]));
+                  double Jhill = 2./3. * (F*Utilities::fixed_power<2>(S_CPO[1][1]-S_CPO[2][2]) + G*Utilities::fixed_power<2>(S_CPO[2][2]-S_CPO[0][0]) + H*Utilities::fixed_power<2>(S_CPO[0][0]-S_CPO[1][1]) + 2*L*Utilities::fixed_power<2>(S_CPO[1][2]) + 2*M*Utilities::fixed_power<2>(S_CPO[0][2]) + 2*N*Utilities::fixed_power<2>(S_CPO[0][1]));
                   if (Jhill < 0)
                     {
-                      Jhill = 1./2. * (std::abs(F)*Utilities::fixed_power<2>(S_CPO[1][1]-S_CPO[2][2]) + std::abs(G)*Utilities::fixed_power<2>(S_CPO[2][2]-S_CPO[0][0]) + std::abs(H)*Utilities::fixed_power<2>(S_CPO[0][0]-S_CPO[1][1]) + 2*L*Utilities::fixed_power<2>(S_CPO[1][2]) + 2*M*Utilities::fixed_power<2>(S_CPO[0][2]) + 2*N*Utilities::fixed_power<2>(S_CPO[0][1]));
+                      Jhill = 2./3. * (std::abs(F)*Utilities::fixed_power<2>(S_CPO[1][1]-S_CPO[2][2]) + std::abs(G)*Utilities::fixed_power<2>(S_CPO[2][2]-S_CPO[0][0]) + std::abs(H)*Utilities::fixed_power<2>(S_CPO[0][0]-S_CPO[1][1]) + 2*L*Utilities::fixed_power<2>(S_CPO[1][2]) + 2*M*Utilities::fixed_power<2>(S_CPO[0][2]) + 2*N*Utilities::fixed_power<2>(S_CPO[0][1]));
                     }
 
                   AssertThrow(std::isfinite(Jhill),
