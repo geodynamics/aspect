@@ -24,6 +24,11 @@ end
 
 subsection Material model
   set Model name = simpler
+
+  subsection Simpler model
+    set Reference density = 0
+    set Viscosity = 0.5
+  end
 end
 
 subsection Gravity model
