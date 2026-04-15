@@ -192,6 +192,12 @@ namespace aspect
         double outer_temperature;
 
         /**
+         * Boundary indicators of the spherical shell.
+         */
+        types::boundary_id inner_boundary_id;
+        types::boundary_id outer_boundary_id;
+
+        /**
          * Initial CMB temperature changing rate
          */
         double init_dT_dt;
@@ -217,11 +223,6 @@ namespace aspect
         double Rc;
 
         /**
-         * (Heat capacity) * density
-         */
-        double CpRho;
-
-        /**
          * Initial light composition concentration
          */
         double X_init;
@@ -232,19 +233,9 @@ namespace aspect
         double Delta;
 
         /**
-         * Gravitational acceleration
-         */
-        double g;
-
-        /**
          * Pressure at the core mantle boundary
          */
         double P_CMB;
-
-        /**
-         * Pressure at the center of the core
-         */
-        double P_Core;
 
         /**
          * Parameters for core solidus following:

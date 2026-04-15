@@ -76,7 +76,6 @@ namespace aspect
 
           Rc = spherical_shell_geometry.inner_radius();
           Mc = compute_mass(Rc);
-          P_Core = compute_pressure(0);
 
           // If the material model is incompressible, we have to get correction for the real core temperature
           if (this->get_adiabatic_conditions().is_initialized() && !this->get_material_model().is_compressible())
@@ -136,7 +135,7 @@ namespace aspect
         double local_CMB_flux   = 0.;
         double local_CMB_area   = 0.;
 
-        types::boundary_id CMB_id = 0;
+        const types::boundary_id CMB_id = inner_boundary_id;
 
         typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
         typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
@@ -182,9 +181,9 @@ namespace aspect
                             const double alpha = out.thermal_expansion_coefficients[q];
                             const double cp = out.specific_heat[0];
                             const double gravity = this->get_gravity_model().gravity_vector(in.position[q]).norm();
-                            if (cell->face(f)->boundary_id()==0)
+                            if (cell->face(f)->boundary_id() == inner_boundary_id)
                               adiabatic_flux = - alpha * gravity / cp;
-                            else if (cell->face(f)->boundary_id()==1)
+                            else if (cell->face(f)->boundary_id() == outer_boundary_id)
                               adiabatic_flux = alpha * gravity / cp;
                           }
 
@@ -211,7 +210,9 @@ namespace aspect
 
       if ((core_data.Q + core_data.Q_OES) * core_data.dt!=0.)
         {
-          double X1,R1 = core_data.Ri,T1;
+          double X1 = core_data.Xi;
+          double R1 = core_data.Ri;
+          double T1 = core_data.Ti;
           solve_time_step(X1,T1,R1);
           if (core_data.dt != 0)
             {
@@ -281,9 +282,8 @@ namespace aspect
         {
           str_data_OES data_read;
           std::string line;
-          while (!in.eof())
+          while (std::getline(in, line))
             {
-              std::getline(in, line);
               if (std::sscanf(line.data(), "%le\t%le\n", &data_read.t, &data_read.w)==2)
                 data_OES.push_back(data_read);
             }
@@ -870,15 +870,14 @@ namespace aspect
     boundary_temperature (const types::boundary_id boundary_indicator,
                           const Point<dim> &/*location*/) const
     {
-      switch (boundary_indicator)
-        {
-          case 0:
-            return inner_temperature;
-          case 1:
-            return outer_temperature;
-          default:
-            Assert (false, ExcMessage ("Unknown boundary indicator."));
-        }
+      if (boundary_indicator == inner_boundary_id)
+        return inner_temperature;
+      else if (boundary_indicator == outer_boundary_id)
+        return outer_temperature;
+      else
+        AssertThrow (false,
+                     ExcMessage ("Unknown boundary indicator for geometry model. "
+                                 "The given boundary should be ``top'' or ``bottom''."));
 
       return std::numeric_limits<double>::quiet_NaN();
     }
@@ -1041,18 +1040,19 @@ namespace aspect
                        ExcMessage ("This boundary model is only implemented if the geometry is "
                                    "a spherical shell."));
 
+          inner_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");
+          outer_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
+
           inner_temperature = prm.get_double ("Inner temperature");
           outer_temperature = prm.get_double ("Outer temperature");
           init_dT_dt        = prm.get_double ("dT over dt") / year_in_seconds;
           init_dR_dt        = prm.get_double ("dR over dt") / year_in_seconds * 1.e3;
           init_dX_dt        = prm.get_double ("dX over dt") / year_in_seconds;
           Rho_cen           = prm.get_double ("Core density");
-          g                 = prm.get_double ("Gravity acceleration");
           P_CMB             = prm.get_double ("CMB pressure");
           X_init            = prm.get_double ("Initial light composition");
           max_steps         = prm.get_integer ("Max iteration");
           Cp                = prm.get_double ("Core heat capacity");
-          CpRho             = Cp*Rho_cen;
 
           //\cite{NPB+04}
           K0                = prm.get_double ("K0");
