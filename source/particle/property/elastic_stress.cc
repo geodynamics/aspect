@@ -75,16 +75,15 @@ namespace aspect
                             stress_field_indices.begin(), stress_field_indices.end(),
                             std::inserter(non_stress_field_indices, non_stress_field_indices.begin()));
 
-        // Connect to the signal after particles are restored at the beginning of
-        // a nonlinear iteration of iterative advection schemes.
-        this->get_signals().post_restore_particles.connect(
+        // Connect to the signal after the nonlinear solver to apply
+        // the stress update of the current time step.
+        this->get_signals().post_nonlinear_solver_loop.connect(
           [&](typename Particle::Manager<dim> &particle_manager)
         {
           this->update_particles(particle_manager);
         }
         );
       }
-
 
 
       template <int dim>
@@ -167,11 +166,11 @@ namespace aspect
                   const std::shared_ptr<MaterialModel::ReactionRateOutputs<dim>> reaction_rate_outputs
                     = material_outputs_cell.template get_additional_output_object<MaterialModel::ReactionRateOutputs<dim>>();
 
-                  // Collect the values of the old solution restricted to the current cell's DOFs
-                  small_vector<double> old_solution_values(this->get_fe().dofs_per_cell);
-                  cell->get_dof_values(this->get_old_solution(),
-                                       old_solution_values.begin(),
-                                       old_solution_values.end());
+                  // Collect the values of the solution restricted to the current cell's DOFs
+                  small_vector<double> solution_values(this->get_fe().dofs_per_cell);
+                  cell->get_dof_values(this->get_solution(),
+                                       solution_values.begin(),
+                                       solution_values.end());
 
                   EvaluationFlags::EvaluationFlags evaluation_flags_union = EvaluationFlags::nothing;
                   for (const auto flag : evaluation_flags)
@@ -183,15 +182,15 @@ namespace aspect
                       // Reinitialize and evaluate the requested solution values and gradients
                       evaluators->reinit(cell, {positions.data(), positions.size()});
 
-                      evaluators->evaluate({old_solution_values.data(),old_solution_values.size()},
+                      evaluators->evaluate({solution_values.data(),solution_values.size()},
                                            evaluation_flags);
                     }
 
                   // To store the old solutions
-                  std::vector<small_vector<double,50>> old_solution(n_particles_in_cell,small_vector<double,50>(evaluators->n_components(), numbers::signaling_nan<double>()));
+                  std::vector<small_vector<double,50>> solution(n_particles_in_cell,small_vector<double,50>(evaluators->n_components(), numbers::signaling_nan<double>()));
 
                   // To store the old gradients
-                  std::vector<small_vector<Tensor<1,dim>,50>> old_gradients(n_particles_in_cell,small_vector<Tensor<1,dim>,50>(evaluators->n_components(), numbers::signaling_nan<Tensor<1,dim>>()));
+                  std::vector<small_vector<Tensor<1,dim>,50>> gradients(n_particles_in_cell,small_vector<Tensor<1,dim>,50>(evaluators->n_components(), numbers::signaling_nan<Tensor<1,dim>>()));
 
                   // Loop over all particles in the cell
                   auto particle = particles_in_cell.begin();
@@ -199,26 +198,26 @@ namespace aspect
                     {
                       // Evaluate the old solution, but only if it is requested in the update_flags
                       if (evaluation_flags_union & EvaluationFlags::values)
-                        evaluators->get_solution(i, {&old_solution[i][0],old_solution[i].size()}, evaluation_flags);
+                        evaluators->get_solution(i, {&solution[i][0],solution[i].size()}, evaluation_flags);
 
                       // Evaluate the old gradients, but only if they are requested in the update_flags
                       if (evaluation_flags_union & EvaluationFlags::gradients)
-                        evaluators->get_gradients(i, {&old_gradients[i][0],old_gradients[i].size()}, evaluation_flags);
+                        evaluators->get_gradients(i, {&gradients[i][0],gradients[i].size()}, evaluation_flags);
 
                       // Fill material model input
                       // Get the real location of the particle
                       material_inputs_cell.position[i] = particle->get_location();
 
-                      material_inputs_cell.temperature[i] = old_solution[i][this->introspection().component_indices.temperature];
+                      material_inputs_cell.temperature[i] = solution[i][this->introspection().component_indices.temperature];
 
-                      material_inputs_cell.pressure[i] = old_solution[i][this->introspection().component_indices.pressure];
+                      material_inputs_cell.pressure[i] = solution[i][this->introspection().component_indices.pressure];
 
                       for (unsigned int d = 0; d < dim; ++d)
-                        material_inputs_cell.velocity[i][d] = old_solution[i][this->introspection().component_indices.velocities[d]];
+                        material_inputs_cell.velocity[i][d] = solution[i][this->introspection().component_indices.velocities[d]];
 
-                      // Fill the non-stress composition inputs with the old_solution.
+                      // Fill the non-stress composition inputs with the current solution.
                       for (const unsigned int &n : non_stress_field_indices)
-                        material_inputs_cell.composition[i][n] = old_solution[i][this->introspection().component_indices.compositional_fields[n]];
+                        material_inputs_cell.composition[i][n] = solution[i][this->introspection().component_indices.compositional_fields[n]];
 
                       // Retrieve the ve_stress_* values from the particles and fields and
                       // fill the material model inputs with a weighted average of the two.
@@ -227,14 +226,14 @@ namespace aspect
                       for (unsigned int n = 0; n < 2*SymmetricTensor<2,dim>::n_independent_components; ++n)
                         {
                           const double particle_stress_value = particle->get_properties()[data_position + n];
-                          const double field_stress_value = old_solution[i][this->introspection().component_indices.compositional_fields[stress_field_indices[n]]];
+                          const double field_stress_value = solution[i][this->introspection().component_indices.compositional_fields[stress_field_indices[n]]];
                           const double stress_value = particle_weight * particle_stress_value + (1-particle_weight) * field_stress_value;
                           material_inputs_cell.composition[i][stress_field_indices[n]] = stress_value;
                         }
 
                       Tensor<2,dim> grad_u;
                       for (unsigned int d=0; d<dim; ++d)
-                        grad_u[d] = old_gradients[i][d];
+                        grad_u[d] = gradients[i][d];
                       material_inputs_cell.strain_rate[i] = symmetrize (grad_u);
                     }
 

@@ -1972,8 +1972,9 @@ namespace aspect
         signals.post_mesh_deformation(*this);
       }
 
-    // Compute the reactions of compositional fields and temperature in case of operator splitting.
-    if (parameters.use_operator_splitting)
+    // Compute the reactions of compositional fields and temperature in case of operator splitting
+    // before the nonlinear solver instead of after.
+    if (parameters.use_operator_splitting && parameters.reaction_strategy == Parameters<dim>::ReactionStrategy::before_nonlinear_solver)
       compute_reactions ();
 
     try
@@ -2116,6 +2117,21 @@ namespace aspect
               AssertThrow(false, ExcNotImplemented());
           }
       }
+
+    // Signal that we are done with the full nonlinear solver loop.
+    // This signal can be used to apply operator
+    // splitting on the particle properties.
+    // TODO There is already a signal post_nonlinear_solver that is
+    // called at the end of every nonlinear solver scheme. However,
+    // that signal is used communicate solver state etc, and does
+    // not pass on the particle manager.
+    for (auto &particle_manager : particle_managers)
+      signals.post_nonlinear_solver_loop(particle_manager);
+
+    // Compute the reactions of compositional fields and temperature here after
+    // the nonlinear solver instead of before.
+    if (parameters.use_operator_splitting && parameters.reaction_strategy == Parameters<dim>::ReactionStrategy::after_nonlinear_solver)
+      compute_reactions ();
   }
 
 
