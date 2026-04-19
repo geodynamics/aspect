@@ -117,19 +117,21 @@ def escape_doc_string(text) :
 def print_if_parameter_or_alias(entry, path_str, true_name, cur_path, output_file) :
     if "value" in entry:
         # this is a parameter
-        print("(parameters:" + path_str + ")=", file=output_file)
-        print("### __Parameter name:__ " + true_name, file=output_file)
+        print("::::{dropdown} __Parameter:__ {ref}`" + true_name + "<parameters:" + path_str + ">`", file=output_file)
+        print(":name: parameters:" + path_str, file=output_file)
         print("**Default value:** " +  entry["default_value"] + " \n", file=output_file)
         print("**Pattern:** " +  entry["pattern_description"] + " \n", file=output_file)
-        print("**Documentation:** " + escape_doc_string(entry["documentation"]) + " \n", file=output_file)
+        print("**Documentation:** " + escape_doc_string(entry["documentation"]), file=output_file)
+        print("::::\n", file=output_file)
     elif "alias" in entry:
         # This is an alias for a parameter
-        print("(parameters:" + path_str + ")=", file=output_file)
         aliased_name = entry["alias"]
         alias_path_str = "/".join(cur_path + [mangle(aliased_name)])
-        print("### __Parameter name__: " +  true_name, file=output_file)
+        print("::::{dropdown} __Parameter:__ {ref}`" + true_name + "<parameters:" + path_str + ">`", file=output_file)
+        print(":name: parameters:" + path_str, file=output_file)
         print("**Alias:** [" + aliased_name + "](parameters:" + alias_path_str + ")\n", file=output_file)
-        print("**Deprecation Status:** " + entry["deprecation_status"] + "\n", file=output_file)
+        print("**Deprecation Status:** " + entry["deprecation_status"], file=output_file)
+        print("::::\n", file=output_file)
 
 
 def handle_subsection(data, cur_path, output_file):

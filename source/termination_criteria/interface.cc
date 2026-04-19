@@ -254,19 +254,6 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
-  namespace internal
-  {
-    namespace Plugins
-    {
-      template <>
-      std::list<internal::Plugins::PluginList<TerminationCriteria::Interface<2>>::PluginInfo> *
-      internal::Plugins::PluginList<TerminationCriteria::Interface<2>>::plugins = nullptr;
-      template <>
-      std::list<internal::Plugins::PluginList<TerminationCriteria::Interface<3>>::PluginInfo> *
-      internal::Plugins::PluginList<TerminationCriteria::Interface<3>>::plugins = nullptr;
-    }
-  }
-
   namespace TerminationCriteria
   {
 #define INSTANTIATE(dim) \

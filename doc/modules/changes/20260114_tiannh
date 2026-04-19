@@ -1,0 +1,8 @@
+Improved: The mesh deformation solver now supports higher-order
+polynomial degrees in GMG-based setups. A new parameter,
+`Mesh deformation mapping order`, controls the polynomial degree
+used by the mesh deformation mapping; the default value `auto`
+uses the larger of 4 and the Stokes velocity polynomial degree
+for curved geometries, and 1 otherwise.
+<br>
+(Ninghui Tian, Rene Gassmoeller, Timo Heister, 2026/03/30)

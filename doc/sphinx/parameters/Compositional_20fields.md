@@ -5,8 +5,8 @@
 ## **Subsection:** Compositional fields
 
 
-(parameters:Compositional_20fields/Compositional_20field_20methods)=
-### __Parameter name:__ Compositional field methods
+::::{dropdown} __Parameter:__ {ref}`Compositional field methods<parameters:Compositional_20fields/Compositional_20field_20methods>`
+:name: parameters:Compositional_20fields/Compositional_20field_20methods
 **Default value:**
 
 **Pattern:** [List of <[Selection field|particles|volume of fluid|static|melt field|darcy field|prescribed field|prescribed field with diffusion ]> of length 0...4294967295 (inclusive)]
@@ -21,17 +21,19 @@ These choices correspond to the following methods by which compositional fields 
 * &ldquo;darcy field&rdquo;: If a compositional field is marked with this method, then its values are computed in each time step by advecting along the values of the previous time step using the fluid velocity prescribed by Darcy&rsquo;s Law, and applying reaction rates to it. In other words this corresponds to the usual notion of a composition field as mentioned in {ref}`sec:methods:compositional-fields`, except that it is advected with the Darcy velocity instead of the solid velocity. This method requires there to be a compositional field named porosity that is advected the darcy field method. We calculate the fluid velocity $u_f$ using an approximation of Darcy&rsquo;s Law: $u_f = u_s - K_D / \phi * (rho_s * g - rho_f * g)$.
 * &ldquo;prescribed field&rdquo;: The value of these fields is determined in each time step from the material model. If a compositional field is marked with this method, then the value of a specific additional material model output, called the &lsquo;PrescribedFieldOutputs&rsquo; is interpolated onto the field. This field does not change otherwise, it is not advected with the flow.
 * &ldquo;prescribed field with diffusion&rdquo;: If a compositional field is marked this way, the value of a specific additional material model output, called the &lsquo;PrescribedFieldOutputs&rsquo; is interpolated onto the field, as in the &ldquo;prescribed field&rdquo; method. Afterwards, the field is diffused based on a solver parameter, the diffusion length scale, smoothing the field. Specifically, the field is updated by solving the equation $(I-l^2 \Delta) C_\text{smoothed} = C_\text{prescribed}$, where $l$ is the diffusion length scale. Note that this means that the amount of diffusion is independent of the time step size, and that the field is not advected with the flow.
+::::
 
-(parameters:Compositional_20fields/List_20of_20normalized_20fields)=
-### __Parameter name:__ List of normalized fields
+::::{dropdown} __Parameter:__ {ref}`List of normalized fields<parameters:Compositional_20fields/List_20of_20normalized_20fields>`
+:name: parameters:Compositional_20fields/List_20of_20normalized_20fields
 **Default value:**
 
 **Pattern:** [List of <[Integer range 0...2147483647 (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A list of integers smaller than or equal to the number of compositional fields. All compositional fields in this list will be normalized before the first timestep. The normalization is implemented in the following way: First, the sum of the fields to be normalized is calculated at every point and the global maximum is determined. Second, the compositional fields to be normalized are divided by this maximum.
+::::
 
-(parameters:Compositional_20fields/Mapped_20particle_20properties)=
-### __Parameter name:__ Mapped particle properties
+::::{dropdown} __Parameter:__ {ref}`Mapped particle properties<parameters:Compositional_20fields/Mapped_20particle_20properties>`
+:name: parameters:Compositional_20fields/Mapped_20particle_20properties
 **Default value:**
 
 **Pattern:** [Map of <[Anything]>:<[Anything]> of length 0...4294967295 (inclusive)]
@@ -39,25 +41,28 @@ These choices correspond to the following methods by which compositional fields 
 **Documentation:** A comma separated list denoting the particle properties that will be projected to those compositional fields that are of the &ldquo;particles&rdquo; field type.
 
 The format of valid entries for this parameter is that of a map given as &ldquo;key1: value1, key2: value2 [component2], key3: value3 [component4], ...&rdquo; where each key must be a valid field name of the &ldquo;particles&rdquo; type, and each value must be one of the currently selected particle properties. Component is a component index of the particle property that is 0 by default, but can be set up to n-1, where n is the number of vector components of this particle property. The component indicator only needs to be set if not the first component of the particle property should be mapped (e.g. the $y$-component of the velocity at the particle positions).
+::::
 
-(parameters:Compositional_20fields/Names_20of_20fields)=
-### __Parameter name:__ Names of fields
+::::{dropdown} __Parameter:__ {ref}`Names of fields<parameters:Compositional_20fields/Names_20of_20fields>`
+:name: parameters:Compositional_20fields/Names_20of_20fields
 **Default value:**
 
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A user-defined name for each of the compositional fields requested.
+::::
 
-(parameters:Compositional_20fields/Number_20of_20fields)=
-### __Parameter name:__ Number of fields
+::::{dropdown} __Parameter:__ {ref}`Number of fields<parameters:Compositional_20fields/Number_20of_20fields>`
+:name: parameters:Compositional_20fields/Number_20of_20fields
 **Default value:** 0
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** The number of fields that will be advected along with the flow field, excluding velocity, pressure and temperature.
+::::
 
-(parameters:Compositional_20fields/Types_20of_20fields)=
-### __Parameter name:__ Types of fields
+::::{dropdown} __Parameter:__ {ref}`Types of fields<parameters:Compositional_20fields/Types_20of_20fields>`
+:name: parameters:Compositional_20fields/Types_20of_20fields
 **Default value:** unspecified
 
 **Pattern:** [List of <[Selection chemical composition|stress|strain|grain size|porosity|density|entropy|generic|unspecified ]> of length 0...4294967295 (inclusive)]
@@ -75,3 +80,4 @@ Each entry of the list must be one of several recognized types: * &ldquo;chemica
 * &ldquo;unspecified&rdquo;: The unspecified type is intended to tell ASPECT that the user has not explicitly indicated the type of this field. ASPECT will then try to detect the type automatically based on the name, but will default to &ldquo;chemical composition&rdquo; if the name does not correspond to a known type.
 
 Note that while ASPECT&rsquo;s functionality can make use of the field types, not all of the code will make use of it. It is the user&rsquo;s responsibility to check that the chosen material model and other plugins interpret the compositional fields as intended.
+::::

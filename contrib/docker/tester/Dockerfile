@@ -35,5 +35,7 @@ ENV OMPI_MCA_mpi_yield_when_idle=1
 ENV OMPI_MCA_rmaps_base_oversubscribe=1
 ENV OMPI_ALLOW_RUN_AS_ROOT=1
 ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
+# Prevent an OpenMPI warning in Ubuntu 22.04 (see https://github.com/openwall/john/issues/5088)
+ENV HWLOC_HIDE_ERRORS=2
 
 WORKDIR /opt

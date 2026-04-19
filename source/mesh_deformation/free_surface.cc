@@ -26,6 +26,7 @@
 #include <aspect/simulator/assemblers/interface.h>
 #include <aspect/melt.h>
 #include <aspect/simulator.h>
+#include <aspect/linear_algebra_types.h>
 
 #include <deal.II/dofs/dof_tools.h>
 

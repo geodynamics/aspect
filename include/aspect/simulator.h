@@ -43,6 +43,7 @@ DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 #include <aspect/global.h>
+#include <aspect/linear_algebra_types.h>
 #include <aspect/simulator_access.h>
 #include <aspect/lateral_averaging.h>
 #include <aspect/simulator_signals.h>
@@ -196,7 +197,7 @@ namespace aspect
    * @ingroup Simulator
    */
   template <int dim>
-  class Simulator
+  class Simulator : public EnableObserverPointer
   {
     public:
       /**
@@ -891,6 +892,15 @@ namespace aspect
        * It will return numbers::invalid_unsigned_int if no snapshot exists.
        */
       unsigned int determine_last_good_snapshot() const;
+
+      /**
+       * Determine which snapshot to resume from based on the checkpointing
+       * configuration. This may be the explicitly requested checkpoint id, the
+       * checkpoint closest to a requested resume time, or the last good
+       * checkpoint. It will return numbers::invalid_unsigned_int if no usable
+       * snapshot exists.
+       */
+      unsigned int determine_resume_snapshot() const;
 
       /**
        * Save the state of this program to a set of files in the output
@@ -2053,17 +2063,48 @@ namespace aspect
       std::unique_ptr<LinearAlgebra::PreconditionAMG>           Amg_preconditioner;
       std::unique_ptr<LinearAlgebra::PreconditionBase>          Mp_preconditioner;
 
+      /**
+       * Whether to resize and rebuild the sparsity pattern and matrix. This can become
+       * necessary if constraints or the mesh changes.
+       */
       bool                                                      rebuild_sparsity_and_matrices;
+
+      /**
+       * Whether to assemble the stokes matrix before solving the Stokes equation.
+       * A matrix that is identical for subsequent time steps (e.g. if the viscosity is constant
+       * over time and no constraints change) can be reused and does not need to be assembled
+       * again, saving considerable computational time.
+       *
+       * Note, that this parameter does not control whether the right-hand side force term of
+       * the equation is assembled (it is always assembled).
+       *
+       * Also note that in the case of defect correction or Newton solvers, the Stokes
+       * matrix is actually on the right-hand side of the equation. The meaning of this flag
+       * does not change however, it still determines if these (right-hand) side terms are
+       * assembled.
+       */
       bool                                                      rebuild_stokes_matrix;
+
+      /**
+       * Whether to assemble the left-hand side matrix of the defect correct or Newton
+       * solver, i.e. the system Jacobian.
+       */
       bool                                                      assemble_newton_stokes_matrix;
+
+      /**
+       * A flag that indicates if we are solving a fixed point Stokes equation (if false),
+       * or a defect correction/Newton solver system (if true).
+       */
       bool                                                      assemble_newton_stokes_system;
+
+      /**
+       * Whether to assemble the stokes preconditioner matrix (if one is used).
+       */
       bool                                                      rebuild_stokes_preconditioner;
 
       /**
        * @}
        */
-
-    private:
 
       /**
        * Unique pointer for an instance of the MeshDeformationHandler. this way,

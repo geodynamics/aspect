@@ -423,19 +423,6 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
-  namespace internal
-  {
-    namespace Plugins
-    {
-      template <>
-      std::list<internal::Plugins::PluginList<MeshRefinement::Interface<2>>::PluginInfo> *
-      internal::Plugins::PluginList<MeshRefinement::Interface<2>>::plugins = nullptr;
-      template <>
-      std::list<internal::Plugins::PluginList<MeshRefinement::Interface<3>>::PluginInfo> *
-      internal::Plugins::PluginList<MeshRefinement::Interface<3>>::plugins = nullptr;
-    }
-  }
-
   namespace MeshRefinement
   {
 #define INSTANTIATE(dim) \

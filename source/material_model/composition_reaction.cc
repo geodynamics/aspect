@@ -148,7 +148,7 @@ namespace aspect
                              "The reference temperature $T_0$. Units: $\\text{K}$.");
           prm.declare_entry ("Viscosity", "5e24",
                              Patterns::Double (0.),
-                             "The value of the constant viscosity. Units: $\\frac{\\text{kg}}{\\text{m}\\test{s}}$.");
+                             "The value of the constant viscosity. Units: $\\frac{\\text{kg}}{\\text{m}\\text{s}}$.");
           prm.declare_entry ("Composition viscosity prefactor 1", "1.0",
                              Patterns::Double (0.),
                              "A linear dependency of viscosity on the first compositional field. "
@@ -165,7 +165,7 @@ namespace aspect
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
-                             "Units: $\\frac{\\text{W}}{\\text{m}\\text{K}}$$\\frac{\\text{W}{\\text{m}\\text{K}}$.");
+                             "Units: $\\frac{\\text{W}}{\\text{m}\\text{K}}$.");
           prm.declare_entry ("Reaction depth", "0.",
                              Patterns::Double (0.),
                              "Above this depth the compositional fields react: "

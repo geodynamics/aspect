@@ -5,8 +5,8 @@
 ## **Subsection:** Adiabatic conditions model
 
 
-(parameters:Adiabatic_20conditions_20model/Model_20name)=
-### __Parameter name:__ Model name
+::::{dropdown} __Parameter:__ {ref}`Model name<parameters:Adiabatic_20conditions_20model/Model_20name>`
+:name: parameters:Adiabatic_20conditions_20model/Model_20name
 **Default value:** compute profile
 
 **Pattern:** [Selection ascii data|compute entropy profile|compute profile|function ]
@@ -20,63 +20,70 @@
 &lsquo;compute profile&rsquo;: A model in which the adiabatic profile is calculated by solving the hydrostatic equations for pressure and temperature in depth. The gravity is assumed to be in depth direction and the composition is either given by the initial composition at reference points or computed as a reference depth-function. All material parameters are computed by the material model plugin. The surface conditions are either constant or changing over time as prescribed by a user-provided function.
 
 &lsquo;function&rsquo;: A model in which the adiabatic profile is specified by a user defined function. The supplied function has to contain temperature, pressure, and density as a function of depth in this order.
+::::
 
 (parameters:Adiabatic_20conditions_20model/Ascii_20data_20model)=
 ## **Subsection:** Adiabatic conditions model / Ascii data model
-(parameters:Adiabatic_20conditions_20model/Ascii_20data_20model/Data_20directory)=
-### __Parameter name:__ Data directory
+::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Adiabatic_20conditions_20model/Ascii_20data_20model/Data_20directory>`
+:name: parameters:Adiabatic_20conditions_20model/Ascii_20data_20model/Data_20directory
 **Default value:** $ASPECT_SOURCE_DIR/tests/adiabatic-conditions/ascii-data/test/
 
 **Pattern:** [DirectoryName]
 
 **Documentation:** The name of a directory that contains the model data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT. A trailing slash at the end of the directory path is optional; the plugin will automatically append a &rsquo;/&rsquo; when the parameters are parsed if it is missing.
+::::
 
-(parameters:Adiabatic_20conditions_20model/Ascii_20data_20model/Data_20file_20name)=
-### __Parameter name:__ Data file name
+::::{dropdown} __Parameter:__ {ref}`Data file name<parameters:Adiabatic_20conditions_20model/Ascii_20data_20model/Data_20file_20name>`
+:name: parameters:Adiabatic_20conditions_20model/Ascii_20data_20model/Data_20file_20name
 **Default value:**
 
 **Pattern:** [Anything]
 
 **Documentation:** The file name of the model data.
+::::
 
-(parameters:Adiabatic_20conditions_20model/Ascii_20data_20model/Scale_20factor)=
-### __Parameter name:__ Scale factor
+::::{dropdown} __Parameter:__ {ref}`Scale factor<parameters:Adiabatic_20conditions_20model/Ascii_20data_20model/Scale_20factor>`
+:name: parameters:Adiabatic_20conditions_20model/Ascii_20data_20model/Scale_20factor
 **Default value:** 1.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
+::::
 
 (parameters:Adiabatic_20conditions_20model/Compute_20entropy_20profile)=
 ## **Subsection:** Adiabatic conditions model / Compute entropy profile
-(parameters:Adiabatic_20conditions_20model/Compute_20entropy_20profile/Number_20of_20points)=
-### __Parameter name:__ Number of points
+::::{dropdown} __Parameter:__ {ref}`Number of points<parameters:Adiabatic_20conditions_20model/Compute_20entropy_20profile/Number_20of_20points>`
+:name: parameters:Adiabatic_20conditions_20model/Compute_20entropy_20profile/Number_20of_20points
 **Default value:** 1000
 
 **Pattern:** [Integer range 5...2147483647 (inclusive)]
 
 **Documentation:** The number of points we use to compute the adiabatic profile. The higher the number of points, the more accurate the downward integration from the adiabatic surface conditions will be.
+::::
 
-(parameters:Adiabatic_20conditions_20model/Compute_20entropy_20profile/Surface_20entropy)=
-### __Parameter name:__ Surface entropy
+::::{dropdown} __Parameter:__ {ref}`Surface entropy<parameters:Adiabatic_20conditions_20model/Compute_20entropy_20profile/Surface_20entropy>`
+:name: parameters:Adiabatic_20conditions_20model/Compute_20entropy_20profile/Surface_20entropy
 **Default value:** 0
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The surface entropy for the profile.
+::::
 
 (parameters:Adiabatic_20conditions_20model/Compute_20profile)=
 ## **Subsection:** Adiabatic conditions model / Compute profile
-(parameters:Adiabatic_20conditions_20model/Compute_20profile/Composition_20reference_20profile)=
-### __Parameter name:__ Composition reference profile
+::::{dropdown} __Parameter:__ {ref}`Composition reference profile<parameters:Adiabatic_20conditions_20model/Compute_20profile/Composition_20reference_20profile>`
+:name: parameters:Adiabatic_20conditions_20model/Compute_20profile/Composition_20reference_20profile
 **Default value:** initial composition
 
 **Pattern:** [Selection initial composition|function ]
 
 **Documentation:** Select how the reference profile for composition is computed. This profile is used to evaluate the material model, when computing the pressure and temperature profile.
+::::
 
-(parameters:Adiabatic_20conditions_20model/Compute_20profile/Function_20constants)=
-### __Parameter name:__ Function constants
+::::{dropdown} __Parameter:__ {ref}`Function constants<parameters:Adiabatic_20conditions_20model/Compute_20profile/Function_20constants>`
+:name: parameters:Adiabatic_20conditions_20model/Compute_20profile/Function_20constants
 **Default value:**
 
 **Pattern:** [Anything]
@@ -84,9 +91,10 @@
 **Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form &lsquo;var1=value1, var2=value2, ...&rsquo;.
 
 A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
+::::
 
-(parameters:Adiabatic_20conditions_20model/Compute_20profile/Function_20expression)=
-### __Parameter name:__ Function expression
+::::{dropdown} __Parameter:__ {ref}`Function expression<parameters:Adiabatic_20conditions_20model/Compute_20profile/Function_20expression>`
+:name: parameters:Adiabatic_20conditions_20model/Compute_20profile/Function_20expression
 **Default value:** 0
 
 **Pattern:** [Anything]
@@ -94,35 +102,39 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Documentation:** The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as &lsquo;sin&rsquo; or &lsquo;cos&rsquo;. In addition, it may contain expressions like &lsquo;if(x>0, 1, -1)&rsquo; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
 
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+::::
 
-(parameters:Adiabatic_20conditions_20model/Compute_20profile/Number_20of_20points)=
-### __Parameter name:__ Number of points
+::::{dropdown} __Parameter:__ {ref}`Number of points<parameters:Adiabatic_20conditions_20model/Compute_20profile/Number_20of_20points>`
+:name: parameters:Adiabatic_20conditions_20model/Compute_20profile/Number_20of_20points
 **Default value:** 1000
 
 **Pattern:** [Integer range 5...2147483647 (inclusive)]
 
 **Documentation:** The number of points we use to compute the adiabatic profile. The higher the number of points, the more accurate the downward integration from the adiabatic surface temperature will be.
+::::
 
-(parameters:Adiabatic_20conditions_20model/Compute_20profile/Use_20surface_20condition_20function)=
-### __Parameter name:__ Use surface condition function
+::::{dropdown} __Parameter:__ {ref}`Use surface condition function<parameters:Adiabatic_20conditions_20model/Compute_20profile/Use_20surface_20condition_20function>`
+:name: parameters:Adiabatic_20conditions_20model/Compute_20profile/Use_20surface_20condition_20function
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to use the &rsquo;Surface condition function&rsquo; to determine surface conditions, or the &rsquo;Adiabatic surface temperature&rsquo; and &rsquo;Surface pressure&rsquo; parameters. If this is set to true the reference profile is updated every timestep. The function expression of the function should be independent of space, but can depend on time &rsquo;t&rsquo;. The function must return two components, the first one being reference surface pressure, the second one being reference surface temperature.
+::::
 
-(parameters:Adiabatic_20conditions_20model/Compute_20profile/Variable_20names)=
-### __Parameter name:__ Variable names
+::::{dropdown} __Parameter:__ {ref}`Variable names<parameters:Adiabatic_20conditions_20model/Compute_20profile/Variable_20names>`
+:name: parameters:Adiabatic_20conditions_20model/Compute_20profile/Variable_20names
 **Default value:** x,t
 
 **Pattern:** [Anything]
 
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
+::::
 
 (parameters:Adiabatic_20conditions_20model/Compute_20profile/Surface_20condition_20function)=
 ## **Subsection:** Adiabatic conditions model / Compute profile / Surface condition function
-(parameters:Adiabatic_20conditions_20model/Compute_20profile/Surface_20condition_20function/Function_20constants)=
-### __Parameter name:__ Function constants
+::::{dropdown} __Parameter:__ {ref}`Function constants<parameters:Adiabatic_20conditions_20model/Compute_20profile/Surface_20condition_20function/Function_20constants>`
+:name: parameters:Adiabatic_20conditions_20model/Compute_20profile/Surface_20condition_20function/Function_20constants
 **Default value:**
 
 **Pattern:** [Anything]
@@ -130,9 +142,10 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form &lsquo;var1=value1, var2=value2, ...&rsquo;.
 
 A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
+::::
 
-(parameters:Adiabatic_20conditions_20model/Compute_20profile/Surface_20condition_20function/Function_20expression)=
-### __Parameter name:__ Function expression
+::::{dropdown} __Parameter:__ {ref}`Function expression<parameters:Adiabatic_20conditions_20model/Compute_20profile/Surface_20condition_20function/Function_20expression>`
+:name: parameters:Adiabatic_20conditions_20model/Compute_20profile/Surface_20condition_20function/Function_20expression
 **Default value:** 0; 0
 
 **Pattern:** [Anything]
@@ -140,19 +153,21 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Documentation:** The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as &lsquo;sin&rsquo; or &lsquo;cos&rsquo;. In addition, it may contain expressions like &lsquo;if(x>0, 1, -1)&rsquo; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
 
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+::::
 
-(parameters:Adiabatic_20conditions_20model/Compute_20profile/Surface_20condition_20function/Variable_20names)=
-### __Parameter name:__ Variable names
+::::{dropdown} __Parameter:__ {ref}`Variable names<parameters:Adiabatic_20conditions_20model/Compute_20profile/Surface_20condition_20function/Variable_20names>`
+:name: parameters:Adiabatic_20conditions_20model/Compute_20profile/Surface_20condition_20function/Variable_20names
 **Default value:** x,t
 
 **Pattern:** [Anything]
 
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
+::::
 
 (parameters:Adiabatic_20conditions_20model/Function)=
 ## **Subsection:** Adiabatic conditions model / Function
-(parameters:Adiabatic_20conditions_20model/Function/Function_20constants)=
-### __Parameter name:__ Function constants
+::::{dropdown} __Parameter:__ {ref}`Function constants<parameters:Adiabatic_20conditions_20model/Function/Function_20constants>`
+:name: parameters:Adiabatic_20conditions_20model/Function/Function_20constants
 **Default value:**
 
 **Pattern:** [Anything]
@@ -160,19 +175,22 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form &lsquo;var1=value1, var2=value2, ...&rsquo;.
 
 A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
+::::
 
-(parameters:Adiabatic_20conditions_20model/Function/Function_20expression)=
-### __Parameter name:__ Function expression
+::::{dropdown} __Parameter:__ {ref}`Function expression<parameters:Adiabatic_20conditions_20model/Function/Function_20expression>`
+:name: parameters:Adiabatic_20conditions_20model/Function/Function_20expression
 **Default value:** 0.0; 0.0; 1.0
 
 **Pattern:** [Anything]
 
 **Documentation:** Expression for the adiabatic temperature, pressure, and density separated by semicolons as a function of &lsquo;depth&rsquo;.
+::::
 
-(parameters:Adiabatic_20conditions_20model/Function/Variable_20names)=
-### __Parameter name:__ Variable names
+::::{dropdown} __Parameter:__ {ref}`Variable names<parameters:Adiabatic_20conditions_20model/Function/Variable_20names>`
+:name: parameters:Adiabatic_20conditions_20model/Function/Variable_20names
 **Default value:** depth
 
 **Pattern:** [Anything]
 
 **Documentation:**
+::::

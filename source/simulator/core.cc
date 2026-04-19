@@ -39,6 +39,7 @@
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 #include <aspect/material_model/rheology/elasticity.h>
 #include <aspect/time_stepping/repeat_on_nonlinear_fail.h>
+#include <aspect/linear_algebra_types.h>
 
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
@@ -2137,9 +2138,9 @@ namespace aspect
     // start-up
     if (parameters.resume_computation == true)
       {
-        last_checkpoint_id = determine_last_good_snapshot();
+        last_checkpoint_id = determine_resume_snapshot();
         AssertThrow(last_checkpoint_id != numbers::invalid_unsigned_int,
-                    ExcMessage("You requested to restart the simulation from the last checkpoint but no written checkpoint has been found."));
+                    ExcMessage("You requested to restart the simulation from a checkpoint, but no matching written checkpoint has been found."));
 
         resume_from_snapshot();
         // we need to remove additional_refinement_times that are in the past

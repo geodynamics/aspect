@@ -1052,6 +1052,14 @@ add_custom_target(indent
   COMMENT "Indenting all ASPECT header and source files..."
   )
 
+# Provide "parameters" target for updating the parameter documentation
+add_custom_target(parameters
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/doc
+  COMMAND ./update_parameters.sh ${CMAKE_BINARY_DIR}/aspect
+  DEPENDS ${TARGET_EXE}
+  COMMENT "Updating parameter documentation..."
+  )
+
 # Provide "release" and "debug" targets to switch compile mode
 if(CMAKE_GENERATOR MATCHES "Ninja")
   set(_make_command "$ ninja")

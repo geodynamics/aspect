@@ -27,6 +27,7 @@
 #include <aspect/postprocess/particles.h>
 #include <aspect/particle/property/interface.h>
 #include <aspect/simulator.h>
+#include <aspect/simulator_signals.h>
 
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/numerics/fe_field_function.h>
@@ -431,6 +432,15 @@ namespace aspect
         strain_healing_temperature_dependent_recovery_rate = prm.get_double ("Strain healing temperature dependent recovery rate");
 
         strain_healing_temperature_dependent_prefactor = prm.get_double ("Strain healing temperature dependent prefactor");
+
+#if !DEAL_II_VERSION_GTE(9, 8, 0)
+        // Work around a memory leak in deal.II that is fixed in 9.8.0-pre:
+        this->get_signals().start_timestep.connect([&](const SimulatorAccess<dim> &)
+        {
+          for (auto &evaluator : composition_evaluators)
+            evaluator.reset();
+        });
+#endif
       }
 
 

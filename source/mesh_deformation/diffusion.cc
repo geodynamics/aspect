@@ -26,6 +26,7 @@
 #include <aspect/geometry_model/two_merged_boxes.h>
 #include <aspect/simulator.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
+#include <aspect/linear_algebra_types.h>
 
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/base/symmetric_tensor.h>

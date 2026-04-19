@@ -22,14 +22,17 @@
 #include <aspect/melt.h>
 #include <aspect/advection_field.h>
 #include <aspect/utilities.h>
+#include <aspect/linear_algebra_types.h>
+
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/boundary_traction/interface.h>
 #include <aspect/simulator/assemblers/advection.h>
-#include <deal.II/base/signaling_nan.h>
 
+#include <deal.II/base/signaling_nan.h>
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/lac/sparsity_tools.h>
+#include <deal.II/lac/solver_cg.h>
 
 #include <deal.II/fe/fe_q.h>
 #include <deal.II/fe/fe_dgp.h>
