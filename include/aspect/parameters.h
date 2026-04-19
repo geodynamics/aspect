@@ -129,6 +129,32 @@ namespace aspect
     };
 
     /**
+     * A struct that contains the enums to decide what to do when a linear solver fails.
+     */
+    struct LinearSolverFailureStrategy
+    {
+      enum Kind
+      {
+        continue_with_nonlinear_solver,
+        abort
+      };
+      /**
+       * Parse the enum value from a string.
+       */
+      static
+      Kind
+      parse(const std::string &input)
+      {
+        if (input == "continue with nonlinear solver")
+          return continue_with_nonlinear_solver;
+        else if (input == "abort")
+          return abort;
+        else
+          AssertThrow(false, ExcNotImplemented());
+      }
+    };
+
+    /**
      * @brief The NullspaceRemoval struct
      */
     struct NullspaceRemoval
@@ -549,6 +575,7 @@ namespace aspect
      */
     typename NonlinearSolver::Kind nonlinear_solver;
     typename NonlinearSolverFailureStrategy::Kind nonlinear_solver_failure_strategy;
+    typename LinearSolverFailureStrategy::Kind linear_solver_failure_strategy;
 
     typename AdvectionStabilizationMethod::Kind advection_stabilization_method;
     double                         nonlinear_tolerance;
