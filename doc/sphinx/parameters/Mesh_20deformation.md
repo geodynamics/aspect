@@ -26,7 +26,9 @@ The names of the boundaries listed here can either be numbers (in which case the
 
 The names of the boundaries listed here can either be numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
 
-The format is id1: object1 \& object2, id2: object3 \& object2, where objects are one of &lsquo;ascii data&rsquo;: Implementation of a model in which the initial mesh deformation (initial topography) is derived from a file containing data in ascii format. The following geometry models are currently supported: box, chunk, spherical. Note the required format of the input data: The first lines may contain any number of comments if they begin with &lsquo;#&rsquo;, but one of these lines needs to contain the number of grid points in each dimension as for example &lsquo;# POINTS: 3 3&rsquo;. The order of the data columns has to be &lsquo;x&rsquo;, &lsquo;Topography [m]&rsquo; in a 2d model and  &lsquo;x&rsquo;, &lsquo;y&rsquo;, &lsquo;Topography [m]&rsquo; in a 3d model, which means that there has to be a single column containing the topography. Note that the data in the input file needs to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. &lsquo;x&rsquo; will be replaced by the azimuth angle in radians  and &lsquo;y&rsquo; by the polar angle in radians measured positive from the north pole. The grid will be assumed to be a longitude-colatitude grid. Note that the order of spherical coordinates is &lsquo;phi&rsquo;, &lsquo;theta&rsquo; and not &lsquo;theta&rsquo;, &lsquo;phi&rsquo;, since this allows for dimension independent expressions.
+The format is id1: object1 \& object2, id2: object3 \& object2, where objects are one of &lsquo;Landlab&rsquo;: A mesh deformation plugin that lets a Python script control the deformation of the surface. It is meant for coupling with the landscape evolution code Landlab, but any other script that provides the necessary functions can be used. It is necessary to have Python and numpy with their C APIs installed and that ASPECT_WITH_PYTHON is enabled when ASPECT is configured with CMake.
+
+&lsquo;ascii data&rsquo;: Implementation of a model in which the initial mesh deformation (initial topography) is derived from a file containing data in ascii format. The following geometry models are currently supported: box, chunk, spherical. Note the required format of the input data: The first lines may contain any number of comments if they begin with &lsquo;#&rsquo;, but one of these lines needs to contain the number of grid points in each dimension as for example &lsquo;# POINTS: 3 3&rsquo;. The order of the data columns has to be &lsquo;x&rsquo;, &lsquo;Topography [m]&rsquo; in a 2d model and  &lsquo;x&rsquo;, &lsquo;y&rsquo;, &lsquo;Topography [m]&rsquo; in a 3d model, which means that there has to be a single column containing the topography. Note that the data in the input file needs to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. &lsquo;x&rsquo; will be replaced by the azimuth angle in radians  and &lsquo;y&rsquo; by the polar angle in radians measured positive from the north pole. The grid will be assumed to be a longitude-colatitude grid. Note that the order of spherical coordinates is &lsquo;phi&rsquo;, &lsquo;theta&rsquo; and not &lsquo;theta&rsquo;, &lsquo;phi&rsquo;, since this allows for dimension independent expressions.
 
 &lsquo;boundary function&rsquo;: A plugin, which prescribes the surface mesh to deform according to an analytically prescribed function. Note that the function prescribes a deformation velocity, i.e. the return value of this plugin is later multiplied by the time step length to compute the displacement increment in this time step. Although the function&rsquo;s time variable is interpreted as years when Use years instead of seconds is set to true, the boundary deformation velocity should still be given in m/s. The format of the functions follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.
 
@@ -148,4 +150,42 @@ If the function you are describing represents a vector-valued function with mult
 **Pattern:** [Selection normal|vertical ]
 
 **Documentation:** After each time step the free surface must be advected in the direction of the velocity field. Mass conservation requires that the mesh velocity is in the normal direction of the surface. However, for steep topography or large curvature, advection in the normal direction can become ill-conditioned, and instabilities in the mesh can form. Projection of the mesh velocity onto the local vertical direction can preserve the mesh quality better, but at the cost of slightly poorer mass conservation of the domain.
+::::
+
+(parameters:Mesh_20deformation/Landlab)=
+## **Subsection:** Mesh deformation / Landlab
+::::{dropdown} __Parameter:__ {ref}`MPI ranks for Landlab<parameters:Mesh_20deformation/Landlab/MPI_20ranks_20for_20Landlab>`
+:name: parameters:Mesh_20deformation/Landlab/MPI_20ranks_20for_20Landlab
+**Default value:** 1
+
+**Pattern:** [Integer range 1...2147483647 (inclusive)]
+
+**Documentation:** Number of ranks to use for the Landlab simulation. If set to 1, the Landlab simulation will run sequentially without MPI. If set to -1, the Landlab simulation will run on all ranks.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Script argument<parameters:Mesh_20deformation/Landlab/Script_20argument>`
+:name: parameters:Mesh_20deformation/Landlab/Script_20argument
+**Default value:**
+
+**Pattern:** [Anything]
+
+**Documentation:** An arbitrary string to be passed to the initialize() function in the Python script. Can be used to specify a configuration file or other option.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Script name<parameters:Mesh_20deformation/Landlab/Script_20name>`
+:name: parameters:Mesh_20deformation/Landlab/Script_20name
+**Default value:**
+
+**Pattern:** [Anything]
+
+**Documentation:** Name of the Python module to load (without .py extension).
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Script path<parameters:Mesh_20deformation/Landlab/Script_20path>`
+:name: parameters:Mesh_20deformation/Landlab/Script_20path
+**Default value:**
+
+**Pattern:** [Anything]
+
+**Documentation:** Path to the Python script to execute. Relative paths and the placeholders ASPECT_SOURCE_DIR and ASPECT_BINARY_DIR are allowed.
 ::::
