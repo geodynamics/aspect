@@ -1,5 +1,5 @@
 {
-  "version": "1.0",
+  "version":"1.1",
   "cross section": [[100e3,100e3],[400e3,500e3]],
   "coordinate system":{"model":"cartesian"},
   "gravity model":{"model":"uniform", "magnitude":10},
@@ -8,7 +8,14 @@
     {"model":"continental plate", "name":"First continental plate", "max depth":250e3, "coordinates":[[-1e3,500e3],[500e3,500e3],[500e3,1000e3],[-1e3,1000e3]],
      "temperature models":[{"model":"uniform", "max depth":75e3, "temperature":150},
                            {"model":"uniform", "min depth":75e3, "max depth":150e3, "temperature":100},
-                           {"model":"uniform", "min depth":150e3, "max depth":225e3, "temperature":50}]},
+                           {"model":"uniform", "min depth":150e3, "max depth":225e3, "temperature":50}],
+      "grains models":[
+                     {"model":"uniform", "compositions":[0,1], // olivine and enstatie
+                      "rotation matrices":[[[11,21,31],[41,51,61],[71,81,91]],[[101,111,121],[131,141,151],[161,171,181]]],
+                      "grain sizes":[0.3,-1]}
+                      ],
+      "velocity models": [{"model": "uniform raw", "velocity": [1.1,2.2,3.3]}]
+},
      
     {"model":"continental plate", "name":"Second continental plate", "max depth":250e3, "coordinates":[[2000e3,2000e3],[1000e3,2000e3],[1000e3,1000e3],[2000e3,1000e3]],
      "temperature models":[{"model":"adiabatic", "potential mantle temperature":20}],
@@ -17,7 +24,8 @@
                      {"model":"uniform", "compositions":[0,1], // olivine and enstatie
                       "rotation matrices":[[[10,20,30],[40,50,60],[70,80,90]],[[100,110,120],[130,140,150],[160,170,180]]],
                       "grain sizes":[0.3,-1]}
-]},
+                    ]
+    },
 
     {"model":"continental plate", "name":"Third continental plate", "max depth":250e3, "coordinates":[[-1e3,500e3],[500e3,500e3],[500e3,1000e3],[-1e3,1000e3]],
      "composition models":[{"model":"uniform", "compositions":[3]}],
@@ -25,7 +33,8 @@
                      {"model":"uniform", "compositions":[0,1], // olivine and enstatie
                       "rotation matrices":[[[1,2,3],[4,5,6],[7,8,9]],[[10,11,12],[13,14,15],[16,17,18]]],
                       "grain sizes":[-1,0.2]}
-]},
+                    ],
+    "velocity models": [{"model": "uniform raw", "velocity": [1.2,2.3,3.4]}]},
 
     {"model":"continental plate", "name":"Fourth continental plate", "max depth":250e3, "coordinates":[[-1e3,1500e3],[500e3,1500e3],[500e3,2000e3],[-1e3,2000e3]],
      "temperature models":[{"model":"linear", "max depth":250e3}],

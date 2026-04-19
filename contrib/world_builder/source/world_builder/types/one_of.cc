@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018-2024 by the authors of the World Builder code.
+  Copyright (C) 2018-2026 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -30,6 +30,17 @@ namespace WorldBuilder
       this->type_name = Types::type::OneOf;
       inner_types_ptr.emplace_back(type_1.clone());
       inner_types_ptr.emplace_back(type_2.clone());
+
+    }
+
+    OneOf::OneOf(const Interface &type_1,
+                 const Interface &type_2,
+                 const Interface &type_3)
+    {
+      this->type_name = Types::type::OneOf;
+      inner_types_ptr.emplace_back(type_1.clone());
+      inner_types_ptr.emplace_back(type_2.clone());
+      inner_types_ptr.emplace_back(type_3.clone());
 
     }
 

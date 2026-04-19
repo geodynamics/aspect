@@ -1,0 +1,18 @@
+# output variables
+grid_type = chunk 
+dim = 3
+compositions = 0
+vtu_output_format = ASCII
+
+# domain of the grid
+x_max = 50
+x_min = -50
+y_max = 50
+y_min = -50
+z_min = 6271000
+z_max = 6371000
+
+# grid properties
+n_cell_x = 25
+n_cell_y = 25
+n_cell_z = 1
