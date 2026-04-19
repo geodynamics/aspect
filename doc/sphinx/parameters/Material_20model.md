@@ -3821,6 +3821,15 @@ Also note that the fluid reaction time scale has to be larger than or equal to t
 **Documentation:** Lower cutoff for the compaction viscosity. Units: $\text{Pa}\text{s}$.
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Minimum weakened viscosity<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Minimum_20weakened_20viscosity>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Minimum_20weakened_20viscosity
+**Default value:** 1e17
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Lower cutoff for the viscosity of the solid phase in the presence of fluids. Units: $\text{Pa}\text{s}$.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Reference fluid density<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Reference_20fluid_20density>`
 :name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Reference_20fluid_20density
 **Default value:** 2500
