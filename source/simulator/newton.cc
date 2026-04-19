@@ -67,13 +67,13 @@ namespace aspect
         Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile)
       {
         assemblers.stokes_system.push_back(
-          std::make_unique<aspect::Assemblers::NewtonStokesImplicitReferenceDensityCompressibilityTerm<dim>>());
+          std::make_unique<aspect::Assemblers::StokesImplicitReferenceDensityCompressibilityTerm<dim>>());
       }
     else if (this->get_parameters().formulation_mass_conservation ==
              Parameters<dim>::Formulation::MassConservation::reference_density_profile)
       {
         assemblers.stokes_system.push_back(
-          std::make_unique<aspect::Assemblers::NewtonStokesReferenceDensityCompressibilityTerm<dim>>());
+          std::make_unique<aspect::Assemblers::StokesReferenceDensityCompressibilityTerm<dim>>());
       }
     else if (this->get_parameters().formulation_mass_conservation ==
              Parameters<dim>::Formulation::MassConservation::incompressible)
@@ -84,14 +84,14 @@ namespace aspect
              Parameters<dim>::Formulation::MassConservation::isentropic_compression)
       {
         assemblers.stokes_system.push_back(
-          std::make_unique<aspect::Assemblers::NewtonStokesIsentropicCompressionTerm<dim>>());
+          std::make_unique<aspect::Assemblers::StokesIsentropicCompressionTerm<dim>>());
       }
     else if (this->get_parameters().formulation_mass_conservation ==
              Parameters<dim>::Formulation::MassConservation::projected_density_field)
       {
         CitationInfo::add("pda");
         assemblers.stokes_system.push_back(
-          std::make_unique<aspect::Assemblers::NewtonStokesProjectedDensityFieldTerm<dim>>());
+          std::make_unique<aspect::Assemblers::StokesProjectedDensityFieldTerm<dim>>());
       }
     else
       AssertThrow(false,
