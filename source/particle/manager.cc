@@ -1089,7 +1089,7 @@ namespace aspect
                                Patterns::Selection ("random|histogram|point density function"),
                                "Algorithm used to add particles to cells. ");
             prm.declare_entry ("Point density kernel function", "cutoff c1 dealii",
-                               Patterns::Selection ("cutoff c1 dealii|cutoff w1 dealii|uniform|triangular|gaussian"),
+                               Patterns::Selection ("epanechnikov | cutoff c1 dealii|cutoff w1 dealii|uniform|triangular|gaussian"),
                                "The kernel function is summed at each particle location to generate a point "
                                "density function of the particle locations according to a process known as "
                                "kernel density estimation. Because kernel density estimation sums the value of "
@@ -1297,6 +1297,8 @@ namespace aspect
           kernel_function = ParticlePDF<dim>::KernelFunction::uniform;
         else if (kernel_function_string == "triangular")
           kernel_function = ParticlePDF<dim>::KernelFunction::triangular;
+        else if (kernel_function_string == "epanechnikov")
+          kernel_function = ParticlePDF<dim>::KernelFunction::epanechnikov;
         else if (kernel_function_string == "gaussian")
           kernel_function = ParticlePDF<dim>::KernelFunction::gaussian;
         else

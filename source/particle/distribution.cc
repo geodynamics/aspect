@@ -493,6 +493,10 @@ namespace aspect
           Functions::CutOffFunctionC1<1> cutoff_function(bandwidth);
           return cutoff_function.value(Point<1>(distance));
         }
+      else if (kernel_function == KernelFunction::epanechnikov)
+        {
+          return kernelfunction_epanechnikov(distance);
+        }
       else
         {
           Assert(false, ExcMessage("Unknown kernel function used in apply_selected_kernel_function."));
@@ -547,6 +551,22 @@ namespace aspect
           const double exponent = distance * distance / (2.*bandwidth*bandwidth);
           const double gaussian = (1 / (bandwidth * std::sqrt(2*numbers::PI))) * std::exp(-exponent);
           return gaussian;
+        }
+      else
+        {
+          return 0.0;
+        }
+    }
+
+
+
+    template <int dim>
+    double
+    ParticlePDF<dim>::kernelfunction_epanechnikov(double distance) const
+    {
+      if (distance < bandwidth)
+        {
+          return std::max((0.75)*(bandwidth-(distance*distance))/bandwidth,0.0);
         }
       else
         {
