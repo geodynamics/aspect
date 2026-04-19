@@ -367,7 +367,9 @@ namespace aspect
                                                     data.local_dof_indices,
                                                     system_preconditioner_matrix);
     if (parameters.use_bfbt)
-      current_constraints.distribute_local_to_global(data.local_inverse_lumped_mass_matrix,data.local_dof_indices,inverse_lumped_mass_matrix);
+      current_constraints.distribute_local_to_global(data.local_inverse_lumped_mass_matrix,
+                                                     data.local_dof_indices,
+                                                     inverse_lumped_mass_matrix);
   }
 
 
@@ -478,15 +480,6 @@ namespace aspect
     // first assemble the raw matrices necessary for the preconditioner
     assemble_stokes_preconditioner ();
 
-    // then extract the other information necessary to build the
-    // AMG preconditioners for the A and M blocks
-#if !DEAL_II_VERSION_GTE(9,7,0)
-    std::vector<std::vector<bool>> constant_modes;
-    DoFTools::extract_constant_modes (dof_handler,
-                                      introspection.component_masks.velocities,
-                                      constant_modes);
-#endif
-
     // When we solve with melt migration, the pressure block contains
     // both pressures and contains an elliptic operator, so it makes
     // sense to use AMG instead of ILU:
@@ -498,15 +491,24 @@ namespace aspect
     Amg_preconditioner = std::make_unique<LinearAlgebra::PreconditionAMG>();
 
     LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
+
+#ifndef ASPECT_USE_TPETRA
+    // then extract the other information necessary to build the
+    // AMG preconditioners for the A and M blocks
 #if !DEAL_II_VERSION_GTE(9,7,0)
+    std::vector<std::vector<bool>> constant_modes;
+    DoFTools::extract_constant_modes (dof_handler,
+                                      introspection.component_masks.velocities,
+                                      constant_modes);
     Amg_data.constant_modes = constant_modes;
 #else
     Amg_data.constant_modes = DoFTools::extract_constant_modes (dof_handler,
                                                                 introspection.component_masks.velocities);
 #endif
-    Amg_data.elliptic = true;
     Amg_data.higher_order_elements = true;
+#endif
 
+    Amg_data.elliptic = true;
     // set the AMG parameters in a way that minimizes the run
     // time. compared to some of the deal.II tutorial programs, we
     // found that it pays off to set the aggregation threshold to
@@ -557,11 +559,12 @@ namespace aspect
 
         LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
         Amg_data.elliptic = true;
-        Amg_data.higher_order_elements = false;
 
         Amg_data.smoother_sweeps = 2;
-        Amg_data.coarse_type = "symmetric Gauss-Seidel";
 
+#ifndef ASPECT_USE_TPETRA
+        Amg_data.coarse_type = "symmetric Gauss-Seidel";
+        Amg_data.higher_order_elements = false;
 #if !DEAL_II_VERSION_GTE(9,7,0)
         std::vector<std::vector<bool>> constant_modes;
         DoFTools::extract_constant_modes (dof_handler,
@@ -571,6 +574,7 @@ namespace aspect
 #else
         Amg_data.constant_modes = DoFTools::extract_constant_modes (dof_handler,
                                                                     cm_pressure);
+#endif
 #endif
 
         LinearAlgebra::PreconditionAMG *Mp_preconditioner_AMG
@@ -1237,7 +1241,9 @@ namespace aspect
         // save memory by only having 1 compositional matrix allocated at a time.
         // If all compositional fields are the same, only composition 0 is non-empty
         // at this time.
-        system_matrix.block(block_idx, block_idx).reinit(system_matrix.block(sparsity_block_idx, sparsity_block_idx));
+        system_matrix.block(block_idx,
+                            block_idx).copy_from(system_matrix.block(sparsity_block_idx,
+                                                                     sparsity_block_idx));
       }
 
     system_matrix.block(block_idx, block_idx) = 0;

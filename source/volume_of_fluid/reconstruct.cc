@@ -502,6 +502,7 @@ namespace aspect
 
       }
 
+    initial_solution.compress(VectorOperation::insert);
 
     const unsigned int blockidx = composition_field.block_index(this->introspection());
     solution.block(blockidx) = initial_solution.block(blockidx);

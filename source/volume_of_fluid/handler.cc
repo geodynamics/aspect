@@ -543,12 +543,12 @@ namespace aspect
     const unsigned int block0_idx = field_struct_for_field_index(0).volume_fraction.block_index;
     const unsigned int block_idx = field.volume_fraction.block_index;
 
-    if (block0_idx!=block_idx)
+    if (block0_idx != block_idx)
       {
         // Allocate the system matrix for the current VoF field by
         // reusing the Trilinos sparsity pattern from the matrix stored for
         // composition 0 (this is the place we allocate the matrix at).
-        sim.system_matrix.block(block_idx, block_idx).reinit(sim.system_matrix.block(block0_idx, block0_idx));
+        sim.system_matrix.block(block_idx, block_idx).copy_from(sim.system_matrix.block(block0_idx, block0_idx));
       }
 
     sim.system_matrix.block(block_idx, block_idx) = 0;

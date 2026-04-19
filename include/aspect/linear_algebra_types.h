@@ -26,7 +26,15 @@
 
 DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 
+#ifdef ASPECT_USE_TPETRA
+#include <deal.II/base/memory_space.h>
+#include <deal.II/lac/trilinos_tpetra_precondition.h>
+#include <deal.II/lac/trilinos_tpetra_sparsity_pattern.h>
+#include <deal.II/lac/block_sparsity_pattern.h>
+#else
 #include <deal.II/lac/generic_linear_algebra.h>
+#include <deal.II/lac/trilinos_precondition.h>
+#endif
 
 DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
@@ -38,38 +46,63 @@ namespace aspect
    */
   namespace LinearAlgebra
   {
+#ifdef ASPECT_USE_TPETRA
     /**
-     * Typedef for the base class for all preconditioners.
-     */
+    * Typedef for the base class for all preconditioners.
+    */
+    using PreconditionBase = dealii::LinearAlgebra::TpetraWrappers::PreconditionBase<double>;
+
+    /**
+    * Typedef for the AMG preconditioner type used for the top left block of
+    * the Stokes matrix.
+    */
+    using PreconditionAMG = dealii::LinearAlgebra::TpetraWrappers::PreconditionAMGMueLu<double>;
+
+    /**
+    * Typedef for the Incomplete LU decomposition preconditioner used for
+    * other blocks of the system matrix.
+    */
+    using PreconditionILU = dealii::LinearAlgebra::TpetraWrappers::PreconditionILU<double>;
+
+    /**
+    * Typedef for the Jacobi preconditioner used for free surface velocity
+    * projection.
+    */
+    using PreconditionJacobi = dealii::LinearAlgebra::TpetraWrappers::PreconditionJacobi<double>;
+#else
+    /**
+    * Typedef for the base class for all preconditioners.
+    */
     using PreconditionBase = dealii::TrilinosWrappers::PreconditionBase;
 
     /**
-     * Typedef for the AMG preconditioner type used for the top left block of
-     * the Stokes matrix.
-     */
+    * Typedef for the AMG preconditioner type used for the top left block of
+    * the Stokes matrix.
+    */
     using PreconditionAMG = dealii::TrilinosWrappers::PreconditionAMG;
 
     /**
-     * Typedef for the Incomplete LU decomposition preconditioner used for
-     * other blocks of the system matrix.
-     */
+    * Typedef for the Incomplete LU decomposition preconditioner used for
+    * other blocks of the system matrix.
+    */
     using PreconditionILU = dealii::TrilinosWrappers::PreconditionILU;
 
     /**
-     * Typedef for the Jacobi preconditioner used for free surface velocity
-     * projection.
-     */
+    * Typedef for the Jacobi preconditioner used for free surface velocity
+    * projection.
+    */
     using PreconditionJacobi = dealii::TrilinosWrappers::PreconditionJacobi;
+#endif
 
     /**
-     * Typedef for the block compressed sparsity pattern type.
-     */
-    using BlockDynamicSparsityPattern = dealii::TrilinosWrappers::BlockSparsityPattern;
+    * Typedef for the block compressed sparsity pattern type.
+    */
+    using BlockDynamicSparsityPattern = dealii::BlockDynamicSparsityPattern;
 
     /**
-     * Typedef for the compressed sparsity pattern type.
-     */
-    using DynamicSparsityPattern = dealii::TrilinosWrappers::SparsityPattern;
+    * Typedef for the compressed sparsity pattern type.
+    */
+    using DynamicSparsityPattern = dealii::DynamicSparsityPattern;
   }
 }
 

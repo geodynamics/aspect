@@ -38,6 +38,7 @@
 #include <deal.II/fe/mapping_q_eulerian.h>
 
 #include <deal.II/lac/sparsity_tools.h>
+#include <deal.II/lac/precondition.h>
 
 #include <deal.II/numerics/vector_tools.h>
 
@@ -948,17 +949,22 @@ namespace aspect
         coupling[c][c] = DoFTools::always;
 
       LinearAlgebra::SparseMatrix mesh_matrix;
-      LinearAlgebra::DynamicSparsityPattern sp (mesh_locally_owned,
-                                                mesh_locally_owned,
-                                                mesh_locally_relevant,
-                                                sim.mpi_communicator);
+      LinearAlgebra::DynamicSparsityPattern dsp (mesh_locally_relevant);
       DoFTools::make_sparsity_pattern (mesh_deformation_dof_handler,
-                                       coupling, sp,
-                                       mesh_velocity_constraints, false,
-                                       Utilities::MPI::
-                                       this_mpi_process(sim.mpi_communicator));
-      sp.compress();
-      mesh_matrix.reinit (sp);
+                                       coupling,
+                                       dsp,
+                                       mesh_velocity_constraints,
+                                       false,
+                                       Utilities::MPI::this_mpi_process(sim.mpi_communicator));
+
+      SparsityTools::distribute_sparsity_pattern(dsp,
+                                                 mesh_locally_owned,
+                                                 this->get_mpi_communicator(),
+                                                 mesh_locally_relevant);
+
+      mesh_matrix.reinit (mesh_locally_owned,
+                          dsp,
+                          this->get_mpi_communicator());
 
       // carry out the solution
       FEValuesExtractors::Vector extract_vel(0);
@@ -994,25 +1000,24 @@ namespace aspect
       rhs.compress (VectorOperation::add);
       mesh_matrix.compress (VectorOperation::add);
 
-      // Make the AMG preconditioner
+      // TODO: think about keeping object between time steps
+      LinearAlgebra::PreconditionAMG preconditioner_stiffness;
+      LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
+
+#ifndef ASPECT_USE_TPETRA
 #if !DEAL_II_VERSION_GTE(9,7,0)
       std::vector<std::vector<bool>> constant_modes;
       DoFTools::extract_constant_modes (mesh_deformation_dof_handler,
                                         ComponentMask(dim, true),
                                         constant_modes);
-#endif
-
-      // TODO: think about keeping object between time steps
-      LinearAlgebra::PreconditionAMG preconditioner_stiffness;
-      LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
-#if !DEAL_II_VERSION_GTE(9,7,0)
       Amg_data.constant_modes = constant_modes;
 #else
       Amg_data.constant_modes = DoFTools::extract_constant_modes (mesh_deformation_dof_handler,
                                                                   ComponentMask(dim, true));
 #endif
-      Amg_data.elliptic = true;
       Amg_data.higher_order_elements = this->get_parameters().stokes_velocity_degree > 1 ? true : false;
+#endif
+      Amg_data.elliptic = true;
       Amg_data.smoother_sweeps = 2;
       Amg_data.aggregation_threshold = 0.02;
       preconditioner_stiffness.initialize(mesh_matrix, Amg_data);
@@ -1692,7 +1697,13 @@ namespace aspect
       dealii::LinearAlgebra::distributed::Vector<double> displacements(mesh_deformation_dof_handler.locally_owned_dofs(),
                                                                        this->get_mpi_communicator());
       dealii::LinearAlgebra::ReadWriteVector<double> rwv;
+#ifndef ASPECT_USE_TPETRA
       rwv.reinit(mesh_displacements);
+#else
+      rwv.reinit(mesh_displacements.locally_owned_elements());
+      rwv.import_elements(mesh_displacements, VectorOperation::insert);
+#endif
+
       displacements.import_elements(rwv, VectorOperation::insert);
 
       const unsigned int n_levels = sim.triangulation.n_global_levels();
