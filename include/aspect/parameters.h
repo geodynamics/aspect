@@ -733,6 +733,9 @@ namespace aspect
      */
     int                            checkpoint_time_secs;
     int                            checkpoint_steps;
+    unsigned int                   n_checkpoints_to_keep;
+    unsigned int                   resume_checkpoint_id;
+    double                         resume_time;
     /**
      * @}
      */

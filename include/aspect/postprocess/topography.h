@@ -65,6 +65,23 @@ namespace aspect
          * @}
          */
 
+        /**
+         * Serialize the contents of this class as far as they are not read
+         * from input parameter files.
+         */
+        template <class Archive>
+        void serialize (Archive &ar, const unsigned int version);
+
+        /**
+         * Save the state of this object.
+         */
+        void save (std::map<std::string, std::string> &status_strings) const override;
+
+        /**
+         * Restore the state of the object.
+         */
+        void load (const std::map<std::string, std::string> &status_strings) override;
+
       private:
         /**
          * Whether or not to produce text files with topography values

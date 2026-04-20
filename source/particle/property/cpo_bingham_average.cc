@@ -22,6 +22,7 @@
 #include <aspect/particle/manager.h>
 
 #include <aspect/utilities.h>
+#include <aspect/simulator.h>
 
 namespace aspect
 {

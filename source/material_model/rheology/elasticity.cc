@@ -25,6 +25,7 @@
 #include <aspect/material_model/visco_plastic.h>
 #include <aspect/material_model/viscoelastic.h>
 #include <aspect/heating_model/shear_heating.h>
+#include <aspect/simulator_signals.h>
 
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/parameter_handler.h>
@@ -313,6 +314,15 @@ namespace aspect
                                "averaging schemes 'none', 'harmonic average only viscosity' and "
                                "'geometric average only viscosity'. This parameter ('Material averaging') "
                                "is located within the 'Material model' subsection."));
+
+#if !DEAL_II_VERSION_GTE(9, 8, 0)
+// Work around a memory leak in deal.II that is fixed in 9.8.0-pre:
+        this->get_signals().start_timestep.connect([&](const SimulatorAccess<dim> &)
+        {
+          evaluator_composition.reset();
+        });
+#endif
+
       }
 
 

@@ -149,7 +149,7 @@ pipeline {
 
         stage('Build Documentation') {
           steps {
-            sh 'cd doc && ./update_parameters.sh ./build/aspect'
+            sh 'cd doc && ./update_parameters.sh ../build/aspect'
           }
           post {
             failure

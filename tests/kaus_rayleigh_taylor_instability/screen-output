@@ -2,7 +2,7 @@
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,524 (578+81+289+576)
 
-Number of mesh deformation degrees of freedom: 162
+Number of mesh deformation degrees of freedom: 578
    Solving mesh displacement system... 0 iterations.
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 0 iterations.
@@ -25,7 +25,7 @@ Number of mesh deformation degrees of freedom: 162
 
    Postprocessing:
      Writing graphical output:   output-kaus_rayleigh_taylor_instability/solution/solution-00001
-     Topography min/max:         -1.125e-06 m, 1.108e-06 m
+     Topography min/max:         -1.118e-06 m, 1.027e-06 m
      Compositions min/max/mass:  0/1/5.729e+10
      Compositions max depth [m]: 9.375e+04
      RMS, max velocity:          0.000481 m/year, 0.0023 m/year

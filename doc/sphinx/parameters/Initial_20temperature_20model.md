@@ -5,8 +5,8 @@
 ## **Subsection:** Initial temperature model
 
 
-(parameters:Initial_20temperature_20model/List_20of_20model_20names)=
-### __Parameter name:__ List of model names
+::::{dropdown} __Parameter:__ {ref}`List of model names<parameters:Initial_20temperature_20model/List_20of_20model_20names>`
+:name: parameters:Initial_20temperature_20model/List_20of_20model_20names
 **Default value:**
 
 **Pattern:** [MultipleSelection S40RTS perturbation|SAVANI perturbation|adiabatic|adiabatic boundary|ascii data|ascii data layered|ascii profile|continental geotherm|function|harmonic perturbation|inclusion shape perturbation|lithosphere mask|mandelbox|patch on S40RTS|perturbed box|polar box|prescribed temperature|random Gaussian perturbation|spherical gaussian perturbation|spherical hexagonal perturbation|world builder ]
@@ -63,17 +63,19 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 &lsquo;spherical hexagonal perturbation&rsquo;: An initial temperature field in which the temperature is perturbed following an $N$-fold pattern in a specified direction from an otherwise spherically symmetric state. The class&rsquo;s name comes from previous versions when the only option was $N=6$.
 
 &lsquo;world builder&rsquo;: Specify the initial temperature through the World Builder. More information on the World Builder can be found at \url{https://geodynamicworldbuilder.github.io}. Make sure to specify the location of the World Builder file in the parameter &rsquo;World builder file&rsquo;.
+::::
 
-(parameters:Initial_20temperature_20model/List_20of_20model_20operators)=
-### __Parameter name:__ List of model operators
+::::{dropdown} __Parameter:__ {ref}`List of model operators<parameters:Initial_20temperature_20model/List_20of_20model_20operators>`
+:name: parameters:Initial_20temperature_20model/List_20of_20model_20operators
 **Default value:** add
 
 **Pattern:** [MultipleSelection add|subtract|minimum|maximum|replace if valid ]
 
 **Documentation:** A comma-separated list of operators that will be used to append the listed temperature models onto the previous models. If only one operator is given, the same operator is applied to all models.
+::::
 
-(parameters:Initial_20temperature_20model/Model_20name)=
-### __Parameter name:__ Model name
+::::{dropdown} __Parameter:__ {ref}`Model name<parameters:Initial_20temperature_20model/Model_20name>`
+:name: parameters:Initial_20temperature_20model/Model_20name
 **Default value:** unspecified
 
 **Pattern:** [Selection S40RTS perturbation|SAVANI perturbation|adiabatic|adiabatic boundary|ascii data|ascii data layered|ascii profile|continental geotherm|function|harmonic perturbation|inclusion shape perturbation|lithosphere mask|mandelbox|patch on S40RTS|perturbed box|polar box|prescribed temperature|random Gaussian perturbation|spherical gaussian perturbation|spherical hexagonal perturbation|world builder|unspecified ]
@@ -130,91 +132,102 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 &lsquo;world builder&rsquo;: Specify the initial temperature through the World Builder. More information on the World Builder can be found at \url{https://geodynamicworldbuilder.github.io}. Make sure to specify the location of the World Builder file in the parameter &rsquo;World builder file&rsquo;.
 
 **Warning**: This parameter provides an old and deprecated way of specifying initial temperature models and shouldn&rsquo;t be used. Please use &rsquo;List of model names&rsquo; instead.
+::::
 
 (parameters:Initial_20temperature_20model/Adiabatic)=
 ## **Subsection:** Initial temperature model / Adiabatic
-(parameters:Initial_20temperature_20model/Adiabatic/Age_20bottom_20boundary_20layer)=
-### __Parameter name:__ Age bottom boundary layer
+::::{dropdown} __Parameter:__ {ref}`Age bottom boundary layer<parameters:Initial_20temperature_20model/Adiabatic/Age_20bottom_20boundary_20layer>`
+:name: parameters:Initial_20temperature_20model/Adiabatic/Age_20bottom_20boundary_20layer
 **Default value:** 0.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The age of the lower thermal boundary layer, used for the calculation of the half-space cooling model temperature. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+::::
 
-(parameters:Initial_20temperature_20model/Adiabatic/Age_20top_20boundary_20layer)=
-### __Parameter name:__ Age top boundary layer
+::::{dropdown} __Parameter:__ {ref}`Age top boundary layer<parameters:Initial_20temperature_20model/Adiabatic/Age_20top_20boundary_20layer>`
+:name: parameters:Initial_20temperature_20model/Adiabatic/Age_20top_20boundary_20layer
 **Default value:** 0.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The age of the upper thermal boundary layer, used for the calculation of the half-space cooling model temperature. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+::::
 
-(parameters:Initial_20temperature_20model/Adiabatic/Amplitude)=
-### __Parameter name:__ Amplitude
+::::{dropdown} __Parameter:__ {ref}`Amplitude<parameters:Initial_20temperature_20model/Adiabatic/Amplitude>`
+:name: parameters:Initial_20temperature_20model/Adiabatic/Amplitude
 **Default value:** 0.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The amplitude (in K) of the initial spherical temperature perturbation at the bottom of the model domain. This perturbation will be added to the adiabatic temperature profile, but not to the bottom thermal boundary layer. Instead, the maximum of the perturbation and the bottom boundary layer temperature will be used.
+::::
 
-(parameters:Initial_20temperature_20model/Adiabatic/Cooling_20model)=
-### __Parameter name:__ Cooling model
+::::{dropdown} __Parameter:__ {ref}`Cooling model<parameters:Initial_20temperature_20model/Adiabatic/Cooling_20model>`
+:name: parameters:Initial_20temperature_20model/Adiabatic/Cooling_20model
 **Default value:** half-space cooling
 
 **Pattern:** [Selection half-space cooling|plate cooling ]
 
 **Documentation:** Whether to use the half space cooling model or the plate cooling model
+::::
 
-(parameters:Initial_20temperature_20model/Adiabatic/Data_20directory)=
-### __Parameter name:__ Data directory
+::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Initial_20temperature_20model/Adiabatic/Data_20directory>`
+:name: parameters:Initial_20temperature_20model/Adiabatic/Data_20directory
 **Default value:** $ASPECT_SOURCE_DIR/data/initial-temperature/adiabatic/
 
 **Pattern:** [DirectoryName]
 
 **Documentation:** The name of a directory that contains the model data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT. A trailing slash at the end of the directory path is optional; the plugin will automatically append a &rsquo;/&rsquo; when the parameters are parsed if it is missing.
+::::
 
-(parameters:Initial_20temperature_20model/Adiabatic/Data_20file_20name)=
-### __Parameter name:__ Data file name
+::::{dropdown} __Parameter:__ {ref}`Data file name<parameters:Initial_20temperature_20model/Adiabatic/Data_20file_20name>`
+:name: parameters:Initial_20temperature_20model/Adiabatic/Data_20file_20name
 **Default value:** adiabatic.txt
 
 **Pattern:** [Anything]
 
 **Documentation:** The file name of the model data.
+::::
 
-(parameters:Initial_20temperature_20model/Adiabatic/Lithosphere_20thickness)=
-### __Parameter name:__ Lithosphere thickness
+::::{dropdown} __Parameter:__ {ref}`Lithosphere thickness<parameters:Initial_20temperature_20model/Adiabatic/Lithosphere_20thickness>`
+:name: parameters:Initial_20temperature_20model/Adiabatic/Lithosphere_20thickness
 **Default value:** 125e3
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Thickness of the lithosphere for plate cooling model. \si{\m}
+::::
 
-(parameters:Initial_20temperature_20model/Adiabatic/Position)=
-### __Parameter name:__ Position
+::::{dropdown} __Parameter:__ {ref}`Position<parameters:Initial_20temperature_20model/Adiabatic/Position>`
+:name: parameters:Initial_20temperature_20model/Adiabatic/Position
 **Default value:** center
 
 **Pattern:** [Selection center ]
 
 **Documentation:** Where the initial temperature perturbation should be placed. If &lsquo;center&rsquo; is given, then the perturbation will be centered along a &lsquo;midpoint&rsquo; of some sort of the bottom boundary. For example, in the case of a box geometry, this is the center of the bottom face; in the case of a spherical shell geometry, it is along the inner surface halfway between the bounding radial lines.
+::::
 
-(parameters:Initial_20temperature_20model/Adiabatic/Radius)=
-### __Parameter name:__ Radius
+::::{dropdown} __Parameter:__ {ref}`Radius<parameters:Initial_20temperature_20model/Adiabatic/Radius>`
+:name: parameters:Initial_20temperature_20model/Adiabatic/Radius
 **Default value:** 0.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The Radius (in m) of the initial spherical temperature perturbation at the bottom of the model domain.
+::::
 
-(parameters:Initial_20temperature_20model/Adiabatic/Scale_20factor)=
-### __Parameter name:__ Scale factor
+::::{dropdown} __Parameter:__ {ref}`Scale factor<parameters:Initial_20temperature_20model/Adiabatic/Scale_20factor>`
+:name: parameters:Initial_20temperature_20model/Adiabatic/Scale_20factor
 **Default value:** 1.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
+::::
 
-(parameters:Initial_20temperature_20model/Adiabatic/Subadiabaticity)=
-### __Parameter name:__ Subadiabaticity
+::::{dropdown} __Parameter:__ {ref}`Subadiabaticity<parameters:Initial_20temperature_20model/Adiabatic/Subadiabaticity>`
+:name: parameters:Initial_20temperature_20model/Adiabatic/Subadiabaticity
 **Default value:** 0.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
@@ -222,27 +235,30 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 **Documentation:** If this value is larger than 0, the initial temperature profile will not be adiabatic, but subadiabatic. This value gives the maximal deviation from adiabaticity. Set to 0 for an adiabatic temperature profile. Units: $\text{K}$.
 
 The function object in the Function subsection represents the compositional fields that will be used as a reference profile for calculating the thermal diffusivity. This function is one-dimensional and depends only on depth. The format of this functions follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.
+::::
 
-(parameters:Initial_20temperature_20model/Adiabatic/Top_20boundary_20layer_20age_20model)=
-### __Parameter name:__ Top boundary layer age model
+::::{dropdown} __Parameter:__ {ref}`Top boundary layer age model<parameters:Initial_20temperature_20model/Adiabatic/Top_20boundary_20layer_20age_20model>`
+:name: parameters:Initial_20temperature_20model/Adiabatic/Top_20boundary_20layer_20age_20model
 **Default value:** constant
 
 **Pattern:** [Selection constant|function|ascii data ]
 
 **Documentation:** How to define the age of the top thermal boundary layer. Options are: &rsquo;constant&rsquo; for a constant age specified by the parameter &rsquo;Age top boundary layer&rsquo;; &rsquo;function&rsquo; for an analytical function describing the age as specified in the subsection &rsquo;Age function&rsquo;; and &rsquo;ascii data&rsquo; to use an &rsquo;ascii data&rsquo; file specified by the parameter &rsquo;Data file name&rsquo;.
+::::
 
 (parameters:Initial_20temperature_20model/Adiabatic/Age_20function)=
 ## **Subsection:** Initial temperature model / Adiabatic / Age function
-(parameters:Initial_20temperature_20model/Adiabatic/Age_20function/Coordinate_20system)=
-### __Parameter name:__ Coordinate system
+::::{dropdown} __Parameter:__ {ref}`Coordinate system<parameters:Initial_20temperature_20model/Adiabatic/Age_20function/Coordinate_20system>`
+:name: parameters:Initial_20temperature_20model/Adiabatic/Age_20function/Coordinate_20system
 **Default value:** cartesian
 
 **Pattern:** [Selection cartesian|spherical ]
 
 **Documentation:** A selection that determines the assumed coordinate system for the function variables. Allowed values are &lsquo;cartesian&rsquo;, &lsquo;spherical&rsquo;, and &lsquo;depth&rsquo;. &lsquo;spherical&rsquo; coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. &lsquo;depth&rsquo; will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
+::::
 
-(parameters:Initial_20temperature_20model/Adiabatic/Age_20function/Function_20constants)=
-### __Parameter name:__ Function constants
+::::{dropdown} __Parameter:__ {ref}`Function constants<parameters:Initial_20temperature_20model/Adiabatic/Age_20function/Function_20constants>`
+:name: parameters:Initial_20temperature_20model/Adiabatic/Age_20function/Function_20constants
 **Default value:**
 
 **Pattern:** [Anything]
@@ -250,9 +266,10 @@ The function object in the Function subsection represents the compositional fiel
 **Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form &lsquo;var1=value1, var2=value2, ...&rsquo;.
 
 A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
+::::
 
-(parameters:Initial_20temperature_20model/Adiabatic/Age_20function/Function_20expression)=
-### __Parameter name:__ Function expression
+::::{dropdown} __Parameter:__ {ref}`Function expression<parameters:Initial_20temperature_20model/Adiabatic/Age_20function/Function_20expression>`
+:name: parameters:Initial_20temperature_20model/Adiabatic/Age_20function/Function_20expression
 **Default value:** 0
 
 **Pattern:** [Anything]
@@ -260,19 +277,21 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Documentation:** The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as &lsquo;sin&rsquo; or &lsquo;cos&rsquo;. In addition, it may contain expressions like &lsquo;if(x>0, 1, -1)&rsquo; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
 
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+::::
 
-(parameters:Initial_20temperature_20model/Adiabatic/Age_20function/Variable_20names)=
-### __Parameter name:__ Variable names
+::::{dropdown} __Parameter:__ {ref}`Variable names<parameters:Initial_20temperature_20model/Adiabatic/Age_20function/Variable_20names>`
+:name: parameters:Initial_20temperature_20model/Adiabatic/Age_20function/Variable_20names
 **Default value:** x,y,t
 
 **Pattern:** [Anything]
 
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
+::::
 
 (parameters:Initial_20temperature_20model/Adiabatic/Function)=
 ## **Subsection:** Initial temperature model / Adiabatic / Function
-(parameters:Initial_20temperature_20model/Adiabatic/Function/Function_20constants)=
-### __Parameter name:__ Function constants
+::::{dropdown} __Parameter:__ {ref}`Function constants<parameters:Initial_20temperature_20model/Adiabatic/Function/Function_20constants>`
+:name: parameters:Initial_20temperature_20model/Adiabatic/Function/Function_20constants
 **Default value:**
 
 **Pattern:** [Anything]
@@ -280,9 +299,10 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form &lsquo;var1=value1, var2=value2, ...&rsquo;.
 
 A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
+::::
 
-(parameters:Initial_20temperature_20model/Adiabatic/Function/Function_20expression)=
-### __Parameter name:__ Function expression
+::::{dropdown} __Parameter:__ {ref}`Function expression<parameters:Initial_20temperature_20model/Adiabatic/Function/Function_20expression>`
+:name: parameters:Initial_20temperature_20model/Adiabatic/Function/Function_20expression
 **Default value:** 0
 
 **Pattern:** [Anything]
@@ -290,195 +310,218 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Documentation:** The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as &lsquo;sin&rsquo; or &lsquo;cos&rsquo;. In addition, it may contain expressions like &lsquo;if(x>0, 1, -1)&rsquo; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
 
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+::::
 
-(parameters:Initial_20temperature_20model/Adiabatic/Function/Variable_20names)=
-### __Parameter name:__ Variable names
+::::{dropdown} __Parameter:__ {ref}`Variable names<parameters:Initial_20temperature_20model/Adiabatic/Function/Variable_20names>`
+:name: parameters:Initial_20temperature_20model/Adiabatic/Function/Variable_20names
 **Default value:** x,t
 
 **Pattern:** [Anything]
 
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
+::::
 
 (parameters:Initial_20temperature_20model/Adiabatic_20boundary)=
 ## **Subsection:** Initial temperature model / Adiabatic boundary
-(parameters:Initial_20temperature_20model/Adiabatic_20boundary/Adiabatic_20temperature_20gradient)=
-### __Parameter name:__ Adiabatic temperature gradient
+::::{dropdown} __Parameter:__ {ref}`Adiabatic temperature gradient<parameters:Initial_20temperature_20model/Adiabatic_20boundary/Adiabatic_20temperature_20gradient>`
+:name: parameters:Initial_20temperature_20model/Adiabatic_20boundary/Adiabatic_20temperature_20gradient
 **Default value:** 0.0005
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the adiabatic temperature gradient. Units: \si{\kelvin\per\meter}.
+::::
 
-(parameters:Initial_20temperature_20model/Adiabatic_20boundary/Data_20directory)=
-### __Parameter name:__ Data directory
+::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Initial_20temperature_20model/Adiabatic_20boundary/Data_20directory>`
+:name: parameters:Initial_20temperature_20model/Adiabatic_20boundary/Data_20directory
 **Default value:** $ASPECT_SOURCE_DIR/data/initial-temperature/adiabatic-boundary/
 
 **Pattern:** [DirectoryName]
 
 **Documentation:** The name of a directory that contains the model data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT. A trailing slash at the end of the directory path is optional; the plugin will automatically append a &rsquo;/&rsquo; when the parameters are parsed if it is missing.
+::::
 
-(parameters:Initial_20temperature_20model/Adiabatic_20boundary/Data_20file_20name)=
-### __Parameter name:__ Data file name
+::::{dropdown} __Parameter:__ {ref}`Data file name<parameters:Initial_20temperature_20model/Adiabatic_20boundary/Data_20file_20name>`
+:name: parameters:Initial_20temperature_20model/Adiabatic_20boundary/Data_20file_20name
 **Default value:** adiabatic_boundary.txt
 
 **Pattern:** [Anything]
 
 **Documentation:** The file name of the model data.
+::::
 
-(parameters:Initial_20temperature_20model/Adiabatic_20boundary/Isotherm_20temperature)=
-### __Parameter name:__ Isotherm temperature
+::::{dropdown} __Parameter:__ {ref}`Isotherm temperature<parameters:Initial_20temperature_20model/Adiabatic_20boundary/Isotherm_20temperature>`
+:name: parameters:Initial_20temperature_20model/Adiabatic_20boundary/Isotherm_20temperature
 **Default value:** 1673.15
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the isothermal boundary temperature. Units: $\text{K}$.
+::::
 
-(parameters:Initial_20temperature_20model/Adiabatic_20boundary/Scale_20factor)=
-### __Parameter name:__ Scale factor
+::::{dropdown} __Parameter:__ {ref}`Scale factor<parameters:Initial_20temperature_20model/Adiabatic_20boundary/Scale_20factor>`
+:name: parameters:Initial_20temperature_20model/Adiabatic_20boundary/Scale_20factor
 **Default value:** 1.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
+::::
 
-(parameters:Initial_20temperature_20model/Adiabatic_20boundary/Surface_20temperature)=
-### __Parameter name:__ Surface temperature
+::::{dropdown} __Parameter:__ {ref}`Surface temperature<parameters:Initial_20temperature_20model/Adiabatic_20boundary/Surface_20temperature>`
+:name: parameters:Initial_20temperature_20model/Adiabatic_20boundary/Surface_20temperature
 **Default value:** 273.15
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the surface temperature. Units: $\text{K}$.
+::::
 
 (parameters:Initial_20temperature_20model/Ascii_20data_20model)=
 ## **Subsection:** Initial temperature model / Ascii data model
-(parameters:Initial_20temperature_20model/Ascii_20data_20model/Data_20directory)=
-### __Parameter name:__ Data directory
+::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Initial_20temperature_20model/Ascii_20data_20model/Data_20directory>`
+:name: parameters:Initial_20temperature_20model/Ascii_20data_20model/Data_20directory
 **Default value:** $ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/
 
 **Pattern:** [DirectoryName]
 
 **Documentation:** The name of a directory that contains the model data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT. A trailing slash at the end of the directory path is optional; the plugin will automatically append a &rsquo;/&rsquo; when the parameters are parsed if it is missing.
+::::
 
-(parameters:Initial_20temperature_20model/Ascii_20data_20model/Data_20file_20name)=
-### __Parameter name:__ Data file name
+::::{dropdown} __Parameter:__ {ref}`Data file name<parameters:Initial_20temperature_20model/Ascii_20data_20model/Data_20file_20name>`
+:name: parameters:Initial_20temperature_20model/Ascii_20data_20model/Data_20file_20name
 **Default value:** initial_isotherm_500K_box_3d.txt
 
 **Pattern:** [Anything]
 
 **Documentation:** The file name of the model data.
+::::
 
-(parameters:Initial_20temperature_20model/Ascii_20data_20model/Data_20file_20names)=
-### __Parameter name:__ Data file names
+::::{dropdown} __Parameter:__ {ref}`Data file names<parameters:Initial_20temperature_20model/Ascii_20data_20model/Data_20file_20names>`
+:name: parameters:Initial_20temperature_20model/Ascii_20data_20model/Data_20file_20names
 **Default value:** initial_isotherm_500K_box_3d.txt
 
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The file names of the model data (comma separated).
+::::
 
-(parameters:Initial_20temperature_20model/Ascii_20data_20model/First_20point_20on_20slice)=
-### __Parameter name:__ First point on slice
+::::{dropdown} __Parameter:__ {ref}`First point on slice<parameters:Initial_20temperature_20model/Ascii_20data_20model/First_20point_20on_20slice>`
+:name: parameters:Initial_20temperature_20model/Ascii_20data_20model/First_20point_20on_20slice
 **Default value:** 0.0,1.0,0.0
 
 **Pattern:** [Anything]
 
 **Documentation:** Point that determines the plane in which the 2d slice lies in. This variable is only used if &rsquo;Slice dataset in 2d plane&rsquo; is true. The slice will go through this point, the point defined by the parameter &rsquo;Second point on slice&rsquo;, and the center of the model domain. After the rotation, this first point will lie along the (0,1,0) axis of the coordinate system. The coordinates of the point have to be given in Cartesian coordinates.
+::::
 
-(parameters:Initial_20temperature_20model/Ascii_20data_20model/Interpolation_20scheme)=
-### __Parameter name:__ Interpolation scheme
+::::{dropdown} __Parameter:__ {ref}`Interpolation scheme<parameters:Initial_20temperature_20model/Ascii_20data_20model/Interpolation_20scheme>`
+:name: parameters:Initial_20temperature_20model/Ascii_20data_20model/Interpolation_20scheme
 **Default value:** linear
 
 **Pattern:** [Selection piecewise constant|linear ]
 
 **Documentation:** Method to interpolate between layer boundaries. Select from piecewise constant or linear. Piecewise constant takes the value from the nearest layer boundary above the data point. The linear option interpolates linearly between layer boundaries. Above and below the domain given by the layer boundaries, the values aregiven by the top and bottom layer boundary.
+::::
 
-(parameters:Initial_20temperature_20model/Ascii_20data_20model/Scale_20factor)=
-### __Parameter name:__ Scale factor
+::::{dropdown} __Parameter:__ {ref}`Scale factor<parameters:Initial_20temperature_20model/Ascii_20data_20model/Scale_20factor>`
+:name: parameters:Initial_20temperature_20model/Ascii_20data_20model/Scale_20factor
 **Default value:** 1.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
+::::
 
-(parameters:Initial_20temperature_20model/Ascii_20data_20model/Second_20point_20on_20slice)=
-### __Parameter name:__ Second point on slice
+::::{dropdown} __Parameter:__ {ref}`Second point on slice<parameters:Initial_20temperature_20model/Ascii_20data_20model/Second_20point_20on_20slice>`
+:name: parameters:Initial_20temperature_20model/Ascii_20data_20model/Second_20point_20on_20slice
 **Default value:** 1.0,0.0,0.0
 
 **Pattern:** [Anything]
 
 **Documentation:** Second point that determines the plane in which the 2d slice lies in. This variable is only used if &rsquo;Slice dataset in 2d plane&rsquo; is true. The slice will go through this point, the point defined by the parameter &rsquo;First point on slice&rsquo;, and the center of the model domain. The coordinates of the point have to be given in Cartesian coordinates.
+::::
 
-(parameters:Initial_20temperature_20model/Ascii_20data_20model/Slice_20dataset_20in_202D_20plane)=
-### __Parameter name:__ Slice dataset in 2D plane
+::::{dropdown} __Parameter:__ {ref}`Slice dataset in 2D plane<parameters:Initial_20temperature_20model/Ascii_20data_20model/Slice_20dataset_20in_202D_20plane>`
+:name: parameters:Initial_20temperature_20model/Ascii_20data_20model/Slice_20dataset_20in_202D_20plane
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether to use a 2d data slice of a 3d data file or the entire data file. Slicing a 3d dataset is only supported for 2d models.
+::::
 
 (parameters:Initial_20temperature_20model/Ascii_20profile)=
 ## **Subsection:** Initial temperature model / Ascii profile
-(parameters:Initial_20temperature_20model/Ascii_20profile/Data_20directory)=
-### __Parameter name:__ Data directory
+::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Initial_20temperature_20model/Ascii_20profile/Data_20directory>`
+:name: parameters:Initial_20temperature_20model/Ascii_20profile/Data_20directory
 **Default value:** $ASPECT_SOURCE_DIR/data/initial-temperature/ascii-profile/tests/
 
 **Pattern:** [DirectoryName]
 
 **Documentation:** The name of a directory that contains the model data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT. A trailing slash at the end of the directory path is optional; the plugin will automatically append a &rsquo;/&rsquo; when the parameters are parsed if it is missing.
+::::
 
-(parameters:Initial_20temperature_20model/Ascii_20profile/Data_20file_20name)=
-### __Parameter name:__ Data file name
+::::{dropdown} __Parameter:__ {ref}`Data file name<parameters:Initial_20temperature_20model/Ascii_20profile/Data_20file_20name>`
+:name: parameters:Initial_20temperature_20model/Ascii_20profile/Data_20file_20name
 **Default value:** simple_test.txt
 
 **Pattern:** [Anything]
 
 **Documentation:** The file name of the model data.
+::::
 
-(parameters:Initial_20temperature_20model/Ascii_20profile/Scale_20factor)=
-### __Parameter name:__ Scale factor
+::::{dropdown} __Parameter:__ {ref}`Scale factor<parameters:Initial_20temperature_20model/Ascii_20profile/Scale_20factor>`
+:name: parameters:Initial_20temperature_20model/Ascii_20profile/Scale_20factor
 **Default value:** 1.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
+::::
 
 (parameters:Initial_20temperature_20model/Continental_20geotherm)=
 ## **Subsection:** Initial temperature model / Continental geotherm
-(parameters:Initial_20temperature_20model/Continental_20geotherm/Layer_20thicknesses)=
-### __Parameter name:__ Layer thicknesses
+::::{dropdown} __Parameter:__ {ref}`Layer thicknesses<parameters:Initial_20temperature_20model/Continental_20geotherm/Layer_20thicknesses>`
+:name: parameters:Initial_20temperature_20model/Continental_20geotherm/Layer_20thicknesses
 **Default value:** 30000.
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of the 3 thicknesses of the lithospheric layers &rsquo;upper\_crust&rsquo;, &rsquo;lower\_crust&rsquo; and &rsquo;mantle\_lithosphere&rsquo;. If only one thickness is given, then the same thickness is used for all layers. Units: \si{meter}.
+::::
 
-(parameters:Initial_20temperature_20model/Continental_20geotherm/Lithosphere_2dAsthenosphere_20boundary_20isotherm)=
-### __Parameter name:__ Lithosphere-Asthenosphere boundary isotherm
+::::{dropdown} __Parameter:__ {ref}`Lithosphere-Asthenosphere boundary isotherm<parameters:Initial_20temperature_20model/Continental_20geotherm/Lithosphere_2dAsthenosphere_20boundary_20isotherm>`
+:name: parameters:Initial_20temperature_20model/Continental_20geotherm/Lithosphere_2dAsthenosphere_20boundary_20isotherm
 **Default value:** 1673.15
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the isotherm that is assumed at the Lithosphere-Asthenosphere boundary. Units: $\text{K}$.
+::::
 
-(parameters:Initial_20temperature_20model/Continental_20geotherm/Surface_20temperature)=
-### __Parameter name:__ Surface temperature
+::::{dropdown} __Parameter:__ {ref}`Surface temperature<parameters:Initial_20temperature_20model/Continental_20geotherm/Surface_20temperature>`
+:name: parameters:Initial_20temperature_20model/Continental_20geotherm/Surface_20temperature
 **Default value:** 273.15
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the surface temperature. Units: $\text{K}$.
+::::
 
 (parameters:Initial_20temperature_20model/Function)=
 ## **Subsection:** Initial temperature model / Function
-(parameters:Initial_20temperature_20model/Function/Coordinate_20system)=
-### __Parameter name:__ Coordinate system
+::::{dropdown} __Parameter:__ {ref}`Coordinate system<parameters:Initial_20temperature_20model/Function/Coordinate_20system>`
+:name: parameters:Initial_20temperature_20model/Function/Coordinate_20system
 **Default value:** cartesian
 
 **Pattern:** [Selection cartesian|spherical|depth ]
 
 **Documentation:** A selection that determines the assumed coordinate system for the function variables. Allowed values are &lsquo;cartesian&rsquo;, &lsquo;spherical&rsquo;, and &lsquo;depth&rsquo;. &lsquo;spherical&rsquo; coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. &lsquo;depth&rsquo; will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
+::::
 
-(parameters:Initial_20temperature_20model/Function/Function_20constants)=
-### __Parameter name:__ Function constants
+::::{dropdown} __Parameter:__ {ref}`Function constants<parameters:Initial_20temperature_20model/Function/Function_20constants>`
+:name: parameters:Initial_20temperature_20model/Function/Function_20constants
 **Default value:**
 
 **Pattern:** [Anything]
@@ -486,9 +529,10 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form &lsquo;var1=value1, var2=value2, ...&rsquo;.
 
 A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
+::::
 
-(parameters:Initial_20temperature_20model/Function/Function_20expression)=
-### __Parameter name:__ Function expression
+::::{dropdown} __Parameter:__ {ref}`Function expression<parameters:Initial_20temperature_20model/Function/Function_20expression>`
+:name: parameters:Initial_20temperature_20model/Function/Function_20expression
 **Default value:** 0
 
 **Pattern:** [Anything]
@@ -496,555 +540,622 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Documentation:** The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as &lsquo;sin&rsquo; or &lsquo;cos&rsquo;. In addition, it may contain expressions like &lsquo;if(x>0, 1, -1)&rsquo; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
 
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+::::
 
-(parameters:Initial_20temperature_20model/Function/Variable_20names)=
-### __Parameter name:__ Variable names
+::::{dropdown} __Parameter:__ {ref}`Variable names<parameters:Initial_20temperature_20model/Function/Variable_20names>`
+:name: parameters:Initial_20temperature_20model/Function/Variable_20names
 **Default value:** x,y,t
 
 **Pattern:** [Anything]
 
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
+::::
 
 (parameters:Initial_20temperature_20model/Harmonic_20perturbation)=
 ## **Subsection:** Initial temperature model / Harmonic perturbation
-(parameters:Initial_20temperature_20model/Harmonic_20perturbation/Lateral_20wave_20number_20one)=
-### __Parameter name:__ Lateral wave number one
+::::{dropdown} __Parameter:__ {ref}`Lateral wave number one<parameters:Initial_20temperature_20model/Harmonic_20perturbation/Lateral_20wave_20number_20one>`
+:name: parameters:Initial_20temperature_20model/Harmonic_20perturbation/Lateral_20wave_20number_20one
 **Default value:** 3
 
 **Pattern:** [Integer range -2147483648...2147483647 (inclusive)]
 
 **Documentation:** Doubled first lateral wave number of the harmonic perturbation. Equals the spherical harmonic degree in 3d spherical shells. In all other cases one equals half of a sine period over the model domain. This allows for single up-/downswings. Negative numbers reverse the sign of the perturbation but are not allowed for the spherical harmonic case.
+::::
 
-(parameters:Initial_20temperature_20model/Harmonic_20perturbation/Lateral_20wave_20number_20two)=
-### __Parameter name:__ Lateral wave number two
+::::{dropdown} __Parameter:__ {ref}`Lateral wave number two<parameters:Initial_20temperature_20model/Harmonic_20perturbation/Lateral_20wave_20number_20two>`
+:name: parameters:Initial_20temperature_20model/Harmonic_20perturbation/Lateral_20wave_20number_20two
 **Default value:** 2
 
 **Pattern:** [Integer range -2147483648...2147483647 (inclusive)]
 
 **Documentation:** Doubled second lateral wave number of the harmonic perturbation. Equals the spherical harmonic order in 3d spherical shells. In all other cases one equals half of a sine period over the model domain. This allows for single up-/downswings. Negative numbers reverse the sign of the perturbation.
+::::
 
-(parameters:Initial_20temperature_20model/Harmonic_20perturbation/Magnitude)=
-### __Parameter name:__ Magnitude
+::::{dropdown} __Parameter:__ {ref}`Magnitude<parameters:Initial_20temperature_20model/Harmonic_20perturbation/Magnitude>`
+:name: parameters:Initial_20temperature_20model/Harmonic_20perturbation/Magnitude
 **Default value:** 1.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The magnitude of the Harmonic perturbation.
+::::
 
-(parameters:Initial_20temperature_20model/Harmonic_20perturbation/Reference_20temperature)=
-### __Parameter name:__ Reference temperature
+::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Initial_20temperature_20model/Harmonic_20perturbation/Reference_20temperature>`
+:name: parameters:Initial_20temperature_20model/Harmonic_20perturbation/Reference_20temperature
 **Default value:** 1600.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The reference temperature that is perturbed by the harmonic function. Only used in incompressible models.
+::::
 
-(parameters:Initial_20temperature_20model/Harmonic_20perturbation/Vertical_20wave_20number)=
-### __Parameter name:__ Vertical wave number
+::::{dropdown} __Parameter:__ {ref}`Vertical wave number<parameters:Initial_20temperature_20model/Harmonic_20perturbation/Vertical_20wave_20number>`
+:name: parameters:Initial_20temperature_20model/Harmonic_20perturbation/Vertical_20wave_20number
 **Default value:** 1
 
 **Pattern:** [Integer range -2147483648...2147483647 (inclusive)]
 
 **Documentation:** Doubled radial wave number of the harmonic perturbation.  One equals half of a sine period over the model domain.  This allows for single up-/downswings. Negative numbers  reverse the sign of the perturbation.
+::::
 
 (parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation)=
 ## **Subsection:** Initial temperature model / Inclusion shape perturbation
-(parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation/Ambient_20temperature)=
-### __Parameter name:__ Ambient temperature
+::::{dropdown} __Parameter:__ {ref}`Ambient temperature<parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation/Ambient_20temperature>`
+:name: parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation/Ambient_20temperature
 **Default value:** 1.0
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The background temperature for the temperature field.
+::::
 
-(parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation/Center_20X)=
-### __Parameter name:__ Center X
+::::{dropdown} __Parameter:__ {ref}`Center X<parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation/Center_20X>`
+:name: parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation/Center_20X
 **Default value:** 0.5
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The X coordinate for the center of the shape.
+::::
 
-(parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation/Center_20Y)=
-### __Parameter name:__ Center Y
+::::{dropdown} __Parameter:__ {ref}`Center Y<parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation/Center_20Y>`
+:name: parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation/Center_20Y
 **Default value:** 0.5
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The Y coordinate for the center of the shape.
+::::
 
-(parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation/Center_20Z)=
-### __Parameter name:__ Center Z
+::::{dropdown} __Parameter:__ {ref}`Center Z<parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation/Center_20Z>`
+:name: parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation/Center_20Z
 **Default value:** 0.5
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The Z coordinate for the center of the shape. This is only necessary for three-dimensional fields.
+::::
 
-(parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation/Inclusion_20gradient)=
-### __Parameter name:__ Inclusion gradient
+::::{dropdown} __Parameter:__ {ref}`Inclusion gradient<parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation/Inclusion_20gradient>`
+:name: parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation/Inclusion_20gradient
 **Default value:** constant
 
 **Pattern:** [Selection gaussian|linear|constant ]
 
 **Documentation:** The gradient of the inclusion to be generated.
+::::
 
-(parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation/Inclusion_20shape)=
-### __Parameter name:__ Inclusion shape
+::::{dropdown} __Parameter:__ {ref}`Inclusion shape<parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation/Inclusion_20shape>`
+:name: parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation/Inclusion_20shape
 **Default value:** circle
 
 **Pattern:** [Selection square|circle ]
 
 **Documentation:** The shape of the inclusion to be generated.
+::::
 
-(parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation/Inclusion_20temperature)=
-### __Parameter name:__ Inclusion temperature
+::::{dropdown} __Parameter:__ {ref}`Inclusion temperature<parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation/Inclusion_20temperature>`
+:name: parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation/Inclusion_20temperature
 **Default value:** 0.0
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The temperature of the inclusion shape. This is only the true temperature in the case of the constant gradient. In all other cases, it gives one endpoint of the temperature gradient for the shape.
+::::
 
-(parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation/Shape_20radius)=
-### __Parameter name:__ Shape radius
+::::{dropdown} __Parameter:__ {ref}`Shape radius<parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation/Shape_20radius>`
+:name: parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation/Shape_20radius
 **Default value:** 1.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The radius of the inclusion to be generated. For shapes with no radius (e.g. square), this will be the width, and for shapes with no width, this gives a general guideline for the size of the shape.
+::::
 
 (parameters:Initial_20temperature_20model/Lithosphere_20Mask)=
 ## **Subsection:** Initial temperature model / Lithosphere Mask
-(parameters:Initial_20temperature_20model/Lithosphere_20Mask/Data_20directory)=
-### __Parameter name:__ Data directory
+::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Initial_20temperature_20model/Lithosphere_20Mask/Data_20directory>`
+:name: parameters:Initial_20temperature_20model/Lithosphere_20Mask/Data_20directory
 **Default value:** $ASPECT_SOURCE_DIR/data/initial-temperature/lithosphere-mask/
 
 **Pattern:** [DirectoryName]
 
 **Documentation:** The path to the LAB depth data file
+::::
 
-(parameters:Initial_20temperature_20model/Lithosphere_20Mask/Depth_20specification_20method)=
-### __Parameter name:__ Depth specification method
+::::{dropdown} __Parameter:__ {ref}`Depth specification method<parameters:Initial_20temperature_20model/Lithosphere_20Mask/Depth_20specification_20method>`
+:name: parameters:Initial_20temperature_20model/Lithosphere_20Mask/Depth_20specification_20method
 **Default value:** Value
 
 **Pattern:** [Selection File|Value ]
 
 **Documentation:** Method that is used to specify the depth of the lithosphere-asthenosphere boundary.
+::::
 
-(parameters:Initial_20temperature_20model/Lithosphere_20Mask/LAB_20depth_20filename)=
-### __Parameter name:__ LAB depth filename
+::::{dropdown} __Parameter:__ {ref}`LAB depth filename<parameters:Initial_20temperature_20model/Lithosphere_20Mask/LAB_20depth_20filename>`
+:name: parameters:Initial_20temperature_20model/Lithosphere_20Mask/LAB_20depth_20filename
 **Default value:** LAB_CAM2016.txt
 
 **Pattern:** [FileName (Type: input)]
 
 **Documentation:** File from which the lithosphere-asthenosphere boundary depth data is read.
+::::
 
-(parameters:Initial_20temperature_20model/Lithosphere_20Mask/Lithosphere_20temperature)=
-### __Parameter name:__ Lithosphere temperature
+::::{dropdown} __Parameter:__ {ref}`Lithosphere temperature<parameters:Initial_20temperature_20model/Lithosphere_20Mask/Lithosphere_20temperature>`
+:name: parameters:Initial_20temperature_20model/Lithosphere_20Mask/Lithosphere_20temperature
 **Default value:** 1600.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The initial temperature within lithosphere, applied abovethe maximum lithosphere depth.
+::::
 
-(parameters:Initial_20temperature_20model/Lithosphere_20Mask/Maximum_20lithosphere_20depth)=
-### __Parameter name:__ Maximum lithosphere depth
+::::{dropdown} __Parameter:__ {ref}`Maximum lithosphere depth<parameters:Initial_20temperature_20model/Lithosphere_20Mask/Maximum_20lithosphere_20depth>`
+:name: parameters:Initial_20temperature_20model/Lithosphere_20Mask/Maximum_20lithosphere_20depth
 **Default value:** 200000.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Units: \si{\meter}.The maximum depth of the lithosphere. The model will be NaNs below this depth.
+::::
 
 (parameters:Initial_20temperature_20model/Patch_20on_20S40RTS)=
 ## **Subsection:** Initial temperature model / Patch on S40RTS
-(parameters:Initial_20temperature_20model/Patch_20on_20S40RTS/Maximum_20grid_20depth)=
-### __Parameter name:__ Maximum grid depth
+::::{dropdown} __Parameter:__ {ref}`Maximum grid depth<parameters:Initial_20temperature_20model/Patch_20on_20S40RTS/Maximum_20grid_20depth>`
+:name: parameters:Initial_20temperature_20model/Patch_20on_20S40RTS/Maximum_20grid_20depth
 **Default value:** 700000.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The maximum depth of the Vs ascii grid. The model will read in  Vs from S40RTS below this depth.
+::::
 
-(parameters:Initial_20temperature_20model/Patch_20on_20S40RTS/Remove_20temperature_20heterogeneity_20down_20to_20specified_20depth)=
-### __Parameter name:__ Remove temperature heterogeneity down to specified depth
+::::{dropdown} __Parameter:__ {ref}`Remove temperature heterogeneity down to specified depth<parameters:Initial_20temperature_20model/Patch_20on_20S40RTS/Remove_20temperature_20heterogeneity_20down_20to_20specified_20depth>`
+:name: parameters:Initial_20temperature_20model/Patch_20on_20S40RTS/Remove_20temperature_20heterogeneity_20down_20to_20specified_20depth
 **Default value:** -1.7976931348623157e+308
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** This will set the heterogeneity prescribed by the Vs ascii grid and S40RTS to zero down to the specified depth (in meters). Note that your resolution has to be adequate to capture this cutoff. For example if you specify a depth of 660 km, but your closest spherical depth layers are only at 500 km and 750 km (due to a coarse resolution) it will only zero out heterogeneities down to 500 km. Similar caution has to be taken when using adaptive meshing.
+::::
 
-(parameters:Initial_20temperature_20model/Patch_20on_20S40RTS/Smoothing_20length_20scale)=
-### __Parameter name:__ Smoothing length scale
+::::{dropdown} __Parameter:__ {ref}`Smoothing length scale<parameters:Initial_20temperature_20model/Patch_20on_20S40RTS/Smoothing_20length_20scale>`
+:name: parameters:Initial_20temperature_20model/Patch_20on_20S40RTS/Smoothing_20length_20scale
 **Default value:** 200000.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The depth range (above maximum grid depth) over which to smooth. The boundary is smoothed using a depth weighted combination of Vs values from the ascii grid and S40RTS at each point in the region of smoothing.
+::::
 
 (parameters:Initial_20temperature_20model/Patch_20on_20S40RTS/Ascii_20data_20model)=
 ## **Subsection:** Initial temperature model / Patch on S40RTS / Ascii data model
-(parameters:Initial_20temperature_20model/Patch_20on_20S40RTS/Ascii_20data_20model/Data_20directory)=
-### __Parameter name:__ Data directory
+::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Initial_20temperature_20model/Patch_20on_20S40RTS/Ascii_20data_20model/Data_20directory>`
+:name: parameters:Initial_20temperature_20model/Patch_20on_20S40RTS/Ascii_20data_20model/Data_20directory
 **Default value:** $ASPECT_SOURCE_DIR/data/initial-temperature/patch-on-S40RTS/test/
 
 **Pattern:** [DirectoryName]
 
 **Documentation:** The name of a directory that contains the model data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT. A trailing slash at the end of the directory path is optional; the plugin will automatically append a &rsquo;/&rsquo; when the parameters are parsed if it is missing.
+::::
 
-(parameters:Initial_20temperature_20model/Patch_20on_20S40RTS/Ascii_20data_20model/Data_20file_20name)=
-### __Parameter name:__ Data file name
+::::{dropdown} __Parameter:__ {ref}`Data file name<parameters:Initial_20temperature_20model/Patch_20on_20S40RTS/Ascii_20data_20model/Data_20file_20name>`
+:name: parameters:Initial_20temperature_20model/Patch_20on_20S40RTS/Ascii_20data_20model/Data_20file_20name
 **Default value:** upper_shell_3d.txt
 
 **Pattern:** [Anything]
 
 **Documentation:** The file name of the model data.
+::::
 
-(parameters:Initial_20temperature_20model/Patch_20on_20S40RTS/Ascii_20data_20model/Scale_20factor)=
-### __Parameter name:__ Scale factor
+::::{dropdown} __Parameter:__ {ref}`Scale factor<parameters:Initial_20temperature_20model/Patch_20on_20S40RTS/Ascii_20data_20model/Scale_20factor>`
+:name: parameters:Initial_20temperature_20model/Patch_20on_20S40RTS/Ascii_20data_20model/Scale_20factor
 **Default value:** 1.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
+::::
 
 (parameters:Initial_20temperature_20model/Random_20Gaussian_20perturbation)=
 ## **Subsection:** Initial temperature model / Random Gaussian perturbation
-(parameters:Initial_20temperature_20model/Random_20Gaussian_20perturbation/Maximum_20magnitude)=
-### __Parameter name:__ Maximum magnitude
+::::{dropdown} __Parameter:__ {ref}`Maximum magnitude<parameters:Initial_20temperature_20model/Random_20Gaussian_20perturbation/Maximum_20magnitude>`
+:name: parameters:Initial_20temperature_20model/Random_20Gaussian_20perturbation/Maximum_20magnitude
 **Default value:** 25.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The maximum magnitude of the Gaussian perturbation. For each perturbation, a random magnitude between plus and minus the maximum magnitude will be chosen. Units: $\text{K}$.
+::::
 
-(parameters:Initial_20temperature_20model/Random_20Gaussian_20perturbation/Number_20of_20perturbations)=
-### __Parameter name:__ Number of perturbations
+::::{dropdown} __Parameter:__ {ref}`Number of perturbations<parameters:Initial_20temperature_20model/Random_20Gaussian_20perturbation/Number_20of_20perturbations>`
+:name: parameters:Initial_20temperature_20model/Random_20Gaussian_20perturbation/Number_20of_20perturbations
 **Default value:** 100
 
 **Pattern:** [Integer range -2147483648...2147483647 (inclusive)]
 
 **Documentation:** Total number of perturbations to be introduced into the model. Perturbations will be placed at random locations within the model domain.
+::::
 
-(parameters:Initial_20temperature_20model/Random_20Gaussian_20perturbation/Width)=
-### __Parameter name:__ Width
+::::{dropdown} __Parameter:__ {ref}`Width<parameters:Initial_20temperature_20model/Random_20Gaussian_20perturbation/Width>`
+:name: parameters:Initial_20temperature_20model/Random_20Gaussian_20perturbation/Width
 **Default value:** 1000.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The Gaussian RMS width of the perturbations. Units: \si{\meter}.
+::::
 
 (parameters:Initial_20temperature_20model/S40RTS_20perturbation)=
 ## **Subsection:** Initial temperature model / S40RTS perturbation
-(parameters:Initial_20temperature_20model/S40RTS_20perturbation/Data_20directory)=
-### __Parameter name:__ Data directory
+::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Initial_20temperature_20model/S40RTS_20perturbation/Data_20directory>`
+:name: parameters:Initial_20temperature_20model/S40RTS_20perturbation/Data_20directory
 **Default value:** $ASPECT_SOURCE_DIR/data/initial-temperature/S40RTS/
 
 **Pattern:** [DirectoryName]
 
 **Documentation:** The path to the model data.
+::::
 
-(parameters:Initial_20temperature_20model/S40RTS_20perturbation/Initial_20condition_20file_20name)=
-### __Parameter name:__ Initial condition file name
+::::{dropdown} __Parameter:__ {ref}`Initial condition file name<parameters:Initial_20temperature_20model/S40RTS_20perturbation/Initial_20condition_20file_20name>`
+:name: parameters:Initial_20temperature_20model/S40RTS_20perturbation/Initial_20condition_20file_20name
 **Default value:** S40RTS.sph
 
 **Pattern:** [Anything]
 
 **Documentation:** The file name of the spherical harmonics coefficients from Ritsema et al.
+::::
 
-(parameters:Initial_20temperature_20model/S40RTS_20perturbation/Maximum_20degree)=
-### __Parameter name:__ Maximum degree
+::::{dropdown} __Parameter:__ {ref}`Maximum degree<parameters:Initial_20temperature_20model/S40RTS_20perturbation/Maximum_20degree>`
+:name: parameters:Initial_20temperature_20model/S40RTS_20perturbation/Maximum_20degree
 **Default value:** 20
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** The maximum degree the users specify when reading the data file of spherical harmonic coefficients, which must be smaller than the maximum degree the data file stored. This parameter will be used only if &rsquo;Specify a lower maximum degree&rsquo; is set to true.
+::::
 
-(parameters:Initial_20temperature_20model/S40RTS_20perturbation/Reference_20temperature)=
-### __Parameter name:__ Reference temperature
+::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Initial_20temperature_20model/S40RTS_20perturbation/Reference_20temperature>`
+:name: parameters:Initial_20temperature_20model/S40RTS_20perturbation/Reference_20temperature
 **Default value:** 1600.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The reference temperature that is perturbed by the spherical harmonic functions. Only used in incompressible models.
+::::
 
-(parameters:Initial_20temperature_20model/S40RTS_20perturbation/Remove_20degree_200_20from_20perturbation)=
-### __Parameter name:__ Remove degree 0 from perturbation
+::::{dropdown} __Parameter:__ {ref}`Remove degree 0 from perturbation<parameters:Initial_20temperature_20model/S40RTS_20perturbation/Remove_20degree_200_20from_20perturbation>`
+:name: parameters:Initial_20temperature_20model/S40RTS_20perturbation/Remove_20degree_200_20from_20perturbation
 **Default value:** true
 
 **Pattern:** [Bool]
 
 **Documentation:** Option to remove the degree zero component from the perturbation, which will ensure that the laterally averaged temperature for a fixed depth is equal to the background temperature.
+::::
 
-(parameters:Initial_20temperature_20model/S40RTS_20perturbation/Remove_20temperature_20heterogeneity_20down_20to_20specified_20depth)=
-### __Parameter name:__ Remove temperature heterogeneity down to specified depth
+::::{dropdown} __Parameter:__ {ref}`Remove temperature heterogeneity down to specified depth<parameters:Initial_20temperature_20model/S40RTS_20perturbation/Remove_20temperature_20heterogeneity_20down_20to_20specified_20depth>`
+:name: parameters:Initial_20temperature_20model/S40RTS_20perturbation/Remove_20temperature_20heterogeneity_20down_20to_20specified_20depth
 **Default value:** -1.7976931348623157e+308
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** This will set the heterogeneity prescribed by S20RTS or S40RTS to zero down to the specified depth (in meters). Note that your resolution has to be adequate to capture this cutoff. For example if you specify a depth of 660 km, but your closest spherical depth layers are only at 500 km and 750 km (due to a coarse resolution) it will only zero out heterogeneities down to 500 km. Similar caution has to be taken when using adaptive meshing.
+::::
 
-(parameters:Initial_20temperature_20model/S40RTS_20perturbation/Specify_20a_20lower_20maximum_20degree)=
-### __Parameter name:__ Specify a lower maximum degree
+::::{dropdown} __Parameter:__ {ref}`Specify a lower maximum degree<parameters:Initial_20temperature_20model/S40RTS_20perturbation/Specify_20a_20lower_20maximum_20degree>`
+:name: parameters:Initial_20temperature_20model/S40RTS_20perturbation/Specify_20a_20lower_20maximum_20degree
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Option to use a lower maximum degree when reading the data file of spherical harmonic coefficients. This is probably used for the faster tests or when the users only want to see the spherical harmonic pattern up to a certain degree.
+::::
 
-(parameters:Initial_20temperature_20model/S40RTS_20perturbation/Spline_20knots_20depth_20file_20name)=
-### __Parameter name:__ Spline knots depth file name
+::::{dropdown} __Parameter:__ {ref}`Spline knots depth file name<parameters:Initial_20temperature_20model/S40RTS_20perturbation/Spline_20knots_20depth_20file_20name>`
+:name: parameters:Initial_20temperature_20model/S40RTS_20perturbation/Spline_20knots_20depth_20file_20name
 **Default value:** Spline_knots.txt
 
 **Pattern:** [Anything]
 
 **Documentation:** The file name of the spline knot locations from Ritsema et al.
+::::
 
-(parameters:Initial_20temperature_20model/S40RTS_20perturbation/Thermal_20expansion_20coefficient_20in_20initial_20temperature_20scaling)=
-### __Parameter name:__ Thermal expansion coefficient in initial temperature scaling
+::::{dropdown} __Parameter:__ {ref}`Thermal expansion coefficient in initial temperature scaling<parameters:Initial_20temperature_20model/S40RTS_20perturbation/Thermal_20expansion_20coefficient_20in_20initial_20temperature_20scaling>`
+:name: parameters:Initial_20temperature_20model/S40RTS_20perturbation/Thermal_20expansion_20coefficient_20in_20initial_20temperature_20scaling
 **Default value:** 2e-5
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal expansion coefficient $\beta$. Units: $\frac{1}{\text{K}}$.
+::::
 
-(parameters:Initial_20temperature_20model/S40RTS_20perturbation/Use_20thermal_20expansion_20coefficient_20from_20material_20model)=
-### __Parameter name:__ Use thermal expansion coefficient from material model
+::::{dropdown} __Parameter:__ {ref}`Use thermal expansion coefficient from material model<parameters:Initial_20temperature_20model/S40RTS_20perturbation/Use_20thermal_20expansion_20coefficient_20from_20material_20model>`
+:name: parameters:Initial_20temperature_20model/S40RTS_20perturbation/Use_20thermal_20expansion_20coefficient_20from_20material_20model
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Option to take the thermal expansion coefficient from the material model instead of from what is specified in this section.
+::::
 
-(parameters:Initial_20temperature_20model/S40RTS_20perturbation/Vs_20to_20density_20scaling)=
-### __Parameter name:__ Vs to density scaling
+::::{dropdown} __Parameter:__ {ref}`Vs to density scaling<parameters:Initial_20temperature_20model/S40RTS_20perturbation/Vs_20to_20density_20scaling>`
+:name: parameters:Initial_20temperature_20model/S40RTS_20perturbation/Vs_20to_20density_20scaling
 **Default value:** 0.25
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** This parameter specifies how the perturbation in shear wave velocity as prescribed by S20RTS or S40RTS is scaled into a density perturbation. See the general description of this model for more detailed information.
+::::
 
-(parameters:Initial_20temperature_20model/S40RTS_20perturbation/Vs_20to_20density_20scaling_20method)=
-### __Parameter name:__ Vs to density scaling method
+::::{dropdown} __Parameter:__ {ref}`Vs to density scaling method<parameters:Initial_20temperature_20model/S40RTS_20perturbation/Vs_20to_20density_20scaling_20method>`
+:name: parameters:Initial_20temperature_20model/S40RTS_20perturbation/Vs_20to_20density_20scaling_20method
 **Default value:** constant
 
 **Pattern:** [Selection file|constant ]
 
 **Documentation:** Method that is used to specify how the vs-to-density scaling varies with depth.
+::::
 
 (parameters:Initial_20temperature_20model/S40RTS_20perturbation/Ascii_20data_20vs_20to_20density_20model)=
 ## **Subsection:** Initial temperature model / S40RTS perturbation / Ascii data vs to density model
-(parameters:Initial_20temperature_20model/S40RTS_20perturbation/Ascii_20data_20vs_20to_20density_20model/Data_20directory)=
-### __Parameter name:__ Data directory
+::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Initial_20temperature_20model/S40RTS_20perturbation/Ascii_20data_20vs_20to_20density_20model/Data_20directory>`
+:name: parameters:Initial_20temperature_20model/S40RTS_20perturbation/Ascii_20data_20vs_20to_20density_20model/Data_20directory
 **Default value:** $ASPECT_SOURCE_DIR/data/initial-temperature/S40RTS/
 
 **Pattern:** [DirectoryName]
 
 **Documentation:** The name of a directory that contains the model data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT. A trailing slash at the end of the directory path is optional; the plugin will automatically append a &rsquo;/&rsquo; when the parameters are parsed if it is missing.
+::::
 
-(parameters:Initial_20temperature_20model/S40RTS_20perturbation/Ascii_20data_20vs_20to_20density_20model/Data_20file_20name)=
-### __Parameter name:__ Data file name
+::::{dropdown} __Parameter:__ {ref}`Data file name<parameters:Initial_20temperature_20model/S40RTS_20perturbation/Ascii_20data_20vs_20to_20density_20model/Data_20file_20name>`
+:name: parameters:Initial_20temperature_20model/S40RTS_20perturbation/Ascii_20data_20vs_20to_20density_20model/Data_20file_20name
 **Default value:** vs_to_density_Steinberger.txt
 
 **Pattern:** [Anything]
 
 **Documentation:** The file name of the model data.
+::::
 
-(parameters:Initial_20temperature_20model/S40RTS_20perturbation/Ascii_20data_20vs_20to_20density_20model/Scale_20factor)=
-### __Parameter name:__ Scale factor
+::::{dropdown} __Parameter:__ {ref}`Scale factor<parameters:Initial_20temperature_20model/S40RTS_20perturbation/Ascii_20data_20vs_20to_20density_20model/Scale_20factor>`
+:name: parameters:Initial_20temperature_20model/S40RTS_20perturbation/Ascii_20data_20vs_20to_20density_20model/Scale_20factor
 **Default value:** 1.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
+::::
 
 (parameters:Initial_20temperature_20model/SAVANI_20perturbation)=
 ## **Subsection:** Initial temperature model / SAVANI perturbation
-(parameters:Initial_20temperature_20model/SAVANI_20perturbation/Data_20directory)=
-### __Parameter name:__ Data directory
+::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Initial_20temperature_20model/SAVANI_20perturbation/Data_20directory>`
+:name: parameters:Initial_20temperature_20model/SAVANI_20perturbation/Data_20directory
 **Default value:** $ASPECT_SOURCE_DIR/data/initial-temperature/SAVANI/
 
 **Pattern:** [DirectoryName]
 
 **Documentation:** The path to the model data.
+::::
 
-(parameters:Initial_20temperature_20model/SAVANI_20perturbation/Initial_20condition_20file_20name)=
-### __Parameter name:__ Initial condition file name
+::::{dropdown} __Parameter:__ {ref}`Initial condition file name<parameters:Initial_20temperature_20model/SAVANI_20perturbation/Initial_20condition_20file_20name>`
+:name: parameters:Initial_20temperature_20model/SAVANI_20perturbation/Initial_20condition_20file_20name
 **Default value:** savani.dlnvs.60.m.ab
 
 **Pattern:** [Anything]
 
 **Documentation:** The file name of the spherical harmonics coefficients from Auer et al.
+::::
 
-(parameters:Initial_20temperature_20model/SAVANI_20perturbation/Maximum_20degree)=
-### __Parameter name:__ Maximum degree
+::::{dropdown} __Parameter:__ {ref}`Maximum degree<parameters:Initial_20temperature_20model/SAVANI_20perturbation/Maximum_20degree>`
+:name: parameters:Initial_20temperature_20model/SAVANI_20perturbation/Maximum_20degree
 **Default value:** 20
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** The maximum degree the users specify when reading the data file of spherical harmonic coefficients, which must be smaller than the maximum degree the data file stored. This parameter will be used only if &rsquo;Specify a lower maximum degree&rsquo; is set to true.
+::::
 
-(parameters:Initial_20temperature_20model/SAVANI_20perturbation/Reference_20temperature)=
-### __Parameter name:__ Reference temperature
+::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Initial_20temperature_20model/SAVANI_20perturbation/Reference_20temperature>`
+:name: parameters:Initial_20temperature_20model/SAVANI_20perturbation/Reference_20temperature
 **Default value:** 1600.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The reference temperature that is perturbed by the spherical harmonic functions. Only used in incompressible models.
+::::
 
-(parameters:Initial_20temperature_20model/SAVANI_20perturbation/Remove_20degree_200_20from_20perturbation)=
-### __Parameter name:__ Remove degree 0 from perturbation
+::::{dropdown} __Parameter:__ {ref}`Remove degree 0 from perturbation<parameters:Initial_20temperature_20model/SAVANI_20perturbation/Remove_20degree_200_20from_20perturbation>`
+:name: parameters:Initial_20temperature_20model/SAVANI_20perturbation/Remove_20degree_200_20from_20perturbation
 **Default value:** true
 
 **Pattern:** [Bool]
 
 **Documentation:** Option to remove the degree zero component from the perturbation, which will ensure that the laterally averaged temperature for a fixed depth is equal to the background temperature.
+::::
 
-(parameters:Initial_20temperature_20model/SAVANI_20perturbation/Remove_20temperature_20heterogeneity_20down_20to_20specified_20depth)=
-### __Parameter name:__ Remove temperature heterogeneity down to specified depth
+::::{dropdown} __Parameter:__ {ref}`Remove temperature heterogeneity down to specified depth<parameters:Initial_20temperature_20model/SAVANI_20perturbation/Remove_20temperature_20heterogeneity_20down_20to_20specified_20depth>`
+:name: parameters:Initial_20temperature_20model/SAVANI_20perturbation/Remove_20temperature_20heterogeneity_20down_20to_20specified_20depth
 **Default value:** -1.7976931348623157e+308
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** This will set the heterogeneity prescribed by SAVANI to zero down to the specified depth (in meters). Note that your resolution has to be adequate to capture this cutoff. For example if you specify a depth of 660 km, but your closest spherical depth layers are only at 500 km and 750 km (due to a coarse resolution) it will only zero out heterogeneities down to 500 km. Similar caution has to be taken when using adaptive meshing.
+::::
 
-(parameters:Initial_20temperature_20model/SAVANI_20perturbation/Specify_20a_20lower_20maximum_20degree)=
-### __Parameter name:__ Specify a lower maximum degree
+::::{dropdown} __Parameter:__ {ref}`Specify a lower maximum degree<parameters:Initial_20temperature_20model/SAVANI_20perturbation/Specify_20a_20lower_20maximum_20degree>`
+:name: parameters:Initial_20temperature_20model/SAVANI_20perturbation/Specify_20a_20lower_20maximum_20degree
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Option to use a lower maximum degree when reading the data file of spherical harmonic coefficients. This is probably used for the faster tests or when the users only want to see the spherical harmonic pattern up to a certain degree.
+::::
 
-(parameters:Initial_20temperature_20model/SAVANI_20perturbation/Spline_20knots_20depth_20file_20name)=
-### __Parameter name:__ Spline knots depth file name
+::::{dropdown} __Parameter:__ {ref}`Spline knots depth file name<parameters:Initial_20temperature_20model/SAVANI_20perturbation/Spline_20knots_20depth_20file_20name>`
+:name: parameters:Initial_20temperature_20model/SAVANI_20perturbation/Spline_20knots_20depth_20file_20name
 **Default value:** Spline_knots.txt
 
 **Pattern:** [Anything]
 
 **Documentation:** The file name of the spline knots taken from the 28 spherical layers of SAVANI tomography model.
+::::
 
-(parameters:Initial_20temperature_20model/SAVANI_20perturbation/Thermal_20expansion_20coefficient_20in_20initial_20temperature_20scaling)=
-### __Parameter name:__ Thermal expansion coefficient in initial temperature scaling
+::::{dropdown} __Parameter:__ {ref}`Thermal expansion coefficient in initial temperature scaling<parameters:Initial_20temperature_20model/SAVANI_20perturbation/Thermal_20expansion_20coefficient_20in_20initial_20temperature_20scaling>`
+:name: parameters:Initial_20temperature_20model/SAVANI_20perturbation/Thermal_20expansion_20coefficient_20in_20initial_20temperature_20scaling
 **Default value:** 2e-5
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The value of the thermal expansion coefficient $\beta$. Units: $\frac{1}{\text{K}}$.
+::::
 
-(parameters:Initial_20temperature_20model/SAVANI_20perturbation/Use_20thermal_20expansion_20coefficient_20from_20material_20model)=
-### __Parameter name:__ Use thermal expansion coefficient from material model
+::::{dropdown} __Parameter:__ {ref}`Use thermal expansion coefficient from material model<parameters:Initial_20temperature_20model/SAVANI_20perturbation/Use_20thermal_20expansion_20coefficient_20from_20material_20model>`
+:name: parameters:Initial_20temperature_20model/SAVANI_20perturbation/Use_20thermal_20expansion_20coefficient_20from_20material_20model
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Option to take the thermal expansion coefficient from the material model instead of from what is specified in this section.
+::::
 
-(parameters:Initial_20temperature_20model/SAVANI_20perturbation/Vs_20to_20density_20scaling)=
-### __Parameter name:__ Vs to density scaling
+::::{dropdown} __Parameter:__ {ref}`Vs to density scaling<parameters:Initial_20temperature_20model/SAVANI_20perturbation/Vs_20to_20density_20scaling>`
+:name: parameters:Initial_20temperature_20model/SAVANI_20perturbation/Vs_20to_20density_20scaling
 **Default value:** 0.25
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** This parameter specifies how the perturbation in shear wave velocity as prescribed by SAVANI is scaled into a density perturbation. See the general description of this model for more detailed information.
+::::
 
-(parameters:Initial_20temperature_20model/SAVANI_20perturbation/Vs_20to_20density_20scaling_20method)=
-### __Parameter name:__ Vs to density scaling method
+::::{dropdown} __Parameter:__ {ref}`Vs to density scaling method<parameters:Initial_20temperature_20model/SAVANI_20perturbation/Vs_20to_20density_20scaling_20method>`
+:name: parameters:Initial_20temperature_20model/SAVANI_20perturbation/Vs_20to_20density_20scaling_20method
 **Default value:** constant
 
 **Pattern:** [Selection file|constant ]
 
 **Documentation:** Method that is used to specify how the vs-to-density scaling varies with depth.
+::::
 
 (parameters:Initial_20temperature_20model/SAVANI_20perturbation/Ascii_20data_20vs_20to_20density_20model)=
 ## **Subsection:** Initial temperature model / SAVANI perturbation / Ascii data vs to density model
-(parameters:Initial_20temperature_20model/SAVANI_20perturbation/Ascii_20data_20vs_20to_20density_20model/Data_20directory)=
-### __Parameter name:__ Data directory
+::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Initial_20temperature_20model/SAVANI_20perturbation/Ascii_20data_20vs_20to_20density_20model/Data_20directory>`
+:name: parameters:Initial_20temperature_20model/SAVANI_20perturbation/Ascii_20data_20vs_20to_20density_20model/Data_20directory
 **Default value:** $ASPECT_SOURCE_DIR/data/initial-temperature/S40RTS/
 
 **Pattern:** [DirectoryName]
 
 **Documentation:** The name of a directory that contains the model data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT. A trailing slash at the end of the directory path is optional; the plugin will automatically append a &rsquo;/&rsquo; when the parameters are parsed if it is missing.
+::::
 
-(parameters:Initial_20temperature_20model/SAVANI_20perturbation/Ascii_20data_20vs_20to_20density_20model/Data_20file_20name)=
-### __Parameter name:__ Data file name
+::::{dropdown} __Parameter:__ {ref}`Data file name<parameters:Initial_20temperature_20model/SAVANI_20perturbation/Ascii_20data_20vs_20to_20density_20model/Data_20file_20name>`
+:name: parameters:Initial_20temperature_20model/SAVANI_20perturbation/Ascii_20data_20vs_20to_20density_20model/Data_20file_20name
 **Default value:** vs_to_density_Steinberger.txt
 
 **Pattern:** [Anything]
 
 **Documentation:** The file name of the model data.
+::::
 
-(parameters:Initial_20temperature_20model/SAVANI_20perturbation/Ascii_20data_20vs_20to_20density_20model/Scale_20factor)=
-### __Parameter name:__ Scale factor
+::::{dropdown} __Parameter:__ {ref}`Scale factor<parameters:Initial_20temperature_20model/SAVANI_20perturbation/Ascii_20data_20vs_20to_20density_20model/Scale_20factor>`
+:name: parameters:Initial_20temperature_20model/SAVANI_20perturbation/Ascii_20data_20vs_20to_20density_20model/Scale_20factor
 **Default value:** 1.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
+::::
 
 (parameters:Initial_20temperature_20model/Spherical_20gaussian_20perturbation)=
 ## **Subsection:** Initial temperature model / Spherical gaussian perturbation
-(parameters:Initial_20temperature_20model/Spherical_20gaussian_20perturbation/Amplitude)=
-### __Parameter name:__ Amplitude
+::::{dropdown} __Parameter:__ {ref}`Amplitude<parameters:Initial_20temperature_20model/Spherical_20gaussian_20perturbation/Amplitude>`
+:name: parameters:Initial_20temperature_20model/Spherical_20gaussian_20perturbation/Amplitude
 **Default value:** 0.01
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The amplitude of the perturbation.
+::::
 
-(parameters:Initial_20temperature_20model/Spherical_20gaussian_20perturbation/Angle)=
-### __Parameter name:__ Angle
+::::{dropdown} __Parameter:__ {ref}`Angle<parameters:Initial_20temperature_20model/Spherical_20gaussian_20perturbation/Angle>`
+:name: parameters:Initial_20temperature_20model/Spherical_20gaussian_20perturbation/Angle
 **Default value:** 0.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The angle where the center of the perturbation is placed.
+::::
 
-(parameters:Initial_20temperature_20model/Spherical_20gaussian_20perturbation/Filename_20for_20initial_20geotherm_20table)=
-### __Parameter name:__ Filename for initial geotherm table
+::::{dropdown} __Parameter:__ {ref}`Filename for initial geotherm table<parameters:Initial_20temperature_20model/Spherical_20gaussian_20perturbation/Filename_20for_20initial_20geotherm_20table>`
+:name: parameters:Initial_20temperature_20model/Spherical_20gaussian_20perturbation/Filename_20for_20initial_20geotherm_20table
 **Default value:** initial-geotherm-table
 
 **Pattern:** [FileName (Type: input)]
 
 **Documentation:** The file from which the initial geotherm table is to be read. The format of the file is defined by what is read in source/initial\_temperature/spherical\_shell.cc.
+::::
 
-(parameters:Initial_20temperature_20model/Spherical_20gaussian_20perturbation/Non_2ddimensional_20depth)=
-### __Parameter name:__ Non-dimensional depth
+::::{dropdown} __Parameter:__ {ref}`Non-dimensional depth<parameters:Initial_20temperature_20model/Spherical_20gaussian_20perturbation/Non_2ddimensional_20depth>`
+:name: parameters:Initial_20temperature_20model/Spherical_20gaussian_20perturbation/Non_2ddimensional_20depth
 **Default value:** 0.7
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The non-dimensional radial distance where the center of the perturbation is placed.
+::::
 
-(parameters:Initial_20temperature_20model/Spherical_20gaussian_20perturbation/Sigma)=
-### __Parameter name:__ Sigma
+::::{dropdown} __Parameter:__ {ref}`Sigma<parameters:Initial_20temperature_20model/Spherical_20gaussian_20perturbation/Sigma>`
+:name: parameters:Initial_20temperature_20model/Spherical_20gaussian_20perturbation/Sigma
 **Default value:** 0.2
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The standard deviation of the Gaussian perturbation.
+::::
 
-(parameters:Initial_20temperature_20model/Spherical_20gaussian_20perturbation/Sign)=
-### __Parameter name:__ Sign
+::::{dropdown} __Parameter:__ {ref}`Sign<parameters:Initial_20temperature_20model/Spherical_20gaussian_20perturbation/Sign>`
+:name: parameters:Initial_20temperature_20model/Spherical_20gaussian_20perturbation/Sign
 **Default value:** 1.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The sign of the perturbation.
+::::
 
 (parameters:Initial_20temperature_20model/Spherical_20hexagonal_20perturbation)=
 ## **Subsection:** Initial temperature model / Spherical hexagonal perturbation
-(parameters:Initial_20temperature_20model/Spherical_20hexagonal_20perturbation/Angular_20mode)=
-### __Parameter name:__ Angular mode
+::::{dropdown} __Parameter:__ {ref}`Angular mode<parameters:Initial_20temperature_20model/Spherical_20hexagonal_20perturbation/Angular_20mode>`
+:name: parameters:Initial_20temperature_20model/Spherical_20hexagonal_20perturbation/Angular_20mode
 **Default value:** 6
 
 **Pattern:** [Integer range -2147483648...2147483647 (inclusive)]
 
 **Documentation:** The number of convection cells with which to perturb the system.
+::::
 
-(parameters:Initial_20temperature_20model/Spherical_20hexagonal_20perturbation/Rotation_20offset)=
-### __Parameter name:__ Rotation offset
+::::{dropdown} __Parameter:__ {ref}`Rotation offset<parameters:Initial_20temperature_20model/Spherical_20hexagonal_20perturbation/Rotation_20offset>`
+:name: parameters:Initial_20temperature_20model/Spherical_20hexagonal_20perturbation/Rotation_20offset
 **Default value:** -45.
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Amount of clockwise rotation in degrees to apply to the perturbations. Default is set to -45 in order to provide backwards compatibility.
+::::

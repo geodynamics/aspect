@@ -162,8 +162,8 @@ namespace aspect
          * of fluids.
          */
         double shear_to_bulk_viscosity_ratio;
-        double min_compaction_visc;
-        double max_compaction_visc;
+        double min_compaction_viscosity;
+        double max_compaction_viscosity;
         double reference_permeability;
         double alpha_phi;
         double reference_T;

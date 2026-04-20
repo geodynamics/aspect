@@ -94,17 +94,3 @@ strain-rate: point = 2, component = 2, Finite difference = 0, Analytical derivat
 strain-rate: point = 3, component = 2, Finite difference = 0, Analytical derivative = 0
 strain-rate: point = 4, component = 2, Finite difference = 0, Analytical derivative = 0
 OK
-Number of active cells: 100 (on 1 levels)
-Number of degrees of freedom: 2,767 (882+121+441+441+441+441)
-
-*** Timestep 0:  t=0 years, dt=0 years
-
-   Postprocessing:
-     RMS, max velocity:                  0 m/year, 0 m/year
-     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
-     Writing graphical output:           output-visco_plastic_derivatives_2d/solution/solution-00000
-
-Termination requested by criterion: end time
-
-
-

@@ -78,9 +78,9 @@ Since the Hill coefficients are defined in the microscopic CPO reference frame, 
 :label: eqn:rotation_matrix
 R = \left[
 \begin{matrix}
-\verb|max_eigenvector|\_{a1} & \verb|max_eigenvector|\_{b1} & \verb|max_eigenvector|\_{c1} \\
-\verb|max_eigenvector|\_{a2} & \verb|max_eigenvector|\_{b2} & \verb|max_eigenvector|\_{c2} \\
-\verb|max_eigenvector|\_{a3} & \verb|max_eigenvector|\_{b3} & \verb|max_eigenvector|\_{c3} \\
+\texttt{max\_eigenvector}_{a1} & \texttt{max\_eigenvector}_{b1} & \texttt{max\_eigenvector}_{c1} \\
+\texttt{max\_eigenvector}_{a2} & \texttt{max\_eigenvector}_{b2} & \texttt{max\_eigenvector}_{c2} \\
+\texttt{max\_eigenvector}_{a3} & \texttt{max\_eigenvector}_{b3} & \texttt{max\_eigenvector}_{c3}
 \end{matrix} \right]
 ```
 

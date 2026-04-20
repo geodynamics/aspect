@@ -1,0 +1,5 @@
+Changed: Added checkpointing parameters to configure how many checkpoint
+slots to keep, restart from a specific checkpoint slot, or restart from
+the checkpoint whose saved time is closest to a requested model time.
+<br>
+(Ninghui Tian, 2026/03/27)

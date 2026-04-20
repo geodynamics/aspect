@@ -5,40 +5,44 @@
 ## **Subsection:** Mesh refinement
 
 
-(parameters:Mesh_20refinement/Adapt_20by_20fraction_20of_20cells)=
-### __Parameter name:__ Adapt by fraction of cells
+::::{dropdown} __Parameter:__ {ref}`Adapt by fraction of cells<parameters:Mesh_20refinement/Adapt_20by_20fraction_20of_20cells>`
+:name: parameters:Mesh_20refinement/Adapt_20by_20fraction_20of_20cells
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Use fraction of the total number of cells instead of fraction of the total error as the limit for refinement and coarsening.
+::::
 
-(parameters:Mesh_20refinement/Additional_20refinement_20times)=
-### __Parameter name:__ Additional refinement times
+::::{dropdown} __Parameter:__ {ref}`Additional refinement times<parameters:Mesh_20refinement/Additional_20refinement_20times>`
+:name: parameters:Mesh_20refinement/Additional_20refinement_20times
 **Default value:**
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A list of times so that if the end time of a time step is beyond this time, an additional round of mesh refinement is triggered. This is mostly useful to make sure we can get through the initial transient phase of a simulation on a relatively coarse mesh, and then refine again when we are in a time range that we are interested in and where we would like to use a finer mesh. Units: Each element of the list has units years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+::::
 
-(parameters:Mesh_20refinement/Coarsening_20fraction)=
-### __Parameter name:__ Coarsening fraction
+::::{dropdown} __Parameter:__ {ref}`Coarsening fraction<parameters:Mesh_20refinement/Coarsening_20fraction>`
+:name: parameters:Mesh_20refinement/Coarsening_20fraction
 **Default value:** 0.05
 
 **Pattern:** [Double 0...1 (inclusive)]
 
 **Documentation:** Cells are sorted from largest to smallest by their total error (determined by the Strategy). Then the cells with the smallest error (bottom of this sorted list) that account for the given fraction of the error are coarsened.
+::::
 
-(parameters:Mesh_20refinement/Initial_20adaptive_20refinement)=
-### __Parameter name:__ Initial adaptive refinement
+::::{dropdown} __Parameter:__ {ref}`Initial adaptive refinement<parameters:Mesh_20refinement/Initial_20adaptive_20refinement>`
+:name: parameters:Mesh_20refinement/Initial_20adaptive_20refinement
 **Default value:** 0
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** The number of adaptive refinement steps performed after initial global refinement but while still within the first time step. These refinement steps (n) are added to the value for initial global refinement (m) so that the final mesh has cells that are at most on refinement level $n+m$.
+::::
 
-(parameters:Mesh_20refinement/Initial_20global_20refinement)=
-### __Parameter name:__ Initial global refinement
+::::{dropdown} __Parameter:__ {ref}`Initial global refinement<parameters:Mesh_20refinement/Initial_20global_20refinement>`
+:name: parameters:Mesh_20refinement/Initial_20global_20refinement
 **Default value:** 2
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
@@ -46,25 +50,28 @@
 **Documentation:** The number of global refinement steps performed on the initial coarse mesh, before the problem is first solved there.
 
 Note that it is possible to supply conflicting refinement and coarsening settings, such as an &rsquo;Initial global refinement&rsquo; of 4 and a &rsquo;Maximum refinement function&rsquo; strategy that limits the refinement locally to 2. In this case, the tagging strategies such as the &rsquo;Maximum refinement function&rsquo; will remove refinement flags in each initial global refinement step, such that the resulting mesh is not necessarily uniform or of the level given by the &rsquo;Initial global refinement&rsquo; parameter.
+::::
 
-(parameters:Mesh_20refinement/Minimum_20refinement_20level)=
-### __Parameter name:__ Minimum refinement level
+::::{dropdown} __Parameter:__ {ref}`Minimum refinement level<parameters:Mesh_20refinement/Minimum_20refinement_20level>`
+:name: parameters:Mesh_20refinement/Minimum_20refinement_20level
 **Default value:** 0
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** The minimum refinement level each cell should have, and that can not be exceeded by coarsening. Should not be higher than the &rsquo;Initial global refinement&rsquo; parameter.
+::::
 
-(parameters:Mesh_20refinement/Normalize_20individual_20refinement_20criteria)=
-### __Parameter name:__ Normalize individual refinement criteria
+::::{dropdown} __Parameter:__ {ref}`Normalize individual refinement criteria<parameters:Mesh_20refinement/Normalize_20individual_20refinement_20criteria>`
+:name: parameters:Mesh_20refinement/Normalize_20individual_20refinement_20criteria
 **Default value:** true
 
 **Pattern:** [Bool]
 
 **Documentation:** If multiple refinement criteria are specified in the &ldquo;Strategy&rdquo; parameter, then they need to be combined somehow to form the final refinement indicators. This is done using the method described by the &ldquo;Refinement criteria merge operation&rdquo; parameter which can either operate on the raw refinement indicators returned by each strategy (i.e., dimensional quantities) or using normalized values where the indicators of each strategy are first normalized to the interval $[0,1]$ (which also makes them non-dimensional). This parameter determines whether this normalization will happen.
+::::
 
-(parameters:Mesh_20refinement/Refinement_20criteria_20merge_20operation)=
-### __Parameter name:__ Refinement criteria merge operation
+::::{dropdown} __Parameter:__ {ref}`Refinement criteria merge operation<parameters:Mesh_20refinement/Refinement_20criteria_20merge_20operation>`
+:name: parameters:Mesh_20refinement/Refinement_20criteria_20merge_20operation
 **Default value:** max
 
 **Pattern:** [Selection plus|max ]
@@ -75,9 +82,10 @@ Note that it is possible to supply conflicting refinement and coarsening setting
 * `plus`: Add the various error indicators together and refine those cells on which the sum of indicators is largest.
 * `max`: Take the maximum of the various error indicators and refine those cells on which the maximal indicators is largest.
 The refinement indicators computed by each strategy are modified by the &ldquo;Normalize individual refinement criteria&rdquo; and &ldquo;Refinement criteria scale factors&rdquo; parameters.
+::::
 
-(parameters:Mesh_20refinement/Refinement_20criteria_20scaling_20factors)=
-### __Parameter name:__ Refinement criteria scaling factors
+::::{dropdown} __Parameter:__ {ref}`Refinement criteria scaling factors<parameters:Mesh_20refinement/Refinement_20criteria_20scaling_20factors>`
+:name: parameters:Mesh_20refinement/Refinement_20criteria_20scaling_20factors
 **Default value:**
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
@@ -89,41 +97,46 @@ If &ldquo;Normalize individual refinement criteria&rdquo; is set to true, then t
 You can experimentally play with these scaling factors by choosing to output the refinement indicators into the graphical output of a run.
 
 If the list of indicators given in this parameter is empty, then this indicates that they should all be chosen equal to one. If the list is not empty then it needs to have as many entries as there are indicators chosen in the &ldquo;Strategy&rdquo; parameter.
+::::
 
-(parameters:Mesh_20refinement/Refinement_20fraction)=
-### __Parameter name:__ Refinement fraction
+::::{dropdown} __Parameter:__ {ref}`Refinement fraction<parameters:Mesh_20refinement/Refinement_20fraction>`
+:name: parameters:Mesh_20refinement/Refinement_20fraction
 **Default value:** 0.3
 
 **Pattern:** [Double 0...1 (inclusive)]
 
 **Documentation:** Cells are sorted from largest to smallest by their total error (determined by the Strategy). Then the cells with the largest error (top of this sorted list) that account for given fraction of the error are refined.
+::::
 
-(parameters:Mesh_20refinement/Run_20postprocessors_20on_20initial_20refinement)=
-### __Parameter name:__ Run postprocessors on initial refinement
+::::{dropdown} __Parameter:__ {ref}`Run postprocessors on initial refinement<parameters:Mesh_20refinement/Run_20postprocessors_20on_20initial_20refinement>`
+:name: parameters:Mesh_20refinement/Run_20postprocessors_20on_20initial_20refinement
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether or not the postprocessors should be executed after each of the initial adaptive refinement cycles that are run at the start of the simulation. This is useful for plotting/analyzing how the mesh refinement parameters are working for a particular model.
+::::
 
-(parameters:Mesh_20refinement/Skip_20setup_20initial_20conditions_20on_20initial_20refinement)=
-### __Parameter name:__ Skip setup initial conditions on initial refinement
+::::{dropdown} __Parameter:__ {ref}`Skip setup initial conditions on initial refinement<parameters:Mesh_20refinement/Skip_20setup_20initial_20conditions_20on_20initial_20refinement>`
+:name: parameters:Mesh_20refinement/Skip_20setup_20initial_20conditions_20on_20initial_20refinement
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether or not the initial conditions should be set up during the adaptive refinement cycles that are run at the start of the simulation.
+::::
 
-(parameters:Mesh_20refinement/Skip_20solvers_20on_20initial_20refinement)=
-### __Parameter name:__ Skip solvers on initial refinement
+::::{dropdown} __Parameter:__ {ref}`Skip solvers on initial refinement<parameters:Mesh_20refinement/Skip_20solvers_20on_20initial_20refinement>`
+:name: parameters:Mesh_20refinement/Skip_20solvers_20on_20initial_20refinement
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** Whether or not solvers should be executed during the initial adaptive refinement cycles that are run at the start of the simulation.
+::::
 
-(parameters:Mesh_20refinement/Strategy)=
-### __Parameter name:__ Strategy
+::::{dropdown} __Parameter:__ {ref}`Strategy<parameters:Mesh_20refinement/Strategy>`
+:name: parameters:Mesh_20refinement/Strategy
 **Default value:** thermal energy density
 
 **Pattern:** [MultipleSelection artificial viscosity|boundary|compaction length|composition|composition approximate gradient|composition gradient|composition threshold|density|isosurfaces|maximum refinement function|minimum refinement function|nonadiabatic temperature|nonadiabatic temperature threshold|particle density|slope|strain rate|temperature|thermal energy density|topography|velocity|viscosity|volume of fluid interface ]
@@ -211,19 +224,21 @@ For complex equations such as those we solve here, this observation may not be s
 &lsquo;viscosity&rsquo;: A mesh refinement criterion that computes refinement indicators from a field that describes the spatial variability of the logarithm of the viscosity, $\log\eta$. (We choose the logarithm of the viscosity because it can vary by orders of magnitude.)Because this quantity may not be a continuous function ($\eta$ may be a discontinuous function along discontinuities in the medium, for example due to phase changes), we approximate the gradient of this quantity to refine the mesh. The error indicator defined here takes the magnitude of the approximate gradient and scales it by $h_K^{1+d/2}$ where $h_K$ is the diameter of each cell and $d$ is the dimension. This scaling ensures that the error indicators converge to zero as $h_K\rightarrow 0$ even if the viscosity is discontinuous, since the gradient of a discontinuous function grows like $1/h_K$.
 
 &lsquo;volume of fluid interface&rsquo;: A class that implements a mesh refinement criterion, which ensures a minimum level of refinement near the volume of fluid interface boundary.
+::::
 
-(parameters:Mesh_20refinement/Time_20steps_20between_20mesh_20refinement)=
-### __Parameter name:__ Time steps between mesh refinement
+::::{dropdown} __Parameter:__ {ref}`Time steps between mesh refinement<parameters:Mesh_20refinement/Time_20steps_20between_20mesh_20refinement>`
+:name: parameters:Mesh_20refinement/Time_20steps_20between_20mesh_20refinement
 **Default value:** 10
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** The number of time steps after which the mesh is to be adapted again based on computed error indicators. If 0 then the mesh will never be changed.
+::::
 
 (parameters:Mesh_20refinement/Artificial_20viscosity)=
 ## **Subsection:** Mesh refinement / Artificial viscosity
-(parameters:Mesh_20refinement/Artificial_20viscosity/Compositional_20field_20scaling_20factors)=
-### __Parameter name:__ Compositional field scaling factors
+::::{dropdown} __Parameter:__ {ref}`Compositional field scaling factors<parameters:Mesh_20refinement/Artificial_20viscosity/Compositional_20field_20scaling_20factors>`
+:name: parameters:Mesh_20refinement/Artificial_20viscosity/Compositional_20field_20scaling_20factors
 **Default value:**
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
@@ -231,19 +246,21 @@ For complex equations such as those we solve here, this observation may not be s
 **Documentation:** A list of scaling factors by which every individual compositional field will be multiplied. These factors are used to weigh the various indicators relative to each other and to the temperature.
 
 If the list of scaling factors given in this parameter is empty, then this indicates that they should all be chosen equal to 0. If the list is not empty then it needs to have as many entries as there are compositional fields.
+::::
 
-(parameters:Mesh_20refinement/Artificial_20viscosity/Temperature_20scaling_20factor)=
-### __Parameter name:__ Temperature scaling factor
+::::{dropdown} __Parameter:__ {ref}`Temperature scaling factor<parameters:Mesh_20refinement/Artificial_20viscosity/Temperature_20scaling_20factor>`
+:name: parameters:Mesh_20refinement/Artificial_20viscosity/Temperature_20scaling_20factor
 **Default value:** 0.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** A scaling factor for the artificial viscosity  of the temperature equation. Use 0.0 to disable.
+::::
 
 (parameters:Mesh_20refinement/Boundary)=
 ## **Subsection:** Mesh refinement / Boundary
-(parameters:Mesh_20refinement/Boundary/Boundary_20refinement_20indicators)=
-### __Parameter name:__ Boundary refinement indicators
+::::{dropdown} __Parameter:__ {ref}`Boundary refinement indicators<parameters:Mesh_20refinement/Boundary/Boundary_20refinement_20indicators>`
+:name: parameters:Mesh_20refinement/Boundary/Boundary_20refinement_20indicators
 **Default value:**
 
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
@@ -251,21 +268,23 @@ If the list of scaling factors given in this parameter is empty, then this indic
 **Documentation:** A comma separated list of names denoting those boundaries where there should be mesh refinement.
 
 The names of the boundaries listed here can either be numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
+::::
 
 (parameters:Mesh_20refinement/Compaction_20length)=
 ## **Subsection:** Mesh refinement / Compaction length
-(parameters:Mesh_20refinement/Compaction_20length/Mesh_20cells_20per_20compaction_20length)=
-### __Parameter name:__ Mesh cells per compaction length
+::::{dropdown} __Parameter:__ {ref}`Mesh cells per compaction length<parameters:Mesh_20refinement/Compaction_20length/Mesh_20cells_20per_20compaction_20length>`
+:name: parameters:Mesh_20refinement/Compaction_20length/Mesh_20cells_20per_20compaction_20length
 **Default value:** 1.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The desired ratio between compaction length and size of the mesh cells, or, in other words, how many cells the mesh should (at least) have per compaction length. Every cell where this ratio is smaller than the value specified by this parameter (in places with fewer mesh cells per compaction length) is marked for refinement.
+::::
 
 (parameters:Mesh_20refinement/Composition)=
 ## **Subsection:** Mesh refinement / Composition
-(parameters:Mesh_20refinement/Composition/Compositional_20field_20scaling_20factors)=
-### __Parameter name:__ Compositional field scaling factors
+::::{dropdown} __Parameter:__ {ref}`Compositional field scaling factors<parameters:Mesh_20refinement/Composition/Compositional_20field_20scaling_20factors>`
+:name: parameters:Mesh_20refinement/Composition/Compositional_20field_20scaling_20factors
 **Default value:**
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
@@ -273,11 +292,12 @@ The names of the boundaries listed here can either be numbers (in which case the
 **Documentation:** A list of scaling factors by which every individual compositional field will be multiplied. If only a single compositional field exists, then this parameter has no particular meaning. On the other hand, if multiple criteria are chosen, then these factors are used to weigh the various indicators relative to each other.
 
 If the list of scaling factors given in this parameter is empty, then this indicates that they should all be chosen equal to one. If the list is not empty then it needs to have as many entries as there are compositional fields.
+::::
 
 (parameters:Mesh_20refinement/Composition_20approximate_20gradient)=
 ## **Subsection:** Mesh refinement / Composition approximate gradient
-(parameters:Mesh_20refinement/Composition_20approximate_20gradient/Compositional_20field_20scaling_20factors)=
-### __Parameter name:__ Compositional field scaling factors
+::::{dropdown} __Parameter:__ {ref}`Compositional field scaling factors<parameters:Mesh_20refinement/Composition_20approximate_20gradient/Compositional_20field_20scaling_20factors>`
+:name: parameters:Mesh_20refinement/Composition_20approximate_20gradient/Compositional_20field_20scaling_20factors
 **Default value:**
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
@@ -285,11 +305,12 @@ If the list of scaling factors given in this parameter is empty, then this indic
 **Documentation:** A list of scaling factors by which every individual compositional field gradient will be multiplied. If only a single compositional field exists, then this parameter has no particular meaning. On the other hand, if multiple criteria are chosen, then these factors are used to weigh the various indicators relative to each other.
 
 If the list of scaling factors given in this parameter is empty, then this indicates that they should all be chosen equal to one. If the list is not empty then it needs to have as many entries as there are compositional fields.
+::::
 
 (parameters:Mesh_20refinement/Composition_20gradient)=
 ## **Subsection:** Mesh refinement / Composition gradient
-(parameters:Mesh_20refinement/Composition_20gradient/Compositional_20field_20scaling_20factors)=
-### __Parameter name:__ Compositional field scaling factors
+::::{dropdown} __Parameter:__ {ref}`Compositional field scaling factors<parameters:Mesh_20refinement/Composition_20gradient/Compositional_20field_20scaling_20factors>`
+:name: parameters:Mesh_20refinement/Composition_20gradient/Compositional_20field_20scaling_20factors
 **Default value:**
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
@@ -297,21 +318,23 @@ If the list of scaling factors given in this parameter is empty, then this indic
 **Documentation:** A list of scaling factors by which every individual compositional field gradient will be multiplied. If only a single compositional field exists, then this parameter has no particular meaning. On the other hand, if multiple criteria are chosen, then these factors are used to weigh the various indicators relative to each other.
 
 If the list of scaling factors given in this parameter is empty, then this indicates that they should all be chosen equal to one. If the list is not empty then it needs to have as many entries as there are compositional fields.
+::::
 
 (parameters:Mesh_20refinement/Composition_20threshold)=
 ## **Subsection:** Mesh refinement / Composition threshold
-(parameters:Mesh_20refinement/Composition_20threshold/Compositional_20field_20thresholds)=
-### __Parameter name:__ Compositional field thresholds
+::::{dropdown} __Parameter:__ {ref}`Compositional field thresholds<parameters:Mesh_20refinement/Composition_20threshold/Compositional_20field_20thresholds>`
+:name: parameters:Mesh_20refinement/Composition_20threshold/Compositional_20field_20thresholds
 **Default value:**
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A list of thresholds, one for each compositional field to be evaluated against.
+::::
 
 (parameters:Mesh_20refinement/Isosurfaces)=
 ## **Subsection:** Mesh refinement / Isosurfaces
-(parameters:Mesh_20refinement/Isosurfaces/Isosurfaces)=
-### __Parameter name:__ Isosurfaces
+::::{dropdown} __Parameter:__ {ref}`Isosurfaces<parameters:Mesh_20refinement/Isosurfaces/Isosurfaces>`
+:name: parameters:Mesh_20refinement/Isosurfaces/Isosurfaces
 **Default value:**
 
 **Pattern:** [Anything]
@@ -319,19 +342,21 @@ If the list of scaling factors given in this parameter is empty, then this indic
 **Documentation:** A list of isosurfaces separated by semi-colons (;). Each isosurface entry consists of multiple entries separated by a comma. The first two entries indicate the minimum and maximum refinement levels respectively. The entries after the first two describe the fields the isosurface applies to, followed by a colon (:), which is again followed by the minimum and maximum property values separated by bar (|). An example for an isosurface is &rsquo;0, 2, Temperature: 300 | 600; 2, 2, C\_1: 0.5 | 1&rsquo;. In this example the mesh refinement is kept between level 0 and level 2 if the temperature is between 300 and 600 and at level 2 when the compositional field C\_1 is between 0.5 and 1. If both happen at the same location and the current refinement level is 1, it means that the first isoline will not set any flag and the second isoline will set a refinement flag. This means the cell will be refined. If both the coarsening and refinement flags are set, preference is given to refinement.
 
 The first two entries for each isosurface, describing the minimum and maximum grid levels, can be two numbers or contain one of the key values &rsquo;min&rsquo; and &rsquo;max&rsquo;. This indicates the key will be replaced with the global minimum and maximum refinement levels. The &rsquo;min&rsquo; and &rsquo;max&rsquo; keys also accept adding values to be added or subtracted from them respectively. This is done by adding a &rsquo;+&rsquo; or &rsquo;-&rsquo; and a number behind them (e.g. min+2 or max-1). Note that you can&rsquo;t subtract a value from a minimum value or add a value to the maximum value. If, for example, &lsquo;max-4&lsquo; drops below the minimum or &lsquo;min+4&lsquo; goes above the maximum, it will simply use the global minimum and maximum values respectively. The same holds for any mesh refinement level below the global minimum or above the global maximum.
+::::
 
 (parameters:Mesh_20refinement/Maximum_20refinement_20function)=
 ## **Subsection:** Mesh refinement / Maximum refinement function
-(parameters:Mesh_20refinement/Maximum_20refinement_20function/Coordinate_20system)=
-### __Parameter name:__ Coordinate system
+::::{dropdown} __Parameter:__ {ref}`Coordinate system<parameters:Mesh_20refinement/Maximum_20refinement_20function/Coordinate_20system>`
+:name: parameters:Mesh_20refinement/Maximum_20refinement_20function/Coordinate_20system
 **Default value:** depth
 
 **Pattern:** [Selection depth|cartesian|spherical ]
 
 **Documentation:** A selection that determines the assumed coordinate system for the function variables. Allowed values are &lsquo;depth&rsquo;, &lsquo;cartesian&rsquo; and &lsquo;spherical&rsquo;. &lsquo;depth&rsquo; will create a function, in which only the first variable is non-zero, which is interpreted to be the depth of the point. &lsquo;spherical&rsquo; coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle.
+::::
 
-(parameters:Mesh_20refinement/Maximum_20refinement_20function/Function_20constants)=
-### __Parameter name:__ Function constants
+::::{dropdown} __Parameter:__ {ref}`Function constants<parameters:Mesh_20refinement/Maximum_20refinement_20function/Function_20constants>`
+:name: parameters:Mesh_20refinement/Maximum_20refinement_20function/Function_20constants
 **Default value:**
 
 **Pattern:** [Anything]
@@ -339,9 +364,10 @@ The first two entries for each isosurface, describing the minimum and maximum gr
 **Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form &lsquo;var1=value1, var2=value2, ...&rsquo;.
 
 A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
+::::
 
-(parameters:Mesh_20refinement/Maximum_20refinement_20function/Function_20expression)=
-### __Parameter name:__ Function expression
+::::{dropdown} __Parameter:__ {ref}`Function expression<parameters:Mesh_20refinement/Maximum_20refinement_20function/Function_20expression>`
+:name: parameters:Mesh_20refinement/Maximum_20refinement_20function/Function_20expression
 **Default value:** 0
 
 **Pattern:** [Anything]
@@ -349,27 +375,30 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Documentation:** The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as &lsquo;sin&rsquo; or &lsquo;cos&rsquo;. In addition, it may contain expressions like &lsquo;if(x>0, 1, -1)&rsquo; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
 
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+::::
 
-(parameters:Mesh_20refinement/Maximum_20refinement_20function/Variable_20names)=
-### __Parameter name:__ Variable names
+::::{dropdown} __Parameter:__ {ref}`Variable names<parameters:Mesh_20refinement/Maximum_20refinement_20function/Variable_20names>`
+:name: parameters:Mesh_20refinement/Maximum_20refinement_20function/Variable_20names
 **Default value:** x,y,t
 
 **Pattern:** [Anything]
 
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
+::::
 
 (parameters:Mesh_20refinement/Minimum_20refinement_20function)=
 ## **Subsection:** Mesh refinement / Minimum refinement function
-(parameters:Mesh_20refinement/Minimum_20refinement_20function/Coordinate_20system)=
-### __Parameter name:__ Coordinate system
+::::{dropdown} __Parameter:__ {ref}`Coordinate system<parameters:Mesh_20refinement/Minimum_20refinement_20function/Coordinate_20system>`
+:name: parameters:Mesh_20refinement/Minimum_20refinement_20function/Coordinate_20system
 **Default value:** depth
 
 **Pattern:** [Selection depth|cartesian|spherical ]
 
 **Documentation:** A selection that determines the assumed coordinate system for the function variables. Allowed values are &lsquo;depth&rsquo;, &lsquo;cartesian&rsquo; and &lsquo;spherical&rsquo;. &lsquo;depth&rsquo; will create a function, in which only the first variable is non-zero, which is interpreted to be the depth of the point. &lsquo;spherical&rsquo; coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle.
+::::
 
-(parameters:Mesh_20refinement/Minimum_20refinement_20function/Function_20constants)=
-### __Parameter name:__ Function constants
+::::{dropdown} __Parameter:__ {ref}`Function constants<parameters:Mesh_20refinement/Minimum_20refinement_20function/Function_20constants>`
+:name: parameters:Mesh_20refinement/Minimum_20refinement_20function/Function_20constants
 **Default value:**
 
 **Pattern:** [Anything]
@@ -377,9 +406,10 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form &lsquo;var1=value1, var2=value2, ...&rsquo;.
 
 A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
+::::
 
-(parameters:Mesh_20refinement/Minimum_20refinement_20function/Function_20expression)=
-### __Parameter name:__ Function expression
+::::{dropdown} __Parameter:__ {ref}`Function expression<parameters:Mesh_20refinement/Minimum_20refinement_20function/Function_20expression>`
+:name: parameters:Mesh_20refinement/Minimum_20refinement_20function/Function_20expression
 **Default value:** 0
 
 **Pattern:** [Anything]
@@ -387,39 +417,44 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Documentation:** The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as &lsquo;sin&rsquo; or &lsquo;cos&rsquo;. In addition, it may contain expressions like &lsquo;if(x>0, 1, -1)&rsquo; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
 
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+::::
 
-(parameters:Mesh_20refinement/Minimum_20refinement_20function/Variable_20names)=
-### __Parameter name:__ Variable names
+::::{dropdown} __Parameter:__ {ref}`Variable names<parameters:Mesh_20refinement/Minimum_20refinement_20function/Variable_20names>`
+:name: parameters:Mesh_20refinement/Minimum_20refinement_20function/Variable_20names
 **Default value:** x,y,t
 
 **Pattern:** [Anything]
 
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
+::::
 
 (parameters:Mesh_20refinement/Nonadiabatic_20temperature_20threshold)=
 ## **Subsection:** Mesh refinement / Nonadiabatic temperature threshold
-(parameters:Mesh_20refinement/Nonadiabatic_20temperature_20threshold/Temperature_20anomaly_20type)=
-### __Parameter name:__ Temperature anomaly type
+::::{dropdown} __Parameter:__ {ref}`Temperature anomaly type<parameters:Mesh_20refinement/Nonadiabatic_20temperature_20threshold/Temperature_20anomaly_20type>`
+:name: parameters:Mesh_20refinement/Nonadiabatic_20temperature_20threshold/Temperature_20anomaly_20type
 **Default value:** absolute value
 
 **Pattern:** [Selection negative only|positive only|absolute value ]
 
 **Documentation:** What type of temperature anomaly should be considered when evaluating against the threshold: Only negative anomalies (negative only), only positive anomalies (positive only) or the absolute value of the nonadiabatic temperature.
+::::
 
-(parameters:Mesh_20refinement/Nonadiabatic_20temperature_20threshold/Threshold)=
-### __Parameter name:__ Threshold
+::::{dropdown} __Parameter:__ {ref}`Threshold<parameters:Mesh_20refinement/Nonadiabatic_20temperature_20threshold/Threshold>`
+:name: parameters:Mesh_20refinement/Nonadiabatic_20temperature_20threshold/Threshold
 **Default value:** 100
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** A threshold that the nonadiabatic temperature will be evaluated against. Units: $\text{K}$
+::::
 
 (parameters:Mesh_20refinement/Volume_20of_20fluid_20interface)=
 ## **Subsection:** Mesh refinement / Volume of fluid interface
-(parameters:Mesh_20refinement/Volume_20of_20fluid_20interface/Strict_20coarsening)=
-### __Parameter name:__ Strict coarsening
+::::{dropdown} __Parameter:__ {ref}`Strict coarsening<parameters:Mesh_20refinement/Volume_20of_20fluid_20interface/Strict_20coarsening>`
+:name: parameters:Mesh_20refinement/Volume_20of_20fluid_20interface/Strict_20coarsening
 **Default value:** false
 
 **Pattern:** [Bool]
 
 **Documentation:** If true, then explicitly coarsen any cells not neighboring the VolumeOfFluid interface.
+::::

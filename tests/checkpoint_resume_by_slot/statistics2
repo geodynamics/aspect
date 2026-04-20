@@ -1,0 +1,21 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Visualization file name
+ 0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225  0 output1.tmp/solution/solution-00000 
+ 1 1.027740563611e+06 1.027740563611e+06 1024 9539 4225 25 output1.tmp/solution/solution-00001 
+ 2 2.100299217251e+06 1.072558653640e+06 1024 9539 4225 19 output1.tmp/solution/solution-00002 
+ 3 3.220363967262e+06 1.120064750011e+06 1024 9539 4225 19 output1.tmp/solution/solution-00003 
+ 4 4.390588143865e+06 1.170224176603e+06 1024 9539 4225 19 output1.tmp/solution/solution-00004 
+ 5 5.613384398901e+06 1.222796255036e+06 1024 9539 4225 19 output1.tmp/solution/solution-00005 
+ 6 6.892312376386e+06 1.278927977485e+06 1024 9539 4225 19 output1.tmp/solution/solution-00006 
+ 7 8.231590892708e+06 1.339278516321e+06 1024 9539 4225 19 output1.tmp/solution/solution-00007 
+ 8 9.636111212012e+06 1.404520319304e+06 1024 9539 4225 20 output1.tmp/solution/solution-00008 
+ 9 1.111151291617e+07 1.475401704158e+06 1024 9539 4225 20 output1.tmp/solution/solution-00009 
+10 1.266388643883e+07 1.552373522656e+06 1024 9539 4225 20 output1.tmp/solution/solution-00010 
+11 1.430010093631e+07 1.636214497487e+06  982 9204 4078 21 output1.tmp/solution/solution-00011 
+12 1.602870077524e+07 1.728599838933e+06  982 9204 4078 22 output1.tmp/solution/solution-00012 

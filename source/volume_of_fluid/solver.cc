@@ -22,7 +22,7 @@
 #include <aspect/volume_of_fluid/handler.h>
 
 #include <deal.II/lac/affine_constraints.h>
-#include <deal.II/lac/trilinos_solver.h>
+#include <deal.II/lac/solver_cg.h>
 
 #include <deal.II/fe/fe_values.h>
 
@@ -40,8 +40,8 @@ namespace aspect
                                       volume_of_fluid_solver_tolerance*sim.system_rhs.block(block_idx).l2_norm());
 
     SolverControl solver_control (1000, tolerance);
+    SolverCG<LinearAlgebra::Vector> solver(solver_control);
 
-    TrilinosWrappers::SolverCG solver(solver_control);
     LinearAlgebra::PreconditionJacobi precondition;
     precondition.initialize(sim.system_matrix.block(block_idx, block_idx));
 

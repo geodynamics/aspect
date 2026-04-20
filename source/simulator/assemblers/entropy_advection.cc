@@ -81,7 +81,7 @@ namespace aspect
 
           const double JxW = scratch.finite_element_values.JxW(q);
 
-          // solve the diffusion equation for the temperature
+          // Solve the diffusion equation for temperature.
           if (advection_field.is_temperature())
             {
               const double density_c_P = scratch.material_model_outputs.densities[q] *
@@ -89,8 +89,8 @@ namespace aspect
 
               const double field_term_for_rhs = scratch.old_field_values[q] * density_c_P;
 
-              // do the actual assembly. note that we only need to loop over the advection
-              // shape functions because these are the only contributions we compute here
+              // Perform the assembly. We only need to loop over advection
+              // shape functions because these are the only contributions computed here.
               for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
                 {
                   data.local_rhs(i)
@@ -109,7 +109,7 @@ namespace aspect
                 }
             }
           else
-            // solve the entropy equation
+            // Solve the entropy equation.
             {
               const double rho_T              =
                 scratch.material_model_outputs.densities[q] *
@@ -136,16 +136,16 @@ namespace aspect
                   (rho_T);
 
               Tensor<1,dim> current_u = scratch.current_velocity_values[q];
-              // Subtract off the mesh velocity for ALE corrections if necessary
+              // Subtract the mesh velocity for ALE corrections, if necessary.
               if (this->get_parameters().mesh_deformation_enabled)
                 current_u -= scratch.mesh_velocity_values[q];
 
-              // We compute the amount of diffusion based on the solution of the temperature equation.
+              // Compute the diffusion term from the solution of the temperature equation.
               const double diffusion_term = (scratch.material_model_inputs.temperature[q] - scratch.old_temperature_values[q])
                                             * scratch.material_model_outputs.densities[q] * scratch.material_model_outputs.specific_heat[q];
 
-              // do the actual assembly. note that we only need to loop over the advection
-              // shape functions because these are the only contributions we compute here
+              // Perform the assembly. We only need to loop over advection
+              // shape functions because these are the only contributions computed here.
               for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
                 {
                   data.local_rhs(i)
@@ -208,8 +208,8 @@ namespace aspect
           const double density      = scratch.material_model_outputs.densities[q];
           const double gamma        = scratch.heating_model_outputs.heating_source_terms[q];
 
-          // Because we solve the diffusion equation for the temperature before the advection equation, we can use
-          // the current and old temperature here, together with the current time step.
+          // Because the temperature diffusion equation is solved before advection, we can use
+          // the current and previous temperatures with the current time step.
           const double diffusion_term = (this->get_timestep() == 0.0) ? 0.0
                                         :
                                         (scratch.material_model_inputs.temperature[q] - scratch.old_temperature_values[q]) / this->get_timestep()
@@ -284,7 +284,7 @@ namespace aspect
 
       if (simulator_access.introspection().composition_type_exists(CompositionalFieldDescription::entropy))
         {
-          // Find the indices of the entropy fields, loop over all of them and replace the assembler for them.
+          // Find entropy-field indices and replace their assemblers.
           // The indices of the entropy fields are their indices in the compositional fields plus one (for the temperature field).
           const std::vector<unsigned int> &entropy_indices = simulator_access.introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::entropy)
                                                              ;

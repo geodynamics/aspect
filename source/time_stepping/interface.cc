@@ -351,20 +351,6 @@ namespace aspect
 // explicit instantiation of the functions we implement in this file
 namespace aspect
 {
-
-  namespace internal
-  {
-    namespace Plugins
-    {
-      template <>
-      std::list<internal::Plugins::PluginList<TimeStepping::Interface<2>>::PluginInfo> *
-      internal::Plugins::PluginList<TimeStepping::Interface<2>>::plugins = nullptr;
-      template <>
-      std::list<internal::Plugins::PluginList<TimeStepping::Interface<3>>::PluginInfo> *
-      internal::Plugins::PluginList<TimeStepping::Interface<3>>::plugins = nullptr;
-    }
-  }
-
   namespace TimeStepping
   {
 #define INSTANTIATE(dim) \
