@@ -163,6 +163,16 @@ namespace aspect
 
     std::vector<Tensor<1,dim>> old_fluid_velocity_values(scratch.finite_element_values.n_quadrature_points);
     std::vector<Tensor<1,dim>> old_old_fluid_velocity_values(scratch.finite_element_values.n_quadrature_points);
+    const bool use_darcy_velocity = (advection_field.advection_method(introspection) == Parameters<dim>::AdvectionFieldMethod::fem_darcy_field);
+
+    std::shared_ptr<const MaterialModel::MeltOutputs<dim>> melt_outputs;
+    if (use_darcy_velocity)
+      {
+        melt_outputs = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
+        AssertThrow(melt_outputs != nullptr,
+                    ExcMessage("Darcy field entropy viscosity requires MeltOutputs to be available."));
+      }
+
     if (parameters.include_melt_transport)
       {
         const FEValuesExtractors::Vector ex_u_f = introspection.variable("fluid velocity").extractor_vector();
@@ -175,6 +185,18 @@ namespace aspect
         const Tensor<1,dim> velocity = (scratch.old_velocity_values[q] +
                                         scratch.old_old_velocity_values[q]) / 2;
         double velocity_norm = velocity.norm();
+
+        if (use_darcy_velocity)
+          {
+            const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
+            const double porosity = std::max(scratch.material_model_inputs.composition[q][porosity_index], 1e-10);
+            const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
+            const double rho_s = scratch.material_model_outputs.densities[q];
+            const double rho_f = melt_outputs->fluid_densities[q];
+            const Tensor<1,dim> gravity = gravity_model.get()->gravity_vector(scratch.finite_element_values.quadrature_point(q));
+            const Tensor<1,dim> darcy_velocity = velocity - K_D * (rho_s - rho_f) * gravity / porosity;
+            velocity_norm = std::max (darcy_velocity.norm(), velocity_norm);
+          }
 
         if (parameters.include_melt_transport)
           {
