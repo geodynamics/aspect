@@ -3,12 +3,12 @@ importing 'mesh_deformation_external_landlab_01' ...
 Number of active cells: 64 (on 3 levels)
 Number of degrees of freedom: 3,041 (2,187+125+729)
 
-Number of mesh deformation degrees of freedom: 375
+Number of mesh deformation degrees of freedom: 2,187
 WARNING: not all evaluation points were found inside the domain!
 Evaluation points not found:
 Point 11: 1.1 0.173205 1
 Point 23: 1.1 0.519615 1
-   Solving mesh displacement system... 5 iterations.
+   Solving mesh displacement system... 6 iterations.
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving mesh displacement system... 0 iterations.
 

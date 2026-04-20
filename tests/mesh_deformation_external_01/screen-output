@@ -5,30 +5,46 @@ initialize()
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
-Number of mesh deformation degrees of freedom: 162
+Number of mesh deformation degrees of freedom: 578
    Solving mesh displacement system... 6 iterations.
 *** Timestep 0:  t=0 seconds, dt=0 seconds
 update()
 	setting points
 map_dof_to_eval_point (dof, evaluation_point_index, component): 
-	116 0 0
-	117 0 1
-	118 1 0
-	119 1 1
-	120 2 0
-	121 2 1
-	126 4 0
-	127 4 1
-	128 5 0
-	129 5 1
-	150 6 0
-	151 6 1
-	152 8 0
-	153 8 1
-	158 9 0
-	159 9 1
-	160 10 0
-	161 10 1
+	398 0 0
+	399 0 1
+	400 1 0
+	401 1 1
+	406 0 0
+	407 0 1
+	410 2 0
+	411 2 1
+	414 2 0
+	415 2 1
+	434 4 0
+	435 4 1
+	438 3 0
+	439 3 1
+	442 5 0
+	443 5 1
+	446 4 0
+	447 4 1
+	530 6 0
+	531 6 1
+	534 6 0
+	535 6 1
+	538 8 0
+	539 8 1
+	542 7 0
+	543 7 1
+	562 9 0
+	563 9 1
+	566 8 0
+	567 8 1
+	570 10 0
+	571 10 1
+	574 10 0
+	575 10 1
 compute_updated_velocities_at_points()
 Solution at evaluation points:
 rank 0:
