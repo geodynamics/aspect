@@ -33,6 +33,7 @@
 #include <deal.II/numerics/vector_tools.h>
 #include <deal.II/lac/precondition.h>
 #include <deal.II/lac/trilinos_precondition.h>
+#include <deal.II/lac/sparsity_tools.h>
 #include <boost/lexical_cast.hpp>
 
 namespace aspect
@@ -218,15 +219,21 @@ namespace aspect
       LinearAlgebra::SparseMatrix matrix;
 
       // Sparsity of the matrix
-      LinearAlgebra::DynamicSparsityPattern sp (mesh_locally_owned,
-                                                mesh_locally_owned,
-                                                mesh_locally_relevant,
-                                                this->get_mpi_communicator());
-      DoFTools::make_sparsity_pattern (mesh_deformation_dof_handler, sp, matrix_constraints, false,
+      LinearAlgebra::DynamicSparsityPattern dsp (mesh_locally_relevant);
+      DoFTools::make_sparsity_pattern (mesh_deformation_dof_handler,
+                                       dsp,
+                                       matrix_constraints,
+                                       false,
                                        Utilities::MPI::this_mpi_process(this->get_mpi_communicator()));
 
-      sp.compress();
-      matrix.reinit (sp);
+      SparsityTools::distribute_sparsity_pattern(dsp,
+                                                 mesh_locally_owned,
+                                                 this->get_mpi_communicator(),
+                                                 mesh_locally_relevant);
+
+      matrix.reinit (mesh_locally_owned,
+                     dsp,
+                     this->get_mpi_communicator());
 
       LinearAlgebra::Vector system_rhs, solution;
       system_rhs.reinit(mesh_locally_owned, this->get_mpi_communicator());
@@ -403,7 +410,12 @@ namespace aspect
       // Jacobi seems to be fine here.  Other preconditioners (ILU, IC) run into trouble
       // because the matrix is mostly empty, since we don't touch internal vertices.
       LinearAlgebra::PreconditionJacobi preconditioner_mass;
+#ifndef ASPECT_USE_TPETRA
       LinearAlgebra::PreconditionJacobi::AdditionalData preconditioner_control(1,1e-16,1);
+#else
+      // The interface for the structure changed. The functionality is the same as before.
+      LinearAlgebra::PreconditionJacobi::AdditionalData preconditioner_control(1,true,1e-16,1);
+#endif
       preconditioner_mass.initialize(matrix, preconditioner_control);
 
       this->get_pcout() << "   Solving mesh surface diffusion" << std::endl;
