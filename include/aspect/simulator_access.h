@@ -361,6 +361,14 @@ namespace aspect
       get_output_directory () const;
 
       /**
+       * Return the ID of the last checkpoint. This is not the current checkpoint ID
+       * being written, but the last checkpoint that was written. This is useful for 
+       * consistently checkpointing other software that interface with ASPECT.
+       */
+      unsigned int
+      get_last_checkpoint_id () const;
+
+      /**
        * Return whether we use the adiabatic heating term.
        */
       bool
