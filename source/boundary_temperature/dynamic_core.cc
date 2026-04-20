@@ -210,10 +210,7 @@ namespace aspect
 
       if ((core_data.Q + core_data.Q_OES) * core_data.dt!=0.)
         {
-          double X1 = core_data.Xi;
-          double R1 = core_data.Ri;
-          double T1 = core_data.Ti;
-          solve_time_step(X1,T1,R1);
+          const auto [X1, T1, R1] = solve_time_step();
           if (core_data.dt != 0)
             {
               core_data.dR_dt = (R1-core_data.Ri)/core_data.dt;
@@ -359,8 +356,8 @@ namespace aspect
 
 
     template <int dim>
-    bool
-    DynamicCore<dim>::solve_time_step(double &X, double &T, double &R) const
+    internal::SolveTimeStepResult
+    DynamicCore<dim>::solve_time_step() const
     {
       // When solving the change in core-mantle boundary temperature T, inner core radius R, and
       //    light component (e.g. S, O, Si) composition X, the following relations has to be respected:
@@ -435,31 +432,31 @@ namespace aspect
             }
         }
 
-      // Calculate new R,T,X
-      R = R_1;
-      T = compute_Tc(R);
-      X = compute_X(R);
+      const internal::SolveTimeStepResult result = std::make_tuple(compute_X(R_1),
+                                                                   compute_Tc(R_1),
+                                                                   R_1);
 
       // Check the signs of dT at the boundaries to classify the solution
       if (dT0<0. && dT2>0.)
         {
           // Core partially molten, freezing from the inside, normal solution
-          return true;
+          return result;
         }
       else if (dT0>0. && dT2<0.)
         {
           // Core partially molten, snowing core solution
-          return false;
+          AssertThrow(false, ExcMessage("[Dynamic core] You had a 'Snowing Core' (i.e., core is freezing from CMB), "
+                                        "the treatment is not available at the moment."));
         }
       else if (dT0 >= 0. && dT2 >= 0.)
         {
           // Core fully molten, normal solution
-          return true;
+          return result;
         }
       else if (dT0 <= 0. && dT2 <= 0.)
         {
           // Core fully solid, normal solution
-          return true;
+          return result;
         }
       else
         {
@@ -471,7 +468,7 @@ namespace aspect
           AssertThrow(false, ExcMessage("[Dynamic core] No inner core radius solution found!"));
         }
 
-      return false;
+      return result;
     }
 
 

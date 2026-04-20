@@ -26,6 +26,8 @@
 #include <aspect/boundary_temperature/interface.h>
 #include <aspect/simulator_access.h>
 
+#include <tuple>
+
 namespace aspect
 {
   namespace BoundaryTemperature
@@ -84,6 +86,12 @@ namespace aspect
 
         bool is_initialized;
       };
+
+      /**
+       * Updated values for light element concentration, CMB temperature,
+       * and inner core radius returned by solve_time_step().
+       */
+      using SolveTimeStepResult = std::tuple<double, double, double>;
     }
 
 
@@ -376,10 +384,12 @@ namespace aspect
          *    However, the core solidus is influenced by light components (e.g. S) and its slope is very close to an adiabat. So there is an alternative
          *    scenario that the crystallization happens first at the core mantle boundary instead of at the center, which is called a 'snowing core'
          *    (Stewart, A. J., et al. (2007). "Mars: a new core-crystallization regime." Science 316(5829): 1323-1325.). This also
-         *    provides a valid solution for the solver. The return value of the function is true for a 'normal core', and false for 'snowing core'.
-         *    TODO: The current code is only able to treat the normal core scenario, treating 'snowing core' scenario may be possible and could be added.
+         *    provides a valid solution for the solver. The current code treats the
+         *    normal core scenario and throws for the unsupported snowing core case.
+         *
+         * @return A tuple containing the updated X, T, and R values.
          */
-        bool solve_time_step(double &X, double &T, double &R) const;
+        internal::SolveTimeStepResult solve_time_step() const;
 
         /**
          * Compute the difference between solidus and adiabatic temperature at inner
