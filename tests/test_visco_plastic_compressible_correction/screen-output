@@ -1,0 +1,17 @@
+
+Number of active cells: 100 (on 1 levels)
+Number of degrees of freedom: 3,217 (1,206+202+603+603+603)
+
+*** Timestep 0:  t=0 years, dt=0 years
+
+   Postprocessing:
+     Writing graphical output:                          output-test_visco_plastic_compressible_correction/solution/solution-00000
+     Compositions min/max/mass:                         0/0/0 // 0/0/0
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Average density / Average viscosity / Total mass:  3904 kg/m^3, 1.75e+20 Pa s, 3.904e+13 kg
+     Writing depth average:                             output-test_visco_plastic_compressible_correction/depth_average
+
+Termination requested by criterion: end time
+
+
+

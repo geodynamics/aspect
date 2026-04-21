@@ -1,0 +1,21 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Visualization file name
+# 10: Minimal value for composition MORB
+# 11: Maximal value for composition MORB
+# 12: Global mass for composition MORB
+# 13: Minimal value for composition sediment
+# 14: Maximal value for composition sediment
+# 15: Global mass for composition sediment
+# 16: RMS velocity (m/year)
+# 17: Max. velocity (m/year)
+# 18: Average density (kg/m^3)
+# 19: Average viscosity (Pa s)
+# 20: Total mass (kg)
+0 0.000000000000e+00 0.000000000000e+00 100 1408 603 1206 0 output-test_visco_plastic_compressible_correction/solution/solution-00000 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 3.90406661e+03 1.75036182e+20 3.90406661e+13 

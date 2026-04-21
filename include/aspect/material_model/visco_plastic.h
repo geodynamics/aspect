@@ -226,6 +226,13 @@ namespace aspect
         bool
         is_yielding (const MaterialModelInputs<dim> &in) const;
 
+        // todo_cc
+        void
+        apply_compressibility_correction(
+          const MaterialModel::MaterialModelInputs<dim> &in,
+          MaterialModel::MaterialModelOutputs<dim> &out,
+          const unsigned int i) const;
+
       private:
 
         /**
@@ -279,6 +286,14 @@ namespace aspect
          * Object that handles discrete phase transitions for the rheology if requested by the variable use_dominant_phase_for_viscosity.
          */
         std::unique_ptr<MaterialUtilities::PhaseFunctionDiscrete<dim>> phase_function_discrete;
+
+        // todo_cc
+        bool compressible_correction;
+        double cc_reference_temperature;
+        double cc_reference_thermal_expansivity;
+        double cc_reference_isothermal_compressibility;
+        double cc_isothermal_bulk_modulus_pressure_derivative;
+        double cc_isochoric_specific_heat;
 
     };
 

@@ -1,0 +1,150 @@
+set Adiabatic surface temperature = 1573.15
+set Nonlinear solver scheme = no Advection, no Stokes
+set Output directory = output
+set Dimension = 2
+set End time = 0.0
+set Pressure normalization = no
+
+subsection Geometry model
+    set Model name = box
+    subsection Box
+        set X extent = 10e3
+        set Y extent = 1000e3
+        set Y repetitions = 100
+    end
+end
+
+
+subsection Mesh refinement
+    set Initial global refinement = 0
+    set Initial adaptive refinement = 0
+    set Time steps between mesh refinement = 0
+end
+
+
+subsection Gravity model
+    set Model name = function
+    subsection Function
+        set Variable names = x,y
+        set Function expression = 0; -9.81
+    end
+end
+
+
+subsection Formulation
+    set Formulation = isentropic compression
+    set Temperature equation = real density
+end
+
+
+subsection Compositional fields
+    set Number of fields = 2
+    set Names of fields = MORB, sediment
+    set Compositional field methods = particles, particles
+    set Mapped particle properties = MORB: initial MORB, sediment: initial sediment
+end
+
+
+subsection Initial composition model
+    set List of model names = function
+    subsection Function
+        set Function expression = 0.0; 0.0
+    end
+end
+
+
+subsection Initial temperature model
+    set List of model names = adiabatic
+    subsection Adiabatic
+        subsection Function
+            set Function expression = 0.0; 0.0
+        end
+    end
+end
+
+
+subsection Boundary composition model
+    set List of model names = initial composition
+end
+
+
+subsection Boundary temperature model
+    set List of model names = initial temperature
+    set Fixed temperature boundary indicators = top, bottom
+end
+
+
+subsection Boundary velocity model
+    set Tangential velocity boundary indicators = left, right, bottom, top
+end
+
+
+subsection Heating model
+    set List of model names = adiabatic heating, shear heating,  latent heat
+end
+
+
+subsection Material model
+    set Model name = visco plastic
+    set Material averaging = geometric average only viscosity
+    subsection Visco Plastic
+        set Viscosity averaging scheme = geometric
+        set Viscous flow law = composite
+        set Use plastic damper = true
+        set Plastic damper viscosity = 1e20
+        set Viscosity prefactor scheme = none
+        set Minimum strain rate = 1e-20
+        set Reference strain rate = 1.0e-15
+        set Phase transition depths = background: 410000.0|520000.0|670000.0, MORB: 50000.0|300000.0|410000.0|750000.0|840000.0
+        set Phase transition widths = background: 10000.0|10000.0|10000.0, MORB: 20000.0|10000.0|20000.0|60000.0|10000.0
+        set Phase transition temperatures = background: 1732|1762.0|1801.0, MORB: 1600.0|1680.0|1732.0|1850.0|1900.0
+        set Phase transition Clapeyron slopes = background: 3000000.0|4000000.0|-1500000.0, MORB: 1000000.0|3000000.0|-1000000.0|2000000.0|5000000.0
+        set Densities = background: 3300.0|3420.0|3500.0|3800.0, MORB: 2900.0|3420.0|3520.0|3570.0|3700.0|3850.0, sediment: 3175.0
+        set Minimum viscosity = 2.5e+19
+        set Maximum viscosity = 2.5e+23
+        set Prefactors for diffusion creep = 1.305e-16
+        set Stress exponents for diffusion creep = 1.0
+        set Grain size exponents for diffusion creep = 3.0
+        set Activation volumes for diffusion creep = 1.9e-06
+        set Grain size = 1.0000e-02
+        set Activation energies for diffusion creep = 335000.0
+        set Prefactors for dislocation creep = 1.1119e-16
+        set Stress exponents for dislocation creep = 3.5
+        set Activation volumes for dislocation creep = 1.1e-05
+        set Activation energies for dislocation creep = 480000.0
+        set Angles of internal friction = 30.0
+        set Cohesions = 60000000.0
+        set Maximum yield stress = 500e6
+        set Use adiabatic pressure in plasticity = true
+        set Thermal expansivities = 0.0
+        set Thermal diffusivities = 1e-6
+        set Heat capacities = 1250.0
+        set Compressible Correction = true
+        set CC reference temperature = 1573.15
+        set CC reference thermal expansivity = 4e-05
+        set CC reference isothermal compressibility = 8e-12
+        set CC isochoric specific heat = 1250.0
+        set CC bulk modulus pressure derivative = 4.0
+    end
+end
+
+
+subsection Postprocess
+    set List of postprocessors = visualization, composition statistics, velocity statistics, material statistics, depth average
+    subsection Visualization
+        set List of output variables = material properties
+        set Output format = vtu
+        set Time between graphical output = 0
+        set Interpolate output = true
+        set Number of grouped files = 0
+        subsection Material properties
+            set List of material properties = density, viscosity
+        end
+    end
+    subsection Depth average
+        set Number of zones = 50
+        set Output format = txt
+        set Time between graphical output = 0
+    end
+end
+
