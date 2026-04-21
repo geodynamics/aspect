@@ -195,7 +195,7 @@ namespace aspect
             const double rho_f = melt_outputs->fluid_densities[q];
             const Tensor<1,dim> gravity = gravity_model.get()->gravity_vector(scratch.finite_element_values.quadrature_point(q));
             const Tensor<1,dim> darcy_velocity = velocity - K_D * (rho_s - rho_f) * gravity / porosity;
-            velocity_norm = std::max (darcy_velocity.norm(), velocity_norm);
+            velocity_norm = darcy_velocity.norm();
           }
 
         if (parameters.include_melt_transport)

@@ -1,3 +1,9 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,526 (578+81+289+289+289)
 
@@ -26,28 +32,28 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving porosity system ... 8 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.7407e-16, 0.338718, 0, 6.78827e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.70515e-16, 0.338718, 0, 6.78827e-09
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.338718
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 7 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.7407e-16, 0.00493967, 0, 6.78827e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.70515e-16, 0.00493967, 0, 6.78827e-09
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00493967
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 5 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.7407e-16, 8.46333e-05, 0, 6.78827e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.70515e-16, 8.46333e-05, 0, 6.78827e-09
       Relative nonlinear residual (total system) after nonlinear iteration 3: 8.46333e-05
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 4 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.7407e-16, 1.70839e-06, 0, 6.78827e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.70515e-16, 1.70839e-06, 0, 6.78827e-09
       Relative nonlinear residual (total system) after nonlinear iteration 4: 1.70839e-06
 
 
@@ -55,3 +61,11 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Compositions min/max/mass: -3.301e-05/0.006382/1.483e+06 // 0/0/0
 
 Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
