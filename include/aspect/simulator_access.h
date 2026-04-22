@@ -361,6 +361,14 @@ namespace aspect
       get_output_directory () const;
 
       /**
+       * Return the ID of the checkpoint that ASPECT is currently writing.
+       * Can be used in plugins to override the save() function and synchronize
+       * the checkpointing of plugins with the main ASPECT checkpoint.
+       */
+      unsigned int
+      get_checkpoint_id () const;
+
+      /**
        * Return whether we use the adiabatic heating term.
        */
       bool

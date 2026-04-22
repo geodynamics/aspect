@@ -371,6 +371,9 @@ namespace aspect
     {
       std::ostringstream oss;
 
+      // Update the checkpoint ID to the current checkpoint ID.
+      last_checkpoint_id = checkpoint_id;
+
       // Serialize into a stringstream. Put the following into a code
       // block of its own to ensure the destruction of the 'oa'
       // archive triggers a flush() on the stringstream so we can
@@ -441,7 +444,6 @@ namespace aspect
     // can be slow, and the model might be cancelled during writing.
     // This way restart remains usable even if restart.new is not completely
     // written.
-    last_checkpoint_id = checkpoint_id;
     if (my_id == 0)
       {
         write_checkpoint_metadata(checkpoint_path, time, timestep_number);
