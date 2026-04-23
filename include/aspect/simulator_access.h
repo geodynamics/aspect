@@ -361,9 +361,10 @@ namespace aspect
       get_output_directory () const;
 
       /**
-       * Return the ID of the checkpoint that ASPECT is currently writing.
-       * Can be used in plugins to override the save() function and synchronize
-       * the checkpointing of plugins with the main ASPECT checkpoint.
+       * Return the ID of the checkpoint that ASPECT is currently writing or was last
+       * written, depending on where this function gets called. Can be used in plugins
+       * to override the save() function and synchronize the checkpointing of plugins
+       * with the main ASPECT checkpoint.
        */
       unsigned int
       get_checkpoint_id () const;
