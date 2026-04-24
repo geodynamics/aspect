@@ -245,8 +245,6 @@ namespace aspect
         return;
       },
       active_viscosity_vector);
-
-      active_viscosity_vector.compress(VectorOperation::insert);
     }
 
     minimum_viscosity = dealii::Utilities::MPI::min(minimum_viscosity_local, this->get_mpi_communicator());

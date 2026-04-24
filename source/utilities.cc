@@ -2770,6 +2770,7 @@ namespace aspect
             // then set the global solution vector to the values just computed
             cell->set_dof_values (local_projection, vec_result);
           }
+      vec_result.compress(VectorOperation::insert);
     }
 
 
