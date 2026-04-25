@@ -43,7 +43,6 @@ subsection Boundary temperature model
     set Inner temperature                 = 4100
     set Outer temperature                 = 300
     set Core density                      = 12.5e3
-    set Gravity acceleration              = 9.81    # For the core
     set CMB pressure                      = 0.14e12
     set Initial light composition         = 0.042   # wt% for light elements
     set Max iteration                     = 30

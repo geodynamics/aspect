@@ -912,10 +912,6 @@ namespace aspect
                              Patterns::Double (),
                              "Density of the core. "
                              "Units: $\\frac{\\text{kg}}{\\text{m}^3}$.");
-          prm.declare_entry ("Gravity acceleration", "9.8",
-                             Patterns::Double (),
-                             "Gravitation acceleration at CMB. "
-                             "Units: \\si{\\meter\\per\\second\\squared}.");
           prm.declare_entry ("CMB pressure", "0.14e12",
                              Patterns::Double (),
                              "Pressure at CMB. Units: \\si{\\pascal}.");
@@ -965,14 +961,14 @@ namespace aspect
             prm.declare_entry ("Tm0","1695.",
                                Patterns::Double (0.),
                                "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm0. Units: $\\text{K}$.");
-            prm.declare_entry ("Tm1","10.9",
+            prm.declare_entry ("Tm1","10.9e-12",
                                Patterns::Double (),
                                "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm1. "
-                               "Units: \\si{\\per\\tera\\pascal}.");
-            prm.declare_entry ("Tm2","-8.0",
+                               "Units: \\si{\\per\\pascal}.");
+            prm.declare_entry ("Tm2","-8.0e-24",
                                Patterns::Double (),
                                "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm2. "
-                               "Units: \\si{\\per\\tera\\pascal\\squared}.");
+                               "Units: \\si{\\per\\pascal\\squared}.");
             prm.declare_entry ("Theta","0.11",
                                Patterns::Double (),
                                "Melting curve (\\cite{NPB+04} eq. (40)) parameter Theta.");
@@ -1130,7 +1126,10 @@ namespace aspect
                                                "Zhang et al. [2016]. The energy of core cooling and freeing of the "
                                                "inner core is included in the plugin. However, current plugin can not "
                                                "deal with the energy balance if the core is in the `snowing core' regime "
-                                               "(i.e., the core solidifies from the top instead of bottom)."
+                                               "(i.e., the core solidifies from the top instead of bottom). "
+                                               "The adiabatic correction for the CMB heat flux uses the active gravity "
+                                               "model, so the gravity at the CMB should be set in subsection "
+                                               "`Gravity model'."
                                               )
   }
 }
