@@ -1,0 +1,72 @@
+
+Loading shared library <./libget_checkpoint_id.debug.so>
+
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
+
+Number of mesh deformation degrees of freedom: 8,450
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 16+0 iterations.
+
+   Postprocessing:
+
+checkpoint_id: 1
+*** Snapshot output-get_checkpoint_id/restart/01/ created!
+
+*** Timestep 1:  t=1.02774e+06 seconds, dt=1.02774e+06 seconds
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 25 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
+
+   Postprocessing:
+
+checkpoint_id: 2
+*** Snapshot output-get_checkpoint_id/restart/02/ created!
+
+*** Timestep 2:  t=2.1003e+06 seconds, dt=1.07256e+06 seconds
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 19 iterations.
+   Solving Stokes system (GMG)... 13+0 iterations.
+
+   Postprocessing:
+
+checkpoint_id: 3
+*** Snapshot output-get_checkpoint_id/restart/03/ created!
+
+*** Timestep 3:  t=3.22036e+06 seconds, dt=1.12006e+06 seconds
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 19 iterations.
+   Solving Stokes system (GMG)... 13+0 iterations.
+
+   Postprocessing:
+
+checkpoint_id: 1
+*** Snapshot output-get_checkpoint_id/restart/01/ created!
+
+*** Timestep 4:  t=4.39059e+06 seconds, dt=1.17022e+06 seconds
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 19 iterations.
+   Solving Stokes system (GMG)... 13+0 iterations.
+
+   Postprocessing:
+
+checkpoint_id: 2
+*** Snapshot output-get_checkpoint_id/restart/02/ created!
+
+*** Timestep 5:  t=5e+06 seconds, dt=609412 seconds
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 13 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
+
+   Postprocessing:
+
+Termination requested by criterion: end time
+checkpoint_id: 3
+*** Snapshot output-get_checkpoint_id/restart/03/ created!
+
+
+
+

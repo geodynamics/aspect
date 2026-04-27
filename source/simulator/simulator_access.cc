@@ -217,6 +217,15 @@ namespace aspect
 
 
   template <int dim>
+  unsigned int
+  SimulatorAccess<dim>::get_checkpoint_id () const
+  {
+    return simulator->last_checkpoint_id;
+  }
+
+
+
+  template <int dim>
   bool
   SimulatorAccess<dim>::convert_output_to_years () const
   {
