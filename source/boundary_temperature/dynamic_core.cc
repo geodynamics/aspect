@@ -628,16 +628,6 @@ namespace aspect
     template <int dim>
     double
     DynamicCore<dim>::
-    compute_g(const double r) const
-    {
-      return (4*numbers::PI/3)*constants::big_g*Rho_cen*r*(1-3*Utilities::fixed_power<2>(r)/(5*Utilities::fixed_power<2>(L)));
-    }
-
-
-
-    template <int dim>
-    double
-    DynamicCore<dim>::
     compute_T(const double Tc, const double r) const
     {
       return Tc*std::exp((Utilities::fixed_power<2>(Rc)-Utilities::fixed_power<2>(r))/Utilities::fixed_power<2>(D));
