@@ -59,7 +59,7 @@ members — i.e., including you! It is our goal to build an inclusive
 and participatory community so we are happy that you are interested in
 participating! We have collected a set of guidelines and advice on how
 to get involved in the community and keep them in the
-[CONTRIBUTING.md](CONTRIBUTING.md)
+[CONTRIBUTING.md](https://github.com/geodynamics/aspect/blob/main/CONTRIBUTING.md)
 file in ASPECT's repository.
 
 
@@ -74,11 +74,11 @@ For more information see:
  - For questions on the source code of ASPECT, portability, installation, new or existing features, etc., use the [ASPECT forum](https://community.geodynamics.org/c/aspect). This forum is where the ASPECT users and developers all hang out.
  - ASPECT is primarily based on the deal.II library. If you have particular questions about deal.II, contact the [deal.II discussion groups](https://dealii.org/getting_help/).
  - ASPECT is being developed by a large, collaborative, and inclusive community. A complete and growing list of the many authors that have contributed over the years can be found at [GitHub contributors](https://github.com/geodynamics/aspect/graphs/contributors).
- - If you have specific questions about ASPECT that are not suitable for public and archived mailing lists, feel free to contact one of the [principal developers](AUTHORS.md#principal-developers).
+ - If you have specific questions about ASPECT that are not suitable for public and archived mailing lists, feel free to contact one of the [principal developers](https://github.com/geodynamics/aspect/blob/main/AUTHORS.md#principal-developers).
 
 
 
 License
 -------
 
-ASPECT is published under [GPL v2 or newer](LICENSE).
+ASPECT is published under [GPL v2 or newer](https://github.com/geodynamics/aspect/blob/main/LICENSE).
