@@ -72,7 +72,7 @@ For more information see:
  - The current [Online Documentation](https://aspect-documentation.readthedocs.io/en/latest/)
  - [How to cite ASPECT](https://aspect.geodynamics.org/cite.html)
  - For questions on the source code of ASPECT, portability, installation, new or existing features, etc., use the [ASPECT forum](https://community.geodynamics.org/c/aspect). This forum is where the ASPECT users and developers all hang out.
- - ASPECT is primarily based on the deal.II library. If you have particular questions about deal.II, contact the [deal.II discussion groups](https://dealii.org/getting_help/).
+ - ASPECT is primarily based on the deal.II library. If you have particular questions about deal.II, have a look at the [deal.II help pages](https://dealii.org/getting_help/).
  - ASPECT is being developed by a large, collaborative, and inclusive community. A complete and growing list of the many authors that have contributed over the years can be found at [GitHub contributors](https://github.com/geodynamics/aspect/graphs/contributors).
  - If you have specific questions about ASPECT that are not suitable for public and archived mailing lists, feel free to contact one of the [principal developers](https://github.com/geodynamics/aspect/blob/main/AUTHORS.md#principal-developers).
 
