@@ -286,10 +286,21 @@ namespace aspect
             }
         }
       if (data_OES.size() != 0)
-        this->get_pcout() << "Other energy source is in use ( "
-                          << data_OES.size()
-                          << " data points is read)."
-                          << std::endl;
+        {
+          AssertThrow(data_OES.size() >= 2,
+                      ExcMessage("The dynamic core other energy source data file "
+                                 "must contain at least two data points."));
+
+          for (unsigned int i=1; i<data_OES.size(); ++i)
+            AssertThrow(data_OES[i].t > data_OES[i-1].t,
+                        ExcMessage("The time values in the dynamic core other energy "
+                                   "source data file must be strictly increasing."));
+
+          this->get_pcout() << "Other energy source is in use ( "
+                            << data_OES.size()
+                            << " data points are read)."
+                            << std::endl;
+        }
     }
 
 
@@ -298,20 +309,26 @@ namespace aspect
     double
     DynamicCore<dim>::compute_OES(const double time) const
     {
+      if (data_OES.empty())
+        return 0.;
+
       // The core evolution is quite slow, so the time units used here is billion years.
       const double t = time / (1.e9*year_in_seconds);
-      double w = 0.;
-      for (unsigned i=1; i<data_OES.size(); ++i)
+
+      AssertThrow(t >= data_OES.front().t && t <= data_OES.back().t,
+                  ExcMessage("The current simulation time is outside the time range "
+                             "covered by the dynamic core other energy source data file."));
+
+      for (unsigned int i=1; i<data_OES.size(); ++i)
         {
-          if (t>=data_OES[i-1].t && t<data_OES[i].t )
-            {
-              w = data_OES[i-1].w + ( t - data_OES[i-1].t)
-                  /(data_OES[i].t - data_OES[i-1].t)
-                  *(data_OES[i].w - data_OES[i-1].w);
-              break;
-            }
+          if (t>=data_OES[i-1].t && t<=data_OES[i].t )
+            return data_OES[i-1].w + ( t - data_OES[i-1].t)
+                   /(data_OES[i].t - data_OES[i-1].t)
+                   *(data_OES[i].w - data_OES[i-1].w);
         }
-      return w;
+
+      AssertThrow(false, ExcInternalError());
+      return std::numeric_limits<double>::quiet_NaN();
     }
 
 
@@ -1010,7 +1027,8 @@ namespace aspect
                                "The 'other energy source' is used for external core energy source."
                                "For example if someone want to test the early lunar core powered by precession "
                                "(Dwyer, C. A., et al. (2011). A long-lived lunar dynamo driven by continuous mechanical stirring. Nature 479(7372): 212-214.)"
-                               "Format [Time(Gyr)   Energy rate(W)]");
+                               "Format [Time(Gyr)   Energy rate(W)]. "
+                               "The time values must be strictly increasing and cover the full simulation time.");
           }
           prm.leave_subsection ();
 
