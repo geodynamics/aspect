@@ -69,9 +69,12 @@
 #ifdef NO_IMPORT_ARRAY
 #  undef NO_IMPORT_ARRAY
 #endif
+#endif
+
 
 namespace aspect
 {
+#ifdef ASPECT_WITH_PYTHON
   namespace PythonHelper
   {
     /**
@@ -112,8 +115,8 @@ namespace aspect
     }
 
   }
-}
 #endif
+}
 
 
 #endif
