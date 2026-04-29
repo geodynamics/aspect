@@ -71,6 +71,111 @@ namespace aspect
       // parameters we declare here
       prm.enter_subsection ("Boundary composition model");
       {
+        const std::vector<std::string> x_fixed_composition_boundary_indicators
+          = Utilities::split_string_list(prm.get("Fixed composition boundary indicators"));
+
+        for (const auto &p : x_fixed_composition_boundary_indicators)
+          {
+            // Each entry has the format (white space is optional):
+            // <id> [field_name_1][field_name_2][field_name_5] : plugin_name_1|plugin_name_2
+            //
+            // First tease apart the two halves, if there are two.
+            const std::vector<std::string> split_parts = Utilities::split_string_list (p, ':');
+
+	    // If there is only one part, it should be a boundary name.
+	    if (split_parts.size() == 1)
+	    {
+               const types::boundary_id boundary_indicator = this->get_geometry_model().translate_symbolic_boundary_name_to_id(split_parts[0]);
+
+	       // TODO any checks on indicator needed?
+
+               // Insert into the set
+	       fixed_composition_boundary_indicators.insert(boundary_indicator);
+	    }
+	    // If there two parts, the second part holds plugin names.
+	    else if (split_parts.size() == 2)
+	    {
+              // Get the plugin names.
+              const std::vector<std::string> plugins = Utilities::split_string_list(split_parts[1], '|');
+              const std::string &value = split_parts[1];
+	    }
+	    else
+	      AssertThrow (false, ExcMessage ("The format for fixed composition boundary indicators "
+				      "requires that each entry consists of either a boundary name "
+				      "or `<id> [field_name][field_name] : plugin_name|plugin_name'."
+				      "The entry "
+				      + p
+				      + "does not appear to follow this format."));
+
+		    AssertThrow (split_parts[0]
+            AssertThrow (split_parts.size() == 2,
+                         ExcMessage ("The format for fixed composition boundary indicators "
+                                     "requires that each entry has the form `"
+                                     "<id> [field_name][field_name] : plugin_name|plugin_name', but there does not "
+                                     "appear to be a colon in the entry <"
+                                     + p
+                                     + ">."));
+
+
+            // now for the rest. since we don't know whether there is a
+            // component selector, start reading at the end and subtracting
+            // letters x, y and z
+            std::string key_and_comp = split_parts[0];
+            std::string comp;
+            while ((key_and_comp.size()>0) &&
+                   ((key_and_comp[key_and_comp.size()-1] == 'x')
+                    ||
+                    (key_and_comp[key_and_comp.size()-1] == 'y')
+                    ||
+                    ((key_and_comp[key_and_comp.size()-1] == 'z') && (dim==3))))
+              {
+                comp += key_and_comp[key_and_comp.size()-1];
+                key_and_comp.erase (--key_and_comp.end());
+              }
+
+            // we've stopped reading component selectors now. there are three
+            // possibilities:
+            // - no characters are left. this means that key_and_comp only
+            //   consisted of a single word that only consisted of 'x', 'y'
+            //   and 'z's. then this would have been a mistake to classify
+            //   as a component selector, and we better undo it
+            // - the last character of key_and_comp is not a whitespace. this
+            //   means that the last word in key_and_comp ended in an 'x', 'y'
+            //   or 'z', but this was not meant to be a component selector.
+            //   in that case, put these characters back.
+            // - otherwise, we split successfully. eat spaces that may be at
+            //   the end of key_and_comp to get key
+            if (key_and_comp.size() == 0)
+
+	///////////	    
+	// First get the boundary indicators with prescribed values
+	// and check which fields need values prescribed by which
+	// plugin.
+        try
+          {
+            const std::vector<types::boundary_id> x_fixed_composition_boundary_indicators
+              = this->get_geometry_model().translate_symbolic_boundary_names_to_ids (Utilities::split_string_list
+                                                                                     (prm.get ("Fixed composition boundary indicators")));
+            fixed_composition_boundary_indicators
+              = std::set<types::boundary_id> (x_fixed_composition_boundary_indicators.begin(),
+                                              x_fixed_composition_boundary_indicators.end());
+
+            // If model names have been set, but no boundaries on which to use them,
+            // ignore the set values, do not create objects that are never used.
+            if (fixed_composition_boundary_indicators.size() == 0)
+              {
+                this->plugin_names.clear();
+                model_operators.clear();
+              }
+          }
+        catch (const std::string &error)
+          {
+            AssertThrow (false, ExcMessage ("While parsing the entry <Boundary composition model/Fixed composition "
+                                            "boundary indicators>, there was an error. Specifically, "
+                                            "the conversion function complained as follows:\n\n"
+                                            + error));
+          }
+
         this->plugin_names
           = Utilities::split_string_list(prm.get("List of model names"));
 
@@ -96,31 +201,6 @@ namespace aspect
                                                   this->plugin_names.size(),
                                                   "List of model operators");
         model_operators = Utilities::create_model_operator_list(model_operator_names);
-
-        try
-          {
-            const std::vector<types::boundary_id> x_fixed_composition_boundary_indicators
-              = this->get_geometry_model().translate_symbolic_boundary_names_to_ids (Utilities::split_string_list
-                                                                                     (prm.get ("Fixed composition boundary indicators")));
-            fixed_composition_boundary_indicators
-              = std::set<types::boundary_id> (x_fixed_composition_boundary_indicators.begin(),
-                                              x_fixed_composition_boundary_indicators.end());
-
-            // If model names have been set, but no boundaries on which to use them,
-            // ignore the set values, do not create objects that are never used.
-            if (fixed_composition_boundary_indicators.size() == 0)
-              {
-                this->plugin_names.clear();
-                model_operators.clear();
-              }
-          }
-        catch (const std::string &error)
-          {
-            AssertThrow (false, ExcMessage ("While parsing the entry <Boundary composition model/Fixed composition "
-                                            "boundary indicators>, there was an error. Specifically, "
-                                            "the conversion function complained as follows:\n\n"
-                                            + error));
-          }
 
         if (prm.get ("Allow fixed composition on outflow boundaries") == "true")
           allow_fixed_composition_on_outflow_boundaries = true;
