@@ -893,7 +893,7 @@ endif()
   endforeach()
 
 ## for each build type
-    file(GLOB_RECURSE _dealii_interface_files_debug "/home/bangerth/p/deal.II/2/b2-install/lib/cmake/dealii_module_debug/miu/*.ccm")
+    file(GLOB_RECURSE _dealii_interface_files_debug "${DEAL_II_DIR}/include/deal.II/module/*.ccm")
 
     add_executable(aspect_module_debug)
     set_property(TARGET aspect_module_debug PROPERTY CXX_STANDARD 20)
@@ -908,7 +908,7 @@ endif()
                        BASE_DIRS
                          ${CMAKE_CURRENT_SOURCE_DIR}
                          ${CMAKE_CURRENT_BINARY_DIR}
-                         "/home/bangerth/p/deal.II/2/b2-install/lib/cmake/dealii_module_debug/miu/"
+                         "${DEAL_II_DIR}/include/deal.II/module/"
     )
     target_sources(aspect_module_debug
                    PRIVATE
