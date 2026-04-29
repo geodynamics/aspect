@@ -38,9 +38,11 @@ namespace aspect
        *
        * @deprecated This name is deprecated and will be removed.
        */
+      template <int dim>
+      using BilinearLeastSquares
       DEAL_II_DEPRECATED_WITH_COMMENT("The class <BilinearLeastSquares> is now named "
                                       "<LinearLeastSquares> and will be removed in the future.")
-      using BilinearLeastSquares = LinearLeastSquares;
+        = LinearLeastSquares<dim>;
     }
   }
 }
