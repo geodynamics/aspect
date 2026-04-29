@@ -1,0 +1,7 @@
+ New: It is now possible to specify different boundary
+ composition plugins for different fields on different
+ boundaries. This means that not all fields need to be
+ prescribed and two prescribed fields can use different
+ plugins to compute the boundary composition.
+ <br>
+ (Anne Glerum 2026/05/11)
