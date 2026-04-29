@@ -51,7 +51,7 @@ namespace aspect
             n_particles_per_direction[i] = static_cast<unsigned int>(std::round(std::pow(n_particles * std::pow(P_diff[i],dim) / volume, 1./dim)));
 #endif
 
-            spacing[i] = P_diff[i] / fmax(n_particles_per_direction[i] - 1,1);
+            spacing[i] = P_diff[i] / std::fmax(n_particles_per_direction[i] - 1,1);
           }
 
         types::particle_index particle_index = 0;
