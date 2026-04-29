@@ -1895,7 +1895,7 @@ namespace aspect
                               "E-folding depth for the exponential of the silt porosity law. Units: ${m}$");
             prm.declare_entry("Silt fraction", "0.5",
                               Patterns::Double(),
-                              "Fraction of silt for material leaving continent.");
+                              "Fraction of silt for material leaving continent. Formerly called Sand-silt ratio.");
             prm.declare_entry("Depth averaging thickness", "1e2",
                               Patterns::Double(),
                               "Depth averaging for the sand-silt equation. Units: ${m}$");
