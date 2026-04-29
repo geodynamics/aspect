@@ -494,7 +494,7 @@ namespace aspect
                                              &sand_surface_porosity,
                                              &silt_efold_depth,
                                              &sand_efold_depth,
-                                             &sand_silt_ratio,
+                                             &incoming_silt_fraction,
                                              &sand_silt_averaging_depth,
                                              &silt_transport_coefficient,
                                              &sand_transport_coefficient);
@@ -1893,9 +1893,9 @@ namespace aspect
             prm.declare_entry("Silt e-folding depth", "1e3",
                               Patterns::Double(),
                               "E-folding depth for the exponential of the silt porosity law. Units: ${m}$");
-            prm.declare_entry("Sand-silt ratio", "0.5",
+            prm.declare_entry("Silt fraction", "0.5",
                               Patterns::Double(),
-                              "Ratio of sand to silt for material leaving continent.");
+                              "Fraction of silt for material leaving continent.");
             prm.declare_entry("Depth averaging thickness", "1e2",
                               Patterns::Double(),
                               "Depth averaging for the sand-silt equation. Units: ${m}$");
@@ -2094,7 +2094,7 @@ namespace aspect
             silt_surface_porosity = prm.get_double("Silt porosity");
             sand_efold_depth = prm.get_double("Sand e-folding depth");
             silt_efold_depth = prm.get_double("Silt e-folding depth");
-            sand_silt_ratio = prm.get_double("Sand-silt ratio");
+            incoming_silt_fraction = prm.get_double("Silt fraction");
             sand_silt_averaging_depth = prm.get_double("Depth averaging thickness");
             sand_transport_coefficient = prm.get_double("Sand transport coefficient");
             silt_transport_coefficient = prm.get_double("Silt transport coefficient");
