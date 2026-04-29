@@ -490,14 +490,14 @@ namespace aspect
           // Add sediments through marine sedimentation
           if (use_marine_component)
             fastscape_set_marine_parameters_(&current_sea_level,
-                                             &sand_surface_porosity,
                                              &silt_surface_porosity,
-                                             &sand_efold_depth,
+                                             &sand_surface_porosity,
                                              &silt_efold_depth,
+                                             &sand_efold_depth,
                                              &sand_silt_ratio,
                                              &sand_silt_averaging_depth,
-                                             &sand_transport_coefficient,
-                                             &silt_transport_coefficient);
+                                             &silt_transport_coefficient,
+                                             &sand_transport_coefficient);
 
           // generate a combined array for kf and kd both onshore and offshore
           std::vector<double> combined_kd(fastscape_array_size);
