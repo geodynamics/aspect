@@ -116,11 +116,13 @@ namespace aspect
     }
 
   }
+#endif
 }
 
 // explicit instantiations
 namespace aspect
 {
+#ifdef ASPECT_WITH_WORLD_BUILDER
   namespace InitialComposition
   {
     ASPECT_REGISTER_INITIAL_COMPOSITION_MODEL(WorldBuilder,

@@ -66,11 +66,13 @@ namespace aspect
     }
 
   }
+#endif
 }
 
 // explicit instantiations
 namespace aspect
 {
+#ifdef ASPECT_WITH_WORLD_BUILDER
   namespace InitialTemperature
   {
     ASPECT_REGISTER_INITIAL_TEMPERATURE_MODEL(WorldBuilder,
