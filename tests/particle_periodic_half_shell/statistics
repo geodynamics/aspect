@@ -1,0 +1,24 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: RMS velocity (m/s)
+# 14: Max. velocity (m/s)
+# 15: Minimal value for composition C_1
+# 16: Maximal value for composition C_1
+# 17: Global mass for composition C_1
+# 18: Number of advected particles
+# 19: Particle file name
+# 20: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 1536 14387 6369 6369 0  0 57 57 168 1.06152780e-02 2.78940761e-02  0.00000000e+00 1.00000000e+00 9.57363703e+00 50 output-particle_periodic_half_shell/particles/particles-00000 output-particle_periodic_half_shell/solution/solution-00000 
+1 2.212653730670e+00 2.212653730670e+00 1536 14387 6369 6369 0 18 53 53 159 1.15861563e-02 3.07897021e-02 -6.93563661e-02 1.08074963e+00 9.57367729e+00 50                                                            ""                                                          "" 
+2 4.211331028877e+00 1.998677298208e+00 1536 14387 6369 6369 0 18 47 47 141 1.26275968e-02 3.36282942e-02 -7.89549127e-02 1.10300194e+00 9.57348650e+00 50                                                            ""                                                          "" 
+3 5.000000000000e+00 7.886689711229e-01 1536 14387 6369 6369 0 14 46 46 138 1.30940991e-02 3.48765384e-02 -7.48093355e-02 1.09618666e+00 9.57333859e+00 50 output-particle_periodic_half_shell/particles/particles-00001                                                          "" 

@@ -1,0 +1,64 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 1,536 (on 5 levels)
+Number of degrees of freedom: 27,125 (12,738+1,649+6,369+6,369)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 57+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.0106 m/s, 0.0279 m/s
+     Compositions min/max/mass: 0/1/9.574
+     Writing particle output:   output-particle_periodic_half_shell/particles/particles-00000
+     Writing graphical output:  output-particle_periodic_half_shell/solution/solution-00000
+
+*** Timestep 1:  t=2.21265 seconds, dt=2.21265 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving C_1 system ... 18 iterations.
+   Solving Stokes system (AMG)... 53+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            0.0116 m/s, 0.0308 m/s
+     Compositions min/max/mass:    -0.06936/1.081/9.574
+     Number of advected particles: 50
+
+*** Timestep 2:  t=4.21133 seconds, dt=1.99868 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving C_1 system ... 18 iterations.
+   Solving Stokes system (AMG)... 47+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            0.0126 m/s, 0.0336 m/s
+     Compositions min/max/mass:    -0.07895/1.103/9.573
+     Number of advected particles: 50
+
+*** Timestep 3:  t=5 seconds, dt=0.788669 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving C_1 system ... 14 iterations.
+   Solving Stokes system (AMG)... 46+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.0131 m/s, 0.0349 m/s
+     Compositions min/max/mass: -0.07481/1.096/9.573
+     Writing particle output:   output-particle_periodic_half_shell/particles/particles-00001
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------

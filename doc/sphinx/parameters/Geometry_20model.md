@@ -802,7 +802,7 @@ The default value of 3,481,000 m equals the radius of a sphere with equal volume
 
 **Pattern:** [Double 0...360 (inclusive)]
 
-**Documentation:** Opening angle in degrees of the section of the shell that we want to build. The only opening angles that are allowed for this geometry are 90, 180, and 360 in 2d; and 90 and 360 in 3d. Units: degrees.
+**Documentation:** Opening angle in degrees of the section of the shell that we want to build. The only opening angles that are allowed for this geometry are 90, 180, and 360. Units: degrees.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Outer radius<parameters:Geometry_20model/Spherical_20shell/Outer_20radius>`
@@ -824,5 +824,5 @@ The default value of 6,336,000 m equals the radius of a sphere with equal volume
 
 **Pattern:** [Bool]
 
-**Documentation:** Whether the shell should be periodic in the phi direction.
+**Documentation:** Whether the shell should be periodic in the phi direction. This is supported for 2d models with opening angles of 90 or 180 degrees, and for 3d models with an opening angle of 180 degrees.
 ::::
