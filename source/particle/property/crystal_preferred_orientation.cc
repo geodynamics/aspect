@@ -364,7 +364,7 @@ namespace aspect
                   {
                     const double volume_fraction_grains = get_volume_fractions_grains(data_position,data,mineral_i,grain_i)*inv_sum_volume_mineral;
                     set_volume_fractions_grains(data_position,data,mineral_i,grain_i,volume_fraction_grains);
-                    Assert(isfinite(get_volume_fractions_grains(data_position,data,mineral_i,grain_i)),
+                    Assert(std::isfinite(get_volume_fractions_grains(data_position,data,mineral_i,grain_i)),
                            ExcMessage("volume_fractions_grains[mineral_i]" + std::to_string(grain_i) + "] is not finite: "
                                       + std::to_string(get_volume_fractions_grains(data_position,data,mineral_i,grain_i)) + ", inv_sum_volume_mineral = "
                                       + std::to_string(inv_sum_volume_mineral) + "."));
@@ -871,9 +871,9 @@ namespace aspect
                                     std::pow(std::abs(gamma*beta[indices[slip_system_i]]),exponent_p/stress_exponent);
                 strain_energy[grain_i] += rhos * std::exp(-nucleation_efficiency * rhos * rhos);
 
-                Assert(isfinite(strain_energy[grain_i]), ExcMessage("strain_energy[" + std::to_string(grain_i) + "] is not finite: " + std::to_string(strain_energy[grain_i])
-                                                                    + ", rhos (" + std::to_string(slip_system_i) + ") = " + std::to_string(rhos)
-                                                                    + ", nucleation_efficiency = " + std::to_string(nucleation_efficiency) + "."));
+                Assert(std::isfinite(strain_energy[grain_i]), ExcMessage("strain_energy[" + std::to_string(grain_i) + "] is not finite: " + std::to_string(strain_energy[grain_i])
+                                                                         + ", rhos (" + std::to_string(slip_system_i) + ") = " + std::to_string(rhos)
+                                                                         + ", nucleation_efficiency = " + std::to_string(nucleation_efficiency) + "."));
               }
 
             // compute the derivative of the rotation matrix: \frac{\partial a_{ij}}{\partial t}
@@ -887,8 +887,8 @@ namespace aspect
                 // volume averaged strain energy
                 mean_strain_energy += volume_fraction_grain * strain_energy[grain_i];
 
-                Assert(isfinite(mean_strain_energy), ExcMessage("mean_strain_energy when adding grain " + std::to_string(grain_i) + " is not finite: " + std::to_string(mean_strain_energy)
-                                                                + ", volume_fraction_grain = " + std::to_string(volume_fraction_grain) + "."));
+                Assert(std::isfinite(mean_strain_energy), ExcMessage("mean_strain_energy when adding grain " + std::to_string(grain_i) + " is not finite: " + std::to_string(mean_strain_energy)
+                                                                     + ", volume_fraction_grain = " + std::to_string(volume_fraction_grain) + "."));
               }
             else
               {
@@ -902,7 +902,7 @@ namespace aspect
             // Different than D-Rex. Here we actually only compute the derivative and do not multiply it with the volume_fractions. We do that when we advect.
             deriv_volume_fractions[grain_i] = get_volume_fraction_mineral(cpo_index,data,mineral_i) * mobility * (mean_strain_energy - strain_energy[grain_i]) * nondimensionalization_value;
 
-            Assert(isfinite(deriv_volume_fractions[grain_i]),
+            Assert(std::isfinite(deriv_volume_fractions[grain_i]),
                    ExcMessage("deriv_volume_fractions[" + std::to_string(grain_i) + "] is not finite: "
                               + std::to_string(deriv_volume_fractions[grain_i])));
           }
