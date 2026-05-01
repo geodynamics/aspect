@@ -443,11 +443,6 @@ namespace aspect
         double compute_rho(const double r) const;
 
         /**
-         * Calculate gravitational acceleration at given radius @p r.
-         */
-        double compute_g(const double r) const;
-
-        /**
          * Calculate the core temperature at given radius @p r and
          * temperature at CMB @p Tc.
          */
