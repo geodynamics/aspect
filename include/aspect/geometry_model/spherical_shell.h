@@ -260,9 +260,7 @@ namespace aspect
          * with zero corresponding to the inner surface and one corresponding
          * to the outer surface. In 2d, if the geometry is only a slice of the
          * shell, boundary indicators 2 and 3 indicate the left and right
-         * radial bounding lines. In 3d, a 180 degree shell uses indicators
-         * 2 and 3 for the two periodic meridional faces, while a 90 degree
-         * shell uses indicators 2, 3, and 4 for its three planar faces.
+         * radial bounding lines.
          */
         std::set<types::boundary_id>
         get_used_boundary_indicators () const override;
