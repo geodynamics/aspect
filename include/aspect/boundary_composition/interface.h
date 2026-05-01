@@ -235,6 +235,22 @@ namespace aspect
                         << arg1
                         << "> among the names of registered boundary composition objects.");
       private:
+
+
+	/**
+	 * A list of masks that specify for each boundary indicator
+	 * which compositional fields are prescribed (true) and which
+	 * are not (false).
+	 */ 
+        std::vector<ComponentMask> masks_fields;
+
+	/**
+	 * A list of masks that specify for each boundary indicator
+	 * which plugins are used to prescribe fixed compositions out
+	 * of the total list of active plugins.
+	 */ 
+        std::vector<ComponentMask> masks_plugins;
+
         /**
          * A list of enums of boundary composition operators that have been
          * requested in the parameter file. Each name is associated

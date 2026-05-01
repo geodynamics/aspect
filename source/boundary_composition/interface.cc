@@ -72,12 +72,12 @@ namespace aspect
       prm.enter_subsection ("Boundary composition model");
       {
         const std::vector<std::string> x_fixed_composition_boundary_indicators
-          = Utilities::split_string_list(prm.get("Fixed composition boundary indicators"));
+          = Utilities::split_string_list(prm.get("Fixed composition boundary indicators"), ';');
 
         for (const auto &p : x_fixed_composition_boundary_indicators)
           {
             // Each entry has the format (white space is optional):
-            // <id> [field_name_1][field_name_2][field_name_5] : plugin_name_1|plugin_name_2
+            // <id>, field_name_1|field_name_2|field_name_5 : plugin_name_1|plugin_name_2
             //
             // First tease apart the two halves, if there are two.
             const std::vector<std::string> split_parts = Utilities::split_string_list (p, ':');
@@ -92,12 +92,66 @@ namespace aspect
                // Insert into the set
 	       fixed_composition_boundary_indicators.insert(boundary_indicator);
 	    }
-	    // If there two parts, the second part holds plugin names.
+	    // If there are two parts, the second part holds plugin names.
 	    else if (split_parts.size() == 2)
 	    {
-              // Get the plugin names.
+              // Get the plugin names from the second part.
               const std::vector<std::string> plugins = Utilities::split_string_list(split_parts[1], '|');
-              const std::string &value = split_parts[1];
+
+	      // Get all potential plugin names to create a mask for each
+	      // boundary indicator.
+            const std::vector<std::string> registered_plugin_names
+          = Utilities::split_string_list(std::get<dim>(registered_plugins).get_pattern_of_names (), '|');
+
+	      ComponentMask plugin_component_mask(registered_plugin_names.size()(),
+                                         false);
+
+	      for (auto &model_name : plugins)
+	      {
+		       // Multiple boundaries can list the same plugins.
+		       // We do not need multiple entries in plugin_names, however.
+                if (std::find(this->plugin_names.begin(),
+                              this->plugin_names.end(),
+                              model_name) == plugin_names.end())
+	        this->plugin_names.push_back(model_name);
+
+		const unsigned int plugin_index = std::find (registered_plugin_names.begin(), registered_plugin_names.end(), model_name);
+		plugin_component_mask(plugin_index) = true;
+	      }
+
+	      masks_plugins.push_back(plugin_component_mask);
+
+	      // TODO
+	      // Also create a map of each boundary and its corresponding plugins
+	     
+	      // Split the first part into boundary index and compositional field names,
+              const std::vector<std::string> first_split_parts = Utilities::split_string_list (split_parts[0], ',');
+
+              const types::boundary_id boundary_indicator = this->get_geometry_model().translate_symbolic_boundary_name_to_id(first_split_parts[0]);
+
+              // Insert boundary indicator into the set
+	      fixed_composition_boundary_indicators.insert(boundary_indicator);
+
+              // Get the field names from the second part.
+              const std::vector<std::string> field_names = Utilities::split_string_list(first_split_parts[1], '|');
+
+	      ComponentMask component_mask(this->n_compositional_fields(),
+                                         false);
+
+	      // Loop over the field names and set their mask to true for this boundary indicator.
+	      for (auto &field_name : field_names)
+	      {
+		      AssertThrow(this->introspection().compositional_name_exists(field_name),
+				      ExcMessage ("The compositional field name "
+					          + field_name
+						  + "listed in `Fixed composition boundary indicators' does not exist."));
+		      component_mask[this->introspection().compositional_index_for_name(field_name)] = true;
+              }
+
+	      field_masks.push_back(component_mask);
+
+	      
+	      // Create a map of each boundary and its corresponding fixed compositions
 	    }
 	    else
 	      AssertThrow (false, ExcMessage ("The format for fixed composition boundary indicators "
