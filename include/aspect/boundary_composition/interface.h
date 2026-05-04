@@ -244,31 +244,31 @@ namespace aspect
          * can be modified by derived classes to limit the application
          * of plugins to specific boundaries.
          */
-        std::<std::vector<types::boundary_id> > boundary_indicators;
+        std::vector <std::vector<types::boundary_id>> boundary_indicators;
 
 
-	/**
-	 * A list of masks that specify for each plugin object
-	 * which compositional fields are prescribed (true) and which
-	 * are not (false).
-	 */ 
+        /**
+         * A list of masks that specify for each plugin object
+         * which compositional fields are prescribed (true) and which
+         * are not (false).
+         */
         std::vector<ComponentMask> masks_fields;
 
-	/**
-	 * A list of masks that specify for each boundary indicator
-	 * which plugins are used to prescribe fixed compositions out
-	 * of the total list of registered plugins.
-	 */ 
+        /**
+         * A list of masks that specify for each boundary indicator
+         * which plugins are used to prescribe fixed compositions out
+         * of the total list of registered plugins.
+         */
         std::vector<ComponentMask> masks_plugins;
 
         /**
          * A list of enums of boundary composition operators for each
-         * boundary indicator that has been
+         * boundary composition plugin that has been
          * requested in the parameter file. Each name is associated
          * with a model_name, and is used to modify the composition
          * boundary with the values from the current plugin.
          */
-        std::vector<std::vector<aspect::Utilities::Operator>> model_operators;
+        std::vector<aspect::Utilities::Operator> model_operators;
 
         /**
          * A set of boundary ids on which the boundary_composition_objects

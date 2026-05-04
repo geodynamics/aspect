@@ -74,14 +74,9 @@ namespace aspect
         const std::vector<std::string> x_fixed_composition_boundary_indicators
           = Utilities::split_string_list(prm.get("Fixed composition boundary indicators"), ';');
 
-        // Get all potential plugin names to create a mask for each
-        // boundary indicator.
-        const std::vector<std::string> registered_plugin_names
-          = Utilities::split_string_list(std::get<dim>(registered_plugins).get_pattern_of_names (), '|');
-
         // For each plugin object, we want to get a component_mask that specifies for which compositional
         // fields it is active (= masks_fields).
-        // We also need a vector of boundary indicators that each plugin is active on. 
+        // We also need a vector of boundary indicators that each plugin is active on.
 
         for (const auto &p : x_fixed_composition_boundary_indicators)
           {
@@ -98,19 +93,19 @@ namespace aspect
 
             // If there is only one part, it should be a boundary name.
             if (split_parts.size() == 1)
-            types::boundary_id boundary_indicator;
               {
-               try
-               {
-                  boundary_indicator = this->get_geometry_model().translate_symbolic_boundary_name_to_id(split_parts[0]);
-                }
-            catch (const std::string &error)
-              {
-                AssertThrow (false, ExcMessage ("While parsing the entry <Boundary composition model/Fixed "
-                                                "boundary composition indicators>, there was an error. Specifically, "
-                                                "the conversion function complained as follows:\n\n"
-                                                + error));
-              }
+                types::boundary_id boundary_indicator;
+                try
+                  {
+                    boundary_indicator = this->get_geometry_model().translate_symbolic_boundary_name_to_id(split_parts[0]);
+                  }
+                catch (const std::string &error)
+                  {
+                    AssertThrow (false, ExcMessage ("While parsing the entry <Boundary composition model/Fixed "
+                                                    "boundary composition indicators>, there was an error. Specifically, "
+                                                    "the conversion function complained as follows:\n\n"
+                                                    + error));
+                  }
 
                 // Since only the boundary indicator is specified,
                 // all fields need to be fixed on this boundary.
@@ -130,47 +125,6 @@ namespace aspect
                                        "'Boundary composition model/List of model names' contains entries more than once. "
                                        "This is not allowed. Please check your parameter file."));
 
-                ComponentMask plugin_component_mask(registered_plugin_names.size(),
-                                                    false);
-
-                for (auto &model_name : list_of_plugins)
-                  {
-                    // Multiple boundaries can list the same plugins.
-                    // We do not need multiple entries in plugin_names, however.
-                    const auto plugin_name_it = std::find(this->plugin_names.begin(), this->plugin_names.end(), model_name);
-                    if (model_name == this->plugin_names.end())
-                    {
-                      this->plugin_names.push_back(model_name);
-                      masks_fields.push_back(component_mask);
-                // Insert into the set
-                fixed_composition_boundary_indicators.insert(boundary_indicator);
-                // Insert into the vector
-                std::vector<types::boundary_id> vec_boundary_indicator;
-                vec_boundary_indicator.push_back(boundary_indicator);
-                boundary_indicators.push_back(vec_boundary_indicator);
-                    }
-                    // The plugin was already listed for another boundary or field,
-                    // so update the fields masks to all be true and add the boundary
-                    // indicator at the existing entry.
-                   else
-                    {
-                      masks_fields.set(plugin_name_it - this->plugin_names.begin(), component_mask); 
-
-                      boundary_indicators[plugin_name_it - this->plugin_names.begin()].push_back(boundary_indicator);
-                    }
-
-
-                    const auto plugin_it = std::find (registered_plugin_names.begin(), registered_plugin_names.end(), model_name);
-                    AssertThrow (plugin_it != registered_plugin_names.end(),
-                        ExcMessage ("The plugin " + model_name + " is not registered."));
-
-                    plugin_component_mask.set(plugin_it - registered_plugin_names.begin(), true);
-                  }
-
-                // Add the plugin masks to the vector that holds
-                // the masks for each boundary indicator.
-                masks_plugins.push_back(plugin_component_mask);
-
                 // Create the operator list to combine the plugin results.
                 // TODO Do we need a Mask for the operators as well?
                 std::vector<std::string> model_operator_names =
@@ -180,7 +134,38 @@ namespace aspect
 
                 std::vector<aspect::Utilities::Operator> list_of_model_operators = Utilities::create_model_operator_list(model_operator_names);
 
-                model_operators.push_back(list_of_model_operators);
+                unsigned int mn = 0;
+                for (auto &model_name : list_of_plugins)
+                  {
+                    // Multiple boundaries can list the same plugins.
+                    // We do not need multiple entries in plugin_names, however.
+                    const auto plugin_name_it = std::find(this->plugin_names.begin(), this->plugin_names.end(), model_name);
+                    if (plugin_name_it == this->plugin_names.end())
+                      {
+                        this->plugin_names.push_back(model_name);
+                        masks_fields.push_back(component_mask);
+                        // Insert into the set
+                        fixed_composition_boundary_indicators.insert(boundary_indicator);
+                        // Insert into the vector
+                        std::vector<types::boundary_id> vec_boundary_indicator;
+                        vec_boundary_indicator.push_back(boundary_indicator);
+                        boundary_indicators.push_back(vec_boundary_indicator);
+                        model_operators.insert(model_operators.end(),list_of_model_operators.begin(),list_of_model_operators.end());
+                      }
+                    // The plugin was already listed for another boundary or field,
+                    // so update the fields masks to all be true and add the boundary
+                    // indicator at the existing entry.
+                    else
+                      {
+                        masks_fields[plugin_name_it - this->plugin_names.begin()] = component_mask;
+
+                        boundary_indicators[plugin_name_it - this->plugin_names.begin()].push_back(boundary_indicator);
+
+                        model_operators[plugin_name_it - this->plugin_names.begin()] = list_of_model_operators[mn];
+                      }
+                    ++mn;
+                  }
+
               }
             // If there are two parts, the second part holds plugin names.
             else if (split_parts.size() == 2)
@@ -189,9 +174,6 @@ namespace aspect
                 // Get the plugin names from the second part.
                 const std::vector<std::string> plugins = Utilities::split_string_list(split_parts[1], '|');
 
-
-                ComponentMask plugin_component_mask(registered_plugin_names.size(),
-                                                    false);
 
                 // All the plugins get the operator 'add'.
                 std::vector<std::string> model_operator_names =
@@ -204,19 +186,18 @@ namespace aspect
                 // Split the first part into boundary indicator and compositional field names.
                 const std::vector<std::string> first_split_parts = Utilities::split_string_list (split_parts[0], ',');
 
-            types::boundary_id boundary_indicator;
-              {
-               try
-               {
-                  boundary_indicator = this->get_geometry_model().translate_symbolic_boundary_name_to_id(first_split_parts[0]);
-                }
-            catch (const std::string &error)
-              {
-                AssertThrow (false, ExcMessage ("While parsing the entry <Boundary composition model/Fixed "
-                                                "boundary composition indicators>, there was an error. Specifically, "
-                                                "the conversion function complained as follows:\n\n"
-                                                + error));
-              }
+                types::boundary_id boundary_indicator;
+                try
+                  {
+                    boundary_indicator = this->get_geometry_model().translate_symbolic_boundary_name_to_id(first_split_parts[0]);
+                  }
+                catch (const std::string &error)
+                  {
+                    AssertThrow (false, ExcMessage ("While parsing the entry <Boundary composition model/Fixed "
+                                                    "boundary composition indicators>, there was an error. Specifically, "
+                                                    "the conversion function complained as follows:\n\n"
+                                                    + error));
+                  }
 
                 // Get the field names from the second part.
                 const std::vector<std::string> field_names = Utilities::split_string_list(first_split_parts[1], '|');
@@ -234,54 +215,46 @@ namespace aspect
                     component_mask.set(this->introspection().compositional_index_for_name(field_name), true);
                   }
 
-                masks_fields.push_back(component_mask);
-
+                unsigned int mn = 0;
                 for (auto &model_name : plugins)
                   {
                     // Multiple boundaries can list the same plugins.
                     // We do not need multiple entries in plugin_names, however.
                     const auto plugin_name_it = std::find(this->plugin_names.begin(), this->plugin_names.end(), model_name);
-                    if (model_name == this->plugin_names.end())
-                    {
-                      this->plugin_names.push_back(model_name);
-                      masks_fields.push_back(component_mask);
-                // Insert into the set
-                fixed_composition_boundary_indicators.insert(boundary_indicator);
-                // Insert into the vector
-                std::vector<types::boundary_id> vec_boundary_indicator;
-                vec_boundary_indicator.push_back(boundary_indicator);
-                boundary_indicators.push_back(vec_boundary_indicator);
+                    if (plugin_name_it == this->plugin_names.end())
+                      {
+                        this->plugin_names.push_back(model_name);
+                        masks_fields.push_back(component_mask);
+                        // Insert into the set
+                        fixed_composition_boundary_indicators.insert(boundary_indicator);
+                        // Insert into the vector
+                        std::vector<types::boundary_id> vec_boundary_indicator;
+                        vec_boundary_indicator.push_back(boundary_indicator);
+                        boundary_indicators.push_back(vec_boundary_indicator);
 
-                model_operators.push_back(list_of_model_operators);
-                    }
+                        model_operators.insert(model_operators.end(),list_of_model_operators.begin(),list_of_model_operators.end());
+                      }
                     // The plugin was already listed for another boundary or field,
                     // so update the fields masks to all be true and add the boundary
                     // indicator at the existing entry.
-                   else
-                    {
-                      // Make sure the existing plugin entry doesn't prescribe the same fields.
-                      AssertThrow (masks_fields.get(plugin_name_it - this->plugin_names.begin()) || component_mask,
-                        ExcMessage ("The plugin " + model_name + " is listed multiple times for the same compositional fields."));
+                    else
+                      {
+                        // Make sure the existing plugin entry doesn't prescribe the same fields.
+                        for (unsigned int mf = 0; mf < this->n_compositional_fields(); ++mf)
+                          AssertThrow (masks_fields[plugin_name_it - this->plugin_names.begin()][mf] != component_mask[mf],
+                                       ExcMessage ("The plugin " + model_name + " is listed multiple times for the same compositional field " + this->introspection().name_for_compositional_index(mf) + "."));
 
-                      masks_fields.set(plugin_name_it - this->plugin_names.begin(), component_mask); 
+                        masks_fields[plugin_name_it - this->plugin_names.begin()] = component_mask;
 
-                      boundary_indicators[plugin_name_it - this->plugin_names.begin()].push_back(boundary_indicator);
+                        boundary_indicators[plugin_name_it - this->plugin_names.begin()].push_back(boundary_indicator);
 
-                      // Operators are now overwritten with `add'.
-                      // TODO desired behavior?
-                      model_operators[plugin_name_it - this->plugin_names.begin()] = list_of_model_operators;
-                    }
-
-                    const auto plugin_it = std::find (registered_plugin_names.begin(), registered_plugin_names.end(), model_name);
-                    AssertThrow (plugin_it != registered_plugin_names.end(),
-                        ExcMessage ("The plugin " + model_name + " is not registered."));
-
-                    plugin_component_mask.set(plugin_it - registered_plugin_names.begin(), true);
+                        // Operators are now overwritten with `add'.
+                        // TODO desired behavior?
+                        model_operators[plugin_name_it - this->plugin_names.begin()] = list_of_model_operators[mn];
+                      }
+                    ++mn;
                   }
 
-                // Add the plugin masks to the vector that holds
-                // the masks for each boundary indicator.
-                masks_plugins.push_back(plugin_component_mask);
               }
             else
               AssertThrow (false, ExcMessage ("The format for fixed composition boundary indicators "
@@ -343,59 +316,39 @@ namespace aspect
                                         const Point<dim> &position,
                                         const unsigned int compositional_field) const
     {
-      const std::vector<std::string> registered_plugin_names
-        = Utilities::split_string_list(get_valid_model_names_pattern(), '|');
-
+      // Loop over the plugin objects and for each object,
+      // check whether it applies to the given boundary and field.
       double composition = 0.0;
       bool found_plugin = false;
 
-      auto plugin = this->plugin_objects.begin();
-      unsigned int i = 0;
-      for (auto &model_name : this->plugin_names)
-      {
-          // Check the field mask and plugin mask for the requested boundary indicator
-          if (fixed_composition_boundary_indicators[i] == boundary_indicator)
-            {
-             for (unsigned int c = 0; c<this->n_compositional_fields(); ++c)
-                if (masks_fields[i][c] == true)
-                {
-                 for (unsigned int p = 0; p<this->registered_plugin_names.size(); ++p)
-                  if (masks_plugins[i][p] == true)
-                  {
-                   found_plugin = true;
-                   composition = model_operators[i](composition,
-                                         (*p)->boundary_composition(boundary_indicator,
-                                                                    position,
-                                                                    compositional_field));
-                  }
-                }
-            }
-            ++i;
-            ++plugin;
-
-      }
-      return composition;
-      for (const auto &plugin: this->plugin_objects)
+      auto p = this->plugin_objects.begin();
+      for (unsigned int i=0; i<this->plugin_objects.size(); ++p, ++i)
         {
-          if (boundary_indicators[i] == boundary_indicator)
-            {
-              found_plugin = true;
-              const Tensor<1,dim> plugin_traction = plugin->boundary_traction(boundary_indicator,
-                                                                              position,
-                                                                              normal_vector);
-              for (unsigned int d=0; d<dim; ++d)
-                if (component_masks[i][d] == true)
-                  traction[d] += plugin_traction[d];
-            }
-
-          ++i;
+          for (unsigned int bi=0; bi<boundary_indicators[i].size(); ++bi)
+            // If the plugin is active for the given boundary ...
+            if (boundary_indicators[i][bi] == boundary_indicator)
+              {
+                // check that the mask is true for the given field.
+                for (unsigned int c = 0; c<this->n_compositional_fields(); ++c)
+                  if (masks_fields[i][c] == true)
+                    {
+                      found_plugin = true;
+                      composition = model_operators[i](composition,
+                                                       (*p)->boundary_composition(boundary_indicator,
+                                                                                  position,
+                                                                                  compositional_field));
+                    }
+              }
         }
 
       (void) found_plugin;
       Assert(found_plugin == true,
-             ExcMessage("The boundary traction manager class was asked for the "
-                        "boundary traction at a boundary that contains no active "
-                        "boundary traction plugin."));
+             ExcMessage("The boundary composition manager class was asked for the "
+                        "boundary composition at a boundary that contains no active "
+                        "boundary composition plugin."));
+
+      return composition;
+
 
     }
 
