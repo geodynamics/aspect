@@ -31,6 +31,8 @@
 #include <deal.II/base/quadrature.h>
 #include <deal.II/base/utilities.h>
 
+#include <boost/serialization/vector.hpp>
+
 #include <limits>
 
 
@@ -541,6 +543,77 @@ namespace aspect
     DynamicCore<dim>::get_core_data() const
     {
       return core_data;
+    }
+
+
+
+    template <int dim>
+    template <class Archive>
+    void
+    DynamicCore<dim>::serialize (Archive &ar, const unsigned int)
+    {
+      ar &core_data.Qs
+      & core_data.Qr
+      & core_data.Qg
+      & core_data.Qk
+      & core_data.Ql
+      & core_data.Es
+      & core_data.Er
+      & core_data.Eg
+      & core_data.Ek
+      & core_data.El
+      & core_data.Eh
+      & core_data.Ri
+      & core_data.Ti
+      & core_data.Xi
+      & core_data.Q
+      & core_data.H
+      & core_data.dt
+      & core_data.dR_dt
+      & core_data.dT_dt
+      & core_data.dX_dt
+      & core_data.Q_OES
+      & core_data.is_initialized
+      & inner_temperature
+      & is_first_call
+      & Rc
+      & Mc
+      & dTa
+      & data_OES;
+    }
+
+
+
+    template <int dim>
+    void
+    DynamicCore<dim>::save (std::map<std::string, std::string> &status_strings) const
+    {
+      // Serialize into a stringstream. Put the following into a code
+      // block of its own to ensure the destruction of the 'oa'
+      // archive triggers a flush() on the stringstream so we can
+      // query the completed string below.
+      std::ostringstream os;
+      {
+        aspect::oarchive oa (os);
+        oa << (*this);
+      }
+
+      status_strings["DynamicCore"] = os.str();
+    }
+
+
+
+    template <int dim>
+    void
+    DynamicCore<dim>::load (const std::map<std::string, std::string> &status_strings)
+    {
+      // See if something was saved.
+      if (status_strings.find("DynamicCore") != status_strings.end())
+        {
+          std::istringstream is (status_strings.find("DynamicCore")->second);
+          aspect::iarchive ia (is);
+          ia >> (*this);
+        }
     }
 
 
