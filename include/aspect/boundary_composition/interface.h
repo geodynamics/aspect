@@ -236,9 +236,19 @@ namespace aspect
                         << "> among the names of registered boundary composition objects.");
       private:
 
+        /**
+         * A list of boundary indicators that indicate for
+         * each plugin in the list of plugin_objects which boundary id
+         * it is responsible for. By default each plugin
+         * is active for all boundaries, but this list
+         * can be modified by derived classes to limit the application
+         * of plugins to specific boundaries.
+         */
+        std::<std::vector<types::boundary_id> > boundary_indicators;
+
 
 	/**
-	 * A list of masks that specify for each boundary indicator
+	 * A list of masks that specify for each plugin object
 	 * which compositional fields are prescribed (true) and which
 	 * are not (false).
 	 */ 
@@ -247,17 +257,18 @@ namespace aspect
 	/**
 	 * A list of masks that specify for each boundary indicator
 	 * which plugins are used to prescribe fixed compositions out
-	 * of the total list of active plugins.
+	 * of the total list of registered plugins.
 	 */ 
         std::vector<ComponentMask> masks_plugins;
 
         /**
-         * A list of enums of boundary composition operators that have been
+         * A list of enums of boundary composition operators for each
+         * boundary indicator that has been
          * requested in the parameter file. Each name is associated
          * with a model_name, and is used to modify the composition
          * boundary with the values from the current plugin.
          */
-        std::vector<aspect::Utilities::Operator> model_operators;
+        std::vector<std::vector<aspect::Utilities::Operator>> model_operators;
 
         /**
          * A set of boundary ids on which the boundary_composition_objects
