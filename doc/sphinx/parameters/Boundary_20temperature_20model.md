@@ -506,7 +506,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Anything]
 
-**Documentation:** Data file name for other energy source into the core. The &rsquo;other energy source&rsquo; is used for external core energy source.For example if someone want to test the early lunar core powered by precession (Dwyer, C. A., et al. (2011). A long-lived lunar dynamo driven by continuous mechanical stirring. Nature 479(7372): 212-214.)Format [Time(Gyr)   Energy rate(W)]
+**Documentation:** Data file name for other energy source into the core. The &rsquo;other energy source&rsquo; is used for external core energy source.For example if someone want to test the early lunar core powered by precession (Dwyer, C. A., et al. (2011). A long-lived lunar dynamo driven by continuous mechanical stirring. Nature 479(7372): 212-214.)Format [Time(Gyr)   Energy rate(W)]. The time values must be strictly increasing and cover the full simulation time.
 ::::
 
 (parameters:Boundary_20temperature_20model/Dynamic_20core/Radioactive_20heat_20source)=
