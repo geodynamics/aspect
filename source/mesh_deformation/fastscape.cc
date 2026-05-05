@@ -1619,29 +1619,24 @@ namespace aspect
     void
     FastScape<dim>::update()
     {
+      // Set the time in seconds or years in each
+      // of the used functions.
+      const double time = this->get_time();
+      const double scaled_time = this->convert_output_to_years() ? time / year_in_seconds : time;
+
       if (use_kd_distribution_function)
         {
-          // read and update the distribution of Kd
-          const double time = this->get_time();
-          // check if input is year or second
-          const double scaled_time = this->convert_output_to_years() ? time / year_in_seconds : time;
           kd_distribution_function.set_time(scaled_time);
         }
+
       if (use_kf_distribution_function)
         {
-          // read and update the distribution of Kf
-          const double time = this->get_time();
-          // check if input is year or second
-          const double scaled_time = this->convert_output_to_years() ? time / year_in_seconds : time;
           kf_distribution_function.set_time(scaled_time);
         }
 
       if (use_sea_level_function)
         {
-          if (this->convert_output_to_years())
-            sea_level_function.set_time(this->get_time() / year_in_seconds);
-          else
-            sea_level_function.set_time(this->get_time());
+          sea_level_function.set_time(scaled_time);
         }
     }
 
