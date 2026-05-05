@@ -499,18 +499,21 @@ namespace aspect
                                              &sand_transport_coefficient,
                                              &silt_transport_coefficient);
 
-          // generate a combined array for kf and kd both onshore and offshore
+          // Generate a combined array for kf and kd both onshore and offshore.
+          // Onshore, kf and kd can have different values for bedrock and
+          // sediment. With use_marine_component = true, offshore only
+          // the silt and sand diffusion coefficients are used, not kf and kd.
           std::vector<double> combined_kd(fastscape_array_size);
           std::vector<double> combined_kf(fastscape_array_size);
           for (unsigned int i = 0; i < fastscape_array_size; ++i)
             {
-              // for cells below sea level, grep the marine sediment data
+              // For cells above sea level, grep the continental erosion parameters.
               if (elevation[i] >= current_sea_level)
                 {
                   combined_kf[i] = bedrock_river_incision_rate_array[i];
                   combined_kd[i] = bedrock_transport_coefficient_array[i];
                 }
-              // for cells below sea level, grep the marine sediment data
+              // For cells below sea level, grep the marine diffusion coefficients.
               else
                 {
                   combined_kf[i] = sediment_river_incision_rate;
