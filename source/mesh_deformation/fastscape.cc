@@ -508,16 +508,38 @@ namespace aspect
           for (unsigned int i = 0; i < fastscape_array_size; ++i)
             {
               // For cells above sea level, grep the continental erosion parameters.
-              if (elevation[i] >= current_sea_level)
+              if (elevation[i] >= current_sea_level || !use_marine_component)
                 {
+                  // The same incision rate is used for sediments as for bedrock
+                  // if the sediment rate is set to something smaller than zero
+                  // (by default -1).
+                  if (sediment_river_incision_rate < 0)
+                    {
                   combined_kf[i] = bedrock_river_incision_rate_array[i];
+                    }
+                  else
+                  combined_kf[i] = sediment_river_incision_rate;
+
+                  // The same diffusion coefficient is used for sediments as for bedrock.
+                  // if the sediment coefficient is set to something smaller than zero
+                  // (by default -1).
+                  if (sediment_river_incision_rate < 0)
+                    {
                   combined_kd[i] = bedrock_transport_coefficient_array[i];
+                    }
+                  else
+                  combined_kd[i] = sediment_transport_coefficient;
                 }
-              // For cells below sea level, grep the marine diffusion coefficients.
+              // Below sea level, when the marine component is used,
+              // kf and kd are not used.
+              else if (elevation[i] < current_sea_level && use_marine_component)
+                {
+                  combined_kf[i] = numbers::signaling_nan<double>();
+                  combined_kd[i] = numbers::signaling_nan<double>();
+                }
               else
                 {
-                  combined_kf[i] = sediment_river_incision_rate;
-                  combined_kd[i] = sediment_transport_coefficient;
+                  AssertThrow (false, ExcMessage ("Unexpected conditions reached while filling the kf and kd arrays in the FastScape interface."));
                 }
             }
 
