@@ -811,8 +811,8 @@ namespace aspect
           const double y = grid_extent[1].first + (iy - use_ghost_nodes) * fastscape_dy;
 
           // Set time scaling factor based on time unit
-          // This factor is use to scale the quantities when "Use years instead of seconds" in ASPECT is off.
-          double time_scaling_factor = (this->convert_output_to_years() ? 1.0 : year_in_seconds);
+          // This factor is used to scale the quantities when "Use years instead of seconds" in ASPECT is off.
+          const double time_scaling_factor = (this->convert_output_to_years() ? 1.0 : year_in_seconds);
           // Update bedrock transport coefficient kd
           bedrock_transport_coefficient_array[i] =
             (use_kd_distribution_function
@@ -821,7 +821,7 @@ namespace aspect
              :
              time_scaling_factor * constant_bedrock_transport_coefficient);
 
-          // Update Bedrock river incision rate kf
+          // Update bedrock river incision rate kf
           bedrock_river_incision_rate_array[i] =
             (use_kf_distribution_function)
             ?  // update with time scaling
