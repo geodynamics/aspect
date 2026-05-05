@@ -382,7 +382,7 @@ namespace aspect
           template <class Archive>
           void serialize (Archive &ar, const unsigned int)
           {
-            ar & t
+            ar &t
             & w;
           }
         };
