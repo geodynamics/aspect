@@ -512,32 +512,33 @@ namespace aspect
                 {
                   std::vector<double> basement(fastscape_array_size);
                   fastscape_copy_basement_(basement.data());
+                  const double sediment_thickness = elevation[i] - basement[i];
 
                   // The same incision rate is used for sediments as for bedrock
                   // if the sediment rate is set to something smaller than zero
                   // (by default -1).
-                  if (sediment_river_incision_rate < 0)
-                    {
-                      combined_kf[i] = bedrock_river_incision_rate_array[i];
-                    }
+                  if (sediment_river_incision_rate < 0. || sediment_thickness <= 1.)
+                    combined_kf[i] = bedrock_river_incision_rate_array[i];
                   // If a different rate is set for sediment and bedrock,
                   // the sediment rate is only used for sediment layers
                   // at least 1 m thick.
-                  else if (elevation[i] - basement[i] > 1.)
+                  else if (sediment_river_incision_rate >= 0. && sediment_thickness > 1.)
                     combined_kf[i] = sediment_river_incision_rate;
+                  else
+                    combined_kf[i] = numbers::signaling_nan<double>();
 
                   // The same diffusion coefficient is used for sediments as for bedrock.
                   // if the sediment coefficient is set to something smaller than zero
                   // (by default -1).
-                  if (sediment_river_incision_rate < 0)
-                    {
-                      combined_kd[i] = bedrock_transport_coefficient_array[i];
-                    }
+                  if (sediment_transport_coefficient < 0 || sediment_thickness <= 1.)
+                    combined_kd[i] = bedrock_transport_coefficient_array[i];
                   // If a different rate is set for sediment and bedrock,
                   // the sediment coefficient is only used for sediment layers
                   // at least 1 m thick.
-                  else if (elevation[i] - basement[i] > 1.)
+                  else if (sediment_transport_coefficient >= 0. && sediment_thickness > 1.)
                     combined_kd[i] = sediment_transport_coefficient;
+                  else
+                    combined_kd[i] = numbers::signaling_nan<double>();
                 }
               // Below sea level, when the marine component is used,
               // kf and kd are not used.
