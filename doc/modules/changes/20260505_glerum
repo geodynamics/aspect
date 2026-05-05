@@ -1,0 +1,8 @@
+ Fixed: The order of silt and sand parameters has
+ been switched in the FastScape mesh deformation
+ plugin call that sets the marine parameters in
+ FastScape. Now silt parameters are used for the
+ finegrained fraction and sand parameters for the
+ coarsegrained sediments in the marine domain.
+ <br>
+ (Anne Glerum 2026/05/05)
