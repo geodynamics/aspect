@@ -510,25 +510,34 @@ namespace aspect
               // For cells above sea level, grep the continental erosion parameters.
               if (elevation[i] >= current_sea_level || !use_marine_component)
                 {
+                  std::vector<double> basement(fastscape_array_size);
+                  fastscape_copy_basement_(basement.data());
+
                   // The same incision rate is used for sediments as for bedrock
                   // if the sediment rate is set to something smaller than zero
                   // (by default -1).
                   if (sediment_river_incision_rate < 0)
                     {
-                  combined_kf[i] = bedrock_river_incision_rate_array[i];
+                      combined_kf[i] = bedrock_river_incision_rate_array[i];
                     }
-                  else
-                  combined_kf[i] = sediment_river_incision_rate;
+                  // If a different rate is set for sediment and bedrock,
+                  // the sediment rate is only used for sediment layers
+                  // at least 1 m thick.
+                  else if (elevation[i] - basement[i] > 1.)
+                    combined_kf[i] = sediment_river_incision_rate;
 
                   // The same diffusion coefficient is used for sediments as for bedrock.
                   // if the sediment coefficient is set to something smaller than zero
                   // (by default -1).
                   if (sediment_river_incision_rate < 0)
                     {
-                  combined_kd[i] = bedrock_transport_coefficient_array[i];
+                      combined_kd[i] = bedrock_transport_coefficient_array[i];
                     }
-                  else
-                  combined_kd[i] = sediment_transport_coefficient;
+                  // If a different rate is set for sediment and bedrock,
+                  // the sediment coefficient is only used for sediment layers
+                  // at least 1 m thick.
+                  else if (elevation[i] - basement[i] > 1.)
+                    combined_kd[i] = sediment_transport_coefficient;
                 }
               // Below sea level, when the marine component is used,
               // kf and kd are not used.
