@@ -212,6 +212,17 @@ namespace aspect
         bool
         allows_fixed_composition_on_outflow_boundaries() const;
 
+        /*
+         * Return whether on the given boundary the given field
+         * is fixed.
+         */
+        bool
+        get_component_mask_for_field(const types::boundary_id boundary_id,
+                                     const unsigned int compositional_field) const;
+
+        std::vector<unsigned int>
+        get_fixed_fields_on_boundary (const types::boundary_id boundary_id) const;
+
         /**
          * For the current plugin subsystem, write a connection graph of all of the
          * plugins we know about, in the format that the
@@ -253,13 +264,6 @@ namespace aspect
          * are not (false).
          */
         std::vector<ComponentMask> masks_fields;
-
-        /**
-         * A list of masks that specify for each boundary indicator
-         * which plugins are used to prescribe fixed compositions out
-         * of the total list of registered plugins.
-         */
-        std::vector<ComponentMask> masks_plugins;
 
         /**
          * A list of enums of boundary composition operators for each
