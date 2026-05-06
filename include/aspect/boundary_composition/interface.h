@@ -260,10 +260,10 @@ namespace aspect
 
         /**
          * A list of masks that specify for each plugin object
-         * which compositional fields are prescribed (true) and which
-         * are not (false).
+         * for each boundary it applies to which compositional fields
+         *  are prescribed (true) and which are not (false).
          */
-        std::vector<ComponentMask> masks_fields;
+        std::vector <std::vector<ComponentMask>> masks_fields;
 
         /**
          * A list of enums of boundary composition operators for each
