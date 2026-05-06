@@ -409,8 +409,9 @@ namespace aspect
       (void) found_plugin;
       Assert(found_plugin == true,
              ExcMessage("The boundary composition manager class was asked for the "
-                        "boundary composition at a boundary that contains no active "
-                        "boundary composition plugin."));
+                        "boundary composition at boundary " + dealii::Utilities::int_to_string(boundary_indicator) + 
+                        " which contains no active boundary composition plugin for field " + 
+                        dealii::Utilities::int_to_string(compositional_field) + "."));
 
       return composition;
 
@@ -522,7 +523,6 @@ namespace aspect
       // Since the component masks of plugins at the same boundary can vary,
       // loop over all the plugins of this boundary and see if any masks for
       // the given compositional field are true.
-      bool field_set_on_boundary = false;
       auto p = this->plugin_objects.begin();
       for (unsigned int i=0; i<this->plugin_objects.size(); ++p, ++i)
         {
@@ -546,6 +546,33 @@ namespace aspect
         }
       return fixed_fields;
     }
+
+    template <int dim>
+        std::set<types::boundary_id>
+        Manager<dim>::get_fixed_boundaries_for_field (const unsigned int compositional_field) const
+{
+      std::set<types::boundary_id> fixed_boundaries;
+
+      // Since the component masks of plugins at the same boundary can vary,
+      // loop over all the plugins of this boundary and see if any masks for
+      // the given compositional field are true.
+      auto p = this->plugin_objects.begin();
+      for (unsigned int i=0; i<this->plugin_objects.size(); ++p, ++i)
+        {
+          for (unsigned int bi=0; bi<boundary_indicators[i].size(); ++bi)
+            {
+                  // check whether the mask is true for the given field.
+                  for (unsigned int c = 0; c<this->n_compositional_fields(); ++c)
+                    {
+                      if (masks_fields[i][bi][c] == true)
+                        {
+                          fixed_boundaries.insert(boundary_indicators[i][bi]);
+                        }
+                    }
+            }
+        }
+      return fixed_boundaries;
+}
 
     template <int dim>
     void

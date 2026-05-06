@@ -223,6 +223,9 @@ namespace aspect
         std::vector<unsigned int>
         get_fixed_fields_on_boundary (const types::boundary_id boundary_id) const;
 
+        std::set<types::boundary_id>
+        get_fixed_boundaries_for_field (const unsigned int compositional_field) const;
+
         /**
          * For the current plugin subsystem, write a connection graph of all of the
          * plugins we know about, in the format that the
