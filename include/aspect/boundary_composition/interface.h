@@ -220,6 +220,13 @@ namespace aspect
         get_component_mask_for_field(const types::boundary_id boundary_id,
                                      const unsigned int compositional_field) const;
 
+        /*
+         * Return whether there are boundaries where only a subset
+         * of fields is fixed.
+         */
+        bool
+        boundaries_with_fixed_subset_of_fields_exist() const;
+
         std::vector<unsigned int>
         get_fixed_fields_on_boundary (const types::boundary_id boundary_id) const;
 
@@ -288,6 +295,12 @@ namespace aspect
          * where material flows out of the domain.
          */
         bool allow_fixed_composition_on_outflow_boundaries;
+
+        /**
+         * Whether one or more boundaries only have fixed boundary conditions
+         * for a subset of fields.
+         */
+        bool boundaries_with_fixed_subset_of_fields = false;
     };
 
 

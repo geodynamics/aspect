@@ -178,7 +178,7 @@ namespace aspect
 
                         boundary_indicators[plugin_name_it - this->plugin_names.begin()].push_back(boundary_indicator);
 
-// Also insert this boundary indicator for the existing plugin.
+                        // Also insert this boundary indicator for the existing plugin.
                         fixed_composition_boundary_indicators.insert(boundary_indicator);
 
                         model_operators[plugin_name_it - this->plugin_names.begin()] = list_of_model_operators[mn];
@@ -272,12 +272,12 @@ namespace aspect
                           {
                             if (boundary_indicators[plugin_name_it - this->plugin_names.begin()][bi] == boundary_indicator)
                               {
-                                this->get_pcout() << "Boundary indicator " << boundary_indicator << " already used for plugin " << *plugin_name_it << std::endl;
+                                // this->get_pcout() << "Boundary indicator " << boundary_indicator << " already used for plugin " << *plugin_name_it << std::endl;
                                 for (unsigned int mf = 0; mf < masks_fields[plugin_name_it - this->plugin_names.begin()][bi].size(); ++mf)
                                   {
                                     if (masks_fields[plugin_name_it - this->plugin_names.begin()][bi][mf] == true)
-                                    AssertThrow (masks_fields[plugin_name_it - this->plugin_names.begin()][bi][mf] != component_mask[mf],
-                                                 ExcMessage ("The plugin " + model_name + " is listed multiple times for the same compositional field " + this->introspection().name_for_compositional_index(mf) + " on the same boundary " + dealii::Utilities::int_to_string(boundary_indicator) + "."));
+                                      AssertThrow (masks_fields[plugin_name_it - this->plugin_names.begin()][bi][mf] != component_mask[mf],
+                                                   ExcMessage ("The plugin " + model_name + " is listed multiple times for the same compositional field " + this->introspection().name_for_compositional_index(mf) + " on the same boundary " + dealii::Utilities::int_to_string(boundary_indicator) + "."));
                                   }
                               }
                           }
@@ -290,7 +290,7 @@ namespace aspect
 
                         boundary_indicators[plugin_name_it - this->plugin_names.begin()].push_back(boundary_indicator);
 
-// Also insert this boundary indicator for the existing plugin.
+                        // Also insert this boundary indicator for the existing plugin.
                         fixed_composition_boundary_indicators.insert(boundary_indicator);
 
                         // Operators are now overwritten with `add'.
@@ -361,6 +361,27 @@ namespace aspect
           this->plugin_objects.back()->parse_parameters (prm);
           this->plugin_objects.back()->initialize ();
         }
+
+      // Check whether some boundaries are fixed for only a subset of fields.
+      auto fcbi = fixed_composition_boundary_indicators.begin();
+      for (unsigned int i=0; i<fixed_composition_boundary_indicators.size(); ++i, ++fcbi)
+        {
+          // this->get_pcout() << "Number of fixed fields on boundary " << this->get_geometry_model().translate_id_to_symbol_name(*fcbi) << ": " << get_fixed_fields_on_boundary(*fcbi).size() << std::endl;
+          if (get_fixed_fields_on_boundary(*fcbi).size() < this->n_compositional_fields())
+            {
+              boundaries_with_fixed_subset_of_fields = true;
+              break;
+            }
+        }
+
+      // Checks on sizes of the different vectors
+      Assert (this->plugin_objects.size() == boundary_indicators.size(), ExcMessage ("The number of boundary composition objects does not agree with the number of boundary indicator entries for the plugins."));
+      Assert (this->plugin_objects.size() == masks_fields.size(), ExcMessage ("The number of boundary composition objects does not agree with the number of field mask entries for the plugins."));
+      auto p = this->plugin_objects.begin();
+      for (unsigned int i=0; i<this->plugin_objects.size(); ++p, ++i)
+        {
+          Assert (boundary_indicators[i].size() == masks_fields[i].size(), ExcMessage ("The number of boundary composition objects does not agree with the number of field mask entries for the plugins."));
+        }
     }
 
 
@@ -409,8 +430,8 @@ namespace aspect
       (void) found_plugin;
       Assert(found_plugin == true,
              ExcMessage("The boundary composition manager class was asked for the "
-                        "boundary composition at boundary " + dealii::Utilities::int_to_string(boundary_indicator) + 
-                        " which contains no active boundary composition plugin for field " + 
+                        "boundary composition at boundary " + dealii::Utilities::int_to_string(boundary_indicator) +
+                        " which contains no active boundary composition plugin for field " +
                         dealii::Utilities::int_to_string(compositional_field) + "."));
 
       return composition;
@@ -500,6 +521,13 @@ namespace aspect
       return field_set_on_boundary;
     }
 
+    template <int dim>
+    bool
+    Manager<dim>::boundaries_with_fixed_subset_of_fields_exist() const
+    {
+      return boundaries_with_fixed_subset_of_fields;
+    }
+
 
 
     template <int dim>
@@ -533,24 +561,30 @@ namespace aspect
               if (boundary_indicators[i][bi] == boundary_id)
                 {
                   // this->get_pcout() << "Found boundary indicator " << boundary_indicators[i][bi] << std::endl;
-                  // check that the mask is true for the given field.
+                  // check how many masks are true.
                   for (unsigned int c = 0; c<this->n_compositional_fields(); ++c)
                     {
                       if (masks_fields[i][bi][c] == true)
                         {
-                          fixed_fields.push_back(c);
+                          // There can be multiple plugins active for a field on a certain boundary,
+                          // so only add the field if it is not listed already.
+                          if (std::find(fixed_fields.begin(), fixed_fields.end(), c) == fixed_fields.end())
+                            {
+                              fixed_fields.push_back(c);
+                            }
                         }
                     }
                 }
             }
         }
+
       return fixed_fields;
     }
 
     template <int dim>
-        std::set<types::boundary_id>
-        Manager<dim>::get_fixed_boundaries_for_field (const unsigned int compositional_field) const
-{
+    std::set<types::boundary_id>
+    Manager<dim>::get_fixed_boundaries_for_field (const unsigned int compositional_field) const
+    {
       std::set<types::boundary_id> fixed_boundaries;
 
       // Since the component masks of plugins at the same boundary can vary,
@@ -561,18 +595,18 @@ namespace aspect
         {
           for (unsigned int bi=0; bi<boundary_indicators[i].size(); ++bi)
             {
-                  // check whether the mask is true for the given field.
-                  for (unsigned int c = 0; c<this->n_compositional_fields(); ++c)
+              // check whether the mask is true for the given field.
+              for (unsigned int c = 0; c<this->n_compositional_fields(); ++c)
+                {
+                  if (c == compositional_field && masks_fields[i][bi][c] == true)
                     {
-                      if (masks_fields[i][bi][c] == true)
-                        {
-                          fixed_boundaries.insert(boundary_indicators[i][bi]);
-                        }
+                      fixed_boundaries.insert(boundary_indicators[i][bi]);
                     }
+                }
             }
         }
       return fixed_boundaries;
-}
+    }
 
     template <int dim>
     void
