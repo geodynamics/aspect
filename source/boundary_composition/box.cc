@@ -143,6 +143,8 @@ namespace aspect
       // Verify that each of the lists for boundary values
       // has the requisite number of elements if it is in the set
       // of prescribed boundary indicators.
+      // TODO Even though not all fields need to be fixed on a given boundary
+      // this plugin still requires that values are given for all fields.
       for (unsigned int f=0; f<2*dim; ++f)
         if (this->get_boundary_composition_manager().get_fixed_composition_boundary_indicators().count(f) != 0)
           AssertThrow (composition_values[f].size() == this->n_compositional_fields(),
