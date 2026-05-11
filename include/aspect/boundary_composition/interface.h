@@ -217,19 +217,28 @@ namespace aspect
          * is fixed.
          */
         bool
-        get_component_mask_for_field(const types::boundary_id boundary_id,
-                                     const unsigned int compositional_field) const;
+        field_is_fixed_on_boundary(const types::boundary_id boundary_id,
+                                   const unsigned int compositional_field) const;
 
         /*
          * Return whether there are boundaries where only a subset
-         * of fields is fixed.
+         * of the compositional fields is prescribed. If false,
+         * either there are no fixed boundary compositions, or all fields
+         * are fixed on the fixed composition boundaries.
          */
         bool
         boundaries_with_fixed_subset_of_fields_exist() const;
 
+        /*
+         * Return a list of fields that are fixed on the given boundary.
+         */
         std::vector<unsigned int>
         get_fixed_fields_on_boundary (const types::boundary_id boundary_id) const;
 
+        /*
+         * Return a set of boundary indicators on which the given field
+         * is fixed.
+         */
         std::set<types::boundary_id>
         get_fixed_boundaries_for_field (const unsigned int compositional_field) const;
 
@@ -259,14 +268,14 @@ namespace aspect
 
         /**
          * A list of boundary indicators that indicate for
-         * each plugin in the list of plugin_objects which boundary id
+         * each plugin in the list of plugin_objects which boundary ids
          * it is responsible for. By default each plugin
          * is active for all boundaries, but this list
-         * can be modified by derived classes to limit the application
+         * can be modified from the input file and by
+         * derived classes to limit the application
          * of plugins to specific boundaries.
          */
         std::vector <std::vector<types::boundary_id>> boundary_indicators;
-
 
         /**
          * A list of masks that specify for each plugin object
@@ -286,7 +295,10 @@ namespace aspect
 
         /**
          * A set of boundary ids on which the boundary_composition_objects
-         * will be applied.
+         * will be applied. This set does not distinguish between boundaries
+         * on which only a subset of the fields are fixed and boundaries on
+         * which all fields are fixed. Any boundary with at least one fixed
+         * field is included.
          */
         std::set<types::boundary_id> fixed_composition_boundary_indicators;
 
@@ -298,7 +310,7 @@ namespace aspect
 
         /**
          * Whether one or more boundaries only have fixed boundary conditions
-         * for a subset of fields.
+         * for a subset of fields, instead of all fields.
          */
         bool boundaries_with_fixed_subset_of_fields = false;
     };

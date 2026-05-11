@@ -662,7 +662,7 @@ namespace aspect
                                             "and likely a bug in the particle property plugin."));
 
                           // Check whether this field is fixed on this boundary, ...
-                          if (manager.get_component_mask_for_field(boundary_id, field_to_use.compositional_variable))
+                          if (manager.field_is_fixed_on_boundary(boundary_id, field_to_use.compositional_variable))
                             {
                               const double field_boundary_value = manager.boundary_composition(boundary_id,
                                                                                                particle_location,
