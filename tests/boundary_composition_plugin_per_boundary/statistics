@@ -7,10 +7,18 @@
 # 7: Number of degrees of freedom for all compositions
 # 8: Iterations for temperature solver
 # 9: Iterations for composition solver 1
-# 10: Iterations for Stokes solver
-# 11: Velocity iterations in Stokes preconditioner
-# 12: Schur complement iterations in Stokes preconditioner
-# 13: Minimal value for composition C_1
-# 14: Maximal value for composition C_1
-# 15: Global mass for composition C_1
-0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 1089 0 0 14 15 15 -1.50000000e+00 1.65000000e+01 6.75945703e+11 
+# 10: Iterations for composition solver 2
+# 11: Iterations for composition solver 3
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
+# 15: Minimal value for composition field1
+# 16: Maximal value for composition field1
+# 17: Global mass for composition field1
+# 18: Minimal value for composition field2
+# 19: Maximal value for composition field2
+# 20: Global mass for composition field2
+# 21: Minimal value for composition field3
+# 22: Maximal value for composition field3
+# 23: Global mass for composition field3
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 3267 0 0 0 0 14 15 15 -1.00000000e+00 1.65000000e+01 6.72471680e+11 -3.00000000e+00 1.65000000e+01 6.69210352e+11 -1.00000000e+00 1.65000000e+01 6.79207031e+11 

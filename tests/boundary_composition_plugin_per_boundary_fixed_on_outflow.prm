@@ -9,4 +9,3 @@ subsection Boundary composition model
   # The right boundary experiences outflow
   set Allow fixed composition on outflow boundaries = true
 end
-
