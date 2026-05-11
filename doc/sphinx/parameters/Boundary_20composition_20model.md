@@ -24,11 +24,11 @@ A warning for models with melt transport: In models with fluid flow, some compos
 
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A comma separated list of names denoting those boundaries on which the composition is fixed and described by the boundary composition object selected in its own section of this input file. All boundary indicators used by the geometry but not explicitly listed here will end up with no-flux (insulating) boundary conditions.
+**Documentation:** A comma separated list of names denoting those boundaries on which the composition is fixed and described by the boundary composition object selected in its own section of this input file or in this list. All boundary indicators used by the geometry but not explicitly listed here will end up with no-flux (insulating) boundary conditions.
 
 The names of the boundaries listed here can either be numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
 
-This parameter only describes which boundaries have a fixed composition, but not what composition should hold on these boundaries. The latter piece of information needs to be implemented in a plugin in the BoundaryComposition group, unless an existing implementation in this group already provides what you want.
+To specify different boundary conditions for different compositions on different boundaries, you can use the format <boundary_name>;field_name_1|field_name_2:plugin_name_1|plugin_name_2,. This also means, not all fields need to have fixed compositions on a specific boundary.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`List of model names<parameters:Boundary_20composition_20model/List_20of_20model_20names>`
