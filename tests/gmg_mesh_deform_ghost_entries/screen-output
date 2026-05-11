@@ -85,7 +85,7 @@ Number of mesh deformation degrees of freedom: 4,474
    Solving ve_stress_yy_old system ... 3 iterations.
    Solving ve_stress_xy_old system ... 3 iterations.
    Solving Stokes system (GMG)... 53+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.49863e-16, 0.000263838, 0.000258911, 0.000158231, 0, 0, 0, 0.000307019
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.38492e-16, 0.000264336, 0.000259418, 0.00015747, 0, 0, 0, 0.000307019
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000307019
 
    Solving temperature system... 0 iterations.
@@ -96,8 +96,8 @@ Number of mesh deformation degrees of freedom: 4,474
    Solving ve_stress_yy_old system ... 2 iterations.
    Solving ve_stress_xy_old system ... 2 iterations.
    Solving Stokes system (GMG)... 33+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.36192e-16, 0.000261422, 0.000256405, 0.0001568, 0, 0, 0, 6.79041e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000261422
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.33954e-16, 0.000261915, 0.000256908, 0.000156045, 0, 0, 0, 6.79687e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000261915
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 1 iterations.
@@ -107,12 +107,12 @@ Number of mesh deformation degrees of freedom: 4,474
    Solving ve_stress_yy_old system ... 1 iterations.
    Solving ve_stress_xy_old system ... 1 iterations.
    Solving Stokes system (GMG)... 9+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.282e-16, 7.73302e-08, 7.72635e-08, 5.79775e-08, 0, 0, 0, 3.02832e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 7.73302e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.45115e-16, 7.72932e-08, 7.72281e-08, 5.78125e-08, 0, 0, 0, 3.02643e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 7.72932e-08
 
 
    Postprocessing:
-     Compositions min/max/mass: -1.608e+06/2.688e+06/-3.562e+11 // -2.687e+06/1.718e+06/5.576e+11 // -1.687e+06/3.746e+06/1.178e+17 // -1.608e+06/2.688e+06/-2.014e+11 // -2.687e+06/1.718e+06/4.027e+11 // -1.687e+06/3.746e+06/1.178e+17
+     Compositions min/max/mass: -1.608e+06/2.688e+06/-3.522e+11 // -2.687e+06/1.718e+06/5.535e+11 // -1.687e+06/3.746e+06/1.178e+17 // -1.608e+06/2.688e+06/-2.014e+11 // -2.687e+06/1.718e+06/4.027e+11 // -1.687e+06/3.746e+06/1.178e+17
      Temperature min/avg/max:   293 K, 293 K, 293 K
      Topography min/max:        -0.04 m, 0.01 m
      RMS, max velocity:         0.0138 m/year, 0.044 m/year
