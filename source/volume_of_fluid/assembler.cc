@@ -197,7 +197,7 @@ namespace aspect
                  face->boundary_id()
                )
                != this->get_fixed_composition_boundary_indicators().end()
-               && this->get_boundary_composition_manager().get_component_mask_for_field(face->boundary_id(), field.composition_index))
+               && this->get_boundary_composition_manager().field_is_fixed_on_boundary(face->boundary_id(), field.composition_index))
             {
               // We are in the case of a Dirichlet BC, so calculate the fluid flux if the boundary is upwind.
               for (unsigned int q=0; q<n_f_q_points; ++q)

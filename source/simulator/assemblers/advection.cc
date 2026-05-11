@@ -849,7 +849,7 @@ namespace aspect
              )
              != this->get_fixed_composition_boundary_indicators().end())
            && (!advection_field.is_temperature())
-           && this->get_boundary_composition_manager().get_component_mask_for_field(face->boundary_id(), advection_field.compositional_variable)))
+           && this->get_boundary_composition_manager().field_is_fixed_on_boundary(face->boundary_id(), advection_field.compositional_variable)))
         {
           /*
            * We are on a face of a Dirichlet temperature or composition boundary.

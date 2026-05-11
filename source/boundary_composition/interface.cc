@@ -72,15 +72,16 @@ namespace aspect
       prm.enter_subsection ("Boundary composition model");
       {
         // First split the list into its separate entries that each
-        // specify a boundary indicator, and the plugins that are active
-        // for the listed compositional fields.
+        // specify a boundary indicator, and, potentially, the plugins that are active
+        // on that boundary for the listed compositional fields.
         const std::vector<std::string> x_fixed_composition_boundary_indicators
           = Utilities::split_string_list(prm.get("Fixed composition boundary indicators"), ',');
 
-        // For each plugin object, we want to get a component_mask that specifies for which compositional
-        // fields it is active (= masks_fields).
-        // We also need a vector of boundary indicators that each plugin is active on.
-
+        // For each plugin object, for each boundary it is active on,
+        // we want to get a component_mask that specifies for which
+        // compositional fields it is active (`masks_fields`).
+        // We also need a vector of boundary indicators for each plugin
+        // that specifies on which boundaries it is active.
         for (const auto &p : x_fixed_composition_boundary_indicators)
           {
             // Each entry has the format:
@@ -147,12 +148,15 @@ namespace aspect
                       {
                         // The plugin was not listed before, so add it.
                         this->plugin_names.push_back(model_name);
+
                         // Also add the compositional field masks for this plugin.
                         std::vector<ComponentMask> vec_component_mask;
                         vec_component_mask.push_back(component_mask);
                         masks_fields.push_back(vec_component_mask);
+
                         // Insert the boundary indicator that belongs to this plugin into the set.
                         fixed_composition_boundary_indicators.insert(boundary_indicator);
+
                         // Insert the boundary indicator that belongs to this plugin into the vector.
                         // It is possible that more boundary indicators are affected by this plugin,
                         // they would be added to the vector of indicators for this plugin
@@ -160,11 +164,12 @@ namespace aspect
                         std::vector<types::boundary_id> vec_boundary_indicator;
                         vec_boundary_indicator.push_back(boundary_indicator);
                         boundary_indicators.push_back(vec_boundary_indicator);
+
                         // Add the model operator for this plugin
                         model_operators.push_back(list_of_model_operators[mn]);
                       }
-                    // The plugin was already listed for another boundary or field,
-                    // so add the boundary indicator and corresponding masks at the existing entry.
+                    // The plugin was already listed for another boundary or field, so add the
+                    // boundary indicator and corresponding masks at the existing plugin entry.
                     else
                       {
                         // Check that the plugin does not specify the same field at the same boundary.
@@ -174,13 +179,17 @@ namespace aspect
                               if (masks_fields[plugin_name_it - this->plugin_names.begin()][bi][mf] == true)
                                 AssertThrow (masks_fields[plugin_name_it - this->plugin_names.begin()][bi][mf] != component_mask[mf], ExcMessage ("The same plugin already specifies the same field on the same boundary."));
 
+                        // Add the masks for this plugin and this boundary indicator.
                         masks_fields[plugin_name_it - this->plugin_names.begin()].push_back(component_mask);
 
+                        // Add the boundary indicator for this plugin.
                         boundary_indicators[plugin_name_it - this->plugin_names.begin()].push_back(boundary_indicator);
 
                         // Also insert this boundary indicator for the existing plugin.
                         fixed_composition_boundary_indicators.insert(boundary_indicator);
 
+                        // Overwrite the operators for this plugin.
+                        // TODO add instead?
                         model_operators[plugin_name_it - this->plugin_names.begin()] = list_of_model_operators[mn];
                       }
                     ++mn;
@@ -190,7 +199,6 @@ namespace aspect
             // If there are two parts, the second part holds plugin names.
             else if (split_parts.size() == 2)
               {
-
                 // Get the plugin names from the second part.
                 const std::vector<std::string> plugins = Utilities::split_string_list(split_parts[1], '|');
 
@@ -220,12 +228,13 @@ namespace aspect
                   }
 
                 // Get the field names from the second part.
+                // TODO what if indices are used?
                 const std::vector<std::string> field_names = Utilities::split_string_list(first_split_parts[1], '|');
 
+                // Loop over the field names and set their mask to true if they exist.
                 ComponentMask component_mask(this->n_compositional_fields(),
                                              false);
 
-                // Loop over the field names and set their mask to true for this boundary indicator.
                 for (auto &field_name : field_names)
                   {
                     AssertThrow(this->introspection().compositional_name_exists(field_name),
@@ -245,12 +254,15 @@ namespace aspect
                       {
                         // The plugin was not listed before, so add it.
                         this->plugin_names.push_back(model_name);
+
                         // Also add the compositional field masks for this plugin.
                         std::vector<ComponentMask> vec_component_mask;
                         vec_component_mask.push_back(component_mask);
                         masks_fields.push_back(vec_component_mask);
+
                         // Insert the boundary indicator that belongs to this plugin into the set.
                         fixed_composition_boundary_indicators.insert(boundary_indicator);
+
                         // Insert the boundary indicator that belongs to this plugin into the vector.
                         // It is possible that more boundary indicators are affected by this plugin,
                         // they would be added to the vector of indicators for this plugin
@@ -258,7 +270,8 @@ namespace aspect
                         std::vector<types::boundary_id> vec_boundary_indicator;
                         vec_boundary_indicator.push_back(boundary_indicator);
                         boundary_indicators.push_back(vec_boundary_indicator);
-                        // Add the model operator for this plugin
+
+                        // Add the model operator for this plugin.
                         model_operators.push_back(list_of_model_operators[mn]);
                       }
                     // The plugin was already listed for another boundary or field,
@@ -272,7 +285,6 @@ namespace aspect
                           {
                             if (boundary_indicators[plugin_name_it - this->plugin_names.begin()][bi] == boundary_indicator)
                               {
-                                // this->get_pcout() << "Boundary indicator " << boundary_indicator << " already used for plugin " << *plugin_name_it << std::endl;
                                 for (unsigned int mf = 0; mf < masks_fields[plugin_name_it - this->plugin_names.begin()][bi].size(); ++mf)
                                   {
                                     if (masks_fields[plugin_name_it - this->plugin_names.begin()][bi][mf] == true)
@@ -282,12 +294,10 @@ namespace aspect
                               }
                           }
 
+                        // Add the masks for this plugin and this boundary indicator.
                         masks_fields[plugin_name_it - this->plugin_names.begin()].push_back(component_mask);
 
-                        // for (unsigned int bi = 0; 0 < boundary_indicators[plugin_name_it - this->plugin_names.begin()].size(); ++bi)
-                        //   AssertThrow (boundary_indicators[plugin_name_it - this->plugin_names.begin()][bi] != boundary_indicator,
-                        //                ExcMessage ("The boundary indicator " + dealii::Utilities::int_to_string(boundary_indicator) + " is already used with plugin " + model_name + "."));
-
+                        // Add the boundary indictor for this plugin.
                         boundary_indicators[plugin_name_it - this->plugin_names.begin()].push_back(boundary_indicator);
 
                         // Also insert this boundary indicator for the existing plugin.
@@ -336,16 +346,6 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      // for (auto pn : this->plugin_names)
-      //   this->get_pcout() << "Model names: " << pn << std::endl;
-
-      // this->get_pcout() << "Nr of Model operators: " << model_operators.size() << std::endl;
-      // this->get_pcout() << "Nr of fixed bi: " << fixed_composition_boundary_indicators.size() << std::endl;
-
-      // for (unsigned int bi = 0; bi < boundary_indicators.size(); ++bi)
-      //   for (unsigned int bi2 = 0; bi2 < boundary_indicators[bi].size(); ++bi2)
-      //     this->get_pcout() << "Boundary indicator: " << bi << ", " << bi2 << ", " << boundary_indicators[bi][bi2] << std::endl;
-
       // go through the list, create objects and let them parse
       // their own parameters
       for (auto &model_name : this->plugin_names)
@@ -363,10 +363,10 @@ namespace aspect
         }
 
       // Check whether some boundaries are fixed for only a subset of fields.
+      // TODO no need for iterator i.
       auto fcbi = fixed_composition_boundary_indicators.begin();
       for (unsigned int i=0; i<fixed_composition_boundary_indicators.size(); ++i, ++fcbi)
         {
-          // this->get_pcout() << "Number of fixed fields on boundary " << this->get_geometry_model().translate_id_to_symbol_name(*fcbi) << ": " << get_fixed_fields_on_boundary(*fcbi).size() << std::endl;
           if (get_fixed_fields_on_boundary(*fcbi).size() < this->n_compositional_fields())
             {
               boundaries_with_fixed_subset_of_fields = true;
@@ -392,11 +392,9 @@ namespace aspect
                                         const Point<dim> &position,
                                         const unsigned int compositional_field) const
     {
-      // this->get_pcout() << "Looking for boundary indicator " << boundary_indicator << std::endl;
-      // this->get_pcout() << "Looking for field " << compositional_field << std::endl;
-
       // Loop over the plugin objects and for each object,
       // check whether it applies to the given boundary and field.
+      // TODO use field_is_fixed_on_boundary function
       double composition = 0.0;
       bool found_plugin = false;
 
@@ -405,11 +403,9 @@ namespace aspect
         {
           for (unsigned int bi=0; bi<boundary_indicators[i].size(); ++bi)
             {
-              // this->get_pcout() << "Looping over boundary indicator " << boundary_indicators[i][bi] << std::endl;
               // If the plugin is active for the given boundary ...
               if (boundary_indicators[i][bi] == boundary_indicator)
                 {
-                  // this->get_pcout() << "Found boundary indicator " << boundary_indicators[i][bi] << std::endl;
                   // check that the mask is true for the given field.
                   for (unsigned int c = 0; c<this->n_compositional_fields(); ++c)
                     {
@@ -420,7 +416,6 @@ namespace aspect
                                                            (*p)->boundary_composition(boundary_indicator,
                                                                                       position,
                                                                                       compositional_field));
-                          // this->get_pcout() << "Composition for field " << c << " = " << composition << std::endl;
                         }
                     }
                 }
@@ -435,8 +430,6 @@ namespace aspect
                         dealii::Utilities::int_to_string(compositional_field) + "."));
 
       return composition;
-
-
     }
 
 
@@ -447,6 +440,7 @@ namespace aspect
     {
       return this->plugin_names;
     }
+
 
 
     template <int dim>
@@ -478,12 +472,16 @@ namespace aspect
 
     template <int dim>
     bool
-    Manager<dim>::get_component_mask_for_field(const types::boundary_id boundary_id,
-                                               const unsigned int compositional_field) const
+    Manager<dim>::field_is_fixed_on_boundary(const types::boundary_id boundary_id,
+                                             const unsigned int compositional_field) const
     {
       Assert(fixed_composition_boundary_indicators.find(boundary_id) != fixed_composition_boundary_indicators.end(),
-             ExcMessage("The boundary composition manager class was asked for the "
-                        "compositional mask of boundary indicator <"
+             ExcMessage("The boundary composition manager class was asked whether the "
+                        "compositional field <"
+                        +
+                        this->introspection().name_for_compositional_index(compositional_field)
+                        +
+                        "> is fixed on boundary indicator <"
                         +
                         Utilities::int_to_string(boundary_id)
                         +
@@ -502,11 +500,9 @@ namespace aspect
         {
           for (unsigned int bi=0; bi<boundary_indicators[i].size(); ++bi)
             {
-              // this->get_pcout() << "Looping over boundary indicator " << boundary_indicators[i][bi] << std::endl;
               // If the plugin is active for the given boundary ...
               if (boundary_indicators[i][bi] == boundary_id)
                 {
-                  // this->get_pcout() << "Found boundary indicator " << boundary_indicators[i][bi] << std::endl;
                   // check that the mask is true for the given field.
                   for (unsigned int c = 0; c<this->n_compositional_fields(); ++c)
                     {
@@ -521,6 +517,8 @@ namespace aspect
       return field_set_on_boundary;
     }
 
+
+
     template <int dim>
     bool
     Manager<dim>::boundaries_with_fixed_subset_of_fields_exist() const
@@ -534,11 +532,9 @@ namespace aspect
     std::vector<unsigned int>
     Manager<dim>::get_fixed_fields_on_boundary (const types::boundary_id boundary_id) const
     {
-      std::vector<unsigned int> fixed_fields;
-
       Assert(fixed_composition_boundary_indicators.find(boundary_id) != fixed_composition_boundary_indicators.end(),
              ExcMessage("The boundary composition manager class was asked for the "
-                        "compositional mask of boundary indicator <"
+                        "compositional fields that are fixed on boundary indicator <"
                         +
                         Utilities::int_to_string(boundary_id)
                         +
@@ -551,17 +547,16 @@ namespace aspect
       // Since the component masks of plugins at the same boundary can vary,
       // loop over all the plugins of this boundary and see if any masks for
       // the given compositional field are true.
+      std::vector<unsigned int> fixed_fields;
       auto p = this->plugin_objects.begin();
       for (unsigned int i=0; i<this->plugin_objects.size(); ++p, ++i)
         {
           for (unsigned int bi=0; bi<boundary_indicators[i].size(); ++bi)
             {
-              // this->get_pcout() << "Looping over boundary indicator " << boundary_indicators[i][bi] << std::endl;
               // If the plugin is active for the given boundary ...
               if (boundary_indicators[i][bi] == boundary_id)
                 {
-                  // this->get_pcout() << "Found boundary indicator " << boundary_indicators[i][bi] << std::endl;
-                  // check how many masks are true.
+                  // check whether any masks are true.
                   for (unsigned int c = 0; c<this->n_compositional_fields(); ++c)
                     {
                       if (masks_fields[i][bi][c] == true)
@@ -581,10 +576,20 @@ namespace aspect
       return fixed_fields;
     }
 
+
+
     template <int dim>
     std::set<types::boundary_id>
     Manager<dim>::get_fixed_boundaries_for_field (const unsigned int compositional_field) const
     {
+      Assert(this->introspection().compositional_name_exists(this->introspection().name_for_compositional_index(compositional_field)),
+             ExcMessage("The boundary composition manager class was asked for the "
+                        "boundaries on which compositional field <"
+                        +
+                        this->introspection().name_for_compositional_index(compositional_field)
+                        +
+                        "> is fixed, but this field does not exist."));
+
       std::set<types::boundary_id> fixed_boundaries;
 
       // Since the component masks of plugins at the same boundary can vary,
@@ -607,6 +612,8 @@ namespace aspect
         }
       return fixed_boundaries;
     }
+
+
 
     template <int dim>
     void
@@ -667,8 +674,9 @@ namespace aspect
                            "use in your model."
                            "\n\n"
                            "To specify different boundary conditions for different compositions "
-                           "you can use the format <boundary_name>,field_name_1|field_name_2:"
-                           "plugin_name_1|plugin_name_2;. This also means, not all fields need "
+                           "on different boundaries, "
+                           "you can use the format <boundary_name>;field_name_1|field_name_2:"
+                           "plugin_name_1|plugin_name_2,. This also means, not all fields need "
                            "to have fixed compositions on a specific boundary.");
         prm.declare_entry ("Allow fixed composition on outflow boundaries", "false for models without melt",
                            Patterns::Selection("true|false|false for models without melt"),
