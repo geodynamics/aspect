@@ -286,12 +286,12 @@ namespace aspect
 
         /**
          * A list of enums of boundary composition operators for each
-         * boundary composition plugin that has been
+         * boundary indicator associated with a boundary composition plugin that has been
          * requested in the parameter file. Each name is associated
          * with a model_name, and is used to modify the composition
          * boundary with the values from the current plugin.
          */
-        std::vector<aspect::Utilities::Operator> model_operators;
+        std::vector <std::vector<aspect::Utilities::Operator>> model_operators;
 
         /**
          * A set of boundary ids on which the boundary_composition_objects

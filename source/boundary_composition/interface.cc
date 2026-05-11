@@ -166,7 +166,9 @@ namespace aspect
                         boundary_indicators.push_back(vec_boundary_indicator);
 
                         // Add the model operator for this plugin
-                        model_operators.push_back(list_of_model_operators[mn]);
+                        std::vector<aspect::Utilities::Operator> vec_model_operator;
+                        vec_model_operator.push_back(list_of_model_operators[mn]);
+                        model_operators.push_back(vec_model_operator);
                       }
                     // The plugin was already listed for another boundary or field, so add the
                     // boundary indicator and corresponding masks at the existing plugin entry.
@@ -188,9 +190,8 @@ namespace aspect
                         // Also insert this boundary indicator for the existing plugin.
                         fixed_composition_boundary_indicators.insert(boundary_indicator);
 
-                        // Overwrite the operators for this plugin.
-                        // TODO add instead?
-                        model_operators[plugin_name_it - this->plugin_names.begin()] = list_of_model_operators[mn];
+                        // Add the operator for this boundary for the existing plugin.
+                        model_operators[plugin_name_it - this->plugin_names.begin()].push_back(list_of_model_operators[mn]);
                       }
                     ++mn;
                   }
@@ -272,7 +273,9 @@ namespace aspect
                         boundary_indicators.push_back(vec_boundary_indicator);
 
                         // Add the model operator for this plugin.
-                        model_operators.push_back(list_of_model_operators[mn]);
+                        std::vector<aspect::Utilities::Operator> vec_model_operator;
+                        vec_model_operator.push_back(list_of_model_operators[mn]);
+                        model_operators.push_back(vec_model_operator);
                       }
                     // The plugin was already listed for another boundary or field,
                     // so update the fields masks to all be true and add the boundary
@@ -297,15 +300,14 @@ namespace aspect
                         // Add the masks for this plugin and this boundary indicator.
                         masks_fields[plugin_name_it - this->plugin_names.begin()].push_back(component_mask);
 
-                        // Add the boundary indictor for this plugin.
+                        // Add the boundary indicator for this plugin.
                         boundary_indicators[plugin_name_it - this->plugin_names.begin()].push_back(boundary_indicator);
 
                         // Also insert this boundary indicator for the existing plugin.
                         fixed_composition_boundary_indicators.insert(boundary_indicator);
 
-                        // Operators are now overwritten with `add'.
-                        // TODO desired behavior?
-                        model_operators[plugin_name_it - this->plugin_names.begin()] = list_of_model_operators[mn];
+                        // Add the operator for this boundary for the existing plugin.
+                        model_operators[plugin_name_it - this->plugin_names.begin()].push_back(list_of_model_operators[mn]);
                       }
                     ++mn;
                   }
@@ -412,10 +414,10 @@ namespace aspect
                       if (c == compositional_field && masks_fields[i][bi][c] == true)
                         {
                           found_plugin = true;
-                          composition = model_operators[i](composition,
-                                                           (*p)->boundary_composition(boundary_indicator,
-                                                                                      position,
-                                                                                      compositional_field));
+                          composition = model_operators[i][bi](composition,
+                                                               (*p)->boundary_composition(boundary_indicator,
+                                                                                          position,
+                                                                                          compositional_field));
                         }
                     }
                 }
