@@ -38,11 +38,41 @@ namespace aspect
 {
   namespace BoundaryTemperature
   {
+    namespace internal
+    {
+      CoreData::CoreData ()
+        : Qs(numbers::signaling_nan<double>()),
+          Qr(numbers::signaling_nan<double>()),
+          Qg(numbers::signaling_nan<double>()),
+          Qk(numbers::signaling_nan<double>()),
+          Ql(numbers::signaling_nan<double>()),
+          Es(numbers::signaling_nan<double>()),
+          Er(numbers::signaling_nan<double>()),
+          Eg(numbers::signaling_nan<double>()),
+          Ek(numbers::signaling_nan<double>()),
+          El(numbers::signaling_nan<double>()),
+          Eh(numbers::signaling_nan<double>()),
+          Ri(numbers::signaling_nan<double>()),
+          Ti(numbers::signaling_nan<double>()),
+          Xi(numbers::signaling_nan<double>()),
+          Q(numbers::signaling_nan<double>()),
+          H(numbers::signaling_nan<double>()),
+          dt(numbers::signaling_nan<double>()),
+          dR_dt(numbers::signaling_nan<double>()),
+          dT_dt(numbers::signaling_nan<double>()),
+          dX_dt(numbers::signaling_nan<double>()),
+          Q_OES(numbers::signaling_nan<double>()),
+          is_initialized(false)
+      {}
+    }
+
     template <int dim>
     DynamicCore<dim>::DynamicCore()
+      :
+      // leave the core_data variable in its uninitialized state
+      core_data()
     {
       is_first_call = true;
-      core_data.is_initialized = false;
     }
 
 
@@ -64,9 +94,16 @@ namespace aspect
 
           const Postprocess::CoreStatistics<dim> &core_statistics
             = this->get_postprocess_manager().template get_matching_active_plugin<const Postprocess::CoreStatistics<dim>>();
+          const internal::CoreData &postprocessor_core_data = core_statistics.get_core_data();
+          const bool restored_core_data = postprocessor_core_data.is_initialized;
+
           // The restart data is stored in 'core statistics' postprocessor.
           // If restart from checkpoint, extract data from there.
-          core_data = core_statistics.get_core_data();
+          // In a fresh run, the postprocessor has not seen valid dynamic core
+          // data yet, so keep the boundary model's CoreData object and
+          // initialize it from the parameter file below.
+          if (restored_core_data)
+            core_data = postprocessor_core_data;
 
           // Read data of other energy source
           read_data_OES();
@@ -99,12 +136,14 @@ namespace aspect
               core_data.Xi = compute_X(core_data.Ri);
 
               core_data.Q = 0.;
+              core_data.H = 0.;
               core_data.dt = 0.;
               core_data.dT_dt = init_dT_dt;
               core_data.dR_dt = init_dR_dt;
               core_data.dX_dt = init_dX_dt;
               update_core_data();
               core_data.is_initialized = true;
+
               std::stringstream output;
               output<<std::setiosflags(std::ios::left)
                     <<"   Dynamic core initialized as:"<<std::endl
@@ -114,6 +153,12 @@ namespace aspect
                     <<std::setw(15)<<core_data.dT_dt *year_in_seconds<<std::setw(15)<<core_data.dR_dt/1.e3 *year_in_seconds
                     <<std::setw(15)<<core_data.dX_dt *year_in_seconds<<std::endl;
               this->get_pcout() << output.str();
+            }
+          else if (restored_core_data)
+            {
+              core_data.dt = this->get_timestep();
+              core_data.H = compute_radioheating_rate();
+              update_core_data();
             }
           is_first_call = false;
         }
@@ -701,6 +746,7 @@ namespace aspect
       Assert (numbers::is_finite(D), ExcInternalError());
       Assert (numbers::is_finite(Rho_cen), ExcInternalError());
       Assert (numbers::is_finite(Rc), ExcInternalError());
+      Assert (numbers::is_finite(core_data.H), ExcInternalError());
 
       double It = numbers::signaling_nan<double>();
       if (D>L)
