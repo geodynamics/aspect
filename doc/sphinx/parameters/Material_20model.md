@@ -5104,7 +5104,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The minimum water content for the HK04 olivine hydration viscosity prefactor scheme. This acts as the cutoff between &rsquo;dry&rsquo; creep and &rsquo;wet&rsquo; creep for olivine, and the default value is chosen based on the value reported by Hirth & Kohlstaedt 2004. For a mass fraction of bound water beneath this value, this value is used instead to compute the water fugacity. Units: \si{\kg} / \si{\kg} %.
+**Documentation:** The minimum water content for the HK04 olivine hydration viscosity prefactor scheme. This acts as the cutoff between &rsquo;dry&rsquo; creep and &rsquo;wet&rsquo; creep for olivine, and the default value is chosen based on the value reported by Hirth & Kohlstedt 2004. For a mass fraction of bound water beneath this value, this value is used instead to compute the water fugacity. Units: \si{\kg} / \si{\kg} %.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Minimum strain rate<parameters:Material_20model/Visco_20Plastic/Minimum_20strain_20rate>`
@@ -5610,7 +5610,7 @@ If a compositional field named &rsquo;noninitial\_plastic\_strain&rsquo; is incl
 
 **Pattern:** [Selection none|HK04 olivine hydration ]
 
-**Documentation:** Select what type of viscosity multiplicative prefactor scheme to apply. Allowed entries are &rsquo;none&rsquo;, and &rsquo;HK04 olivine hydration&rsquo;. HK04 olivine hydration calculates the viscosity change due to hydrogen incorporation into olivine following Hirth & Kohlstaedt 2004 (10.1029/138GM06). none does not modify the viscosity. Units: none.
+**Documentation:** Select what type of viscosity multiplicative prefactor scheme to apply. Allowed entries are &rsquo;none&rsquo;, and &rsquo;HK04 olivine hydration&rsquo;. HK04 olivine hydration calculates the viscosity change due to hydrogen incorporation into olivine following Hirth & Kohlstedt 2004 (10.1029/138GM06). none does not modify the viscosity. Units: none.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Viscosity ratios for Frank Kamenetskii<parameters:Material_20model/Visco_20Plastic/Viscosity_20ratios_20for_20Frank_20Kamenetskii>`
