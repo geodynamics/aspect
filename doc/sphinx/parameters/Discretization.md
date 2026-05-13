@@ -141,7 +141,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** Select for which compositional fields to skip the entropy viscosity stabilization at dirichlet boundaries. This is only advisable for compositional fields that have intrinsic physical diffusion terms, otherwise oscillations may develop. The parameter should contain a list of compositional field names.
+**Documentation:** Select for which compositional fields to skip the entropy viscosity stabilization at Dirichlet boundaries. This is only advisable for compositional fields that have intrinsic physical diffusion terms, otherwise oscillations may develop. The parameter should contain a list of compositional field names.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Stabilization method<parameters:Discretization/Stabilization_20parameters/Stabilization_20method>`
@@ -186,7 +186,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 **Pattern:** [Integer range 1...2 (inclusive)]
 
-**Documentation:** The exponent $\alpha$ in the entropy viscosity stabilization. Valid options are 1 or 2. The recommended setting is 2. (This parameter does not correspond to any variable in the 2012 paper by Kronbichler, Heister and Bangerth that describes ASPECT, see {cite}`kronbichler:etal:2012`. Rather, the paper always uses 2 as the exponent in the definition of the entropy, following equation (15) of the paper. The full approach is discussed in {cite}`guermond:etal:2011`.) Note that this is not the thermal expansion coefficient, also commonly referred to as $\alpha$.Units: None.
+**Documentation:** The exponent $\alpha$ in the entropy viscosity stabilization. Valid options are 1 or 2. The recommended setting is 2. (This parameter does not correspond to any variable in the 2012 paper by Kronbichler, Heister and Bangerth that describes ASPECT, see {cite}`kronbichler:etal:2012`. Rather, the paper always uses 2 as the exponent in the definition of the entropy, following equation (15) of the paper. The full approach is discussed in {cite}`guermond:etal:2011`.) Note that this is not the thermal expansion coefficient, also commonly referred to as $\alpha$. Units: None.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`beta<parameters:Discretization/Stabilization_20parameters/beta>`
