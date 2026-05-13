@@ -501,27 +501,26 @@ namespace aspect
 
           // Generate a combined array for kf and kd both onshore and offshore.
           // Onshore, kf and kd can have different values for bedrock and
-          // sediment. With use_marine_component = true, offshore only
+          // sediment. With use_marine_component = true, offshore
           // the silt and sand diffusion coefficients are used, not kf and kd.
           std::vector<double> combined_kd(fastscape_array_size);
           std::vector<double> combined_kf(fastscape_array_size);
+          std::vector<double> basement(fastscape_array_size);
           for (unsigned int i = 0; i < fastscape_array_size; ++i)
             {
               // For cells above sea level, grep the continental erosion parameters.
               if (elevation[i] >= current_sea_level || !use_marine_component)
                 {
-                  std::vector<double> basement(fastscape_array_size);
                   fastscape_copy_basement_(basement.data());
                   const double sediment_thickness = elevation[i] - basement[i];
 
                   // The same incision rate is used for sediments as for bedrock
                   // if the sediment rate is set to something smaller than zero
-                  // (by default -1).
+                  // (by default -1). If a different rate is set for sediment and
+                  // bedrock, the sediment rate is only used for sediment layers
+                  // at least 1 m thick.
                   if (sediment_river_incision_rate < 0. || sediment_thickness <= 1.)
                     combined_kf[i] = bedrock_river_incision_rate_array[i];
-                  // If a different rate is set for sediment and bedrock,
-                  // the sediment rate is only used for sediment layers
-                  // at least 1 m thick.
                   else if (sediment_river_incision_rate >= 0. && sediment_thickness > 1.)
                     combined_kf[i] = sediment_river_incision_rate;
                   else
@@ -529,12 +528,11 @@ namespace aspect
 
                   // The same diffusion coefficient is used for sediments as for bedrock.
                   // if the sediment coefficient is set to something smaller than zero
-                  // (by default -1).
-                  if (sediment_transport_coefficient < 0 || sediment_thickness <= 1.)
-                    combined_kd[i] = bedrock_transport_coefficient_array[i];
-                  // If a different rate is set for sediment and bedrock,
+                  // (by default -1). If a different rate is set for sediment and bedrock,
                   // the sediment coefficient is only used for sediment layers
                   // at least 1 m thick.
+                  if (sediment_transport_coefficient < 0 || sediment_thickness <= 1.)
+                    combined_kd[i] = bedrock_transport_coefficient_array[i];
                   else if (sediment_transport_coefficient >= 0. && sediment_thickness > 1.)
                     combined_kd[i] = sediment_transport_coefficient;
                   else
