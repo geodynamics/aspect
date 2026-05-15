@@ -90,17 +90,10 @@ namespace aspect
                 friction_function->set_time (this->get_time());
 
               // determine the friction angle based on position and composition
-              // The volume_fraction_index is based on the number of chemical compositional fields.
-              // However, this plugin reads a function for every compositional field, regardless of
-              // its type. Therefore we have to get the correct index.
-              // If no fields or no chemical fields are present, but only background material, the index is zero.
-              // If chemical fields are present, volume_fractions will be of size 1+n_chemical_composition_fields.
-              // The size of chemical_composition_field_indices will be one less.
-              unsigned int index = 0;
-              if (this->introspection().composition_type_exists(CompositionalFieldDescription::chemical_composition))
-                index = this->introspection().chemical_composition_field_indices()[volume_fraction_index-1];
+              // This plugin reads a function for background material and every chemical compositional field.
+              // We assume the order of the functions is the same as the order of the volume fractions.
               double friction_from_function =
-                friction_function->value(Utilities::convert_array_to_point<dim>(point.get_coordinates()),index);
+                friction_function->value(Utilities::convert_array_to_point<dim>(point.get_coordinates()), volume_fraction_index);
 
               // Convert angles from degrees to radians
               friction_from_function *= constants::degree_to_radians;
@@ -152,7 +145,8 @@ namespace aspect
                            "are applicable to the strength of rocks during earthquakes."
                            "\n\n"
                            "\\item ``function'': Specify the friction angle as a function of space and time "
-                           "for each compositional field.");
+                           "for background material and compositional fields, for a total of N$+$1 values, "
+                           "where N is the number of all compositional fields corresponding to chemical compositions.");
 
         // Dynamic friction parameters
         prm.declare_entry ("Dynamic characteristic strain rate", "1e-12",
@@ -259,11 +253,8 @@ namespace aspect
 
         // Get the number of fields for composition-dependent material properties
         // including the background field.
-        // TODO Make sure functions only have to be specified per chemical composition,
-        // but can still be specified for all fields for backwards compatibility.
-        const unsigned int n_fields = this->n_compositional_fields() + 1;
-
-        // if friction is specified as a function
+        // Parse the functions for the background material plus all chemical composition fields,
+        // if friction is specified as a function.
         if (friction_mechanism == function)
           {
             prm.enter_subsection("Friction function");
@@ -272,7 +263,7 @@ namespace aspect
               try
                 {
                   friction_function
-                    = std::make_unique<Functions::ParsedFunction<dim>>(n_fields);
+                    = std::make_unique<Functions::ParsedFunction<dim>>(chemical_field_names.size());
                   friction_function->parse_parameters (prm);
                 }
               catch (...)
