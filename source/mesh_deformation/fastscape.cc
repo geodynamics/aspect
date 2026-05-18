@@ -810,21 +810,25 @@ namespace aspect
           const double x = grid_extent[0].first + (ix - use_ghost_nodes) * fastscape_dx;
           const double y = grid_extent[1].first + (iy - use_ghost_nodes) * fastscape_dy;
 
-          // Set time scaling factor based on time unit
-          // This factor is used to scale the quantities when "Use years instead of seconds" in ASPECT is off.
+          // Set the time scaling factor based on the unit of time, as Fastscape always
+          // expects units in years, not seconds. Therefore, the factor is used to scale
+          // the quantities when "Use years instead of seconds" in ASPECT is set to false.
+          // In that case the transport coefficient has units ${m^2/s}$, and the river
+          // incision rate units of $m^(1-2drainage_area_exponent)/s}$, so we multiply
+          // with a year in seconds.
           const double time_scaling_factor = (this->convert_output_to_years() ? 1.0 : year_in_seconds);
-          // Update bedrock transport coefficient kd
+          // Set bedrock transport coefficient kd either from a function or a constant.
           bedrock_transport_coefficient_array[i] =
             (use_kd_distribution_function
-             ?  // update with time scaling
+             ?
              time_scaling_factor * kd_distribution_function.value(Point<2>(x, y))
              :
              time_scaling_factor * constant_bedrock_transport_coefficient);
 
-          // Update bedrock river incision rate kf
+          // Set bedrock river incision rate kf either from a function or a constant.
           bedrock_river_incision_rate_array[i] =
             (use_kf_distribution_function)
-            ?  // update with time scaling
+            ?
             time_scaling_factor * kf_distribution_function.value(Point<2>(x, y))
             :
             time_scaling_factor * constant_bedrock_river_incision_rate;
@@ -2000,7 +2004,14 @@ namespace aspect
           {
             drainage_area_exponent_m = prm.get_double("Drainage area exponent");
             slope_exponent_n = prm.get_double("Slope exponent");
-            sediment_river_incision_rate = prm.get_double("Sediment river incision rate");
+            // Fastscape always expects units in years, not seconds. Therefore, scale
+            // the sediment Kf and Kd when "Use years instead of seconds" in ASPECT is set to false.
+            // In that case the transport coefficient has units ${m^2/s}$, and the river
+            // incision rate units of $m^(1-2drainage_area_exponent)/s}$, so we multiply
+            // with a year in seconds. The bedrock values are scaled when filling the FastScape
+            // arrays.
+            const double time_scaling_factor = (this->convert_output_to_years() ? 1.0 : year_in_seconds);
+            sediment_river_incision_rate = time_scaling_factor * prm.get_double("Sediment river incision rate");
             // kf
             use_kf_distribution_function = prm.get_bool("Use kf distribution function");
             if (use_kf_distribution_function)
@@ -2019,7 +2030,7 @@ namespace aspect
               {
                 constant_bedrock_river_incision_rate = prm.get_double("Bedrock river incision rate");
               }
-            sediment_transport_coefficient = prm.get_double("Sediment diffusivity");
+            sediment_transport_coefficient = time_scaling_factor * prm.get_double("Sediment diffusivity");
             // kd
             use_kd_distribution_function = prm.get_bool("Use kd distribution function");
             if (use_kd_distribution_function)
