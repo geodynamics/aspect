@@ -1772,19 +1772,19 @@ namespace aspect
                               "Deposition coefficient for bedrock.");
             prm.declare_entry("Sediment deposition coefficient", "-1",
                               Patterns::Double(),
-                              "Deposition coefficient for sediment, -1 sets this to the same as the bedrock deposition coefficient.");
+                              "Deposition coefficient for sediment. A value smaller than 0 sets this to the same as the bedrock deposition coefficient.");
             // Define Bedrock river incision rate (Kf) as a constant value or a time-dependent user-defined function
             prm.declare_entry("Use kf distribution function", "false",
                               Patterns::Bool(),
                               "Whether to define bedrock river incision rate using a distribution function. "
-                              "If false, a constant kf value will be used, which can be specified by setting
+                              "If false, a constant kf value will be used, which can be specified by setting "
                               "the parameter ``Bedrock river incision rate''. Units: ${m^(1-2drainage_area_exponent)/yr}$ "
                               "if ``Use years instead of seconds'' is true; otherwise, the units are ${m^(1-2drainage_area_exponent)/s}$.");
             prm.declare_entry("Bedrock river incision rate", "1e-5",
                               Patterns::Double(),
                               "River incision rate for bedrock in the Stream Power Law. "
                               "Units: ${m^(1-2drainage_area_exponent)/yr}$ if ``Use years instead of seconds'' is true; "
-                              "otherwise, the units are ${m^(1-2drainage_area_exponent)/s}$");
+                              "otherwise, the units are ${m^(1-2drainage_area_exponent)/s}$.");
             prm.enter_subsection ("kf distribution function");
             {
               Functions::ParsedFunction<2>::declare_parameters(prm, 2);
@@ -1792,16 +1792,16 @@ namespace aspect
             prm.leave_subsection();
             prm.declare_entry("Sediment river incision rate", "-1",
                               Patterns::Double(),
-                              "River incision rate for sediment in the Stream Power Law. -1 sets this to the bedrock river incision rate. "
+                              "River incision rate for sediment in the Stream Power Law. A value smaller than 0 sets this to the bedrock river incision rate. "
                               "Units: $m^(1-2drainage_area_exponent)/yr}$ if ``Use years instead of seconds'' is true; "
-                              "otherwise, the units are $m^(1-2drainage_area_exponent)/s}$");
+                              "otherwise, the units are $m^(1-2drainage_area_exponent)/s}$.");
 
             // Define Bedrock transport coefficient (Kd) as a constant value of time dependent user-defined function
             prm.declare_entry("Use kd distribution function", "false",
                               Patterns::Bool(),
                               "Whether to define Bedrock transport coefficient (diffusivity) using a distribution function. "
                               "If false, a constant kd value will be used, which can be specified by setting the parameter "
-                              ``Bedrock diffusivity''. Units: ${m^2/yr}$ if ``Use years instead of seconds'' "
+                              "``Bedrock diffusivity''. Units: ${m^2/yr}$ if ``Use years instead of seconds'' "
                               "is true; otherwise, the units are ${m^2/s}$.");
             prm.declare_entry("Bedrock diffusivity", "1e-2",
                               Patterns::Double(),
