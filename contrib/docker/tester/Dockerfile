@@ -25,10 +25,20 @@ RUN cd /opt && \
     ./candi.sh -p /opt -j4 && \
     rm -rf /opt/tmp
 
+# Install FastScape for ASPECT
+RUN cd /opt && \
+    git clone https://github.com/Djneu/fastscapelib-fortran.git && \
+    cd fastscapelib-fortran  && \
+    mdkir build && \
+    cd build && \
+    cmake -DBUILD_FASTSCAPELIB_SHARED=ON .. && \
+    make
+
 # Set environment variables for this image to be used
 # by Github Actions
 ENV PATH="/opt/astyle-2.04:/opt/cmake-3.26.4-linux-x86_64/bin:$PATH"
 ENV DEAL_II_DIR /opt/deal.II-master
+ENV FASTSCAPE_DIR /opt/fastscapelib-fortran/build
 ENV NETCDF_DIR /opt/netcdf-4.7.4
 ENV OMPI_MCA_btl_base_warn_component_unused=0
 ENV OMPI_MCA_mpi_yield_when_idle=1
