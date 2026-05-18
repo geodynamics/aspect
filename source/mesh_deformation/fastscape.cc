@@ -1781,7 +1781,7 @@ namespace aspect
             prm.declare_entry("Bedrock river incision rate", "1e-5",
                               Patterns::Double(),
                               "River incision rate for bedrock in the Stream Power Law. "
-                              "Units: ${m^(1-2drainage_area_exponent)/yr}$ if ``Use years instead of seconds in output'' is true; "
+                              "Units: ${m^(1-2drainage_area_exponent)/yr}$ if ``Use years instead of seconds'' is true; "
                               "otherwise, the units are ${m^(1-2drainage_area_exponent)/s}$");
             prm.enter_subsection ("kf distribution function");
             {
@@ -1791,7 +1791,7 @@ namespace aspect
             prm.declare_entry("Sediment river incision rate", "-1",
                               Patterns::Double(),
                               "River incision rate for sediment in the Stream Power Law. -1 sets this to the bedrock river incision rate. "
-                              "Units: $m^(1-2drainage_area_exponent)/yr}$ if ``Use years instead of seconds in output'' is true; "
+                              "Units: $m^(1-2drainage_area_exponent)/yr}$ if ``Use years instead of seconds'' is true; "
                               "otherwise, the units are $m^(1-2drainage_area_exponent)/s}$");
 
             // Define Bedrock transport coefficient (Kd) as a constant value of time dependent user-defined function
@@ -1801,7 +1801,7 @@ namespace aspect
                               "If false, a constant kd value will be used.");
             prm.declare_entry("Bedrock diffusivity", "1e-2",
                               Patterns::Double(),
-                              "Transport coefficient (diffusivity) for bedrock. Units: ${m^2/yr}$ if ``Use years instead of seconds in output'' "
+                              "Transport coefficient (diffusivity) for bedrock. Units: ${m^2/yr}$ if ``Use years instead of seconds'' "
                               "is true; otherwise, the units are ${m^2/s}$.");
             prm.enter_subsection ("kd distribution function");
             {
