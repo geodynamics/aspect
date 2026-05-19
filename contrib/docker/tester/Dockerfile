@@ -29,6 +29,7 @@ RUN cd /opt && \
 RUN cd /opt && \
     git clone https://github.com/Djneu/fastscapelib-fortran.git && \
     cd fastscapelib-fortran  && \
+    git checkout coupling_dev && \
     mdkir build && \
     cd build && \
     cmake -DBUILD_FASTSCAPELIB_SHARED=ON .. && \
