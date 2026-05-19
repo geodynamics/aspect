@@ -24,7 +24,7 @@
 
 #include <aspect/simulator_access.h>
 #include <aspect/gravity_model/interface.h>
-#include <aspect/gravity_model/radial.h>
+#include <aspect/gravity_model/radial_constant.h>
 
 namespace aspect
 {
@@ -70,6 +70,11 @@ namespace aspect
 
       private:
         /**
+         * 
+         */
+        RadialConstant<dim> radialconstant;
+
+        /**
          * Mass of the perturbing body
          */
         double M_p;
@@ -80,7 +85,7 @@ namespace aspect
         double a_s;
 
         /**
-         * Period of the non-synchronous rotation in year or second
+         * Period of the non-synchronous rotation
          */
         double P;
     };

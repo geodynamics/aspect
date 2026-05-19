@@ -25,7 +25,7 @@
 
 #include <deal.II/base/tensor.h>
 
-#include <aspect/gravity_model/radial.h>
+#include <aspect/gravity_model/radial_constant.h>
 
 namespace aspect
 {
@@ -47,7 +47,7 @@ namespace aspect
       const unsigned int dim = 3;
       /**
        * Notation of this potential equation is converted from spherical coordinates to cartesian coordinates.
-       * Therefore, gradient of potential is (3 G M_p) / (2 a_s^3) * ( 1 / 6 * ( x^2 + y^2 - 2 * z^2) + 1 / 2 * (C1*(x^2 + y^2) - 2 * C2 * x * y)))
+       * Therefore, the potential is (3 G M_p) / (2 a_s^3) * ( 1 / 6 * ( x^2 + y^2 - 2 * z^2) + 1 / 2 * (C1*(x^2 + y^2) - 2 * C2 * x * y)))
        * where C1 = cos(2*b*t) and C2 = sin(2*b*t)
        * b = 2 * pi / P
        */
@@ -59,15 +59,13 @@ namespace aspect
 
       const Tensor<1,dim> dTstar_gradient ({1./3. * p[0], 1./3. * p[1], -2./3. * p[2]});
 
-      const Tensor<1,dim> dT0_gradient ({C1 *p[0] - C2 *p[1], -C1 *p[1] - C2 *p[0], 0});
+      const Tensor<1,dim> dT0_gradient ({C1 * p[0] - C2 * p[1], -C1 * p[1] - C2 * p[0], 0});
 
       const double G = aspect::constants::big_g;
       const double T_factor = 3. * G * M_p / ( 2. * a_s * a_s * a_s );
-
       const Tensor<1,dim> tidal_gravity = T_factor *
                                           (dTstar_gradient + dT0_gradient);
 
-      RadialConstant<dim> radialconstant;
       return radialconstant.gravity_vector(p) + tidal_gravity;
     }
 
@@ -76,11 +74,11 @@ namespace aspect
     void
     RadialWithTidalPotential<dim>::declare_parameters (ParameterHandler &prm)
     {
-      RadialLinear<dim>::declare_parameters(prm);
       prm.enter_subsection("Gravity model");
       {
         prm.enter_subsection("Radial with tidal potential");
         {
+          RadialConstant<dim>::declare_parameters(prm);
           prm.declare_entry ("Mass of perturbing body", "1.898e27",
                              Patterns::Double (),
                              "Mass of body that perturbs gravity of modeled body. "
@@ -96,7 +94,6 @@ namespace aspect
           prm.declare_entry ("Period of nonsynchronous rotation", "10000",
                              Patterns::Double (),
                              "Period of nonsynchronous rotation (NSR). "
-                             "This works for the modeled body having decoupled rotation between interior layers. "
                              "The default value is the period of NSR on Europa's icy shell. "
                              "Units is $year$ when 'Use years instead of seconds' is true, "
                              "and $second$ when 'Use years instead of seconds' is false. ");
@@ -113,11 +110,13 @@ namespace aspect
     {
       AssertThrow (dim==3, ExcMessage ("The 'radial with tidal potential' gravity model "
                                        "can only be used in 3D."));
-
+      
       prm.enter_subsection("Gravity model");
       {
         prm.enter_subsection("Radial with tidal potential");
         {
+          radialconstant.initialize_simulator(this->get_simulator());
+          radialconstant.parse_parameters(prm);
           M_p = prm.get_double ("Mass of perturbing body");
           a_s = prm.get_double ("Semimajor axis of orbit");
           const double time_scale = this->get_parameters().convert_to_years ? constants::year_in_seconds : 1.0;
@@ -141,10 +140,15 @@ namespace aspect
                                   "(which is radial, pointing inward if the gravity "
                                   "is positive), "
                                   "and a term that results from a tidal potential and that "
-                                  "leads to a gravity field that varies with latitude and longitude."
+                                  "leads to a gravity field that varies with latitude and longitude. "
+                                  "There are two components of tidal potential: pulling of perturbing body and "
+                                  "nonsynchronous rotation of modeled body. "
+                                  "Nonsynchronous rotation occurs in planetary bodies where a liquid layer "
+                                  "decouples rotation of surrounding solid layers. "
                                   "The magnitude of gravity for the radial constant part is read from the "
                                   "input file in a section `Gravity model/Radial constant'; the "
                                   "parameters that describe the tidal potential contribution are read "
-                                  "from a section `Gravity model/Radial with tidal potential'.")
+                                  "from a section `Gravity model/Radial with tidal potential'. "
+                                  "This module only works in 3D spherical geometry.")
   }
 }
