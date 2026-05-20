@@ -38,7 +38,22 @@ echo "end" >> current.prm
 echo "set Output directory = output_addition/output-histogram" >> current.prm
 cat addition_algorithm_benchmarks.prm current.prm | mpirun -np $processes $ASPECT_EXEC --
 
-# Point density function, Cutoff_c1 (the default kernel function)
+# Point density function, Epanechnikov (parabolic)
+echo "subsection Prescribed Stokes solution" > current.prm
+echo "set Model name = function" >> current.prm
+echo "subsection Velocity function" >> current.prm
+echo "  set Variable names      = x,y,t" >> current.prm
+echo "  set Function expression = 0; (0.5*sin(pi*t))" >> current.prm
+echo " end" >> current.prm
+echo "end" >> current.prm
+echo "subsection Particles" >> current.prm
+echo "  set Particle addition algorithm = point density function" >> current.prm
+echo "  set Point density kernel function = epanechnikov" >> current.prm
+echo "end" >> current.prm
+echo "set Output directory = output_addition/output-epanechnikov" >> current.prm
+cat addition_algorithm_benchmarks.prm current.prm | mpirun -np $processes $ASPECT_EXEC --
+
+# Point density function, Cutoff_c1
 echo "subsection Prescribed Stokes solution" > current.prm
 echo "set Model name = function" >> current.prm
 echo "subsection Velocity function" >> current.prm
@@ -144,7 +159,7 @@ echo "end" >> current.prm
 echo "set Output directory = output_addition/output-histogram-constant-velocity" >> current.prm
 cat addition_algorithm_benchmarks.prm current.prm | mpirun -np $processes $ASPECT_EXEC --
 
-# Point density function, Cutoff_c1 (the default kernel function)
+# Point density function, epanechnikov (parabolic)
 echo "subsection Prescribed Stokes solution" > current.prm
 echo "set Model name = function" >> current.prm
 echo "subsection Velocity function" >> current.prm
@@ -155,8 +170,9 @@ echo " end" >> current.prm
 echo "end" >> current.prm
 echo "subsection Particles" >> current.prm
 echo "  set Particle addition algorithm = point density function" >> current.prm
+echo "  set Point density kernel function = epanechnikov" >> current.prm
 echo "end" >> current.prm
-echo "set Output directory = output_addition/output-cutoff-c1-constant-velocity" >> current.prm
+echo "set Output directory = output_addition/output-epanechnikov-constant-velocity" >> current.prm
 cat addition_algorithm_benchmarks.prm current.prm | mpirun -np $processes $ASPECT_EXEC --
 
 # Point density function, Cutoff_w1 (the default kernel function)
