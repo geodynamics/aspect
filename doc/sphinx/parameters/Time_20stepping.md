@@ -22,7 +22,7 @@ The following plugins are available:
 &lsquo;function&rsquo;: This model uses a time step specified in the parameter file specified as a function of time. This plugin will always request advancing to the next time step.
 
 &lsquo;repeat on cutback&rsquo;: This time stepping plugin will detect a situation where the computed time step shrinks by more than a user-controlled factor. In that situation, the previous time step will be repeated with a smaller step size.
-A large reduction in time step size typically happens when velocities change abruptly. Repeating the time step ensure properly resolving this event. It is useful to consider setting the "Maximum relative increase in time step" option to avoid repeatedly repeating every other time step.
+A large reduction in time step size typically happens when velocities change abruptly. Repeating the time step ensures properly resolving this event. It is useful to consider setting the "Maximum relative increase in time step" option to avoid repeatedly repeating every other time step.
 
 &lsquo;repeat on nonlinear solver failure&rsquo;: This time stepping plugin will react when the nonlinear solver does not converge in the specified maximum number of iterations and repeats the current timestep with a smaller step size. This plugin is enabled automatically if "Nonlinear solver failure strategy" is set to "cut timestep size".
 ::::
