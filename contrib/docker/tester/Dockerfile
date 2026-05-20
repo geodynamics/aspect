@@ -32,7 +32,7 @@ RUN cd /opt && \
     git checkout coupling_dev && \
     mkdir build && \
     cd build && \
-    cmake -DBUILD_FASTSCAPELIB_SHARED=ON .. && \
+    /opt/cmake-3.26.4-linux-x86_64/bin/cmake -DBUILD_FASTSCAPELIB_SHARED=ON .. && \
     make
 
 # Set environment variables for this image to be used
