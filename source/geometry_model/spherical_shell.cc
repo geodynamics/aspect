@@ -50,36 +50,6 @@ namespace aspect
 
 
       template <int dim>
-      FullMatrix<double>
-      phi_periodicity_rotation_matrix(const double phi)
-      {
-        FullMatrix<double> rotation_matrix(dim);
-
-        if constexpr (dim == 2)
-          {
-            Assert(phi == 90 || phi == 180, ExcInternalError());
-            if (phi == 90)
-              {
-                rotation_matrix[0][1] = 1.;
-                rotation_matrix[1][0] = -1.;
-              }
-            else
-              {
-                rotation_matrix[0][0] = -1.;
-                rotation_matrix[1][1] = -1.;
-              }
-          }
-        else
-          {
-            Assert(false, ExcInternalError());
-          }
-
-        return rotation_matrix;
-      }
-
-
-
-      template <int dim>
       Tensor<2, dim>
       phi_periodicity_rotation_tensor(const double phi)
       {
@@ -110,11 +80,17 @@ namespace aspect
 
 
       template <int dim>
-      unsigned int
-      phi_periodicity_direction(const double phi)
+      FullMatrix<double>
+      phi_periodicity_rotation_matrix(const double phi)
       {
-        Assert(phi == 90 || phi == 180, ExcInternalError());
-        return 1;
+        FullMatrix<double> rotation_matrix(dim);
+        const Tensor<2, dim> rotation_tensor = phi_periodicity_rotation_tensor<dim>(phi);
+
+        for (unsigned int i=0; i<dim; ++i)
+          for (unsigned int j=0; j<dim; ++j)
+            rotation_matrix[i][j] = rotation_tensor[i][j];
+
+        return rotation_matrix;
       }
     }
 
@@ -535,7 +511,7 @@ namespace aspect
               const FullMatrix<double> rotation_matrix = phi_periodicity_rotation_matrix<dim>(phi);
 
               GridTools::collect_periodic_faces(coarse_grid, /*b_id1*/ 2, /*b_id2*/ 3,
-                                                phi_periodicity_direction<dim>(phi), matched_pairs,
+                                                /*direction*/ 1, matched_pairs,
                                                 Tensor<1, dim>(), rotation_matrix);
 
               if (matched_pairs.size() > 0)
@@ -553,28 +529,12 @@ namespace aspect
 
           if (periodic)
             {
-              Tensor<2, dim> align_with_phi_range;
-              align_with_phi_range[0][1] = -1.;
-              align_with_phi_range[1][0] = 1.;
-
-              GridTools::transform(
-                [&](const Point<dim> &p) -> Point<dim>
-              {
-                const Tensor<1, dim> rotated_point = align_with_phi_range * p;
-                Point<dim> transformed_point;
-                for (unsigned int d=0; d<dim; ++d)
-                  transformed_point[d] = rotated_point[d];
-
-                return transformed_point;
-              },
-              coarse_grid);
-
               std::vector<GridTools::PeriodicFacePair<typename parallel::distributed::Triangulation<dim>::cell_iterator>>
               matched_pairs;
               const FullMatrix<double> rotation_matrix = phi_periodicity_rotation_matrix<dim>(phi);
 
               GridTools::collect_periodic_faces(coarse_grid, /*b_id1*/ 2, /*b_id2*/ 3,
-                                                phi_periodicity_direction<dim>(phi), matched_pairs,
+                                                /*direction*/ 1, matched_pairs,
                                                 Tensor<1, dim>(), rotation_matrix);
 
               if (matched_pairs.size() > 0)
@@ -727,22 +687,19 @@ namespace aspect
 
       if (periodic)
         {
-          Tensor<2,dim> rotation_matrix = phi_periodicity_rotation_tensor<dim>(phi);
+          Tensor<2,dim> rotation_matrix;
 
-          if (phi == 180)
+          // half_hyper_shell creates the 180 degree shell in the positive
+          // x half-plane. Points that crossed a periodic boundary therefore
+          // need a 180 degree rotation only if they left this half-plane.
+          if (phi == 180 && position[0] < 0.)
+            rotation_matrix = phi_periodicity_rotation_tensor<dim>(phi);
+          else if (phi == 90 && position[0] < 0.)
+            rotation_matrix = phi_periodicity_rotation_tensor<dim>(phi);
+          else if (phi == 90 && position[1] < 0.)
             {
-              if (position[1] >= 0.)
-                return;
-            }
-          else if (position[0] < 0.)
-            {
-              rotation_matrix[0][1] = 1.;
-              rotation_matrix[1][0] = -1.;
-            }
-          else if (position[1] < 0.)
-            {
-              rotation_matrix[0][1] = -1.;
-              rotation_matrix[1][0] = 1.;
+              rotation_matrix = phi_periodicity_rotation_tensor<dim>(phi);
+              rotation_matrix *= -1.;
             }
           else
             return;
@@ -943,7 +900,7 @@ namespace aspect
           const FullMatrix<double> rotation_matrix = phi_periodicity_rotation_matrix<dim>(phi);
 
           GridTools::collect_periodic_faces(dof_handler, /*b_id1*/ 2, /*b_id2*/ 3,
-                                            phi_periodicity_direction<dim>(phi), matched_pairs,
+                                            /*direction*/ 1, matched_pairs,
                                             Tensor<1, dim>(), rotation_matrix);
 
           DoFTools::make_periodicity_constraints<dim,dim,double>(matched_pairs,
