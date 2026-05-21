@@ -2,7 +2,7 @@
 # of grain boundary sliding (GBS) rheology in ASPECT, based on the analytical
 # creep law from Goldsby & Kohlstedt (2001): 
 #
-#   η = 0.5 * A^(-1/n) * d^m * exp[(E + PV)/(nRT)] * (ε̇)^{(1-n)/n}
+#   η = 0.5 * A^(-1/n) * d^(m/n) * exp[(E + PV)/(nRT)] * (ε̇)^{(1-n)/n}
 #
 # where:
 #   η is the effective viscosity,
@@ -46,13 +46,13 @@
 # y = 0.5
 # P = 0
 
-# eta = 0.5 * A**(-1/n) * d**m * np.exp((E + P * V) / (n * R * T)) * edot**((1 - n) / n)
+# eta = 0.5 * A**(-1/n) * d**(m/n) * np.exp((E + P * V) / (n * R * T)) * edot**((1 - n) / n)
 # print(f"Analytical viscosity at y={y}: {eta:.2e} Pa·s")
 
 set Dimension                              = 2
 set End time                               = 0.025
 set Use years instead of seconds           = false
-set Output directory = grain_boundary_sliding
+set Output directory = output-grain_boundary_sliding
 
 subsection Geometry model
   set Model name = box
@@ -95,11 +95,11 @@ subsection Material model
 
     subsection Grain boundary sliding
       # GBS Parameters (Goldsby & Kohlstedt 2001)
-      set Prefactors for grain boundary sliding = 3.9e-19
+      set Prefactors for grain boundary sliding = 6.2e-14
       set Stress exponents for grain boundary sliding = 1.8
       set Grain size exponents for grain boundary sliding = 1.4
-      set Activation energies for grain boundary sliding = 49000
-      set Activation volumes for grain boundary sliding = 13e-6
+      set Activation energies for grain boundary sliding = 49e3
+      set Activation volumes for grain boundary sliding = -13e-6
       set Grain size = 26e-6
     end
 

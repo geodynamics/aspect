@@ -5704,20 +5704,20 @@ If the function you are describing represents a vector-valued function with mult
 ## **Subsection:** Material model / Visco Plastic / Grain boundary sliding
 ::::{dropdown} __Parameter:__ {ref}`Activation energies for grain boundary sliding<parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Activation_20energies_20for_20grain_20boundary_20sliding>`
 :name: parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Activation_20energies_20for_20grain_20boundary_20sliding
-**Default value:** 49
+**Default value:** 49e3
 
 **Pattern:** [Anything]
 
-**Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001for T > 262 k.Units: \si{\joule\per\mole}.
+**Documentation:** Here we use the default values for ice at T < 255 K as given in Goldsby & Kohlstedt, 2001. Units: \si{\joule\per\mole}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Activation volumes for grain boundary sliding<parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Activation_20volumes_20for_20grain_20boundary_20sliding>`
 :name: parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Activation_20volumes_20for_20grain_20boundary_20sliding
-**Default value:** 13e-6
+**Default value:** -13e-6
 
 **Pattern:** [Anything]
 
-**Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001.Units: \si{\meter\cubed\per\mole}.
+**Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001. Units: \si{\meter\cubed\per\mole}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Grain size<parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Grain_20size>`
@@ -5726,7 +5726,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001.Units: \si{\meter}.
+**Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001. Units: \si{\meter}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Grain size exponents for grain boundary sliding<parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Grain_20size_20exponents_20for_20grain_20boundary_20sliding>`
@@ -5735,16 +5735,16 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Anything]
 
-**Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001.
+**Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001. Units: None.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Prefactors for grain boundary sliding<parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Prefactors_20for_20grain_20boundary_20sliding>`
 :name: parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Prefactors_20for_20grain_20boundary_20sliding
-**Default value:** 3.9e-19.2
+**Default value:** 6.2e-14
 
 **Pattern:** [Anything]
 
-**Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001
+**Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001. Units: \si{\pascal}$^{-n_{\text{grain boundary sliding}}}$ \si{\meter}$^{m_{\text{grain boundary sliding}}}$ \si{\per\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Stress exponents for grain boundary sliding<parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Stress_20exponents_20for_20grain_20boundary_20sliding>`
@@ -5753,7 +5753,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001.
+**Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001. Units: None.
 ::::
 
 (parameters:Material_20model/Viscoelastic)=

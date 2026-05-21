@@ -110,12 +110,12 @@ namespace aspect
                                                                           n_phase_transitions_per_composition);
 
         // Power law grain-size sensitive creep equation:
-        // viscosity = 0.5 * A^(-1/n) * d^m * exp[(E + PV)/(nRT)] * edot_ii^[(1 - n)/n]
+        // viscosity = 0.5 * A^(-1/n) * d^(m/n) * exp[(E + PV)/(nRT)] * edot_ii^[(1 - n)/n]
         // A: prefactor, edot_ii: square root of second invariant of deviatoric strain rate tensor,
         // E: activation energy, d: grain size, m: grain size exponenet, P: pressure,
         // V; activation volume, n: stress exponent, R: gas constant, T: temperature.
         double viscosity_grainboundarysliding = 0.5 * std::pow(p.prefactor, -1.0 / p.stress_exponent) *
-                                                std::pow(grain_size, p.grain_size_exponent) *
+                                                std::pow(grain_size, p.grain_size_exponent / p.stress_exponent) *
                                                 std::exp((p.activation_energy + pressure * p.activation_volume) /
                                                          (constants::gas_constant * temperature * p.stress_exponent)) *
                                                 std::pow(strain_rate, (1.0 - p.stress_exponent) / p.stress_exponent);
@@ -139,26 +139,26 @@ namespace aspect
       {
         prm.enter_subsection("Grain boundary sliding");
         {
-          prm.declare_entry ("Prefactors for grain boundary sliding", "3.9e-19.2",
+          prm.declare_entry ("Prefactors for grain boundary sliding", "6.2e-14",
                              Patterns::Anything(),
-                             "Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001");
+                             "Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001. "
+                             "Units: \\si{\\pascal}$^{-n_{\\text{grain boundary sliding}}}$ \\si{\\meter}$^{m_{\\text{grain boundary sliding}}}$ \\si{\\per\\second}.");
           prm.declare_entry ("Stress exponents for grain boundary sliding", "1.8",
                              Patterns::List(Patterns::Double(0.)),
-                             "Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001.");
+                             "Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001. Units: None.");
           prm.declare_entry ("Grain size exponents for grain boundary sliding", "1.4.",
                              Patterns::Anything(),
-                             "Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001.");
-          prm.declare_entry ("Activation energies for grain boundary sliding", "49",
+                             "Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001. Units: None.");
+          prm.declare_entry ("Activation energies for grain boundary sliding", "49e3",
                              Patterns::Anything(),
-                             "Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001"
-                             "for T > 262 k."
+                             "Here we use the default values for ice at T < 255 K as given in Goldsby & Kohlstedt, 2001. "
                              "Units: \\si{\\joule\\per\\mole}.");
-          prm.declare_entry ("Activation volumes for grain boundary sliding", "13e-6",
+          prm.declare_entry ("Activation volumes for grain boundary sliding", "-13e-6",
                              Patterns::Anything(),
-                             "Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001."
+                             "Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001. "
                              "Units: \\si{\\meter\\cubed\\per\\mole}.");
           prm.declare_entry ("Grain size", "26e-6", Patterns::Double (0.),
-                             "Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001."
+                             "Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001. "
                              "Units: \\si{\\meter}.");
           prm.leave_subsection();
         }
