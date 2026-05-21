@@ -1717,7 +1717,7 @@ namespace aspect
                             Patterns::Double(),
                             "Maximum topography change from the initial noise. Units: ${m}$");
           prm.declare_entry("Additional output variables", "river incision rate",
-                            Patterns::Selection("river incision rate|deposition coefficient|uplift rate"),
+                            Patterns::Selection("river incision rate|transport coefficient|uplift rate"),
                             "Select one additional Fastscape variable to output in the Fastcape vtk. "
                             "Output are in units of per year. "
                            );
@@ -1993,7 +1993,7 @@ namespace aspect
 
           if (output_choice == "river incision rate")
             additional_output_variable = FastscapeOutputVariable::kf;
-          else if (output_choice == "deposition coefficient")
+          else if (output_choice == "transport coefficient")
             additional_output_variable = FastscapeOutputVariable::kd;
           else if (output_choice == "uplift rate")
             additional_output_variable = FastscapeOutputVariable::uplift_rate;
