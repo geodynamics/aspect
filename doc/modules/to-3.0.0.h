@@ -7,12 +7,6 @@
  *
  * <ol>
  *
- * <li> New: The 2d spherical shell geometry model now supports
- * 180 degree phi-periodic shells, including particle advection across
- * the periodic boundary.
- * <br>
- * (Francesco Radica, 2026/05/20)
- *
  * <li>  Fixed: The function to determine whether a boundary is an inflow
  * or outflow boundary (for the purpose of deciding whether to apply
  * boundary conditions for compositional fields) did not take into
