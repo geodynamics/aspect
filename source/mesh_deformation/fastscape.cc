@@ -503,9 +503,13 @@ namespace aspect
           // Onshore, kf and kd can have different values for bedrock and
           // sediment. With use_marine_component = true, offshore
           // the silt and sand diffusion coefficients are used, not kf and kd.
+          // We use a composite of the silt and sand diffusion coefficients
+          // to fill kd there (as they pertain to the same diffusion equation)
+          // but set kf to a signalling nan.
           std::vector<double> combined_kd(fastscape_array_size);
           std::vector<double> combined_kf(fastscape_array_size);
           std::vector<double> basement(fastscape_array_size);
+          std::vector<double> silt_fraction(fastscape_array_size);
           for (unsigned int i = 0; i < fastscape_array_size; ++i)
             {
               // For cells above sea level, grep the continental erosion parameters.
@@ -539,11 +543,20 @@ namespace aspect
                     combined_kd[i] = numbers::signaling_nan<double>();
                 }
               // Below sea level, when the marine component is used,
-              // kf and kd are not used.
+              // kf is not used. kd is set to the marine diffusion coefficients.
               else if (elevation[i] < current_sea_level && use_marine_component)
                 {
                   combined_kf[i] = numbers::signaling_nan<double>();
-                  combined_kd[i] = numbers::signaling_nan<double>();
+                  fastscape_copy_f_(silt_fraction.data());
+                  // The silt fraction represents the fraction of silt out of the
+                  // total marine sediments (i.e., silt / (sand + silt)).
+                  // Note that Fastscape does not know about the marine background
+                  // sedimentation and only considers sand and silt in the marine domain.
+                  // The combined marine diffusion coefficient is an approximation
+                  // of the actual diffusion, which is solved for both sediment
+                  // types separately in Fastscape.
+                  const double marine_diffusion_coefficient = silt_fraction * silt_transport_coefficient + (1. - silt_fraction) * sand_transport_coefficient;
+                  combined_kd[i] = marine_diffusion_coefficient;
                 }
               else
                 {
