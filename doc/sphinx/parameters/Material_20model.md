@@ -5708,7 +5708,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Anything]
 
-**Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001for T < 255 K.Units: \si{\joule\per\mole}.
+**Documentation:** Here we use the default values for ice at T < 255 K as given in Goldsby & Kohlstedt, 2001. Units: \si{\joule\per\mole}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Activation volumes for grain boundary sliding<parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Activation_20volumes_20for_20grain_20boundary_20sliding>`
@@ -5717,7 +5717,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Anything]
 
-**Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001.Units: \si{\meter\cubed\per\mole}.
+**Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001. Units: \si{\meter\cubed\per\mole}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Grain size<parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Grain_20size>`
@@ -5726,7 +5726,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001.Units: \si{\meter}.
+**Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001. Units: \si{\meter}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Grain size exponents for grain boundary sliding<parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Grain_20size_20exponents_20for_20grain_20boundary_20sliding>`
@@ -5744,7 +5744,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Anything]
 
-**Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001Units: \si{\pascal}$^{-n_{\text{grain boundary sliding}}}$ \si{\meter}$^{m_{\text{grain boundary sliding}}}$ \si{\per\second}.
+**Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001. Units: \si{\pascal}$^{-n_{\text{grain boundary sliding}}}$ \si{\meter}$^{m_{\text{grain boundary sliding}}}$ \si{\per\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Stress exponents for grain boundary sliding<parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Stress_20exponents_20for_20grain_20boundary_20sliding>`
