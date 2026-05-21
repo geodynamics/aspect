@@ -3,7 +3,7 @@
 
 set Dimension                              = 2
 set Start time                             = 0
-set End time                               = 0.03
+set End time                               = 0.06
 set Use years instead of seconds           = false
 set Nonlinear solver scheme                = single Advection, single Stokes
 set Maximum time step                      = 0.01
@@ -14,8 +14,8 @@ end
 
 subsection Termination criteria
   set Termination criteria      = end step
-  set End step                  = 3
-  set Checkpoint on termination = false
+  set End step                  = 6
+  set Checkpoint on termination = true
 end
 
 subsection Geometry model
