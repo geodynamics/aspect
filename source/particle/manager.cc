@@ -1103,7 +1103,9 @@ namespace aspect
                                "value as long as the distance between particles is less than the selected bandwidth."
                                "The cutoff w1 and cutoff c1 dealii options call the deal.II functions called cutoffW1 and cutoffC1 respectively. "
                                "These are functions whose return values decrease with distance. A more detailed explanation on these two "
-                               "function are available in the deal.II documentation.");
+                               "function are available in the deal.II documentation. The epanechnikov function is a parabolic function "
+                               "which also returns a lower value as distance increases. The epanechnikov kernel is theoretically "
+                               "the most efficient possible kernel to use in kernel density estimation.");
             prm.declare_entry ("Bandwidth", "0.3",
                                Patterns::Double (0.3),"The bandwidth value is used to scale the kernel "
                                "function when generating the point density function of particles. "
