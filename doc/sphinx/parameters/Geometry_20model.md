@@ -824,5 +824,5 @@ The default value of 6,336,000 m equals the radius of a sphere with equal volume
 
 **Pattern:** [Bool]
 
-**Documentation:** Whether the shell should be periodic in the phi direction.
+**Documentation:** Whether the shell should be periodic in the phi direction. This is supported for 2d models with opening angles of 90 or 180 degrees.
 ::::

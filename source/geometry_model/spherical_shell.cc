@@ -46,6 +46,52 @@ namespace aspect
       {
         subcell_data.boundary_quads.push_back(face);
       }
+
+
+
+      template <int dim>
+      Tensor<2, dim>
+      phi_periodicity_rotation_tensor(const double phi)
+      {
+        Tensor<2, dim> rotation_matrix;
+
+        if constexpr (dim == 2)
+          {
+            Assert(phi == 90 || phi == 180, ExcInternalError());
+            if (phi == 90)
+              {
+                rotation_matrix[0][1] = 1.;
+                rotation_matrix[1][0] = -1.;
+              }
+            else
+              {
+                rotation_matrix[0][0] = -1.;
+                rotation_matrix[1][1] = -1.;
+              }
+          }
+        else
+          {
+            Assert(false, ExcInternalError());
+          }
+
+        return rotation_matrix;
+      }
+
+
+
+      template <int dim>
+      FullMatrix<double>
+      phi_periodicity_rotation_matrix(const double phi)
+      {
+        FullMatrix<double> rotation_matrix(dim);
+        const Tensor<2, dim> rotation_tensor = phi_periodicity_rotation_tensor<dim>(phi);
+
+        for (unsigned int i=0; i<dim; ++i)
+          for (unsigned int j=0; j<dim; ++j)
+            rotation_matrix[i][j] = rotation_tensor[i][j];
+
+        return rotation_matrix;
+      }
     }
 
 
@@ -462,9 +508,7 @@ namespace aspect
               // Tell p4est about the periodicity of the mesh.
               std::vector<GridTools::PeriodicFacePair<typename parallel::distributed::Triangulation<dim>::cell_iterator>>
               matched_pairs;
-              FullMatrix<double> rotation_matrix(dim);
-              rotation_matrix[0][1] = 1.;
-              rotation_matrix[1][0] = -1.;
+              const FullMatrix<double> rotation_matrix = phi_periodicity_rotation_matrix<dim>(phi);
 
               GridTools::collect_periodic_faces(coarse_grid, /*b_id1*/ 2, /*b_id2*/ 3,
                                                 /*direction*/ 1, matched_pairs,
@@ -482,6 +526,20 @@ namespace aspect
                                            R1,
                                            0,
                                            true);
+
+          if (periodic)
+            {
+              std::vector<GridTools::PeriodicFacePair<typename parallel::distributed::Triangulation<dim>::cell_iterator>>
+              matched_pairs;
+              const FullMatrix<double> rotation_matrix = phi_periodicity_rotation_matrix<dim>(phi);
+
+              GridTools::collect_periodic_faces(coarse_grid, /*b_id1*/ 2, /*b_id2*/ 3,
+                                                /*direction*/ 1, matched_pairs,
+                                                Tensor<1, dim>(), rotation_matrix);
+
+              if (matched_pairs.size() > 0)
+                coarse_grid.add_periodicity (matched_pairs);
+            }
         }
       else
         {
@@ -621,26 +679,27 @@ namespace aspect
                                                            const ArrayView<Tensor<1, dim>> &connected_velocities) const
     {
       AssertThrow(dim == 2,
-                  ExcMessage("Periodic boundaries currently "
-                             "only work with 2d spherical shell."));
-      AssertThrow(phi == 90,
-                  ExcMessage("Periodic boundaries currently "
-                             "only work with 90 degree opening angle in spherical shell."));
+                  ExcMessage("Periodic boundaries currently only work with "
+                             "2d spherical shells."));
+      AssertThrow(phi == 90 || phi == 180,
+                  ExcMessage("Periodic boundaries currently only work with "
+                             "90 or 180 degree opening angles in spherical shell."));
 
       if (periodic)
         {
-          // define a rotation matrix for the new position depending on the boundary
           Tensor<2,dim> rotation_matrix;
 
-          if (position[0] < 0.)
+          // half_hyper_shell creates the 180 degree shell in the positive
+          // x half-plane. Points that crossed a periodic boundary therefore
+          // need a 180 degree rotation only if they left this half-plane.
+          if (phi == 180 && position[0] < 0.)
+            rotation_matrix = phi_periodicity_rotation_tensor<dim>(phi);
+          else if (phi == 90 && position[0] < 0.)
+            rotation_matrix = phi_periodicity_rotation_tensor<dim>(phi);
+          else if (phi == 90 && position[1] < 0.)
             {
-              rotation_matrix[0][1] = 1.;
-              rotation_matrix[1][0] = -1.;
-            }
-          else if (position[1] < 0.)
-            {
-              rotation_matrix[0][1] = -1.;
-              rotation_matrix[1][0] = 1.;
+              rotation_matrix = phi_periodicity_rotation_tensor<dim>(phi);
+              rotation_matrix *= -1.;
             }
           else
             return;
@@ -838,9 +897,7 @@ namespace aspect
         {
           std::vector<GridTools::PeriodicFacePair<typename DoFHandler<dim>::cell_iterator>>
           matched_pairs;
-          FullMatrix<double> rotation_matrix(dim);
-          rotation_matrix[0][1] = 1.;
-          rotation_matrix[1][0] = -1.;
+          const FullMatrix<double> rotation_matrix = phi_periodicity_rotation_matrix<dim>(phi);
 
           GridTools::collect_periodic_faces(dof_handler, /*b_id1*/ 2, /*b_id2*/ 3,
                                             /*direction*/ 1, matched_pairs,
@@ -947,7 +1004,9 @@ namespace aspect
                              "ignored when using a custom mesh subdivision scheme.");
           prm.declare_entry ("Phi periodic", "false",
                              Patterns::Bool (),
-                             "Whether the shell should be periodic in the phi direction.");
+                             "Whether the shell should be periodic in the phi direction. "
+                             "This is supported for 2d models with opening angles of "
+                             "90 or 180 degrees.");
 
         }
         prm.leave_subsection();
@@ -1011,8 +1070,12 @@ namespace aspect
           periodic = prm.get_bool ("Phi periodic");
           if (periodic)
             {
-              AssertThrow (dim == 2,  ExcMessage("Periodic boundaries in the spherical shell are only supported for 2d models."));
-              AssertThrow (phi == 90, ExcMessage("Periodic boundaries in the spherical shell are only supported for an opening angle of 90 degrees."));
+              AssertThrow (dim == 2,
+                           ExcMessage("Periodic boundaries in the spherical shell are only supported for "
+                                      "2d models."));
+              AssertThrow (phi == 90 || phi == 180,
+                           ExcMessage("Periodic boundaries in the spherical shell are only supported for "
+                                      "an opening angle of 90 or 180 degrees."));
             }
 
 
@@ -1065,13 +1128,12 @@ namespace aspect
                                    "also be referenced using the symbolic names `inner', `outer' "
                                    "and (if applicable) `left', `right'."
                                    "\n\n"
-                                   "In 3d, inner and "
-                                   "outer indicators are treated as in 2d. If the opening "
-                                   "angle is chosen as 90 degrees, i.e., the domain is the "
-                                   "intersection of a spherical shell and the first octant, "
-                                   "then indicator 2 is at the face $x=0$, 3 at $y=0$, "
-                                   "and 4 at $z=0$. These last three boundaries can then also "
-                                   "be referred to as `east', `west' and `south' symbolically "
-                                   "in input files.")
+                                   "In 3d, inner and outer indicators are treated as in 2d. "
+                                   "If the opening angle is chosen as 90 degrees, i.e., the "
+                                   "domain is the intersection of a spherical shell and the "
+                                   "first octant, then indicator 2 is at the face $x=0$, "
+                                   "3 at $y=0$, and 4 at $z=0$. These last three boundaries "
+                                   "can then also be referred to as `east', `west' and "
+                                   "`south' symbolically in input files.")
   }
 }
