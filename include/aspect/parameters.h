@@ -96,6 +96,24 @@ namespace aspect
              false;
     }
 
+    static
+    bool
+    solve_Stokes_iteratively(const typename NonlinearSolver::Kind &input)
+    {
+      return input == NonlinearSolver::no_Advection_iterated_Stokes ||
+             input == NonlinearSolver::no_Advection_iterated_defect_correction_Stokes ||
+             input == NonlinearSolver::single_Advection_iterated_Stokes ||
+             input == NonlinearSolver::single_Advection_iterated_defect_correction_Stokes ||
+             input == NonlinearSolver::single_Advection_iterated_Newton_Stokes ||
+             input == NonlinearSolver::iterated_Advection_and_Stokes ||
+             input == NonlinearSolver::iterated_Advection_and_defect_correction_Stokes ||
+             input == NonlinearSolver::iterated_Advection_and_Newton_Stokes
+             ?
+             true
+             :
+             false;
+    }
+
     /**
      * A struct that contains the enums to decide what to do when a nonlinear solver fails.
      */
@@ -125,6 +143,33 @@ namespace aspect
           AssertThrow(false, ExcNotImplemented());
 
         return Kind();
+      }
+    };
+
+    /**
+     * A struct that contains the enums to decide what to do when a linear solver fails.
+     */
+    struct LinearSolverFailureStrategy
+    {
+      enum Kind
+      {
+        continue_with_nonlinear_solver,
+        abort
+      };
+
+      /**
+       * Parse the enum value from a string.
+       */
+      static
+      Kind
+      parse(const std::string &input)
+      {
+        if (input == "continue with nonlinear solver")
+          return continue_with_nonlinear_solver;
+        else if (input == "abort")
+          return abort;
+        else
+          AssertThrow(false, ExcNotImplemented());
       }
     };
 
@@ -549,6 +594,7 @@ namespace aspect
      */
     typename NonlinearSolver::Kind nonlinear_solver;
     typename NonlinearSolverFailureStrategy::Kind nonlinear_solver_failure_strategy;
+    typename LinearSolverFailureStrategy::Kind linear_solver_failure_strategy;
 
     typename AdvectionStabilizationMethod::Kind advection_stabilization_method;
     double                         nonlinear_tolerance;
