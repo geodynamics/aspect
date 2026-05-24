@@ -510,12 +510,15 @@ namespace aspect
           std::vector<double> combined_kf(fastscape_array_size);
           std::vector<double> basement(fastscape_array_size);
           std::vector<double> silt_fraction(fastscape_array_size);
+          fastscape_copy_basement_(basement.data());
+          if (use_marine_component)
+            fastscape_copy_f_(silt_fraction.data());
+
           for (unsigned int i = 0; i < fastscape_array_size; ++i)
             {
               // For cells above sea level, grep the continental erosion parameters.
               if (elevation[i] >= current_sea_level || !use_marine_component)
                 {
-                  fastscape_copy_basement_(basement.data());
                   const double sediment_thickness = elevation[i] - basement[i];
 
                   // The same incision rate is used for sediments as for bedrock
@@ -547,7 +550,6 @@ namespace aspect
               else if (elevation[i] < current_sea_level && use_marine_component)
                 {
                   combined_kf[i] = numbers::signaling_nan<double>();
-                  fastscape_copy_f_(silt_fraction.data());
                   // The silt fraction represents the fraction of silt out of the
                   // total marine sediments (i.e., silt / (sand + silt)).
                   // Note that Fastscape does not know about the marine background
@@ -555,7 +557,7 @@ namespace aspect
                   // The combined marine diffusion coefficient is an approximation
                   // of the actual diffusion, which is solved for both sediment
                   // types separately in Fastscape.
-                  const double marine_diffusion_coefficient = silt_fraction * silt_transport_coefficient + (1. - silt_fraction) * sand_transport_coefficient;
+                  const double marine_diffusion_coefficient = silt_fraction[i] * silt_transport_coefficient + (1. - silt_fraction[i]) * sand_transport_coefficient;
                   combined_kd[i] = marine_diffusion_coefficient;
                 }
               else
