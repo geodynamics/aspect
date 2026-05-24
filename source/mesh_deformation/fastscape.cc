@@ -499,22 +499,68 @@ namespace aspect
                                              &silt_transport_coefficient,
                                              &sand_transport_coefficient);
 
-          // generate a combined array for kf and kd both onshore and offshore
+          // Generate a combined array for kf and kd both onshore and offshore.
+          // Onshore, kf and kd can have different values for bedrock and
+          // sediment. With use_marine_component = true, offshore
+          // the silt and sand diffusion coefficients are used, not kf and kd.
+          // We use a composite of the silt and sand diffusion coefficients
+          // to fill kd there (as they pertain to the same diffusion equation)
+          // but set kf to a signalling nan.
           std::vector<double> combined_kd(fastscape_array_size);
           std::vector<double> combined_kf(fastscape_array_size);
+          std::vector<double> basement(fastscape_array_size);
+          std::vector<double> silt_fraction(fastscape_array_size);
           for (unsigned int i = 0; i < fastscape_array_size; ++i)
             {
-              // for cells below sea level, grep the marine sediment data
-              if (elevation[i] >= current_sea_level)
+              // For cells above sea level, grep the continental erosion parameters.
+              if (elevation[i] >= current_sea_level || !use_marine_component)
                 {
-                  combined_kf[i] = bedrock_river_incision_rate_array[i];
-                  combined_kd[i] = bedrock_transport_coefficient_array[i];
+                  fastscape_copy_basement_(basement.data());
+                  const double sediment_thickness = elevation[i] - basement[i];
+
+                  // The same incision rate is used for sediments as for bedrock
+                  // if the sediment rate is set to something smaller than zero
+                  // (by default -1). If a different rate is set for sediment and
+                  // bedrock, the sediment rate is only used for sediment layers
+                  // at least 1 m thick.
+                  if (sediment_river_incision_rate < 0. || sediment_thickness <= 1.)
+                    combined_kf[i] = bedrock_river_incision_rate_array[i];
+                  else if (sediment_river_incision_rate >= 0. && sediment_thickness > 1.)
+                    combined_kf[i] = sediment_river_incision_rate;
+                  else
+                    combined_kf[i] = numbers::signaling_nan<double>();
+
+                  // The same diffusion coefficient is used for sediments as for bedrock.
+                  // if the sediment coefficient is set to something smaller than zero
+                  // (by default -1). If a different rate is set for sediment and bedrock,
+                  // the sediment coefficient is only used for sediment layers
+                  // at least 1 m thick.
+                  if (sediment_transport_coefficient < 0 || sediment_thickness <= 1.)
+                    combined_kd[i] = bedrock_transport_coefficient_array[i];
+                  else if (sediment_transport_coefficient >= 0. && sediment_thickness > 1.)
+                    combined_kd[i] = sediment_transport_coefficient;
+                  else
+                    combined_kd[i] = numbers::signaling_nan<double>();
                 }
-              // for cells below sea level, grep the marine sediment data
+              // Below sea level, when the marine component is used,
+              // kf is not used. kd is set to the marine diffusion coefficients.
+              else if (elevation[i] < current_sea_level && use_marine_component)
+                {
+                  combined_kf[i] = numbers::signaling_nan<double>();
+                  fastscape_copy_f_(silt_fraction.data());
+                  // The silt fraction represents the fraction of silt out of the
+                  // total marine sediments (i.e., silt / (sand + silt)).
+                  // Note that Fastscape does not know about the marine background
+                  // sedimentation and only considers sand and silt in the marine domain.
+                  // The combined marine diffusion coefficient is an approximation
+                  // of the actual diffusion, which is solved for both sediment
+                  // types separately in Fastscape.
+                  const double marine_diffusion_coefficient = silt_fraction * silt_transport_coefficient + (1. - silt_fraction) * sand_transport_coefficient;
+                  combined_kd[i] = marine_diffusion_coefficient;
+                }
               else
                 {
-                  combined_kf[i] = sediment_river_incision_rate;
-                  combined_kd[i] = sediment_transport_coefficient;
+                  AssertThrow (false, ExcMessage ("Unexpected conditions reached while filling the kf and kd arrays in the FastScape interface."));
                 }
             }
 
