@@ -40,7 +40,6 @@
 #include <cstring>
 #include <fstream>
 #include <limits>
-#include <sstream>
 
 #ifdef DEAL_II_WITH_ZLIB
 #  include <zlib.h>
@@ -309,40 +308,6 @@ namespace aspect
 
 
 
-    template <int dim, class Archive>
-    void serialize_particle_managers (Archive &ar,
-                                      std::vector<Particle::Manager<dim>> &particle_managers)
-    {
-      std::vector<std::string> serialized_particle_managers;
-
-      if (Archive::is_saving::value)
-        {
-          serialized_particle_managers.resize(particle_managers.size());
-
-          for (unsigned int particle_manager = 0; particle_manager < particle_managers.size(); ++particle_manager)
-            {
-              std::ostringstream os;
-              particle_managers[particle_manager].save(os);
-              serialized_particle_managers[particle_manager] = os.str();
-            }
-        }
-
-      ar &serialized_particle_managers;
-
-      if (Archive::is_loading::value)
-        {
-          AssertThrow (serialized_particle_managers.size() == particle_managers.size(),
-                       ExcMessage ("The number of particle managers stored in the checkpoint "
-                                   "does not match the particle managers initialized from "
-                                   "the current input file."));
-
-          for (unsigned int particle_manager = 0; particle_manager < particle_managers.size(); ++particle_manager)
-            {
-              std::istringstream is (serialized_particle_managers[particle_manager]);
-              particle_managers[particle_manager].load(is);
-            }
-        }
-    }
   }
 
 
@@ -796,7 +761,12 @@ namespace aspect
     // dynamic core boundary temperature plugin) and need to be serialized.
     ar &mesh_refinement_manager;
     ar &heating_model_manager;
-    serialize_particle_managers(ar, particle_managers);
+    const auto n_particle_managers = particle_managers.size();
+    ar &particle_managers;
+    AssertThrow (particle_managers.size() == n_particle_managers,
+                 ExcMessage ("The number of particle managers stored in the checkpoint "
+                             "does not match the particle managers initialized from "
+                             "the current input file."));
     ar &postprocess_manager;
     ar &boundary_temperature_manager;
     ar &boundary_convective_heating_manager;
