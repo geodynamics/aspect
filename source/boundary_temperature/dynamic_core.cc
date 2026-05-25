@@ -26,11 +26,14 @@
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/introspection.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/base/quadrature.h>
 #include <deal.II/base/utilities.h>
 
+#include <algorithm>
+#include <iostream>
 #include <limits>
 
 
@@ -70,9 +73,12 @@ namespace aspect
     DynamicCore<dim>::DynamicCore()
       :
       // leave the core_data variable in its uninitialized state
-      core_data()
+      core_data(),
+      outer_temperature_function(1)
     {
       is_first_call = true;
+      use_outer_temperature_function = false;
+      prescribed_core_radius = 0.;
     }
 
 
@@ -81,6 +87,14 @@ namespace aspect
     void
     DynamicCore<dim>::update()
     {
+      if (use_outer_temperature_function)
+        {
+          if (this->convert_output_to_years())
+            outer_temperature_function.set_time(this->get_time() / year_in_seconds);
+          else
+            outer_temperature_function.set_time(this->get_time());
+        }
+
       core_data.dt = this->get_timestep();
       core_data.H  = compute_radioheating_rate();
 
@@ -108,17 +122,54 @@ namespace aspect
           // Read data of other energy source
           read_data_OES();
 
-          const GeometryModel::SphericalShell<dim> &spherical_shell_geometry =
-            Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model());
+          const bool is_spherical_shell =
+            Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model());
 
-          Rc = spherical_shell_geometry.inner_radius();
+          if (is_spherical_shell)
+            {
+              const GeometryModel::SphericalShell<dim> &spherical_shell_geometry =
+                Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model());
+
+              Rc = spherical_shell_geometry.inner_radius();
+            }
+          else
+            {
+              AssertThrow(prescribed_core_radius > 0.,
+                          ExcMessage("Dynamic core requires a positive `Core radius' "
+                                     "when used with a geometry other than spherical shell."));
+              Rc = prescribed_core_radius;
+            }
+
           Mc = compute_mass(Rc);
 
           // If the material model is incompressible, we have to get correction for the real core temperature
           if (this->get_adiabatic_conditions().is_initialized() && !this->get_material_model().is_compressible())
             {
               Point<dim> p1;
-              p1(0) = spherical_shell_geometry.inner_radius();
+              if (is_spherical_shell)
+                p1(0) = Rc;
+              else
+                {
+                  // Use a representative point on the CMB/bottom boundary.
+                  bool found_boundary_point = false;
+                  Point<dim> local_boundary_point;
+                  for (const auto &cell : this->get_triangulation().active_cell_iterators())
+                    if (cell->is_locally_owned())
+                      for (const unsigned int f : cell->face_indices())
+                        if (cell->at_boundary(f) && cell->face(f)->boundary_id() == inner_boundary_id)
+                          {
+                            local_boundary_point = cell->face(f)->center();
+                            found_boundary_point = true;
+                            break;
+                          }
+                  for (unsigned int d=0; d<dim; ++d)
+                    {
+                      const double local_coordinate = found_boundary_point
+                                                      ? local_boundary_point[d]
+                                                      : -std::numeric_limits<double>::max();
+                      p1[d] = Utilities::MPI::max(local_coordinate, this->get_mpi_communicator());
+                    }
+                }
               dTa   = this->get_adiabatic_conditions().temperature(p1)
                       - this->get_adiabatic_surface_temperature();
             }
@@ -294,9 +345,18 @@ namespace aspect
     template <int dim>
     double
     DynamicCore<dim>::
-    minimal_temperature (const std::set<types::boundary_id> &/*fixed_boundary_ids*/) const
+    minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
     {
-      return std::min (inner_temperature, outer_temperature);
+      double temperature = std::numeric_limits<double>::max();
+
+      if (fixed_boundary_ids.empty() || fixed_boundary_ids.find(inner_boundary_id) != fixed_boundary_ids.end())
+        temperature = std::min (temperature, inner_temperature);
+
+      if (fixed_boundary_ids.empty() || fixed_boundary_ids.find(outer_boundary_id) != fixed_boundary_ids.end())
+        temperature = std::min (temperature,
+                                use_outer_temperature_function ? minimal_outer_temperature : outer_temperature);
+
+      return temperature;
     }
 
 
@@ -304,9 +364,18 @@ namespace aspect
     template <int dim>
     double
     DynamicCore<dim>::
-    maximal_temperature (const std::set<types::boundary_id> &/*fixed_boundary_ids*/) const
+    maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
     {
-      return std::max (inner_temperature, outer_temperature);
+      double temperature = 0.;
+
+      if (fixed_boundary_ids.empty() || fixed_boundary_ids.find(inner_boundary_id) != fixed_boundary_ids.end())
+        temperature = std::max (temperature, inner_temperature);
+
+      if (fixed_boundary_ids.empty() || fixed_boundary_ids.find(outer_boundary_id) != fixed_boundary_ids.end())
+        temperature = std::max (temperature,
+                                use_outer_temperature_function ? maximal_outer_temperature : outer_temperature);
+
+      return temperature;
     }
 
 
@@ -918,12 +987,21 @@ namespace aspect
     double
     DynamicCore<dim>::
     boundary_temperature (const types::boundary_id boundary_indicator,
-                          const Point<dim> &/*location*/) const
+                          const Point<dim> &location) const
     {
       if (boundary_indicator == inner_boundary_id)
         return inner_temperature;
       else if (boundary_indicator == outer_boundary_id)
-        return outer_temperature;
+        {
+          if (use_outer_temperature_function)
+            {
+              const Utilities::NaturalCoordinate<dim> point =
+                this->get_geometry_model().cartesian_to_other_coordinates(location, outer_temperature_function_coordinate_system);
+              return outer_temperature_function.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()));
+            }
+
+          return outer_temperature;
+        }
       else
         AssertThrow (false,
                      ExcMessage ("Unknown boundary indicator for geometry model. "
@@ -943,8 +1021,11 @@ namespace aspect
         prm.enter_subsection("Dynamic core");
         {
           prm.declare_entry ("Outer temperature", "0.",
-                             Patterns::Double (),
-                             "Temperature at the outer boundary (lithosphere water/air). Units: $\\text{K}$.");
+                             Patterns::Anything (),
+                             "Temperature at the outer boundary (lithosphere water/air). "
+                             "This can be a constant value with units $\\text{K}$, "
+                             "or the keyword `function' to prescribe the outer "
+                             "temperature in subsection `Function'.");
           prm.declare_entry ("Inner temperature", "6000.",
                              Patterns::Double (),
                              "Temperature at the inner boundary (core mantle boundary) at the "
@@ -965,6 +1046,14 @@ namespace aspect
                              Patterns::Double (),
                              "Density of the core. "
                              "Units: $\\frac{\\text{kg}}{\\text{m}^3}$.");
+          prm.declare_entry ("Core radius", "0.",
+                             Patterns::Double (0.),
+                             "Physical core radius used to convert the CMB heat "
+                             "flux density into a total core heat flow. For "
+                             "spherical shell geometries this value is ignored "
+                             "and the inner radius of the geometry is used. For "
+                             "other geometries this parameter has to be positive. "
+                             "Units: $\\text{m}$.");
           prm.declare_entry ("CMB pressure", "0.14e12",
                              Patterns::Double (),
                              "Pressure at CMB. Units: \\si{\\pascal}.");
@@ -1009,6 +1098,28 @@ namespace aspect
           prm.declare_entry ("Core conductivity", "60.",
                              Patterns::Double (0.),
                              "Core heat conductivity $k_c$. Units: $\\frac{\\text{W}}{\\text{m}\\text{K}}$.");
+
+          prm.enter_subsection("Function");
+          {
+            prm.declare_entry ("Coordinate system", "cartesian",
+                               Patterns::Selection ("cartesian|spherical|depth"),
+                               "A selection that determines the assumed coordinate "
+                               "system for the outer boundary temperature function. "
+                               "Allowed values are `cartesian', `spherical', and `depth'.");
+
+            Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
+
+            prm.declare_entry ("Minimal temperature", "273.",
+                               Patterns::Double (),
+                               "Minimal value of the outer boundary temperature "
+                               "function. Units: $\\text{K}$.");
+            prm.declare_entry ("Maximal temperature", "3773.",
+                               Patterns::Double (),
+                               "Maximal value of the outer boundary temperature "
+                               "function. Units: $\\text{K}$.");
+          }
+          prm.leave_subsection ();
+
           prm.enter_subsection("Geotherm parameters");
           {
             prm.declare_entry ("Tm0","1695.",
@@ -1078,24 +1189,88 @@ namespace aspect
     {
       prm.enter_subsection("Boundary temperature model");
       {
+        const std::vector<std::string> model_names = Utilities::split_string_list(prm.get("List of model names"));
+        const bool function_temperature_is_active =
+          (std::find(model_names.begin(), model_names.end(), "function") != model_names.end());
+
+        AssertThrow (!function_temperature_is_active,
+                     ExcMessage ("The boundary temperature model `function' can not be "
+                                 "combined with the `dynamic core' boundary temperature "
+                                 "model. To prescribe a spatially variable outer "
+                                 "temperature with dynamic core, set "
+                                 "`Boundary temperature model/Dynamic core/Outer "
+                                 "temperature = function' and configure "
+                                 "`Boundary temperature model/Dynamic core/Function'. "
+                                 "The dynamic core model always owns the CMB "
+                                 "temperature, so a separate function model must not "
+                                 "be used for the bottom/inner boundary."));
+
         prm.enter_subsection("Dynamic core");
         {
-          // verify that the geometry is in fact a spherical shell since only
-          // for this geometry do we know for sure what boundary indicators it
-          // uses and what they mean
-          AssertThrow (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model()),
-                       ExcMessage ("This boundary model is only implemented if the geometry is "
-                                   "a spherical shell."));
-
           inner_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");
           outer_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
 
           inner_temperature = prm.get_double ("Inner temperature");
-          outer_temperature = prm.get_double ("Outer temperature");
+          const std::string outer_temperature_parameter = prm.get("Outer temperature");
+          use_outer_temperature_function = (outer_temperature_parameter == "function");
+          if (use_outer_temperature_function)
+            {
+              prm.enter_subsection("Function");
+              {
+                outer_temperature_function_coordinate_system =
+                  Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
+
+                try
+                  {
+                    outer_temperature_function.parse_parameters(prm);
+                  }
+                catch (...)
+                  {
+                    std::cerr << "ERROR: FunctionParser failed to parse\n"
+                              << "\t'Boundary temperature model.Dynamic core.Function'\n"
+                              << "with expression\n"
+                              << "\t'" << prm.get("Function expression") << "'"
+                              << "More information about the cause of the parse error \n"
+                              << "is shown below.\n";
+                    throw;
+                  }
+
+                minimal_outer_temperature = prm.get_double("Minimal temperature");
+                maximal_outer_temperature = prm.get_double("Maximal temperature");
+                AssertThrow (minimal_outer_temperature <= maximal_outer_temperature,
+                             ExcMessage ("The minimal outer boundary temperature "
+                                         "must not be larger than the maximal outer "
+                                         "boundary temperature."));
+              }
+              prm.leave_subsection ();
+            }
+          else
+            {
+              try
+                {
+                  outer_temperature = Utilities::string_to_double(outer_temperature_parameter);
+                }
+              catch (...)
+                {
+                  AssertThrow (false,
+                               ExcMessage ("The parameter `Boundary temperature "
+                                           "model/Dynamic core/Outer temperature' "
+                                           "must be either a constant temperature or "
+                                           "the keyword `function'."));
+                }
+
+              minimal_outer_temperature = outer_temperature;
+              maximal_outer_temperature = outer_temperature;
+            }
           init_dT_dt        = prm.get_double ("dT over dt") / year_in_seconds;
           init_dR_dt        = prm.get_double ("dR over dt") / year_in_seconds * 1.e3;
           init_dX_dt        = prm.get_double ("dX over dt") / year_in_seconds;
           Rho_cen           = prm.get_double ("Core density");
+          prescribed_core_radius = prm.get_double ("Core radius");
+          AssertThrow(Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model())
+                      || prescribed_core_radius > 0.,
+                      ExcMessage("Dynamic core requires `Core radius' to be positive "
+                                 "when the geometry is not spherical shell."));
           P_CMB             = prm.get_double ("CMB pressure");
           X_init            = prm.get_double ("Initial light composition");
           max_steps         = prm.get_integer ("Max iteration");
@@ -1173,7 +1348,8 @@ namespace aspect
                                                "dynamic core",
                                                "This is a boundary temperature model working only with spherical "
                                                "shell geometry and core statistics postprocessor. The temperature "
-                                               "at the top is constant, and the core mantle boundary temperature "
+                                               "at the top can be either constant or function-based, and the "
+                                               "core mantle boundary temperature "
                                                "is dynamically evolving through time by calculating the heat flux "
                                                "into the core and solving the core energy balance. The formulation "
                                                "is mainly following \\cite{NPB+04}, and the plugin is used in "

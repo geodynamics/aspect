@@ -1,0 +1,25 @@
+
+TimerOutput objects finalize timed values printed to the
+screen by communicating over MPI in their destructors.
+Since an exception is currently uncaught, this
+synchronization (and subsequent output) will be skipped
+to avoid a possible deadlock.
+
+
+Exception 'ExcMessage ("The boundary temperature model `function' can not be " "combined with the `dynamic core' boundary temperature " "model. To prescribe a spatially variable outer " "temperature with dynamic core, set " "`Boundary temperature model/Dynamic core/Outer " "temperature = function' and configure " "`Boundary temperature model/Dynamic core/Function'. " "The dynamic core model always owns the CMB " "temperature, so a separate function model must not " "be used for the bottom/inner boundary.")' on rank 0 on processing: 
+
+An error occurred in file <dynamic_core.cc> in function
+(line in output replaced by default.sh script)
+The violated condition was: 
+    !function_temperature_is_active
+Additional information: 
+    The boundary temperature model `function' can not be combined with the
+    `dynamic core' boundary temperature model. To prescribe a spatially
+    variable outer temperature with dynamic core, set `Boundary
+    temperature model/Dynamic core/Outer temperature = function' and
+    configure `Boundary temperature model/Dynamic core/Function'. The
+    dynamic core model always owns the CMB temperature, so a separate
+    function model must not be used for the bottom/inner boundary.
+
+Stacktrace:
+(rest of the output replaced by default.sh script)

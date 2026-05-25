@@ -1,0 +1,18 @@
+# EXPECT FAILURE
+
+include @SOURCE_DIR@/dynamic_core.prm
+
+set End time = 0
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = inner, outer
+  set List of model names = dynamic core, function
+
+  subsection Function
+    set Coordinate system   = spherical
+    set Variable names      = r,phi,t
+    set Function expression = 300 + 0*t
+    set Minimal temperature = 300
+    set Maximal temperature = 300
+  end
+end

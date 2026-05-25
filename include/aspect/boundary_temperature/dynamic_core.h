@@ -25,6 +25,9 @@
 
 #include <aspect/boundary_temperature/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
+
+#include <deal.II/base/parsed_function.h>
 
 #include <tuple>
 
@@ -202,9 +205,35 @@ namespace aspect
         double inner_temperature;
 
         /**
-         * Temperatures at the outer boundaries.
+         * Temperature at the outer boundary, if it is constant.
          */
         double outer_temperature;
+
+        /**
+         * Whether the outer boundary temperature is prescribed by a function.
+         */
+        bool use_outer_temperature_function;
+
+        /**
+         * Function used to prescribe the outer boundary temperature.
+         */
+        Functions::ParsedFunction<dim> outer_temperature_function;
+
+        /**
+         * Minimal value of the outer boundary temperature function.
+         */
+        double minimal_outer_temperature;
+
+        /**
+         * Maximal value of the outer boundary temperature function.
+         */
+        double maximal_outer_temperature;
+
+        /**
+         * The coordinate representation to evaluate the outer boundary
+         * temperature function.
+         */
+        Utilities::Coordinates::CoordinateSystem outer_temperature_function_coordinate_system;
 
         /**
          * Boundary indicators of the spherical shell.
@@ -236,6 +265,11 @@ namespace aspect
          * Core radius
          */
         double Rc;
+
+        /**
+         * User-provided core radius for non-spherical shell geometries.
+         */
+        double prescribed_core_radius;
 
         /**
          * Initial light composition concentration
