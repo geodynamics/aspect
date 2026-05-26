@@ -1,0 +1,9 @@
+New: ASPECT can now use the Tpetra packages provided by
+Trilinos if configured with deal.II 9.8.0 or higher.
+This means ASPECT can now use Trilinos 17 for its vector,
+matrix, and solver types. While accuracy and compatibility
+have been confirmed, performance may deteriorate
+compared to the older Epetra packages, until solver
+parameters have been investigated and tuned.
+<br>
+(Rene Gassmoeller, 2026/05/26)

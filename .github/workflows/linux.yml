@@ -123,19 +123,27 @@ jobs:
             compare-tests: "ON"
             result-file: "changes-test-results-9.6.diff"
             container-options: '--user 0 --name container'
+            use-tpetra: "OFF"
           - image: "geodynamics/aspect-tester:jammy-dealii-9.7-v3"
             build-with-fastscape: "OFF"
             run-tests: "ON"
             compare-tests: "OFF"
             result-file: "changes-test-results-9.7.diff"
             container-options: '--user 0 --name container'
+            use-tpetra: "OFF"
           - image: "geodynamics/aspect-tester:jammy-dealii-master"
             build-with-fastscape: "ON"
             run-tests: "ON"
             compare-tests: "OFF"
             result-file: "changes-test-results-master.diff"
             container-options: '--user 0 --name container'
-
+            use-tpetra: "OFF"
+          - image: "geodynamics/aspect-tester:jammy-dealii-master"
+            run-tests: "ON"
+            compare-tests: "OFF"
+            result-file: "changes-test-results-master-tpetra.diff"
+            container-options: '--user 0 --name container'
+            use-tpetra: "ON"
     container: 
       image: ${{ matrix.image }}
       options: ${{ matrix.container-options }}
@@ -158,6 +166,7 @@ jobs:
         -D FASTSCAPE_DIR="$FASTSCAPE_DIR" \
         -D ASPECT_RUN_ALL_TESTS='${{ matrix.run-tests }}' \
         -D ASPECT_COMPARE_TEST_RESULTS='${{ matrix.compare-tests }}' \
+        -D ASPECT_USE_TPETRA='${{ matrix.use-tpetra }}' \
         -D CMAKE_UNITY_BUILD_BATCH_SIZE=8 \
         ..
         ninja -j 4
