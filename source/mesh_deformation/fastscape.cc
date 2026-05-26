@@ -592,7 +592,7 @@ namespace aspect
 
           // Find timestep size, run FastScape, and make visualizations.
           execute_fastscape(elevation,
-                            bedrock_river_incision_rate_array,  // corresponds to FastScape's 'HHHHH' argument
+                            additional_output_field,  // corresponds to FastScape's 'HHHHH' argument
                             velocity_x,
                             velocity_y,
                             velocity_z,
@@ -963,7 +963,7 @@ namespace aspect
             this->get_pcout() << "      Writing initial VTK..." << std::endl;
             // FastScape by default visualizes a field called HHHHH,
             // and the parameter this shows will be whatever is given as the first
-            // position. At the moment it visualizes the bedrock diffusivity.
+            // position. extra_vtk_field is set to the river incision rate by default.
             fastscape_named_vtk_(extra_vtk_field.data(),
                                  &vexp,
                                  &visualization_step,
