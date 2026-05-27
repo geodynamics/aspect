@@ -60,7 +60,8 @@ namespace aspect
           triangular,
           uniform,
           cutoff_function_w1_dealii,
-          cutoff_function_c1_dealii
+          cutoff_function_c1_dealii,
+          epanechnikov
         };
 
         /**
@@ -342,6 +343,14 @@ namespace aspect
          * @param distance the output of the kernel function depends on the distance between the reference point and the center of the kernel function.
          */
         double kernelfunction_gaussian(const double distance) const;
+
+        /**
+         * The epanechnikov function returns the value of an epanechnikov parabolic function
+         * at the specified distance.
+         *
+         * @param distance the output of the kernel function depends on the distance between the reference point and the center of the kernel function.
+         */
+        double kernelfunction_epanechnikov(const double distance) const;
     };
   }
 }
