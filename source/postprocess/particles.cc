@@ -172,8 +172,10 @@ namespace aspect
       // the first time around we get to check it
       last_output_time (std::vector<double>(1,std::numeric_limits<double>::quiet_NaN())),
       output_file_number (std::vector<unsigned int>(1,numbers::invalid_unsigned_int)),
+      output_formats (1, std::vector<std::string>()),
       group_files(0),
-      write_in_background_thread(false)
+      write_in_background_thread(false),
+      exclude_output_properties (1, std::vector<std::string>())
     {}
 
 
@@ -816,7 +818,7 @@ namespace aspect
                              tmp_output_formats.end(),
                              "none") == tmp_output_formats.end())
                 {
-// We want to prepare as many directories
+                  // We want to prepare as many directories
                   // as there will be particle managers, once they are created.
                   std::string particles_directory_base_name = "particles";
                   if (particle_manager > 0)
@@ -853,9 +855,8 @@ namespace aspect
               if (particle_manager > 0)
                 last_output_time.emplace_back(std::numeric_limits<double>::quiet_NaN());
             }
-
+            prm.leave_subsection ();
           }
-        prm.leave_subsection ();
       }
       prm.leave_subsection ();
     }
