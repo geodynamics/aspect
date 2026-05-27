@@ -364,7 +364,6 @@ namespace aspect
               write_output[particle_manager] = false;
             }
 
-
           if (output_file_number[particle_manager] == numbers::invalid_unsigned_int)
             output_file_number[particle_manager] = 0;
           else
@@ -373,11 +372,10 @@ namespace aspect
         }
 
 
-// Only report the number of particles if none of the particle managers
-// writes output.
+      // Only report the number of particles if none of the particle managers
+      // writes output.
       if (std::find(write_output.begin(), write_output.end(), true) == write_output.end())
         return std::make_pair("Number of advected particles:", number_of_advected_particles);
-
 
       for (unsigned int particle_manager = 0; particle_manager < this->n_particle_managers(); ++particle_manager)
         {
@@ -853,7 +851,10 @@ namespace aspect
 
               // Add a non-sensical value for each additional particle manager.
               if (particle_manager > 0)
+              {
                 last_output_time.emplace_back(std::numeric_limits<double>::quiet_NaN());
+                output_file_number.emplace_back(numbers::invalid_unsigned_int);
+              }
             }
             prm.leave_subsection ();
           }
