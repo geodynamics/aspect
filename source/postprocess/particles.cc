@@ -854,10 +854,10 @@ namespace aspect
 
               // Add a non-sensical value for each additional particle manager.
               if (particle_manager > 0)
-              {
-                last_output_time.emplace_back(std::numeric_limits<double>::quiet_NaN());
-                output_file_number.emplace_back(numbers::invalid_unsigned_int);
-              }
+                {
+                  last_output_time.emplace_back(std::numeric_limits<double>::quiet_NaN());
+                  output_file_number.emplace_back(numbers::invalid_unsigned_int);
+                }
             }
             prm.leave_subsection ();
           }
