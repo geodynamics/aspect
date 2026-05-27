@@ -364,10 +364,13 @@ namespace aspect
               write_output[particle_manager] = false;
             }
 
-          if (output_file_number[particle_manager] == numbers::invalid_unsigned_int)
-            output_file_number[particle_manager] = 0;
-          else
-            ++output_file_number[particle_manager];
+          if (write_output[particle_manager] == true)
+            {
+              if (output_file_number[particle_manager] == numbers::invalid_unsigned_int)
+                output_file_number[particle_manager] = 0;
+              else
+                ++output_file_number[particle_manager];
+            }
 
         }
 
