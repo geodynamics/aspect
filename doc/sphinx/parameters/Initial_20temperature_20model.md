@@ -196,7 +196,7 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Thickness of the lithosphere for plate cooling model. \si{\m}
+**Documentation:** Thickness of the lithosphere for plate cooling model. $\text{m}$
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Position<parameters:Initial_20temperature_20model/Adiabatic/Position>`
@@ -329,7 +329,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the adiabatic temperature gradient. Units: \si{\kelvin\per\meter}.
+**Documentation:** The value of the adiabatic temperature gradient. Units: $\text{K}\text{m}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Initial_20temperature_20model/Adiabatic_20boundary/Data_20directory>`
@@ -488,7 +488,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of the 3 thicknesses of the lithospheric layers &rsquo;upper\_crust&rsquo;, &rsquo;lower\_crust&rsquo; and &rsquo;mantle\_lithosphere&rsquo;. If only one thickness is given, then the same thickness is used for all layers. Units: \si{meter}.
+**Documentation:** List of the 3 thicknesses of the lithospheric layers &rsquo;upper\_crust&rsquo;, &rsquo;lower\_crust&rsquo; and &rsquo;mantle\_lithosphere&rsquo;. If only one thickness is given, then the same thickness is used for all layers. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Lithosphere-Asthenosphere boundary isotherm<parameters:Initial_20temperature_20model/Continental_20geotherm/Lithosphere_2dAsthenosphere_20boundary_20isotherm>`
@@ -716,7 +716,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Units: \si{\meter}.The maximum depth of the lithosphere. The model will be NaNs below this depth.
+**Documentation:** Units: $\text{m}$.The maximum depth of the lithosphere. The model will be NaNs below this depth.
 ::::
 
 (parameters:Initial_20temperature_20model/Patch_20on_20S40RTS)=
@@ -803,7 +803,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The Gaussian RMS width of the perturbations. Units: \si{\meter}.
+**Documentation:** The Gaussian RMS width of the perturbations. Units: $\text{m}$.
 ::::
 
 (parameters:Initial_20temperature_20model/S40RTS_20perturbation)=

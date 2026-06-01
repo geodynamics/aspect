@@ -933,7 +933,7 @@ namespace aspect
           prm.declare_entry ("List of radial values", "",
                              Patterns::List(Patterns::Double ()),
                              "List of radial values for the custom mesh scheme. Units: "
-                             "$\\si{m}$. "
+                             "$\\text{m}$. "
                              "A list of radial values subdivides the spherical shell at "
                              "specified radii. The list must be strictly ascending, and "
                              "the first value must be greater than the inner radius "
@@ -954,7 +954,7 @@ namespace aspect
                              "the mesh.");
           prm.declare_entry ("Inner radius", "3481000.",  // 6371-2890 in km
                              Patterns::Double (0.),
-                             "Inner radius of the spherical shell. Units: \\si{\\meter}."
+                             "Inner radius of the spherical shell. Units: $\\text{m}$."
                              "\n\n"
                              ":::{note}\n"
                              "The default value of 3,481,000 m equals the "
@@ -964,7 +964,7 @@ namespace aspect
                              ":::");
           prm.declare_entry ("Outer radius", "6336000.",  // 6371-35 in km
                              Patterns::Double (0.),
-                             "Outer radius of the spherical shell. Units: \\si{\\meter}."
+                             "Outer radius of the spherical shell. Units: $\\text{m}$."
                              "\n\n"
                              ":::{note}\n"
                              "The default value of 6,336,000 m equals the "

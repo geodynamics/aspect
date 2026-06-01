@@ -142,7 +142,7 @@ namespace aspect
           prm.declare_entry ("Prefactors for grain boundary sliding", "6.2e-14",
                              Patterns::Anything(),
                              "Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001. "
-                             "Units: \\si{\\pascal}$^{-n_{\\text{grain boundary sliding}}}$ \\si{\\meter}$^{m_{\\text{grain boundary sliding}}}$ \\si{\\per\\second}.");
+                             "Units: $\\text{Pa}$$^{-n_{\\text{grain boundary sliding}}}$ $\\text{m}$$^{m_{\\text{grain boundary sliding}}}$ $\\text{s}^{-1}$.");
           prm.declare_entry ("Stress exponents for grain boundary sliding", "1.8",
                              Patterns::List(Patterns::Double(0.)),
                              "Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001. Units: None.");
@@ -152,14 +152,14 @@ namespace aspect
           prm.declare_entry ("Activation energies for grain boundary sliding", "49e3",
                              Patterns::Anything(),
                              "Here we use the default values for ice at T < 255 K as given in Goldsby & Kohlstedt, 2001. "
-                             "Units: \\si{\\joule\\per\\mole}.");
+                             "Units: $\\text{J}\\text{mol}^{-1}$.");
           prm.declare_entry ("Activation volumes for grain boundary sliding", "-13e-6",
                              Patterns::Anything(),
                              "Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001. "
-                             "Units: \\si{\\meter\\cubed\\per\\mole}.");
+                             "Units: $\\text{m}^{3}\\text{mol}^{-1}$.");
           prm.declare_entry ("Grain size", "26e-6", Patterns::Double (0.),
                              "Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001. "
-                             "Units: \\si{\\meter}.");
+                             "Units: $\\text{m}$.");
           prm.leave_subsection();
         }
       }

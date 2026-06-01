@@ -378,7 +378,7 @@ namespace aspect
                              "for a total of N+1 values, where N is the number of all compositional fields or only "
                              "those corresponding to chemical compositions. "
                              "If only one value is given, then all use the same value.  "
-                             "Units: \\si{\\meter\\squared\\per\\second}.");
+                             "Units: $\\text{m}^{2}\\text{s}^{-1}$.");
           prm.declare_entry ("Define thermal conductivities","false",
                              Patterns::Bool (),
                              "Whether to directly define thermal conductivities for each compositional field "

@@ -162,11 +162,11 @@ namespace aspect
           prm.declare_entry ("Minimum material pressure", "1.e5",
                              Patterns::Double (0.),
                              "The value of the minimum pressure used to query PerpleX. "
-                             "Units: \\si{\\pascal}.");
+                             "Units: $\\text{Pa}$.");
           prm.declare_entry ("Maximum material pressure", "1.e12",
                              Patterns::Double (0.),
                              "The value of the maximum pressure used to query PerpleX. "
-                             "Units: \\si{\\pascal}.");
+                             "Units: $\\text{Pa}$.");
 
         }
         prm.leave_subsection();

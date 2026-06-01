@@ -956,7 +956,7 @@ namespace aspect
           prm.declare_entry ("dR over dt", "0.",
                              Patterns::Double (),
                              "Initial inner core radius changing rate. "
-                             "Units: \\si{\\kilo\\meter}/year.");
+                             "Units: $\\text{k}\\text{m}$/year.");
           prm.declare_entry ("dX over dt", "0.",
                              Patterns::Double (),
                              "Initial light composition changing rate. "
@@ -967,7 +967,7 @@ namespace aspect
                              "Units: $\\frac{\\text{kg}}{\\text{m}^3}$.");
           prm.declare_entry ("CMB pressure", "0.14e12",
                              Patterns::Double (),
-                             "Pressure at CMB. Units: \\si{\\pascal}.");
+                             "Pressure at CMB. Units: $\\text{Pa}$.");
           prm.declare_entry ("Initial light composition", "0.01",
                              Patterns::Double (0.),
                              "Initial light composition (eg. S,O) concentration "
@@ -994,11 +994,11 @@ namespace aspect
           prm.declare_entry ("Lh", "750e3",
                              Patterns::Double (0.),
                              "The latent heat of core freeze. "
-                             "Units: \\si{\\joule\\per\\kilogram}.");
+                             "Units: $\\text{J}\\text{kg}^{-1}$.");
           prm.declare_entry ("Rh","-27.7e6",
                              Patterns::Double (),
                              "The heat of reaction. "
-                             "Units: \\si{\\joule\\per\\kilogram}.");
+                             "Units: $\\text{J}\\text{kg}^{-1}$.");
           prm.declare_entry ("Beta composition", "1.1",
                              Patterns::Double (0.),
                              "Compositional expansion coefficient $Beta_c$. "
@@ -1017,11 +1017,11 @@ namespace aspect
             prm.declare_entry ("Tm1","10.9e-12",
                                Patterns::Double (),
                                "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm1. "
-                               "Units: \\si{\\per\\pascal}.");
+                               "Units: $\\text{Pa}^{-1}$.");
             prm.declare_entry ("Tm2","-8.0e-24",
                                Patterns::Double (),
                                "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm2. "
-                               "Units: \\si{\\per\\pascal\\squared}.");
+                               "Units: $\\text{Pa}^{-2}$.");
             prm.declare_entry ("Theta","0.11",
                                Patterns::Double (),
                                "Melting curve (\\cite{NPB+04} eq. (40)) parameter Theta.");

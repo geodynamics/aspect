@@ -101,7 +101,7 @@ namespace aspect
                                                   "A visualization output object that generates output "
                                                   "for the averaged entropy of multiple components."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\J/kg/K}.")
+                                                  "Physical units: $\\text{J/kg/K}$.")
     }
   }
 }

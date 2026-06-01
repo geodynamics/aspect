@@ -569,7 +569,7 @@ namespace aspect
                             "The hillslope transport coefficient $\\kappa$ used to "
                             "diffuse the free surface, either as a  "
                             "stabilization step or to mimic erosional "
-                            "and depositional processes. Units: $\\si{m^2/s}$. ");
+                            "and depositional processes. Units: $\\text{m}^2/\\text{s}$. ");
           prm.declare_entry("Time steps between diffusion", "1",
                             Patterns::Integer(0,std::numeric_limits<int>::max()),
                             "The number of time steps between each application of "

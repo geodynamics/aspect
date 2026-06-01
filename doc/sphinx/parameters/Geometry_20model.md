@@ -60,7 +60,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** X coordinate of box origin. Units: \si{\meter}.
+**Documentation:** X coordinate of box origin. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Box origin Y coordinate<parameters:Geometry_20model/Box/Box_20origin_20Y_20coordinate>`
@@ -69,7 +69,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Y coordinate of box origin. Units: \si{\meter}.
+**Documentation:** Y coordinate of box origin. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Box origin Z coordinate<parameters:Geometry_20model/Box/Box_20origin_20Z_20coordinate>`
@@ -78,7 +78,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Z coordinate of box origin. This value is ignored if the simulation is in 2d. Units: \si{\meter}.
+**Documentation:** Z coordinate of box origin. This value is ignored if the simulation is in 2d. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`X extent<parameters:Geometry_20model/Box/X_20extent>`
@@ -87,7 +87,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Extent of the box in x-direction. Units: \si{\meter}.
+**Documentation:** Extent of the box in x-direction. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`X periodic<parameters:Geometry_20model/Box/X_20periodic>`
@@ -114,7 +114,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Extent of the box in y-direction. Units: \si{\meter}.
+**Documentation:** Extent of the box in y-direction. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Y periodic<parameters:Geometry_20model/Box/Y_20periodic>`
@@ -141,7 +141,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Extent of the box in z-direction. This value is ignored if the simulation is in 2d. Units: \si{\meter}.
+**Documentation:** Extent of the box in z-direction. This value is ignored if the simulation is in 2d. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Z periodic<parameters:Geometry_20model/Box/Z_20periodic>`
@@ -170,7 +170,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** X coordinate of box origin. Units: \si{\meter}.
+**Documentation:** X coordinate of box origin. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Box origin Y coordinate<parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Box_20origin_20Y_20coordinate>`
@@ -179,7 +179,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Y coordinate of box origin. Units: \si{\meter}.
+**Documentation:** Y coordinate of box origin. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Box origin Z coordinate<parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Box_20origin_20Z_20coordinate>`
@@ -188,7 +188,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Z coordinate of box origin. This value is ignored if the simulation is in 2d. Units: \si{\meter}.
+**Documentation:** Z coordinate of box origin. This value is ignored if the simulation is in 2d. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Lithospheric thickness<parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Lithospheric_20thickness>`
@@ -215,7 +215,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Extent of the box in x-direction. Units: \si{\meter}.
+**Documentation:** Extent of the box in x-direction. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`X periodic<parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/X_20periodic>`
@@ -251,7 +251,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Extent of the box in y-direction. Units: \si{\meter}.
+**Documentation:** Extent of the box in y-direction. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Y periodic<parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Y_20periodic>`
@@ -296,7 +296,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Extent of the box in z-direction. This value is ignored if the simulation is in 2d. Units: \si{\meter}.
+**Documentation:** Extent of the box in z-direction. This value is ignored if the simulation is in 2d. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Z periodic<parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Z_20periodic>`
@@ -334,7 +334,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Radius at the bottom surface of the chunk. Units: \si{\meter}.
+**Documentation:** Radius at the bottom surface of the chunk. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Chunk maximum latitude<parameters:Geometry_20model/Chunk/Chunk_20maximum_20latitude>`
@@ -379,7 +379,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Radius at the top surface of the chunk. Units: \si{\meter}.
+**Documentation:** Radius at the top surface of the chunk. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Latitude repetitions<parameters:Geometry_20model/Chunk/Latitude_20repetitions>`
@@ -417,7 +417,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Radius at the bottom surface of the chunk. Units: \si{\meter}.
+**Documentation:** Radius at the bottom surface of the chunk. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Chunk maximum latitude<parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20maximum_20latitude>`
@@ -444,7 +444,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Radius at the top surface of the lower chunk, where it merges with the upper chunk. Units: \si{\meter}.
+**Documentation:** Radius at the top surface of the lower chunk, where it merges with the upper chunk. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Chunk minimum latitude<parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20minimum_20latitude>`
@@ -471,7 +471,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Radius at the top surface of the chunk. Units: \si{\meter}.
+**Documentation:** Radius at the top surface of the chunk. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Inner chunk radius repetitions<parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Inner_20chunk_20radius_20repetitions>`
@@ -729,7 +729,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Radius of the sphere. Units: \si{\meter}.
+**Documentation:** Radius of the sphere. Units: $\text{m}$.
 ::::
 
 (parameters:Geometry_20model/Spherical_20shell)=
@@ -771,7 +771,7 @@ In either case, this parameter is ignored unless the opening angle of the domain
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Inner radius of the spherical shell. Units: \si{\meter}.
+**Documentation:** Inner radius of the spherical shell. Units: $\text{m}$.
 
 :::{note}
 The default value of 3,481,000 m equals the radius of a sphere with equal volume as Earth (i.e., 6371 km) minus the average depth of the core-mantle boundary (i.e., 2890 km).
@@ -784,7 +784,7 @@ The default value of 3,481,000 m equals the radius of a sphere with equal volume
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of radial values for the custom mesh scheme. Units: $\si{m}$. A list of radial values subdivides the spherical shell at specified radii. The list must be strictly ascending, and the first value must be greater than the inner radius while the last must be less than the outer radius.
+**Documentation:** List of radial values for the custom mesh scheme. Units: $\text{m}$. A list of radial values subdivides the spherical shell at specified radii. The list must be strictly ascending, and the first value must be greater than the inner radius while the last must be less than the outer radius.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Number of slices<parameters:Geometry_20model/Spherical_20shell/Number_20of_20slices>`
@@ -811,7 +811,7 @@ The default value of 3,481,000 m equals the radius of a sphere with equal volume
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Outer radius of the spherical shell. Units: \si{\meter}.
+**Documentation:** Outer radius of the spherical shell. Units: $\text{m}$.
 
 :::{note}
 The default value of 6,336,000 m equals the radius of a sphere with equal volume as Earth (i.e., 6371 km) minus the average depth of the mantle-crust interface (i.e., 35 km).

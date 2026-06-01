@@ -353,7 +353,7 @@ namespace aspect
                              "longitude, and in 3d latitude. Note that the coordinate related to the depth "
                              "($y$ in 2d Cartesian, $z$ in 3d Cartesian and radius in spherical coordinates) is "
                              "not used. "
-                             "Units: \\si{\\meter} or degrees.");
+                             "Units: $\\text{m}$ or degrees.");
           prm.declare_entry("Number of integration points", "1000",
                             Patterns::Integer(0),
                             "The number of integration points over which we integrate the lithostatic pressure "

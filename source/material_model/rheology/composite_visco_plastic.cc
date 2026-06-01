@@ -714,7 +714,7 @@ namespace aspect
         // rheology models. The new defaults will apply both to
         // this rheology model and to the subordinate rheology modules.
         prm.declare_entry ("Minimum strain rate", "1.4e-20", Patterns::Double(0.),
-                           "Stabilizes strain dependent viscosity. Units: \\si{\\per\\second}.");
+                           "Stabilizes strain dependent viscosity. Units: $\\text{s}^{-1}$.");
 
         // Viscosity iteration parameters
         prm.declare_entry ("Strain rate residual tolerance", "1e-10", Patterns::Double(0.),

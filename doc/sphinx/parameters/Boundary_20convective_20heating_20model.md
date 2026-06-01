@@ -76,7 +76,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [MultipleSelection function ]
 
-**Documentation:** A comma-separated list of boundary convective heating models that will be used to determine the heat transfer coefficient across the boundary. The heat transfer coefficient characterises the heat exchange between the solid model interior and an adjacent fluid. In the context of a Robin boundary condition, the heat transfer coefficient governs the strength of the convective coupling: For heat transfer coefficient --> zero, the boundary approaches insulating (Neumann) behaviour; For heat transfer coefficient --> infinity, the boundary approaches a prescribed-temperature (Dirichlet) condition. The unit of the heat transfer coefficient is \si{\watt\per\meter\squared\per\kelvin}.At the moment, this list can only have one entry.
+**Documentation:** A comma-separated list of boundary convective heating models that will be used to determine the heat transfer coefficient across the boundary. The heat transfer coefficient characterises the heat exchange between the solid model interior and an adjacent fluid. In the context of a Robin boundary condition, the heat transfer coefficient governs the strength of the convective coupling: For heat transfer coefficient --> zero, the boundary approaches insulating (Neumann) behaviour; For heat transfer coefficient --> infinity, the boundary approaches a prescribed-temperature (Dirichlet) condition. The unit of the heat transfer coefficient is $\text{W}\text{m}^{-2}\text{K}^{-1}$.At the moment, this list can only have one entry.
 
 The following heat transfer coefficient models are available:
 

@@ -211,7 +211,7 @@ namespace aspect
         prm.declare_entry ("Reference temperature", "293.", Patterns::Double(0.),
                            "For calculating density by thermal expansivity. Units: $\\text{K}$.");
         prm.declare_entry ("Minimum strain rate", "1.4e-20", Patterns::Double(0.),
-                           "Stabilizes strain dependent viscosity. Units: \\si{\\per\\second}.");
+                           "Stabilizes strain dependent viscosity. Units: $\\text{s}^{-1}$.");
         prm.declare_entry ("Minimum viscosity", "1e17", Patterns::Double(0.),
                            "Lower cutoff for effective viscosity. Units: $\\text{Pa}\\text{s}$.");
         prm.declare_entry ("Maximum viscosity", "1e28", Patterns::Double(0.),
@@ -233,7 +233,7 @@ namespace aspect
 
         // Equation of state parameters
         prm.declare_entry ("Thermal diffusivity", "0.8e-6", Patterns::Double(0.),
-                           "Units: \\si{\\meter\\squared\\per\\second}.");
+                           "Units: $\\text{m}^{2}\\text{s}^{-1}$.");
         prm.declare_entry ("Heat capacity", "1.25e3",
                            Patterns::Double(0.),
                            "The value of the specific heat $C_p$. "
@@ -266,7 +266,7 @@ namespace aspect
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
                            "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
-                           "Units: $\\frac{1}{\\text{Pa}}$ \\si{\\meter}$^{m_{\\text{diffusion}}}$ \\si{\\per\\second}.");
+                           "Units: $\\frac{1}{\\text{Pa}}$ $\\text{m}$$^{m_{\\text{diffusion}}}$ $\\text{s}^{-1}$.");
         prm.declare_entry ("Stress exponents for diffusion creep", "1.",
                            Patterns::List(Patterns::Double(0.)),
                            "List of stress exponents, $n_{\\text{diffusion}}$, for background mantle and compositional fields, "
@@ -285,14 +285,14 @@ namespace aspect
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
                            "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
-                           "Units: \\si{\\joule\\per\\mole}.");
+                           "Units: $\\text{J}\\text{mol}^{-1}$.");
         prm.declare_entry ("Activation volumes for diffusion creep", "6e-6",
                            Patterns::List(Patterns::Double(0.)),
                            "List of activation volumes, $V_a$, for background mantle and compositional fields, "
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
                            "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
-                           "Units: \\si{\\meter\\cubed\\per\\mole}.");
+                           "Units: $\\text{m}^{3}\\text{mol}^{-1}$.");
 
         // Dislocation creep parameters
         prm.declare_entry ("Prefactors for dislocation creep", "1.1e-16",
@@ -301,7 +301,7 @@ namespace aspect
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
                            "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
-                           "Units: \\si{\\pascal}$^{-n_{\\text{dislocation}}}$\\si{\\per\\second}.");
+                           "Units: $\\text{Pa}$$^{-n_{\\text{dislocation}}}$$\\text{s}^{-1}$.");
         prm.declare_entry ("Stress exponents for dislocation creep", "3.5",
                            Patterns::List(Patterns::Double(0.)),
                            "List of stress exponents, $n_{\\text{dislocation}}$, for background mantle and compositional fields, "
@@ -314,14 +314,14 @@ namespace aspect
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
                            "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
-                           "Units: \\si{\\joule\\per\\mole}.");
+                           "Units: $\\text{J}\\text{mol}^{-1}$.");
         prm.declare_entry ("Activation volumes for dislocation creep", "1.4e-5",
                            Patterns::List(Patterns::Double(0.)),
                            "List of activation volumes, $V_a$, for background mantle and compositional fields, "
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
                            "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
-                           "Units: \\si{\\meter\\cubed\\per\\mole}.");
+                           "Units: $\\text{m}^{3}\\text{mol}^{-1}$.");
 
         // Diffusion creep parameters
         Rheology::DiffusionCreep<dim>::declare_parameters(prm);

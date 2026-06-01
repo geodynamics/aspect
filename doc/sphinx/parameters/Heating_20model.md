@@ -23,7 +23,7 @@ For full adiabatic heating, this has to be used in combination with the heating 
 
 &lsquo;anisotropic shear heating&rsquo;: Implementation of a standard model for shear heating extended for an anisotropic viscosity tensor. If the material model provides a stress-strain director tensor, then the strain-rate is multiplied with this tensor to compute the stress that is used when computing the shear heating.
 
-&lsquo;compositional heating&rsquo;: Implementation of a model in which magnitude of internal heat production is determined from fixed values assigned to each compositional field. These values are interpreted as having units \si{\watt\per\meter\cubed}.
+&lsquo;compositional heating&rsquo;: Implementation of a model in which magnitude of internal heat production is determined from fixed values assigned to each compositional field. These values are interpreted as having units $\text{W}\text{m}^{-3}$.
 
 &lsquo;constant heating&rsquo;: Implementation of a model in which the heating rate is constant.
 
@@ -80,7 +80,7 @@ The formula is interpreted as having units W/kg.
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of heat production per unit volume values for background and compositional fields, for a total of N+1 values, where the first value corresponds to the background material, and N is the number of compositional fields. Units: \si{\watt\per\meter\cubed}.
+**Documentation:** List of heat production per unit volume values for background and compositional fields, for a total of N+1 values, where the first value corresponds to the background material, and N is the number of compositional fields. Units: $\text{W}\text{m}^{-3}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Use compositional field for heat production averaging<parameters:Heating_20model/Compositional_20heating/Use_20compositional_20field_20for_20heat_20production_20averaging>`
@@ -191,7 +191,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Depth of the crust when crust if defined by depth. Units: \si{\meter}.
+**Documentation:** Depth of the crust when crust if defined by depth. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Half decay times<parameters:Heating_20model/Radioactive_20decay/Half_20decay_20times>`

@@ -482,7 +482,7 @@ namespace aspect
                              Patterns::Double(0),
                              "The viscosity that is used in this model. "
                              "\n\n"
-                             "Units: \\si{\\pascal\\second}");
+                             "Units: $\\text{Pa}\\text{s}$");
           prm.declare_entry ("Lateral viscosity file name", "constant_lateral_vis_prefactor.txt",
                              Patterns::Anything (),
                              "The file name of the lateral viscosity prefactor.");
@@ -509,7 +509,7 @@ namespace aspect
                              Patterns::Double (0.),
                              "The value of the cohesion, $C$. The extremely large default"
                              "cohesion value (1e20 Pa) prevents the viscous stress from "
-                             "exceeding the yield stress. Units: \\si{\\pascal}.");
+                             "exceeding the yield stress. Units: $\\text{Pa}$.");
 
           // Multicomponent equilibration parameters
           prm.declare_entry ("Maximum iteration for multicomponent equilibration", "50",

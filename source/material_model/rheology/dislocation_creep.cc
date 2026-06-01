@@ -185,7 +185,7 @@ namespace aspect
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
                            "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
-                           "Units: \\si{\\pascal}$^{-n_{\\text{dislocation}}}$ \\si{\\per\\second}.");
+                           "Units: $\\text{Pa}$$^{-n_{\\text{dislocation}}}$ $\\text{s}^{-1}$.");
         prm.declare_entry ("Stress exponents for dislocation creep", "3.5",
                            Patterns::Anything(),
                            "List of stress exponents, $n_{\\text{dislocation}}$, for background material and compositional fields, "
@@ -198,14 +198,14 @@ namespace aspect
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
                            "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
-                           "Units: \\si{\\joule\\per\\mole}.");
+                           "Units: $\\text{J}\\text{mol}^{-1}$.");
         prm.declare_entry ("Activation volumes for dislocation creep", "1.4e-5",
                            Patterns::Anything(),
                            "List of activation volumes, $V_a$, for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
                            "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
-                           "Units: \\si{\\meter\\cubed\\per\\mole}.");
+                           "Units: $\\text{m}^{3}\\text{mol}^{-1}$.");
       }
 
 

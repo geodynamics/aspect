@@ -163,7 +163,7 @@ namespace aspect
                            "the static angle of internal friction is used. Around the dynamic characteristic "
                            "strain rate, there is a smooth gradient from the static to the dynamic angle "
                            "of internal friction. "
-                           "Units: \\si{\\per\\second}.");
+                           "Units: $\\text{s}^{-1}$.");
 
         prm.declare_entry ("Dynamic angles of internal friction", "2",
                            Patterns::List(Patterns::Double(0)),
@@ -172,7 +172,7 @@ namespace aspect
                            "those corresponding to chemical compositions. "
                            "Dynamic angles of friction are used as the current friction angle when the effective "
                            "strain rate is well above the 'dynamic characteristic strain rate'. "
-                           "Units: \\si{\\degree}.");
+                           "Units: $\\text{degree}$.");
 
         prm.declare_entry ("Dynamic friction smoothness exponent", "1",
                            Patterns::Double (0),

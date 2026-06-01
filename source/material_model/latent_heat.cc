@@ -310,7 +310,7 @@ namespace aspect
                              "0 stands for the 1st compositional fields, 1 for the second compositional field "
                              "and -1 for none of them. "
                              "List must have the same number of entries as Phase transition depths. "
-                             "Units: \\si{\\pascal\\per\\kelvin}.");
+                             "Units: $\\text{Pa}\\text{K}^{-1}$.");
           prm.declare_entry ("Viscosity prefactors", "all:1",
                              Patterns::Anything(),
                              "A list of prefactors for the viscosity for each phase. The ``Viscosity'' "

@@ -1120,7 +1120,7 @@ Physical units: $\frac{\text{m}}{\text{s}}$ or $\frac{\text{m}}{\text{year}}$, d
 
 &lsquo;density anomaly&rsquo;: A visualization output postprocessor that outputs the density minus the depth-average of the density.In the &ldquo;lateral average&rdquo; scheme, the average density is calculated using the lateral averaging functionfrom the &ldquo;depth average&rdquo; postprocessor and interpolated linearly between the layers specified through &ldquo;Number of depth slices&rdquo;. In the &ldquo;reference profile&rdquo; scheme, the adiabatic density is used as theaverage density.
 
-Physical units: \si{\kg/m^3}.
+Physical units: $\text{kg}/\text{m}^3$.
 
 &lsquo;depth&rsquo;: A visualization output postprocessor that outputs the depth for all points inside the domain, as determined by the geometry model.
 
@@ -1130,7 +1130,7 @@ Physical units: $\text{m}$.
 
 &lsquo;depth including mesh deformation&rsquo;: A visualization output postprocessor that outputs the depth for all points inside the domain, as determined by the current model surface. This plugin will include changes to the surface from mesh deformation.
 
-Physical units: \si{\meter}.
+Physical units: $\text{m}$.
 
 &lsquo;dynamic topography&rsquo;: A visualization output object that generates output for the dynamic topography at the top and bottom of the model space. The actual computation of this topography is handled inside the &rsquo;dynamic topography&rsquo; postprocessor, please check its documentation for details about the numerical methods.
 
@@ -1142,7 +1142,7 @@ Physical units: $\text{m}$.
 
 &lsquo;entropy average&rsquo;: A visualization output object that generates output for the averaged entropy of multiple components.
 
-Physical units: \si{\J/kg/K}.
+Physical units: $\text{J/kg/K}$.
 
 &lsquo;error indicator&rsquo;: A visualization output object that generates output showing the estimated error or other mesh refinement indicator as a spatially variable function with one value per cell.
 
@@ -1166,7 +1166,7 @@ Physical units: $\frac{\text{W}}{\text{m}^2}$.
 
 &lsquo;heating&rsquo;: A visualization output object that generates output for all the heating terms used in the energy equation.
 
-Physical units: $\frac{\text{W}}{\text{m}^3}$\si{\watt\per\cubic\meter}.
+Physical units: $\frac{\text{W}}{\text{m}^3}$.
 
 &lsquo;material properties&rsquo;: A visualization output object that generates output for the material properties given by the material model. The current postprocessor allows to output a (potentially large) subset of all of the information provided by material models at once, with just a single material model evaluation per output point. Although individual properties can still be listed in the &ldquo;List of output variables&rdquo;, this visualization plugin is called internally to avoid duplicated evaluations of the material model.
 
@@ -1250,7 +1250,7 @@ Physical units: $\frac{1}{\text{s}}$.
 
 This postprocessor outputs the quantity computed herein as a tensor, i.e., programs such as VisIt or Pararview can visualize it as tensors represented by ellipses, not just as individual fields. That said, you can also visualize individual tensor components, by noting that the components that are written to the output file correspond to the tensor components $t_{xx}, t_{xy}, t_{yx}, t_{yy}$ (in 2d) or  $t_{xx}, t_{xy}, t_{xz}, t_{yx}, t_{yy}, t_{yz}, t_{zx}, t_{zy}, t_{zz}$ (in 3d) of a tensor $t$ in a Cartesian coordinate system. Even though the tensor we output is symmetric, the output contains all components of the tensor because that is what the file format requires.
 
-Physical units: \si{\per\second}.
+Physical units: $\text{s}^{-1}$.
 
 &lsquo;stress&rsquo;: A visualization output object that generates output for the 3 (in 2d) or 6 (in 3d) components of the stress tensor, i.e., for the components of the tensor $-2\eta\varepsilon(\mathbf u)+pI$ in the incompressible case and $-2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]+pI$ in the compressible case. If elasticity is used, the elastic contribution is being accounted for. Note that the convention of positive compressive stress is followed.
 

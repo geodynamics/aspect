@@ -164,15 +164,15 @@ namespace aspect
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
                            "those corresponding to chemical compositions. "
                            "The extremely large default cohesion value (1e20 Pa) prevents the viscous stress from "
-                           "exceeding the yield stress. Units: \\si{\\pascal}.");
+                           "exceeding the yield stress. Units: $\\text{Pa}$.");
         prm.declare_entry ("Maximum yield stress", "1e12", Patterns::Double (0.),
                            "Limits the maximum value of the yield stress determined by the "
                            "Drucker-Prager plasticity parameters. Default value is chosen so this "
                            "is not automatically used. Values of 100e6--1000e6 $Pa$ have been used "
-                           "in previous models. Units: \\si{\\pascal}.");
+                           "in previous models. Units: $\\text{Pa}$.");
         prm.declare_entry ("Reference plastic strain rate", "1e-18", Patterns::Double (0.),
                            "Provides the strain rate at which the yield stress determined by the "
-                           "Drucker-Prager plasticity parameters apply. Units: \\si{\\per\\second}.");
+                           "Drucker-Prager plasticity parameters apply. Units: $\\text{s}^{-1}$.");
         prm.declare_entry ("Plastic stress exponent", "50", Patterns::Double (0.),
                            "Provides the stress exponent that modifies the yield stress according to "
                            "the strain rate. The default value is chosen to provide trade-off between "

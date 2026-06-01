@@ -473,7 +473,7 @@ namespace aspect
                            "Depth above that melt will be extracted from the model, "
                            "which is done by a negative reaction term proportional to the "
                            "porosity field. "
-                           "Units: \\si{\\meter}.");
+                           "Units: $\\text{m}$.");
         prm.declare_entry ("Melt compressibility", "0.0",
                            Patterns::Double (0.),
                            "The value of the compressibility of the melt. "
@@ -548,7 +548,7 @@ namespace aspect
         prm.declare_entry ("Reference permeability", "1e-8",
                            Patterns::Double(),
                            "Reference permeability of the solid host rock."
-                           "Units: \\si{\\meter\\squared}.");
+                           "Units: $\\text{m}^{2}$.");
 
 
       }

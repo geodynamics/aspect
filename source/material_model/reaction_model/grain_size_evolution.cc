@@ -349,12 +349,12 @@ namespace aspect
                            Patterns::List (Patterns::Double (0.)),
                            "The activation energy for grain growth $E_g$. "
                            "List must have one more entry than the Phase transition depths. "
-                           "Units: \\si{\\joule\\per\\mole}.");
+                           "Units: $\\text{J}\\text{mol}^{-1}$.");
         prm.declare_entry ("Grain growth activation volume", "8e-6",
                            Patterns::List (Patterns::Double (0.)),
                            "The activation volume for grain growth $V_g$. "
                            "List must have one more entry than the Phase transition depths. "
-                           "Units: \\si{\\meter\\cubed\\per\\mole}.");
+                           "Units: $\\text{m}^{3}\\text{mol}^{-1}$.");
         prm.declare_entry ("Grain growth exponent", "3.",
                            Patterns::List (Patterns::Double (0.)),
                            "The exponent of the grain growth law $p_g$. This is an experimentally determined "
@@ -367,7 +367,7 @@ namespace aspect
                            "This is dependent on water content, which is assumed to be "
                            "50 H/$10^6$ Si for the default value. "
                            "List must have one more entry than the Phase transition depths. "
-                           "Units: \\si{\\meter}$^{p_g}$\\si{\\per\\second}.");
+                           "Units: $\\text{m}$$^{p_g}$$\\text{s}^{-1}$.");
         prm.declare_entry ("Reciprocal required strain", "10.",
                            Patterns::List (Patterns::Double (0.)),
                            "This parameter ($\\lambda$) gives an estimate of the strain necessary "
@@ -378,7 +378,7 @@ namespace aspect
                            "The grain size $d_{ph}$ to that a phase will be reduced to when crossing a phase transition. "
                            "When set to zero, grain size will not be reduced. "
                            "List must have the same number of entries as Phase transition depths. "
-                           "Units: \\si{\\meter}.");
+                           "Units: $\\text{m}$.");
         prm.declare_entry ("Phase volume fraction", "0.4",
                            Patterns::Double (0., 1.),
                            "The volume fraction of one of the phases in the two-phase damage model of Bercovici and Ricard (2012). "
@@ -403,12 +403,12 @@ namespace aspect
                            Patterns::List (Patterns::Double (0.)),
                            "The average specific grain boundary energy $\\gamma$. "
                            "List must have one more entry than the Phase transition depths. "
-                           "Units: \\si{\\joule\\per\\meter\\squared}.");
+                           "Units: $\\text{J}\\text{m}^{-2}$.");
         prm.declare_entry ("Work fraction for boundary area change", "0.1",
                            Patterns::List (Patterns::Double (0.)),
                            "The fraction $\\chi$ of work done by dislocation creep to change the grain boundary area. "
                            "List must have one more entry than the Phase transition depths. "
-                           "Units: \\si{\\joule\\per\\meter\\squared}.");
+                           "Units: $\\text{J}\\text{m}^{-2}$.");
         prm.declare_entry ("Geometric constant", "3.",
                            Patterns::List (Patterns::Double (0.)),
                            "The geometric constant $c$ used in the paleowattmeter grain size reduction law. "
@@ -419,7 +419,7 @@ namespace aspect
                            "The minimum grain size that is used for the material model. This parameter "
                            "is introduced to limit local viscosity contrasts, but still allows for a widely "
                            "varying viscosity over the whole mantle range. "
-                           "Units: \\si{\\meter}.");
+                           "Units: $\\text{m}$.");
         prm.declare_entry ("Lower mantle grain size scaling", "1.0",
                            Patterns::Double (0.),
                            "This option does not exist any more.");

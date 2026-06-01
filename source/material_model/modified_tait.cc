@@ -136,7 +136,7 @@ namespace aspect
         {
           prm.declare_entry ("Reference pressure", "1e5",
                              Patterns::Double (0.),
-                             "Reference pressure $P_0$. Units: \\si{\\pascal}.");
+                             "Reference pressure $P_0$. Units: $\\text{Pa}$.");
           prm.declare_entry ("Reference temperature", "298.15",
                              Patterns::Double (0.),
                              "Reference temperature $T_0$. Units: $\\text{K}$.");
@@ -147,7 +147,7 @@ namespace aspect
           prm.declare_entry ("Reference isothermal bulk modulus", "125e9",
                              Patterns::Double (0.),
                              "The isothermal bulk modulus at the reference pressure and temperature. "
-                             "Units: \\si{\\pascal}.");
+                             "Units: $\\text{Pa}$.");
           prm.declare_entry ("Reference bulk modulus derivative", "4.",
                              Patterns::Double (0.),
                              "The value of the first pressure derivative of the isothermal bulk modulus "

@@ -374,7 +374,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Thickness of the crustal layer generated at the surface.Units: \si{\meter}.
+**Documentation:** Thickness of the crustal layer generated at the surface.Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Lithosphere thickness<parameters:Particles_202/Crust_20and_20lithosphere_20formation/Lithosphere_20thickness>`
@@ -383,7 +383,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Thickness of the lithosphere layer generated below the crust.Units: \si{\meter}.
+**Documentation:** Thickness of the lithosphere layer generated below the crust.Units: $\text{m}$.
 ::::
 
 (parameters:Particles_202/Crystal_20Preferred_20Orientation)=

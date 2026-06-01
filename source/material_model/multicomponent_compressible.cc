@@ -177,7 +177,7 @@ namespace aspect
                              "the total number of phase transitions, summed over all phases. The format is "
                              "background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. "
                              "If only one value is given, then all fields/phases use the same value. "
-                             "Units: \\si{\\pascal\\second}.");
+                             "Units: $\\text{Pa}\\text{s}$.");
           prm.declare_entry ("Thermal conductivities", "4.7",
                              Patterns::Anything(),
                              "List of thermal conductivities for background and compositional fields (N), "
@@ -190,7 +190,7 @@ namespace aspect
                              "the total number of phase transitions, summed over all phases. The format is "
                              "background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. "
                              "If only one value is given, then all fields/phases use the same value. "
-                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
+                             "Units: $\\text{W}\\text{m}^{-1}\\text{K}^{-1}$.");
           prm.declare_entry ("Viscosity averaging scheme", "harmonic",
                              Patterns::Selection("arithmetic|harmonic|geometric|maximum composition"),
                              "When more than one compositional field is present at a point "

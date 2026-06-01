@@ -103,12 +103,12 @@ namespace aspect
                            Patterns::Double (),
                            "Thickness of the crustal layer generated "
                            "at the surface."
-                           "Units: \\si{\\meter}.");
+                           "Units: $\\text{m}$.");
         prm.declare_entry ("Lithosphere thickness", "63000",
                            Patterns::Double (),
                            "Thickness of the lithosphere layer generated "
                            "below the crust."
-                           "Units: \\si{\\meter}.");
+                           "Units: $\\text{m}$.");
       }
 
 

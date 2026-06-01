@@ -161,7 +161,7 @@ namespace aspect
           prm.declare_entry ("Width", "1000.0",
                              Patterns::Double (0.),
                              "The Gaussian RMS width of the perturbations. "
-                             "Units: \\si{\\meter}.");
+                             "Units: $\\text{m}$.");
         }
         prm.leave_subsection ();
       }

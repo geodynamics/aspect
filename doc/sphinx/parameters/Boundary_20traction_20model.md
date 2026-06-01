@@ -183,5 +183,5 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The point where the pressure profile will be calculated. Cartesian coordinates $(x,y,z)$ when geometry is a box, otherwise enter radius, longitude, and in 3d latitude. Note that the coordinate related to the depth ($y$ in 2d Cartesian, $z$ in 3d Cartesian and radius in spherical coordinates) is not used. Units: \si{\meter} or degrees.
+**Documentation:** The point where the pressure profile will be calculated. Cartesian coordinates $(x,y,z)$ when geometry is a box, otherwise enter radius, longitude, and in 3d latitude. Note that the coordinate related to the depth ($y$ in 2d Cartesian, $z$ in 3d Cartesian and radius in spherical coordinates) is not used. Units: $\text{m}$ or degrees.
 ::::

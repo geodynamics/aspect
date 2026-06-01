@@ -88,7 +88,7 @@ namespace aspect
                                                   "determined by the current model surface. This plugin "
                                                   "will include changes to the surface from mesh deformation."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\meter}.")
+                                                  "Physical units: $\\text{m}$.")
     }
   }
 }

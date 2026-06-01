@@ -80,7 +80,7 @@
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Set a length scale for the diffusion of advection fields if the &ldquo;prescribed field with diffusion&rdquo; method is selected for a field. More precisely, this length scale represents the square root of the product of diffusivity and time in the diffusion equation, and controls the distance over which features are diffused. Units: \si{\meter}.
+**Documentation:** Set a length scale for the diffusion of advection fields if the &ldquo;prescribed field with diffusion&rdquo; method is selected for a field. More precisely, this length scale represents the square root of the product of diffusivity and time in the diffusion equation, and controls the distance over which features are diffused. Units: $\text{m}$.
 ::::
 
 (parameters:Solver_20parameters/Matrix_20Free)=

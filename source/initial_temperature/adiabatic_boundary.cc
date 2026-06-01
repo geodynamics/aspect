@@ -82,7 +82,7 @@ namespace aspect
           prm.declare_entry ("Adiabatic temperature gradient", "0.0005",
                              Patterns::Double (0.),
                              "The value of the adiabatic temperature gradient. "
-                             "Units: \\si{\\kelvin\\per\\meter}.");
+                             "Units: $\\text{K}\\text{m}^{-1}$.");
         }
         prm.leave_subsection();
       }

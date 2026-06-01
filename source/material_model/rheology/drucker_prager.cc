@@ -284,7 +284,7 @@ namespace aspect
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
                            "those corresponding to chemical compositions. "
                            "The extremely large default cohesion value (1e20 Pa) prevents the viscous stress from "
-                           "exceeding the yield stress. Units: \\si{\\pascal}.");
+                           "exceeding the yield stress. Units: $\\text{Pa}$.");
         prm.declare_entry ("Prefactors for yield stress", "1.0",
                            Patterns::Anything(),
                            "List of prefactors for the yield stress, for background material and compositional fields, "
@@ -298,7 +298,7 @@ namespace aspect
                            ", which limits the maximum value of the yield stress determined by the "
                            "Drucker-Prager plasticity parameters. Default value is chosen so this "
                            "is not automatically used. Values of 100e6--1000e6 $Pa$ have been used "
-                           "in previous models. Units: \\si{\\pascal}.");
+                           "in previous models. Units: $\\text{Pa}$.");
         prm.declare_entry ("Use plastic damper","false",
                            Patterns::Bool (),
                            "Whether to use a plastic damper when computing the Drucker-Prager "
@@ -307,7 +307,7 @@ namespace aspect
                            "sufficient resolutions.");
         prm.declare_entry ("Plastic damper viscosity", "0.0", Patterns::Double(0),
                            "Viscosity of the damper that acts in parallel with the plastic viscosity "
-                           "to produce mesh-independent behavior at sufficient resolutions. Units: \\si{\\pascal\\second}");
+                           "to produce mesh-independent behavior at sufficient resolutions. Units: $\\text{Pa}\\text{s}$");
       }
 
 

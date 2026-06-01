@@ -193,24 +193,24 @@ namespace aspect
           prm.declare_entry ("Reference temperature", "293.",
                              Patterns::Double (0.),
                              "The reference temperature $T_0$. The reference temperature is used "
-                             "in the density calculation. Units: \\si{\\kelvin}.");
+                             "in the density calculation. Units: $\\text{K}$.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
-                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
+                             "Units: $\\text{W}\\text{m}^{-1}\\text{K}^{-1}$.");
           prm.enter_subsection ("Viscosity");
           {
 
             prm.declare_entry ("Minimum viscosity", "1e19",
                                Patterns::Double (0.),
-                               "The value of the minimum viscosity cutoff $\\eta_min$. Units: \\si{\\pascal\\second}.");
+                               "The value of the minimum viscosity cutoff $\\eta_min$. Units: $\\text{Pa}\\text{s}$.");
             prm.declare_entry ("Maximum viscosity", "1e24",
                                Patterns::Double (0.),
-                               "The value of the maximum viscosity cutoff $\\eta_max$. Units: \\si{\\pascal\\second}.");
+                               "The value of the maximum viscosity cutoff $\\eta_max$. Units: $\\text{Pa}\\text{s}$.");
             prm.declare_entry ("Reference strain rate", "1e-15",
                                Patterns::Double (0.),
                                "The value of the initial strain rate prescribed during the "
-                               "first nonlinear iteration $\\dot{\\epsilon}_ref$. Units: \\si{\\per\\second}.");
+                               "first nonlinear iteration $\\dot{\\epsilon}_ref$. Units: $\\text{s}^{-1}$.");
             prm.declare_entry ("Angle of internal friction", "0.",
                                Patterns::Double (0.),
                                "The value of the angle of internal friction $\\phi$. "
@@ -219,7 +219,7 @@ namespace aspect
                                "harder to solve numerically. Units: degrees.");
             prm.declare_entry ("Cohesion", "2e7",
                                Patterns::Double (0.),
-                               "The value of the cohesion $C$. Units: \\si{\\pascal}.");
+                               "The value of the cohesion $C$. Units: $\\text{Pa}$.");
           }
           prm.leave_subsection();
         }

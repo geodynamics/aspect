@@ -304,7 +304,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Pressure at CMB. Units: \si{\pascal}.
+**Documentation:** Pressure at CMB. Units: $\text{Pa}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Core conductivity<parameters:Boundary_20temperature_20model/Dynamic_20core/Core_20conductivity>`
@@ -376,7 +376,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The latent heat of core freeze. Units: \si{\joule\per\kilogram}.
+**Documentation:** The latent heat of core freeze. Units: $\text{J}\text{kg}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Max iteration<parameters:Boundary_20temperature_20model/Dynamic_20core/Max_20iteration>`
@@ -403,7 +403,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The heat of reaction. Units: \si{\joule\per\kilogram}.
+**Documentation:** The heat of reaction. Units: $\text{J}\text{kg}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Rho0<parameters:Boundary_20temperature_20model/Dynamic_20core/Rho0>`
@@ -421,7 +421,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Initial inner core radius changing rate. Units: \si{\kilo\meter}/year.
+**Documentation:** Initial inner core radius changing rate. Units: $\text{k}\text{m}$/year.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`dT over dt<parameters:Boundary_20temperature_20model/Dynamic_20core/dT_20over_20dt>`
@@ -477,7 +477,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Melting curve ({cite}`NPB+04` eq. (40)) parameter Tm1. Units: \si{\per\pascal}.
+**Documentation:** Melting curve ({cite}`NPB+04` eq. (40)) parameter Tm1. Units: $\text{Pa}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Tm2<parameters:Boundary_20temperature_20model/Dynamic_20core/Geotherm_20parameters/Tm2>`
@@ -486,7 +486,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Melting curve ({cite}`NPB+04` eq. (40)) parameter Tm2. Units: \si{\per\pascal\squared}.
+**Documentation:** Melting curve ({cite}`NPB+04` eq. (40)) parameter Tm2. Units: $\text{Pa}^{-2}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Use BW11<parameters:Boundary_20temperature_20model/Dynamic_20core/Geotherm_20parameters/Use_20BW11>`

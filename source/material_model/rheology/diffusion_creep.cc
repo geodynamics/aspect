@@ -228,7 +228,7 @@ namespace aspect
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
                            "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
-                           "Units: \\si{\\per\\pascal\\meter}$^{m_{\\text{diffusion}}}$\\si{\\per\\second}.");
+                           "Units: $\\text{Pa}^{-1}\\text{m}^{-1}$$^{m_{\\text{diffusion}}}$$\\text{s}^{-1}$.");
         prm.declare_entry ("Stress exponents for diffusion creep", "1.",
                            Patterns::List(Patterns::Double(0.)),
                            "List of stress exponents, $n_{\\text{diffusion}}$, for background mantle and compositional fields, "
@@ -248,21 +248,21 @@ namespace aspect
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
                            "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
-                           "Units: \\si{\\joule\\per\\mole}.");
+                           "Units: $\\text{J}\\text{mol}^{-1}$.");
         prm.declare_entry ("Activation volumes for diffusion creep", "6e-6",
                            Patterns::Anything(),
                            "List of activation volumes, $V_a$, for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
                            "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
-                           "Units: \\si{\\meter\\cubed\\per\\mole}.");
+                           "Units: $\\text{m}^{3}\\text{mol}^{-1}$.");
         prm.declare_entry ("Grain size", "1e-3", Patterns::Double (0.),
                            "The fixed grain size of the material. "
                            "This grain size is only used if the parent "
                            "material model does not provide its own "
                            "(possibly variable) grain size when "
                            "calling this rheology."
-                           "Units: \\si{\\meter}.");
+                           "Units: $\\text{m}$.");
       }
 
 

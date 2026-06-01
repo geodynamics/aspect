@@ -94,7 +94,7 @@ namespace aspect
                            "the total number of phase transitions, summed over all phases. The format is "
                            "background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. "
                            "If only one value is given, then all fields/phases use the same value. "
-                           "Units: \\si{\\kelvin}.");
+                           "Units: $\\text{K}$.");
         prm.declare_entry ("Reference densities", "3300.",
                            Patterns::Anything(),
                            "List of reference densities for background and compositional fields (N), "
@@ -107,7 +107,7 @@ namespace aspect
                            "the total number of phase transitions, summed over all phases. The format is "
                            "background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. "
                            "If only one value is given, then all fields/phases use the same value. "
-                           "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
+                           "Units: $\\text{kg}\\text{m}^{-3}$.");
         prm.declare_entry ("Reference isothermal compressibilities", "4e-12",
                            Patterns::Anything(),
                            "List of isothermal compressibilities for background and compositional fields (N), "
@@ -120,7 +120,7 @@ namespace aspect
                            "the total number of phase transitions, summed over all phases. The format is "
                            "background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. "
                            "If only one value is given, then all fields/phases use the same value. "
-                           "Units: \\si{\\per\\pascal}.");
+                           "Units: $\\text{Pa}^{-1}$.");
         prm.declare_entry ("Isothermal bulk modulus pressure derivatives", "4.",
                            Patterns::Anything(),
                            "List of isothermal bulk modulus pressure derivatives for background and compositional fields (N), "
@@ -146,7 +146,7 @@ namespace aspect
                            "the total number of phase transitions, summed over all phases. The format is "
                            "background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. "
                            "If only one value is given, then all fields/phases use the same value. "
-                           "Units: \\si{\\per\\kelvin}.");
+                           "Units: $\\text{K}^{-1}$.");
         prm.declare_entry ("Isochoric specific heats", "1250.",
                            Patterns::Anything(),
                            "List of isochoric specific heats for background and compositional fields (N), "
@@ -159,7 +159,7 @@ namespace aspect
                            "the total number of phase transitions, summed over all phases. The format is "
                            "background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. "
                            "If only one value is given, then all fields/phases use the same value. "
-                           "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
+                           "Units: $\\text{J}\\text{K}^{-1}\\text{kg}^{-1}$.");
         prm.declare_entry ("Enable phase transitions", "false",
                            Patterns::Bool (),
                            "Whether to enable the use of phase transitions, which break the thermodynamic "

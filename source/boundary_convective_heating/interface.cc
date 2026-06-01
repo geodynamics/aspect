@@ -320,7 +320,7 @@ namespace aspect
                           "insulating (Neumann) behaviour; "
                           "For heat transfer coefficient --> infinity, the boundary approaches "
                           "a prescribed-temperature (Dirichlet) condition. "
-                          "The unit of the heat transfer coefficient is \\si{\\watt\\per\\meter\\squared\\per\\kelvin}."
+                          "The unit of the heat transfer coefficient is $\\text{W}\\text{m}^{-2}\\text{K}^{-1}$."
                           "At the moment, this list can only have one entry. \n\n"
                           "The following heat transfer coefficient models are available:\n\n"
                           +

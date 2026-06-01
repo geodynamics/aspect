@@ -227,7 +227,7 @@ namespace aspect
                                                   "``Number of depth slices''. In the ``reference profile'' scheme, the adiabatic density is used as the"
                                                   "average density."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\kg/m^3}.")
+                                                  "Physical units: $\\text{kg}/\\text{m}^3$.")
     }
   }
 }

@@ -363,7 +363,7 @@ namespace aspect
                             "that for more information.");
           prm.declare_entry ("Reference fluid density", "2500",
                              Patterns::Double (0),
-                             "Reference density of the melt/fluid$\\rho_{f,0}$. Units: \\si{\\kilogram\\per\\meter\\cubed}.");
+                             "Reference density of the melt/fluid$\\rho_{f,0}$. Units: $\\text{kg}\\text{m}^{-3}$.");
           prm.declare_entry ("Shear to bulk viscosity ratio", "0.1",
                              Patterns::Double (0),
                              "Ratio between shear and bulk viscosity at the reference "
@@ -386,7 +386,7 @@ namespace aspect
           prm.declare_entry ("Reference permeability", "1e-8",
                              Patterns::Double(),
                              "Reference permeability of the solid host rock."
-                             "Units: \\si{\\meter\\squared}.");
+                             "Units: $\\text{m}^{2}$.");
           prm.declare_entry ("Fluid compressibility", "0.0",
                              Patterns::Double (0),
                              "The value of the compressibility of the fluid. "
@@ -423,7 +423,7 @@ namespace aspect
                              Patterns::Double (0.),
                              "The reference temperature $T_0$ for the katz2003 reaction model. "
                              "The reference temperature is used in both the density and "
-                             "viscosity formulas of this model. Units: \\si{\\kelvin}.");
+                             "viscosity formulas of this model. Units: $\\text{K}$.");
         }
         prm.leave_subsection();
 

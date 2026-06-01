@@ -118,7 +118,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The hillslope transport coefficient $\kappa$ used to diffuse the free surface, either as a  stabilization step or to mimic erosional and depositional processes. Units: $\si{m^2/s}$.
+**Documentation:** The hillslope transport coefficient $\kappa$ used to diffuse the free surface, either as a  stabilization step or to mimic erosional and depositional processes. Units: $\text{m}^2/\text{s}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Time steps between diffusion<parameters:Mesh_20deformation/Diffusion/Time_20steps_20between_20diffusion>`

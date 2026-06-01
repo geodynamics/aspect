@@ -250,7 +250,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of depths where the viscosity changes. Values must monotonically increase. Units: \si{\meter}.
+**Documentation:** A list of depths where the viscosity changes. Values must monotonically increase. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Use TALA<parameters:Material_20model/Ascii_20reference_20profile/Use_20TALA>`
@@ -680,7 +680,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** List of activation energies, $E_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\joule\per\mole}.
+**Documentation:** List of activation energies, $E_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\text{J}\text{mol}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Activation energies for dislocation creep<parameters:Material_20model/Diffusion_20dislocation/Activation_20energies_20for_20dislocation_20creep>`
@@ -689,7 +689,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** List of activation energies, $E_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\joule\per\mole}.
+**Documentation:** List of activation energies, $E_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\text{J}\text{mol}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Activation volumes for diffusion creep<parameters:Material_20model/Diffusion_20dislocation/Activation_20volumes_20for_20diffusion_20creep>`
@@ -698,7 +698,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** List of activation volumes, $V_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\meter\cubed\per\mole}.
+**Documentation:** List of activation volumes, $V_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\text{m}^{3}\text{mol}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Activation volumes for dislocation creep<parameters:Material_20model/Diffusion_20dislocation/Activation_20volumes_20for_20dislocation_20creep>`
@@ -707,7 +707,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** List of activation volumes, $V_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\meter\cubed\per\mole}.
+**Documentation:** List of activation volumes, $V_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\text{m}^{3}\text{mol}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Densities<parameters:Material_20model/Diffusion_20dislocation/Densities>`
@@ -734,7 +734,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The fixed grain size of the material. This grain size is only used if the parent material model does not provide its own (possibly variable) grain size when calling this rheology.Units: \si{\meter}.
+**Documentation:** The fixed grain size of the material. This grain size is only used if the parent material model does not provide its own (possibly variable) grain size when calling this rheology.Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Grain size exponents for diffusion creep<parameters:Material_20model/Diffusion_20dislocation/Grain_20size_20exponents_20for_20diffusion_20creep>`
@@ -779,7 +779,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Stabilizes strain dependent viscosity. Units: \si{\per\second}.
+**Documentation:** Stabilizes strain dependent viscosity. Units: $\text{s}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Minimum viscosity<parameters:Material_20model/Diffusion_20dislocation/Minimum_20viscosity>`
@@ -797,7 +797,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\per\pascal\meter}$^{m_{\text{diffusion}}}$\si{\per\second}.
+**Documentation:** List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\text{Pa}^{-1}\text{m}^{-1}$$^{m_{\text{diffusion}}}$$\text{s}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Prefactors for dislocation creep<parameters:Material_20model/Diffusion_20dislocation/Prefactors_20for_20dislocation_20creep>`
@@ -806,7 +806,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\pascal}$^{-n_{\text{dislocation}}}$ \si{\per\second}.
+**Documentation:** List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\text{Pa}$$^{-n_{\text{dislocation}}}$ $\text{s}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Diffusion_20dislocation/Reference_20temperature>`
@@ -851,7 +851,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Units: \si{\meter\squared\per\second}.
+**Documentation:** Units: $\text{m}^{2}\text{s}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal expansivities<parameters:Material_20model/Diffusion_20dislocation/Thermal_20expansivities>`
@@ -898,7 +898,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The reference temperature $T_0$. The reference temperature is used in the density calculation. Units: \si{\kelvin}.
+**Documentation:** The reference temperature $T_0$. The reference temperature is used in the density calculation. Units: $\text{K}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal conductivity<parameters:Material_20model/Drucker_20Prager/Thermal_20conductivity>`
@@ -907,7 +907,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Units: \si{\watt\per\meter\per\kelvin}.
+**Documentation:** The value of the thermal conductivity $k$. Units: $\text{W}\text{m}^{-1}\text{K}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal expansion coefficient<parameters:Material_20model/Drucker_20Prager/Thermal_20expansion_20coefficient>`
@@ -936,7 +936,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the cohesion $C$. Units: \si{\pascal}.
+**Documentation:** The value of the cohesion $C$. Units: $\text{Pa}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Maximum viscosity<parameters:Material_20model/Drucker_20Prager/Viscosity/Maximum_20viscosity>`
@@ -945,7 +945,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the maximum viscosity cutoff $\eta_max$. Units: \si{\pascal\second}.
+**Documentation:** The value of the maximum viscosity cutoff $\eta_max$. Units: $\text{Pa}\text{s}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Minimum viscosity<parameters:Material_20model/Drucker_20Prager/Viscosity/Minimum_20viscosity>`
@@ -954,7 +954,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the minimum viscosity cutoff $\eta_min$. Units: \si{\pascal\second}.
+**Documentation:** The value of the minimum viscosity cutoff $\eta_min$. Units: $\text{Pa}\text{s}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference strain rate<parameters:Material_20model/Drucker_20Prager/Viscosity/Reference_20strain_20rate>`
@@ -963,7 +963,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the initial strain rate prescribed during the first nonlinear iteration $\dot{\epsilon}_ref$. Units: \si{\per\second}.
+**Documentation:** The value of the initial strain rate prescribed during the first nonlinear iteration $\dot{\epsilon}_ref$. Units: $\text{s}^{-1}$.
 ::::
 
 (parameters:Material_20model/Entropy_20model)=
@@ -983,7 +983,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the cohesion, $C$. The extremely large defaultcohesion value (1e20 Pa) prevents the viscous stress from exceeding the yield stress. Units: \si{\pascal}.
+**Documentation:** The value of the cohesion, $C$. The extremely large defaultcohesion value (1e20 Pa) prevents the viscous stress from exceeding the yield stress. Units: $\text{Pa}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Material_20model/Entropy_20model/Data_20directory>`
@@ -1073,7 +1073,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of values that determine the linear scaling of the thermal conductivity with pressure. Units: \si{\watt\per\meter\per\kelvin\per\pascal}.
+**Documentation:** A list of values that determine the linear scaling of the thermal conductivity with pressure. Units: $\text{W}\text{m}^{-1}\text{K}^{-1}\text{Pa}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference temperatures for thermal conductivity<parameters:Material_20model/Entropy_20model/Reference_20temperatures_20for_20thermal_20conductivity>`
@@ -1102,7 +1102,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Documentation:** The viscosity that is used in this model.
 
-Units: \si{\pascal\second}
+Units: $\text{Pa}\text{s}$
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Saturation prefactors<parameters:Material_20model/Entropy_20model/Saturation_20prefactors>`
@@ -1147,7 +1147,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of depth values that indicate where the transitions between the different conductivity parameter sets should occur (in most cases, these will be the depths of major phase transitions). Units: \si{\meter}.
+**Documentation:** A list of depth values that indicate where the transitions between the different conductivity parameter sets should occur (in most cases, these will be the depths of major phase transitions). Units: $\text{m}$.
 ::::
 
 (parameters:Material_20model/Grain_20size_20model)=
@@ -1203,7 +1203,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The average specific grain boundary energy $\gamma$. List must have one more entry than the Phase transition depths. Units: \si{\joule\per\meter\squared}.
+**Documentation:** The average specific grain boundary energy $\gamma$. List must have one more entry than the Phase transition depths. Units: $\text{J}\text{m}^{-2}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Bilinear interpolation<parameters:Material_20model/Grain_20size_20model/Bilinear_20interpolation>`
@@ -1221,7 +1221,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Anything]
 
-**Documentation:** List of cohesions, $C$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. The extremely large default cohesion value (1e20 Pa) prevents the viscous stress from exceeding the yield stress. Units: \si{\pascal}.
+**Documentation:** List of cohesions, $C$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. The extremely large default cohesion value (1e20 Pa) prevents the viscous stress from exceeding the yield stress. Units: $\text{Pa}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Material_20model/Grain_20size_20model/Data_20directory>`
@@ -1365,7 +1365,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The activation energy for grain growth $E_g$. List must have one more entry than the Phase transition depths. Units: \si{\joule\per\mole}.
+**Documentation:** The activation energy for grain growth $E_g$. List must have one more entry than the Phase transition depths. Units: $\text{J}\text{mol}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Grain growth activation volume<parameters:Material_20model/Grain_20size_20model/Grain_20growth_20activation_20volume>`
@@ -1374,7 +1374,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The activation volume for grain growth $V_g$. List must have one more entry than the Phase transition depths. Units: \si{\meter\cubed\per\mole}.
+**Documentation:** The activation volume for grain growth $V_g$. List must have one more entry than the Phase transition depths. Units: $\text{m}^{3}\text{mol}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Grain growth exponent<parameters:Material_20model/Grain_20size_20model/Grain_20growth_20exponent>`
@@ -1392,7 +1392,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The prefactor for the Ostwald ripening grain growth law $G_0$. This is dependent on water content, which is assumed to be 50 H/$10^6$ Si for the default value. List must have one more entry than the Phase transition depths. Units: \si{\meter}$^{p_g}$\si{\per\second}.
+**Documentation:** The prefactor for the Ostwald ripening grain growth law $G_0$. This is dependent on water content, which is assumed to be 50 H/$10^6$ Si for the default value. List must have one more entry than the Phase transition depths. Units: $\text{m}$$^{p_g}$$\text{s}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Grain size evolution formulation<parameters:Material_20model/Grain_20size_20model/Grain_20size_20evolution_20formulation>`
@@ -1482,7 +1482,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Anything]
 
-**Documentation:** List of maximum yield stresses, for background material and compositional fields, , which limits the maximum value of the yield stress determined by the Drucker-Prager plasticity parameters. Default value is chosen so this is not automatically used. Values of 100e6--1000e6 $Pa$ have been used in previous models. Units: \si{\pascal}.
+**Documentation:** List of maximum yield stresses, for background material and compositional fields, , which limits the maximum value of the yield stress determined by the Drucker-Prager plasticity parameters. Default value is chosen so this is not automatically used. Values of 100e6--1000e6 $Pa$ have been used in previous models. Units: $\text{Pa}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Minimum grain size<parameters:Material_20model/Grain_20size_20model/Minimum_20grain_20size>`
@@ -1491,7 +1491,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The minimum grain size that is used for the material model. This parameter is introduced to limit local viscosity contrasts, but still allows for a widely varying viscosity over the whole mantle range. Units: \si{\meter}.
+**Documentation:** The minimum grain size that is used for the material model. This parameter is introduced to limit local viscosity contrasts, but still allows for a widely varying viscosity over the whole mantle range. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Minimum specific heat<parameters:Material_20model/Grain_20size_20model/Minimum_20specific_20heat>`
@@ -1527,7 +1527,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of Clapeyron slopes for each phase transition. A positive Clapeyron slope indicates that the phase transition will occur in a greater depth, if the temperature is higher than the one given in Phase transition temperatures and in a smaller depth, if the temperature is smaller than the one given in Phase transition temperatures. For negative slopes the other way round. List must have the same number of entries as Phase transition depths. Units: \si{\pascal\per\kelvin}.
+**Documentation:** A list of Clapeyron slopes for each phase transition. A positive Clapeyron slope indicates that the phase transition will occur in a greater depth, if the temperature is higher than the one given in Phase transition temperatures and in a smaller depth, if the temperature is smaller than the one given in Phase transition temperatures. For negative slopes the other way round. List must have the same number of entries as Phase transition depths. Units: $\text{Pa}\text{K}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition depths<parameters:Material_20model/Grain_20size_20model/Phase_20transition_20depths>`
@@ -1536,7 +1536,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of depths where phase transitions occur. Values must monotonically increase. Units: \si{\meter}.
+**Documentation:** A list of depths where phase transitions occur. Values must monotonically increase. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition pressure widths<parameters:Material_20model/Grain_20size_20model/Phase_20transition_20pressure_20widths>`
@@ -1545,7 +1545,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of widths for each phase transition, in terms of pressure. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition pressures. Define transition by depth instead of pressure must be set to false to use this parameter. Units: \si{\pascal}.
+**Documentation:** A list of widths for each phase transition, in terms of pressure. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition pressures. Define transition by depth instead of pressure must be set to false to use this parameter. Units: $\text{Pa}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition pressures<parameters:Material_20model/Grain_20size_20model/Phase_20transition_20pressures>`
@@ -1554,7 +1554,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of pressures where phase transitions occur. Values must monotonically increase. Define transition by depth instead of pressure must be set to false to use this parameter. Units: \si{\pascal}.
+**Documentation:** A list of pressures where phase transitions occur. Values must monotonically increase. Define transition by depth instead of pressure must be set to false to use this parameter. Units: $\text{Pa}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition temperature lower limits<parameters:Material_20model/Grain_20size_20model/Phase_20transition_20temperature_20lower_20limits>`
@@ -1563,7 +1563,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of lower temperature limits for each phase transition. Below this temperature the respective phase transition is deactivated. The default value means there is no lower limit for any phase transition. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: \si{\kelvin}.
+**Documentation:** A list of lower temperature limits for each phase transition. Below this temperature the respective phase transition is deactivated. The default value means there is no lower limit for any phase transition. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: $\text{K}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition temperature upper limits<parameters:Material_20model/Grain_20size_20model/Phase_20transition_20temperature_20upper_20limits>`
@@ -1572,7 +1572,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of upper temperature limits for each phase transition. Above this temperature the respective phase transition is deactivated. The default value means there is no upper limit for any phase transitions. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: \si{\kelvin}.
+**Documentation:** A list of upper temperature limits for each phase transition. Above this temperature the respective phase transition is deactivated. The default value means there is no upper limit for any phase transitions. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: $\text{K}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition temperatures<parameters:Material_20model/Grain_20size_20model/Phase_20transition_20temperatures>`
@@ -1581,7 +1581,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of temperatures where phase transitions occur. Higher or lower temperatures lead to phase transition occurring in smaller or greater depths than given in Phase transition depths, depending on the Clapeyron slope given in Phase transition Clapeyron slopes. List must have the same number of entries as Phase transition depths. Units: \si{\kelvin}.
+**Documentation:** A list of temperatures where phase transitions occur. Higher or lower temperatures lead to phase transition occurring in smaller or greater depths than given in Phase transition depths, depending on the Clapeyron slope given in Phase transition Clapeyron slopes. List must have the same number of entries as Phase transition depths. Units: $\text{K}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition widths<parameters:Material_20model/Grain_20size_20model/Phase_20transition_20widths>`
@@ -1590,7 +1590,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of widths for each phase transition, in terms of depth. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition depths. Units: \si{\meter}.
+**Documentation:** A list of widths for each phase transition, in terms of depth. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition depths. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase volume fraction<parameters:Material_20model/Grain_20size_20model/Phase_20volume_20fraction>`
@@ -1608,7 +1608,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Viscosity of the damper that acts in parallel with the plastic viscosity to produce mesh-independent behavior at sufficient resolutions. Units: \si{\pascal\second}
+**Documentation:** Viscosity of the damper that acts in parallel with the plastic viscosity to produce mesh-independent behavior at sufficient resolutions. Units: $\text{Pa}\text{s}$
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Prefactors for yield stress<parameters:Material_20model/Grain_20size_20model/Prefactors_20for_20yield_20stress>`
@@ -1635,7 +1635,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The grain size $d_{ph}$ to that a phase will be reduced to when crossing a phase transition. When set to zero, grain size will not be reduced. List must have the same number of entries as Phase transition depths. Units: \si{\meter}.
+**Documentation:** The grain size $d_{ph}$ to that a phase will be reduced to when crossing a phase transition. When set to zero, grain size will not be reduced. List must have the same number of entries as Phase transition depths. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference compressibility<parameters:Material_20model/Grain_20size_20model/Reference_20compressibility>`
@@ -1761,7 +1761,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The fraction $\chi$ of work done by dislocation creep to change the grain boundary area. List must have one more entry than the Phase transition depths. Units: \si{\joule\per\meter\squared}.
+**Documentation:** The fraction $\chi$ of work done by dislocation creep to change the grain boundary area. List must have one more entry than the Phase transition depths. Units: $\text{J}\text{m}^{-2}$.
 ::::
 
 (parameters:Material_20model/Grain_20size_20model/Grain_20damage_20partitioning)=
@@ -1837,7 +1837,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [List of <[Integer range 0...2147483647 (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of phases, which correspond to the Phase transition density jumps. The density jumps occur only in the phase that is given by this phase value. 0 stands for the 1st compositional fields, 1 for the second compositional field and -1 for none of them. List must have the same number of entries as Phase transition depths. Units: \si{\pascal\per\kelvin}.
+**Documentation:** A list of phases, which correspond to the Phase transition density jumps. The density jumps occur only in the phase that is given by this phase value. 0 stands for the 1st compositional fields, 1 for the second compositional field and -1 for none of them. List must have the same number of entries as Phase transition depths. Units: $\text{Pa}\text{K}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Define transition by depth instead of pressure<parameters:Material_20model/Latent_20heat/Define_20transition_20by_20depth_20instead_20of_20pressure>`
@@ -1882,7 +1882,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of Clapeyron slopes for each phase transition. A positive Clapeyron slope indicates that the phase transition will occur in a greater depth, if the temperature is higher than the one given in Phase transition temperatures and in a smaller depth, if the temperature is smaller than the one given in Phase transition temperatures. For negative slopes the other way round. List must have the same number of entries as Phase transition depths. Units: \si{\pascal\per\kelvin}.
+**Documentation:** A list of Clapeyron slopes for each phase transition. A positive Clapeyron slope indicates that the phase transition will occur in a greater depth, if the temperature is higher than the one given in Phase transition temperatures and in a smaller depth, if the temperature is smaller than the one given in Phase transition temperatures. For negative slopes the other way round. List must have the same number of entries as Phase transition depths. Units: $\text{Pa}\text{K}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition density jumps<parameters:Material_20model/Latent_20heat/Phase_20transition_20density_20jumps>`
@@ -1900,7 +1900,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of depths where phase transitions occur. Values must monotonically increase. Units: \si{\meter}.
+**Documentation:** A list of depths where phase transitions occur. Values must monotonically increase. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition pressure widths<parameters:Material_20model/Latent_20heat/Phase_20transition_20pressure_20widths>`
@@ -1909,7 +1909,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of widths for each phase transition, in terms of pressure. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition pressures. Define transition by depth instead of pressure must be set to false to use this parameter. Units: \si{\pascal}.
+**Documentation:** A list of widths for each phase transition, in terms of pressure. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition pressures. Define transition by depth instead of pressure must be set to false to use this parameter. Units: $\text{Pa}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition pressures<parameters:Material_20model/Latent_20heat/Phase_20transition_20pressures>`
@@ -1918,7 +1918,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of pressures where phase transitions occur. Values must monotonically increase. Define transition by depth instead of pressure must be set to false to use this parameter. Units: \si{\pascal}.
+**Documentation:** A list of pressures where phase transitions occur. Values must monotonically increase. Define transition by depth instead of pressure must be set to false to use this parameter. Units: $\text{Pa}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition temperature lower limits<parameters:Material_20model/Latent_20heat/Phase_20transition_20temperature_20lower_20limits>`
@@ -1927,7 +1927,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of lower temperature limits for each phase transition. Below this temperature the respective phase transition is deactivated. The default value means there is no lower limit for any phase transition. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: \si{\kelvin}.
+**Documentation:** A list of lower temperature limits for each phase transition. Below this temperature the respective phase transition is deactivated. The default value means there is no lower limit for any phase transition. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: $\text{K}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition temperature upper limits<parameters:Material_20model/Latent_20heat/Phase_20transition_20temperature_20upper_20limits>`
@@ -1936,7 +1936,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of upper temperature limits for each phase transition. Above this temperature the respective phase transition is deactivated. The default value means there is no upper limit for any phase transitions. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: \si{\kelvin}.
+**Documentation:** A list of upper temperature limits for each phase transition. Above this temperature the respective phase transition is deactivated. The default value means there is no upper limit for any phase transitions. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: $\text{K}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition temperatures<parameters:Material_20model/Latent_20heat/Phase_20transition_20temperatures>`
@@ -1945,7 +1945,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of temperatures where phase transitions occur. Higher or lower temperatures lead to phase transition occurring in smaller or greater depths than given in Phase transition depths, depending on the Clapeyron slope given in Phase transition Clapeyron slopes. List must have the same number of entries as Phase transition depths. Units: \si{\kelvin}.
+**Documentation:** A list of temperatures where phase transitions occur. Higher or lower temperatures lead to phase transition occurring in smaller or greater depths than given in Phase transition depths, depending on the Clapeyron slope given in Phase transition Clapeyron slopes. List must have the same number of entries as Phase transition depths. Units: $\text{K}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition widths<parameters:Material_20model/Latent_20heat/Phase_20transition_20widths>`
@@ -1954,7 +1954,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of widths for each phase transition, in terms of depth. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition depths. Units: \si{\meter}.
+**Documentation:** A list of widths for each phase transition, in terms of depth. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition depths. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference density<parameters:Material_20model/Latent_20heat/Reference_20density>`
@@ -2747,7 +2747,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Reference permeability of the solid host rock.Units: \si{\meter\squared}.
+**Documentation:** Reference permeability of the solid host rock.Units: $\text{m}^{2}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference shear viscosity<parameters:Material_20model/Melt_20global/Reference_20shear_20viscosity>`
@@ -2992,7 +2992,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Depth above that melt will be extracted from the model, which is done by a negative reaction term proportional to the porosity field. Units: \si{\meter}.
+**Documentation:** Depth above that melt will be extracted from the model, which is done by a negative reaction term proportional to the porosity field. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Melting time scale for operator splitting<parameters:Material_20model/Melt_20simple/Melting_20time_20scale_20for_20operator_20splitting>`
@@ -3048,7 +3048,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Reference permeability of the solid host rock.Units: \si{\meter\squared}.
+**Documentation:** Reference permeability of the solid host rock.Units: $\text{m}^{2}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference shear viscosity<parameters:Material_20model/Melt_20simple/Reference_20shear_20viscosity>`
@@ -3214,7 +3214,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The isothermal bulk modulus at the reference pressure and temperature. Units: \si{\pascal}.
+**Documentation:** The isothermal bulk modulus at the reference pressure and temperature. Units: $\text{Pa}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference pressure<parameters:Material_20model/Modified_20Tait_20model/Reference_20pressure>`
@@ -3223,7 +3223,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Reference pressure $P_0$. Units: \si{\pascal}.
+**Documentation:** Reference pressure $P_0$. Units: $\text{Pa}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Modified_20Tait_20model/Reference_20temperature>`
@@ -3301,7 +3301,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** List of densities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\kilogram\per\meter\cubed}.
+**Documentation:** List of densities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: $\text{kg}\text{m}^{-3}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Heat capacities<parameters:Material_20model/Multicomponent/Heat_20capacities>`
@@ -3310,7 +3310,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** List of specific heats $C_p$ for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\joule\per\kelvin\per\kilogram}.
+**Documentation:** List of specific heats $C_p$ for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: $\text{J}\text{K}^{-1}\text{kg}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Multicomponent/Reference_20temperature>`
@@ -3344,7 +3344,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** List of thermal expansivities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\per\kelvin}.
+**Documentation:** List of thermal expansivities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: $\text{K}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Viscosities<parameters:Material_20model/Multicomponent/Viscosities>`
@@ -3391,7 +3391,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** List of isochoric specific heats for background and compositional fields (N), for a total of N+1 values for models with no phase transitions (or models where the value does not change across any of the phase transitions). For models with phase transitions, the list needs to contain each field name, including the background, for a total of N+1 names, and for each of these names, specify the value for each phase (giving P_c+1 values for each field, with P_c being the number of phase transitions for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given, then all fields/phases use the same value. Units: \si{\joule\per\kelvin\per\kilogram}.
+**Documentation:** List of isochoric specific heats for background and compositional fields (N), for a total of N+1 values for models with no phase transitions (or models where the value does not change across any of the phase transitions). For models with phase transitions, the list needs to contain each field name, including the background, for a total of N+1 names, and for each of these names, specify the value for each phase (giving P_c+1 values for each field, with P_c being the number of phase transitions for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given, then all fields/phases use the same value. Units: $\text{J}\text{K}^{-1}\text{kg}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Isothermal bulk modulus pressure derivatives<parameters:Material_20model/Multicomponent_20compressible/Isothermal_20bulk_20modulus_20pressure_20derivatives>`
@@ -3409,7 +3409,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of Clapeyron slopes for each phase transition. A positive Clapeyron slope indicates that the phase transition will occur in a greater depth, if the temperature is higher than the one given in Phase transition temperatures and in a smaller depth, if the temperature is smaller than the one given in Phase transition temperatures. For negative slopes the other way round. List must have the same number of entries as Phase transition depths. Units: \si{\pascal\per\kelvin}.
+**Documentation:** A list of Clapeyron slopes for each phase transition. A positive Clapeyron slope indicates that the phase transition will occur in a greater depth, if the temperature is higher than the one given in Phase transition temperatures and in a smaller depth, if the temperature is smaller than the one given in Phase transition temperatures. For negative slopes the other way round. List must have the same number of entries as Phase transition depths. Units: $\text{Pa}\text{K}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition depths<parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20depths>`
@@ -3418,7 +3418,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of depths where phase transitions occur. Values must monotonically increase. Units: \si{\meter}.
+**Documentation:** A list of depths where phase transitions occur. Values must monotonically increase. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition pressure widths<parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20pressure_20widths>`
@@ -3427,7 +3427,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of widths for each phase transition, in terms of pressure. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition pressures. Define transition by depth instead of pressure must be set to false to use this parameter. Units: \si{\pascal}.
+**Documentation:** A list of widths for each phase transition, in terms of pressure. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition pressures. Define transition by depth instead of pressure must be set to false to use this parameter. Units: $\text{Pa}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition pressures<parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20pressures>`
@@ -3436,7 +3436,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of pressures where phase transitions occur. Values must monotonically increase. Define transition by depth instead of pressure must be set to false to use this parameter. Units: \si{\pascal}.
+**Documentation:** A list of pressures where phase transitions occur. Values must monotonically increase. Define transition by depth instead of pressure must be set to false to use this parameter. Units: $\text{Pa}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition temperature lower limits<parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20temperature_20lower_20limits>`
@@ -3445,7 +3445,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of lower temperature limits for each phase transition. Below this temperature the respective phase transition is deactivated. The default value means there is no lower limit for any phase transition. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: \si{\kelvin}.
+**Documentation:** A list of lower temperature limits for each phase transition. Below this temperature the respective phase transition is deactivated. The default value means there is no lower limit for any phase transition. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: $\text{K}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition temperature upper limits<parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20temperature_20upper_20limits>`
@@ -3454,7 +3454,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of upper temperature limits for each phase transition. Above this temperature the respective phase transition is deactivated. The default value means there is no upper limit for any phase transitions. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: \si{\kelvin}.
+**Documentation:** A list of upper temperature limits for each phase transition. Above this temperature the respective phase transition is deactivated. The default value means there is no upper limit for any phase transitions. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: $\text{K}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition temperatures<parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20temperatures>`
@@ -3463,7 +3463,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of temperatures where phase transitions occur. Higher or lower temperatures lead to phase transition occurring in smaller or greater depths than given in Phase transition depths, depending on the Clapeyron slope given in Phase transition Clapeyron slopes. List must have the same number of entries as Phase transition depths. Units: \si{\kelvin}.
+**Documentation:** A list of temperatures where phase transitions occur. Higher or lower temperatures lead to phase transition occurring in smaller or greater depths than given in Phase transition depths, depending on the Clapeyron slope given in Phase transition Clapeyron slopes. List must have the same number of entries as Phase transition depths. Units: $\text{K}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition widths<parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20widths>`
@@ -3472,7 +3472,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of widths for each phase transition, in terms of depth. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition depths. Units: \si{\meter}.
+**Documentation:** A list of widths for each phase transition, in terms of depth. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition depths. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference densities<parameters:Material_20model/Multicomponent_20compressible/Reference_20densities>`
@@ -3481,7 +3481,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** List of reference densities for background and compositional fields (N), for a total of N+1 values for models with no phase transitions (or models where the value does not change across any of the phase transitions). For models with phase transitions, the list needs to contain each field name, including the background, for a total of N+1 names, and for each of these names, specify the value for each phase (giving P_c+1 values for each field, with P_c being the number of phase transitions for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given, then all fields/phases use the same value. Units: \si{\kilogram\per\meter\cubed}.
+**Documentation:** List of reference densities for background and compositional fields (N), for a total of N+1 values for models with no phase transitions (or models where the value does not change across any of the phase transitions). For models with phase transitions, the list needs to contain each field name, including the background, for a total of N+1 names, and for each of these names, specify the value for each phase (giving P_c+1 values for each field, with P_c being the number of phase transitions for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given, then all fields/phases use the same value. Units: $\text{kg}\text{m}^{-3}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference isothermal compressibilities<parameters:Material_20model/Multicomponent_20compressible/Reference_20isothermal_20compressibilities>`
@@ -3490,7 +3490,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** List of isothermal compressibilities for background and compositional fields (N), for a total of N+1 values for models with no phase transitions (or models where the value does not change across any of the phase transitions). For models with phase transitions, the list needs to contain each field name, including the background, for a total of N+1 names, and for each of these names, specify the value for each phase (giving P_c+1 values for each field, with P_c being the number of phase transitions for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given, then all fields/phases use the same value. Units: \si{\per\pascal}.
+**Documentation:** List of isothermal compressibilities for background and compositional fields (N), for a total of N+1 values for models with no phase transitions (or models where the value does not change across any of the phase transitions). For models with phase transitions, the list needs to contain each field name, including the background, for a total of N+1 names, and for each of these names, specify the value for each phase (giving P_c+1 values for each field, with P_c being the number of phase transitions for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given, then all fields/phases use the same value. Units: $\text{Pa}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference temperatures<parameters:Material_20model/Multicomponent_20compressible/Reference_20temperatures>`
@@ -3499,7 +3499,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** List of reference temperatures $T_0$ for background and compositional fields (N), for a total of N+1 values for models with no phase transitions (or models where the value does not change across any of the phase transitions). For models with phase transitions, the list needs to contain each field name, including the background, for a total of N+1 names, and for each of these names, specify the value for each phase (giving P_c+1 values for each field, with P_c being the number of phase transitions for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given, then all fields/phases use the same value. Units: \si{\kelvin}.
+**Documentation:** List of reference temperatures $T_0$ for background and compositional fields (N), for a total of N+1 values for models with no phase transitions (or models where the value does not change across any of the phase transitions). For models with phase transitions, the list needs to contain each field name, including the background, for a total of N+1 names, and for each of these names, specify the value for each phase (giving P_c+1 values for each field, with P_c being the number of phase transitions for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given, then all fields/phases use the same value. Units: $\text{K}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference thermal expansivities<parameters:Material_20model/Multicomponent_20compressible/Reference_20thermal_20expansivities>`
@@ -3508,7 +3508,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** List of reference thermal expansivities for background and compositional fields (N), for a total of N+1 values for models with no phase transitions (or models where the value does not change across any of the phase transitions). For models with phase transitions, the list needs to contain each field name, including the background, for a total of N+1 names, and for each of these names, specify the value for each phase (giving P_c+1 values for each field, with P_c being the number of phase transitions for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given, then all fields/phases use the same value. Units: \si{\per\kelvin}.
+**Documentation:** List of reference thermal expansivities for background and compositional fields (N), for a total of N+1 values for models with no phase transitions (or models where the value does not change across any of the phase transitions). For models with phase transitions, the list needs to contain each field name, including the background, for a total of N+1 names, and for each of these names, specify the value for each phase (giving P_c+1 values for each field, with P_c being the number of phase transitions for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given, then all fields/phases use the same value. Units: $\text{K}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal conductivities<parameters:Material_20model/Multicomponent_20compressible/Thermal_20conductivities>`
@@ -3517,7 +3517,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** List of thermal conductivities for background and compositional fields (N), for a total of N+1 values for models with no phase transitions (or models where the value does not change across any of the phase transitions). For models with phase transitions, the list needs to contain each field name, including the background, for a total of N+1 names, and for each of these names, specify the value for each phase (giving P_c+1 values for each field, with P_c being the number of phase transitions for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given, then all fields/phases use the same value. Units: \si{\watt\per\meter\per\kelvin}.
+**Documentation:** List of thermal conductivities for background and compositional fields (N), for a total of N+1 values for models with no phase transitions (or models where the value does not change across any of the phase transitions). For models with phase transitions, the list needs to contain each field name, including the background, for a total of N+1 names, and for each of these names, specify the value for each phase (giving P_c+1 values for each field, with P_c being the number of phase transitions for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given, then all fields/phases use the same value. Units: $\text{W}\text{m}^{-1}\text{K}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Viscosities<parameters:Material_20model/Multicomponent_20compressible/Viscosities>`
@@ -3526,7 +3526,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** List of viscosities for background and compositional fields (N), for a total of N+1 values for models with no phase transitions (or models where the value does not change across any of the phase transitions). For models with phase transitions, the list needs to contain each field name, including the background, for a total of N+1 names, and for each of these names, specify the value for each phase (giving P_c+1 values for each field, with P_c being the number of phase transitions for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given, then all fields/phases use the same value. Units: \si{\pascal\second}.
+**Documentation:** List of viscosities for background and compositional fields (N), for a total of N+1 values for models with no phase transitions (or models where the value does not change across any of the phase transitions). For models with phase transitions, the list needs to contain each field name, including the background, for a total of N+1 names, and for each of these names, specify the value for each phase (giving P_c+1 values for each field, with P_c being the number of phase transitions for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given, then all fields/phases use the same value. Units: $\text{Pa}\text{s}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Viscosity averaging scheme<parameters:Material_20model/Multicomponent_20compressible/Viscosity_20averaging_20scheme>`
@@ -3620,7 +3620,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the maximum pressure used to query PerpleX. Units: \si{\pascal}.
+**Documentation:** The value of the maximum pressure used to query PerpleX. Units: $\text{Pa}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Maximum material temperature<parameters:Material_20model/PerpleX_20lookup_20model/Maximum_20material_20temperature>`
@@ -3638,7 +3638,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the minimum pressure used to query PerpleX. Units: \si{\pascal}.
+**Documentation:** The value of the minimum pressure used to query PerpleX. Units: $\text{Pa}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Minimum material temperature<parameters:Material_20model/PerpleX_20lookup_20model/Minimum_20material_20temperature>`
@@ -3827,7 +3827,7 @@ Also note that the fluid reaction time scale has to be larger than or equal to t
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Reference density of the melt/fluid$\rho_{f,0}$. Units: \si{\kilogram\per\meter\cubed}.
+**Documentation:** Reference density of the melt/fluid$\rho_{f,0}$. Units: $\text{kg}\text{m}^{-3}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference fluid viscosity<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Reference_20fluid_20viscosity>`
@@ -3845,7 +3845,7 @@ Also note that the fluid reaction time scale has to be larger than or equal to t
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Reference permeability of the solid host rock.Units: \si{\meter\squared}.
+**Documentation:** Reference permeability of the solid host rock.Units: $\text{m}^{2}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Reference_20temperature>`
@@ -3854,7 +3854,7 @@ Also note that the fluid reaction time scale has to be larger than or equal to t
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The reference temperature $T_0$ for the katz2003 reaction model. The reference temperature is used in both the density and viscosity formulas of this model. Units: \si{\kelvin}.
+**Documentation:** The reference temperature $T_0$ for the katz2003 reaction model. The reference temperature is used in both the density and viscosity formulas of this model. Units: $\text{K}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Shear to bulk viscosity ratio<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Shear_20to_20bulk_20viscosity_20ratio>`
@@ -4009,7 +4009,7 @@ Also note that the fluid reaction time scale has to be larger than or equal to t
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Depth above that melt will be extracted from the model, which is done by a negative reaction term proportional to the porosity field. Units: \si{\meter}.
+**Documentation:** Depth above that melt will be extracted from the model, which is done by a negative reaction term proportional to the porosity field. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Melting time scale for operator splitting<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Melting_20time_20scale_20for_20operator_20splitting>`
@@ -4065,7 +4065,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Reference permeability of the solid host rock.Units: \si{\meter\squared}.
+**Documentation:** Reference permeability of the solid host rock.Units: $\text{m}^{2}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal bulk viscosity exponent<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Thermal_20bulk_20viscosity_20exponent>`
@@ -4215,7 +4215,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Units: \si{\meter}.The maximum depth of the lithosphere. The model will be NaNs below this depth.
+**Documentation:** Units: $\text{m}$.The maximum depth of the lithosphere. The model will be NaNs below this depth.
 ::::
 
 (parameters:Material_20model/Simple_20compressible_20model)=
@@ -4466,7 +4466,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** List of cohesions, $C$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. The extremely large default cohesion value (1e20 Pa) prevents the viscous stress from exceeding the yield stress. Units: \si{\pascal}.
+**Documentation:** List of cohesions, $C$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. The extremely large default cohesion value (1e20 Pa) prevents the viscous stress from exceeding the yield stress. Units: $\text{Pa}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Composition viscosity prefactors<parameters:Material_20model/Steinberger_20model/Composition_20viscosity_20prefactors>`
@@ -4574,7 +4574,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** List of maximum yield stresses, for background material and compositional fields, , which limits the maximum value of the yield stress determined by the Drucker-Prager plasticity parameters. Default value is chosen so this is not automatically used. Values of 100e6--1000e6 $Pa$ have been used in previous models. Units: \si{\pascal}.
+**Documentation:** List of maximum yield stresses, for background material and compositional fields, , which limits the maximum value of the yield stress determined by the Drucker-Prager plasticity parameters. Default value is chosen so this is not automatically used. Values of 100e6--1000e6 $Pa$ have been used in previous models. Units: $\text{Pa}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Minimum viscosity<parameters:Material_20model/Steinberger_20model/Minimum_20viscosity>`
@@ -4601,7 +4601,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Viscosity of the damper that acts in parallel with the plastic viscosity to produce mesh-independent behavior at sufficient resolutions. Units: \si{\pascal\second}
+**Documentation:** Viscosity of the damper that acts in parallel with the plastic viscosity to produce mesh-independent behavior at sufficient resolutions. Units: $\text{Pa}\text{s}$
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Prefactors for yield stress<parameters:Material_20model/Steinberger_20model/Prefactors_20for_20yield_20stress>`
@@ -4619,7 +4619,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of values that determine the linear scaling of the thermal conductivity with pressure. Units: \si{\watt\per\meter\per\kelvin\per\pascal}.
+**Documentation:** A list of values that determine the linear scaling of the thermal conductivity with pressure. Units: $\text{W}\text{m}^{-1}\text{K}^{-1}\text{Pa}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Radial viscosity file name<parameters:Material_20model/Steinberger_20model/Radial_20viscosity_20file_20name>`
@@ -4691,7 +4691,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of depth values that indicate where the transitions between the different conductivity parameter sets should occur (in most cases, these will be the depths of major phase transitions). Units: \si{\meter}.
+**Documentation:** A list of depth values that indicate where the transitions between the different conductivity parameter sets should occur (in most cases, these will be the depths of major phase transitions). Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Use Drucker-Prager rheology<parameters:Material_20model/Steinberger_20model/Use_20Drucker_2dPrager_20rheology>`
@@ -4738,7 +4738,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** List of activation energies, $E$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\joule\per\mole}.
+**Documentation:** List of activation energies, $E$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\text{J}\text{mol}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Activation energies for diffusion creep<parameters:Material_20model/Visco_20Plastic/Activation_20energies_20for_20diffusion_20creep>`
@@ -4747,7 +4747,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** List of activation energies, $E_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\joule\per\mole}.
+**Documentation:** List of activation energies, $E_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\text{J}\text{mol}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Activation energies for dislocation creep<parameters:Material_20model/Visco_20Plastic/Activation_20energies_20for_20dislocation_20creep>`
@@ -4756,7 +4756,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** List of activation energies, $E_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\joule\per\mole}.
+**Documentation:** List of activation energies, $E_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\text{J}\text{mol}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Activation volumes for Peierls creep<parameters:Material_20model/Visco_20Plastic/Activation_20volumes_20for_20Peierls_20creep>`
@@ -4765,7 +4765,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** List of activation volumes, $V$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\meter\cubed\per\mole}.
+**Documentation:** List of activation volumes, $V$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\text{m}^{3}\text{mol}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Activation volumes for diffusion creep<parameters:Material_20model/Visco_20Plastic/Activation_20volumes_20for_20diffusion_20creep>`
@@ -4774,7 +4774,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** List of activation volumes, $V_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\meter\cubed\per\mole}.
+**Documentation:** List of activation volumes, $V_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\text{m}^{3}\text{mol}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Activation volumes for dislocation creep<parameters:Material_20model/Visco_20Plastic/Activation_20volumes_20for_20dislocation_20creep>`
@@ -4783,7 +4783,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** List of activation volumes, $V_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\meter\cubed\per\mole}.
+**Documentation:** List of activation volumes, $V_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\text{m}^{3}\text{mol}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Adiabat temperature gradient for viscosity<parameters:Material_20model/Visco_20Plastic/Adiabat_20temperature_20gradient_20for_20viscosity>`
@@ -4792,7 +4792,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Add an adiabatic temperature gradient to the temperature used in the flow law so that the activation volume is consistent with what one would use in a earth-like (compressible) model. Default is set so this is off. Note that this is a linear approximation of the real adiabatic gradient, which is okay for the upper mantle, but is not really accurate for the lower mantle. Using a pressure gradient of 32436 Pa/m, then a value of 0.3 K/km = 0.0003 K/m = 9.24e-09 K/Pa gives an earth-like adiabat.Units: \si{\kelvin\per\pascal}.
+**Documentation:** Add an adiabatic temperature gradient to the temperature used in the flow law so that the activation volume is consistent with what one would use in a earth-like (compressible) model. Default is set so this is off. Note that this is a linear approximation of the real adiabatic gradient, which is okay for the upper mantle, but is not really accurate for the lower mantle. Using a pressure gradient of 32436 Pa/m, then a value of 0.3 K/km = 0.0003 K/m = 9.24e-09 K/Pa gives an earth-like adiabat.Units: $\text{K}\text{Pa}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Allow negative pressures in plasticity<parameters:Material_20model/Visco_20Plastic/Allow_20negative_20pressures_20in_20plasticity>`
@@ -4846,7 +4846,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** List of cohesions, $C$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. The extremely large default cohesion value (1e20 Pa) prevents the viscous stress from exceeding the yield stress. Units: \si{\pascal}.
+**Documentation:** List of cohesions, $C$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. The extremely large default cohesion value (1e20 Pa) prevents the viscous stress from exceeding the yield stress. Units: $\text{Pa}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Constant viscosity prefactors<parameters:Material_20model/Visco_20Plastic/Constant_20viscosity_20prefactors>`
@@ -4864,7 +4864,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** List of the Stress thresholds below which the strain rate is solved for as a quadratic function of stress to aid with convergence when stress exponent n=0. Units: \si{\pascal}
+**Documentation:** List of the Stress thresholds below which the strain rate is solved for as a quadratic function of stress to aid with convergence when stress exponent n=0. Units: $\text{Pa}$
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Material_20model/Visco_20Plastic/Data_20directory>`
@@ -4900,7 +4900,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** List of densities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\kilogram\per\meter\cubed}.
+**Documentation:** List of densities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: $\text{kg}\text{m}^{-3}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Dynamic angles of internal friction<parameters:Material_20model/Visco_20Plastic/Dynamic_20angles_20of_20internal_20friction>`
@@ -4909,7 +4909,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of dynamic angles of internal friction, $\phi$, for background material and compositional fields, for a total of N$+$1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. Dynamic angles of friction are used as the current friction angle when the effective strain rate is well above the &rsquo;dynamic characteristic strain rate&rsquo;. Units: \si{\degree}.
+**Documentation:** List of dynamic angles of internal friction, $\phi$, for background material and compositional fields, for a total of N$+$1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. Dynamic angles of friction are used as the current friction angle when the effective strain rate is well above the &rsquo;dynamic characteristic strain rate&rsquo;. Units: $\text{degree}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Dynamic characteristic strain rate<parameters:Material_20model/Visco_20Plastic/Dynamic_20characteristic_20strain_20rate>`
@@ -4918,7 +4918,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The characteristic strain rate value at which the angle of friction is equal to $\mu = (\mu_s+\mu_d)/2$. When the effective strain rate is very high, the dynamic angle of friction is taken, when it is very low, the static angle of internal friction is used. Around the dynamic characteristic strain rate, there is a smooth gradient from the static to the dynamic angle of internal friction. Units: \si{\per\second}.
+**Documentation:** The characteristic strain rate value at which the angle of friction is equal to $\mu = (\mu_s+\mu_d)/2$. When the effective strain rate is very high, the dynamic angle of friction is taken, when it is very low, the static angle of internal friction is used. Around the dynamic characteristic strain rate, there is a smooth gradient from the static to the dynamic angle of internal friction. Units: $\text{s}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Dynamic friction smoothness exponent<parameters:Material_20model/Visco_20Plastic/Dynamic_20friction_20smoothness_20exponent>`
@@ -5005,7 +5005,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The fixed grain size of the material. This grain size is only used if the parent material model does not provide its own (possibly variable) grain size when calling this rheology.Units: \si{\meter}.
+**Documentation:** The fixed grain size of the material. This grain size is only used if the parent material model does not provide its own (possibly variable) grain size when calling this rheology.Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Grain size exponents for diffusion creep<parameters:Material_20model/Visco_20Plastic/Grain_20size_20exponents_20for_20diffusion_20creep>`
@@ -5023,7 +5023,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** List of specific heats $C_p$ for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\joule\per\kelvin\per\kilogram}.
+**Documentation:** List of specific heats $C_p$ for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: $\text{J}\text{K}^{-1}\text{kg}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Include Grain Boundary Sliding<parameters:Material_20model/Visco_20Plastic/Include_20Grain_20Boundary_20Sliding>`
@@ -5095,7 +5095,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** List of maximum yield stresses, for background material and compositional fields, , which limits the maximum value of the yield stress determined by the Drucker-Prager plasticity parameters. Default value is chosen so this is not automatically used. Values of 100e6--1000e6 $Pa$ have been used in previous models. Units: \si{\pascal}.
+**Documentation:** List of maximum yield stresses, for background material and compositional fields, , which limits the maximum value of the yield stress determined by the Drucker-Prager plasticity parameters. Default value is chosen so this is not automatically used. Values of 100e6--1000e6 $Pa$ have been used in previous models. Units: $\text{Pa}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Minimum mass fraction bound water content for fugacity<parameters:Material_20model/Visco_20Plastic/Minimum_20mass_20fraction_20bound_20water_20content_20for_20fugacity>`
@@ -5104,7 +5104,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The minimum water content for the HK04 olivine hydration viscosity prefactor scheme. This acts as the cutoff between &rsquo;dry&rsquo; creep and &rsquo;wet&rsquo; creep for olivine, and the default value is chosen based on the value reported by Hirth & Kohlstedt 2004. For a mass fraction of bound water beneath this value, this value is used instead to compute the water fugacity. Units: \si{\kg} / \si{\kg} %.
+**Documentation:** The minimum water content for the HK04 olivine hydration viscosity prefactor scheme. This acts as the cutoff between &rsquo;dry&rsquo; creep and &rsquo;wet&rsquo; creep for olivine, and the default value is chosen based on the value reported by Hirth & Kohlstedt 2004. For a mass fraction of bound water beneath this value, this value is used instead to compute the water fugacity. Units: $\text{kg}$ / $\text{kg}$ %.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Minimum strain rate<parameters:Material_20model/Visco_20Plastic/Minimum_20strain_20rate>`
@@ -5113,7 +5113,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Stabilizes strain dependent viscosity. Units: \si{\per\second}.
+**Documentation:** Stabilizes strain dependent viscosity. Units: $\text{s}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Minimum viscosity<parameters:Material_20model/Visco_20Plastic/Minimum_20viscosity>`
@@ -5176,7 +5176,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** List of stress limits for Peierls creep $\sigma_{\text{peierls}}$ for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\pascal}
+**Documentation:** List of stress limits for Peierls creep $\sigma_{\text{peierls}}$ for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\text{Pa}$
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition Clapeyron slopes<parameters:Material_20model/Visco_20Plastic/Phase_20transition_20Clapeyron_20slopes>`
@@ -5185,7 +5185,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of Clapeyron slopes for each phase transition. A positive Clapeyron slope indicates that the phase transition will occur in a greater depth, if the temperature is higher than the one given in Phase transition temperatures and in a smaller depth, if the temperature is smaller than the one given in Phase transition temperatures. For negative slopes the other way round. List must have the same number of entries as Phase transition depths. Units: \si{\pascal\per\kelvin}.
+**Documentation:** A list of Clapeyron slopes for each phase transition. A positive Clapeyron slope indicates that the phase transition will occur in a greater depth, if the temperature is higher than the one given in Phase transition temperatures and in a smaller depth, if the temperature is smaller than the one given in Phase transition temperatures. For negative slopes the other way round. List must have the same number of entries as Phase transition depths. Units: $\text{Pa}\text{K}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition depths<parameters:Material_20model/Visco_20Plastic/Phase_20transition_20depths>`
@@ -5194,7 +5194,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of depths where phase transitions occur. Values must monotonically increase. Units: \si{\meter}.
+**Documentation:** A list of depths where phase transitions occur. Values must monotonically increase. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition indicators<parameters:Material_20model/Visco_20Plastic/Phase_20transition_20indicators>`
@@ -5212,7 +5212,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of widths for each phase transition, in terms of pressure. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition pressures. Define transition by depth instead of pressure must be set to false to use this parameter. Units: \si{\pascal}.
+**Documentation:** A list of widths for each phase transition, in terms of pressure. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition pressures. Define transition by depth instead of pressure must be set to false to use this parameter. Units: $\text{Pa}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition pressures<parameters:Material_20model/Visco_20Plastic/Phase_20transition_20pressures>`
@@ -5221,7 +5221,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of pressures where phase transitions occur. Values must monotonically increase. Define transition by depth instead of pressure must be set to false to use this parameter. Units: \si{\pascal}.
+**Documentation:** A list of pressures where phase transitions occur. Values must monotonically increase. Define transition by depth instead of pressure must be set to false to use this parameter. Units: $\text{Pa}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition temperature lower limits<parameters:Material_20model/Visco_20Plastic/Phase_20transition_20temperature_20lower_20limits>`
@@ -5230,7 +5230,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of lower temperature limits for each phase transition. Below this temperature the respective phase transition is deactivated. The default value means there is no lower limit for any phase transition. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: \si{\kelvin}.
+**Documentation:** A list of lower temperature limits for each phase transition. Below this temperature the respective phase transition is deactivated. The default value means there is no lower limit for any phase transition. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: $\text{K}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition temperature upper limits<parameters:Material_20model/Visco_20Plastic/Phase_20transition_20temperature_20upper_20limits>`
@@ -5239,7 +5239,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of upper temperature limits for each phase transition. Above this temperature the respective phase transition is deactivated. The default value means there is no upper limit for any phase transitions. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: \si{\kelvin}.
+**Documentation:** A list of upper temperature limits for each phase transition. Above this temperature the respective phase transition is deactivated. The default value means there is no upper limit for any phase transitions. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: $\text{K}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition temperatures<parameters:Material_20model/Visco_20Plastic/Phase_20transition_20temperatures>`
@@ -5248,7 +5248,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of temperatures where phase transitions occur. Higher or lower temperatures lead to phase transition occurring in smaller or greater depths than given in Phase transition depths, depending on the Clapeyron slope given in Phase transition Clapeyron slopes. List must have the same number of entries as Phase transition depths. Units: \si{\kelvin}.
+**Documentation:** A list of temperatures where phase transitions occur. Higher or lower temperatures lead to phase transition occurring in smaller or greater depths than given in Phase transition depths, depending on the Clapeyron slope given in Phase transition Clapeyron slopes. List must have the same number of entries as Phase transition depths. Units: $\text{K}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition widths<parameters:Material_20model/Visco_20Plastic/Phase_20transition_20widths>`
@@ -5257,7 +5257,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** A list of widths for each phase transition, in terms of depth. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition depths. Units: \si{\meter}.
+**Documentation:** A list of widths for each phase transition, in terms of depth. The phase functions are scaled with these values, leading to a jump between phases for a value of zero and a gradual transition for larger values. List must have the same number of entries as Phase transition depths. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Plastic damper viscosity<parameters:Material_20model/Visco_20Plastic/Plastic_20damper_20viscosity>`
@@ -5266,7 +5266,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Viscosity of the damper that acts in parallel with the plastic viscosity to produce mesh-independent behavior at sufficient resolutions. Units: \si{\pascal\second}
+**Documentation:** Viscosity of the damper that acts in parallel with the plastic viscosity to produce mesh-independent behavior at sufficient resolutions. Units: $\text{Pa}\text{s}$
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Prefactor strain weakening factors<parameters:Material_20model/Visco_20Plastic/Prefactor_20strain_20weakening_20factors>`
@@ -5293,7 +5293,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\pascal}$^{-n_{\text{peierls}}}$ \si{\per\second}
+**Documentation:** List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\text{Pa}$$^{-n_{\text{peierls}}}$ $\text{s}^{-1}$
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Prefactors for diffusion creep<parameters:Material_20model/Visco_20Plastic/Prefactors_20for_20diffusion_20creep>`
@@ -5302,7 +5302,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\per\pascal\meter}$^{m_{\text{diffusion}}}$\si{\per\second}.
+**Documentation:** List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\text{Pa}^{-1}\text{m}^{-1}$$^{m_{\text{diffusion}}}$$\text{s}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Prefactors for dislocation creep<parameters:Material_20model/Visco_20Plastic/Prefactors_20for_20dislocation_20creep>`
@@ -5311,7 +5311,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\pascal}$^{-n_{\text{dislocation}}}$ \si{\per\second}.
+**Documentation:** List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\text{Pa}$$^{-n_{\text{dislocation}}}$ $\text{s}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Prefactors for yield stress<parameters:Material_20model/Visco_20Plastic/Prefactors_20for_20yield_20stress>`
@@ -5347,7 +5347,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Reference strain rate for first time step. Units: \si{\per\second}.
+**Documentation:** Reference strain rate for first time step. Units: $\text{s}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Visco_20Plastic/Reference_20temperature>`
@@ -5356,7 +5356,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The reference temperature $T_0$. Units: \si{\kelvin}.
+**Documentation:** The reference temperature $T_0$. Units: $\text{K}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference temperatures for Frank Kamenetskii<parameters:Material_20model/Visco_20Plastic/Reference_20temperatures_20for_20Frank_20Kamenetskii>`
@@ -5511,7 +5511,7 @@ If a compositional field named &rsquo;noninitial\_plastic\_strain&rsquo; is incl
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of thermal diffusivities, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value.  Units: \si{\meter\squared\per\second}.
+**Documentation:** List of thermal diffusivities, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value.  Units: $\text{m}^{2}\text{s}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal expansivities<parameters:Material_20model/Visco_20Plastic/Thermal_20expansivities>`
@@ -5520,7 +5520,7 @@ If a compositional field named &rsquo;noninitial\_plastic\_strain&rsquo; is incl
 
 **Pattern:** [Anything]
 
-**Documentation:** List of thermal expansivities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\per\kelvin}.
+**Documentation:** List of thermal expansivities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: $\text{K}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Upper temperature for maximum strain weakening<parameters:Material_20model/Visco_20Plastic/Upper_20temperature_20for_20maximum_20strain_20weakening>`
@@ -5708,7 +5708,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Anything]
 
-**Documentation:** Here we use the default values for ice at T < 255 K as given in Goldsby & Kohlstedt, 2001. Units: \si{\joule\per\mole}.
+**Documentation:** Here we use the default values for ice at T < 255 K as given in Goldsby & Kohlstedt, 2001. Units: $\text{J}\text{mol}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Activation volumes for grain boundary sliding<parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Activation_20volumes_20for_20grain_20boundary_20sliding>`
@@ -5717,7 +5717,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Anything]
 
-**Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001. Units: \si{\meter\cubed\per\mole}.
+**Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001. Units: $\text{m}^{3}\text{mol}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Grain size<parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Grain_20size>`
@@ -5726,7 +5726,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001. Units: \si{\meter}.
+**Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001. Units: $\text{m}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Grain size exponents for grain boundary sliding<parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Grain_20size_20exponents_20for_20grain_20boundary_20sliding>`
@@ -5744,7 +5744,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Anything]
 
-**Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001. Units: \si{\pascal}$^{-n_{\text{grain boundary sliding}}}$ \si{\meter}$^{m_{\text{grain boundary sliding}}}$ \si{\per\second}.
+**Documentation:** Here we use the default values for ice as given in Goldsby & Kohlstedt, 2001. Units: $\text{Pa}$$^{-n_{\text{grain boundary sliding}}}$ $\text{m}$$^{m_{\text{grain boundary sliding}}}$ $\text{s}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Stress exponents for grain boundary sliding<parameters:Material_20model/Visco_20Plastic/Grain_20boundary_20sliding/Stress_20exponents_20for_20grain_20boundary_20sliding>`
@@ -5764,7 +5764,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Anything]
 
-**Documentation:** List of densities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\kilogram\per\meter\cubed}.
+**Documentation:** List of densities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: $\text{kg}\text{m}^{-3}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Elastic damper viscosity<parameters:Material_20model/Viscoelastic/Elastic_20damper_20viscosity>`
@@ -5800,7 +5800,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Anything]
 
-**Documentation:** List of specific heats $C_p$ for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\joule\per\kelvin\per\kilogram}.
+**Documentation:** List of specific heats $C_p$ for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: $\text{J}\text{K}^{-1}\text{kg}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Viscoelastic/Reference_20temperature>`
@@ -5809,7 +5809,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The reference temperature $T_0$. Units: \si{\kelvin}.
+**Documentation:** The reference temperature $T_0$. Units: $\text{K}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Specific heats<parameters:Material_20model/Viscoelastic/Specific_20heats>`
@@ -5843,7 +5843,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Anything]
 
-**Documentation:** List of thermal expansivities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\per\kelvin}.
+**Documentation:** List of thermal expansivities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: $\text{K}^{-1}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Use fixed elastic time step<parameters:Material_20model/Viscoelastic/Use_20fixed_20elastic_20time_20step>`

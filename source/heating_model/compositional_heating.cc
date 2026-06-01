@@ -78,7 +78,7 @@ namespace aspect
                             "background and compositional fields, for a total of "
                             "N+1 values, where the first value corresponds to the "
                             "background material, and N is the number of compositional fields. "
-                            "Units: \\si{\\watt\\per\\meter\\cubed}.");
+                            "Units: $\\text{W}\\text{m}^{-3}$.");
           prm.declare_entry ("Use compositional field for heat production averaging", "1",
                              Patterns::List(Patterns::Integer(0,1)),
                              "A list of integers with as many entries as compositional fields plus one. "
@@ -147,6 +147,6 @@ namespace aspect
                                   "Implementation of a model in which magnitude of internal heat production "
                                   "is determined from fixed values assigned to each compositional "
                                   "field. These values are interpreted as having units "
-                                  "\\si{\\watt\\per\\meter\\cubed}.")
+                                  "$\\text{W}\\text{m}^{-3}$.")
   }
 }

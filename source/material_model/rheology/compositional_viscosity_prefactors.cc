@@ -107,7 +107,7 @@ namespace aspect
                            "prefactor scheme. This acts as the cutoff between 'dry' creep and 'wet' creep "
                            "for olivine, and the default value is chosen based on the value reported by "
                            "Hirth & Kohlstedt 2004. For a mass fraction of bound water beneath this value, "
-                           "this value is used instead to compute the water fugacity. Units: \\si{\\kg} / \\si{\\kg} %.");
+                           "this value is used instead to compute the water fugacity. Units: $\\text{kg}$ / $\\text{kg}$ %.");
 
         prm.declare_entry ("Water fugacity exponents for diffusion creep", "0.0",
                            Patterns::List(Patterns::Double(0)),

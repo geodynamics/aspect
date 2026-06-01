@@ -649,9 +649,9 @@ namespace aspect
 
         // Reference and minimum/maximum values
         prm.declare_entry ("Minimum strain rate", "1.0e-20", Patterns::Double (0.),
-                           "Stabilizes strain dependent viscosity. Units: \\si{\\per\\second}.");
+                           "Stabilizes strain dependent viscosity. Units: $\\text{s}^{-1}$.");
         prm.declare_entry ("Reference strain rate","1.0e-15",Patterns::Double (0.),
-                           "Reference strain rate for first time step. Units: \\si{\\per\\second}.");
+                           "Reference strain rate for first time step. Units: $\\text{s}^{-1}$.");
         prm.declare_entry ("Minimum viscosity", "1e17", Patterns::Anything(),
                            "Lower cutoff for effective viscosity. Units: $\\text{Pa}\\text{s}$. "
                            "List with as many components as active "
@@ -758,7 +758,7 @@ namespace aspect
                            "is okay for the upper mantle, but is not really accurate for the lower mantle. "
                            "Using a pressure gradient of 32436 Pa/m, then a value of "
                            "0.3 K/km = 0.0003 K/m = 9.24e-09 K/Pa gives an earth-like adiabat."
-                           "Units: \\si{\\kelvin\\per\\pascal}.");
+                           "Units: $\\text{K}\\text{Pa}^{-1}$.");
       }
 
 

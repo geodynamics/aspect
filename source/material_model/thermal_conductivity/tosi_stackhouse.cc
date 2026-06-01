@@ -71,7 +71,7 @@ namespace aspect
                            "A list of depth values that indicate where the transitions between "
                            "the different conductivity parameter sets should occur (in most cases, "
                            "these will be the depths of major phase transitions). "
-                           "Units: \\si{\\meter}.");
+                           "Units: $\\text{m}$.");
         prm.declare_entry ("Reference thermal conductivities", "2.47, 3.81, 3.52, 4.9",
                            Patterns::List(Patterns::Double (0.)),
                            "A list of base values of the thermal conductivity for each of the "
@@ -84,7 +84,7 @@ namespace aspect
                            Patterns::List(Patterns::Double ()),
                            "A list of values that determine the linear scaling of the "
                            "thermal conductivity with pressure. "
-                           "Units: \\si{\\watt\\per\\meter\\per\\kelvin\\per\\pascal}.");
+                           "Units: $\\text{W}\\text{m}^{-1}\\text{K}^{-1}\\text{Pa}^{-1}$.");
         prm.declare_entry ("Reference temperatures for thermal conductivity", "300, 300, 300, 1200",
                            Patterns::List(Patterns::Double (0.)),
                            "A list of values of reference temperatures used to determine "
