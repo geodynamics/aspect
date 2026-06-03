@@ -78,7 +78,7 @@ subsection Mesh deformation
       set Function expression = if(t<=250e3, 1e-6, if(x>25e3,1e-4, 1e-6))
     end
      set Sediment river incision rate = 1e-5
-     set Bedrock diffusivity = -1    
+     set Bedrock diffusivity = 1e-10
      set Sediment diffusivity = -1
    end
   end
