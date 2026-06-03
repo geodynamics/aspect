@@ -1,7 +1,8 @@
-New: The dynamic core boundary temperature model can now prescribe the outer
-boundary temperature with an internal function by setting `Outer temperature =
-function` and configuring the new `Function` subsection. This keeps the
-evolving CMB temperature and the spatially variable outer boundary temperature
-inside the same boundary temperature model.
+Changed: The dynamic core boundary temperature model can now be combined with
+the standard function boundary temperature model to prescribe a spatially
+variable outer boundary temperature. Set `Dynamic core/Outer temperature = 0`
+when the function model should provide the full outer boundary temperature, and
+make the function return zero on the CMB so that the dynamic core model remains
+responsible for the evolving CMB temperature.
 <br>
 (Francesco Radica, 2026/05/23)
