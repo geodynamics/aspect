@@ -1,0 +1,6 @@
+Changed: The dynamic core statistics postprocessor no longer stores or
+serializes a separate copy of the dynamic core state. It now reads the current
+core data directly from the dynamic core boundary temperature plugin, making the
+boundary temperature plugin the single owner of the restart state.
+<br>
+(Francesco Radica, 2026/06/04)

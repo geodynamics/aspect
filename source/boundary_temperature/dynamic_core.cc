@@ -21,7 +21,6 @@
 
 
 #include <aspect/boundary_temperature/dynamic_core.h>
-#include <aspect/postprocess/core_statistics.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/gravity_model/interface.h>
@@ -86,27 +85,8 @@ namespace aspect
       core_data.dt = this->get_timestep();
       core_data.H  = compute_radioheating_rate();
 
-      // It's a bit tricky here.
-      // Didn't use the initialize() function instead because the postprocess is initialized after boundary temperature.
-      // It is not available at the time initialize() function of boundary temperature is called.
       if (is_first_call==true)
         {
-          AssertThrow(this->get_postprocess_manager().template has_matching_active_plugin<const Postprocess::CoreStatistics<dim>>(),
-                      ExcMessage ("Dynamic core boundary condition has to work with dynamic core statistics postprocessor."));
-
-          const Postprocess::CoreStatistics<dim> &core_statistics
-            = this->get_postprocess_manager().template get_matching_active_plugin<const Postprocess::CoreStatistics<dim>>();
-          const internal::CoreData &postprocessor_core_data = core_statistics.get_core_data();
-          const bool restored_core_data = postprocessor_core_data.is_initialized;
-
-          // The restart data is stored in 'core statistics' postprocessor.
-          // If restart from checkpoint, extract data from there.
-          // In a fresh run, the postprocessor has not seen valid dynamic core
-          // data yet, so keep the boundary model's CoreData object and
-          // initialize it from the parameter file below.
-          if (restored_core_data)
-            core_data = postprocessor_core_data;
-
           // Read data of other energy source
           read_data_OES();
 
@@ -127,10 +107,8 @@ namespace aspect
           else
             dTa   = 0.;
 
-          // Setup initial core data from prm input.
-          // If resumed from checkpoint, core_data is read from postprocess instead of set from prm file.
-          // (The boundary_temperature doesn't seem to support restart/resume, the data has to passed and
-          // stored in the postprocessor 'core statistics')
+          // Setup initial core data from prm input. On restart, core_data has
+          // already been restored by DynamicCore::load().
           if (!core_data.is_initialized)
             {
               core_data.Ti = inner_temperature + dTa;
@@ -156,7 +134,7 @@ namespace aspect
                     <<std::setw(15)<<core_data.dX_dt *year_in_seconds<<std::endl;
               this->get_pcout() << output.str();
             }
-          else if (restored_core_data)
+          else
             {
               core_data.dt = this->get_timestep();
               core_data.H = compute_radioheating_rate();
@@ -1245,7 +1223,7 @@ namespace aspect
     ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL(DynamicCore,
                                                "dynamic core",
                                                "This is a boundary temperature model working only with spherical "
-                                               "shell geometry and core statistics postprocessor. The temperature "
+                                               "shell geometry. The temperature "
                                                "at the top is constant, and the core mantle boundary temperature "
                                                "is dynamically evolving through time by calculating the heat flux "
                                                "into the core and solving the core energy balance. The formulation "
