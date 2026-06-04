@@ -202,7 +202,7 @@ namespace aspect
         double inner_temperature;
 
         /**
-         * Temperature at the outer boundary, if it is constant.
+         * Temperatures at the outer boundaries.
          */
         double outer_temperature;
 
@@ -236,11 +236,6 @@ namespace aspect
          * Core radius
          */
         double Rc;
-
-        /**
-         * User-provided core radius for non-spherical shell geometries.
-         */
-        double prescribed_core_radius;
 
         /**
          * Initial light composition concentration
