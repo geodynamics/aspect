@@ -2,7 +2,7 @@
 # The dynamic core model contributes only to the CMB, while the function
 # model contributes only to the outer boundary.
 
-include @SOURCE_DIR@/dynamic_core.prm
+include $ASPECT_SOURCE_DIR/tests/dynamic_core.prm
 
 set End time          = 0
 
