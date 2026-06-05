@@ -603,28 +603,17 @@ namespace aspect
     void
     Particles<dim>::save (std::map<std::string, std::string> &status_strings) const
     {
-      for (unsigned int particle_manager = 0; particle_manager < this->n_particle_managers(); ++particle_manager)
-        {
-          std::string particles_output_base_name = "Particles";
-          if (particle_manager > 0)
-            {
-              particles_output_base_name += "-" + Utilities::int_to_string(particle_manager+1);
-            }
+      // Serialize into a stringstream. Put the following into a code
+      // block of its own to ensure the destruction of the 'oa'
+      // archive triggers a flush() on the stringstream so we can
+      // query the completed string below.
+      std::ostringstream os;
+      {
+        aspect::oarchive oa (os);
+        oa << (*this);
+      }
 
-          // Serialize into a stringstream. Put the following into a code
-          // block of its own to ensure the destruction of the 'oa'
-          // archive triggers a flush() on the stringstream so we can
-          // query the completed string below.
-          std::ostringstream os;
-          {
-            aspect::oarchive oa (os);
-
-            this->get_particle_manager(particle_manager).save(os);
-            oa << (*this);
-          }
-
-          status_strings[particles_output_base_name] = os.str();
-        }
+      status_strings["Particles"] = os.str();
     }
 
 
@@ -632,24 +621,13 @@ namespace aspect
     void
     Particles<dim>::load (const std::map<std::string, std::string> &status_strings)
     {
-      for (unsigned int particle_manager = 0; particle_manager < this->n_particle_managers(); ++particle_manager)
+      // See if something was saved.
+      const auto status = status_strings.find("Particles");
+      if (status != status_strings.end())
         {
-          std::string particles_output_base_name = "Particles";
-          if (particle_manager > 0)
-            {
-              particles_output_base_name += "-" + Utilities::int_to_string(particle_manager+1);
-            }
-          // see if something was saved
-          if (status_strings.find(particles_output_base_name) != status_strings.end())
-            {
-              std::istringstream is (status_strings.find(particles_output_base_name)->second);
-              aspect::iarchive ia (is);
-
-              // Load the particle manager
-              this->get_particle_manager(particle_manager).load(is);
-
-              ia >> (*this);
-            }
+          std::istringstream is (status->second);
+          aspect::iarchive ia (is);
+          ia >> (*this);
         }
     }
 

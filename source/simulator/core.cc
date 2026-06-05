@@ -68,6 +68,7 @@
 #endif
 #include <deal.II/distributed/grid_refinement.h>
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <locale>
@@ -473,7 +474,15 @@ namespace aspect
     postprocess_manager.initialize_simulator (*this);
     postprocess_manager.parse_parameters (prm);
 
-    if (postprocess_manager.template has_matching_active_plugin<Postprocess::Particles<dim>>())
+    const bool particles_are_needed =
+      postprocess_manager.template has_matching_active_plugin<Postprocess::Particles<dim>>()
+      ||
+      (std::find (parameters.compositional_field_methods.begin(),
+                  parameters.compositional_field_methods.end(),
+                  Parameters<dim>::AdvectionFieldMethod::particles)
+       != parameters.compositional_field_methods.end());
+
+    if (particles_are_needed)
       {
         particle_managers.resize(parameters.n_particle_managers);
 

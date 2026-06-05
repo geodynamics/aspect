@@ -305,6 +305,9 @@ namespace aspect
                                "These need to be the same during restarting "
                                "from a checkpoint."));
     }
+
+
+
   }
 
 
@@ -760,6 +763,12 @@ namespace aspect
     // dynamic core boundary temperature plugin) and need to be serialized.
     ar &mesh_refinement_manager;
     ar &heating_model_manager;
+    const auto n_particle_managers = particle_managers.size();
+    ar &particle_managers;
+    AssertThrow (particle_managers.size() == n_particle_managers,
+                 ExcMessage ("The number of particle managers stored in the checkpoint "
+                             "does not match the particle managers initialized from "
+                             "the current input file."));
     ar &postprocess_manager;
     ar &boundary_temperature_manager;
     ar &boundary_convective_heating_manager;
