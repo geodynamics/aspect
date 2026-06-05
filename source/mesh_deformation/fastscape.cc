@@ -531,7 +531,9 @@ namespace aspect
                   else if (sediment_river_incision_rate >= 0. && sediment_thickness > 1.)
                     combined_kf[i] = sediment_river_incision_rate;
                   else
-                    combined_kf[i] = numbers::signaling_nan<double>();
+                    {
+                      AssertThrow (false, ExcMessage ("Unexpected conditions reached while filling the combined kf array in the FastScape interface."));
+                    }
 
                   // The same diffusion coefficient is used for sediments as for bedrock.
                   // if the sediment coefficient is set to something smaller than zero
@@ -543,13 +545,15 @@ namespace aspect
                   else if (sediment_transport_coefficient >= 0. && sediment_thickness > 1.)
                     combined_kd[i] = sediment_transport_coefficient;
                   else
-                    combined_kd[i] = numbers::signaling_nan<double>();
+                    {
+                      AssertThrow (false, ExcMessage ("Unexpected conditions reached while filling the combined kd array in the FastScape interface."));
+                    }
                 }
               // Below sea level, when the marine component is used,
               // kf is not used. kd is set to the marine diffusion coefficients.
               else if (elevation[i] < current_sea_level && use_marine_component)
                 {
-                  combined_kf[i] = numbers::signaling_nan<double>();
+                  combined_kf[i] = 0.;
                   // The silt fraction represents the fraction of silt out of the
                   // total marine sediments (i.e., silt / (sand + silt)).
                   // Note that Fastscape does not know about the marine background
@@ -948,7 +952,7 @@ namespace aspect
       // and a second after, we first set the visualization step to zero.
       unsigned int visualization_step = 0;
       const unsigned int current_timestep = this->get_timestep_number ();
-      std::string dirname = (this->get_output_directory() + "fastscape/");
+      const std::string dirname = (this->get_output_directory() + "fastscape/");
       const char *dirname_char=dirname.c_str();
       const unsigned int dirname_length = dirname.length();
 
@@ -1039,6 +1043,12 @@ namespace aspect
 #ifdef ASPECT_HAVE_FASTSCAPE_NAMED_VTK
             this->get_pcout() << "      Writing FastScape VTK..." << std::endl;
             visualization_step = current_timestep;
+            // Get the output directory name and name length again
+            // to avoid Fortran error that the dirname has length -1,
+            // eventhough dirname_length passes the correct length.
+            const std::string dirname = (this->get_output_directory() + "fastscape/");
+            const char *dirname_char=dirname.c_str();
+            const unsigned int dirname_length = dirname.length();
             fastscape_named_vtk_(extra_vtk_field.data(),
                                  &vexp,
                                  &visualization_step,
