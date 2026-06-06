@@ -4987,7 +4987,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 \item &ldquo;dynamic friction&rdquo;: The friction angle is rate dependent.When &rsquo;dynamic angles of internal friction&rsquo; are specified, the friction angle will be weakened for high strain rates with: $\mu = \mu_d + \frac{\mu_s-\mu_d}{1+\frac{\dot{\epsilon}_{ii}}{\dot{\epsilon}_C}}^x$  where $\mu_s$ and $\mu_d$ are the friction angles at low and high strain rates, respectively. $\dot{\epsilon}_{ii}$ is the second invariant of the strain rate and $\dot{\epsilon}_C$ is the &rsquo;dynamic characteristic strain rate&rsquo; where $\mu = (\mu_s+\mu_d)/2$. The &rsquo;dynamic friction smoothness exponent&rsquo; x controls how smooth or step-like the change from $\mu_s$ to $\mu_d$ is. The equation is modified after Equation (13) in {cite}`van_dinther_seismic_2013`. $\mu_s$ and $\mu_d$ can be specified by setting &rsquo;Angles of internal friction&rsquo; and &rsquo;Dynamic angles of internal friction&rsquo;, respectively. This relationship is similar to rate-and-state friction constitutive relationships, which are applicable to the strength of rocks during earthquakes.
 
-\item &ldquo;function&rdquo;: Specify the friction angle as a function of space and time for each compositional field.
+\item &ldquo;function&rdquo;: Specify the friction angle as a function of space and time for background material and compositional fields, for a total of N$+$1 values, where N is the number of all compositional fields corresponding to chemical compositions.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Friction strain weakening factors<parameters:Material_20model/Visco_20Plastic/Friction_20strain_20weakening_20factors>`

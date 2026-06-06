@@ -1,0 +1,6 @@
+Changed: If specifying friction angles as a function, we now
+limit the number of function expressions to the number of
+chemical compositional fields plus one, instead of
+specifying functions for all types of compositional fields.
+<br>
+(Arushi Saxena, 2026/06/03)
