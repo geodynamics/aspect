@@ -101,6 +101,11 @@ namespace aspect
          */
         bool is_compressible () const override;
 
+        /**
+         * Return the subordinary model used for a specific property
+         */
+        const Interface<dim> &
+        get_model_for_property(const Property::MaterialProperty property) const;
 
 
       private:
@@ -130,6 +135,61 @@ namespace aspect
         std::vector<std::string>                             model_names;
         std::vector<std::unique_ptr<Interface<dim>>> models;
     };
+
+
+    /**
+     * Modify the Plugins::plugin_type_matches to account for the compositing material model
+    */
+    template <typename TestType, int dim>
+    inline
+    bool
+    material_model_matches_or_uses (const MaterialModel::Interface<dim> &plugin,
+                                    const Property::MaterialProperty property)
+    {
+      // Direct match
+      if (Plugins::plugin_type_matches<TestType>(plugin))
+        return true;
+
+      // Search inside compositing material model
+      if (const auto *compositing =
+            dynamic_cast<const MaterialModel::Compositing<dim> *>(&plugin))
+        {
+          const auto &submodel = compositing->get_model_for_property(property);
+          if (Plugins::plugin_type_matches<TestType>(submodel))
+            return true;
+        }
+
+      return false;
+    }
+
+
+    /**
+     * Modify the Plugins::get_plugin_as_type to account for the compositing material model
+    */
+    template <typename TestType, int dim>
+    inline
+    const TestType &
+    get_material_model_matches_or_uses (const MaterialModel::Interface<dim> &plugin,
+                                        const Property::MaterialProperty property)
+    {
+      // Direct match
+      if (Plugins::plugin_type_matches<TestType>(plugin))
+        return Plugins::get_plugin_as_type<TestType>(plugin);
+
+      // Search inside compositing material model
+      if (const auto *compositing =
+            dynamic_cast<const MaterialModel::Compositing<dim> *>(&plugin))
+        {
+          const auto &submodel = compositing->get_model_for_property(property);
+          return Plugins::get_plugin_as_type<TestType>(submodel);
+        }
+
+      AssertThrow(false,
+                  ExcMessage("Could not find requested plugin type."));
+
+      return *static_cast<const TestType *>(nullptr);
+    }
+
   }
 }
 
