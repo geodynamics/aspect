@@ -34,6 +34,8 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <aspect/particle/distribution.h>
+#include <aspect/particle/histogram.h>
+
 
 namespace aspect
 {
@@ -193,12 +195,14 @@ namespace aspect
         [&] (typename parallel::distributed::Triangulation<dim> &)
       {
         this->apply_particle_per_cell_bounds();
+        this->apply_particle_distribution_per_cell_bound();
       });
 
       signals.post_resume_load_user_data.connect(
         [&] (typename parallel::distributed::Triangulation<dim> &)
       {
         this->apply_particle_per_cell_bounds();
+        this->apply_particle_distribution_per_cell_bound();
       });
     }
 
@@ -335,7 +339,6 @@ namespace aspect
                   {
                     for (unsigned int i = n_particles_in_cell; i < min_particles_per_cell; ++i,++local_next_particle_index)
                       {
-                        const unsigned int current_n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
                         if (addition_algorithm == AdditionAlgorithm::random)
                           {
 
@@ -357,34 +360,7 @@ namespace aspect
                         else if (addition_algorithm == AdditionAlgorithm::point_density_function)
                           {
                             ParticlePDF<dim> pdf(addition_granularity_pdf,bandwidth,kernel_function);
-                            const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
-                            particle_ranges_to_sum_over = get_neighboring_particle_ranges(cell,get_particle_handler(),grid_cache);
-
-                            pdf.fill_from_particle_range(particle_handler->particles_in_cell(cell),
-                                                         particle_ranges_to_sum_over,
-                                                         current_n_particles_in_cell,
-                                                         this->get_mapping(),
-                                                         cell);
-                            pdf.compute_statistical_values();
-
-                            const std::vector<Point<dim>> min_density_positions = pdf.get_min_positions();
-                            const int min_density_position_index = std::uniform_int_distribution<unsigned int>(0,min_density_positions.size()-1)(random_number_generator);
-                            const Point<dim> selected_min_density_position = min_density_positions[min_density_position_index];
-
-                            std::pair<Particles::internal::LevelInd,Particles::Particle<dim>> new_particle =
-                              generator->generate_particle(cell,local_next_particle_index,selected_min_density_position);
-
-                            const std::vector<double> particle_properties =
-                              property_manager->initialize_late_particle(new_particle.second.get_location(),
-                                                                         *particle_handler,
-                                                                         *interpolator,
-                                                                         cell);
-
-                            typename ParticleHandler<dim>::particle_iterator particle = particle_handler->insert_particle(new_particle.second,
-                                                                                        typename parallel::distributed::Triangulation<dim>::cell_iterator (&this->get_triangulation(),
-                                                                                            new_particle.first.first,
-                                                                                            new_particle.first.second));
-                            particle->set_properties(particle_properties);
+                            add_particle_at_lowest_particle_density(cell,pdf,grid_cache,local_next_particle_index);
                           }
                         else if (addition_algorithm == AdditionAlgorithm::histogram)
                           {
@@ -549,33 +525,10 @@ namespace aspect
                     const unsigned int n_particles_to_remove = n_particles_in_cell - max_particles_per_cell;
                     for (unsigned int i=0; i < n_particles_to_remove; ++i)
                       {
-                        const unsigned int current_n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
-
                         if (deletion_algorithm == DeletionAlgorithm::point_density_function)
                           {
                             ParticlePDF<dim> pdf(bandwidth,kernel_function);
-                            /*
-                            'particle_ranges_to_sum_over' includes this cell's and neighboring cell's particles.
-                            If neighboring cell's particles are not included in the KDE, particles at cell boundaries will
-                            have artificially low point density values.
-                            */
-                            std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
-                            particle_ranges_to_sum_over = get_neighboring_particle_ranges(cell,get_particle_handler(),grid_cache);
-
-                            pdf.fill_from_particle_range(particle_handler->particles_in_cell(cell),
-                                                         particle_ranges_to_sum_over,
-                                                         current_n_particles_in_cell,
-                                                         this->get_mapping(),
-                                                         cell);
-                            pdf.compute_statistical_values();
-
-                            const types::particle_index index_max = pdf.get_max_particle();
-                            auto particle_to_remove = particle_handler->particles_in_cell(cell).begin();
-                            while (particle_to_remove->get_id() != index_max && particle_to_remove != particle_handler->particles_in_cell(cell).end())
-                              {
-                                ++particle_to_remove;
-                              }
-                            particle_handler->remove_particle(particle_to_remove);
+                            remove_most_clustered_particle(cell,pdf,grid_cache);
                           }
                         else if (deletion_algorithm == DeletionAlgorithm::random)
                           {
@@ -596,6 +549,65 @@ namespace aspect
           particle_handler->update_cached_numbers();
         }
     }
+
+
+
+    template <int dim>
+    void
+    Manager<dim>::apply_particle_distribution_per_cell_bound()
+    {
+      // If we are not redistributing particles in cells based on measured clustering,
+      // we don't want to run this function
+      if (active_redistribution == false)
+        {
+          return;
+        }
+      ParticleHistogram<dim> histogram(active_redistribution_histogram_granularity);
+
+      GridTools::Cache<dim> grid_cache(this->get_triangulation(), this->get_mapping());
+      types::particle_index local_next_particle_index = particle_handler->get_next_free_particle_index();
+
+      // Loop over all cells and move particles around within each cell, if particles are too clustered
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+        if (cell->is_locally_owned())
+          {
+            const unsigned int current_n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
+            const auto particle_range = particle_handler->particles_in_cell(cell);
+            const double cell_distribution_score = histogram.evaluate_particle_range(particle_range,current_n_particles_in_cell);
+
+            unsigned int distribution_attempts = 0;
+
+            /**
+            We need to make sure that the particles in the cell are sufficiently clustered
+            so that it makes sense to redistribute them. We also need to ensure that
+            there are enough particles in the cell (>3) to interpolate. Finally,
+            we don't want to get stuck inside the while loop if the cell_distribution_score is
+            never brought below max_distribution_score_before_redistribution so we also break
+            out of the loop if we make too many attempts.
+            */
+            while (distribution_attempts < distribution_attempts_max &&
+                   cell_distribution_score > max_distribution_score_before_redistribution
+                   && current_n_particles_in_cell > 3)
+              {
+                ++distribution_attempts;
+
+                // First, remove the "most clustered" particle
+                ParticlePDF<dim> pdf_removal(bandwidth,kernel_function);
+                remove_most_clustered_particle(cell,pdf_removal,grid_cache);
+
+
+                std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
+                particle_ranges_to_sum_over = get_neighboring_particle_ranges(cell,get_particle_handler(),grid_cache);
+
+                // Then, add a particle after removing one.
+                // This should be equivalent to "moving" a particle
+                ParticlePDF<dim> pdf_addition(addition_granularity_pdf,bandwidth,kernel_function);
+                add_particle_at_lowest_particle_density(cell,pdf_addition,grid_cache,local_next_particle_index);
+              }
+          }
+    };
+
+
 
     template <int dim>
     unsigned int
@@ -989,6 +1001,7 @@ namespace aspect
       while (integrator->new_integration_step());
 
       apply_particle_per_cell_bounds();
+      apply_particle_distribution_per_cell_bound();
 
       // Update particle properties
       if (property_manager->need_update() == Property::update_time_step)
@@ -1034,6 +1047,80 @@ namespace aspect
         }
 
       return particle_ranges_to_sum_over;
+    }
+
+
+
+    template <int dim>
+    void
+    Manager<dim>::remove_most_clustered_particle(const typename Triangulation<dim>::active_cell_iterator &cell,
+                                                 ParticlePDF<dim> &pdf,
+                                                 GridTools::Cache<dim> &grid_cache)
+    {
+      const unsigned int current_n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
+
+
+      // Include neighboring cells in the density calculation
+      std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
+      particle_ranges_to_sum_over = get_neighboring_particle_ranges(cell,get_particle_handler(),grid_cache);
+
+      pdf.fill_from_particle_range(particle_handler->particles_in_cell(cell),
+                                   particle_ranges_to_sum_over,
+                                   current_n_particles_in_cell,
+                                   this->get_mapping(),
+                                   cell);
+      pdf.compute_statistical_values();
+
+      const types::particle_index index_max = pdf.get_max_particle();
+      auto particle_to_remove = particle_handler->particles_in_cell(cell).begin();
+      while (particle_to_remove->get_id() != index_max && particle_to_remove != particle_handler->particles_in_cell(cell).end())
+        {
+          ++particle_to_remove;
+        }
+      particle_handler->remove_particle(particle_to_remove);
+    }
+
+
+
+    template <int dim>
+    void
+    Manager<dim>::add_particle_at_lowest_particle_density(const typename Triangulation<dim>::active_cell_iterator &cell,
+                                                          ParticlePDF<dim> &pdf,
+                                                          GridTools::Cache<dim> &grid_cache,
+                                                          types::particle_index local_next_particle_index)
+    {
+      const unsigned int current_n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
+
+      // Include neighboring cells in the density calculation
+      std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
+      particle_ranges_to_sum_over = get_neighboring_particle_ranges(cell,get_particle_handler(),grid_cache);
+
+      pdf.fill_from_particle_range(particle_handler->particles_in_cell(cell),
+                                   particle_ranges_to_sum_over,
+                                   current_n_particles_in_cell,
+                                   this->get_mapping(),
+                                   cell);
+      pdf.compute_statistical_values();
+
+      const std::vector<Point<dim>> min_density_positions = pdf.get_min_positions();
+      const int min_density_position_index = std::uniform_int_distribution<unsigned int>(0,min_density_positions.size()-1)(random_number_generator);
+      const Point<dim> selected_min_density_position = min_density_positions[min_density_position_index];
+
+      std::pair<Particles::internal::LevelInd,Particles::Particle<dim>> new_particle =
+        generator->generate_particle(cell,local_next_particle_index,selected_min_density_position);
+
+      const std::vector<double> particle_properties =
+        property_manager->initialize_late_particle(new_particle.second.get_location(),
+                                                   *particle_handler,
+                                                   *interpolator,
+                                                   cell);
+
+      typename ParticleHandler<dim>::particle_iterator particle = particle_handler->insert_particle(new_particle.second,
+                                                                  typename parallel::distributed::Triangulation<dim>::cell_iterator (&this->get_triangulation(),
+                                                                      new_particle.first.first,
+                                                                      new_particle.first.second));
+      particle->set_properties(particle_properties);
+
     }
 
 
@@ -1088,6 +1175,27 @@ namespace aspect
             prm.declare_entry ("Particle addition algorithm", "random",
                                Patterns::Selection ("random|histogram|point density function"),
                                "Algorithm used to add particles to cells. ");
+            prm.declare_entry("Active redistribution within cells", "false",
+                              Patterns::Bool (),
+                              "Sometimes particles will cluster in one part of the cell, "
+                              "which can make the particles less useful for visualization. When this parameter is "
+                              "set to true, the particle manager will use a histogram to quantify the level of particle "
+                              "clustering in each cell. If the particles are sufficiently clustered, the particle manager "
+                              "will redistribute the particles in the cell so that they are more evenly spread throughout "
+                              "the cell. ");
+            prm.declare_entry("Maximum distribution score per cell","0.10",
+                              Patterns::Double (0.001,1.0),
+                              "The maximum allowable distribution score a cell can have before its particles are redistributed "
+                              "inside the cell. The distribution score is measured using a histogram based method which is described "
+                              "in more detail in the documentation for the Particle Distribution Score plugin. Paticles are only "
+                              "redistributed within cells if the `Active redistribution within cells` parameter is set to true. ");
+            prm.declare_entry("Distribution attempts max", "10",
+                              Patterns::Integer(1,100),
+                              "The maximum amount of times to move a particle in order to reduce a cell's "
+                              "distribution score below the Maximum distribution score per cell before giving up. "
+                              "The particle manager will stop moving particles if the distribution score is brought "
+                              "below the Maximum distribution score per cell even if the number of particles moved is "
+                              "below this number. ");
             prm.declare_entry ("Point density kernel function", "cutoff c1 dealii",
                                Patterns::Selection ("cutoff c1 dealii|cutoff w1 dealii|uniform|triangular|gaussian"),
                                "The kernel function is summed at each particle location to generate a point "
@@ -1105,7 +1213,7 @@ namespace aspect
                                "These are functions whose return values decrease with distance. A more detailed explanation on these two "
                                "function are available in the deal.II documentation.");
             prm.declare_entry ("Bandwidth", "0.3",
-                               Patterns::Double (0.3),"The bandwidth value is used to scale the kernel "
+                               Patterns::Double (0.1,0.9),"The bandwidth value is used to scale the kernel "
                                "function when generating the point density function of particles. "
                                "The bandwidth is measured as a fraction of the cells extent in one spatial "
                                "dimension. For example, the default bandwidth of 0.3 represents a size "
@@ -1119,6 +1227,10 @@ namespace aspect
                               "The number of subdivisions of each cell in each spatial dimension when adding particles using point "
                               "density function based methods. Higher granularities are generally better for "
                               "point density function based methods but might be slower.");
+            prm.declare_entry("Active redistribution histogram granularity","2",
+                              Patterns::Integer(2),
+                              "The number of subdivisions of each cell in each spatial dimension when evaluating cells for "
+                              "particle clustering when actively redistributing particles.");
             prm.declare_entry ("Minimum particles per cell", "0",
                                Patterns::Integer (0),
                                "Lower limit for particle number per cell. This limit is "
@@ -1324,6 +1436,16 @@ namespace aspect
             AssertThrow(false, ExcNotImplemented());
           }
 
+        // Whether or not to move particles around within cells to avoid excessive clustering.
+        active_redistribution = prm.get_bool("Active redistribution within cells");
+
+        // The maximum allowable distribution score a cell can have before having its particles
+        // redistributed internally if active_redistribution == true
+        max_distribution_score_before_redistribution = prm.get_double("Maximum distribution score per cell");
+
+        distribution_attempts_max = prm.get_integer("Distribution attempts max");
+
+        active_redistribution_histogram_granularity = prm.get_integer("Active redistribution histogram granularity");
 
         this->get_computing_timer().enter_subsection("Particles: Initialization");
 

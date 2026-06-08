@@ -29,6 +29,7 @@
 #include <deal.II/particles/particle_handler.h>
 #include <deal.II/particles/property_pool.h>
 #include <aspect/particle/distribution.h>
+#include <aspect/particle/histogram.h>
 
 #include <deal.II/matrix_free/fe_point_evaluation.h>
 
@@ -338,7 +339,8 @@ namespace aspect
          * The granularity to use for histogram techniques for
          * adding particles when cells fall below the minimum number of particles allowed.
          * Granularity represents the number of subdivisions of the cell in each dimension
-         * when calculating a histogram.
+         * when calculating a histogram. The number
+         * of subdivisions used in the histogram equals granularity^dim.
          */
         unsigned int addition_granularity_histogram;
 
@@ -352,6 +354,34 @@ namespace aspect
          */
         double bandwidth;
 
+        /**
+         * Whether or not to redistribute particles within cells in order to avoid excessive
+         * particle clustering.
+         */
+        bool active_redistribution;
+
+        /**
+         * The highest allowable distribution score (as reported by the ParticleHistogram
+         * class) allowed per cell before moving particles if active_redistribution is set
+         * to true.
+         */
+        double max_distribution_score_before_redistribution;
+
+        /**
+         * The amount of times to try moving a particle in order to reduce a cell's
+         * distribution score below max_distribution_score_before_redistribution
+         * before giving up
+         */
+        unsigned int distribution_attempts_max;
+
+        /**
+         * The granularity of the histogram used to score cells when actively
+         * redistributing particles within cells to avoid clustering. Granularity
+         * represents the number of spatial subdivisions of the cell in each dimension
+         * when calculating a histogram. The number
+         * of subdivisions used in the histogram equals granularity^dim.
+         */
+        unsigned int active_redistribution_histogram_granularity;
         /**
          * Generation scheme for creating particles in this manager
          */
@@ -461,6 +491,45 @@ namespace aspect
          */
         void
         apply_particle_per_cell_bounds();
+
+        /**
+         * Apply the bounds for the maximum allowed clustering of particles
+         * per cell.
+         */
+        void
+        apply_particle_distribution_per_cell_bound();
+
+        /**
+         * Remove the particle at the location with the highest density of
+         * particles in the cell.
+         * @param cell A reference to the cell from which to remove a
+         * particle
+         * @param pdf A refence to the instance of ParticlePDF to use to
+         * generate the point density function of the particles in the cell
+         * @param grid_cache A reference to the grid cache used to get the
+         * particles contained by the cells neighboring the cell from which
+         * the function removes the most clustered particle
+         */
+        void
+        remove_most_clustered_particle(const typename Triangulation<dim>::active_cell_iterator &cell,
+                                       ParticlePDF<dim> &pdf,
+                                       GridTools::Cache<dim> &grid_cache);
+
+        /**
+         * Add a particle at the location in the cell with the lowest density of particles around it.
+         * @param cell A reference to the cell to add a particle to
+         * @param pdf A refence to the instance of ParticlePDF to use to
+         * generate the point density function of the particles in the cell
+         * @param grid_cache A reference to the grid cache used to get the
+         * particles contained by the cells neighboring the cell from which
+         * the function adds a particle to
+         * @param local_next_particle_index The index to give to the added particle
+         */
+        void
+        add_particle_at_lowest_particle_density(const typename Triangulation<dim>::active_cell_iterator &cell,
+                                                ParticlePDF<dim> &pdf,
+                                                GridTools::Cache<dim> &grid_cache,
+                                                types::particle_index local_next_particle_index);
 
         /**
          * Advect the particle positions by one integration step. Needs to be
