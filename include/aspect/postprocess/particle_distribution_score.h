@@ -79,17 +79,6 @@ namespace aspect
          * $2\times 2=4$ buckets in 2D.
          */
         unsigned int granularity;
-
-        /**
-         * Sorts all of the particles within the cell into a deal.II table based on their position.
-         * @param cell The cell for which to compute the particle distribution.
-         * @param bucket_width The size (relative to the size of the cell) of each bucket in the table.
-         * @return The table with the particle information.
-         */
-        Table<dim,unsigned int>
-        sort_particles_into_buckets(const typename Triangulation<dim>::active_cell_iterator &cell,
-                                    const unsigned int particle_manager_index,
-                                    const double bucket_width) const;
     };
   }
 }
