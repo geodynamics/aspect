@@ -16,8 +16,8 @@ Python packages needed:
 1- Install Python with anaconda: 
 https://www.anaconda.com/distribution/
 
-2- The provided YAML configuration file <environment.yml> can be used to create the <py_aspect> environment and install all the packages listed above:
->> conda env create -f environment.yml
+2- The provided YAML configuration file <env-py_aspect.yml> can be used to create the <py_aspect> environment and install all the packages listed above:
+>> conda env create -f env-py_aspect.yml
 
 3- Activate the new environment:
 >> conda activate py_aspect
