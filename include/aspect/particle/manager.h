@@ -504,7 +504,7 @@ namespace aspect
          * particles in the cell.
          * @param cell A reference to the cell from which to remove a
          * particle
-         * @param pdf A refence to the instance of ParticlePDF to use to
+         * @param pdf A reference to the instance of ParticlePDF to use to
          * generate the point density function of the particles in the cell
          * @param grid_cache A reference to the grid cache used to get the
          * particles contained by the cells neighboring the cell from which
@@ -518,7 +518,7 @@ namespace aspect
         /**
          * Add a particle at the location in the cell with the lowest density of particles around it.
          * @param cell A reference to the cell to add a particle to
-         * @param pdf A refence to the instance of ParticlePDF to use to
+         * @param pdf A reference to the instance of ParticlePDF to use to
          * generate the point density function of the particles in the cell
          * @param grid_cache A reference to the grid cache used to get the
          * particles contained by the cells neighboring the cell from which

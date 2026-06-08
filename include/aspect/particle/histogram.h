@@ -23,6 +23,7 @@
 
 #include <aspect/simulator_access.h>
 #include <deal.II/particles/property_pool.h>
+#include <deal.II/particles/particle_handler.h>
 
 
 namespace aspect

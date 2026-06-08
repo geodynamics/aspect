@@ -1,0 +1,5 @@
+New: The particle manager class can now redistribute particles
+within cells if it calculates that the particles within that
+cell are too clustered.
+<br>
+(Jarett Baker-Dunn, 2026/06/08)
