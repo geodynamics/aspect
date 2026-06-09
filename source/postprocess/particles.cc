@@ -166,16 +166,8 @@ namespace aspect
     template <int dim>
     Particles<dim>::Particles ()
       :
-      // the following value is later read from the input file
-      output_interval (std::vector<double>(1,0)),
-      // initialize this to a nonsensical value; set it to the actual time
-      // the first time around we get to check it
-      last_output_time (std::vector<double>(1,std::numeric_limits<double>::quiet_NaN())),
-      output_file_number (std::vector<unsigned int>(1,numbers::invalid_unsigned_int)),
-      output_formats (1, std::vector<std::string>()),
       group_files(0),
-      write_in_background_thread(false),
-      exclude_output_properties (1, std::vector<std::string>())
+      write_in_background_thread(false)
     {}
 
 
@@ -796,10 +788,7 @@ namespace aspect
                 prm.enter_subsection("Particles " + std::to_string(particle_manager+1));
               }
             {
-              if (particle_manager == 0)
-                output_interval[particle_manager] = prm.get_double ("Time between data output");
-              else
-                output_interval.emplace_back(prm.get_double ("Time between data output"));
+              output_interval.emplace_back(prm.get_double ("Time between data output"));
 
               if (this->convert_output_to_years())
                 output_interval[particle_manager] *= year_in_seconds;
@@ -842,25 +831,16 @@ namespace aspect
               if (output_format != tmp_output_formats.end())
                 *output_format = "gnuplot";
 
-              if (particle_manager == 0)
-                output_formats[particle_manager] = tmp_output_formats;
-              else
-                output_formats.push_back(tmp_output_formats);
+              output_formats.push_back(tmp_output_formats);
 
-              if (particle_manager == 0)
-                exclude_output_properties[particle_manager] = Utilities::split_string_list(prm.get("Exclude output properties"));
-              else
-                exclude_output_properties.emplace_back(Utilities::split_string_list(prm.get("Exclude output properties")));
+              exclude_output_properties.emplace_back(Utilities::split_string_list(prm.get("Exclude output properties")));
 
               // Never output the integrator properties that are for internal use only
               exclude_output_properties[particle_manager].emplace_back("internal: integrator properties");
 
-              // Add a non-sensical value for each additional particle manager.
-              if (particle_manager > 0)
-                {
-                  last_output_time.emplace_back(std::numeric_limits<double>::quiet_NaN());
-                  output_file_number.emplace_back(numbers::invalid_unsigned_int);
-                }
+              // Add a non-sensical value for each particle manager.
+              last_output_time.emplace_back(std::numeric_limits<double>::quiet_NaN());
+              output_file_number.emplace_back(numbers::invalid_unsigned_int);
             }
             prm.leave_subsection ();
           }
