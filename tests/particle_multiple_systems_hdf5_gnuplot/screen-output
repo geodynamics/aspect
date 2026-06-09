@@ -1,9 +1,4 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
 
@@ -41,14 +36,9 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Postprocessing:
      RMS, max velocity:         0.00037 m/s, 0.000824 m/s
      Compositions min/max/mass: -0.002385/1.01/0.1824
-     Writing particle output:   output-particle_multiple_systems_hdf5_gnuplot/particles/particles-00002, output-particle_multiple_systems_hdf5_gnuplot/particles-2/particles-2-00002
+     Writing particle output:   output-particle_multiple_systems_hdf5_gnuplot/particles/particles-00001, output-particle_multiple_systems_hdf5_gnuplot/particles-2/particles-2-00002
 
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
