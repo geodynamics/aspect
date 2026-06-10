@@ -892,6 +892,37 @@ Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set;
 **Documentation:** File operations can potentially take a long time, blocking the progress of the rest of the model run. Setting this variable to &lsquo;true&rsquo; moves this process into a background thread, while the rest of the model continues.
 ::::
 
+(parameters:Postprocess/Particles_202)=
+## **Subsection:** Postprocess / Particles 2
+::::{dropdown} __Parameter:__ {ref}`Data output format<parameters:Postprocess/Particles_202/Data_20output_20format>`
+:name: parameters:Postprocess/Particles_202/Data_20output_20format
+**Default value:** vtu
+
+**Pattern:** [MultipleSelection none|dx|ucd|gnuplot|povray|eps|gmv|tecplot|vtk|vtu|hdf5|svg|deal.II intermediate|ascii ]
+
+**Documentation:** A comma separated list of file formats to be used for graphical output. The list of possible output formats that can be given here is documented in the appendix of the manual where the current parameter is described.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Exclude output properties<parameters:Postprocess/Particles_202/Exclude_20output_20properties>`
+:name: parameters:Postprocess/Particles_202/Exclude_20output_20properties
+**Default value:**
+
+**Pattern:** [Anything]
+
+**Documentation:** A comma separated list of particle properties that should *not* be output. If this list contains the entry &lsquo;all&rsquo;, only the id of particles will be provided in graphical output files.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Time between data output<parameters:Postprocess/Particles_202/Time_20between_20data_20output>`
+:name: parameters:Postprocess/Particles_202/Time_20between_20data_20output
+**Default value:** 1e8
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The time interval between each generation of output files. A value of zero indicates that output should be generated every time step.
+
+Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+::::
+
 (parameters:Postprocess/Point_20values)=
 ## **Subsection:** Postprocess / Point values
 ::::{dropdown} __Parameter:__ {ref}`Evaluation points<parameters:Postprocess/Point_20values/Evaluation_20points>`

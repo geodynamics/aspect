@@ -166,12 +166,6 @@ namespace aspect
     template <int dim>
     Particles<dim>::Particles ()
       :
-      // the following value is later read from the input file
-      output_interval (0),
-      // initialize this to a nonsensical value; set it to the actual time
-      // the first time around we get to check it
-      last_output_time (std::numeric_limits<double>::quiet_NaN())
-      ,output_file_number (numbers::invalid_unsigned_int),
       group_files(0),
       write_in_background_thread(false)
     {}
@@ -318,18 +312,18 @@ namespace aspect
     std::pair<std::string,std::string>
     Particles<dim>::execute (TableHandler &statistics)
     {
-      // if this is the first time we get here, set the last output time
-      // to the current time - output_interval. this makes sure we
-      // always produce data during the first time step
-      if (std::isnan(last_output_time))
-        last_output_time = this->get_time() - output_interval;
-
-      bool write_output = true;
+      std::vector<bool> write_output(this->n_particle_managers(),true);
       std::string number_of_advected_particles = "";
       std::string screen_output = "";
 
       for (unsigned int particle_manager = 0; particle_manager < this->n_particle_managers(); ++particle_manager)
         {
+          // if this is the first time we get here, set the last output time
+          // to the current time - output_interval. this makes sure we
+          // always produce data during the first time step
+          if (std::isnan(last_output_time[particle_manager]))
+            last_output_time[particle_manager] = this->get_time() - output_interval[particle_manager];
+
           const Particle::Manager<dim> &manager = this->get_particle_manager(particle_manager);
 
           const std::string statistics_column_name = (particle_manager == 0 ?
@@ -343,36 +337,45 @@ namespace aspect
               number_of_advected_particles += ", ";
             }
           number_of_advected_particles += Utilities::int_to_string(manager.n_global_particles());
+
+          // If it's not time to generate an output file
+          // return early with the number of particles that were advected
+          if (this->get_time() < last_output_time[particle_manager] + output_interval[particle_manager])
+            {
+              write_output[particle_manager] = false;
+            }
+
+          // If we do not write output
+          // return early with the number of particles that were advected
+          if (output_formats[particle_manager].size() == 0 || output_formats[particle_manager][0] == "none")
+            {
+              // Up the next time we need output. This is relevant to correctly
+              // write output after a restart if the format is changed.
+              set_last_output_time (this->get_time());
+
+              write_output[particle_manager] = false;
+            }
+
+          if (write_output[particle_manager] == true)
+            {
+              if (output_file_number[particle_manager] == numbers::invalid_unsigned_int)
+                output_file_number[particle_manager] = 0;
+              else
+                ++output_file_number[particle_manager];
+            }
+
         }
 
-      // If it's not time to generate an output file
-      // return early with the number of particles that were advected
-      if (this->get_time() < last_output_time + output_interval)
-        {
-          write_output = false;
-        }
-
-      // If we do not write output
-      // return early with the number of particles that were advected
-      if (output_formats.size() == 0 || output_formats[0] == "none")
-        {
-          // Up the next time we need output. This is relevant to correctly
-          // write output after a restart if the format is changed.
-          set_last_output_time (this->get_time());
-
-          write_output = false;
-        }
-
-      if (write_output == false)
+      // Only report the number of particles if none of the particle managers
+      // writes output.
+      if (std::find(write_output.begin(), write_output.end(), true) == write_output.end())
         return std::make_pair("Number of advected particles:", number_of_advected_particles);
-
-      if (output_file_number == numbers::invalid_unsigned_int)
-        output_file_number = 0;
-      else
-        ++output_file_number;
 
       for (unsigned int particle_manager = 0; particle_manager < this->n_particle_managers(); ++particle_manager)
         {
+          if (write_output[particle_manager] == false)
+            continue;
+
           const Particle::Manager<dim> &manager = this->get_particle_manager(particle_manager);
           std::string particles_output_base_name = "particles";
           if (particle_manager > 0)
@@ -381,21 +384,21 @@ namespace aspect
             }
 
           // Create the particle output
-          const bool output_hdf5 = std::find(output_formats.begin(), output_formats.end(),"hdf5") != output_formats.end();
+          const bool output_hdf5 = std::find(output_formats[particle_manager].begin(), output_formats[particle_manager].end(),"hdf5") != output_formats[particle_manager].end();
           internal::ParticleOutput<dim> data_out;
           data_out.build_patches(manager.get_particle_handler(),
                                  manager.get_property_manager().get_data_info(),
-                                 exclude_output_properties,
+                                 exclude_output_properties[particle_manager],
                                  output_hdf5);
 
           // Now prepare everything for writing the output and choose output format
-          std::string particle_file_prefix = particles_output_base_name + "-" + Utilities::int_to_string (output_file_number, 5);
+          std::string particle_file_prefix = particles_output_base_name + "-" + Utilities::int_to_string (output_file_number[particle_manager], 5);
 
           const double time_in_years_or_seconds = (this->convert_output_to_years() ?
                                                    this->get_time() / year_in_seconds :
                                                    this->get_time());
 
-          for (const auto &output_format : output_formats)
+          for (const auto &output_format : output_formats[particle_manager])
             {
               // this case was handled above
               Assert(output_format != "none", ExcInternalError());
@@ -551,8 +554,9 @@ namespace aspect
 
           const std::string particle_output = this->get_output_directory() + particles_output_base_name + "/" + particle_file_prefix;
 
-          if (particle_manager == 0)
-            screen_output = particle_output;
+          if (screen_output != "")
+            screen_output += ", ";
+          screen_output += particle_output;
 
           // record the file base file name in the output file
           const std::string statistics_column_name = (particle_manager == 0 ?
@@ -572,17 +576,20 @@ namespace aspect
     Particles<dim>::set_last_output_time (const double current_time)
     {
       // if output_interval is positive, then update the last supposed output
-      // time
-      if (output_interval > 0)
+      // time for each particle manager
+      for (unsigned int particle_manager = 0; particle_manager < this->n_particle_managers(); ++particle_manager)
         {
-          // We need to find the last time output was supposed to be written.
-          // this is the last_output_time plus the largest positive multiple
-          // of output_intervals that passed since then. We need to handle the
-          // edge case where last_output_time+output_interval==current_time,
-          // we did an output and std::floor sadly rounds to zero. This is done
-          // by forcing std::floor to round 1.0-eps to 1.0.
-          const double magic = 1.0+2.0*std::numeric_limits<double>::epsilon();
-          last_output_time = last_output_time + std::floor((current_time-last_output_time)/output_interval*magic) * output_interval/magic;
+          if (output_interval[particle_manager] > 0)
+            {
+              // We need to find the last time output was supposed to be written.
+              // this is the last_output_time plus the largest positive multiple
+              // of output_intervals that passed since then. We need to handle the
+              // edge case where last_output_time+output_interval==current_time,
+              // we did an output and std::floor sadly rounds to zero. This is done
+              // by forcing std::floor to round 1.0-eps to 1.0.
+              const double magic = 1.0+2.0*std::numeric_limits<double>::epsilon();
+              last_output_time[particle_manager] = last_output_time[particle_manager] + std::floor((current_time-last_output_time[particle_manager])/output_interval[particle_manager]*magic) * output_interval[particle_manager]/magic;
+            }
         }
     }
 
@@ -640,26 +647,6 @@ namespace aspect
       {
         prm.enter_subsection("Particles");
         {
-          prm.declare_entry ("Time between data output", "1e8",
-                             Patterns::Double (0.),
-                             "The time interval between each generation of "
-                             "output files. A value of zero indicates that "
-                             "output should be generated every time step.\n\n"
-                             "Units: years if the "
-                             "'Use years instead of seconds' parameter is set; "
-                             "seconds otherwise.");
-
-          // now also see about the file format we're supposed to write in
-          // Note: "ascii" is a legacy format used by ASPECT before particle output
-          // in deal.II was implemented. It is nearly identical to the gnuplot format, thus
-          // we now simply replace "ascii" by "gnuplot" should it be selected.
-          prm.declare_entry ("Data output format", "vtu",
-                             Patterns::MultipleSelection (DataOutBase::get_output_format_names ()+"|ascii"),
-                             "A comma separated list of file formats to be used for graphical "
-                             "output. The list of possible output formats that can be given "
-                             "here is documented in the appendix of the manual where the current "
-                             "parameter is described.");
-
           prm.declare_entry ("Number of grouped files", "16",
                              Patterns::Integer(0),
                              "VTU file output supports grouping files from several CPUs "
@@ -684,15 +671,49 @@ namespace aspect
                              "move this file to a network file system. If this variable is "
                              "set to a non-empty string it will be interpreted as a "
                              "temporary storage location.");
-
-          prm.declare_entry ("Exclude output properties", "",
-                             Patterns::Anything(),
-                             "A comma separated list of particle properties that should "
-                             "\\textit{not} be output. If this list contains the "
-                             "entry `all', only the id of particles will be provided in "
-                             "graphical output files.");
         }
         prm.leave_subsection ();
+        constexpr unsigned int number_of_particle_managers = ASPECT_MAX_NUM_PARTICLE_SYSTEMS;
+        for (unsigned int particle_manager = 0; particle_manager < number_of_particle_managers; ++particle_manager)
+          {
+            if (particle_manager == 0)
+              {
+                prm.enter_subsection("Particles");
+              }
+            else
+              {
+                prm.enter_subsection("Particles " + std::to_string(particle_manager+1));
+              }
+            {
+              prm.declare_entry ("Time between data output", "1e8",
+                                 Patterns::Double (0.),
+                                 "The time interval between each generation of "
+                                 "output files. A value of zero indicates that "
+                                 "output should be generated every time step.\n\n"
+                                 "Units: years if the "
+                                 "'Use years instead of seconds' parameter is set; "
+                                 "seconds otherwise.");
+
+              // now also see about the file format we're supposed to write in
+              // Note: "ascii" is a legacy format used by ASPECT before particle output
+              // in deal.II was implemented. It is nearly identical to the gnuplot format, thus
+              // we now simply replace "ascii" by "gnuplot" should it be selected.
+              prm.declare_entry ("Data output format", "vtu",
+                                 Patterns::MultipleSelection (DataOutBase::get_output_format_names ()+"|ascii"),
+                                 "A comma separated list of file formats to be used for graphical "
+                                 "output. The list of possible output formats that can be given "
+                                 "here is documented in the appendix of the manual where the current "
+                                 "parameter is described.");
+
+              prm.declare_entry ("Exclude output properties", "",
+                                 Patterns::Anything(),
+                                 "A comma separated list of particle properties that should "
+                                 "\\textit{not} be output. If this list contains the "
+                                 "entry `all', only the id of particles will be provided in "
+                                 "graphical output files.");
+            }
+            prm.leave_subsection ();
+          }
       }
       prm.leave_subsection ();
 
@@ -708,56 +729,9 @@ namespace aspect
       {
         prm.enter_subsection("Particles");
         {
-          output_interval = prm.get_double ("Time between data output");
-          if (this->convert_output_to_years())
-            output_interval *= year_in_seconds;
-
           AssertThrow(this->get_parameters().run_postprocessors_on_nonlinear_iterations == false,
                       ExcMessage("Postprocessing nonlinear iterations in models with "
                                  "particles is currently not supported."));
-
-          output_formats   = Utilities::split_string_list(prm.get ("Data output format"));
-          AssertThrow(Utilities::has_unique_entries(output_formats),
-                      ExcMessage("The list of strings for the parameter "
-                                 "'Postprocess/Particles/Data output format' contains entries more than once. "
-                                 "This is not allowed. Please check your parameter file."));
-
-          AssertThrow ((std::find (output_formats.begin(),
-                                   output_formats.end(),
-                                   "none") == output_formats.end())
-                       ||
-                       (output_formats.size() == 1),
-                       ExcMessage ("If you specify 'none' for the parameter \"Data output format\", "
-                                   "then this needs to be the only value given."));
-
-          if (std::find (output_formats.begin(),
-                         output_formats.end(),
-                         "none") == output_formats.end())
-            {
-              // Note that we iterate until the value of parameters.n_particle_managers and not
-              // this->particle_managers, because at this point in the program execution the
-              // particle managers have not been created yet. We want to prepare as many directories
-              // as there will be particle managers, once they are created.
-              for (unsigned int particle_manager = 0; particle_manager < this->get_parameters().n_particle_managers; ++particle_manager)
-                {
-                  std::string particles_directory_base_name = "particles";
-                  if (particle_manager > 0)
-                    particles_directory_base_name += "-" + Utilities::int_to_string(particle_manager+1);
-
-                  aspect::Utilities::create_directory (this->get_output_directory() + particles_directory_base_name + "/",
-                                                       this->get_mpi_communicator(),
-                                                       true);
-                }
-            }
-
-          // Note: "ascii" is a legacy format used by ASPECT before particle output
-          // in deal.II was implemented. It is nearly identical to the gnuplot format, thus
-          // we simply replace "ascii" by "gnuplot" should it be selected.
-          std::vector<std::string>::iterator output_format =  std::find (output_formats.begin(),
-                                                                         output_formats.end(),
-                                                                         "ascii");
-          if (output_format != output_formats.end())
-            *output_format = "gnuplot";
 
           group_files     = prm.get_integer("Number of grouped files");
           write_in_background_thread = prm.get_bool("Write in background thread");
@@ -775,12 +749,79 @@ namespace aspect
                                      "after writing. The system() command did not succeed in finding such a terminal."));
             }
 
-          exclude_output_properties = Utilities::split_string_list(prm.get("Exclude output properties"));
-
-          // Never output the integrator properties that are for internal use only
-          exclude_output_properties.emplace_back("internal: integrator properties");
         }
         prm.leave_subsection ();
+
+        // Note that we iterate until the value of parameters.n_particle_managers and not
+        // this->particle_managers, because at this point in the program execution the
+        // particle managers have not been created yet.
+        for (unsigned int particle_manager = 0; particle_manager < this->get_parameters().n_particle_managers; ++particle_manager)
+          {
+            if (particle_manager == 0)
+              {
+                prm.enter_subsection("Particles");
+              }
+            else
+              {
+                prm.enter_subsection("Particles " + std::to_string(particle_manager+1));
+              }
+            {
+              output_interval.emplace_back(prm.get_double ("Time between data output"));
+
+              if (this->convert_output_to_years())
+                output_interval[particle_manager] *= year_in_seconds;
+
+              std::vector<std::string> tmp_output_formats   = Utilities::split_string_list(prm.get ("Data output format"));
+              AssertThrow(Utilities::has_unique_entries(tmp_output_formats),
+                          ExcMessage("The list of strings for the parameter "
+                                     "'Postprocess/Particles/Data output format' contains entries more than once. "
+                                     "This is not allowed. Please check your parameter file."));
+
+              AssertThrow ((std::find (tmp_output_formats.begin(),
+                                       tmp_output_formats.end(),
+                                       "none") == tmp_output_formats.end())
+                           ||
+                           (tmp_output_formats.size() == 1),
+                           ExcMessage ("If you specify 'none' for the parameter \"Data output format\", "
+                                       "then this needs to be the only value given."));
+
+              if (std::find (tmp_output_formats.begin(),
+                             tmp_output_formats.end(),
+                             "none") == tmp_output_formats.end())
+                {
+                  // We want to prepare as many directories
+                  // as there will be particle managers, once they are created.
+                  std::string particles_directory_base_name = "particles";
+                  if (particle_manager > 0)
+                    particles_directory_base_name += "-" + Utilities::int_to_string(particle_manager+1);
+
+                  aspect::Utilities::create_directory (this->get_output_directory() + particles_directory_base_name + "/",
+                                                       this->get_mpi_communicator(),
+                                                       true);
+                }
+
+              // Note: "ascii" is a legacy format used by ASPECT before particle output
+              // in deal.II was implemented. It is nearly identical to the gnuplot format, thus
+              // we simply replace "ascii" by "gnuplot" should it be selected.
+              std::vector<std::string>::iterator output_format =  std::find (tmp_output_formats.begin(),
+                                                                             tmp_output_formats.end(),
+                                                                             "ascii");
+              if (output_format != tmp_output_formats.end())
+                *output_format = "gnuplot";
+
+              output_formats.push_back(tmp_output_formats);
+
+              exclude_output_properties.emplace_back(Utilities::split_string_list(prm.get("Exclude output properties")));
+
+              // Never output the integrator properties that are for internal use only
+              exclude_output_properties[particle_manager].emplace_back("internal: integrator properties");
+
+              // Add a non-sensical value for each particle manager.
+              last_output_time.emplace_back(std::numeric_limits<double>::quiet_NaN());
+              output_file_number.emplace_back(numbers::invalid_unsigned_int);
+            }
+            prm.leave_subsection ();
+          }
       }
       prm.leave_subsection ();
     }

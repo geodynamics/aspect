@@ -1,0 +1,6 @@
+ Added: Different particle managers can
+ now also have different postprocessing
+ output intervals and formats and exclude
+ different particle properties.
+ <br>
+ (Anne Glerum 2026/05/27)

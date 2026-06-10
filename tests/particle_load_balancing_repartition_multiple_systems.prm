@@ -115,6 +115,11 @@ subsection Postprocess
     set Time between data output = 100
     set Data output format = gnuplot
   end
+
+  subsection Particles 2
+    set Time between data output = 100
+    set Data output format = gnuplot
+  end
 end
 
 subsection Particles

@@ -78,6 +78,11 @@ subsection Postprocess
     set Time between data output = 70
     set Data output format = hdf5
   end
+
+  subsection Particles 2
+    set Time between data output = 70
+    set Data output format = hdf5
+  end
 end
 
 subsection Particles

@@ -1,0 +1,54 @@
+<?xml version="1.0" ?>
+<!DOCTYPE Xdmf SYSTEM "Xdmf.dtd" []>
+<Xdmf Version="2.0">
+  <Domain>
+    <Grid Name="CellTime" GridType="Collection" CollectionType="Temporal">
+      <Grid Name="mesh" GridType="Uniform">
+        <Time Value="0"/>
+        <Geometry GeometryType="XY">
+          <DataItem Dimensions="10 2" NumberType="Float" Precision="8" Format="HDF">
+            particles/particles-00000.h5:/nodes
+          </DataItem>
+        </Geometry>
+        <Topology TopologyType="Polyvertex" NumberOfElements="10" NodesPerElement="1">
+          <DataItem Dimensions="10 1" NumberType="UInt" Format="HDF">
+            particles/particles-00000.h5:/cells
+          </DataItem>
+        </Topology>
+        <Attribute Name="id" AttributeType="Scalar" Center="Node">
+          <DataItem Dimensions="10 1" NumberType="Float" Precision="8" Format="HDF">
+            particles/particles-00000.h5:/id
+          </DataItem>
+        </Attribute>
+        <Attribute Name="initial anomaly" AttributeType="Scalar" Center="Node">
+          <DataItem Dimensions="10 1" NumberType="Float" Precision="8" Format="HDF">
+            particles/particles-00000.h5:/initial anomaly
+          </DataItem>
+        </Attribute>
+      </Grid>
+      <Grid Name="mesh" GridType="Uniform">
+        <Time Value="70"/>
+        <Geometry GeometryType="XY">
+          <DataItem Dimensions="10 2" NumberType="Float" Precision="8" Format="HDF">
+            particles/particles-00001.h5:/nodes
+          </DataItem>
+        </Geometry>
+        <Topology TopologyType="Polyvertex" NumberOfElements="10" NodesPerElement="1">
+          <DataItem Dimensions="10 1" NumberType="UInt" Format="HDF">
+            particles/particles-00001.h5:/cells
+          </DataItem>
+        </Topology>
+        <Attribute Name="id" AttributeType="Scalar" Center="Node">
+          <DataItem Dimensions="10 1" NumberType="Float" Precision="8" Format="HDF">
+            particles/particles-00001.h5:/id
+          </DataItem>
+        </Attribute>
+        <Attribute Name="initial anomaly" AttributeType="Scalar" Center="Node">
+          <DataItem Dimensions="10 1" NumberType="Float" Precision="8" Format="HDF">
+            particles/particles-00001.h5:/initial anomaly
+          </DataItem>
+        </Attribute>
+      </Grid>
+    </Grid>
+  </Domain>
+</Xdmf>
