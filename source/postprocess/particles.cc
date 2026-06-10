@@ -554,9 +554,9 @@ namespace aspect
 
           const std::string particle_output = this->get_output_directory() + particles_output_base_name + "/" + particle_file_prefix;
 
-          screen_output += particle_output;
-          if (std::find(write_output.begin() + particle_manager + 1, write_output.end(), true) != write_output.end())
+          if (screen_output != "")
             screen_output += ", ";
+          screen_output += particle_output;
 
           // record the file base file name in the output file
           const std::string statistics_column_name = (particle_manager == 0 ?
