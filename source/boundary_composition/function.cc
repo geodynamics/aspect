@@ -31,13 +31,29 @@ namespace aspect
     template <int dim>
     double
     Function<dim>::
-    boundary_composition (const types::boundary_id /*boundary_indicator*/,
+    boundary_composition (const types::boundary_id boundary_indicator,
                           const Point<dim> &position,
                           const unsigned int compositional_field) const
     {
       const Utilities::NaturalCoordinate<dim> point =
         this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system);
-      return function->value(Utilities::convert_array_to_point<dim>(point.get_coordinates()), compositional_field);
+
+      // In case not all fields are fixed on the boundary,
+      // figure out the right index of the given field.
+      unsigned int field_id = compositional_field;
+      if (this->get_boundary_composition_manager().boundaries_with_fixed_subset_of_fields_exist())
+        {
+          const std::set<unsigned int> fixed_fields = this->get_boundary_composition_manager().get_fixed_compositional_fields_for_plugin("function");
+          Assert (fixed_fields.find(compositional_field) != fixed_fields.end(),
+                  ExcMessage ("Boundary composition was requested for field " +
+                              Utilities::int_to_string(compositional_field) +
+                              " on boundary " +
+                              Utilities::int_to_string(boundary_indicator) +
+                              " but this field is not prescribed by the `function` plugin. "));
+          field_id = std::distance(fixed_fields.begin(), fixed_fields.find(compositional_field));
+        }
+
+      return function->value(Utilities::convert_array_to_point<dim>(point.get_coordinates()), field_id);
     }
 
 
@@ -95,10 +111,14 @@ namespace aspect
         {
           coordinate_system = ::aspect::Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
 
+          const unsigned int n_fixed_compositional_fields = this->get_boundary_composition_manager().boundaries_with_fixed_subset_of_fields_exist() ?
+                                                            this->get_boundary_composition_manager().get_fixed_compositional_fields_for_plugin("function").size() :
+                                                            this->n_compositional_fields();
+
           try
             {
               function
-                = std::make_unique<Functions::ParsedFunction<dim>>(this->n_compositional_fields());
+                = std::make_unique<Functions::ParsedFunction<dim>>(n_fixed_compositional_fields);
               function->parse_parameters (prm);
             }
           catch (...)
