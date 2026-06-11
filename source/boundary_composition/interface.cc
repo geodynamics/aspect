@@ -87,10 +87,10 @@ namespace aspect
             // Each entry has the format:
             // <boundary_name>
             // or
-            // <boundary_name>; field_name_1|field_name_2|field_name_5 : plugin_name_1|plugin_name_2
+            // <boundary_name> [field_name_1|field_name_2|field_name_5] : plugin_name_1+plugin_name_2
             // That means
-            // <boundary_name>; field_name_1|field_name_2
-            // is not allowed; plugins need to be specified.
+            // <boundary_name> [field_name_1|field_name_2]
+            // is not allowed; plugins need to be specified if field names are specified.
             //
             // First tease apart the two halves, if there are two.
             const std::vector<std::string> split_parts = Utilities::split_string_list (p, ':');
@@ -201,7 +201,7 @@ namespace aspect
             else if (split_parts.size() == 2)
               {
                 // Get the plugin names from the second part.
-                const std::vector<std::string> plugins = Utilities::split_string_list(split_parts[1], '|');
+                const std::vector<std::string> plugins = Utilities::split_string_list(split_parts[1], '+');
 
                 // All the plugins get the operator 'add'.
                 // TODO This reduces functionality of the operators.
@@ -213,7 +213,12 @@ namespace aspect
                 std::vector<aspect::Utilities::Operator> list_of_model_operators = Utilities::create_model_operator_list(model_operator_names);
 
                 // Split the first part into boundary indicator and compositional field names.
-                const std::vector<std::string> first_split_parts = Utilities::split_string_list (split_parts[0], ';');
+                const std::vector<std::string> first_split_parts = Utilities::split_string_list (split_parts[0], '[');
+
+                AssertThrow (first_split_parts.size() == 2, ExcMessage ("While parsing the entry <Boundary composition model/Fixed "
+                                                    "boundary composition indicators>, there was an error. Specifically, "
+                                                    "the boundary indicator and corresponding plugins were incorrect in "
+                                                    + split_parts[0] + "."));
 
                 types::boundary_id boundary_indicator;
                 try
@@ -230,7 +235,15 @@ namespace aspect
 
                 // Get the field names from the second part.
                 // TODO what if indices are used?
-                const std::vector<std::string> field_names = Utilities::split_string_list(first_split_parts[1], '|');
+                // Remove the closing square bracket first.
+                std::string tmp_field_names = first_split_parts[1];
+                AssertThrow(tmp_field_names[tmp_field_names.size()-1] == ']', ExcMessage ("While parsing the entry <Boundary composition model/Fixed "
+                                                    "boundary composition indicators>, there was an error. The list of fields for a "
+                                                    "specific boundary needs to be enclosed in square brackets. The closing bracket "
+                                                    "is missing."));
+                tmp_field_names.erase (--tmp_field_names.end());
+                
+                const std::vector<std::string> field_names = Utilities::split_string_list(tmp_field_names, '|');
 
                 // Loop over the field names and set their mask to true if they exist.
                 ComponentMask component_mask(this->n_compositional_fields(),
@@ -316,7 +329,7 @@ namespace aspect
             else
               AssertThrow (false, ExcMessage ("The format for fixed composition boundary indicators "
                                               "requires that each entry consists of either a boundary name "
-                                              "or `<boundary_name>; field_name|field_name : plugin_name|plugin_name'."
+                                              "or `<boundary_name> [field_name_1|field_name_2] : plugin_name_1+plugin_name_2'."
                                               "The entry "
                                               + p
                                               + "does not appear to follow this format."));
@@ -382,7 +395,7 @@ namespace aspect
       auto p = this->plugin_objects.begin();
       for (unsigned int i=0; i<this->plugin_objects.size(); ++p, ++i)
         {
-          Assert (boundary_indicators[i].size() == masks_fields[i].size(), ExcMessage ("The number of boundary composition objects does not agree with the number of field mask entries for the plugins."));
+          Assert (boundary_indicators[i].size() == masks_fields[i].size(), ExcMessage ("The number of boundary indicators does not agree with the number of field mask entries for each plugin."));
         }
     }
 
@@ -677,8 +690,8 @@ namespace aspect
                            "\n\n"
                            "To specify different boundary conditions for different compositions "
                            "on different boundaries, "
-                           "you can use the format <boundary_name>;field_name_1|field_name_2:"
-                           "plugin_name_1|plugin_name_2,. This also means, not all fields need "
+                           "you can use the format <boundary_name> [field_name_1|field_name_2]:"
+                           "plugin_name_1+plugin_name_2. This also means that not all fields need "
                            "to have fixed compositions on a specific boundary.");
         prm.declare_entry ("Allow fixed composition on outflow boundaries", "false for models without melt",
                            Patterns::Selection("true|false|false for models without melt"),
