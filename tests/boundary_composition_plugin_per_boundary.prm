@@ -24,10 +24,10 @@ end
 subsection Boundary composition model
   set List of model names = box, function, initial composition
   set List of model operators = maximum, subtract, add
-  set Fixed composition boundary indicators   = top;field1:box,\
-                                                top;field2:box|function,\
+  set Fixed composition boundary indicators   = top[field1]:box,\
+                                                top[field2]:box+function,\
                                                 left,\
-                                                bottom;field1|field2|field3:box|function|initial composition,\
+                                                bottom[field1|field2|field3]:box+function+initial composition,\
                                                 right
 
   subsection Box
