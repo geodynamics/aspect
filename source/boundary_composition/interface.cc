@@ -116,6 +116,9 @@ namespace aspect
                 ComponentMask component_mask(this->n_compositional_fields(),
                                              true);
 
+                for (unsigned int f = 0; f<this->n_compositional_fields(); ++f)
+                  fixed_compositional_fields.insert(f);
+
                 // The plugins that should be used to compute the
                 // fixed composition are given as one list.
                 // Any boundary for which no fields and plugins are
@@ -216,9 +219,9 @@ namespace aspect
                 const std::vector<std::string> first_split_parts = Utilities::split_string_list (split_parts[0], '[');
 
                 AssertThrow (first_split_parts.size() == 2, ExcMessage ("While parsing the entry <Boundary composition model/Fixed "
-                                                    "boundary composition indicators>, there was an error. Specifically, "
-                                                    "the boundary indicator and corresponding plugins were incorrect in "
-                                                    + split_parts[0] + "."));
+                                                                        "boundary composition indicators>, there was an error. Specifically, "
+                                                                        "the boundary indicator and corresponding plugins were incorrect in "
+                                                                        + split_parts[0] + "."));
 
                 types::boundary_id boundary_indicator;
                 try
@@ -238,11 +241,11 @@ namespace aspect
                 // Remove the closing square bracket first.
                 std::string tmp_field_names = first_split_parts[1];
                 AssertThrow(tmp_field_names[tmp_field_names.size()-1] == ']', ExcMessage ("While parsing the entry <Boundary composition model/Fixed "
-                                                    "boundary composition indicators>, there was an error. The list of fields for a "
-                                                    "specific boundary needs to be enclosed in square brackets. The closing bracket "
-                                                    "is missing."));
+                                                                                          "boundary composition indicators>, there was an error. The list of fields for a "
+                                                                                          "specific boundary needs to be enclosed in square brackets. The closing bracket "
+                                                                                          "is missing."));
                 tmp_field_names.erase (--tmp_field_names.end());
-                
+
                 const std::vector<std::string> field_names = Utilities::split_string_list(tmp_field_names, '|');
 
                 // Loop over the field names and set their mask to true if they exist.
@@ -256,6 +259,9 @@ namespace aspect
                                             + field_name
                                             + "listed in `Fixed composition boundary indicators' does not exist."));
                     component_mask.set(this->introspection().compositional_index_for_name(field_name), true);
+
+                    fixed_compositional_fields.insert(this->introspection().compositional_index_for_name(field_name));
+
                   }
 
                 unsigned int mn = 0;
@@ -626,6 +632,89 @@ namespace aspect
             }
         }
       return fixed_boundaries;
+    }
+
+
+    template <int dim>
+    std::set<unsigned int>
+    Manager<dim>::get_fixed_compositional_fields () const
+    {
+      return fixed_compositional_fields;
+    }
+
+
+
+    template <int dim>
+    std::set<unsigned int>
+    Manager<dim>::get_fixed_compositional_fields_for_plugin (const std::string plugin_name) const
+    {
+// If there are no boundaries for which only a subset of fields
+// is fixed, then all plugins prescribe all fields.
+      if (!boundaries_with_fixed_subset_of_fields)
+        return fixed_compositional_fields;
+      // Loop over the plugin names and for the matching name,
+      // store which fields it prescribes.
+      std::set<unsigned int> fixed_compositional_fields_for_plugin;
+
+      auto p = this->plugin_names.begin();
+      for (unsigned int i=0; i<this->plugin_names.size(); ++p, ++i)
+        {
+          if (*p == plugin_name)
+            {
+              for (unsigned int bi=0; bi<boundary_indicators[i].size(); ++bi)
+                {
+                  // check that the mask is true for the given field.
+                  for (unsigned int c = 0; c<this->n_compositional_fields(); ++c)
+                    {
+                      if (masks_fields[i][bi][c] == true)
+                        {
+                          fixed_compositional_fields_for_plugin.insert(c);
+                        }
+                    }
+                }
+            }
+        }
+
+      return fixed_compositional_fields_for_plugin;
+    }
+
+
+    template <int dim>
+    std::set<unsigned int>
+    Manager<dim>::get_fixed_compositional_fields_for_plugin_on_boundary (const std::string plugin_name, const types::boundary_id boundary_id) const
+    {
+// If there are no boundaries for which only a subset of fields
+// is fixed, then all plugins prescribe all fields.
+      if (!boundaries_with_fixed_subset_of_fields)
+        return fixed_compositional_fields;
+
+      // Loop over the plugin names and for the matching name and
+      // boundary indicator, store which fields it prescribes.
+      std::set<unsigned int> fixed_compositional_fields_for_plugin;
+
+      auto p = this->plugin_names.begin();
+      for (unsigned int i=0; i<this->plugin_names.size(); ++p, ++i)
+        {
+          if (*p == plugin_name)
+            {
+              for (unsigned int bi=0; bi<boundary_indicators[i].size(); ++bi)
+                {
+                  if (boundary_indicators[i][bi] == boundary_id)
+                    {
+                      // check that the mask is true for the given field.
+                      for (unsigned int c = 0; c<this->n_compositional_fields(); ++c)
+                        {
+                          if (masks_fields[i][bi][c] == true)
+                            {
+                              fixed_compositional_fields_for_plugin.insert(c);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+      return fixed_compositional_fields_for_plugin;
     }
 
 
