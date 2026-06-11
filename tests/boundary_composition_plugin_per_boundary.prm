@@ -33,7 +33,7 @@ subsection Boundary composition model
   subsection Box
     set Left composition = 15, 15, 15
     set Right composition = 0, 0, 0
-    set Top composition = 0, 0, 0
+    set Top composition = 0, 0
     set Bottom composition = 7, 7, 7
   end
 

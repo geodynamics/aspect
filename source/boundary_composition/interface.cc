@@ -361,6 +361,18 @@ namespace aspect
       }
       prm.leave_subsection ();
 
+      // Check whether some boundaries are fixed for only a subset of fields.
+      // TODO no need for iterator i.
+      auto fcbi = fixed_composition_boundary_indicators.begin();
+      for (unsigned int i=0; i<fixed_composition_boundary_indicators.size(); ++i, ++fcbi)
+        {
+          if (get_fixed_fields_on_boundary(*fcbi).size() < this->n_compositional_fields())
+            {
+              boundaries_with_fixed_subset_of_fields = true;
+              break;
+            }
+        }
+
       // go through the list, create objects and let them parse
       // their own parameters
       for (auto &model_name : this->plugin_names)
@@ -375,18 +387,6 @@ namespace aspect
 
           this->plugin_objects.back()->parse_parameters (prm);
           this->plugin_objects.back()->initialize ();
-        }
-
-      // Check whether some boundaries are fixed for only a subset of fields.
-      // TODO no need for iterator i.
-      auto fcbi = fixed_composition_boundary_indicators.begin();
-      for (unsigned int i=0; i<fixed_composition_boundary_indicators.size(); ++i, ++fcbi)
-        {
-          if (get_fixed_fields_on_boundary(*fcbi).size() < this->n_compositional_fields())
-            {
-              boundaries_with_fixed_subset_of_fields = true;
-              break;
-            }
         }
 
       // Checks on sizes of the different vectors
