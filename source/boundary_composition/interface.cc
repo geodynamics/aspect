@@ -727,6 +727,35 @@ namespace aspect
 
 
     template <int dim>
+    std::set<types::boundary_id>
+    Manager<dim>::get_fixed_composition_boundaries_for_plugin (const std::string plugin_name) const
+    {
+      const auto plugin_name_it = std::find(this->plugin_names.begin(), this->plugin_names.end(), plugin_name);
+      AssertThrow (plugin_name_it != this->plugin_names.end(),
+                   ExcMessage("The boundary composition manager class was asked for the "
+                              "boundary indicators that have fixed boundary compositions "
+                              "for the plugin <"
+                              +
+                              plugin_name
+                              +
+                              ">, but this plugin is not part of the active boundary composition plugins."));
+
+      // Loop over the plugin names and for the matching name and
+      // boundary indicator, store which fields it prescribes.
+      std::set<unsigned int> fixed_composition_boundaries_for_plugin;
+
+      for (unsigned int bi=0; bi<boundary_indicators[plugin_name_it - this->plugin_names.begin()].size(); ++bi)
+        {
+          fixed_composition_boundaries_for_plugin.insert(boundary_indicators[plugin_name_it - this->plugin_names.begin()][bi]);
+        }
+
+      return fixed_composition_boundaries_for_plugin;
+    }
+
+
+
+
+    template <int dim>
     void
     Manager<dim>::declare_parameters (ParameterHandler &prm)
     {
