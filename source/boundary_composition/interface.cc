@@ -683,10 +683,17 @@ namespace aspect
     std::set<unsigned int>
     Manager<dim>::get_fixed_compositional_fields_for_plugin_on_boundary (const std::string plugin_name, const types::boundary_id boundary_id) const
     {
-// If there are no boundaries for which only a subset of fields
-// is fixed, then all plugins prescribe all fields.
-      if (!boundaries_with_fixed_subset_of_fields)
-        return fixed_compositional_fields;
+      Assert(fixed_composition_boundary_indicators.find(boundary_id) != fixed_composition_boundary_indicators.end(),
+             ExcMessage("The boundary composition manager class was asked for the "
+                        "compositional fields that are fixed on boundary indicator <"
+                        +
+                        Utilities::int_to_string(boundary_id)
+                        +
+                        "> with symbolic name <"
+                        +
+                        this->get_geometry_model().translate_id_to_symbol_name(boundary_id)
+                        +
+                        ">, but this boundary is not part of the active boundary composition plugins."));
 
       // Loop over the plugin names and for the matching name and
       // boundary indicator, store which fields it prescribes.

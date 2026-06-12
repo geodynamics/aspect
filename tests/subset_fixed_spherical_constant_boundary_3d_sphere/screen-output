@@ -1,0 +1,20 @@
+
+Number of active cells: 80 (on 3 levels)
+Number of degrees of freedom: 2,448 (674+89+337+337+337+337+337)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving field0 system ... 0 iterations.
+   Solving field1 system ... 0 iterations.
+   Solving field2 system ... 0 iterations.
+   Solving field3 system ... 0 iterations.
+   Solving Stokes system (GMG)... 10+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-subset_fixed_spherical_constant_boundary_3d_sphere/solution/solution-00000
+     Compositions min/max/mass: 1/4/1.511e+14 // 1/1/1.275e+14 // 1/1/1.275e+14 // 1/10/1.983e+14
+
+Termination requested by criterion: end time
+
+
+
