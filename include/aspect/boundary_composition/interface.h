@@ -262,6 +262,13 @@ namespace aspect
         std::set<unsigned int>
         get_fixed_compositional_fields_for_plugin_on_boundary (const std::string plugin_name, const types::boundary_id boundary_id) const;
 
+        /*
+         * Return the set of boundary indicators for which fields are fixed
+         * for the given plugin name.
+         */
+        std::set<types::boundary_id>
+        get_fixed_composition_boundaries_for_plugin (const std::string plugin_name) const;
+
         /**
          * For the current plugin subsystem, write a connection graph of all of the
          * plugins we know about, in the format that the

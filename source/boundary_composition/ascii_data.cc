@@ -37,8 +37,10 @@ namespace aspect
     void
     AsciiData<dim>::initialize ()
     {
-      Utilities::AsciiDataBoundary<dim>::initialize(this->get_fixed_composition_boundary_indicators(),
-                                                    this->n_compositional_fields());
+      const unsigned int n_fixed_fields = this->get_boundary_composition_manager().get_fixed_compositional_fields_for_plugin("ascii data").size();
+      const std::set<types::boundary_id> fixed_boundary_indicators = this->get_boundary_composition_manager().get_fixed_composition_boundaries_for_plugin("ascii data");
+      Utilities::AsciiDataBoundary<dim>::initialize(fixed_boundary_indicators,
+                                                    n_fixed_fields);
     }
 
 
@@ -59,9 +61,24 @@ namespace aspect
                           const Point<dim> &position,
                           const unsigned int compositional_field) const
     {
+      // In case not all fields are fixed on the boundary,
+      // figure out the right index of the given field.
+      unsigned int field_id = compositional_field;
+      if (this->get_boundary_composition_manager().boundaries_with_fixed_subset_of_fields_exist())
+        {
+          const std::set<unsigned int> fixed_fields = this->get_boundary_composition_manager().get_fixed_compositional_fields_for_plugin("ascii data");
+          Assert (fixed_fields.find(compositional_field) != fixed_fields.end(),
+                  ExcMessage ("Boundary composition was requested for field " +
+                              Utilities::int_to_string(compositional_field) +
+                              " on boundary " +
+                              Utilities::int_to_string(boundary_indicator) +
+                              " but this field is not prescribed by the `ascii data` plugin. "));
+          field_id = std::distance(fixed_fields.begin(), fixed_fields.find(compositional_field));
+        }
+
       return Utilities::AsciiDataBoundary<dim>::get_data_component(boundary_indicator,
                                                                    position,
-                                                                   compositional_field);
+                                                                   field_id);
     }
 
     template <int dim>
@@ -110,10 +127,11 @@ namespace aspect
                                                "etc. in a 2d model and "
                                                "`x', `y', `composition1', `composition2', "
                                                "etc., in a 3d model, according "
-                                               "to the number of compositional fields, which means that "
-                                               "there has to be a single column "
-                                               "for every composition in the model. "
-                                               "Note that the data in the input "
+                                               "to the compositional fields that are fixed on all "
+                                               "the boundaries that use this plugin to prescribe them. "
+                                               "This means that there has to be a single column "
+                                               "for every composition that is prescribed with `ascii data' "
+                                               "in the model. Note that the data in the input "
                                                "files need to be sorted in a specific order: "
                                                "the first coordinate needs to ascend first, "
                                                "followed by the second in order to "
