@@ -1,0 +1,34 @@
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/geometry-model/initial-topography-model/ascii-data/test/box_3d_top.0.txt.
+
+Number of active cells: 128 (on 3 levels)
+Number of degrees of freedom: 9,864 (4,131+225+1,377+1,377+1,377+1,377)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving field0 system ... 13 iterations.
+   Solving field1 system ... 13 iterations.
+   Solving field2 system ... 13 iterations.
+   Solving Stokes system (GMG)... 27+0 iterations.
+
+Number of active cells: 149 (on 4 levels)
+Number of degrees of freedom: 13,082 (5,478+300+1,826+1,826+1,826+1,826)
+
+   Added initial topography to grid
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving field0 system ... 12 iterations.
+   Solving field1 system ... 12 iterations.
+   Solving field2 system ... 12 iterations.
+   Solving Stokes system (GMG)... 32+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: -4.062/30/6.671e+17 // -4.062/30/8.225e+17 // -4.922/39.38/4.235e+17
+     Writing graphical output:  output-subset_fixed_two_merged_boxes_boundary_composition/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
+

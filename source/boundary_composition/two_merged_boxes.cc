@@ -40,7 +40,22 @@ namespace aspect
     {
       Assert (boundary_indicator<2*dim+2*(dim-1), ExcMessage ("The given boundary indicator needs to be less than 2*dimension+2*(dim-1)."));
 
-      return composition_values[boundary_indicator][compositional_field];
+      // In case not all fields are fixed on the boundary,
+      // figure out the right index of the given field.
+      unsigned int field_id = compositional_field;
+      if (this->get_boundary_composition_manager().boundaries_with_fixed_subset_of_fields_exist())
+        {
+          const std::set<unsigned int> fixed_fields = this->get_boundary_composition_manager().get_fixed_compositional_fields_for_plugin_on_boundary("box with lithosphere boundary indicators", boundary_indicator);
+          Assert (fixed_fields.find(compositional_field) != fixed_fields.end(),
+                  ExcMessage ("Boundary composition was requested for field " +
+                              Utilities::int_to_string(compositional_field) +
+                              " on boundary " +
+                              Utilities::int_to_string(boundary_indicator) +
+                              " but this field is not prescribed by the `box with lithosphere boundary indicators' plugin. "));
+          field_id = std::distance(fixed_fields.begin(), fixed_fields.find(compositional_field));
+        }
+
+      return composition_values[boundary_indicator][field_id];
     }
 
     template <int dim>
@@ -55,56 +70,60 @@ namespace aspect
                              Patterns::List(Patterns::Double ()),
                              "A comma separated list of composition boundary values "
                              "at the left boundary (at minimal $x$-value). This list must have as many "
-                             "entries as there are compositional fields. Units: none.");
+                             "entries as there are fixed compositional fields on the left boundary. Units: none.");
           prm.declare_entry ("Right composition", "",
                              Patterns::List(Patterns::Double ()),
                              "A comma separated list of composition boundary values "
                              "at the right boundary (at maximal $x$-value). This list must have as many "
-                             "entries as there are compositional fields. Units: none.");
+                             "entries as there are fixed compositional fields on the right boundary. Units: none.");
           prm.declare_entry ("Left composition lithosphere", "",
                              Patterns::List(Patterns::Double ()),
                              "A comma separated list of composition boundary values "
                              "at the left boundary (at minimal $x$-value). This list must have as many "
-                             "entries as there are compositional fields. Units: none.");
+                             "entries as there are fixed compositional fields on the left lithosphere "
+                             "boundary. Units: none.");
           prm.declare_entry ("Right composition lithosphere", "",
                              Patterns::List(Patterns::Double ()),
                              "A comma separated list of composition boundary values "
                              "at the right boundary (at maximal $x$-value). This list must have as many "
-                             "entries as there are compositional fields. Units: none.");
+                             "entries as there are fixed compositional fields on the right lithosphere "
+                             "boundary. Units: none.");
           prm.declare_entry ("Bottom composition", "",
                              Patterns::List(Patterns::Double ()),
                              "A comma separated list of composition boundary values "
                              "at the bottom boundary (at minimal $y$-value in 2d, or minimal "
                              "$z$-value in 3d). This list must have as many "
-                             "entries as there are compositional fields. Units: none.");
+                             "entries as there are fixed compositional fields on the bottom boundary. Units: none.");
           prm.declare_entry ("Top composition", "",
                              Patterns::List(Patterns::Double ()),
                              "A comma separated list of composition boundary values "
                              "at the top boundary (at maximal $y$-value in 2d, or maximal "
                              "$z$-value in 3d). This list must have as many "
-                             "entries as there are compositional fields. Units: none.");
+                             "entries as there are fixed compositional fields on the top boundary. Units: none.");
           if (dim==3)
             {
               prm.declare_entry ("Front composition", "",
                                  Patterns::List(Patterns::Double ()),
                                  "A comma separated list of composition boundary values "
                                  "at the front boundary (at minimal $y$-value). This list must have as many "
-                                 "entries as there are compositional fields. Units: none.");
+                                 "entries as there are fixed compositional fields on the front boundary. Units: none.");
               prm.declare_entry ("Back composition", "",
                                  Patterns::List(Patterns::Double ()),
                                  "A comma separated list of composition boundary values "
                                  "at the back boundary (at maximal $y$-value). This list must have as many "
-                                 "entries as there are compositional fields. Units: none.");
+                                 "entries as there are fixed compositional fields on the back boundary. Units: none.");
               prm.declare_entry ("Front composition lithosphere", "",
                                  Patterns::List(Patterns::Double ()),
                                  "A comma separated list of composition boundary values "
                                  "at the front lithosphere boundary (at minimal $y$-value). This list must have as many "
-                                 "entries as there are compositional fields. Units: none.");
+                                 "entries as there are fixed compositional fields on the front lithosphere boundary. "
+                                 "Units: none.");
               prm.declare_entry ("Back composition lithosphere", "",
                                  Patterns::List(Patterns::Double ()),
                                  "A comma separated list of composition boundary values "
                                  "at the back lithosphere boundary (at maximal $y$-value). This list must have as many "
-                                 "entries as there are compositional fields. Units: none.");
+                                 "entries as there are fixed compositional fields on the back lithosphere boundary. "
+                                 "Units: none.");
             }
         }
         prm.leave_subsection ();
@@ -166,27 +185,35 @@ namespace aspect
                    ExcMessage ("This boundary model is only useful if the geometry is "
                                "a box with additional lithosphere boundary indicators."));
 
-      // verify that each of the lists for boundary values
-      // has the requisite number of elements
+      // Verify that each of the lists for boundary values
+      // has the requisite number of elements if it is in the set
+      // of prescribed boundary indicators.
+      // Not all fields need to be fixed on a given boundary.
+      const std::set<types::boundary_id> fixed_boundary_indicators = this->get_boundary_composition_manager().get_fixed_composition_boundary_indicators();
       for (unsigned int f=0; f<2*dim+2*(dim-1); ++f)
-        AssertThrow (composition_values[f].size() == this->n_compositional_fields(),
-                     ExcMessage (std::string("The specification of boundary composition values for the `box with "
-                                             "lithosphere boundary indicators' model "
-                                             "requires as many values for each boundary indicator the box as there "
-                                             "are compositional "
-                                             "fields. However, for boundary indicator ")
-                                 +
-                                 Utilities::int_to_string(f)
-                                 +
-                                 ", the input file specifies "
-                                 +
-                                 Utilities::int_to_string(composition_values[f].size())
-                                 +
-                                 " values even though there are "
-                                 +
-                                 Utilities::int_to_string(this->n_compositional_fields())
-                                 +
-                                 " compositional fields."));
+        if (fixed_boundary_indicators.count(f) != 0)
+          AssertThrow ((!(this->get_boundary_composition_manager().boundaries_with_fixed_subset_of_fields_exist()) && composition_values[f].size() == this->n_compositional_fields()) ||
+                       composition_values[f].size() == this->get_boundary_composition_manager().get_fixed_fields_on_boundary(f).size(),
+                       ExcMessage (std::string("The specification of boundary composition values for the `box with "
+                                               "lithosphere boundary indicators' model "
+                                               "requires as many values for each boundary indicator of the box as there "
+                                               "are compositional fields. However, for boundary indicator "
+                                               +
+                                               Utilities::int_to_string(f)
+                                               +
+                                               ", the input file specifies "
+                                               +
+                                               Utilities::int_to_string(composition_values[f].size())
+                                               +
+                                               " values even though there are "
+                                               +
+                                               Utilities::int_to_string(this->n_compositional_fields())
+                                               +
+                                               " compositional fields and "
+                                               +
+                                               Utilities::int_to_string(this->get_boundary_composition_manager().get_fixed_fields_on_boundary(f).size())
+                                               +
+                                               " compositional fields fixed on this face.")));
     }
 
   }
