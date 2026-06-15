@@ -691,22 +691,13 @@ namespace aspect
                               +
                               ">, but this plugin is not part of the active boundary composition plugins."));
 
-      Assert(fixed_composition_boundary_indicators.find(boundary_id) != fixed_composition_boundary_indicators.end(),
-             ExcMessage("The boundary composition manager class was asked for the "
-                        "compositional fields that are fixed on boundary indicator <"
-                        +
-                        Utilities::int_to_string(boundary_id)
-                        +
-                        "> with symbolic name <"
-                        +
-                        this->get_geometry_model().translate_id_to_symbol_name(boundary_id)
-                        +
-                        ">, but this boundary is not part of the active boundary composition plugins."));
+      // Return an empty set if the boundary has no prescribed compositional fields.
+      std::set<unsigned int> fixed_compositional_fields_for_plugin;
+      if (fixed_composition_boundary_indicators.find(boundary_id) == fixed_composition_boundary_indicators.end())
+        return fixed_compositional_fields_for_plugin;
 
       // For the given plugin name, loop over its boundary indicators
       // and store which fields the plugin prescribes for the given boundary indicator.
-      std::set<unsigned int> fixed_compositional_fields_for_plugin;
-
       for (unsigned int bi=0; bi<boundary_indicators[plugin_name_it - this->plugin_names.begin()].size(); ++bi)
         {
           if (boundary_indicators[plugin_name_it - this->plugin_names.begin()][bi] == boundary_id)
