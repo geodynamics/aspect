@@ -71,27 +71,27 @@ namespace aspect
                              Patterns::List(Patterns::Double ()),
                              "A comma separated list of composition boundary values "
                              "at the left boundary (at minimal $x$-value). This list must have as many "
-                             "entries as there are fixed compositional fields on the left boundary. "
+                             "entries as there are compositional fields prescribed by the plugin on the left boundary. "
                              "Units: none.");
           prm.declare_entry ("Right composition", "",
                              Patterns::List(Patterns::Double ()),
                              "A comma separated list of composition boundary values "
                              "at the right boundary (at maximal $x$-value). This list must have as many "
-                             "entries as there are fixed compositional fields on the right boundary. "
+                             "entries as there are compositional fields prescribed by the plugin on the right boundary. "
                              "Units: none.");
           prm.declare_entry ("Bottom composition", "",
                              Patterns::List(Patterns::Double ()),
                              "A comma separated list of composition boundary values "
                              "at the bottom boundary (at minimal $y$-value in 2d, or minimal "
                              "$z$-value in 3d). This list must have as many "
-                             "entries as there are fixed compositional fields on the bottom boundary. "
+                             "entries as there are compositional fields prescribed by the plugin on the bottom boundary. "
                              "Units: none.");
           prm.declare_entry ("Top composition", "",
                              Patterns::List(Patterns::Double ()),
                              "A comma separated list of composition boundary values "
                              "at the top boundary (at maximal $y$-value in 2d, or maximal "
                              "$z$-value in 3d). This list must have as many "
-                             "entries as there are fixed compositional fields on the top boundary. "
+                             "entries as there are compositional fields prescribed by the plugin on the top boundary. "
                              "Units: none.");
           if (dim==3)
             {
@@ -99,13 +99,13 @@ namespace aspect
                                  Patterns::List(Patterns::Double ()),
                                  "A comma separated list of composition boundary values "
                                  "at the front boundary (at minimum $y$-value). This list must have as many "
-                                 "entries as there are fixed compositional fields on the front boundary. "
+                                 "entries as there are compositional fields prescribed by the plugin on the front boundary. "
                                  "Units: none.");
               prm.declare_entry ("Back composition", "",
                                  Patterns::List(Patterns::Double ()),
                                  "A comma separated list of composition boundary values "
                                  "at the back boundary (at maximum $y$-value). This list must have as many "
-                                 "entries as there are fixed compositional fields on the back boundary. "
+                                 "entries as there are compositional fields prescribed by the plugin on the back boundary. "
                                  "Units: none.");
             }
         }
@@ -167,28 +167,30 @@ namespace aspect
       // of prescribed boundary indicators.
       // Not all fields need to be fixed on a given boundary.
       for (unsigned int f=0; f<2*dim; ++f)
-        if (this->get_boundary_composition_manager().get_fixed_composition_boundary_indicators().count(f) != 0)
-          AssertThrow ((!(this->get_boundary_composition_manager().boundaries_with_fixed_subset_of_fields_exist()) && composition_values[f].size() == this->n_compositional_fields()) ||
-                       composition_values[f].size() == this->get_boundary_composition_manager().get_fixed_fields_on_boundary(f).size(),
-                       ExcMessage (std::string("The specification of boundary composition values for the `box' model "
-                                               "requires as many values on each face of the box as there are fixed "
-                                               "compositional fields on each face. However, for face ")
-                                   +
-                                   Utilities::int_to_string(f)
-                                   +
-                                   ", the input file specifies "
-                                   +
-                                   Utilities::int_to_string(composition_values[f].size())
-                                   +
-                                   " values even though there are "
-                                   +
-                                   Utilities::int_to_string(this->n_compositional_fields())
-                                   +
-                                   " compositional fields and "
-                                   +
-                                   Utilities::int_to_string(this->get_boundary_composition_manager().get_fixed_fields_on_boundary(f).size())
-                                   +
-                                   " compositional fields fixed on this face."));
+        {
+          const std::set<types::boundary_id> fixed_boundary_indicators = this->get_boundary_composition_manager().get_fixed_compositional_fields_for_plugin_on_boundary("box",f);
+          if (fixed_boundary_indicators.count(f) != 0)
+            AssertThrow (composition_values[f].size() == fixed_boundary_indicators.size(),
+                         ExcMessage (std::string("The specification of boundary composition values for the `box' model "
+                                                 "requires as many values on each face of the box as there are "
+                                                 "compositional fields prescribed by the plugin on each face. However, for face ")
+                                     +
+                                     Utilities::int_to_string(f)
+                                     +
+                                     ", the input file specifies "
+                                     +
+                                     Utilities::int_to_string(composition_values[f].size())
+                                     +
+                                     " values even though there are "
+                                     +
+                                     Utilities::int_to_string(this->n_compositional_fields())
+                                     +
+                                     " compositional field(s) and "
+                                     +
+                                     Utilities::int_to_string(fixed_boundary_indicators.size())
+                                     +
+                                     " compositional field(s) prescribed by the plugin on this face."));
+        }
     }
 
   }

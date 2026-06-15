@@ -94,14 +94,14 @@ namespace aspect
                              Patterns::List(Patterns::Double ()),
                              "A comma separated list of composition boundary values "
                              "at the top boundary (at maximal radius). This list must have "
-                             "one entry or as many entries as there are fixed compositional fields "
-                             "on the boundary. Units: none.");
+                             "one entry or as many entries as there are compositional fields "
+                             "prescribed by the plugin on the boundary. Units: none.");
           prm.declare_entry ("Inner composition", "1.",
                              Patterns::List(Patterns::Double ()),
                              "A comma separated list of composition boundary values "
                              "at the bottom boundary (at minimal radius). This list must have "
-                             "one entry or as many entries as there are fixed compositional fields "
-                             "on the boundary. Units: none.");
+                             "one entry or as many entries as there are compositional fields "
+                             "prescribed by the plugin on the boundary. Units: none.");
         }
         prm.leave_subsection ();
       }
