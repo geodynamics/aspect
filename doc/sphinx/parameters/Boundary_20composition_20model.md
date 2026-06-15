@@ -28,7 +28,7 @@ A warning for models with melt transport: In models with fluid flow, some compos
 
 The names of the boundaries listed here can either be numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
 
-To specify different boundary conditions for different compositions on different boundaries, you can use the format <boundary_name>;field_name_1|field_name_2:plugin_name_1|plugin_name_2,. This also means, not all fields need to have fixed compositions on a specific boundary.
+To specify different boundary conditions for different compositions on different boundaries, you can use the format <boundary_name> [field_name_1|field_name_2]:plugin_name_1+plugin_name_2. This also means that not all fields need to have fixed compositions on a specific boundary.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`List of model names<parameters:Boundary_20composition_20model/List_20of_20model_20names>`
@@ -41,7 +41,7 @@ To specify different boundary conditions for different compositions on different
 
 The following boundary composition models are available:
 
-&lsquo;ascii data&rsquo;: Implementation of a model in which the boundary composition is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with &lsquo;#&rsquo;, but one of these lines needs to contain the number of grid points in each dimension as for example &lsquo;# POINTS: 3 3&rsquo;. The order of the data columns has to be &lsquo;x&rsquo;, &lsquo;composition1&rsquo;, &lsquo;composition2&rsquo;, etc. in a 2d model and &lsquo;x&rsquo;, &lsquo;y&rsquo;, &lsquo;composition1&rsquo;, &lsquo;composition2&rsquo;, etc., in a 3d model, according to the number of compositional fields, which means that there has to be a single column for every composition in the model. Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates.If you use a spherical model, then the assumed grid changes. &lsquo;x&rsquo; will be replaced by the radial distance of the point to the bottom of the model, &lsquo;y&rsquo; by the azimuth angle and &lsquo;z&rsquo; by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is &lsquo;r&rsquo;, &lsquo;phi&rsquo;, &lsquo;theta&rsquo; and not &lsquo;r&rsquo;, &lsquo;theta&rsquo;, &lsquo;phi&rsquo;, since this allows for dimension independent expressions.
+&lsquo;ascii data&rsquo;: Implementation of a model in which the boundary composition is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with &lsquo;#&rsquo;, but one of these lines needs to contain the number of grid points in each dimension as for example &lsquo;# POINTS: 3 3&rsquo;. The order of the data columns has to be &lsquo;x&rsquo;, &lsquo;composition1&rsquo;, &lsquo;composition2&rsquo;, etc. in a 2d model and &lsquo;x&rsquo;, &lsquo;y&rsquo;, &lsquo;composition1&rsquo;, &lsquo;composition2&rsquo;, etc., in a 3d model, with a column for each of the compositional fields that are prescribed by this plugin (on all boundaries). This means that there has to be a single column for every composition that is prescribed with &lsquo;ascii data&rsquo; in the model. Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates.If you use a spherical model, then the assumed grid changes. &lsquo;x&rsquo; will be replaced by the radial distance of the point to the bottom of the model, &lsquo;y&rsquo; by the azimuth angle and &lsquo;z&rsquo; by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is &lsquo;r&rsquo;, &lsquo;phi&rsquo;, &lsquo;theta&rsquo; and not &lsquo;r&rsquo;, &lsquo;theta&rsquo;, &lsquo;phi&rsquo;, since this allows for dimension independent expressions.
 
 &lsquo;box&rsquo;: A model in which the composition is chosen constant on the sides of a box which are selected by the parameters Left/Right/Top/Bottom/Front/Back composition
 
@@ -50,6 +50,8 @@ The following boundary composition models are available:
 &lsquo;function&rsquo;: Implementation of a model in which the boundary composition is given in terms of an explicit formula that is elaborated in the parameters in section &ldquo;Boundary composition model|Function&rdquo;.
 
 Since the symbol $t$ indicating time may appear in the formulas for the prescribed composition, it is interpreted as having units seconds unless the global input parameter &ldquo;Use years instead of seconds&rdquo; is set, in which case we interpret the formula expressions as having units year.
+
+The number of provided functions should equal the total number of compositional fields prescribed by this plugin.
 
 The format of these functions follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.
 
@@ -77,7 +79,7 @@ Because this class simply takes what the initial composition had described, this
 
 **Documentation:** Select one of the following models:
 
-&lsquo;ascii data&rsquo;: Implementation of a model in which the boundary composition is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with &lsquo;#&rsquo;, but one of these lines needs to contain the number of grid points in each dimension as for example &lsquo;# POINTS: 3 3&rsquo;. The order of the data columns has to be &lsquo;x&rsquo;, &lsquo;composition1&rsquo;, &lsquo;composition2&rsquo;, etc. in a 2d model and &lsquo;x&rsquo;, &lsquo;y&rsquo;, &lsquo;composition1&rsquo;, &lsquo;composition2&rsquo;, etc., in a 3d model, according to the number of compositional fields, which means that there has to be a single column for every composition in the model. Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates.If you use a spherical model, then the assumed grid changes. &lsquo;x&rsquo; will be replaced by the radial distance of the point to the bottom of the model, &lsquo;y&rsquo; by the azimuth angle and &lsquo;z&rsquo; by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is &lsquo;r&rsquo;, &lsquo;phi&rsquo;, &lsquo;theta&rsquo; and not &lsquo;r&rsquo;, &lsquo;theta&rsquo;, &lsquo;phi&rsquo;, since this allows for dimension independent expressions.
+&lsquo;ascii data&rsquo;: Implementation of a model in which the boundary composition is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with &lsquo;#&rsquo;, but one of these lines needs to contain the number of grid points in each dimension as for example &lsquo;# POINTS: 3 3&rsquo;. The order of the data columns has to be &lsquo;x&rsquo;, &lsquo;composition1&rsquo;, &lsquo;composition2&rsquo;, etc. in a 2d model and &lsquo;x&rsquo;, &lsquo;y&rsquo;, &lsquo;composition1&rsquo;, &lsquo;composition2&rsquo;, etc., in a 3d model, with a column for each of the compositional fields that are prescribed by this plugin (on all boundaries). This means that there has to be a single column for every composition that is prescribed with &lsquo;ascii data&rsquo; in the model. Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates.If you use a spherical model, then the assumed grid changes. &lsquo;x&rsquo; will be replaced by the radial distance of the point to the bottom of the model, &lsquo;y&rsquo; by the azimuth angle and &lsquo;z&rsquo; by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is &lsquo;r&rsquo;, &lsquo;phi&rsquo;, &lsquo;theta&rsquo; and not &lsquo;r&rsquo;, &lsquo;theta&rsquo;, &lsquo;phi&rsquo;, since this allows for dimension independent expressions.
 
 &lsquo;box&rsquo;: A model in which the composition is chosen constant on the sides of a box which are selected by the parameters Left/Right/Top/Bottom/Front/Back composition
 
@@ -86,6 +88,8 @@ Because this class simply takes what the initial composition had described, this
 &lsquo;function&rsquo;: Implementation of a model in which the boundary composition is given in terms of an explicit formula that is elaborated in the parameters in section &ldquo;Boundary composition model|Function&rdquo;.
 
 Since the symbol $t$ indicating time may appear in the formulas for the prescribed composition, it is interpreted as having units seconds unless the global input parameter &ldquo;Use years instead of seconds&rdquo; is set, in which case we interpret the formula expressions as having units year.
+
+The number of provided functions should equal the total number of compositional fields prescribed by this plugin.
 
 The format of these functions follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.
 
@@ -171,7 +175,7 @@ Because this class simply takes what the initial composition had described, this
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A comma separated list of composition boundary values at the bottom boundary (at minimal $y$-value in 2d, or minimal $z$-value in 3d). This list must have as many entries as there are compositional fields. Units: none.
+**Documentation:** A comma separated list of composition boundary values at the bottom boundary (at minimal $y$-value in 2d, or minimal $z$-value in 3d). This list must have as many entries as there are compositional fields prescribed by the plugin on the bottom boundary. Units: none.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Left composition<parameters:Boundary_20composition_20model/Box/Left_20composition>`
@@ -180,7 +184,7 @@ Because this class simply takes what the initial composition had described, this
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A comma separated list of composition boundary values at the left boundary (at minimal $x$-value). This list must have as many entries as there are compositional fields. Units: none.
+**Documentation:** A comma separated list of composition boundary values at the left boundary (at minimal $x$-value). This list must have as many entries as there are compositional fields prescribed by the plugin on the left boundary. Units: none.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Right composition<parameters:Boundary_20composition_20model/Box/Right_20composition>`
@@ -189,7 +193,7 @@ Because this class simply takes what the initial composition had described, this
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A comma separated list of composition boundary values at the right boundary (at maximal $x$-value). This list must have as many entries as there are compositional fields. Units: none.
+**Documentation:** A comma separated list of composition boundary values at the right boundary (at maximal $x$-value). This list must have as many entries as there are compositional fields prescribed by the plugin on the right boundary. Units: none.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Top composition<parameters:Boundary_20composition_20model/Box/Top_20composition>`
@@ -198,7 +202,7 @@ Because this class simply takes what the initial composition had described, this
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A comma separated list of composition boundary values at the top boundary (at maximal $y$-value in 2d, or maximal $z$-value in 3d). This list must have as many entries as there are compositional fields. Units: none.
+**Documentation:** A comma separated list of composition boundary values at the top boundary (at maximal $y$-value in 2d, or maximal $z$-value in 3d). This list must have as many entries as there are compositional fields prescribed by the plugin on the top boundary. Units: none.
 ::::
 
 (parameters:Boundary_20composition_20model/Box_20with_20lithosphere_20boundary_20indicators)=
@@ -209,7 +213,7 @@ Because this class simply takes what the initial composition had described, this
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A comma separated list of composition boundary values at the bottom boundary (at minimal $y$-value in 2d, or minimal $z$-value in 3d). This list must have as many entries as there are compositional fields. Units: none.
+**Documentation:** A comma separated list of composition boundary values at the bottom boundary (at minimal $y$-value in 2d, or minimal $z$-value in 3d). This list must have as many entries as there are compositional fields prescribed by the plugin on the bottom boundary. Units: none.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Left composition<parameters:Boundary_20composition_20model/Box_20with_20lithosphere_20boundary_20indicators/Left_20composition>`
@@ -218,7 +222,7 @@ Because this class simply takes what the initial composition had described, this
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A comma separated list of composition boundary values at the left boundary (at minimal $x$-value). This list must have as many entries as there are compositional fields. Units: none.
+**Documentation:** A comma separated list of composition boundary values at the left boundary (at minimal $x$-value). This list must have as many entries as there are compositional fields prescribed by the plugin on the left boundary. Units: none.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Left composition lithosphere<parameters:Boundary_20composition_20model/Box_20with_20lithosphere_20boundary_20indicators/Left_20composition_20lithosphere>`
@@ -227,7 +231,7 @@ Because this class simply takes what the initial composition had described, this
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A comma separated list of composition boundary values at the left boundary (at minimal $x$-value). This list must have as many entries as there are compositional fields. Units: none.
+**Documentation:** A comma separated list of composition boundary values at the left boundary (at minimal $x$-value). This list must have as many entries as there are compositional fields prescribed by the plugin on the left lithosphere boundary. Units: none.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Right composition<parameters:Boundary_20composition_20model/Box_20with_20lithosphere_20boundary_20indicators/Right_20composition>`
@@ -236,7 +240,7 @@ Because this class simply takes what the initial composition had described, this
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A comma separated list of composition boundary values at the right boundary (at maximal $x$-value). This list must have as many entries as there are compositional fields. Units: none.
+**Documentation:** A comma separated list of composition boundary values at the right boundary (at maximal $x$-value). This list must have as many entries as there are compositional fields prescribed by the plugin on the right boundary. Units: none.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Right composition lithosphere<parameters:Boundary_20composition_20model/Box_20with_20lithosphere_20boundary_20indicators/Right_20composition_20lithosphere>`
@@ -245,7 +249,7 @@ Because this class simply takes what the initial composition had described, this
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A comma separated list of composition boundary values at the right boundary (at maximal $x$-value). This list must have as many entries as there are compositional fields. Units: none.
+**Documentation:** A comma separated list of composition boundary values at the right boundary (at maximal $x$-value). This list must have as many entries as there are compositional fields prescribed by the plugin on the right lithosphere boundary. Units: none.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Top composition<parameters:Boundary_20composition_20model/Box_20with_20lithosphere_20boundary_20indicators/Top_20composition>`
@@ -254,7 +258,7 @@ Because this class simply takes what the initial composition had described, this
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A comma separated list of composition boundary values at the top boundary (at maximal $y$-value in 2d, or maximal $z$-value in 3d). This list must have as many entries as there are compositional fields. Units: none.
+**Documentation:** A comma separated list of composition boundary values at the top boundary (at maximal $y$-value in 2d, or maximal $z$-value in 3d). This list must have as many entries as there are compositional fields prescribed by the plugin on the top boundary. Units: none.
 ::::
 
 (parameters:Boundary_20composition_20model/Function)=
@@ -327,7 +331,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A comma separated list of composition boundary values at the bottom boundary (at minimal radius). This list must have one entry or as many entries as there are compositional fields. Units: none.
+**Documentation:** A comma separated list of composition boundary values at the bottom boundary (at minimal radius). This list must have one entry or as many entries as there are compositional fields prescribed by the plugin on the boundary. Units: none.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Outer composition<parameters:Boundary_20composition_20model/Spherical_20constant/Outer_20composition>`
@@ -336,5 +340,5 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A comma separated list of composition boundary values at the top boundary (at maximal radius). This list must have one entry or as many entries as there are compositional fields. Units: none.
+**Documentation:** A comma separated list of composition boundary values at the top boundary (at maximal radius). This list must have one entry or as many entries as there are compositional fields prescribed by the plugin on the boundary. Units: none.
 ::::
