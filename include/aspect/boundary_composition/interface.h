@@ -243,12 +243,6 @@ namespace aspect
         get_fixed_boundaries_for_field (const unsigned int compositional_field) const;
 
         /*
-         * Return the set of all compositional fields that are fixed.
-         */
-        std::set<unsigned int>
-        get_fixed_compositional_fields () const;
-
-        /*
          * Return the set of compositional fields that are fixed
          * for the given plugin name.
          */
@@ -345,7 +339,7 @@ namespace aspect
          * Whether one or more boundaries only have fixed boundary conditions
          * for a subset of fields, instead of all fields.
          */
-        bool boundaries_with_fixed_subset_of_fields = false;
+        bool do_boundaries_with_fixed_subset_of_fields_exist = false;
     };
 
 
