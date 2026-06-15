@@ -155,8 +155,7 @@ namespace aspect
                         this->plugin_names.push_back(model_name);
 
                         // Also add the compositional field masks for this plugin.
-                        std::vector<ComponentMask> vec_component_mask;
-                        vec_component_mask.push_back(component_mask);
+                        const std::vector<ComponentMask> vec_component_mask(1,component_mask);
                         masks_fields.push_back(vec_component_mask);
 
                         // Insert the boundary indicator that belongs to this plugin into the set
@@ -168,13 +167,11 @@ namespace aspect
                         // It is possible that more boundary indicators are affected by this plugin,
                         // they would be added to the vector of indicators for this plugin
                         // in the other conditional branch.
-                        std::vector<types::boundary_id> vec_boundary_indicator;
-                        vec_boundary_indicator.push_back(boundary_indicator);
+                        const std::vector<types::boundary_id> vec_boundary_indicator(1,boundary_indicator);
                         boundary_indicators.push_back(vec_boundary_indicator);
 
                         // Add the model operator for this plugin and boundary.
-                        std::vector<aspect::Utilities::Operator> vec_model_operator;
-                        vec_model_operator.push_back(list_of_model_operators[mn]);
+                        const std::vector<aspect::Utilities::Operator> vec_model_operator(1,list_of_model_operators[mn]);
                         model_operators.push_back(vec_model_operator);
                       }
                     // The plugin was already listed for another boundary or field, so add the
@@ -284,8 +281,7 @@ namespace aspect
                         this->plugin_names.push_back(model_name);
 
                         // Also add the compositional field masks for this plugin.
-                        std::vector<ComponentMask> vec_component_mask;
-                        vec_component_mask.push_back(component_mask);
+                        const std::vector<ComponentMask> vec_component_mask(1,component_mask);
                         masks_fields.push_back(vec_component_mask);
 
                         // Insert the boundary indicator that belongs to this plugin into the set
@@ -297,13 +293,11 @@ namespace aspect
                         // It is possible that more boundary indicators are affected by this plugin,
                         // they would be added to the vector of indicators for this plugin
                         // in the other conditional branch.
-                        std::vector<types::boundary_id> vec_boundary_indicator;
-                        vec_boundary_indicator.push_back(boundary_indicator);
+                        const std::vector<types::boundary_id> vec_boundary_indicator(1,boundary_indicator);
                         boundary_indicators.push_back(vec_boundary_indicator);
 
                         // Add the model operator for this plugin and boundary.
-                        std::vector<aspect::Utilities::Operator> vec_model_operator;
-                        vec_model_operator.push_back(list_of_model_operators[mn]);
+                        const std::vector<aspect::Utilities::Operator> vec_model_operator(1,list_of_model_operators[mn]);
                         model_operators.push_back(vec_model_operator);
                       }
                     // The plugin was already listed for another boundary or field, so add the
@@ -378,12 +372,10 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      // Check whether on some boundaries composition is olny fixed for a subset of fields.
-      // TODO no need for iterator i.
-      auto fcbi = fixed_composition_boundary_indicators.begin();
-      for (unsigned int i=0; i<fixed_composition_boundary_indicators.size(); ++i, ++fcbi)
+      // Check whether on some boundaries composition is only fixed for a subset of fields.
+      for (auto fcbi : fixed_composition_boundary_indicators)
         {
-          if (get_fixed_fields_on_boundary(*fcbi).size() < this->n_compositional_fields())
+          if (get_fixed_fields_on_boundary(fcbi).size() < this->n_compositional_fields())
             {
               do_boundaries_with_fixed_subset_of_fields_exist = true;
               break;
@@ -711,27 +703,20 @@ namespace aspect
                         +
                         ">, but this boundary is not part of the active boundary composition plugins."));
 
-      // Loop over the plugin names and for the matching name and
-      // boundary indicator, store which fields it prescribes.
+      // For the given plugin name, loop over its boundary indicators
+      // and store which fields the plugin prescribes for the given boundary indicator.
       std::set<unsigned int> fixed_compositional_fields_for_plugin;
 
-      auto p = this->plugin_names.begin();
-      for (unsigned int i=0; i<this->plugin_names.size(); ++p, ++i)
+      for (unsigned int bi=0; bi<boundary_indicators[plugin_name_it - this->plugin_names.begin()].size(); ++bi)
         {
-          if (*p == plugin_name)
+          if (boundary_indicators[plugin_name_it - this->plugin_names.begin()][bi] == boundary_id)
             {
-              for (unsigned int bi=0; bi<boundary_indicators[i].size(); ++bi)
+              // check that the mask is true for the given field.
+              for (unsigned int c = 0; c<this->n_compositional_fields(); ++c)
                 {
-                  if (boundary_indicators[i][bi] == boundary_id)
+                  if (masks_fields[plugin_name_it - this->plugin_names.begin()][bi][c] == true)
                     {
-                      // check that the mask is true for the given field.
-                      for (unsigned int c = 0; c<this->n_compositional_fields(); ++c)
-                        {
-                          if (masks_fields[i][bi][c] == true)
-                            {
-                              fixed_compositional_fields_for_plugin.insert(c);
-                            }
-                        }
+                      fixed_compositional_fields_for_plugin.insert(c);
                     }
                 }
             }
