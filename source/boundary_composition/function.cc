@@ -44,12 +44,12 @@ namespace aspect
       if (this->get_boundary_composition_manager().boundaries_with_fixed_subset_of_fields_exist())
         {
           const std::set<unsigned int> fixed_fields = this->get_boundary_composition_manager().get_fixed_compositional_fields_for_plugin("function");
-          Assert (fixed_fields.find(compositional_field) != fixed_fields.end(),
-                  ExcMessage ("Boundary composition was requested for field " +
-                              Utilities::int_to_string(compositional_field) +
-                              " on boundary " +
-                              Utilities::int_to_string(boundary_indicator) +
-                              " but this field is not prescribed by the `function` plugin. "));
+          AssertThrow (fixed_fields.find(compositional_field) != fixed_fields.end(),
+                       ExcMessage ("Boundary composition was requested for field " +
+                                   Utilities::int_to_string(compositional_field) +
+                                   " on boundary " +
+                                   Utilities::int_to_string(boundary_indicator) +
+                                   " but this field is not prescribed by the `function` plugin. "));
           field_id = std::distance(fixed_fields.begin(), fixed_fields.find(compositional_field));
         }
 

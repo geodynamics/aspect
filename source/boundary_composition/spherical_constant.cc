@@ -113,8 +113,6 @@ namespace aspect
     void
     SphericalConstant<dim>::parse_parameters (ParameterHandler &prm)
     {
-      const unsigned int n_compositional_fields = this->n_compositional_fields();
-
       prm.enter_subsection("Boundary composition model");
       {
         prm.enter_subsection("Spherical constant");
@@ -140,7 +138,7 @@ namespace aspect
           // Get the compositional fields that are fixed on outer boundary.
           const unsigned int n_outer_fixed_fields = (this->get_boundary_composition_manager().get_fixed_compositional_fields_for_plugin_on_boundary("spherical constant", outer_boundary_indicator)).size();
 
-          Assert (n_inner_fixed_fields <= n_compositional_fields && n_outer_fixed_fields <= n_compositional_fields,
+          Assert (n_inner_fixed_fields <= this->n_compositional_fields() && n_outer_fixed_fields <= this->n_compositional_fields(),
                   ExcMessage ("The number of fixed compositional fields on the inner and/or outer boundary is higher than the total number of fields."));
 
           // Read in the composition values (either one value or as many as there are fixed fields).
