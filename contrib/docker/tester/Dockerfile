@@ -27,9 +27,9 @@ RUN cd /opt && \
 
 # Install FastScape for ASPECT
 RUN cd /opt && \
-    git clone https://github.com/Djneu/fastscapelib-fortran.git && \
+    git clone https://github.com/anne-glerum/fastscapelib-fortran.git && \
     cd fastscapelib-fortran  && \
-    git checkout coupling_dev && \
+    git checkout aspect_tester && \
     mkdir build && \
     cd build && \
     /opt/cmake-3.26.4-linux-x86_64/bin/cmake -DBUILD_FASTSCAPELIB_SHARED=ON .. && \
