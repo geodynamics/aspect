@@ -1,7 +1,8 @@
-# This test verifies the input functionality of the bedrock incision coefficient (Kf) in the Fastscape plugin.
+# This test verifies the input functionality of the bedrock
+# river incision rate (Kf) in the Fastscape plugin.
 # Kf can be defined either as a constant or as a time-dependent 2D function.
-# In this test, Kf starts at 1e-6 across the domain, and the right side of the domain increases to 1e-4
-# between 250 kyr and 500 kyr.
+# In this test, Kf starts at 1e-6 across the domain and increases to 1e-4
+# between 250 kyr and 500 kyr on the right side of the domain.
 # The results can be visualized in the Fastscape topography VTK output file.
 # Enable if: ASPECT_WITH_FASTSCAPE
 
