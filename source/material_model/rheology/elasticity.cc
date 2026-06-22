@@ -754,7 +754,7 @@ namespace aspect
                 // The ratio between the computational and elastic timestep $\frac{\Delta t_c} / {\Delta t_{el}}$.
                 const double timestep_ratio = calculate_timestep_ratio();
 
-                // Compute the total stress at time $t+\Delta t_c$.
+                // Compute the total stress at time $t$.
                 SymmetricTensor<2, dim>
                 stress_t = 2. * effective_creep_viscosity * Utilities::Tensors::consistent_deviator(in.strain_rate[i])
                            + effective_creep_viscosity / elastic_viscosity * stress_0_t;

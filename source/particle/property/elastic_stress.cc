@@ -314,9 +314,6 @@ namespace aspect
       ElasticStress<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &inputs,
                                                      typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
-        const std::shared_ptr<MaterialModel::ReactionRateOutputs<dim>> reaction_rate_outputs
-          = material_outputs.template get_additional_output_object<MaterialModel::ReactionRateOutputs<dim>>();
-
         const unsigned int n_total_stress_components = stress_field_indices.size();
 
         unsigned int p = 0;

@@ -397,19 +397,7 @@ namespace aspect
       }
 
     if (fields_advected_by_particles.size() > 0)
-      {
-        interpolate_particle_properties(fields_advected_by_particles);
-
-        for (const auto &adv_field: fields_advected_by_particles)
-          {
-            // Call the signal in case the user wants to do something with the variable:
-            SolverControl dummy;
-            signals.post_advection_solver(*this,
-                                          adv_field.is_temperature(),
-                                          adv_field.compositional_variable,
-                                          dummy);
-          }
-      }
+      interpolate_particle_properties(fields_advected_by_particles);
 
     // If elasticity is switched on, the stress tensor can have components
     // with very large values and components that are and stay practically zero.
@@ -417,25 +405,27 @@ namespace aspect
     // of the same stress tensor in the computation of the initial residual
     // for the fields that belong to that tensor. In other words, we compute an
     // averaged initial residual using those fields that belong to the ve_stress tensor.
-    // The ve_stress_old values are not independent components of the solution vector,
-    // so we do not need to compute a residual for them and set their residual to zero.
     // TODO Is this residual calculation representative of a second order tensor?
     if (parameters.enable_elasticity == true && residual)
       {
         const std::vector<unsigned int> &stress_field_indices = introspection.get_indices_for_fields_of_type(CompositionalFieldDescription::stress);
         const double n_stress_fields = stress_field_indices.size();
 
-        double stress_initial_residual = 0.0;
-        for (auto &c : stress_field_indices)
-          stress_initial_residual += system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm() / n_stress_fields;
+        AssertThrow((n_stress_fields == 2*SymmetricTensor<2,dim>::n_independent_components ||
+                     n_stress_fields == SymmetricTensor<2,dim>::n_independent_components),
+                    ExcMessage("The number of stress tensor element fields does not equal the number of expected components."));
 
-        for (auto &c : stress_field_indices)
-          {
-            if (c<SymmetricTensor<2,dim>::n_independent_components)
-              (*residual)[c] = stress_initial_residual;
-            else
-              (*residual)[c] = 0.;
-          }
+        double stress_initial_residual = 0.0;
+
+        for (unsigned int c=0; c<SymmetricTensor<2,dim>::n_independent_components; ++c)
+          stress_initial_residual += system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm();
+
+        stress_initial_residual /= static_cast<double>(SymmetricTensor<2,dim>::n_independent_components);
+
+        // The ve_stress_old values if they exist are not independent components of the solution vector,
+        // so we do not compute a residual for them and set their residual to zero.
+        for (unsigned int c=0; c<n_stress_fields; ++c)
+          (*residual)[stress_field_indices[c]] = (c<SymmetricTensor<2,dim>::n_independent_components) ? stress_initial_residual : 0.;
       }
 
 
