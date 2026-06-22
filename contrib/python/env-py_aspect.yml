@@ -8,3 +8,4 @@ dependencies:
   - pandas
   - matplotlib
   - libnetcdf
+  - cmcrameri
