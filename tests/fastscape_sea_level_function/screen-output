@@ -1,26 +1,8 @@
------------------------------------------------------------------------------
---                             This is ASPECT                              --
--- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
------------------------------------------------------------------------------
---     . version 3.1.0-pre (sea_level_function, 54652a673)
---     . using deal.II 9.6.2
---     .       with 32 bit indices
---     .       with vectorization level 1 (SSE2, 2 doubles, 128 bits)
---     . using Trilinos 13.4.1
---     . using p4est 2.8.0
---     . using Geodynamic World Builder 1.0.0
---     . running in OPTIMIZED mode
---     . running with 1 MPI process
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&fastscape=1&sha=54652a673&src=code
------------------------------------------------------------------------------
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)
 
-Number of mesh deformation degrees of freedom: 50
+Number of mesh deformation degrees of freedom: 162
    Solving mesh displacement system... 0 iterations.
    Added initial topography to grid
 
@@ -30,7 +12,7 @@ Number of mesh deformation degrees of freedom: 50
    Solving Stokes system (AMG)... 2+0 iterations.
 
    Postprocessing:
-     Writing graphical output: fastscape_sea_level_function/solution/solution-00000
+     Writing graphical output: output-fastscape_sea_level_function/solution/solution-00000
 
 *** Timestep 1:  t=20000 years, dt=20000 years
    Initializing FastScape... 4 levels, cell size: 6250 m.
@@ -38,7 +20,7 @@ Number of mesh deformation degrees of freedom: 50
       Writing initial VTK...
    Solving mesh displacement system... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 5+0 iterations.
+   Solving Stokes system (AMG)... 6+0 iterations.
 
    Postprocessing:
 
@@ -46,7 +28,7 @@ Number of mesh deformation degrees of freedom: 50
    Executing FastScape... 5 timesteps of 4000 years.
    Solving mesh displacement system... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 5+0 iterations.
+   Solving Stokes system (AMG)... 6+0 iterations.
 
    Postprocessing:
 
@@ -62,7 +44,7 @@ Number of mesh deformation degrees of freedom: 50
    Executing FastScape... 5 timesteps of 4000 years.
    Solving mesh displacement system... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 3+0 iterations.
+   Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
 
@@ -70,7 +52,7 @@ Number of mesh deformation degrees of freedom: 50
    Executing FastScape... 5 timesteps of 4000 years.
    Solving mesh displacement system... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 3+0 iterations.
+   Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
 
@@ -94,7 +76,7 @@ Number of mesh deformation degrees of freedom: 50
    Executing FastScape... 5 timesteps of 4000 years.
    Solving mesh displacement system... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 3+0 iterations.
+   Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
 
@@ -102,7 +84,7 @@ Number of mesh deformation degrees of freedom: 50
    Executing FastScape... 5 timesteps of 4000 years.
    Solving mesh displacement system... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 3+0 iterations.
+   Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
 
@@ -110,7 +92,7 @@ Number of mesh deformation degrees of freedom: 50
    Executing FastScape... 5 timesteps of 4000 years.
    Solving mesh displacement system... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 3+0 iterations.
+   Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
 
@@ -190,7 +172,7 @@ Number of mesh deformation degrees of freedom: 50
    Executing FastScape... 5 timesteps of 4000 years.
    Solving mesh displacement system... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 3+0 iterations.
+   Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
 
@@ -198,7 +180,7 @@ Number of mesh deformation degrees of freedom: 50
    Executing FastScape... 5 timesteps of 4000 years.
    Solving mesh displacement system... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 3+0 iterations.
+   Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
 
@@ -206,7 +188,7 @@ Number of mesh deformation degrees of freedom: 50
    Executing FastScape... 5 timesteps of 4000 years.
    Solving mesh displacement system... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 3+0 iterations.
+   Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
 
@@ -214,7 +196,7 @@ Number of mesh deformation degrees of freedom: 50
    Executing FastScape... 5 timesteps of 4000 years.
    Solving mesh displacement system... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 3+0 iterations.
+   Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
 
@@ -222,7 +204,7 @@ Number of mesh deformation degrees of freedom: 50
    Executing FastScape... 5 timesteps of 4000 years.
    Solving mesh displacement system... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 3+0 iterations.
+   Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
 
@@ -231,35 +213,12 @@ Number of mesh deformation degrees of freedom: 50
       Writing FastScape VTK...
    Solving mesh displacement system... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 3+0 iterations.
+   Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
-     Writing graphical output: fastscape_sea_level_function/solution/solution-00001
+     Writing graphical output: output-fastscape_sea_level_function/solution/solution-00001
 
 Termination requested by criterion: end time
 
 
-+---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |     0.135s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
-+---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        26 |   0.00511s |       3.8% |
-| Build Stokes preconditioner     |        26 |    0.0205s |        15% |
-| Execute FastScape               |        25 |   0.00788s |       5.8% |
-| FastScape plugin                |        25 |   0.00932s |       6.9% |
-| Initialization                  |         1 |    0.0563s |        42% |
-| Mesh deformation                |        26 |    0.0267s |        20% |
-| Mesh deformation initialize     |         1 |   0.00726s |       5.4% |
-| Postprocessing                  |        26 |   0.00277s |         2% |
-| Setup dof systems               |         1 |   0.00963s |       7.1% |
-| Setup initial conditions        |         1 |   0.00114s |      0.85% |
-| Setup matrices                  |         1 |  0.000244s |      0.18% |
-| Solve Stokes system             |        26 |   0.00387s |       2.9% |
-+---------------------------------+-----------+------------+------------+
 
--- Total wallclock time elapsed including restarts: 0s
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&fastscape=1&sha=54652a673&src=code
------------------------------------------------------------------------------
