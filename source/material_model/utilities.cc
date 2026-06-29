@@ -1214,17 +1214,26 @@ namespace aspect
               }
             start_phase_transition_index += n_phase_transitions_per_chemical_composition[n_relevant_fields];
           }
+        
+        // Clamp the lower bound of P and T to the table minimum, so that e.g. negative temperatures or sub-minimum pressures are mapped to the table's lower boundary
+        const double pressure_in_bar = std::max(in.pressure/1.e5, minimum_pressure[n_comp]);
+        const double clamped_temperature = std::max(in.temperature, minimum_temperature[n_comp]);
 
-        const double pressure_in_bar = in.pressure/1.e5;
-
-        Assert (in.temperature >= minimum_temperature[n_comp] && in.temperature < maximum_temperature[n_comp], ExcInternalError());
-        Assert (pressure_in_bar >= minimum_pressure[n_comp] && pressure_in_bar < maximum_pressure[n_comp], ExcInternalError());
+        // For the upper bound of P/T values, do assertion instead of clamping, as it is not physically reasonable to ditch high P/T values
+        AssertThrow(pressure_in_bar <= maximum_pressure[n_comp],
+                    ExcMessage("The model pressure (" + std::to_string(pressure_in_bar) + " bar) exceeds the "
+                               "maximum pressure in the lookup table (" + std::to_string(maximum_pressure[n_comp]) + " bar) "
+                               "for composition " + std::to_string(n_comp) + "."));
+        AssertThrow(clamped_temperature <= maximum_temperature[n_comp],
+                    ExcMessage("The model temperature (" + std::to_string(clamped_temperature) + " K) exceeds the "
+                               "maximum temperature in the lookup table (" + std::to_string(maximum_temperature[n_comp]) + " K) "
+                               "for composition " + std::to_string(n_comp) + "."));
 
         const std::vector<double> &temperature_points = material_lookup[n_comp]->get_interpolation_point_coordinates(0);
         const std::vector<double> &pressure_points = material_lookup[n_comp]->get_interpolation_point_coordinates(1);
 
         // round T and p points to exact values in the table
-        const unsigned int i_T = static_cast<unsigned int>(std::round((in.temperature - minimum_temperature[n_comp]) / interval_temperature[n_comp]));
+        const unsigned int i_T = static_cast<unsigned int>(std::round((clamped_temperature - minimum_temperature[n_comp]) / interval_temperature[n_comp]));
         const unsigned int i_p = static_cast<unsigned int>(std::round((pressure_in_bar - minimum_pressure[n_comp]) / interval_pressure[n_comp]));
 
         Point<2> temperature_pressure(temperature_points[i_T], pressure_points[i_p]);
@@ -1410,7 +1419,8 @@ namespace aspect
         n_phases_per_chemical_composition = {n_phases_per_composition[0]};
         n_phase_transitions_per_chemical_composition = {n_phases_per_composition[0] - 1};
         n_phases_total_chemical_compositions = n_phases_per_composition[0];
-        for (auto i : this->introspection().chemical_composition_field_indices())
+        // const unsigned int n_chemical_compositions = this->introspection().chemical_composition_field_indices().size();
+        for (unsigned int i = 0; i < this->introspection().chemical_composition_field_indices().size(); ++i)
           {
             n_phases_per_chemical_composition.push_back(n_phases_per_composition[i+1]);
             n_phase_transitions_per_chemical_composition.push_back(n_phases_per_composition[i+1] - 1);
