@@ -315,14 +315,15 @@ namespace aspect
 
           MaterialUtilities::fill_averaged_equation_of_state_outputs(eos_outputs[i], mass_fractions, volume_fractions[i], i, out);
 
-	  // If a field called "depletion" exist, do density scaling using its value
+	        // If a field called "depletion" exist, do density scaling using its value
           const std::vector<double> &composition = in.composition[i];
           if (this->introspection().compositional_name_exists("depletion"))
             {
               const unsigned int depletion_index = this->introspection().compositional_index_for_name("depletion");
-              if (composition[depletion_index] >= 0.2) 
+              // If the depletion-% is at least 30%, reduce its density 
+              if (composition[depletion_index] >= 0.3) 
                 {
-                  out.densities[i] = out.densities[i] * (1.0 - 0.04 * (composition[depletion_index] - 0.2));
+                  out.densities[i] = out.densities[i] * (1.0 - 0.04 * (composition[depletion_index] - 0.3));
                 }
             }
 
