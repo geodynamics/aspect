@@ -245,6 +245,12 @@ namespace aspect
           double ref_strain_rate;
 
           /**
+           * Scaling factor for the viscosity increase due to depletion.
+           * The viscosity multiplier is: max(depletion_viscosity_scaling_factor * depletion + 1.0, 1.0).
+           */
+          double depletion_viscosity_scaling_factor;
+
+          /**
            * Minimum and maximum viscosities used to improve the
            * stability of the rheology model.
            * These parameters contain one value per composition and phase (potentially the same value).
@@ -356,6 +362,28 @@ namespace aspect
            * Object for computing plastic stresses, viscosities, and additional outputs
            */
           Rheology::DruckerPrager<dim> drucker_prager_plasticity;
+
+          /**
+           * Name of the compositional field for which a linearly depth-dependent
+           * upper viscosity limit is applied between two specified depths.
+           * An empty string disables this feature.
+           */
+          std::string depth_dependent_max_viscosity_composition;
+
+          /**
+           * Depths bounding the range over which the maximum viscosity is
+           * linearly interpolated for the specified composition.
+           * top_depth is the shallower boundary, bottom_depth is the deeper one.
+           */
+          double depth_dependent_max_viscosity_top_depth;
+          double depth_dependent_max_viscosity_bottom_depth;
+
+          /**
+           * Maximum viscosity values at the top (shallower) and bottom (deeper)
+           * of the depth-dependent viscosity clamping range.
+           */
+          double depth_dependent_max_viscosity_at_top;
+          double depth_dependent_max_viscosity_at_bottom;
 
       };
     }
