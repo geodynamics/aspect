@@ -156,6 +156,30 @@ namespace aspect
           edot_ii = std::max(std::sqrt(std::max(-Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(Utilities::Tensors::consistent_deviator(in.strain_rate[i])), 0.)),
                              min_strain_rate);
 
+        // Determine the j-index in the volume_fractions loop that corresponds to the composition
+        // for which depth-dependent maximum viscosity clamping is applied (j=0 is background,
+        // j = 1 + position_in_chemical_composition_field_indices for compositional fields).
+        // volume_fractions is built from chemical_composition_field_indices() only, so the j-index
+        // must be resolved against that subset, not the global composition list.
+        // invalid_unsigned_int disables clamping.
+        unsigned int depth_clamping_composition_j = numbers::invalid_unsigned_int;
+        if (!depth_dependent_max_viscosity_composition.empty())
+          {
+            if (depth_dependent_max_viscosity_composition == "background")
+              depth_clamping_composition_j = 0;
+            else
+              {
+                const std::vector<std::string> &all_names = this->introspection().get_composition_names();
+                const std::vector<unsigned int> &chem_indices = this->introspection().chemical_composition_field_indices();
+                for (unsigned int k = 0; k < chem_indices.size(); ++k)
+                  if (all_names[chem_indices[k]] == depth_dependent_max_viscosity_composition)
+                    {
+                      depth_clamping_composition_j = k + 1; // +1 because j=0 is background
+                      break;
+                    }
+              }
+          }
+
         // Calculate viscosities for each of the individual compositional phases
         for (unsigned int j=0; j < volume_fractions.size(); ++j)
           {
@@ -410,14 +434,22 @@ namespace aspect
                 }
               }
 
+            // If a field called "depletion" exists, scale viscosity before clamping
+            if (this->introspection().compositional_name_exists("depletion"))
+              {
+                const unsigned int depletion_index = this->introspection().compositional_index_for_name("depletion");
+                const double depletion_factor = std::max((depletion_viscosity_scaling_factor - 1.0) * in.composition[i][depletion_index] + 1.0, 1.0);
+                effective_viscosity *= depletion_factor;
+              }
+
             // Step 6: limit the viscosity with specified minimum and maximum bounds
-            const double maximum_viscosity_for_composition = MaterialModel::MaterialUtilities::phase_average_value(
-                                                               phase_function_values,
-                                                               n_phase_transitions_per_composition,
-                                                               maximum_viscosity,
-                                                               j,
-                                                               MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic
-                                                             );
+            double maximum_viscosity_for_composition = MaterialModel::MaterialUtilities::phase_average_value(
+                                                         phase_function_values,
+                                                         n_phase_transitions_per_composition,
+                                                         maximum_viscosity,
+                                                         j,
+                                                         MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic
+                                                       );
             const double minimum_viscosity_for_composition = MaterialModel::MaterialUtilities::phase_average_value(
                                                                phase_function_values,
                                                                n_phase_transitions_per_composition,
@@ -425,6 +457,26 @@ namespace aspect
                                                                j,
                                                                MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic
                                                              );
+
+            // Apply depth-dependent maximum viscosity clamping if this is the target composition
+            if (j == depth_clamping_composition_j)
+              {
+                const double depth = this->get_geometry_model().depth(in.position[i]);
+                double depth_clamped_max_viscosity;
+                if (depth <= depth_dependent_max_viscosity_top_depth)
+                  depth_clamped_max_viscosity = depth_dependent_max_viscosity_at_top;
+                else if (depth >= depth_dependent_max_viscosity_bottom_depth)
+                  depth_clamped_max_viscosity = depth_dependent_max_viscosity_at_bottom;
+                else
+                  {
+                    const double fraction = (depth - depth_dependent_max_viscosity_top_depth) /
+                                            (depth_dependent_max_viscosity_bottom_depth - depth_dependent_max_viscosity_top_depth);
+                    depth_clamped_max_viscosity = depth_dependent_max_viscosity_at_top +
+                                                  fraction * (depth_dependent_max_viscosity_at_bottom - depth_dependent_max_viscosity_at_top);
+                  }
+                maximum_viscosity_for_composition = depth_clamped_max_viscosity;
+              }
+
             output_parameters.composition_viscosities[j] = std::min(std::max(effective_viscosity, minimum_viscosity_for_composition), maximum_viscosity_for_composition);
 
             // Compute the dilation terms if necessary.
@@ -749,7 +801,15 @@ namespace aspect
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
                            "those corresponding to chemical compositions. Units: none.");
 
-        // Temperature gradient in viscosity laws to include an adiabat (note units of K/Pa)
+        // Depletion viscosity scaling
+        prm.declare_entry ("Depletion viscosity scaling factor", "1.0", Patterns::Double (1.),
+                           "Total viscosity multiplication factor at depletion=1. "
+                           "If a compositional field named 'depletion' exists, the viscosity "
+                           "is multiplied by max((factor - 1) * depletion + 1, 1). "
+                           "A value of 1 (default) means no scaling; a value of 10 means "
+                           "10x viscosity increase at full depletion. Units: none.");
+
+        // Include an adiabat temperature gradient in viscosity laws to include an adiabat (note units of K/Pa)
         prm.declare_entry ("Adiabat temperature gradient for viscosity", "0.0", Patterns::Double (0.),
                            "Add an adiabatic temperature gradient to the temperature used in the flow law "
                            "so that the activation volume is consistent with what one would use in a "
@@ -759,6 +819,35 @@ namespace aspect
                            "Using a pressure gradient of 32436 Pa/m, then a value of "
                            "0.3 K/km = 0.0003 K/m = 9.24e-09 K/Pa gives an earth-like adiabat."
                            "Units: \\si{\\kelvin\\per\\pascal}.");
+
+        // Depth-dependent maximum viscosity clamping parameters
+        prm.declare_entry ("Depth-dependent maximum viscosity composition", "",
+                           Patterns::Anything(),
+                           "Name of the compositional field for which a linearly depth-dependent "
+                           "upper viscosity limit is applied between two specified depths. "
+                           "Use 'background' to apply this clamping to the background material. "
+                           "Leave empty (default) to disable this feature.");
+        prm.declare_entry ("Depth-dependent maximum viscosity top depth", "0.",
+                           Patterns::Double (0.),
+                           "Depth of the shallower boundary of the depth range over which "
+                           "the maximum viscosity is linearly interpolated for the specified "
+                           "composition. Units: \\si{\\meter}.");
+        prm.declare_entry ("Depth-dependent maximum viscosity bottom depth", "0.",
+                           Patterns::Double (0.),
+                           "Depth of the deeper boundary of the depth range over which "
+                           "the maximum viscosity is linearly interpolated for the specified "
+                           "composition. Must be greater than the top depth. "
+                           "Units: \\si{\\meter}.");
+        prm.declare_entry ("Maximum viscosity at top of depth-dependent range", "1e28",
+                           Patterns::Double (0.),
+                           "Upper viscosity limit at the top (shallower) depth of the "
+                           "depth-dependent viscosity clamping range. "
+                           "Units: $\\text{Pa}\\text{s}$.");
+        prm.declare_entry ("Maximum viscosity at bottom of depth-dependent range", "1e28",
+                           Patterns::Double (0.),
+                           "Upper viscosity limit at the bottom (deeper) depth of the "
+                           "depth-dependent viscosity clamping range. "
+                           "Units: $\\text{Pa}\\text{s}$.");
       }
 
 
@@ -798,7 +887,7 @@ namespace aspect
         chemical_field_names.insert(chemical_field_names.begin(), "background");
 
         Utilities::MapParsing::Options options(chemical_field_names, "Minimum viscosity");
-        options.list_of_allowed_keys = compositional_field_names;
+        options.list_of_allowed_keys = chemical_field_names;
         options.allow_multiple_values_per_key = true;
         if (expected_n_phases_per_composition)
           {
@@ -914,6 +1003,8 @@ namespace aspect
         exponents_stress_limiter = Utilities::MapParsing::parse_map_to_double_array (prm.get("Stress limiter exponents"),
                                                                                      options);
 
+        depletion_viscosity_scaling_factor = prm.get_double("Depletion viscosity scaling factor");
+
         // Include an adiabat temperature gradient in flow laws
         adiabatic_temperature_gradient_for_viscosity = prm.get_double("Adiabat temperature gradient for viscosity");
         if (this->get_heating_model_manager().adiabatic_heating_enabled())
@@ -921,6 +1012,42 @@ namespace aspect
                        ExcMessage("If adiabatic heating is enabled you should not add another adiabatic gradient"
                                   "to the temperature for computing the viscosity, because the ambient"
                                   "temperature profile already includes the adiabatic gradient."));
+
+        // Depth-dependent maximum viscosity clamping parameters
+        depth_dependent_max_viscosity_composition = prm.get("Depth-dependent maximum viscosity composition");
+        depth_dependent_max_viscosity_top_depth    = prm.get_double("Depth-dependent maximum viscosity top depth");
+        depth_dependent_max_viscosity_bottom_depth = prm.get_double("Depth-dependent maximum viscosity bottom depth");
+        depth_dependent_max_viscosity_at_top       = prm.get_double("Maximum viscosity at top of depth-dependent range");
+        depth_dependent_max_viscosity_at_bottom    = prm.get_double("Maximum viscosity at bottom of depth-dependent range");
+
+        if (!depth_dependent_max_viscosity_composition.empty())
+          {
+            AssertThrow(depth_dependent_max_viscosity_bottom_depth > depth_dependent_max_viscosity_top_depth,
+                        ExcMessage("When using depth-dependent maximum viscosity clamping, the "
+                                   "'Depth-dependent maximum viscosity bottom depth' must be greater than the "
+                                   "'Depth-dependent maximum viscosity top depth'."));
+
+            // Verify the composition name is valid and is a chemical composition field
+            if (depth_dependent_max_viscosity_composition != "background")
+              {
+                AssertThrow(this->introspection().compositional_name_exists(depth_dependent_max_viscosity_composition),
+                            ExcMessage("The composition name '" + depth_dependent_max_viscosity_composition +
+                                       "' specified for 'Depth-dependent maximum viscosity composition' "
+                                       "does not correspond to any existing compositional field."));
+                // The j-index mapping in calculate_isostrain_viscosities assumes the target is
+                // a chemical composition field (volume_fractions is built from those only).
+                const std::vector<std::string> &all_names = this->introspection().get_composition_names();
+                const std::vector<unsigned int> &chem_indices = this->introspection().chemical_composition_field_indices();
+                const bool is_chemical = std::any_of(chem_indices.begin(), chem_indices.end(),
+                                                     [&](unsigned int idx)
+                { return all_names[idx] == depth_dependent_max_viscosity_composition; });
+                AssertThrow(is_chemical,
+                            ExcMessage("The composition '" + depth_dependent_max_viscosity_composition +
+                                       "' specified for 'Depth-dependent maximum viscosity composition' "
+                                       "is not a chemical composition field. Only chemical composition "
+                                       "fields (or 'background') are supported for this feature."));
+              }
+          }
 
       }
 
