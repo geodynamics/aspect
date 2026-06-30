@@ -66,9 +66,10 @@ end
 # Comment the following 3 sections for steinberg model and pyrolitic lookup table
 # Fields of composition
 subsection Compositional fields
-  set Number of fields = 1
-  set Names of fields = spharz
-  set Compositional field methods = field
+  set Number of fields = 2
+  set Names of fields = plastic_strain, spharz
+  set Types of fields = strain, chemical composition
+  set Compositional field methods = field, field
 end
 
 # Initial composition model
@@ -77,7 +78,7 @@ subsection Initial composition model
 
   subsection Function
     set Coordinate system = cartesian
-    set Function expression = 1.0
+    set Function expression = 1.0; 1.0
   end
 end
 
@@ -87,10 +88,10 @@ subsection Boundary composition model
   set Fixed composition boundary indicators   = top, bottom, left, right
 
   subsection Box
-    set Bottom composition = 1.0
-    set Left composition   = 1.0
-    set Right composition  = 1.0
-    set Top composition    = 1.0
+    set Bottom composition = 1.0, 1.0
+    set Left composition   = 1.0, 1.0
+    set Right composition  = 1.0, 1.0
+    set Top composition    = 1.0, 1.0
   end
 end
 
@@ -135,7 +136,7 @@ subsection Postprocess
   set List of postprocessors = visualization, material statistics
 
   subsection Visualization
-    set Output format                 = gnuplot
+    # set Output format                 = gnuplot
     set List of output variables      = material properties
     set Time between graphical output = 0e6
 
