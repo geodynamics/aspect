@@ -9,8 +9,6 @@ participating!
 
 For questions about ASPECT on all levels, please use the
 [ASPECT forum](https://community.geodynamics.org/c/aspect).
-Archived discussions from the inactive aspect-devel mailing list can be downloaded
-at [aspect-devel archives](https://geodynamics.org/pipermail/aspect-devel/).
 
 Please note that no one in the forum is paid or obliged to answer
 your questions. Everyone answering forum posts is volunteering

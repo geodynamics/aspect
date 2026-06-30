@@ -1,4 +1,9 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 Number of active cells: 100 (on 1 levels)
 Number of degrees of freedom: 2,767 (882+121+441+441+441+441)
 
@@ -8,7 +13,7 @@ Number of degrees of freedom: 2,767 (882+121+441+441+441+441)
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 31+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.54919e-16, 1.72792e-16, 0, 1.29361e-16, 0.991524
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.4955e-16, 1.37841e-16, 0, 1.44921e-16, 0.991524
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.991524
 
    Solving temperature system... 0 iterations.
@@ -16,7 +21,7 @@ Number of degrees of freedom: 2,767 (882+121+441+441+441+441)
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.54919e-16, 1.72792e-16, 0, 1.29361e-16, 6.67266e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.4955e-16, 1.37841e-16, 0, 1.44921e-16, 6.67266e-08
       Relative nonlinear residual (total system) after nonlinear iteration 2: 6.67266e-08
 
 
@@ -27,664 +32,646 @@ Number of degrees of freedom: 2,767 (882+121+441+441+441+441)
 *** Timestep 1:  t=1.75808 years, dt=1.75808 years
    Solving composition reactions... in 4 substep(s).
    Solving temperature system... 0 iterations.
-   Solving porosity system ... 11 iterations.
+   Solving porosity system ... 10 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 9 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.76845e-16, 0.0269035, 0, 0.000479967, 6.67297e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0269035
-
-   Solving temperature system... 0 iterations.
-   Solving porosity system ... 11 iterations.
-   Skipping bound_fluid composition solve because RHS is zero.
-   Solving solid_phase system ... 0 iterations.
-   Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.61188e-16, 0.0100012, 0, 1.12057e-13, 6.67275e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0100012
-
-   Solving temperature system... 0 iterations.
-   Solving porosity system ... 10 iterations.
-   Skipping bound_fluid composition solve because RHS is zero.
-   Solving solid_phase system ... 0 iterations.
-   Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.61188e-16, 0.00352563, 0, 1.12057e-13, 6.67282e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00352563
-
-   Solving temperature system... 0 iterations.
-   Solving porosity system ... 10 iterations.
-   Skipping bound_fluid composition solve because RHS is zero.
-   Solving solid_phase system ... 0 iterations.
-   Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.61188e-16, 0.00133068, 0, 1.12057e-13, 6.6728e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.00133068
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.74935e-16, 0.0322571, 0, 0.000479967, 6.67302e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0322571
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 9 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.61188e-16, 0.000501625, 0, 1.12057e-13, 6.67281e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.000501625
-
-
-   Postprocessing:
-     RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -0.0007856/0.05/3.202e+05 // 0/0/0 // -0.0003901/1/2.918e+06
-
-*** Timestep 2:  t=3.51623 years, dt=1.75815 years
-   Solving composition reactions... in 4 substep(s).
-   Solving temperature system... 0 iterations.
-   Solving porosity system ... 10 iterations.
-   Skipping bound_fluid composition solve because RHS is zero.
-   Solving solid_phase system ... 6 iterations.
-   Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.99532e-16, 0.00558722, 0, 2.78274e-07, 6.67309e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00558722
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.52027e-16, 0.00969742, 0, 1.12053e-13, 6.67275e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00969742
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 9 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.98529e-16, 0.000778271, 0, 1.24303e-13, 6.67309e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000778271
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.52027e-16, 0.00266872, 0, 1.12053e-13, 6.67282e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00266872
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 8 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Solving solid_phase system ... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.52027e-16, 0.00077759, 0, 1.12053e-13, 6.6728e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.00077759
 
 
    Postprocessing:
      RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -0.0007618/0.05/3.177e+05 // 0/0/0 // -0.0007797/1/2.918e+06
+     Compositions min/max/mass: -0.001153/0.04949/3.202e+05 // 0/0/0 // -0.0003901/1/2.918e+06
 
-*** Timestep 3:  t=5.27442 years, dt=1.75819 years
-   Solving composition reactions... in 4 substep(s).
+*** Timestep 2:  t=3.55091 years, dt=1.79283 years
+   Solving composition reactions... in 5 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 6 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.34438e-16, 0.00588644, 0, 3.71038e-07, 6.67328e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00588644
-
-   Solving temperature system... 0 iterations.
-   Solving porosity system ... 9 iterations.
-   Skipping bound_fluid composition solve because RHS is zero.
-   Solving solid_phase system ... 0 iterations.
-   Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.42183e-16, 0.000730215, 0, 1.66378e-13, 6.67328e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000730215
-
-
-   Postprocessing:
-     RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -0.0005439/0.05/3.153e+05 // 0/0/0 // -0.001169/1.001/2.919e+06
-
-*** Timestep 4:  t=7.03263 years, dt=1.75821 years
-   Solving composition reactions... in 4 substep(s).
-   Solving temperature system... 0 iterations.
-   Solving porosity system ... 9 iterations.
-   Skipping bound_fluid composition solve because RHS is zero.
-   Solving solid_phase system ... 6 iterations.
-   Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.39665e-16, 0.00488014, 0, 4.0171e-07, 6.67346e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00488014
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.64428e-16, 0.00939436, 0, 2.88424e-07, 6.67318e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00939436
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.37506e-16, 0.000524626, 0, 1.80225e-13, 6.67346e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000524626
-
-
-   Postprocessing:
-     RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -0.0003598/0.05/3.128e+05 // 0/0/0 // -0.001557/1.001/2.92e+06
-
-*** Timestep 5:  t=8.79086 years, dt=1.75823 years
-   Solving composition reactions... in 4 substep(s).
-   Solving temperature system... 0 iterations.
-   Solving porosity system ... 9 iterations.
-   Skipping bound_fluid composition solve because RHS is zero.
-   Solving solid_phase system ... 6 iterations.
-   Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.42795e-16, 0.00398604, 0, 4.1168e-07, 6.67363e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00398604
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.63323e-16, 0.00111899, 0, 1.28813e-13, 6.6732e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00111899
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.52383e-16, 0.000360631, 0, 1.84668e-13, 6.67363e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000360631
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.63323e-16, 0.000187379, 0, 1.28813e-13, 6.67319e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000187379
 
 
    Postprocessing:
      RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -0.0002405/0.05/3.103e+05 // 0/0/0 // -0.001944/1.001/2.921e+06
+     Compositions min/max/mass: -0.001191/0.04925/3.177e+05 // 0/0/0 // -0.0007874/1/2.918e+06
 
-*** Timestep 6:  t=10.5491 years, dt=1.75824 years
-   Solving composition reactions... in 4 substep(s).
+*** Timestep 3:  t=5.36039 years, dt=1.80948 years
+   Solving composition reactions... in 5 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 6 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.41005e-16, 0.00353019, 0, 4.14749e-07, 6.6738e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00353019
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.25607e-16, 0.0080513, 0, 3.92125e-07, 6.67339e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0080513
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.32833e-16, 0.000268962, 0, 1.85977e-13, 6.6738e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000268962
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.13886e-16, 0.000883827, 0, 1.75768e-13, 6.6734e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000883827
 
 
    Postprocessing:
      RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -0.0001673/0.05/3.078e+05 // 0/0/0 // -0.002331/1.001/2.922e+06
+     Compositions min/max/mass: -0.0008177/0.04914/3.152e+05 // 0/0/0 // -0.001188/1.001/2.919e+06
 
-*** Timestep 7:  t=12.3073 years, dt=1.75825 years
-   Solving composition reactions... in 4 substep(s).
+*** Timestep 4:  t=7.17763 years, dt=1.81724 years
+   Solving composition reactions... in 5 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 6 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.42313e-16, 0.00330148, 0, 4.1552e-07, 6.67396e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00330148
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.37391e-16, 0.00409069, 0, 4.28565e-07, 6.6736e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00409069
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.42842e-16, 0.00021618, 0, 1.8624e-13, 6.67397e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00021618
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.33953e-16, 0.000403098, 0, 1.92186e-13, 6.6736e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000403098
 
 
    Postprocessing:
      RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -0.0001217/0.05/3.052e+05 // 0/0/0 // -0.002716/1.002/2.923e+06
+     Compositions min/max/mass: -0.0005371/0.04908/3.126e+05 // 0/0/0 // -0.001589/1.001/2.92e+06
 
-*** Timestep 8:  t=14.0656 years, dt=1.75828 years
-   Solving composition reactions... in 4 substep(s).
+*** Timestep 5:  t=8.99845 years, dt=1.82082 years
+   Solving composition reactions... in 5 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 6 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.23169e-16, 0.00306716, 0, 4.1553e-07, 6.67413e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00306716
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.08837e-16, 0.00342493, 0, 4.4118e-07, 6.67379e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00342493
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.15422e-16, 0.000177012, 0, 1.8616e-13, 6.67414e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000177012
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.13348e-16, 0.000274611, 0, 1.97797e-13, 6.67379e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000274611
 
 
    Postprocessing:
      RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -9.234e-05/0.05/3.026e+05 // 0/0/0 // -0.003101/1.002/2.923e+06
+     Compositions min/max/mass: -0.0004046/0.04906/3.1e+05 // 0/0/0 // -0.00199/1.001/2.921e+06
 
-*** Timestep 9:  t=15.824 years, dt=1.75833 years
-   Solving composition reactions... in 4 substep(s).
+*** Timestep 6:  t=10.8209 years, dt=1.82249 years
+   Solving composition reactions... in 5 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 6 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.76052e-16, 0.00278291, 0, 4.15296e-07, 6.67431e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00278291
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.45735e-16, 0.00325867, 0, 4.45412e-07, 6.67397e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00325867
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.70771e-16, 0.000143768, 0, 1.85969e-13, 6.67431e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000143768
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.40859e-16, 0.000232825, 0, 1.99616e-13, 6.67398e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000232825
 
 
    Postprocessing:
      RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -7.634e-05/0.04999/3e+05 // 0/0/0 // -0.003485/1.002/2.924e+06
+     Compositions min/max/mass: -0.0003029/0.04905/3.074e+05 // 0/0/0 // -0.00239/1.001/2.922e+06
 
-*** Timestep 10:  t=17.5824 years, dt=1.75844 years
-   Solving composition reactions... in 4 substep(s).
+*** Timestep 7:  t=12.6442 years, dt=1.82328 years
+   Solving composition reactions... in 5 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 9 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 6 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.76903e-16, 0.00250737, 0, 4.15001e-07, 6.67449e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00250737
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.28287e-16, 0.00300757, 0, 4.46684e-07, 6.67416e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00300757
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.77373e-16, 0.000116712, 0, 1.85754e-13, 6.67449e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000116712
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.22782e-16, 0.000190658, 0, 2.00087e-13, 6.67417e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000190658
 
 
    Postprocessing:
      RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -6.501e-05/0.04999/2.973e+05 // 0/0/0 // -0.003869/1.002/2.925e+06
+     Compositions min/max/mass: -0.0002221/0.04904/3.047e+05 // 0/0/0 // -0.00279/1.002/2.923e+06
 
-*** Timestep 11:  t=19.341 years, dt=1.75864 years
-   Solving composition reactions... in 4 substep(s).
+*** Timestep 8:  t=14.4679 years, dt=1.8237 years
+   Solving composition reactions... in 5 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 9 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 6 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.90318e-16, 0.00228643, 0, 4.14716e-07, 6.67469e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00228643
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.41377e-16, 0.0026928, 0, 4.4691e-07, 6.67435e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0026928
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.93894e-16, 9.66067e-05, 0, 1.85537e-13, 6.67469e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 9.66067e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.51506e-16, 0.000151548, 0, 2.00102e-13, 6.67436e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000151548
 
 
    Postprocessing:
      RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -5.648e-05/0.04999/2.947e+05 // 0/0/0 // -0.004252/1.003/2.926e+06
+     Compositions min/max/mass: -0.0001676/0.04904/3.02e+05 // 0/0/0 // -0.003189/1.002/2.924e+06
 
-*** Timestep 12:  t=21.1 years, dt=1.75899 years
+*** Timestep 9:  t=16.2919 years, dt=1.82403 years
+   Solving composition reactions... in 5 substep(s).
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 9 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Solving solid_phase system ... 6 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.69413e-16, 0.00243522, 0, 4.46787e-07, 6.67455e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00243522
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 8 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Solving solid_phase system ... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.64646e-16, 0.000123395, 0, 1.99943e-13, 6.67455e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000123395
+
+
+   Postprocessing:
+     RMS, max velocity:         0.1 m/year, 0.1 m/year
+     Compositions min/max/mass: -0.0001278/0.04903/2.992e+05 // 0/0/0 // -0.003588/1.002/2.925e+06
+
+*** Timestep 10:  t=18.1164 years, dt=1.82445 years
+   Solving composition reactions... in 5 substep(s).
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 9 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Solving solid_phase system ... 6 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.11138e-16, 0.00222717, 0, 4.46599e-07, 6.67476e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00222717
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 8 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Solving solid_phase system ... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.09477e-16, 0.000102122, 0, 1.99759e-13, 6.67476e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000102122
+
+
+   Postprocessing:
+     RMS, max velocity:         0.1 m/year, 0.1 m/year
+     Compositions min/max/mass: -9.916e-05/0.04902/2.965e+05 // 0/0/0 // -0.003985/1.002/2.925e+06
+
+*** Timestep 11:  t=19.9416 years, dt=1.8252 years
+   Solving composition reactions... in 5 substep(s).
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 10 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Solving solid_phase system ... 6 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.05053e-16, 0.00204143, 0, 4.46514e-07, 6.67497e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00204143
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 8 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Solving solid_phase system ... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.05692e-16, 8.52102e-05, 0, 1.99632e-13, 6.67497e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 8.52102e-05
+
+
+   Postprocessing:
+     RMS, max velocity:         0.1 m/year, 0.1 m/year
+     Compositions min/max/mass: -8.25e-05/0.049/2.937e+05 // 0/0/0 // -0.004382/1.003/2.926e+06
+
+*** Timestep 12:  t=21.7682 years, dt=1.82662 years
    Solving composition reactions... in 4 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 6 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.16768e-16, 0.00211537, 0, 4.14488e-07, 6.67489e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00211537
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.22891e-16, 0.00188543, 0, 4.46706e-07, 6.67519e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00188543
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.23208e-16, 8.20464e-05, 0, 1.85338e-13, 6.67489e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 8.20464e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.32206e-16, 7.21432e-05, 0, 1.99625e-13, 6.67519e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.21432e-05
 
 
    Postprocessing:
      RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -4.987e-05/0.04998/2.92e+05 // 0/0/0 // -0.004633/1.003/2.927e+06
+     Compositions min/max/mass: -6.829e-05/0.04897/2.91e+05 // 0/0/0 // -0.004778/1.003/2.927e+06
 
-*** Timestep 13:  t=22.8597 years, dt=1.75965 years
+*** Timestep 13:  t=23.5974 years, dt=1.82923 years
    Solving composition reactions... in 4 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 6 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.0252e-16, 0.00197042, 0, 4.14383e-07, 6.6751e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00197042
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.27733e-16, 0.00175255, 0, 4.47413e-07, 6.67541e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00175255
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.93159e-16, 7.07809e-05, 0, 1.85216e-13, 6.67511e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.07809e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.2645e-16, 6.18798e-05, 0, 1.99832e-13, 6.67541e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 6.18798e-05
 
 
    Postprocessing:
      RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -4.462e-05/0.04996/2.894e+05 // 0/0/0 // -0.005015/1.003/2.928e+06
+     Compositions min/max/mass: -5.489e-05/0.0489/2.882e+05 // 0/0/0 // -0.005174/1.003/2.928e+06
 
-*** Timestep 14:  t=24.6206 years, dt=1.7609 years
+*** Timestep 14:  t=25.4312 years, dt=1.83378 years
    Solving composition reactions... in 4 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 6 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.08681e-16, 0.00184098, 0, 4.14521e-07, 6.67532e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00184098
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.14617e-16, 0.0016429, 0, 4.48979e-07, 6.67564e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0016429
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.16286e-16, 6.14891e-05, 0, 1.85184e-13, 6.67533e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 6.14891e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.03686e-16, 5.38287e-05, 0, 2.00428e-13, 6.67564e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 5.38287e-05
 
 
    Postprocessing:
      RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -4.037e-05/0.04992/2.867e+05 // 0/0/0 // -0.005395/1.003/2.929e+06
+     Compositions min/max/mass: -4.497e-05/0.0488/2.854e+05 // 0/0/0 // -0.00557/1.003/2.929e+06
 
-*** Timestep 15:  t=26.3838 years, dt=1.76318 years
+*** Timestep 15:  t=27.2725 years, dt=1.84128 years
    Solving composition reactions... in 4 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 6 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.9649e-16, 0.00172862, 0, 4.15093e-07, 6.67555e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00172862
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.30864e-16, 0.00155074, 0, 4.51865e-07, 6.67587e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00155074
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.9448e-16, 5.38543e-05, 0, 1.85352e-13, 6.67555e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 5.38543e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.29401e-16, 4.74978e-05, 0, 2.01613e-13, 6.67587e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 4.74978e-05
 
 
    Postprocessing:
      RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -3.686e-05/0.04986/2.84e+05 // 0/0/0 // -0.005776/1.004/2.929e+06
+     Compositions min/max/mass: -3.719e-05/0.04864/2.826e+05 // 0/0/0 // -0.005967/1.004/2.93e+06
 
-*** Timestep 16:  t=28.151 years, dt=1.7672 years
+*** Timestep 16:  t=29.1254 years, dt=1.85286 years
    Solving composition reactions... in 4 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 6 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.90307e-16, 0.00163425, 0, 4.16402e-07, 6.67578e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00163425
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.24946e-16, 0.00147462, 0, 4.56632e-07, 6.6761e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00147462
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.85562e-16, 4.77568e-05, 0, 1.85853e-13, 6.67578e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 4.77568e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.27621e-16, 4.25625e-05, 0, 2.03629e-13, 6.6761e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 4.25625e-05
 
 
    Postprocessing:
      RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -3.394e-05/0.04976/2.814e+05 // 0/0/0 // -0.006156/1.004/2.93e+06
+     Compositions min/max/mass: -3.118e-05/0.0484/2.798e+05 // 0/0/0 // -0.006366/1.004/2.931e+06
 
-*** Timestep 17:  t=29.925 years, dt=1.77409 years
+*** Timestep 17:  t=30.9951 years, dt=1.86978 years
    Solving composition reactions... in 4 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 6 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.9433e-16, 0.00155534, 0, 4.18932e-07, 6.676e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00155534
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.68081e-16, 0.00141285, 0, 4.63912e-07, 6.67632e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00141285
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.99745e-16, 4.29145e-05, 0, 1.8688e-13, 6.676e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 4.29145e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.61606e-16, 3.87384e-05, 0, 2.06746e-13, 6.67633e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.87384e-05
 
 
    Postprocessing:
      RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -3.151e-05/0.0496/2.787e+05 // 0/0/0 // -0.006537/1.004/2.931e+06
+     Compositions min/max/mass: -2.716e-05/0.04809/2.77e+05 // 0/0/0 // -0.006767/1.004/2.932e+06
 
-*** Timestep 18:  t=31.7104 years, dt=1.7854 years
+*** Timestep 18:  t=32.8884 years, dt=1.89327 years
    Solving composition reactions... in 4 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 6 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.46324e-16, 0.00148988, 0, 4.23379e-07, 6.67623e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00148988
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.2357e-16, 0.00136247, 0, 4.74377e-07, 6.67655e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00136247
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.46738e-16, 3.9049e-05, 0, 1.88763e-13, 6.67623e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.9049e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.2449e-16, 3.58131e-05, 0, 2.11269e-13, 6.67655e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.58131e-05
 
 
    Postprocessing:
      RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -2.949e-05/0.04934/2.76e+05 // 0/0/0 // -0.00692/1.004/2.932e+06
+     Compositions min/max/mass: -2.494e-05/0.04768/2.741e+05 // 0/0/0 // -0.007172/1.004/2.933e+06
 
-*** Timestep 19:  t=33.5134 years, dt=1.80298 years
+*** Timestep 19:  t=34.8128 years, dt=1.92437 years
    Solving composition reactions... in 4 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 6 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.5558e-16, 0.00143738, 0, 4.30623e-07, 6.67645e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00143738
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.22168e-16, 0.00131883, 0, 4.88688e-07, 6.67677e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00131883
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.34059e-16, 3.60363e-05, 0, 1.91881e-13, 6.67645e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.60363e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.25945e-16, 3.36264e-05, 0, 2.17501e-13, 6.67678e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.36264e-05
 
 
    Postprocessing:
      RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -2.783e-05/0.04897/2.733e+05 // 0/0/0 // -0.007306/1.005/2.933e+06
+     Compositions min/max/mass: -2.353e-05/0.04717/2.713e+05 // 0/0/0 // -0.007583/1.005/2.934e+06
 
-*** Timestep 20:  t=35.3421 years, dt=1.8287 years
+*** Timestep 20:  t=36.7766 years, dt=1.96385 years
    Solving composition reactions... in 4 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 6 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.14399e-16, 0.00139635, 0, 4.41625e-07, 6.67667e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00139635
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.93477e-16, 0.00127965, 0, 5.07431e-07, 6.677e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00127965
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.91246e-16, 3.382e-05, 0, 1.96665e-13, 6.67668e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.382e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.97621e-16, 3.19971e-05, 0, 2.25661e-13, 6.677e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.19971e-05
 
 
    Postprocessing:
      RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -2.649e-05/0.04848/2.705e+05 // 0/0/0 // -0.007696/1.005/2.934e+06
+     Compositions min/max/mass: -2.249e-05/0.04657/2.684e+05 // 0/0/0 // -0.008002/1.005/2.935e+06
 
-*** Timestep 21:  t=37.2062 years, dt=1.86405 years
+*** Timestep 21:  t=38.7889 years, dt=2.01222 years
    Solving composition reactions... in 4 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 6 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.99417e-16, 0.0013637, 0, 4.57301e-07, 6.67689e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0013637
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.05028e-15, 0.00124695, 0, 5.31143e-07, 6.67721e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00124695
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.22101e-16, 3.22751e-05, 0, 2.03497e-13, 6.67689e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.22751e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.04661e-15, 3.07955e-05, 0, 2.36009e-13, 6.67722e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.07955e-05
 
 
    Postprocessing:
      RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -2.544e-05/0.04787/2.677e+05 // 0/0/0 // -0.008093/1.005/2.935e+06
+     Compositions min/max/mass: -2.163e-05/0.04589/2.654e+05 // 0/0/0 // -0.00843/1.005/2.935e+06
 
-*** Timestep 22:  t=39.1162 years, dt=1.91001 years
+*** Timestep 22:  t=40.8587 years, dt=2.06985 years
    Solving composition reactions... in 4 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 6 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.41732e-16, 0.00133701, 0, 4.78437e-07, 6.67711e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00133701
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.26294e-15, 0.00122163, 0, 5.60343e-07, 6.67743e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00122163
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.54745e-16, 3.12262e-05, 0, 2.12734e-13, 6.67711e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.12262e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.27466e-15, 2.99663e-05, 0, 2.48753e-13, 6.67743e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.99663e-05
 
 
    Postprocessing:
      RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -2.464e-05/0.04713/2.649e+05 // 0/0/0 // -0.008499/1.005/2.936e+06
+     Compositions min/max/mass: -2.084e-05/0.04513/2.624e+05 // 0/0/0 // -0.008869/1.006/2.937e+06
 
-*** Timestep 23:  t=41.0832 years, dt=1.96697 years
+*** Timestep 23:  t=42.9957 years, dt=2.13701 years
    Solving composition reactions... in 4 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 6 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.29793e-16, 0.00131647, 0, 5.05645e-07, 6.67733e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00131647
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.2798e-15, 0.00120465, 0, 5.95579e-07, 6.67764e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00120465
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.32776e-16, 3.05635e-05, 0, 2.2463e-13, 6.67733e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.05635e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.28436e-15, 2.95488e-05, 0, 2.64132e-13, 6.67765e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.95488e-05
 
 
    Postprocessing:
      RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -2.406e-05/0.0463/2.62e+05 // 0/0/0 // -0.008916/1.006/2.937e+06
+     Compositions min/max/mass: -2.011e-05/0.0443/2.594e+05 // 0/0/0 // -0.009321/1.006/2.938e+06
 
-*** Timestep 24:  t=43.118 years, dt=2.0348 years
+*** Timestep 24:  t=45.2094 years, dt=2.21368 years
    Solving composition reactions... in 4 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 6 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.18758e-16, 0.00130397, 0, 5.39378e-07, 6.67754e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00130397
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.40743e-15, 0.00119647, 0, 6.37346e-07, 6.67785e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00119647
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.06809e-16, 3.02876e-05, 0, 2.39384e-13, 6.67754e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.02876e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.40991e-15, 2.95264e-05, 0, 2.8235e-13, 6.67786e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.95264e-05
 
 
    Postprocessing:
      RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -2.365e-05/0.04539/2.591e+05 // 0/0/0 // -0.009346/1.006/2.938e+06
+     Compositions min/max/mass: -1.944e-05/0.04343/2.563e+05 // 0/0/0 // -0.009787/1.006/2.939e+06
 
-*** Timestep 25:  t=45.231 years, dt=2.11302 years
+*** Timestep 25:  t=47.5089 years, dt=2.29946 years
    Solving composition reactions... in 4 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 6 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.09317e-16, 0.00130077, 0, 5.79955e-07, 6.67775e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00130077
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.51776e-15, 0.00119975, 0, 6.85992e-07, 6.67806e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00119975
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.26428e-16, 3.04246e-05, 0, 2.57111e-13, 6.67775e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.04246e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.52356e-15, 2.98336e-05, 0, 3.0354e-13, 6.67806e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.98336e-05
 
 
    Postprocessing:
      RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -2.337e-05/0.04444/2.561e+05 // 0/0/0 // -0.009792/1.006/2.939e+06
+     Compositions min/max/mass: -1.883e-05/0.04253/2.532e+05 // 0/0/0 // -0.01027/1.006/2.94e+06
 
-*** Timestep 26:  t=47.4319 years, dt=2.20091 years
+*** Timestep 26:  t=49.9027 years, dt=2.39381 years
    Solving composition reactions... in 4 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 10 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 6 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.28176e-16, 0.00130665, 0, 6.27593e-07, 6.67796e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00130665
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.23957e-15, 0.00121553, 0, 7.41778e-07, 6.67826e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00121553
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving solid_phase system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.33845e-16, 3.09271e-05, 0, 2.77898e-13, 6.67796e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.09271e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.25217e-15, 3.04038e-05, 0, 3.27802e-13, 6.67827e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.04038e-05
 
 
    Postprocessing:
      RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -2.319e-05/0.04345/2.531e+05 // 0/0/0 // -0.01026/1.006/2.94e+06
+     Compositions min/max/mass: -1.828e-05/0.04161/2.501e+05 // 0/0/0 // -0.01077/1.007/2.941e+06
 
-*** Timestep 27:  t=49.7295 years, dt=2.29764 years
-   Solving composition reactions... in 4 substep(s).
-   Solving temperature system... 0 iterations.
-   Solving porosity system ... 10 iterations.
-   Skipping bound_fluid composition solve because RHS is zero.
-   Solving solid_phase system ... 6 iterations.
-   Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.63027e-16, 0.00132117, 0, 6.82452e-07, 6.67817e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00132117
-
-   Solving temperature system... 0 iterations.
-   Solving porosity system ... 8 iterations.
-   Skipping bound_fluid composition solve because RHS is zero.
-   Solving solid_phase system ... 0 iterations.
-   Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.61058e-16, 3.16888e-05, 0, 3.0182e-13, 6.67817e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.16888e-05
-
-
-   Postprocessing:
-     RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -2.307e-05/0.04245/2.5e+05 // 0/0/0 // -0.01074/1.007/2.941e+06
-
-*** Timestep 28:  t=50 years, dt=0.270471 years
+*** Timestep 27:  t=50 years, dt=0.0973286 years
    Solving composition reactions... in 4 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 8 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
-   Solving solid_phase system ... 5 iterations.
+   Solving solid_phase system ... 4 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.62044e-16, 8.54003e-05, 0, 4.58017e-08, 6.67819e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 8.54003e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.42358e-16, 2.55237e-05, 0, 1.59856e-08, 6.67827e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.55237e-05
 
 
    Postprocessing:
      RMS, max velocity:         0.1 m/year, 0.1 m/year
-     Compositions min/max/mass: -1.015e-05/0.04233/2.496e+05 // 0/0/0 // -0.01079/1.007/2.941e+06
+     Compositions min/max/mass: -7.155e-06/0.04157/2.5e+05 // 0/0/0 // -0.01079/1.007/2.941e+06
 
 Termination requested by criterion: end time
 
 
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
 
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------

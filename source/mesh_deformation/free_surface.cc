@@ -29,6 +29,9 @@
 #include <aspect/linear_algebra_types.h>
 
 #include <deal.II/dofs/dof_tools.h>
+#include <deal.II/lac/sparsity_tools.h>
+#include <deal.II/lac/solver_cg.h>
+#include <deal.II/lac/precondition.h>
 
 
 namespace aspect
@@ -110,14 +113,22 @@ namespace aspect
 
       // set up the matrix
       LinearAlgebra::SparseMatrix mass_matrix;
-      LinearAlgebra::DynamicSparsityPattern sp (mesh_locally_owned,
-                                                mesh_locally_owned,
-                                                mesh_locally_relevant,
-                                                this->get_mpi_communicator());
-      DoFTools::make_sparsity_pattern (mesh_deformation_dof_handler, sp, mass_matrix_constraints, false,
+      LinearAlgebra::DynamicSparsityPattern dsp (mesh_locally_relevant);
+
+      DoFTools::make_sparsity_pattern (mesh_deformation_dof_handler,
+                                       dsp,
+                                       mass_matrix_constraints,
+                                       false,
                                        Utilities::MPI::this_mpi_process(this->get_mpi_communicator()));
-      sp.compress();
-      mass_matrix.reinit (sp);
+
+      SparsityTools::distribute_sparsity_pattern(dsp,
+                                                 mesh_locally_owned,
+                                                 this->get_mpi_communicator(),
+                                                 mesh_locally_relevant);
+
+      mass_matrix.reinit (mesh_locally_owned,
+                          dsp,
+                          this->get_mpi_communicator());
 
       FEValuesExtractors::Vector extract_vel(0);
 
@@ -198,7 +209,15 @@ namespace aspect
       // Jacobi seems to be fine here.  Other preconditioners (ILU, IC) run into troubles
       // because the matrix is mostly empty, since we don't touch internal vertices.
       LinearAlgebra::PreconditionJacobi preconditioner_mass;
-      preconditioner_mass.initialize(mass_matrix);
+#ifdef ASPECT_USE_TPETRA
+      // Our matrix contains a lot of zeros on the main diagonal, and Tpetra's Jacobi
+      // preconditioner is more sensitive to this than the Epetra version. Strengthen
+      // the main diagonal to avoid floating point exceptions.
+      LinearAlgebra::PreconditionJacobi::AdditionalData preconditioner_control(1,true,1e-16,1);
+#else
+      LinearAlgebra::PreconditionJacobi::AdditionalData preconditioner_control;
+#endif
+      preconditioner_mass.initialize(mass_matrix, preconditioner_control);
 
       SolverControl solver_control(5*rhs.size(), this->get_parameters().linear_stokes_solver_tolerance*rhs.l2_norm());
       SolverCG<LinearAlgebra::Vector> cg(solver_control);

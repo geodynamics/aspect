@@ -23,8 +23,6 @@
 
 #include <aspect/global.h>
 
-#ifdef ASPECT_WITH_WORLD_BUILDER
-
 #include <aspect/initial_composition/interface.h>
 #include <aspect/simulator_access.h>
 
@@ -36,6 +34,9 @@ namespace WorldBuilder
 
 namespace aspect
 {
+
+#ifdef ASPECT_WITH_WORLD_BUILDER
+
   namespace InitialComposition
   {
     /**
@@ -91,7 +92,8 @@ namespace aspect
         std::shared_ptr<const ::WorldBuilder::World> world_builder;
     };
   }
+#endif
+
 }
 
-#endif
 #endif

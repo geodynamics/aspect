@@ -284,6 +284,13 @@ namespace aspect
                        "iterations, in other words, if it is set to something other than "
                        "`single Advection, single Stokes' or `single Advection, no Stokes'.");
 
+    prm.declare_entry ("Linear solver failure strategy", "abort",
+                       Patterns::Selection("continue with nonlinear solver|abort"),
+                       "Select the strategy on what to do if the linear solver scheme fails to "
+                       "converge. The options are:\n"
+                       "`continue with nonlinear solver`: ignore error and continue with the nonlinear solver\n"
+                       "`abort`: abort with an error message");
+
     prm.declare_entry ("Pressure normalization", "surface",
                        Patterns::Selection ("surface|volume|no"),
                        "If and how to normalize the pressure after the solution step. "
@@ -988,6 +995,24 @@ namespace aspect
                          "If 0 and time between checkpoint is not specified, "
                          "checkpointing will not be performed. "
                          "Units: None.");
+      prm.declare_entry ("Number of checkpoints to keep", "3",
+                         Patterns::Integer (1),
+                         "The number of checkpoint slots to rotate through in the "
+                         "output/restart directory. "
+                         "Units: None.");
+      prm.declare_entry ("Resume checkpoint", "0",
+                         Patterns::Integer (0),
+                         "If nonzero, resume from the checkpoint with this slot id "
+                         "inside output/restart. This overrides Resume time and the "
+                         "last good checkpoint selection. "
+                         "Units: None.");
+      prm.declare_entry ("Resume time", "-1",
+                         Patterns::Double (-1),
+                         "If non-negative, resume from the checkpoint whose saved model "
+                         "time is closest to this value. This option is ignored when "
+                         "Resume checkpoint is set. "
+                         "Units: Years if the 'Use years instead "
+                         "of seconds' parameter is set; seconds otherwise.");
     }
     prm.leave_subsection ();
 
@@ -1131,7 +1156,7 @@ namespace aspect
         prm.declare_entry ("List of compositional fields with disabled boundary entropy viscosity", "",
                            Patterns::List(Patterns::Anything()),
                            "Select for which compositional fields to skip the entropy viscosity "
-                           "stabilization at dirichlet boundaries. This is "
+                           "stabilization at Dirichlet boundaries. This is "
                            "only advisable for compositional fields "
                            "that have intrinsic physical diffusion terms, otherwise "
                            "oscillations may develop. The parameter should contain a list of "
@@ -1154,7 +1179,7 @@ namespace aspect
                            "Rather, the paper always uses 2 as the exponent in the definition "
                            "of the entropy, following equation (15) of the paper. The full "
                            "approach is discussed in \\cite{guermond:etal:2011}.) Note that this is not the "
-                           "thermal expansion coefficient, also commonly referred to as $\\alpha$."
+                           "thermal expansion coefficient, also commonly referred to as $\\alpha$. "
                            "Units: None.");
         prm.declare_entry ("cR", "0.11",
                            Patterns::List(Patterns::Double (0.)),
@@ -1341,8 +1366,8 @@ namespace aspect
                          "determine the equation of state, rheology, and reactions."
                          "\n"
                          "* ``stress'': This type of field represents stress in the material. "
-                         "Whether the fields represents a scalar stress invariant or "
-                         "tensor components, and which type of stress is represented "
+                         "Whether the field represents a scalar stress invariant or a "
+                         "tensor component, and which type of stress is represented "
                          "depends on the interpretation of the material model."
                          "\n"
                          "* ``strain'': This type of field represents accumulated strain. "
@@ -1443,8 +1468,8 @@ namespace aspect
                          "field as mentioned in Section~\\ref{sec:methods:compositional-fields}, except that it is "
                          "advected with the Darcy velocity instead of the solid velocity. This method "
                          "requires there to be a compositional field named porosity that is advected "
-                         "the darcy field method. We calculate the fluid velocity $u_f$ using an "
-                         "approximation of Darcy's Law: $u_f = u_s - K_D / \\phi * (rho_s * g - rho_f * g)$."
+                         "with the Darcy field method. We calculate the fluid velocity $u_f$ using an "
+                         "approximation of Darcy's Law: $u_f = u_s - K_D / \\phi * (\\rho_s * g - \\rho_f * g)$."
                          "\n"
                          "* ``prescribed field'': The value of these fields is determined "
                          "in each time step from the material model. If a compositional field is "
@@ -1611,6 +1636,13 @@ namespace aspect
     }
     nonlinear_solver_failure_strategy = NonlinearSolverFailureStrategy::parse(
                                           prm.get("Nonlinear solver failure strategy"));
+    linear_solver_failure_strategy = LinearSolverFailureStrategy::parse(
+                                       prm.get("Linear solver failure strategy"));
+    if (linear_solver_failure_strategy ==
+        Parameters<dim>::LinearSolverFailureStrategy::continue_with_nonlinear_solver)
+      AssertThrow(Parameters<dim>::solve_Stokes_iteratively(nonlinear_solver) == true,
+                  ExcMessage("You are not allowed to select the linear solver failure strategy 'continue' "
+                             "with a solver scheme that does not iterate the Stokes equations."));
 
     prm.enter_subsection ("Solver parameters");
     {
@@ -1905,6 +1937,16 @@ namespace aspect
     {
       checkpoint_time_secs = prm.get_integer ("Time between checkpoint");
       checkpoint_steps     = prm.get_integer ("Steps between checkpoint");
+      n_checkpoints_to_keep = prm.get_integer ("Number of checkpoints to keep");
+      resume_checkpoint_id  = prm.get_integer ("Resume checkpoint");
+      resume_time           = prm.get_double ("Resume time");
+      if (convert_to_years && resume_time >= 0.)
+        resume_time *= year_in_seconds;
+
+      AssertThrow(!(resume_checkpoint_id != 0 && resume_time >= 0.),
+                  ExcMessage("The parameters 'Resume checkpoint' and 'Resume time' "
+                             "can not be used at the same time. Please set at most one "
+                             "of them."));
 
 #ifndef DEAL_II_WITH_ZLIB
       AssertThrow ((checkpoint_time_secs == 0)
@@ -1930,6 +1972,8 @@ namespace aspect
       composition_degrees    = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_unsigned_int(Utilities::split_string_list(prm.get("Composition polynomial degree"))),
                                                                        n_compositional_fields,
                                                                        "Composition polynomial degree");
+
+
       if (n_compositional_fields > 0)
         max_composition_degree = *std::max_element(composition_degrees.begin(), composition_degrees.end());
       else
@@ -2259,7 +2303,7 @@ namespace aspect
           AssertThrow (porosity_idx != n_compositional_fields,
                        ExcMessage ("The Darcy advection field method only works if there is a compositional field named 'porosity'"));
           AssertThrow (compositional_field_methods[porosity_idx] == AdvectionFieldMethod::fem_darcy_field,
-                       ExcMessage ("When using the Darcy advection field method, the porosity field must be advected with the darcy method."));
+                       ExcMessage ("When using the Darcy advection field method, the porosity field must be advected with the Darcy method."));
         }
 
       for (const auto &p : x_mapped_particle_properties)

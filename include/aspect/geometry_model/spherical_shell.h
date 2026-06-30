@@ -416,7 +416,7 @@ namespace aspect
         void set_manifold_ids (parallel::distributed::Triangulation<dim> &triangulation) const;
 
         /**
-         * Flag whether the 2D quarter shell is periodic in phi.
+         * Flag whether the shell is periodic in phi.
          */
         bool periodic;
 

@@ -1,0 +1,50 @@
+#########################################################
+# This test is built off of the darcy convection step test, but increases the 
+# stabilization parameters to show that the diffusion of the porosity with the 
+# "darcy field" advection method works.
+#########################################################
+
+include $ASPECT_SOURCE_DIR/tests/darcy_convection_step.prm
+set Max nonlinear iterations               = 10
+set Output directory                       = darcy_field_diffusion
+
+# 10 km x 10 km box
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 100e3
+    set Y extent = 100e3
+  end
+end
+
+# Set the stabilization parameters to be very large, so that there is substantial diffusion after just one time step.
+subsection Discretization
+  subsection Stabilization parameters
+    set cR   = 1.0
+    set beta = 0.5
+  end
+end
+
+# # Initialize 1% (0.01) porosity blob.
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y,t
+    set Function constants  = pi=3.1415926, x0=50000, y0=50000, c=5000
+    set Function expression = 0.01 * exp(-((x-x0)*(x-x0)+(y-y0)*(y-y0))/(2*c*c)); 0.0
+  end
+end
+
+# Set the global refinement to 3
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+  set Time steps between mesh refinement = 0
+end
+
+# Output the composition statistics, which will show that the max value of the "porosity" composition has decrease by a large value.
+subsection Postprocess
+  set List of postprocessors = composition statistics
+end

@@ -1,0 +1,32 @@
+#### This tests fastscape's differentiation between
+# finegrained (silt) and coarsegrained sand in the
+# marine domain. These sediments derive from continental
+# erosion and enter the marine domain with, by default,
+# an equal proportion (silt fraction is 0.5).
+# Through their different transport coefficients,
+# this fraction will vary through space and time.
+# Enable if: ASPECT_WITH_FASTSCAPE
+
+include $ASPECT_SOURCE_DIR/tests/fastscape_test_open_ghost_nodes.prm
+
+####  Global parameters
+set Dimension                              = 2
+set End time                               = 1.4e5
+
+####  Fastscape parameters
+subsection Mesh deformation
+  set Mesh deformation boundary indicators        = top: fastscape
+
+  subsection Fastscape
+    set Use marine component = true
+    subsection Marine parameters
+      set Sea level = -200
+      # The coarser grained sand is expected
+      # to be transported less far than the
+      # finer grained silt, so the transport
+      # coefficient is lower.
+      set Silt transport coefficient = 5e2
+      set Sand transport coefficient = 1e2
+    end
+  end
+end

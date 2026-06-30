@@ -125,12 +125,22 @@ def rename_linear_least_squares(parameters):
 
     return parameters
 
+def rename_fastscape_vtk_output(parameters):
+    if "Mesh deformation" in parameters:
+        if "Fastscape" in parameters["Mesh deformation"]["value"]:
+            if "Additional output variables" in parameters ["Mesh deformation"]["value"]["Fastscape"]["value"]:
+               if "deposition coefficient" in parameters["Mesh deformation"]["value"]["Fastscape"]["value"]["Additional output variables"]["value"]:
+                  parameters["Mesh deformation"]["value"]["Fastscape"]["value"]["Additional output variables"]["value"] = "transport coefficient"
+
+    return parameters
+
 def main(input_file, output_file):
     """Echo the input arguments to standard output"""
     parameters = aspect.read_parameter_file(input_file)
     parameters = reformat(parameters)
     parameters = merge_deprecated_postprocessors_into_material_properties(parameters)
     parameters = rename_linear_least_squares(parameters)
+    parameters = rename_fastscape_vtk_output(parameters)
     aspect.write_parameter_file(parameters, output_file)
 
 

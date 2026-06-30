@@ -1,0 +1,7 @@
+Changed: The viscoplastic strain invariant particle property now supports the compositing
+material model when it uses the visco-plastic material model to compute viscosity.
+The interface has also been extended to allow checking for the use of a specific
+material model, even when that model is used as a subordinate component within
+a compositing material model.
+<br>
+(Haoyuan Li, 2026/03/11)

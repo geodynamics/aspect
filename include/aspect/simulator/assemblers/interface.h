@@ -487,7 +487,6 @@ namespace aspect
    */
   namespace Assemblers
   {
-
     /**
      * For a reference cell (which is typically obtained by asking the finite
      * element to be used), determine how many interface matrices are needed.
@@ -497,16 +496,18 @@ namespace aspect
      * accommodates the fact that the neighbors of a cell can all be refined,
      * though they can only be refined once.
      */
+    template <int dim>
     unsigned int
-    n_interface_matrices (const ReferenceCell &reference_cell);
+    n_interface_matrices (const ReferenceCell<dim> &reference_cell);
 
     /**
      * For a given reference cell, and a given face we are currently
      * assembling on, return which element of an array of size
      * `n_interface_matrices(reference_cell)` to use.
      */
+    template <int dim>
     unsigned int
-    nth_interface_matrix (const ReferenceCell &reference_cell,
+    nth_interface_matrix (const ReferenceCell<dim> &reference_cell,
                           const unsigned int face);
 
     /**
@@ -514,8 +515,9 @@ namespace aspect
      * currently assembling on, return which element of an array of size
      * `n_interface_matrices(reference_cell)` to use.
      */
+    template <int dim>
     unsigned int
-    nth_interface_matrix (const ReferenceCell &reference_cell,
+    nth_interface_matrix (const ReferenceCell<dim> &reference_cell,
                           const unsigned int face,
                           const unsigned int sub_face);
 

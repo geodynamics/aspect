@@ -37,38 +37,31 @@ namespace aspect
     std::pair<std::string,std::string>
     ParticleDistributionStatistics<dim>::execute (TableHandler &statistics)
     {
-      unsigned int cells_with_particles = 0;
-      double standard_deviation_sum = 0;
-      double standard_deviation_min = std::numeric_limits<double>::max();
-      double standard_deviation_max = std::numeric_limits<double>::min();
-      double function_min_sum = 0;
-      double function_max_sum = 0;
-      double function_min_min = std::numeric_limits<double>::max();
-      double function_max_max = std::numeric_limits<double>::min();
+      // These need to be vectors to account for multiple particle managers.
+      std::vector<unsigned int> cells_with_particles(this->n_particle_managers(),0);
+      std::vector<double> standard_deviation_sums(this->n_particle_managers(),0);
+      std::vector<double> standard_deviation_mins(this->n_particle_managers(),std::numeric_limits<double>::max());
+      std::vector<double> standard_deviation_maxs(this->n_particle_managers(),0);
+      std::vector<double> function_min_sums(this->n_particle_managers(),0);
+      std::vector<double> function_max_sums(this->n_particle_managers(),0);
+      std::vector<double> function_min_mins(this->n_particle_managers(),std::numeric_limits<double>::max());
+      std::vector<double> function_max_maxs(this->n_particle_managers(),std::numeric_limits<double>::min());
 
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         {
           if (cell->is_locally_owned())
             {
-              unsigned int particles_in_cell = 0;
               for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
-                particles_in_cell += this->get_particle_manager(particle_manager_index).get_particle_handler().n_particles_in_cell(cell);
-
-              if (particles_in_cell > 0)
                 {
-                  ++cells_with_particles;
+                  unsigned int particles_in_cell = this->get_particle_manager(particle_manager_index).get_particle_handler().n_particles_in_cell(cell);
 
-                  if (KDE_per_particle == false)
+                  if (particles_in_cell > 0)
                     {
-                      /*
-                        Loop through every particle manager here, since the ParticlePDF class operates
-                        on a single particle_iterator_range. The ParticlePDF class is written to operate
-                        on a single particle_iterator_range at a time so that it can be called directly
-                        by the particle_manager class to assist in particle load balancing.
-                      */
-                      for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
+                      ++cells_with_particles[particle_manager_index];
+                      if (KDE_per_particle == false)
                         {
+
                           const auto &particle_handler = this->get_particle_manager(particle_manager_index).get_particle_handler();
                           Particle::ParticlePDF<dim> pdf(granularity,bandwidth,kernel_function);
                           const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over = get_neighboring_particle_ranges(cell,particle_handler);
@@ -80,19 +73,16 @@ namespace aspect
                                                        cell);
                           pdf.compute_statistical_values();
 
-                          standard_deviation_min = std::min(standard_deviation_min, pdf.get_standard_deviation());
-                          standard_deviation_max = std::max(standard_deviation_max, pdf.get_standard_deviation());
-                          standard_deviation_sum += pdf.get_standard_deviation();
+                          standard_deviation_mins[particle_manager_index] = std::min(standard_deviation_mins[particle_manager_index], pdf.get_standard_deviation());
+                          standard_deviation_maxs[particle_manager_index] = std::max(standard_deviation_maxs[particle_manager_index], pdf.get_standard_deviation());
+                          standard_deviation_sums[particle_manager_index] += pdf.get_standard_deviation();
 
-                          function_min_sum += pdf.get_min();
-                          function_max_sum += pdf.get_max();
-                          function_min_min = std::min(function_min_min, pdf.get_min());
-                          function_max_max = std::max(function_max_max, pdf.get_max());
+                          function_min_sums[particle_manager_index] += pdf.get_min();
+                          function_max_sums[particle_manager_index] += pdf.get_max();
+                          function_min_mins[particle_manager_index] = std::min(function_min_mins[particle_manager_index], pdf.get_min());
+                          function_max_maxs[particle_manager_index] = std::max(function_max_maxs[particle_manager_index], pdf.get_max());
                         }
-                    }
-                  else
-                    {
-                      for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
+                      else
                         {
                           const auto &particle_handler = this->get_particle_manager(particle_manager_index).get_particle_handler();
                           Particle::ParticlePDF<dim> pdf(bandwidth,kernel_function);
@@ -105,52 +95,60 @@ namespace aspect
                                                        cell);
                           pdf.compute_statistical_values();
 
-                          standard_deviation_min = std::min(standard_deviation_min, pdf.get_standard_deviation());
-                          standard_deviation_max = std::max(standard_deviation_max, pdf.get_standard_deviation());
-                          standard_deviation_sum += pdf.get_standard_deviation();
+                          standard_deviation_mins[particle_manager_index] = std::min(standard_deviation_mins[particle_manager_index], pdf.get_standard_deviation());
+                          standard_deviation_maxs[particle_manager_index] = std::max(standard_deviation_maxs[particle_manager_index], pdf.get_standard_deviation());
+                          standard_deviation_sums[particle_manager_index] += pdf.get_standard_deviation();
 
-                          function_min_sum += pdf.get_min();
-                          function_max_sum += pdf.get_max();
-                          function_min_min = std::min(function_min_min, pdf.get_min());
-                          function_max_max = std::max(function_max_max, pdf.get_max());
+                          function_min_sums[particle_manager_index] += pdf.get_min();
+                          function_max_sums[particle_manager_index] += pdf.get_max();
+                          function_min_mins[particle_manager_index] = std::min(function_min_mins[particle_manager_index], pdf.get_min());
+                          function_max_maxs[particle_manager_index] = std::max(function_max_maxs[particle_manager_index], pdf.get_max());
                         }
                     }
                 }
             }
         }
 
-      // Get final values from all processors
-      const double global_standard_deviation_max = Utilities::MPI::max (standard_deviation_max, this->get_mpi_communicator());
-      const double global_standard_deviation_min = Utilities::MPI::min (standard_deviation_min, this->get_mpi_communicator());
-      const double global_cells_with_particles = Utilities::MPI::sum (cells_with_particles, this->get_mpi_communicator());
-      const double global_standard_deviation_sum = Utilities::MPI::sum (standard_deviation_sum, this->get_mpi_communicator());
-      const double global_standard_deviation_mean = global_standard_deviation_sum/global_cells_with_particles;
-      const double global_function_min_min = Utilities::MPI::min(function_min_min,this->get_mpi_communicator());
-      const double global_function_max_max = Utilities::MPI::min(function_max_max,this->get_mpi_communicator());
-
-      // Get the average of the functions max and min values
-      const double global_function_min_sum = Utilities::MPI::sum (function_min_sum, this->get_mpi_communicator());
-      const double global_function_max_sum = Utilities::MPI::sum (function_max_sum, this->get_mpi_communicator());
-      const double global_function_min_mean = global_function_min_sum/global_cells_with_particles;
-      const double global_function_max_mean = global_function_max_sum/global_cells_with_particles;
-
-      // Write to statistics file
-      statistics.add_value ("Minimum PDF standard deviation: ", global_standard_deviation_min);
-      statistics.add_value ("Mean of PDF standard deviation: ", global_standard_deviation_mean);
-      statistics.add_value ("Maximum PDF standard deviation: ", global_standard_deviation_max);
-      statistics.add_value ("Mean of PDF minimum values: ", global_function_min_mean);
-      statistics.add_value ("Mean PDF maximum values: ", global_function_max_mean);
-      statistics.add_value ("Minimum of PDF minimum values: ", global_function_min_min);
-      statistics.add_value ("Maximum of PDF maximum values: ", global_function_max_max);
 
 
       std::ostringstream output;
-      output << global_standard_deviation_min << "/" << global_standard_deviation_mean << "/" << global_standard_deviation_max << ", "
-             << global_function_min_mean << "/" << global_function_max_mean << ", " << global_function_min_min << "/" << global_function_max_max;
+      for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
+        {
+          // Get final values from all processors
+          const double global_standard_deviation_max = Utilities::MPI::max (standard_deviation_maxs[particle_manager_index], this->get_mpi_communicator());
+          const double global_standard_deviation_min = Utilities::MPI::min (standard_deviation_mins[particle_manager_index], this->get_mpi_communicator());
+          const double global_cells_with_particles = Utilities::MPI::sum (cells_with_particles[particle_manager_index], this->get_mpi_communicator());
+          const double global_standard_deviation_sum = Utilities::MPI::sum (standard_deviation_sums[particle_manager_index], this->get_mpi_communicator());
+          const double global_standard_deviation_mean = global_standard_deviation_sum/global_cells_with_particles;
+          const double global_function_min_min = Utilities::MPI::min(function_min_mins[particle_manager_index],this->get_mpi_communicator());
+          const double global_function_max_max = Utilities::MPI::min(function_max_maxs[particle_manager_index],this->get_mpi_communicator());
 
+          // Get the average of the functions max and min values
+          const double global_function_min_sum = Utilities::MPI::sum (function_min_sums[particle_manager_index], this->get_mpi_communicator());
+          const double global_function_max_sum = Utilities::MPI::sum (function_max_sums[particle_manager_index], this->get_mpi_communicator());
+          const double global_function_min_mean = global_function_min_sum/global_cells_with_particles;
+          const double global_function_max_mean = global_function_max_sum/global_cells_with_particles;
 
+          // Write to statistics file
+          std::string particle_manager_index_prefix = (particle_manager_index==0) ? "" : "Particles " + std::to_string(particle_manager_index+1) + ": ";
+
+          statistics.add_value (particle_manager_index_prefix+"Minimum PDF standard deviation: ", global_standard_deviation_min);
+          statistics.add_value (particle_manager_index_prefix+"Mean of PDF standard deviation: ", global_standard_deviation_mean);
+          statistics.add_value (particle_manager_index_prefix+"Maximum PDF standard deviation: ", global_standard_deviation_max);
+          statistics.add_value (particle_manager_index_prefix+"Mean of PDF minimum values: ", global_function_min_mean);
+          statistics.add_value (particle_manager_index_prefix+"Mean PDF maximum values: ", global_function_max_mean);
+          statistics.add_value (particle_manager_index_prefix+"Minimum of PDF minimum values: ", global_function_min_min);
+          statistics.add_value (particle_manager_index_prefix+"Maximum of PDF maximum values: ", global_function_max_max);
+
+          if (particle_manager_index == 0)
+            {
+              output << global_standard_deviation_min << "/" << global_standard_deviation_mean << "/" << global_standard_deviation_max << ", "
+                     << global_function_min_mean << "/" << global_function_max_mean << ", " << global_function_min_min << "/" << global_function_max_max;
+            }
+        }
       return std::pair<std::string, std::string> ("Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max):",
                                                   output.str());
+
     }
 
 

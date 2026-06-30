@@ -38,6 +38,7 @@
 #include <deal.II/lac/solver_idr.h>
 #include <deal.II/lac/solver_cg.h>
 #include <deal.II/lac/solver_bicgstab.h>
+#include <deal.II/lac/precondition.h>
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/dofs/dof_handler.h>
 #include <deal.II/dofs/dof_renumbering.h>
@@ -277,8 +278,6 @@ namespace aspect
         return;
       },
       active_viscosity_vector);
-
-      active_viscosity_vector.compress(VectorOperation::insert);
     }
 
     minimum_viscosity = dealii::Utilities::MPI::min(minimum_viscosity_local, this->get_mpi_communicator());
@@ -1510,6 +1509,8 @@ namespace aspect
         // if the solver fails trigger the post stokes solver signal and throw an exception
         catch (const std::exception &exc)
           {
+            ++sim.linear_solver_failures;
+
             this->get_signals().post_stokes_solver(sim,
                                                    schur_approximation_cheap.n_iterations() + schur_approximation_expensive.n_iterations(),
                                                    inverse_velocity_block_cheap.n_iterations() + inverse_velocity_block_expensive.n_iterations(),
@@ -1522,12 +1523,27 @@ namespace aspect
             if (this->get_parameters().n_expensive_stokes_solver_steps > 0)
               solver_controls.push_back(solver_control_expensive);
 
-            Utilities::throw_linear_solver_failure_exception("iterative Stokes solver",
-                                                             "StokesMatrixFreeHandlerLocalSmoothingImplementation::solve",
-                                                             solver_controls,
-                                                             exc,
-                                                             this->get_mpi_communicator(),
-                                                             this->get_parameters().output_directory+"solver_history.txt");
+            // Determine whether to warn or throw an exception due to linear solver failure
+            switch (this->get_parameters().linear_solver_failure_strategy)
+              {
+                case Parameters<dim>::LinearSolverFailureStrategy::continue_with_nonlinear_solver:
+                {
+                  this->get_pcout() << " linear solver failed (GMG), continuing" << std::endl;
+                  break;
+                }
+                case Parameters<dim>::LinearSolverFailureStrategy::abort:
+                {
+                  Utilities::throw_linear_solver_failure_exception("iterative Stokes solver",
+                                                                   "StokesMatrixFreeHandlerLocalSmoothingImplementation::solve",
+                                                                   solver_controls,
+                                                                   exc,
+                                                                   this->get_mpi_communicator(),
+                                                                   this->get_parameters().output_directory+"solver_history.txt");
+                  break;
+                }
+                default:
+                  AssertThrow(false, ExcNotImplemented());
+              }
           }
       }
 

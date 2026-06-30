@@ -457,21 +457,21 @@ namespace aspect
                         finite_element.dofs_per_cell),
           local_matrices_int_ext ((field_is_discontinuous
                                    ?
-                                   Assemblers::n_interface_matrices(finite_element.reference_cell())
+                                   Assemblers::n_interface_matrices<dim>(finite_element.reference_cell())
                                    :
                                    0),
                                   FullMatrix<double>(finite_element.dofs_per_cell,
                                                      finite_element.dofs_per_cell)),
           local_matrices_ext_int ((field_is_discontinuous
                                    ?
-                                   Assemblers::n_interface_matrices(finite_element.reference_cell())
+                                   Assemblers::n_interface_matrices<dim>(finite_element.reference_cell())
                                    :
                                    0),
                                   FullMatrix<double>(finite_element.dofs_per_cell,
                                                      finite_element.dofs_per_cell)),
           local_matrices_ext_ext ((field_is_discontinuous
                                    ?
-                                   Assemblers::n_interface_matrices(finite_element.reference_cell())
+                                   Assemblers::n_interface_matrices<dim>(finite_element.reference_cell())
                                    :
                                    0),
                                   FullMatrix<double>(finite_element.dofs_per_cell,
@@ -480,14 +480,14 @@ namespace aspect
 
           assembled_matrices ((field_is_discontinuous
                                ?
-                               Assemblers::n_interface_matrices(finite_element.reference_cell())
+                               Assemblers::n_interface_matrices<dim>(finite_element.reference_cell())
                                :
                                0), false),
 
           local_dof_indices (finite_element.dofs_per_cell),
           neighbor_dof_indices ((field_is_discontinuous
                                  ?
-                                 Assemblers::n_interface_matrices(finite_element.reference_cell())
+                                 Assemblers::n_interface_matrices<dim>(finite_element.reference_cell())
                                  :
                                  0),
                                 std::vector<types::global_dof_index>(finite_element.dofs_per_cell))
@@ -501,8 +501,9 @@ namespace aspect
 
   namespace Assemblers
   {
+    template <int dim>
     unsigned int
-    n_interface_matrices (const ReferenceCell &reference_cell)
+    n_interface_matrices (const ReferenceCell<dim> &reference_cell)
     {
       // The current implementation assumes that all faces are
       // the same; so no wedges or pyramids please.
@@ -520,8 +521,9 @@ namespace aspect
 
 
 
+    template <int dim>
     unsigned int
-    nth_interface_matrix (const ReferenceCell &reference_cell,
+    nth_interface_matrix (const ReferenceCell<dim> &reference_cell,
                           const unsigned int face)
     {
       AssertIndexRange (face, reference_cell.n_faces());
@@ -531,8 +533,9 @@ namespace aspect
 
 
 
+    template <int dim>
     unsigned int
-    nth_interface_matrix (const ReferenceCell &reference_cell,
+    nth_interface_matrix (const ReferenceCell<dim> &reference_cell,
                           const unsigned int face,
                           const unsigned int sub_face)
     {
@@ -649,7 +652,23 @@ namespace aspect
     template class Interface<dim>; \
     template class AdvectionStabilizationInterface<dim>; \
     template class Manager<dim>; \
+    \
+    template \
+    unsigned int \
+    n_interface_matrices<dim> (const ReferenceCell<dim> &reference_cell); \
+    \
+    template \
+    unsigned int \
+    nth_interface_matrix<dim> (const ReferenceCell<dim> &reference_cell, \
+                               const unsigned int face); \
+    \
+    template \
+    unsigned int \
+    nth_interface_matrix<dim> (const ReferenceCell<dim> &reference_cell, \
+                               const unsigned int face, \
+                               const unsigned int sub_face); \
   }
+
   ASPECT_INSTANTIATE(INSTANTIATE)
 
 #undef INSTANTIATE

@@ -69,6 +69,11 @@ subsection Postprocess
     set Time between data output = 0
     set Data output format = ascii
   end
+
+  subsection Particles 2
+    set Time between data output = 0
+    set Data output format = ascii
+  end
 end
 
 subsection Termination criteria

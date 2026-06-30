@@ -1,0 +1,5 @@
+Fixed: Fields advected with the `darcy field` advection method
+now correctly use the Darcy velocity instead of the solid velocity
+to compute the necessary entropy viscosity stabilization.
+<br>
+(Daniel Douglas, 2026/04/21)

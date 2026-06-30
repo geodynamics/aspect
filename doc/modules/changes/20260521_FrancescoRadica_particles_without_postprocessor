@@ -1,0 +1,5 @@
+Fixed: Particle managers are now initialized and serialized when particles are
+used to advect compositional fields, even if the particles postprocessor is not
+active.
+<br>
+(Francesco Radica, 2026/05/21)

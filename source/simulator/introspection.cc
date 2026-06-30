@@ -140,24 +140,33 @@ namespace aspect
     template <int dim>
     typename Introspection<dim>::Quadratures
     setup_quadratures (const Parameters<dim> &parameters,
-                       const ReferenceCell reference_cell)
+                       const ReferenceCell<dim> reference_cell)
     {
+      const auto get_gauss_type_quadrature = [&reference_cell](const unsigned int degree)
+      {
+#if DEAL_II_VERSION_GTE(9,8,0)
+        return reference_cell.get_gauss_type_quadrature(degree);
+#else
+        return reference_cell.template get_gauss_type_quadrature<dim>(degree);
+#endif
+      };
+
       typename Introspection<dim>::Quadratures quadratures;
 
-      quadratures.velocities = reference_cell.get_gauss_type_quadrature<dim>(parameters.stokes_velocity_degree+1);
-      quadratures.pressure = reference_cell.get_gauss_type_quadrature<dim>(parameters.use_equal_order_interpolation_for_stokes
-                                                                           ?
-                                                                           parameters.stokes_velocity_degree+1
-                                                                           :
-                                                                           parameters.stokes_velocity_degree);
-      quadratures.temperature = reference_cell.get_gauss_type_quadrature<dim>(parameters.temperature_degree+1);
-      quadratures.compositional_field_max = reference_cell.get_gauss_type_quadrature<dim>(parameters.max_composition_degree+1);
+      quadratures.velocities = get_gauss_type_quadrature(parameters.stokes_velocity_degree+1);
+      quadratures.pressure = get_gauss_type_quadrature(parameters.use_equal_order_interpolation_for_stokes
+                                                       ?
+                                                       parameters.stokes_velocity_degree+1
+                                                       :
+                                                       parameters.stokes_velocity_degree);
+      quadratures.temperature = get_gauss_type_quadrature(parameters.temperature_degree+1);
+      quadratures.compositional_field_max = get_gauss_type_quadrature(parameters.max_composition_degree+1);
       for (const auto &degree: parameters.composition_degrees)
-        quadratures.compositional_fields.emplace_back(reference_cell.get_gauss_type_quadrature<dim>(degree+1));
-      quadratures.system = reference_cell.get_gauss_type_quadrature<dim>(std::max({parameters.stokes_velocity_degree,
-                                                                                   parameters.temperature_degree,
-                                                                                   parameters.max_composition_degree
-                                                                                  }) + 1);
+        quadratures.compositional_fields.emplace_back(get_gauss_type_quadrature(degree+1));
+      quadratures.system = get_gauss_type_quadrature(std::max({parameters.stokes_velocity_degree,
+                                                               parameters.temperature_degree,
+                                                               parameters.max_composition_degree
+                                                              }) + 1);
 
       return quadratures;
     }
@@ -167,19 +176,29 @@ namespace aspect
     template <int dim>
     typename Introspection<dim>::FaceQuadratures
     setup_face_quadratures (const Parameters<dim> &parameters,
-                            const ReferenceCell reference_cell)
+                            const ReferenceCell<dim> reference_cell)
     {
+      const auto get_gauss_type_face_quadrature = [&reference_cell](const unsigned int degree)
+      {
+#if DEAL_II_VERSION_GTE(9,8,0)
+        return reference_cell.face_reference_cell(0).get_gauss_type_quadrature(degree);
+#else
+        return reference_cell.face_reference_cell(0).template get_gauss_type_quadrature<dim-1>(degree);
+#endif
+      };
+
+
       typename Introspection<dim>::FaceQuadratures quadratures;
 
-      quadratures.velocities = reference_cell.face_reference_cell(0).get_gauss_type_quadrature<dim-1>(parameters.stokes_velocity_degree+1);
-      quadratures.pressure = reference_cell.face_reference_cell(0).get_gauss_type_quadrature<dim-1>(parameters.use_equal_order_interpolation_for_stokes
-                             ?
-                             parameters.stokes_velocity_degree+1
-                             :
-                             parameters.stokes_velocity_degree);
-      quadratures.temperature = reference_cell.face_reference_cell(0).get_gauss_type_quadrature<dim-1>(parameters.temperature_degree+1);
-      quadratures.compositional_fields = reference_cell.face_reference_cell(0).get_gauss_type_quadrature<dim-1>(parameters.max_composition_degree+1);
-      quadratures.system = reference_cell.face_reference_cell(0).get_gauss_type_quadrature<dim-1>(
+      quadratures.velocities = get_gauss_type_face_quadrature(parameters.stokes_velocity_degree+1);
+      quadratures.pressure = get_gauss_type_face_quadrature(parameters.use_equal_order_interpolation_for_stokes
+                                                            ?
+                                                            parameters.stokes_velocity_degree+1
+                                                            :
+                                                            parameters.stokes_velocity_degree);
+      quadratures.temperature = get_gauss_type_face_quadrature(parameters.temperature_degree+1);
+      quadratures.compositional_fields = get_gauss_type_face_quadrature(parameters.max_composition_degree+1);
+      quadratures.system = get_gauss_type_face_quadrature(
                              std::max({parameters.stokes_velocity_degree, parameters.temperature_degree, parameters.max_composition_degree}) + 1);
 
       return quadratures;

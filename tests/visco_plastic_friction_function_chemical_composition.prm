@@ -1,0 +1,50 @@
+# This tests if the correct friction angle is assigned to
+# different chemical compositions (a compositional field and
+# the background material).
+# Instead of using the friction angle function to define a different
+# friction angle based on coordinates and time, as in
+# tests/visco_plastic_friction_function.prm, a chemical compositional
+# field is added here. The friction function then specifies uniform
+# constant friction angles for the background material and
+# the compositional field.
+
+include $ASPECT_SOURCE_DIR/tests/visco_plastic_friction_function.prm
+
+set Output directory               = visco_plastic_friction_function_chemical_composition
+set End time                       = 0
+
+subsection Compositional fields
+   set Number of fields = 1
+   set Names of fields  = weak_zone
+   set Types of fields  = chemical composition
+end
+
+subsection Initial composition model
+  set List of model names =  function
+
+  subsection Function
+    set Function expression = if (x < 60e3 && x > 40e3 && y < 55e3 && y > 45e3, 1, 0)
+  end
+end
+
+subsection Material model
+  set Model name =  visco plastic
+
+  subsection Visco Plastic
+    set Friction mechanism         = function
+
+    subsection Friction function
+      set Coordinate system        = cartesian
+      set Variable names           = x, z
+      set Function expression      = 30 ; 10
+    end
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors       = visualization
+  subsection Visualization
+    set List of output variables   = named additional outputs
+    set Output format              = gnuplot
+  end  
+end

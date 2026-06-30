@@ -1,0 +1,7 @@
+Fixed: grain size exponent was not divided by stress exponent.
+Exponent on grain size is now grain_size_exponent / stress_exponent.
+Also default values based on Goldsby & Kohlstedt (2001) was changed to match the unit in ASPECT code.
+The unit of prefactor in Goldsby & Kohlstedt (2001) is MPa**-n * meter**m /s. The changed default is Pa**-n * meter**m / s.
+The unit of activation energy in Goldsby & Kohlstedt (2001) is kJ/mol. The changed default is J/mol.
+<br>
+(Hyunseong Kim, 2026/05/20)

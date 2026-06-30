@@ -37,6 +37,7 @@
 #include <deal.II/lac/solver_idr.h>
 #include <deal.II/lac/solver_cg.h>
 #include <deal.II/lac/solver_bicgstab.h>
+#include <deal.II/lac/precondition.h>
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/dofs/dof_handler.h>
 #include <deal.II/dofs/dof_renumbering.h>
@@ -244,8 +245,6 @@ namespace aspect
         return;
       },
       active_viscosity_vector);
-
-      active_viscosity_vector.compress(VectorOperation::insert);
     }
 
     minimum_viscosity = dealii::Utilities::MPI::min(minimum_viscosity_local, this->get_mpi_communicator());

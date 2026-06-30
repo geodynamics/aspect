@@ -82,6 +82,11 @@ subsection Postprocess
     set Time between data output = 70
     set Data output format =
   end
+
+  subsection Particles 2
+    set Time between data output = 70
+    set Data output format =
+  end
 end
 
 subsection Particles

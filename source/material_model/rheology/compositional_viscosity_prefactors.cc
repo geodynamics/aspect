@@ -61,7 +61,7 @@ namespace aspect
             {
               // We calculate the atomic H/Si ppm (C_OH) at each point to compute the water fugacity of
               // olivine assuming a composition of 90 mol% Forsterite and 10 mol% Fayalite from Hirth
-              // and Kohlstaedt 2004 10.1029/138GM06.
+              // and Kohlstedt 2004 10.1029/138GM06.
               const double temperature_for_fugacity = (this->simulator_is_past_initialization())
                                                       ?
                                                       in.temperature[q]
@@ -106,7 +106,7 @@ namespace aspect
                            "The minimum water content for the HK04 olivine hydration viscosity "
                            "prefactor scheme. This acts as the cutoff between 'dry' creep and 'wet' creep "
                            "for olivine, and the default value is chosen based on the value reported by "
-                           "Hirth & Kohlstaedt 2004. For a mass fraction of bound water beneath this value, "
+                           "Hirth & Kohlstedt 2004. For a mass fraction of bound water beneath this value, "
                            "this value is used instead to compute the water fugacity. Units: \\si{\\kg} / \\si{\\kg} %.");
 
         prm.declare_entry ("Water fugacity exponents for diffusion creep", "0.0",
@@ -134,7 +134,7 @@ namespace aspect
                            "Select what type of viscosity multiplicative prefactor scheme to apply. "
                            "Allowed entries are 'none', and 'HK04 olivine hydration'. HK04 olivine "
                            "hydration calculates the viscosity change due to hydrogen incorporation "
-                           "into olivine following Hirth & Kohlstaedt 2004 (10.1029/138GM06). none "
+                           "into olivine following Hirth & Kohlstedt 2004 (10.1029/138GM06). none "
                            "does not modify the viscosity. Units: none.");
       }
 

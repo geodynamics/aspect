@@ -181,15 +181,15 @@ namespace aspect
 
       private:
         /**
-         * Interval between output (in years if appropriate simulation
-         * parameter is set, otherwise seconds)
+         * List of interval between output (in years if appropriate simulation
+         * parameter is set, otherwise seconds) for each particle manager.
          */
-        double output_interval;
+        std::vector<double> output_interval;
 
         /**
-         * Records time for next output to occur
+         * Records time for next output to occur for each particle manager.
          */
-        double last_output_time;
+        std::vector<double> last_output_time;
 
         /**
          * Set the time output was supposed to be written. In the simplest
@@ -203,14 +203,14 @@ namespace aspect
 
         /**
          * Consecutively counted number indicating the how-manyth time we will
-         * create output the next time we get to it.
+         * create output the next time we get to it for each particle manager.
          */
-        unsigned int output_file_number;
+        std::vector<unsigned int> output_file_number;
 
         /**
-         * Graphical output format.
+         * List of graphical output formats for each particle manager.
          */
-        std::vector<std::string> output_formats;
+        std::vector<std::vector<std::string>> output_formats;
 
         /**
          * A map between particle manager name and list of pairs of
@@ -279,9 +279,9 @@ namespace aspect
 
         /**
          * Stores the particle property fields which are excluded from output
-         * to the visualization file.
+         * to the visualization file for each particle manager.
          */
-        std::vector<std::string> exclude_output_properties;
+        std::vector<std::vector<std::string>> exclude_output_properties;
 
         /**
          * A function that writes the text in the second argument to a file

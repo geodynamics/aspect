@@ -1,0 +1,6 @@
+Fixed: The deal.II memory-leak workaround in the StrainDependent and
+Elasticity rheologies (used with deal.II older than 9.8.0-pre, see
+dealii/dealii#19328) now also resets the cached velocity-gradient
+FEPointEvaluation, which was previously missed and kept leaking.
+<br>
+(Ninghui Tian, 2026/05/06)

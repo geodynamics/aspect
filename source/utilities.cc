@@ -1294,7 +1294,8 @@ namespace aspect
 
                           // The url Array contains a separate array for each column of data.
                           // This will put each of these individual arrays into its own vector.
-                          urlArray->value(&tmp[0]);
+                          if (!tmp.empty())
+                            urlArray->value(tmp.data());
                           columns.push_back(tmp);
                         }
                       else
@@ -1416,7 +1417,8 @@ namespace aspect
           // Distribute data_size and data across processes
           std::ignore = Utilities::MPI::broadcast (comm, filesize, 0);
 
-          big_mpi::broadcast(&data_string[0], filesize, 0, comm);
+          if (filesize > 0)
+            big_mpi::broadcast(data_string.data(), filesize, 0, comm);
         }
       else
         {
@@ -1428,7 +1430,8 @@ namespace aspect
           data_string.resize(filesize);
 
           // Receive and store data
-          big_mpi::broadcast(&data_string[0], filesize, 0, comm);
+          if (filesize > 0)
+            big_mpi::broadcast(data_string.data(), filesize, 0, comm);
         }
 
       return data_string;
@@ -2767,6 +2770,7 @@ namespace aspect
             // then set the global solution vector to the values just computed
             cell->set_dof_values (local_projection, vec_result);
           }
+      vec_result.compress(VectorOperation::insert);
     }
 
 

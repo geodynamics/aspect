@@ -60,7 +60,7 @@ subsection Mesh deformation
     set Y extent in 2d = 20e3
     set Uplift and advect with fastscape = true
     set Use ghost nodes = true
-    set Additional output variables = deposition coefficient
+    set Additional output variables = transport coefficient
 
 
    subsection Boundary conditions    

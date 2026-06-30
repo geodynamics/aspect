@@ -22,6 +22,7 @@
 #define _aspect_material_model_rheology_constant_viscosity_h
 
 #include <aspect/global.h>
+#include <deal.II/base/parameter_handler.h>
 
 namespace aspect
 {

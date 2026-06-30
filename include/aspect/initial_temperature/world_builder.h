@@ -23,8 +23,6 @@
 
 #include <aspect/global.h>
 
-#ifdef ASPECT_WITH_WORLD_BUILDER
-
 #include <aspect/initial_temperature/interface.h>
 #include <aspect/simulator_access.h>
 
@@ -37,6 +35,9 @@ namespace WorldBuilder
 
 namespace aspect
 {
+
+#ifdef ASPECT_WITH_WORLD_BUILDER
+
   namespace InitialTemperature
   {
     /**
@@ -76,7 +77,8 @@ namespace aspect
         std::shared_ptr<const ::WorldBuilder::World> world_builder;
     };
   }
+#endif
+
 }
 
-#endif
 #endif

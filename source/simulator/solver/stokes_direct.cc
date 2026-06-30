@@ -20,7 +20,11 @@
 
 #include <aspect/simulator/solver/stokes_direct.h>
 
+#ifndef ASPECT_USE_TPETRA
 #include <deal.II/lac/trilinos_solver.h>
+#else
+#include <deal.II/lac/trilinos_tpetra_solver_direct.h>
+#endif
 
 namespace aspect
 {
@@ -130,8 +134,14 @@ namespace aspect
                                      system_rhs.block(velocity_and_pressure_block));
 
       SolverControl cn;
+
       // TODO: can we re-use the direct solver?
+#ifndef ASPECT_USE_TPETRA
       TrilinosWrappers::SolverDirect solver(cn);
+#else
+      dealii::LinearAlgebra::TpetraWrappers::SolverDirectKLU2<double> solver(cn);
+#endif
+
       try
         {
           solver.solve(system_matrix.block(velocity_and_pressure_block,velocity_and_pressure_block),

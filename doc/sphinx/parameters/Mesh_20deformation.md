@@ -39,6 +39,15 @@ This surface velocity is used to deform the surface and as a boundary condition 
 &lsquo;free surface&rsquo;: A plugin that computes the deformation of surface vertices according to the solution of the flow problem. In particular this means if the surface of the domain is left open to flow, this flow will carry the mesh with it. The implementation was described in {cite}`rose_freesurface`, with the stabilization of the free surface originally described in {cite}`kaus:etal:2010`.
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Mesh deformation mapping order<parameters:Mesh_20deformation/Mesh_20deformation_20mapping_20order>`
+:name: parameters:Mesh_20deformation/Mesh_20deformation_20mapping_20order
+**Default value:** auto
+
+**Pattern:** [Anything]
+
+**Documentation:** Polynomial degree used by the MappingQEulerian object for mesh deformation. Set to &lsquo;auto&lsquo; to choose a robust default. For geometries with curved elements, the mapping order is the larger of 4 and the Stokes velocity polynomial degree. For geometries without curved elements, the mapping order is 1. Set this parameter to an integer >= 1 to explicitly enforce a mapping order. In most cases, &lsquo;auto&lsquo; is recommended. Explicit values are mainly useful for stability investigations or reproducibility studies.
+::::
+
 (parameters:Mesh_20deformation/Ascii_20data_20model)=
 ## **Subsection:** Mesh deformation / Ascii data model
 ::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Mesh_20deformation/Ascii_20data_20model/Data_20directory>`

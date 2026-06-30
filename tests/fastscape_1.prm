@@ -13,7 +13,7 @@ set Output directory                       = fastscape_test
 set Pressure normalization                 = no
 set Surface pressure                       = 0
 
-# A box that has an initial 60x60 km mountain block that is 2.5 km above the initial model surface.
+# A box that has an initial 60 km wide mountain block that is 2.5 km above the initial model surface.
 subsection Geometry model
   set Model name = box
 
@@ -46,18 +46,18 @@ subsection Boundary temperature model
   set List of model names = initial temperature
 end
 
-# X Set all boundaries except the top to freeslip.
+# Set all boundaries except the top to free slip.
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = bottom, left, right
 end
 
-# Here we setup the top boundary with fastscape.
+# Here we setup the top boundary with FastScape.
 subsection Mesh deformation
   set Mesh deformation boundary indicators = top : fastscape
   set Additional tangential mesh velocity boundary indicators = left, right
 
   subsection Fastscape
-    # As the highest resolution at the surface is 4 in the mesh refinement function, we set this the same.
+    # As the highest resolution at the surface is 1 in the mesh refinement function, we set this the same.
     set Maximum surface refinement level = 1
 
     # Because we only have the same level across the entire surface we set this to zero.
@@ -65,7 +65,7 @@ subsection Mesh deformation
     # this would be set to 2 (number of cell sizes at surface - 1).
     set Surface refinement difference = 0
 
-    # We set FastScape as 1 level more resolved than ASPECT's initial global surface resolution.
+    # We set FastScape to have the same resolution as ASPECT's initial global surface resolution.
     set Additional fastscape refinement = 0
 
     # Number of FastScape timesteps we want per ASPECT timestep.
@@ -141,7 +141,7 @@ subsection Formulation
   set Formulation = Boussinesq approximation
 end
 
-# We set a maximum surface refinement level of 4 using the max/minimum refinement level.
+# We set a global refinement level of 1, so that the surface refinement level is also 1.
 # This will make it so that the ASPECT surface refinement is the same as what we set
 # for our maximum surface refinement level for FastScape.
 subsection Mesh refinement

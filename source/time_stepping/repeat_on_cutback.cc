@@ -108,7 +108,7 @@ namespace aspect
                                         "shrinks by more than a user-controlled factor. In that situation, the previous "
                                         "time step will be repeated with a smaller step size.\n"
                                         "A large reduction in time step size typically happens when velocities change "
-                                        "abruptly. Repeating the time step ensure properly resolving this event. It is "
+                                        "abruptly. Repeating the time step ensures properly resolving this event. It is "
                                         "useful to consider setting the \"Maximum relative increase in time step\" option "
                                         "to avoid repeatedly repeating every other time step.")
   }

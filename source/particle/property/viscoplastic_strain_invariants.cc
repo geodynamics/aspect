@@ -21,6 +21,7 @@
 #include <aspect/particle/property/viscoplastic_strain_invariants.h>
 #include <aspect/material_model/visco_plastic.h>
 #include <aspect/initial_composition/interface.h>
+#include <aspect/material_model/compositing.h>
 
 
 namespace aspect
@@ -43,8 +44,8 @@ namespace aspect
       void
       ViscoPlasticStrainInvariant<dim>::initialize ()
       {
-        AssertThrow(Plugins::plugin_type_matches<const MaterialModel::ViscoPlastic<dim>>
-                    (this->get_material_model()),
+        AssertThrow((MaterialModel::material_model_matches_or_uses<const MaterialModel::ViscoPlastic<dim>, dim>
+                     (this->get_material_model(), MaterialModel::Property::viscosity)),
                     ExcMessage("This initial condition only makes sense in combination "
                                "with the visco_plastic material model."));
 
@@ -102,7 +103,8 @@ namespace aspect
       {
         // Find out plastic yielding by calling function in material model.
         const MaterialModel::ViscoPlastic<dim> &viscoplastic
-          = Plugins::get_plugin_as_type<const MaterialModel::ViscoPlastic<dim>>(this->get_material_model());
+          = MaterialModel::get_material_model_matches_or_uses<const MaterialModel::ViscoPlastic<dim>, dim>
+            (this->get_material_model(), MaterialModel::Property::viscosity);
 
         // Current timestep
         const double dt = this->get_timestep();

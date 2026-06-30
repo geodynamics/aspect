@@ -1125,12 +1125,12 @@ namespace aspect
                 {
                   if (fe.system_to_component_index(i).first == solution_component)
                     {
-                      data.neighbor_dof_indices[nth_interface_matrix(fe.reference_cell(), face_no)][i_advection] = neighbor_dof_indices[i];
+                      data.neighbor_dof_indices[nth_interface_matrix<dim>(fe.reference_cell(), face_no)][i_advection] = neighbor_dof_indices[i];
                       ++i_advection;
                     }
                   ++i;
                 }
-              data.assembled_matrices[nth_interface_matrix(fe.reference_cell(), face_no)] = true;
+              data.assembled_matrices[nth_interface_matrix<dim>(fe.reference_cell(), face_no)] = true;
 
               for (unsigned int q=0; q<n_q_points; ++q)
                 {
@@ -1289,7 +1289,7 @@ namespace aspect
                              )
                              * scratch.face_finite_element_values->JxW(q);
 
-                          data.local_matrices_int_ext[nth_interface_matrix(fe.reference_cell(), face_no)](i,j)
+                          data.local_matrices_int_ext[nth_interface_matrix<dim>(fe.reference_cell(), face_no)](i,j)
                           += (- 0.5 * time_step * neighbor_conductivity
                               * scratch.neighbor_face_grad_phi_field[j]
                               * scratch.face_finite_element_values->normal_vector(q)
@@ -1319,7 +1319,7 @@ namespace aspect
                              )
                              * scratch.face_finite_element_values->JxW(q);
 
-                          data.local_matrices_ext_int[nth_interface_matrix(fe.reference_cell(), face_no)](i,j)
+                          data.local_matrices_ext_int[nth_interface_matrix<dim>(fe.reference_cell(), face_no)](i,j)
                           += (+ 0.5 * time_step * conductivity
                               * scratch.face_grad_phi_field[j]
                               * scratch.face_finite_element_values->normal_vector(q)
@@ -1349,7 +1349,7 @@ namespace aspect
                              )
                              * scratch.face_finite_element_values->JxW(q);
 
-                          data.local_matrices_ext_ext[nth_interface_matrix(fe.reference_cell(), face_no)](i,j)
+                          data.local_matrices_ext_ext[nth_interface_matrix<dim>(fe.reference_cell(), face_no)](i,j)
                           += (+ 0.5 * time_step * neighbor_conductivity
                               * scratch.neighbor_face_grad_phi_field[i]
                               * scratch.face_finite_element_values->normal_vector(q)
@@ -1479,12 +1479,12 @@ namespace aspect
                 {
                   if (fe.system_to_component_index(i).first == solution_component)
                     {
-                      data.neighbor_dof_indices[nth_interface_matrix(fe.reference_cell(), face_no, subface_no)][i_advection] = neighbor_dof_indices[i];
+                      data.neighbor_dof_indices[nth_interface_matrix<dim>(fe.reference_cell(), face_no, subface_no)][i_advection] = neighbor_dof_indices[i];
                       ++i_advection;
                     }
                   ++i;
                 }
-              data.assembled_matrices[nth_interface_matrix(fe.reference_cell(), face_no, subface_no)] = true;
+              data.assembled_matrices[nth_interface_matrix<dim>(fe.reference_cell(), face_no, subface_no)] = true;
 
               for (unsigned int q=0; q<n_q_points; ++q)
                 {
@@ -1643,7 +1643,7 @@ namespace aspect
                              )
                              * scratch.subface_finite_element_values->JxW(q);
 
-                          data.local_matrices_int_ext[nth_interface_matrix(fe.reference_cell(), face_no, subface_no)](i,j)
+                          data.local_matrices_int_ext[nth_interface_matrix<dim>(fe.reference_cell(), face_no, subface_no)](i,j)
                           += (- 0.5 * time_step * neighbor_conductivity
                               * scratch.neighbor_face_grad_phi_field[j]
                               * scratch.subface_finite_element_values->normal_vector(q)
@@ -1673,7 +1673,7 @@ namespace aspect
                              )
                              * scratch.subface_finite_element_values->JxW(q);
 
-                          data.local_matrices_ext_int[nth_interface_matrix(fe.reference_cell(), face_no, subface_no)](i,j)
+                          data.local_matrices_ext_int[nth_interface_matrix<dim>(fe.reference_cell(), face_no, subface_no)](i,j)
                           += (+ 0.5 * time_step * conductivity
                               * scratch.face_grad_phi_field[j]
                               * scratch.subface_finite_element_values->normal_vector(q)
@@ -1703,7 +1703,7 @@ namespace aspect
                              )
                              * scratch.subface_finite_element_values->JxW(q);
 
-                          data.local_matrices_ext_ext[nth_interface_matrix(fe.reference_cell(), face_no, subface_no)](i,j)
+                          data.local_matrices_ext_ext[nth_interface_matrix<dim>(fe.reference_cell(), face_no, subface_no)](i,j)
                           += (+ 0.5 * time_step * neighbor_conductivity
                               * scratch.neighbor_face_grad_phi_field[i]
                               * scratch.subface_finite_element_values->normal_vector(q)

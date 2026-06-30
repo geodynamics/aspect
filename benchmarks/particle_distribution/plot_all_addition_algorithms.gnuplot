@@ -3,6 +3,7 @@ plot "output_addition/output-cutoff-w1/statistics" using 2:23 title "deal.ii-cut
      "output_addition/output-gaussian/statistics" using 2:23 title "gaussian", \
      "output_addition/output-triangular/statistics" using 2:23 title "triangular", \
      "output_addition/output-uniform/statistics" using 2:23 title "uniform", \
+     "output_addition/output-epanechnikov/statistics" using 2:23 title "epanechnikov", \
      "output_addition/output-histogram/statistics" using 2:23 title "histogram", \
      "output_addition/output-random/statistics" using 2:23 title "random"
 set style data linespoints
@@ -20,6 +21,7 @@ plot "output_addition/output-cutoff-w1-constant-velocity/statistics" using 2:23 
      "output_addition/output-gaussian-constant-velocity/statistics" using 2:23 title "gaussian constant V", \
      "output_addition/output-triangular-constant-velocity/statistics" using 2:23 title "triangular constant V", \
      "output_addition/output-uniform-constant-velocity/statistics" using 2:23 title "uniform constant V", \
+     "output_addition/output-epanechnikov-constant-velocity/statistics" using 2:23 title "epanechnikov", \
      "output_addition/output-histogram-constant-velocity/statistics" using 2:23 title "histogram constant V", \
      "output_addition/output-random-constant-velocity/statistics" using 2:23 title "random constant V"
 set style data linespoints
@@ -37,6 +39,7 @@ plot "output_addition/output-cutoff-w1/statistics" using 2:21 title "deal.ii-cut
      "output_addition/output-gaussian/statistics" using 2:21 title "gaussian", \
      "output_addition/output-triangular/statistics" using 2:21 title "triangular", \
      "output_addition/output-uniform/statistics" using 2:21 title "uniform", \
+     "output_addition/output-epanechnikov/statistics" using 2:21 title "epanechnikov", \
      "output_addition/output-histogram/statistics" using 2:21 title "histogram", \
      "output_addition/output-random/statistics" using 2:21 title "random"
 set style data linespoints
@@ -54,7 +57,8 @@ plot "output_addition/output-cutoff-w1-constant-velocity/statistics" using 2:21 
      "output_addition/output-gaussian-constant-velocity/statistics" using 2:21 title "gaussian constant V", \
      "output_addition/output-triangular-constant-velocity/statistics" using 2:21 title "triangular constant V", \
      "output_addition/output-uniform-constant-velocity/statistics" using 2:21 title "uniform constant V", \
-     "output_addition/output-histogram-constant-velocity/statistics" using 2:21 title "histogram", \
+     "output_addition/output-epanechnikov-constant-velocity/statistics" using 2:21 title "epanechnikov constant V", \
+     "output_addition/output-histogram-constant-velocity/statistics" using 2:21 title "histogram constant V", \
      "output_addition/output-random-constant-velocity/statistics" using 2:21 title "random constant V"
 set style data linespoints
 set xl "Time"
@@ -71,6 +75,7 @@ plot "output_addition/output-cutoff-w1/statistics" using 2:22 title "deal.ii-cut
      "output_addition/output-gaussian/statistics" using 2:22 title "gaussian", \
      "output_addition/output-triangular/statistics" using 2:22 title "triangular", \
      "output_addition/output-uniform/statistics" using 2:22 title "uniform", \
+     "output_addition/output-epanechnikov/statistics" using 2:22 title "epanechnikov", \
      "output_addition/output-histogram/statistics" using 2:22 title "histogram", \
      "output_addition/output-random/statistics" using 2:22 title "random"
 set style data linespoints
@@ -88,6 +93,7 @@ plot "output_addition/output-cutoff-w1-constant-velocity/statistics" using 2:22 
      "output_addition/output-gaussian-constant-velocity/statistics" using 2:22 title "gaussian constant V", \
      "output_addition/output-triangular-constant-velocity/statistics" using 2:22 title "triangular constant V", \
      "output_addition/output-uniform-constant-velocity/statistics" using 2:22 title "uniform constant V", \
+     "output_addition/output-epanechnikov-constant-velocity/statistics" using 2:22 title "epanechnikov constant V", \
      "output_addition/output-histogram-constant-velocity/statistics" using 2:22 title "histogram", \
      "output_addition/output-random-constant-velocity/statistics" using 2:22 title "random constant V"
 set style data linespoints

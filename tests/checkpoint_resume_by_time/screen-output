@@ -1,0 +1,13 @@
+
+Loading shared library <./libcheckpoint_resume_by_time.debug.so>
+* starting from beginning:
+Executing the following command:
+cd output-checkpoint_resume_by_time ; (cat ASPECT_DIR/tests/checkpoint_resume_by_time.prm  ;  echo 'set Output directory = output1.tmp'  ;  rm -rf output1.tmp ; mkdir output1.tmp ) | ../../aspect -- > /dev/null
+Executing the following command:
+cd output-checkpoint_resume_by_time ;  rm -rf output2.tmp ; cp -r output1.tmp output2.tmp ;  rm -f output1.tmp/log.txt
+* now resuming near checkpoint 3 at time 7578262.0852927389:
+Executing the following command:
+cd output-checkpoint_resume_by_time ; (cat ASPECT_DIR/tests/checkpoint_resume_by_time.prm  ;  echo 'set Output directory = output1.tmp'  ;  echo 'set Resume computation = true'  ;  echo 'subsection Checkpointing'  ;  echo '  set Resume time = 7578262.0852927389'  ;  echo 'end' ) | ../../aspect -- > /dev/null
+* now comparing:
+Executing the following command:
+cd output-checkpoint_resume_by_time ; diff -c output1.tmp/statistics output2.tmp/statistics ; cp output1.tmp/log.txt log.txt1 ; cp output2.tmp/log.txt log.txt2 ; cp output1.tmp/statistics statistics1 ; cp output2.tmp/statistics statistics2 ; grep 'Resuming from snapshot' output1.tmp/log.txt > resume-summary.txt

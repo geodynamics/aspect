@@ -19,8 +19,8 @@
 */
 
 
-#ifndef aspect_block_stokes_preconditioner_h
-#define aspect_block_stokes_preconditioner_h
+#ifndef _aspect_block_stokes_preconditioner_h
+#define _aspect_block_stokes_preconditioner_h
 
 #include <deal.II/lac/solver_bicgstab.h>
 #include <deal.II/lac/solver_cg.h>

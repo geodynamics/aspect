@@ -1,6 +1,6 @@
 FROM ubuntu:22.04
 
-LABEL maintainer <rene.gassmoeller@mailbox.org>
+LABEL maintainer=<rene.gassmoeller@mailbox.org>
 
 RUN DEBIAN_FRONTEND=noninteractive apt update && apt upgrade -yq && \
   DEBIAN_FRONTEND=noninteractive apt install -yq --no-install-recommends \
@@ -25,11 +25,23 @@ RUN cd /opt && \
     ./candi.sh -p /opt -j4 && \
     rm -rf /opt/tmp
 
+# Install FastScape for ASPECT
+RUN cd /opt && \
+    git clone https://github.com/anne-glerum/fastscapelib-fortran.git && \
+    cd fastscapelib-fortran  && \
+    git checkout aspect_tester && \
+    mkdir build && \
+    cd build && \
+    /opt/cmake-3.26.4-linux-x86_64/bin/cmake -DBUILD_FASTSCAPELIB_SHARED=ON .. && \
+    make
+
 # Set environment variables for this image to be used
 # by Github Actions
 ENV PATH="/opt/astyle-2.04:/opt/cmake-3.26.4-linux-x86_64/bin:$PATH"
-ENV DEAL_II_DIR /opt/deal.II-master
-ENV NETCDF_DIR /opt/netcdf-4.7.4
+ENV DEAL_II_DIR=/opt/deal.II-master
+ENV FASTSCAPE_DIR=/opt/fastscapelib-fortran/build
+ENV GFORTRAN_CONVERT_UNIT='big_endian'
+ENV NETCDF_DIR=/opt/netcdf-4.7.4
 ENV OMPI_MCA_btl_base_warn_component_unused=0
 ENV OMPI_MCA_mpi_yield_when_idle=1
 ENV OMPI_MCA_rmaps_base_oversubscribe=1

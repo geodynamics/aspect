@@ -1,0 +1,3 @@
+Added: a configurable linear solver failure strategy to allow iterative Stokes solver schemes to continue nonlinear iterations after linear solver failures, including checkpoint/restart support, and tests for both AMG and GMG Stokes solvers.
+<br>
+(Haoyuan Li, 2026/05/13)

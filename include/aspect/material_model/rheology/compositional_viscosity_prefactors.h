@@ -83,7 +83,7 @@ namespace aspect
            * parse_parameters() function. Users can choose between different schemes.
            * none: no viscosity change
            * hk04_olivine_hydration: calculate the viscosity change due to hydrogen
-           * incorporation into olivine using Hirth & Kohlstaedt 2004 10.1029/138GM06.
+           * incorporation into olivine using Hirth & Kohlstedt 2004 10.1029/138GM06.
            * This method requires a composition called 'bound_fluid' which tracks the wt%
            * water in the solid, which is used to compute an atomic ratio of H/Si ppm
            * assuming 90 mol% forsterite and 10 mol% fayalite, and finally calculates
@@ -103,7 +103,7 @@ namespace aspect
           std::vector<double> dislocation_water_fugacity_exponents;
           std::vector<double> minimum_mass_fraction_water_for_dry_creep;
 
-          // From Hirth & Kohlstaedt 2004, equation 6
+          // From Hirth & Kohlstedt 2004, equation 6
           const double A_H2O = 2.6e-5; // 1/Pa
           const double activation_energy_H2O = 40e3; // J/mol/K
           const double activation_volume_H2O = 10e-6; // m^3/mol

@@ -88,6 +88,7 @@ namespace aspect
          */
         Table<dim,unsigned int>
         sort_particles_into_buckets(const typename Triangulation<dim>::active_cell_iterator &cell,
+                                    const unsigned int particle_manager_index,
                                     const double bucket_width) const;
     };
   }

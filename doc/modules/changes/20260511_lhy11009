@@ -1,0 +1,5 @@
+Added: A new visualization postprocessor 'prescribed solution', which outputs
+whether the solution components are prescribed by
+the prescribed solution plugin system and if so to which value.
+<br>
+(Haoyuan Li, 2026/05/11)

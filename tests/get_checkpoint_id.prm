@@ -1,0 +1,17 @@
+# test the function get_checkpoint_id() in simulator_access.
+
+include $ASPECT_SOURCE_DIR/tests/checkpoint_02.prm
+
+set End time                               = 0.5e7
+
+subsection Checkpointing
+  set Steps between checkpoint = 1
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: Test mesh deformation
+end
+
+subsection Postprocess
+  set List of postprocessors = 
+end

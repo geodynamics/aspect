@@ -118,7 +118,7 @@ subsection Postprocess
   set List of postprocessors = velocity statistics, dynamic topography, visualization, basic statistics, geoid
 
   subsection Visualization
-    set Output format            = vtu
+    set Output format            = gnuplot
     set List of output variables = geoid, dynamic topography, material properties, gravity, surface stress, surface elevation
     set Number of grouped files  = 1
 
