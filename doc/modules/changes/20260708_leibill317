@@ -1,0 +1,9 @@
+Fixed: When checkpointing a model with FastScape mesh deformation, the
+basement and silt fraction fields were saved using the surface elevation
+accessor (fastscape_copy_h_) rather than the basement and silt fraction
+accessors. On restart this could corrupt the basement and silt fraction
+state, making the computed sediment thickness (elevation - basement)
+collapse to nearly zero. The basement and silt fraction accessors
+(fastscape_copy_basement_ and fastscape_copy_f_) are now used.
+<br>
+(Z. Lei, 2026/07/08)

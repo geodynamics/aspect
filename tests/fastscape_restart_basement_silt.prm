@@ -1,0 +1,49 @@
+# Regression test for FastScape checkpoint/restart of the basement and silt
+# fraction fields. A model with a marine component is run to the End time in
+# one go (writing checkpoints along the way), then resumed from the last
+# checkpoint and continued to the same End time. Because FastScape runs
+# deterministically on the root process, a correct restart must reproduce the
+# uninterrupted run bit-for-bit.
+#
+# This exercises the bug where FastScape<dim>::save() snapshotted the basement
+# and silt fraction arrays with the surface-elevation accessor
+# (fastscape_copy_h_) instead of fastscape_copy_basement_ / fastscape_copy_f_.
+# With that bug the restarted sediment thickness (elevation - basement)
+# collapses to ~0, so the resumed run diverges from the straight run. The stock
+# fastscape tests use identical bedrock and sediment erosion parameters and can
+# never see this; here the sediment is deliberately far more incisive and
+# diffusive than the bedrock so the corruption is observable in the topography.
+#
+# The checkpoint is placed at step 4 (Steps between checkpoint = 4), after
+# FastScape has been set up on its first execution step, to avoid the
+# "STOP CopyH - You need to run SetUp first" abort that a step-0/1 checkpoint
+# would trigger.
+#
+# Enable if: ASPECT_WITH_FASTSCAPE
+
+include $ASPECT_SOURCE_DIR/tests/fastscape_test_fixed_ghost_nodes.prm
+
+set End time           = 1.2e5
+set Resume computation = false
+
+subsection Checkpointing
+  set Steps between checkpoint = 4
+end
+
+subsection Mesh deformation
+  subsection Fastscape
+    subsection Erosional parameters
+      set Bedrock river incision rate  = 1e-5
+      set Sediment river incision rate = 2e-4
+      set Bedrock diffusivity          = 1e-2
+      set Sediment diffusivity         = 5e-1
+    end
+  end
+end
+
+subsection Postprocess
+  subsection Topography
+    set Time between text output = 1.2e5
+    set Output to file           = true
+  end
+end
