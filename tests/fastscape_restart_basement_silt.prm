@@ -14,6 +14,20 @@
 # never see this; here the sediment is deliberately far more incisive and
 # diffusive than the bedrock so the corruption is observable in the topography.
 #
+# To exercise the silt-fraction half of the restart (not just the basement),
+# two things are set up. First, the sea level is raised (the base model only
+# floods a thin strip) so a substantial part of the domain is marine and the
+# silt fraction is actually used. Second, the silt and sand marine transport
+# coefficients are made distinct: the offshore diffusivity FastScape sees is a
+# silt-fraction weighting of the two (kd = f*silt + (1-f)*sand), so a contrast
+# lets the silt fraction evolve away from its reference value and feed back on
+# the topography. Silt is set larger than sand (finer material travels farther),
+# which is also the ordering for which the marine diffusion stays convergent at
+# this basin depth. With basement restored correctly but the silt fraction
+# still taken from the surface elevation, this configuration diverges by tens
+# of metres offshore, so the test guards the silt-fraction save independently
+# of the basement save.
+#
 # The checkpoint is placed at step 4 (Steps between checkpoint = 4), after
 # FastScape has been set up on its first execution step, to avoid the
 # "STOP CopyH - You need to run SetUp first" abort that a step-0/1 checkpoint
@@ -37,6 +51,18 @@ subsection Mesh deformation
       set Sediment river incision rate = 2e-4
       set Bedrock diffusivity          = 1e-2
       set Sediment diffusivity         = 5e-1
+    end
+
+    # Raise the sea level so a substantial part of the domain is marine, and
+    # give silt and sand distinct transport coefficients (silt > sand) so the
+    # marine silt fraction evolves away from its reference value and affects the
+    # offshore diffusivity. Together these exercise the silt-fraction part of
+    # the checkpoint/restart.
+    set Use marine component = true
+    subsection Marine parameters
+      set Sea level                  = 0
+      set Silt transport coefficient = 5e2
+      set Sand transport coefficient = 5e1
     end
   end
 end
