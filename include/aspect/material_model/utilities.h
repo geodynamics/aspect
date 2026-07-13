@@ -503,6 +503,27 @@ namespace aspect
       }
 
       /**
+      * Material models compute output quantities such as the viscosity, the
+      * density, etc. For some models, these values may depend on the phase in
+      * addition to the composition. This function modifies the values of the
+      * individual phases for a given composition according to the supplied
+      * phase transition kinetics.
+      *
+      * The modification is based on the transition kinetics given by
+      * @p phase_kinetics_values and @p phase_kinetics_mapping, with
+      * @p parameter_values containing the values of all individual phases.
+      * The modified values are written back into @p parameter_values and can
+      * subsequently be used for phase averaging.
+      */
+      void
+      phase_kinetics_modify_values (const std::vector<double> &phase_kinetics_values,
+                                    const std::vector<int> &phase_kinetics_mapping,
+                                    const std::vector<unsigned int> &n_phase_transitions_per_composition,
+                                    std::vector<double> &parameter_values,
+                                    const unsigned int composition_index,
+                                    const PhaseUtilities::PhaseAveragingOperation operation = PhaseUtilities::arithmetic);
+
+      /**
        * Material models compute output quantities such as the viscosity, the
        * density, etc. For some models, these values may depend on the phase in
        * addition to the composition, and more than one phase field might have
@@ -524,7 +545,27 @@ namespace aspect
                                   const unsigned int composition_index,
                                   const PhaseUtilities::PhaseAveragingOperation operation = PhaseUtilities::arithmetic);
 
-
+      /**
+       * Extract the phase transition kinetics associated with a particular
+       * composition. The number of phase transitions for each composition is
+       * given by @p n_phase_transitions_per_composition, while
+       * @p phase_kinetics_mapping contains one entry for every phase transition
+       * across all compositions. A non-negative mapping entry specifies the
+       * index of the corresponding kinetics value in @p phase_kinetics_values,
+       * whereas a negative entry indicates that the phase transition has no
+       * associated kinetics variable.
+       *
+       * For the composition specified by @p composition_index, this function
+       * returns a pair containing the corresponding phase transition kinetics
+       * values and the local indices of the phase transitions to which they
+       * apply.
+       */
+      std::pair<std::vector<double>, std::vector<unsigned int>>
+      map_transition_kinetics_to_phases (
+        const std::vector<double> &phase_kinetics_values,
+        const std::vector<int> &phase_kinetics_mapping,
+        const std::vector<unsigned int> &n_phase_transitions_per_composition,
+        const unsigned int composition_index);
 
       /**
        * A data structure with all inputs for the
@@ -788,6 +829,13 @@ namespace aspect
           unsigned int n_phases_over_all_chemical_compositions () const;
 
           /**
+           * Return the mapping to the transition kinetics
+           */
+          const std::vector<int>
+          get_transition_kinetics_mapping () const;
+
+
+          /**
            * Return the Clapeyron slope (dp/dT of the transition) for
            * phase transition number @p phase_transition_index.
            */
@@ -861,6 +909,7 @@ namespace aspect
           std::vector<double> transition_slopes;
           std::vector<double> transition_temperature_upper_limits;
           std::vector<double> transition_temperature_lower_limits;
+          std::vector<double> transition_kinetics_mapping;
 
           /**
            * Whether to define the phase transitions based on depth, or pressure.

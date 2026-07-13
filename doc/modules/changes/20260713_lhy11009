@@ -1,0 +1,6 @@
+Added: A new composition type of "phase kinetics"
+which is used to modify composition properties in
+visco plastic material models base on phase transition
+kinetics.
+<br>
+(Haoyuan Li, 2026/07/13)
