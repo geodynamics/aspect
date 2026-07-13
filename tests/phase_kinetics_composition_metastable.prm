@@ -1,0 +1,131 @@
+# This test verifies the handling of phase transition kinetics in the
+# visco-plastic material model. A simple 2-D box geometry is initialized
+# with a linear temperature gradient in the horizontal direction so that
+# the equilibrium phase transition is crossed within the model domain.
+set Dimension = 2
+set Start time = 0
+set End time = 0
+set Pressure normalization = surface
+set Surface pressure = 0
+set Adiabatic surface temperature = 1662
+set Nonlinear solver scheme = no Advection, no Stokes 
+set Resume computation = false
+
+subsection Discretization
+    set Composition polynomial degree = 2
+    set Stokes velocity polynomial degree = 2
+    set Temperature polynomial degree = 2
+    set Use discontinuous composition discretization = true
+    subsection Stabilization parameters
+        set Use limiter for discontinuous composition solution = true
+        set Global composition maximum = 1
+        set Global composition minimum = 0
+    end
+end
+
+
+subsection Formulation
+    set Formulation = custom
+    set Mass conservation = incompressible
+    set Temperature equation = reference density profile
+end
+
+# model geometry
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X repetitions = 50
+    set Y repetitions = 50
+    set X extent      = 800e3
+    set Y extent      = 1200e3
+  end
+end
+
+# Mesh refinement specifications
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+
+# Temperature boundary and initial conditions maintain
+# a linear increase in temperature along the x axis
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = left, right
+  set List of model names = box
+  subsection Box
+    set Left temperature   = 273.15
+    set Right temperature  = 2273.15
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Coordinate system = cartesian
+    set Variable names = x, y
+    set Function constants = XMAX=800e3, Tl=273.15, Tr=2273.15
+    set Function expression = Tl * (x - XMAX)/(-XMAX) + Tr * x / XMAX
+  end
+end
+
+
+# Include crust and barzburgite for chemical compositions
+subsection Compositional fields
+    set Number of fields = 3
+    set Names of fields = crust, harzburgite, reaction_progress_1
+    set Compositional field methods = field, field, field
+end
+
+
+# Initial composition model
+# Assign the background composition for this test
+subsection Initial composition model
+    set List of model names = function
+    subsection Function
+        set Coordinate system = cartesian
+        set Variable names = x, y
+        set Function expression = 0.0 ; 0.0; ((x < 500e3)? 0.0: 1.0)
+    end
+end
+
+# Phase transition kinetics mapping to map phase transitions and transition kinetics
+subsection Material model
+    set Model name = visco plastic
+    set Material averaging = harmonic average
+    subsection Visco Plastic
+        set Reference strain rate = 1.e-15
+        set Minimum viscosity = 1e18
+        set Maximum viscosity = 1e24
+        set Phase transition temperatures = background:1662.0|1662.0|1662.0|1662.0, crust: 1173.0|1662.0|1662.0, harzburgite: 1662.0|1662.0|1662.0|1662.0
+        set Phase transition depths = background:410e3|520e3|560e3|670e3, crust: 80e3|665e3|720e3, harzburgite: 410e3|520e3|560e3|670e3
+        set Phase transition widths = background:5e3, crust: 5e3, harzburgite: 5e3
+        set Phase transition Clapeyron slopes = background:4e6|4.1e6|4e6|-2e6, crust: 0.0|4e6|1.3e6, harzburgite: 4e6|4.1e6|4e6|-2e6
+        set Thermal diffusivities = 1.0e-6
+        set Heat capacities = 1250.0
+        set Thermal expansivities = 3.1e-5
+        set Densities = background: 3300.0|3394.4|3442.1|3453.2|3617.6,\
+                        harzburgite: 3235.0|3372.3|3441.7|3441.7|3680.8,\
+                        crust: 3000.0|3540.0|3613.0|3871.7
+        set Phase transition kinetics mapping = 0
+    end
+end
+
+subsection Heating model
+    set List of model names = adiabatic heating, latent heat, shear heating
+end
+
+subsection Gravity model
+    set Model name = ascii data
+end
+
+subsection Postprocess
+    set List of postprocessors = visualization, temperature statistics,  composition statistics, material statistics
+    subsection Visualization
+        set List of output variables = material properties, heating
+        set Output format =  gnuplot
+        set Time between graphical output = 0
+    end
+end

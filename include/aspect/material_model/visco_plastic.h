@@ -280,6 +280,11 @@ namespace aspect
          */
         std::unique_ptr<MaterialUtilities::PhaseFunctionDiscrete<dim>> phase_function_discrete;
 
+        /**
+         * Record the mapping of phase kinetics to phase transitions used in the material model
+         */
+        std::vector<unsigned int> phase_kinetics_mapping;
+
     };
 
   }

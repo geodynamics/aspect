@@ -1100,6 +1100,52 @@ namespace aspect
 
 
 
+      void
+      phase_kinetics_modify_values (const std::vector<double> &phase_kinetics_values,
+                                    const std::vector<unsigned int> &phase_kinetics_mapping,
+                                    const std::vector<unsigned int> &n_phase_transitions_per_composition,
+                                    std::vector<double> &parameter_values,
+                                    const unsigned int composition_index,
+                                    const PhaseUtilities::PhaseAveragingOperation operation)
+      {
+        unsigned int start_phase_index = 0;
+        for (unsigned int i=0; i<composition_index; ++i)
+          start_phase_index += n_phase_transitions_per_composition[i] + 1;
+
+        if (n_phase_transitions_per_composition[composition_index] > 0)
+          {
+            for (unsigned int i=0; i<n_phase_transitions_per_composition[composition_index]; ++i)
+              {
+                const unsigned int phase_index = start_phase_index + i;
+
+                double current_parameter = parameter_values[phase_index+1];
+                if (operation == PhaseUtilities::logarithmic)
+                  current_parameter = std::log(current_parameter);
+
+                // Modify the parameter according to reaction progress.
+                for (unsigned int previous_phase_index=start_phase_index; previous_phase_index<=phase_index; previous_phase_index++)
+                  {
+                    auto [phase_kinetics_active, phase_kinetics_value]  = get_transition_kinetics_for_phase_transition(phase_kinetics_values,
+                                                                          phase_kinetics_mapping,
+                                                                          previous_phase_index);
+
+                    if (phase_kinetics_active)
+                      {
+                        const double start_parameter = parameter_values[previous_phase_index];
+                        current_parameter = start_parameter + (current_parameter-start_parameter) * phase_kinetics_value;
+                      }
+                  }
+
+                if (operation == PhaseUtilities::logarithmic)
+                  current_parameter = std::exp(current_parameter);
+
+                parameter_values[phase_index+1] = current_parameter;
+              }
+          }
+      }
+
+
+
       double phase_average_value (const std::vector<double> &phase_function_values,
                                   const std::vector<unsigned int> &n_phase_transitions_per_composition,
                                   const std::vector<double> &parameter_values,
@@ -1139,6 +1185,20 @@ namespace aspect
               averaged_parameter = std::exp(averaged_parameter);
           }
         return averaged_parameter;
+      }
+
+
+
+      std::pair<bool, double>
+      get_transition_kinetics_for_phase_transition(const std::vector<double> &phase_kinetics_values,
+                                                   const std::vector<unsigned> &phase_kinetics_mapping,
+                                                   const unsigned int phase_transition_index)
+      {
+        const unsigned int n_phase_kinetics = phase_kinetics_mapping.size();
+        for (unsigned int phase_kinetics_index=0; phase_kinetics_index<n_phase_kinetics; ++phase_kinetics_index)
+          if (phase_kinetics_mapping[phase_kinetics_index] == phase_transition_index)
+            return {true, phase_kinetics_values[phase_kinetics_index]};
+        return {false, 0.0};
       }
 
 

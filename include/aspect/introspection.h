@@ -63,8 +63,9 @@ namespace aspect
       porosity = 4,
       density = 5,
       entropy = 6,
-      generic = 7,
-      unspecified = 8
+      reaction_progress = 7,
+      generic = 8,
+      unspecified = 9
     } type;
 
     /**
@@ -94,6 +95,8 @@ namespace aspect
         return CompositionalFieldDescription::density;
       else if (input == "entropy")
         return CompositionalFieldDescription::entropy;
+      else if (input == "reaction progress")
+        return CompositionalFieldDescription::reaction_progress;
       else if (input == "generic")
         return CompositionalFieldDescription::generic;
       else if (input == "unspecified")

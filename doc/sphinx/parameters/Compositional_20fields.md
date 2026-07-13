@@ -65,7 +65,7 @@ The format of valid entries for this parameter is that of a map given as &ldquo;
 :name: parameters:Compositional_20fields/Types_20of_20fields
 **Default value:** unspecified
 
-**Pattern:** [List of <[Selection chemical composition|stress|strain|grain size|porosity|density|entropy|generic|unspecified ]> of length 0...4294967295 (inclusive)]
+**Pattern:** [List of <[Selection chemical composition|stress|strain|grain size|porosity|density|entropy|reaction progress|generic|unspecified ]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A comma separated list denoting a &ldquo;type&rdquo; for each of the compositional fields requested. ASPECT uses these types to determine how fields are handled when evaluating the material model and when solving the equations as described below.
 
@@ -76,7 +76,7 @@ Each entry of the list must be one of several recognized types: * &ldquo;chemica
 * &ldquo;porosity&rdquo;: This type of field represents porosity in a two-phase flow or Darcy flow system. Note that setting the type of a compositional field to &ldquo;porosity&rdquo; does not automatically enable melt transport, which is done with the parameter &ldquo;Melt settings/Include melt transport&rdquo;.
 * &ldquo;density&rdquo;: This type of field is a finite-element field representation of the density in the model. This field type is not usually used except for the projected density approximation of the compressible Stokes equations, which uses this field type to compute gradients and time-derivatives of the density.
 * &ldquo;entropy&rdquo;: This type of field represents entropy. If one or more entropy fields are found in a model, they automatically replace temperature as the main thermodynamic state variable in the model. The temperature equation is then automatically changed to a pure diffusion equation, which is coupled to the entropy advection equation as described in the paper {cite}`dannberg:etal:2022`.
-* &ldquo;generic&rdquo;: The generic type is intended to be a placeholder type that is not used by any component of ASPECT unless in user-provided source code.
+* &ldquo;reaction progress&rdquo;: This type of field represents the progress of a phase transition controlled by reaction kinetics. It will only be considered in material models that include models for time-dependent phase transition kinetics.* &ldquo;generic&rdquo;: The generic type is intended to be a placeholder type that is not used by any component of ASPECT unless in user-provided source code.
 * &ldquo;unspecified&rdquo;: The unspecified type is intended to tell ASPECT that the user has not explicitly indicated the type of this field. ASPECT will then try to detect the type automatically based on the name, but will default to &ldquo;chemical composition&rdquo; if the name does not correspond to a known type.
 
 Note that while ASPECT&rsquo;s functionality can make use of the field types, not all of the code will make use of it. It is the user&rsquo;s responsibility to check that the chosen material model and other plugins interpret the compositional fields as intended.
