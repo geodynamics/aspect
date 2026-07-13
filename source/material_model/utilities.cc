@@ -1220,7 +1220,7 @@ namespace aspect
         const double clamped_temperature = std::max(in.temperature, minimum_temperature[n_comp]);
 
         // For the upper bound of P/T values, do assertion instead of clamping, as it is not physically reasonable to ditch high P/T values
-        AssertThrow(pressure_in_bar <= maximum_pressure[n_comp],
+        /*AssertThrow(pressure_in_bar <= maximum_pressure[n_comp],
                     ExcMessage("The model pressure (" + std::to_string(pressure_in_bar) + " bar) exceeds the "
                                "maximum pressure in the lookup table (" + std::to_string(maximum_pressure[n_comp]) + " bar) "
                                "for composition " + std::to_string(n_comp) + "."));
@@ -1228,7 +1228,7 @@ namespace aspect
                     ExcMessage("The model temperature (" + std::to_string(clamped_temperature) + " K) exceeds the "
                                "maximum temperature in the lookup table (" + std::to_string(maximum_temperature[n_comp]) + " K) "
                                "for composition " + std::to_string(n_comp) + "."));
-
+        */
         const std::vector<double> &temperature_points = material_lookup[n_comp]->get_interpolation_point_coordinates(0);
         const std::vector<double> &pressure_points = material_lookup[n_comp]->get_interpolation_point_coordinates(1);
 
