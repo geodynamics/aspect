@@ -1,0 +1,5 @@
+Added: A new composition type of "reaction progress"
+which is used to keep track of the state of reactions,
+for example in models considering reaction kinetics.
+<br>
+(Haoyuan Li, 2026/07/13)

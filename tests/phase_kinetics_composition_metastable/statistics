@@ -1,0 +1,26 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Visualization file name
+# 10: Minimal temperature (K)
+# 11: Average temperature (K)
+# 12: Maximal temperature (K)
+# 13: Average nondimensional temperature (K)
+# 14: Minimal value for composition crust
+# 15: Maximal value for composition crust
+# 16: Global mass for composition crust
+# 17: Minimal value for composition harzburgite
+# 18: Maximal value for composition harzburgite
+# 19: Global mass for composition harzburgite
+# 20: Minimal value for composition reaction_progress_1
+# 21: Maximal value for composition reaction_progress_1
+# 22: Global mass for composition reaction_progress_1
+# 23: Average density (kg/m^3)
+# 24: Average viscosity (Pa s)
+# 25: Total mass (kg)
+0 0.000000000000e+00 0.000000000000e+00 2500 23003 10201 67500 0 output-phase_kinetics_composition_metastable/solution/solution-00000 2.73150000e+02 1.27315000e+03 2.27315000e+03 5.00000000e-01 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.00000000e+00 3.61600000e+11 3.43044552e+03 5.45342439e+23 3.29322770e+15 

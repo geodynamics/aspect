@@ -290,6 +290,11 @@ namespace aspect
          */
         std::unique_ptr<MaterialUtilities::PhaseFunctionDiscrete<dim>> phase_function_discrete;
 
+        /**
+         * Record the mapping of reaction progress to phase transitions used in the material model
+         */
+        std::vector<unsigned int> reaction_progress_mapping;
+
     };
 
   }

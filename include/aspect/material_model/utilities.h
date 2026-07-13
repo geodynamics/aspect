@@ -502,6 +502,38 @@ namespace aspect
         };
       }
 
+
+
+      /**
+      * This function modifies the parameter values of all phases for a given composition
+      * according to the supplied reaction progress.
+      *
+      * The input @p parameter_values contains the parameter values for every
+      * phase of the composition specified by @p composition_index. This function
+      * uses the corresponding entries in @p reaction_progress_values and
+      * @p reaction_progress_mapping to modify the parameter values of phases
+      * affected by kinetic reactions.
+      *
+      * The vector @p reaction_progress_values contains one value for each kinetic
+      * reaction, while @p reaction_progress_mapping specifies the associated phase
+      * transition index for each reaction. The vector
+      * @p n_phase_transitions_per_composition is used to determine which phase
+      * transitions belong to the selected composition.
+      *
+      * The modified parameter values are written back into @p parameter_values
+      * and can subsequently be used during phase averaging with the specified
+      * averaging @p operation.
+      */
+      void
+      reaction_progress_modify_values (const std::vector<double> &reaction_progress_values,
+                                       const std::vector<unsigned int> &reaction_progress_mapping,
+                                       const std::vector<unsigned int> &n_phase_transitions_per_composition,
+                                       std::vector<double> &parameter_values,
+                                       const unsigned int composition_index,
+                                       const PhaseUtilities::PhaseAveragingOperation operation = PhaseUtilities::arithmetic);
+
+
+
       /**
        * Material models compute output quantities such as the viscosity, the
        * density, etc. For some models, these values may depend on the phase in
@@ -523,8 +555,16 @@ namespace aspect
                                   const std::vector<double> &parameter_values,
                                   const unsigned int composition_index,
                                   const PhaseUtilities::PhaseAveragingOperation operation = PhaseUtilities::arithmetic);
-
-
+      /**
+       * Return whether the phase transition with index
+       * @p phase_transition_index has an associated reaction progress value in
+       * @p reaction_progress_mapping and @p reaction_progress_values. If so, return
+       * the corresponding reaction progress value.
+       */
+      std::pair<bool, double>
+      get_reaction_progress_for_phase_transition(const std::vector<double> &reaction_progress_values,
+                                                 const std::vector<unsigned> &reaction_progress_mapping,
+                                                 const unsigned int phase_transition_index);
 
       /**
        * A data structure with all inputs for the
