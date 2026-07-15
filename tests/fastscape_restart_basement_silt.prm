@@ -18,8 +18,7 @@
 # two things are set up. First, the sea level is raised (the base model only
 # floods a thin strip) so a substantial part of the domain is marine and the
 # silt fraction is actually used. Second, the silt and sand marine transport
-# coefficients are made distinct: the offshore diffusivity FastScape sees is a
-# silt-fraction weighting of the two (kd = f*silt + (1-f)*sand), so a contrast
+# coefficients are made distinct, which
 # lets the silt fraction evolve away from its reference value and feed back on
 # the topography. Silt is set larger than sand (finer material travels farther),
 # which is also the ordering for which the marine diffusion stays convergent at
