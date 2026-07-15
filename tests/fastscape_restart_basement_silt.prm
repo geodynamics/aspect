@@ -54,8 +54,7 @@ subsection Mesh deformation
 
     # Raise the sea level so a substantial part of the domain is marine, and
     # give silt and sand distinct transport coefficients (silt > sand) so the
-    # marine silt fraction evolves away from its reference value and affects the
-    # offshore diffusivity. Together these exercise the silt-fraction part of
+    # marine silt fraction evolves away from its reference value. Together these exercise the silt-fraction part of
     # the checkpoint/restart.
     set Use marine component = true
     subsection Marine parameters
