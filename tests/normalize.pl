@@ -1,15 +1,12 @@
 #!/usr/bin/perl
 ######################################################################
 #
-# Copyright (C) 2017
+# Copyright (C) 2017-2026
 #
 # Remove insignificant volatile data from output files of tests
 #
 # Data affected:
-#  JobID line (containing date)
-#  line number of exceptions
-#  start and final residual in iterations
-#  small doubles
+#  timing data, date and time information in output files
 ######################################################################
 
 # usage:
@@ -34,7 +31,7 @@ while (<$in>)
     s/\# Date =.*//;
 
     # replace current source directory by ASPECT_DIR
-    s/$aspect_src_dir/ASPECT_DIR/g;
+    s/\Q$aspect_src_dir\E/ASPECT_DIR/g;
 
     # Exceptions
     s/line <\d+> of file <.*\//file </;
@@ -44,30 +41,3 @@ while (<$in>)
 
     print $_;
 }
-
-# Several date and time strings
-
-#s/%%Creation Date:.*//;
-#s/\"created\".*//;
-#s/^\s+Time =.*//;
-#s/^\s+Date =.*//;
-#s/Time tag:.*//g;
-
-
-
-# Make small exponentials zero
-
-#s/-?\d?\.\d+e-[123456789]\d+/0.00/g;
-
-# See if we have a -0.0... (not followed by any other digit) and replace it
-# by the same number without the negative sign
-#s/-0\.(0+)(?!\d)/0.\1/g;
-
-# Residual values
-
-#s/value.*//;
-#s/with residual.*//;
-
-
-# remove deal.II debug output
-#s/^DEAL.*::_.*\n//g;
