@@ -2355,7 +2355,7 @@ namespace aspect
     // Provide output about the resources used during the computation, but only
     // if the model run is longer than our test cases. This ensures the
     // additional empty lines do not confuse our test system.
-    if (resource_usage > 0.2)
+    if (resource_usage > 1.0)
       resource_output << "\n-- Approximate resource usage including restarts:             "
                       << resource_usage
                       << " core hours"
