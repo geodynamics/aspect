@@ -305,6 +305,9 @@ namespace aspect
                                "These need to be the same during restarting "
                                "from a checkpoint."));
     }
+
+
+
   }
 
 
@@ -371,6 +374,9 @@ namespace aspect
     {
       std::ostringstream oss;
 
+      // Update the checkpoint ID to the current checkpoint ID.
+      last_checkpoint_id = checkpoint_id;
+
       // Serialize into a stringstream. Put the following into a code
       // block of its own to ensure the destruction of the 'oa'
       // archive triggers a flush() on the stringstream so we can
@@ -385,12 +391,15 @@ namespace aspect
 #ifdef DEAL_II_WITH_ZLIB
       if (my_id == 0)
         {
-          uLongf compressed_data_length = compressBound (oss.str().length());
-          std::vector<char *> compressed_data (compressed_data_length);
-          int err = compress2 (reinterpret_cast<Bytef *>(&compressed_data[0]),
+          const std::string serialized_data = oss.str();
+          const uLong serialized_data_length = serialized_data.size();
+
+          uLongf compressed_data_length = compressBound(serialized_data_length);
+          std::vector<Bytef> compressed_data(compressed_data_length);
+          int err = compress2 (compressed_data.data(),
                                &compressed_data_length,
-                               reinterpret_cast<const Bytef *>(oss.str().data()),
-                               oss.str().length(),
+                               reinterpret_cast<const Bytef *>(serialized_data.data()),
+                               serialized_data_length,
                                Z_BEST_COMPRESSION);
           (void)err;
           Assert (err == Z_OK, ExcInternalError());
@@ -398,14 +407,15 @@ namespace aspect
           // build compression header
           const std::uint32_t compression_header[4]
             = { 1,                                   /* number of blocks */
-                static_cast<std::uint32_t>(oss.str().length()), /* size of block */
-                static_cast<std::uint32_t>(oss.str().length()), /* size of last block */
+                static_cast<std::uint32_t>(serialized_data_length), /* size of block */
+                static_cast<std::uint32_t>(serialized_data_length), /* size of last block */
                 static_cast<std::uint32_t>(compressed_data_length)
               }; /* list of compressed sizes of blocks */
 
           std::ofstream f (checkpoint_path + "/resume.z");
           f.write(reinterpret_cast<const char *>(compression_header), 4 * sizeof(compression_header[0]));
-          f.write(reinterpret_cast<char *>(&compressed_data[0]), compressed_data_length);
+          f.write(reinterpret_cast<const char *>(compressed_data.data()),
+                  compressed_data_length);
           f.close();
 
           // We check the fail state of the stream _after_ closing the file to
@@ -437,7 +447,6 @@ namespace aspect
     // can be slow, and the model might be cancelled during writing.
     // This way restart remains usable even if restart.new is not completely
     // written.
-    last_checkpoint_id = checkpoint_id;
     if (my_id == 0)
       {
         write_checkpoint_metadata(checkpoint_path, time, timestep_number);
@@ -744,6 +753,8 @@ namespace aspect
     ar &pre_refinement_step;
     ar &last_pressure_normalization_adjustment;
     ar &total_walltime_until_last_snapshot;
+    ar &nonlinear_solver_failures;
+    ar &linear_solver_failures;
 
     ar &statistics;
 
@@ -752,6 +763,12 @@ namespace aspect
     // dynamic core boundary temperature plugin) and need to be serialized.
     ar &mesh_refinement_manager;
     ar &heating_model_manager;
+    const auto n_particle_managers = particle_managers.size();
+    ar &particle_managers;
+    AssertThrow (particle_managers.size() == n_particle_managers,
+                 ExcMessage ("The number of particle managers stored in the checkpoint "
+                             "does not match the particle managers initialized from "
+                             "the current input file."));
     ar &postprocess_manager;
     ar &boundary_temperature_manager;
     ar &boundary_convective_heating_manager;

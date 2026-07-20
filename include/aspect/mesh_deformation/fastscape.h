@@ -549,8 +549,8 @@ namespace aspect
         Functions::ParsedFunction<1> sea_level_function;
 
         /**
-        * Whether to use a function to define sea level.
-        */
+         * Whether to use a function to define sea level.
+         */
         bool use_sea_level_function;
 
         /**
@@ -585,9 +585,9 @@ namespace aspect
         double silt_efold_depth;
 
         /**
-         * Sand-silt ratio
+         * Silt fraction of material entering the marine domain.
          */
-        double sand_silt_ratio;
+        double incoming_silt_fraction;
 
         /**
          * Averaging depth/thickness for sand-silt equation (m).

@@ -71,7 +71,14 @@ namespace aspect
                 const aspect::LinearAlgebra::Vector &in)
       {
         dealii::LinearAlgebra::ReadWriteVector<double> rwv;
+
+#ifndef ASPECT_USE_TPETRA
         rwv.reinit(in);
+#else
+        rwv.reinit(in.locally_owned_elements());
+        rwv.import_elements(in, VectorOperation::insert);
+#endif
+
         out.import_elements(rwv, VectorOperation::insert);
       }
 

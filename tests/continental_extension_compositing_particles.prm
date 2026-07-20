@@ -1,0 +1,121 @@
+# This is a simplified version of the continental extension cookbook to test
+# the combination of particles, compositing material model and plastic weakening.
+# This test modifies from the continental_extension_mixed_compositions_particles by
+# including compositing material model. 
+include $ASPECT_SOURCE_DIR/tests/continental_extension_mixed_compositions_particles.prm
+
+subsection Material model
+  set Model name = compositing
+  
+  set Material averaging = harmonic average only viscosity
+
+  subsection Simple model
+    set Reference density = 3340
+    set Reference specific heat = 1200
+    set Thermal expansion coefficient = 3e-5
+    set Viscosity = 1e21
+  end
+
+
+  subsection Visco Plastic
+
+    # Reference temperature and viscosity
+    set Reference temperature = 273
+
+    # The minimum strain-rate helps limit large viscosities values that arise
+    # as the strain-rate approaches zero.
+    # The reference strain-rate is used on the first non-linear iteration
+    # of the first time step when the velocity has not been determined yet.
+    set Minimum strain rate = 1.e-20
+    set Reference strain rate = 1.e-16
+
+    # Limit the viscosity with minimum and maximum values
+    set Minimum viscosity = 1e18
+    set Maximum viscosity = 1e26
+
+    # Thermal diffusivity is adjusted to match thermal conductivities
+    # assumed in assigning the initial geotherm
+    set Define thermal conductivities = true
+    set Thermal conductivities        = 2.5
+    set Heat capacities               = 750.
+
+    # Density values of 1 are assigned to "strain" fields, which are not taken into
+    # account when computing material properties.
+    set Densities                     = background: 3300, \
+                                        crust_upper: 2700, \
+                                        crust_lower: 2900, \
+                                        mantle_lithosphere: 3300
+
+    set Thermal expansivities         = 2e-5
+
+    # Harmonic viscosity averaging
+    set Viscosity averaging scheme = harmonic
+
+    # Choose to have the viscosity (pre-yield) follow a dislocation
+    # diffusion or composite flow law.  Here, dislocation is selected
+    # so no need to specify diffusion creep parameters below, which are
+    # only used if "diffusion" or "composite" option is selected.
+    set Viscous flow law = dislocation
+
+    # Dislocation creep parameters for
+    # 1. Background material/mantle (dry olivine)
+    #    Hirth & Kohlstedt (2004),  Geophys. Monogr. Am. Geophys. Soc., v.138, p.83-105.
+    #    "Rheology of the upper mantle and the mantle wedge:a view from the experimentalists"
+    # 2. Upper crust (wet quartzite)
+    #    Gleason and Tullis (1995)
+    # 3. Lower crust and weak seed (wet anorthite)
+    #    Rybacki et al. (2006), J. Geophys. Res., v.111(B3).
+    #    "Influence of water fugacity and activation volume on the flow properties of fine-grained
+    #    anorthite aggregates"
+    # Note that the viscous pre-factors below are scaled to plane strain from unixial strain experiments.
+    # For ease of identification, fields tracking strain are assigned prefactors of 1e-50
+    set Prefactors for dislocation creep          = background: 7.37e-15, \
+                                                    crust_upper: 1.37e-26, \
+                                                    crust_lower: 5.71e-23, \
+                                                    mantle_lithosphere: 7.37e-15
+
+    set Stress exponents for dislocation creep    = background: 3.5, \
+                                                    crust_upper: 4.0, \
+                                                    crust_lower: 3.0, \
+                                                    mantle_lithosphere: 3.5
+
+    set Activation energies for dislocation creep = background: 530.e3, \
+                                                    crust_upper: 223.e3, \
+                                                    crust_lower: 345.e3, \
+                                                    mantle_lithosphere: 530.e3
+
+    set Activation volumes for dislocation creep  = background: 18.e-6, \
+                                                    crust_upper: 0, \
+                                                    crust_lower: 0, \
+                                                    mantle_lithosphere: 18.e-6
+
+    # Plasticity parameters
+    set Angles of internal friction = 30
+    set Cohesions                   = 20.e6
+
+    # The parameters below weaken the friction and cohesion by a
+    # a factor of 4 between plastic strain values of 0.5 and 1.5.
+    set Strain weakening mechanism                   = plastic weakening with plastic strain only
+    set Start plasticity strain weakening intervals  = 0.5
+    set End plasticity strain weakening intervals    = 1.5
+    set Cohesion strain weakening factors            = 0.25
+    set Friction strain weakening factors            = 0.25
+
+    set Use plastic damper       = true
+    set Plastic damper viscosity = 1e21
+
+  end
+
+  subsection Compositing
+    set Viscosity =  visco plastic
+    set Density = simple
+    set Thermal expansion coefficient = simple
+    set Specific heat = simple
+    set Thermal conductivity = simple
+    set Compressibility = visco plastic
+    set Entropy derivative pressure = visco plastic
+    set Entropy derivative temperature = visco plastic
+    set Reaction terms = visco plastic
+  end
+
+end

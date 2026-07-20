@@ -58,9 +58,11 @@ pipeline {
               not {changeRequest authorEmail: "ja3170@columbia.edu"}
               not {changeRequest authorEmail: "jbnaliboff@ucdavis.edu"}
               not {changeRequest authorEmail: "menno.fraters@tutanota.com"}
-              not {changeRequest authorEmail: "a.c.glerum@uu.nl"}
+              not {changeRequest authorEmail: "acglerum@gfz.de"}
               not {changeRequest authorEmail: "myhill.bob@gmail.com"}
               not {changeRequest authorEmail: "ljhwang@ucdavis.edu"}
+              not {changeRequest authorEmail: "saxena.arushi314@gmail.com"}
+              not {changeRequest authorEmail: "daniel.douglas@bc.edu"}
             }
           }
           steps {

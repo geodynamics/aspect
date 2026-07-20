@@ -31,6 +31,8 @@
 #include <deal.II/base/quadrature.h>
 #include <deal.II/base/utilities.h>
 
+#include <boost/serialization/vector.hpp>
+
 #include <limits>
 
 
@@ -38,11 +40,41 @@ namespace aspect
 {
   namespace BoundaryTemperature
   {
+    namespace internal
+    {
+      CoreData::CoreData ()
+        : Qs(numbers::signaling_nan<double>()),
+          Qr(numbers::signaling_nan<double>()),
+          Qg(numbers::signaling_nan<double>()),
+          Qk(numbers::signaling_nan<double>()),
+          Ql(numbers::signaling_nan<double>()),
+          Es(numbers::signaling_nan<double>()),
+          Er(numbers::signaling_nan<double>()),
+          Eg(numbers::signaling_nan<double>()),
+          Ek(numbers::signaling_nan<double>()),
+          El(numbers::signaling_nan<double>()),
+          Eh(numbers::signaling_nan<double>()),
+          Ri(numbers::signaling_nan<double>()),
+          Ti(numbers::signaling_nan<double>()),
+          Xi(numbers::signaling_nan<double>()),
+          Q(numbers::signaling_nan<double>()),
+          H(numbers::signaling_nan<double>()),
+          dt(numbers::signaling_nan<double>()),
+          dR_dt(numbers::signaling_nan<double>()),
+          dT_dt(numbers::signaling_nan<double>()),
+          dX_dt(numbers::signaling_nan<double>()),
+          Q_OES(numbers::signaling_nan<double>()),
+          is_initialized(false)
+      {}
+    }
+
     template <int dim>
     DynamicCore<dim>::DynamicCore()
+      :
+      // leave the core_data variable in its uninitialized state
+      core_data()
     {
       is_first_call = true;
-      core_data.is_initialized = false;
     }
 
 
@@ -64,9 +96,16 @@ namespace aspect
 
           const Postprocess::CoreStatistics<dim> &core_statistics
             = this->get_postprocess_manager().template get_matching_active_plugin<const Postprocess::CoreStatistics<dim>>();
+          const internal::CoreData &postprocessor_core_data = core_statistics.get_core_data();
+          const bool restored_core_data = postprocessor_core_data.is_initialized;
+
           // The restart data is stored in 'core statistics' postprocessor.
           // If restart from checkpoint, extract data from there.
-          core_data = core_statistics.get_core_data();
+          // In a fresh run, the postprocessor has not seen valid dynamic core
+          // data yet, so keep the boundary model's CoreData object and
+          // initialize it from the parameter file below.
+          if (restored_core_data)
+            core_data = postprocessor_core_data;
 
           // Read data of other energy source
           read_data_OES();
@@ -76,7 +115,6 @@ namespace aspect
 
           Rc = spherical_shell_geometry.inner_radius();
           Mc = compute_mass(Rc);
-          P_Core = compute_pressure(0);
 
           // If the material model is incompressible, we have to get correction for the real core temperature
           if (this->get_adiabatic_conditions().is_initialized() && !this->get_material_model().is_compressible())
@@ -100,12 +138,14 @@ namespace aspect
               core_data.Xi = compute_X(core_data.Ri);
 
               core_data.Q = 0.;
+              core_data.H = 0.;
               core_data.dt = 0.;
               core_data.dT_dt = init_dT_dt;
               core_data.dR_dt = init_dR_dt;
               core_data.dX_dt = init_dX_dt;
               update_core_data();
               core_data.is_initialized = true;
+
               std::stringstream output;
               output<<std::setiosflags(std::ios::left)
                     <<"   Dynamic core initialized as:"<<std::endl
@@ -115,6 +155,12 @@ namespace aspect
                     <<std::setw(15)<<core_data.dT_dt *year_in_seconds<<std::setw(15)<<core_data.dR_dt/1.e3 *year_in_seconds
                     <<std::setw(15)<<core_data.dX_dt *year_in_seconds<<std::endl;
               this->get_pcout() << output.str();
+            }
+          else if (restored_core_data)
+            {
+              core_data.dt = this->get_timestep();
+              core_data.H = compute_radioheating_rate();
+              update_core_data();
             }
           is_first_call = false;
         }
@@ -136,7 +182,7 @@ namespace aspect
         double local_CMB_flux   = 0.;
         double local_CMB_area   = 0.;
 
-        types::boundary_id CMB_id = 0;
+        const types::boundary_id CMB_id = inner_boundary_id;
 
         typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
         typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
@@ -182,9 +228,9 @@ namespace aspect
                             const double alpha = out.thermal_expansion_coefficients[q];
                             const double cp = out.specific_heat[0];
                             const double gravity = this->get_gravity_model().gravity_vector(in.position[q]).norm();
-                            if (cell->face(f)->boundary_id()==0)
+                            if (cell->face(f)->boundary_id() == inner_boundary_id)
                               adiabatic_flux = - alpha * gravity / cp;
-                            else if (cell->face(f)->boundary_id()==1)
+                            else if (cell->face(f)->boundary_id() == outer_boundary_id)
                               adiabatic_flux = alpha * gravity / cp;
                           }
 
@@ -211,8 +257,7 @@ namespace aspect
 
       if ((core_data.Q + core_data.Q_OES) * core_data.dt!=0.)
         {
-          double X1,R1 = core_data.Ri,T1;
-          solve_time_step(X1,T1,R1);
+          const auto [X1, T1, R1] = solve_time_step();
           if (core_data.dt != 0)
             {
               core_data.dR_dt = (R1-core_data.Ri)/core_data.dt;
@@ -281,18 +326,28 @@ namespace aspect
         {
           str_data_OES data_read;
           std::string line;
-          while (!in.eof())
+          while (std::getline(in, line))
             {
-              std::getline(in, line);
               if (std::sscanf(line.data(), "%le\t%le\n", &data_read.t, &data_read.w)==2)
                 data_OES.push_back(data_read);
             }
         }
       if (data_OES.size() != 0)
-        this->get_pcout() << "Other energy source is in use ( "
-                          << data_OES.size()
-                          << " data points is read)."
-                          << std::endl;
+        {
+          AssertThrow(data_OES.size() >= 2,
+                      ExcMessage("The dynamic core other energy source data file "
+                                 "must contain at least two data points."));
+
+          for (unsigned int i=1; i<data_OES.size(); ++i)
+            AssertThrow(data_OES[i].t > data_OES[i-1].t,
+                        ExcMessage("The time values in the dynamic core other energy "
+                                   "source data file must be strictly increasing."));
+
+          this->get_pcout() << "Other energy source is in use ( "
+                            << data_OES.size()
+                            << " data points are read)."
+                            << std::endl;
+        }
     }
 
 
@@ -301,20 +356,26 @@ namespace aspect
     double
     DynamicCore<dim>::compute_OES(const double time) const
     {
+      if (data_OES.empty())
+        return 0.;
+
       // The core evolution is quite slow, so the time units used here is billion years.
       const double t = time / (1.e9*year_in_seconds);
-      double w = 0.;
-      for (unsigned i=1; i<data_OES.size(); ++i)
+
+      AssertThrow(t >= data_OES.front().t && t <= data_OES.back().t,
+                  ExcMessage("The current simulation time is outside the time range "
+                             "covered by the dynamic core other energy source data file."));
+
+      for (unsigned int i=1; i<data_OES.size(); ++i)
         {
-          if (t>=data_OES[i-1].t && t<data_OES[i].t )
-            {
-              w = data_OES[i-1].w + ( t - data_OES[i-1].t)
-                  /(data_OES[i].t - data_OES[i-1].t)
-                  *(data_OES[i].w - data_OES[i-1].w);
-              break;
-            }
+          if (t>=data_OES[i-1].t && t<=data_OES[i].t )
+            return data_OES[i-1].w + ( t - data_OES[i-1].t)
+                   /(data_OES[i].t - data_OES[i-1].t)
+                   *(data_OES[i].w - data_OES[i-1].w);
         }
-      return w;
+
+      AssertThrow(false, ExcInternalError());
+      return std::numeric_limits<double>::quiet_NaN();
     }
 
 
@@ -359,8 +420,8 @@ namespace aspect
 
 
     template <int dim>
-    bool
-    DynamicCore<dim>::solve_time_step(double &X, double &T, double &R) const
+    internal::SolveTimeStepResult
+    DynamicCore<dim>::solve_time_step() const
     {
       // When solving the change in core-mantle boundary temperature T, inner core radius R, and
       //    light component (e.g. S, O, Si) composition X, the following relations has to be respected:
@@ -435,31 +496,31 @@ namespace aspect
             }
         }
 
-      // Calculate new R,T,X
-      R = R_1;
-      T = compute_Tc(R);
-      X = compute_X(R);
+      const internal::SolveTimeStepResult result = std::make_tuple(compute_X(R_1),
+                                                                   compute_Tc(R_1),
+                                                                   R_1);
 
       // Check the signs of dT at the boundaries to classify the solution
       if (dT0<0. && dT2>0.)
         {
           // Core partially molten, freezing from the inside, normal solution
-          return true;
+          return result;
         }
       else if (dT0>0. && dT2<0.)
         {
           // Core partially molten, snowing core solution
-          return false;
+          AssertThrow(false, ExcMessage("[Dynamic core] You had a 'Snowing Core' (i.e., core is freezing from CMB), "
+                                        "the treatment is not available at the moment."));
         }
       else if (dT0 >= 0. && dT2 >= 0.)
         {
           // Core fully molten, normal solution
-          return true;
+          return result;
         }
       else if (dT0 <= 0. && dT2 <= 0.)
         {
           // Core fully solid, normal solution
-          return true;
+          return result;
         }
       else
         {
@@ -471,7 +532,7 @@ namespace aspect
           AssertThrow(false, ExcMessage("[Dynamic core] No inner core radius solution found!"));
         }
 
-      return false;
+      return result;
     }
 
 
@@ -527,6 +588,77 @@ namespace aspect
     DynamicCore<dim>::get_core_data() const
     {
       return core_data;
+    }
+
+
+
+    template <int dim>
+    template <class Archive>
+    void
+    DynamicCore<dim>::serialize (Archive &ar, const unsigned int)
+    {
+      ar &core_data.Qs
+      & core_data.Qr
+      & core_data.Qg
+      & core_data.Qk
+      & core_data.Ql
+      & core_data.Es
+      & core_data.Er
+      & core_data.Eg
+      & core_data.Ek
+      & core_data.El
+      & core_data.Eh
+      & core_data.Ri
+      & core_data.Ti
+      & core_data.Xi
+      & core_data.Q
+      & core_data.H
+      & core_data.dt
+      & core_data.dR_dt
+      & core_data.dT_dt
+      & core_data.dX_dt
+      & core_data.Q_OES
+      & core_data.is_initialized
+      & inner_temperature
+      & is_first_call
+      & Rc
+      & Mc
+      & dTa
+      & data_OES;
+    }
+
+
+
+    template <int dim>
+    void
+    DynamicCore<dim>::save (std::map<std::string, std::string> &status_strings) const
+    {
+      // Serialize into a stringstream. Put the following into a code
+      // block of its own to ensure the destruction of the 'oa'
+      // archive triggers a flush() on the stringstream so we can
+      // query the completed string below.
+      std::ostringstream os;
+      {
+        aspect::oarchive oa (os);
+        oa << (*this);
+      }
+
+      status_strings["DynamicCore"] = os.str();
+    }
+
+
+
+    template <int dim>
+    void
+    DynamicCore<dim>::load (const std::map<std::string, std::string> &status_strings)
+    {
+      // See if something was saved.
+      if (status_strings.find("DynamicCore") != status_strings.end())
+        {
+          std::istringstream is (status_strings.find("DynamicCore")->second);
+          aspect::iarchive ia (is);
+          ia >> (*this);
+        }
     }
 
 
@@ -631,16 +763,6 @@ namespace aspect
     template <int dim>
     double
     DynamicCore<dim>::
-    compute_g(const double r) const
-    {
-      return (4*numbers::PI/3)*constants::big_g*Rho_cen*r*(1-3*Utilities::fixed_power<2>(r)/(5*Utilities::fixed_power<2>(L)));
-    }
-
-
-
-    template <int dim>
-    double
-    DynamicCore<dim>::
     compute_T(const double Tc, const double r) const
     {
       return Tc*std::exp((Utilities::fixed_power<2>(Rc)-Utilities::fixed_power<2>(r))/Utilities::fixed_power<2>(D));
@@ -697,6 +819,7 @@ namespace aspect
       Assert (numbers::is_finite(D), ExcInternalError());
       Assert (numbers::is_finite(Rho_cen), ExcInternalError());
       Assert (numbers::is_finite(Rc), ExcInternalError());
+      Assert (numbers::is_finite(core_data.H), ExcInternalError());
 
       double It = numbers::signaling_nan<double>();
       if (D>L)
@@ -870,15 +993,14 @@ namespace aspect
     boundary_temperature (const types::boundary_id boundary_indicator,
                           const Point<dim> &/*location*/) const
     {
-      switch (boundary_indicator)
-        {
-          case 0:
-            return inner_temperature;
-          case 1:
-            return outer_temperature;
-          default:
-            Assert (false, ExcMessage ("Unknown boundary indicator."));
-        }
+      if (boundary_indicator == inner_boundary_id)
+        return inner_temperature;
+      else if (boundary_indicator == outer_boundary_id)
+        return outer_temperature;
+      else
+        AssertThrow (false,
+                     ExcMessage ("Unknown boundary indicator for geometry model. "
+                                 "The given boundary should be ``top'' or ``bottom''."));
 
       return std::numeric_limits<double>::quiet_NaN();
     }
@@ -916,10 +1038,6 @@ namespace aspect
                              Patterns::Double (),
                              "Density of the core. "
                              "Units: $\\frac{\\text{kg}}{\\text{m}^3}$.");
-          prm.declare_entry ("Gravity acceleration", "9.8",
-                             Patterns::Double (),
-                             "Gravitation acceleration at CMB. "
-                             "Units: \\si{\\meter\\per\\second\\squared}.");
           prm.declare_entry ("CMB pressure", "0.14e12",
                              Patterns::Double (),
                              "Pressure at CMB. Units: \\si{\\pascal}.");
@@ -969,14 +1087,14 @@ namespace aspect
             prm.declare_entry ("Tm0","1695.",
                                Patterns::Double (0.),
                                "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm0. Units: $\\text{K}$.");
-            prm.declare_entry ("Tm1","10.9",
+            prm.declare_entry ("Tm1","10.9e-12",
                                Patterns::Double (),
                                "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm1. "
-                               "Units: \\si{\\per\\tera\\pascal}.");
-            prm.declare_entry ("Tm2","-8.0",
+                               "Units: \\si{\\per\\pascal}.");
+            prm.declare_entry ("Tm2","-8.0e-24",
                                Patterns::Double (),
                                "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm2. "
-                               "Units: \\si{\\per\\tera\\pascal\\squared}.");
+                               "Units: \\si{\\per\\pascal\\squared}.");
             prm.declare_entry ("Theta","0.11",
                                Patterns::Double (),
                                "Melting curve (\\cite{NPB+04} eq. (40)) parameter Theta.");
@@ -1014,7 +1132,8 @@ namespace aspect
                                "The 'other energy source' is used for external core energy source."
                                "For example if someone want to test the early lunar core powered by precession "
                                "(Dwyer, C. A., et al. (2011). A long-lived lunar dynamo driven by continuous mechanical stirring. Nature 479(7372): 212-214.)"
-                               "Format [Time(Gyr)   Energy rate(W)]");
+                               "Format [Time(Gyr)   Energy rate(W)]. "
+                               "The time values must be strictly increasing and cover the full simulation time.");
           }
           prm.leave_subsection ();
 
@@ -1041,18 +1160,19 @@ namespace aspect
                        ExcMessage ("This boundary model is only implemented if the geometry is "
                                    "a spherical shell."));
 
+          inner_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");
+          outer_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
+
           inner_temperature = prm.get_double ("Inner temperature");
           outer_temperature = prm.get_double ("Outer temperature");
           init_dT_dt        = prm.get_double ("dT over dt") / year_in_seconds;
           init_dR_dt        = prm.get_double ("dR over dt") / year_in_seconds * 1.e3;
           init_dX_dt        = prm.get_double ("dX over dt") / year_in_seconds;
           Rho_cen           = prm.get_double ("Core density");
-          g                 = prm.get_double ("Gravity acceleration");
           P_CMB             = prm.get_double ("CMB pressure");
           X_init            = prm.get_double ("Initial light composition");
           max_steps         = prm.get_integer ("Max iteration");
           Cp                = prm.get_double ("Core heat capacity");
-          CpRho             = Cp*Rho_cen;
 
           //\cite{NPB+04}
           K0                = prm.get_double ("K0");
@@ -1133,7 +1253,10 @@ namespace aspect
                                                "Zhang et al. [2016]. The energy of core cooling and freeing of the "
                                                "inner core is included in the plugin. However, current plugin can not "
                                                "deal with the energy balance if the core is in the `snowing core' regime "
-                                               "(i.e., the core solidifies from the top instead of bottom)."
+                                               "(i.e., the core solidifies from the top instead of bottom). "
+                                               "The adiabatic correction for the CMB heat flux uses the active gravity "
+                                               "model, so the gravity at the CMB should be set in subsection "
+                                               "`Gravity model'."
                                               )
   }
 }

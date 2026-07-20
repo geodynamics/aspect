@@ -218,13 +218,13 @@ namespace aspect
                 {
                   case diffusion:
                   {
-                    non_yielding_viscosity = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_diffusion, j, i, \
+                    non_yielding_viscosity = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_diffusion, j, i,
                                                                                                   CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::diffusion);
                     break;
                   }
                   case dislocation:
                   {
-                    non_yielding_viscosity = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_dislocation, j, i, \
+                    non_yielding_viscosity = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_dislocation, j, i,
                                                                                                   CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::dislocation);
                     break;
                   }
@@ -238,9 +238,9 @@ namespace aspect
                   }
                   case composite:
                   {
-                    const double scaled_viscosity_diffusion = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_diffusion, j, i, \
+                    const double scaled_viscosity_diffusion = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_diffusion, j, i,
                                                               CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::diffusion);
-                    const double scaled_viscosity_dislocation = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_dislocation, j, i, \
+                    const double scaled_viscosity_dislocation = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_dislocation, j, i,
                                                                 CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::dislocation);
                     non_yielding_viscosity = (scaled_viscosity_diffusion * scaled_viscosity_dislocation)/
                                              (scaled_viscosity_diffusion + scaled_viscosity_dislocation);
@@ -248,9 +248,9 @@ namespace aspect
                   }
                   case minimum_diffusion_dislocation:
                   {
-                    const double scaled_viscosity_diffusion = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_diffusion, j, i, \
+                    const double scaled_viscosity_diffusion = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_diffusion, j, i,
                                                               CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::diffusion);
-                    const double scaled_viscosity_dislocation = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_dislocation, j, i, \
+                    const double scaled_viscosity_dislocation = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_dislocation, j, i,
                                                                 CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::dislocation);
                     non_yielding_viscosity = std::min(scaled_viscosity_diffusion, scaled_viscosity_dislocation);
                     break;

@@ -434,11 +434,18 @@ namespace aspect
         strain_healing_temperature_dependent_prefactor = prm.get_double ("Strain healing temperature dependent prefactor");
 
 #if !DEAL_II_VERSION_GTE(9, 8, 0)
-        // Work around a memory leak in deal.II that is fixed in 9.8.0-pre:
+        // Work around a memory leak in deal.II fixed in 9.8.0-pre
+        // (see dealii/dealii#19328) by dropping cached FEPointEvaluation
+        // objects at the start of every timestep so they are rebuilt fresh.
+        // The original workaround in #6877 only reset composition_evaluators;
+        // the velocity-gradient evaluator is also reset here since it is
+        // used for tensor-component strain weakening and would otherwise
+        // keep leaking.
         this->get_signals().start_timestep.connect([&](const SimulatorAccess<dim> &)
         {
-          for (auto &evaluator : composition_evaluators)
-            evaluator.reset();
+          evaluator.reset();
+          for (auto &composition_evaluator : composition_evaluators)
+            composition_evaluator.reset();
         });
 #endif
       }

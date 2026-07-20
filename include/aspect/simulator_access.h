@@ -152,6 +152,11 @@ namespace aspect
     template <int dim> class Manager;
   }
 
+  namespace PrescribedSolution
+  {
+    template <int dim> class  Manager;
+  }
+
   /**
    * SimulatorAccess is a base class for different plugins like postprocessors.
    * It provides access to the various variables of the main class that
@@ -359,6 +364,15 @@ namespace aspect
        */
       std::string
       get_output_directory () const;
+
+      /**
+       * Return the ID of the checkpoint that ASPECT is currently writing or was last
+       * written, depending on where this function gets called. Can be used in plugins
+       * to override the save() function and synchronize the checkpointing of plugins
+       * with the main ASPECT checkpoint.
+       */
+      unsigned int
+      get_checkpoint_id () const;
 
       /**
        * Return whether we use the adiabatic heating term.
@@ -1019,6 +1033,13 @@ namespace aspect
        */
       const StokesMatrixFreeHandler<dim> &
       get_stokes_matrix_free () const;
+
+      /**
+       * Return a reference to the PrescribedSolution::Manager that manages the
+       * Prescribed solution plugins.
+       */
+      const PrescribedSolution::Manager<dim> &
+      get_prescribed_solution () const;
 
       /**
        * Compute the angular momentum and other rotation properties

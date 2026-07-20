@@ -1891,6 +1891,9 @@ namespace aspect
     // Now apply constraints (boundary conditions and others) to the new solution vector.
     current_constraints.distribute (distributed_vector);
 
+    // Apply hanging node constraints but not Dirichet bcs, while preserving periodic bcs
+    constraints.distribute(distributed_reaction_vector);
+
     // put the final values into the solution vector
     for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
       update_solution_vectors_with_reaction_results(introspection.block_indices.compositional_fields[c],

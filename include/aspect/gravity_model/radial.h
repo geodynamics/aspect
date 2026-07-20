@@ -31,4 +31,8 @@
 #include <aspect/gravity_model/radial_constant.h>
 #include <aspect/gravity_model/radial_linear.h>
 
+namespace aspect
+{
+}
+
 #endif

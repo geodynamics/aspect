@@ -1,0 +1,7 @@
+
+Loading shared library <./libcheckpoint_09_particles_no_postprocessor.debug.so>
+* running continuous reference:
+* running restart setup:
+* now resuming:
+* comparing restarted run with continuous run:
+* checkpoint resume preserved particle state without particle output.

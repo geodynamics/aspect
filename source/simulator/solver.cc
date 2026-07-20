@@ -897,6 +897,8 @@ namespace aspect
             // processors
             catch (const std::exception &exc)
               {
+                ++linear_solver_failures;
+
                 signals.post_stokes_solver(*this,
                                            schur->n_iterations(),
                                            inverse_velocity_block_cheap.n_iterations()+inverse_velocity_block_expensive.n_iterations(),
@@ -910,13 +912,27 @@ namespace aspect
                 if (parameters.n_expensive_stokes_solver_steps > 0)
                   solver_controls.push_back(solver_control_expensive);
 
-                // Exit with an exception that describes the underlying cause:
-                Utilities::throw_linear_solver_failure_exception("iterative Stokes solver",
-                                                                 "Simulator::solve_stokes",
-                                                                 solver_controls,
-                                                                 exc,
-                                                                 mpi_communicator,
-                                                                 parameters.output_directory+"solver_history.txt");
+                // Determine whether to warn or throw an exception due to linear solver failure
+                switch (parameters.linear_solver_failure_strategy)
+                  {
+                    case Parameters<dim>::LinearSolverFailureStrategy::continue_with_nonlinear_solver:
+                    {
+                      pcout << " linear solver failed, continuing" << std::endl;
+                      break;
+                    }
+                    case Parameters<dim>::LinearSolverFailureStrategy::abort:
+                    {
+                      Utilities::throw_linear_solver_failure_exception("iterative Stokes solver",
+                                                                       "Simulator::solve_stokes",
+                                                                       solver_controls,
+                                                                       exc,
+                                                                       mpi_communicator,
+                                                                       parameters.output_directory+"solver_history.txt");
+                      break;
+                    }
+                    default:
+                      AssertThrow(false, ExcNotImplemented());
+                  }
               }
           }
 

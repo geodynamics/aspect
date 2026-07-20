@@ -23,7 +23,7 @@ The additional boundary indicators for the lithosphere allow for selecting bound
 
 &lsquo;chunk&rsquo;: A geometry which can be described as a chunk of a spherical shell, bounded by lines of longitude, latitude and radius. The minimum and maximum longitude, latitude (if in 3d) and depth of the chunk is set in the parameter file. The chunk geometry labels its 2*dim sides as follows: &ldquo;west&rdquo; and &ldquo;east&rdquo;: minimum and maximum longitude, &ldquo;south&rdquo; and &ldquo;north&rdquo;: minimum and maximum latitude, &ldquo;inner&rdquo; and &ldquo;outer&rdquo;: minimum and maximum radii.
 
-The dimensions of the model are specified by parameters of the following form: Chunk (minimum || maximum) (longitude || latitude): edges of geographical quadrangle (in degrees) Chunk (inner || outer) radius: Radii at bottom and top of chunk (Longitude || Latitude || Radius) repetitions: number of cells in each coordinate direction.
+The dimensions of the model are specified by parameters of the following form: Chunk (minimum || maximum) (longitude || latitude): edges of geographical quadrangle (in degrees). Chunk (inner || outer) radius: Radii at bottom and top of chunk. (Longitude || Latitude || Radius) repetitions: number of cells in each coordinate direction.
 
 When used in 2d, this geometry does not imply the use of a spherical coordinate system. Indeed, in 2d the geometry is simply a sector of an annulus in a Cartesian coordinate system and consequently would correspond to a sector of a cross section of the fluid filled space between two infinite cylinders where one has made the assumption that the velocity in direction of the cylinder axes is zero. This is consistent with the definition of what we consider the two-dimension case given in {ref}`sec:methods:2d-models`. It is also possible to add initial topography to the chunk geometry, based on an ascii data file.
 
@@ -824,5 +824,5 @@ The default value of 6,336,000 m equals the radius of a sphere with equal volume
 
 **Pattern:** [Bool]
 
-**Documentation:** Whether the shell should be periodic in the phi direction.
+**Documentation:** Whether the shell should be periodic in the phi direction. This is supported for 2d models with opening angles of 90 or 180 degrees.
 ::::

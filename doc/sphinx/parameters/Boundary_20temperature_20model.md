@@ -47,7 +47,7 @@ The following boundary temperature models are available:
 
 &lsquo;constant&rsquo;: A model in which the temperature is chosen constant on a given boundary indicator.  Parameters are read from the subsection &rsquo;Constant&rsquo;.
 
-&lsquo;dynamic core&rsquo;: This is a boundary temperature model working only with spherical shell geometry and core statistics postprocessor. The temperature at the top is constant, and the core mantle boundary temperature is dynamically evolving through time by calculating the heat flux into the core and solving the core energy balance. The formulation is mainly following {cite}`NPB+04`, and the plugin is used in Zhang et al. [2016]. The energy of core cooling and freeing of the inner core is included in the plugin. However, current plugin can not deal with the energy balance if the core is in the &lsquo;snowing core&rsquo; regime (i.e., the core solidifies from the top instead of bottom).
+&lsquo;dynamic core&rsquo;: This is a boundary temperature model working only with spherical shell geometry and core statistics postprocessor. The temperature at the top is constant, and the core mantle boundary temperature is dynamically evolving through time by calculating the heat flux into the core and solving the core energy balance. The formulation is mainly following {cite}`NPB+04`, and the plugin is used in Zhang et al. [2016]. The energy of core cooling and freeing of the inner core is included in the plugin. However, current plugin can not deal with the energy balance if the core is in the &lsquo;snowing core&rsquo; regime (i.e., the core solidifies from the top instead of bottom). The adiabatic correction for the CMB heat flux uses the active gravity model, so the gravity at the CMB should be set in subsection &lsquo;Gravity model&rsquo;.
 
 &lsquo;function&rsquo;: Implementation of a model in which the boundary temperature is given in terms of an explicit formula that is elaborated in the parameters in section &ldquo;Boundary temperature model|Function&rdquo;.
 
@@ -89,7 +89,7 @@ Because this class simply takes what the initial temperature had described, this
 
 &lsquo;constant&rsquo;: A model in which the temperature is chosen constant on a given boundary indicator.  Parameters are read from the subsection &rsquo;Constant&rsquo;.
 
-&lsquo;dynamic core&rsquo;: This is a boundary temperature model working only with spherical shell geometry and core statistics postprocessor. The temperature at the top is constant, and the core mantle boundary temperature is dynamically evolving through time by calculating the heat flux into the core and solving the core energy balance. The formulation is mainly following {cite}`NPB+04`, and the plugin is used in Zhang et al. [2016]. The energy of core cooling and freeing of the inner core is included in the plugin. However, current plugin can not deal with the energy balance if the core is in the &lsquo;snowing core&rsquo; regime (i.e., the core solidifies from the top instead of bottom).
+&lsquo;dynamic core&rsquo;: This is a boundary temperature model working only with spherical shell geometry and core statistics postprocessor. The temperature at the top is constant, and the core mantle boundary temperature is dynamically evolving through time by calculating the heat flux into the core and solving the core energy balance. The formulation is mainly following {cite}`NPB+04`, and the plugin is used in Zhang et al. [2016]. The energy of core cooling and freeing of the inner core is included in the plugin. However, current plugin can not deal with the energy balance if the core is in the &lsquo;snowing core&rsquo; regime (i.e., the core solidifies from the top instead of bottom). The adiabatic correction for the CMB heat flux uses the active gravity model, so the gravity at the CMB should be set in subsection &lsquo;Gravity model&rsquo;.
 
 &lsquo;function&rsquo;: Implementation of a model in which the boundary temperature is given in terms of an explicit formula that is elaborated in the parameters in section &ldquo;Boundary temperature model|Function&rdquo;.
 
@@ -343,15 +343,6 @@ Because this class simply takes what the initial temperature had described, this
 **Documentation:** Partition coefficient of the light element.
 ::::
 
-::::{dropdown} __Parameter:__ {ref}`Gravity acceleration<parameters:Boundary_20temperature_20model/Dynamic_20core/Gravity_20acceleration>`
-:name: parameters:Boundary_20temperature_20model/Dynamic_20core/Gravity_20acceleration
-**Default value:** 9.8
-
-**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
-
-**Documentation:** Gravitation acceleration at CMB. Units: \si{\meter\per\second\squared}.
-::::
-
 ::::{dropdown} __Parameter:__ {ref}`Initial light composition<parameters:Boundary_20temperature_20model/Dynamic_20core/Initial_20light_20composition>`
 :name: parameters:Boundary_20temperature_20model/Dynamic_20core/Initial_20light_20composition
 **Default value:** 0.01
@@ -482,20 +473,20 @@ Because this class simply takes what the initial temperature had described, this
 
 ::::{dropdown} __Parameter:__ {ref}`Tm1<parameters:Boundary_20temperature_20model/Dynamic_20core/Geotherm_20parameters/Tm1>`
 :name: parameters:Boundary_20temperature_20model/Dynamic_20core/Geotherm_20parameters/Tm1
-**Default value:** 10.9
+**Default value:** 10.9e-12
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Melting curve ({cite}`NPB+04` eq. (40)) parameter Tm1. Units: \si{\per\tera\pascal}.
+**Documentation:** Melting curve ({cite}`NPB+04` eq. (40)) parameter Tm1. Units: \si{\per\pascal}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Tm2<parameters:Boundary_20temperature_20model/Dynamic_20core/Geotherm_20parameters/Tm2>`
 :name: parameters:Boundary_20temperature_20model/Dynamic_20core/Geotherm_20parameters/Tm2
-**Default value:** -8.0
+**Default value:** -8.0e-24
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Melting curve ({cite}`NPB+04` eq. (40)) parameter Tm2. Units: \si{\per\tera\pascal\squared}.
+**Documentation:** Melting curve ({cite}`NPB+04` eq. (40)) parameter Tm2. Units: \si{\per\pascal\squared}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Use BW11<parameters:Boundary_20temperature_20model/Dynamic_20core/Geotherm_20parameters/Use_20BW11>`
@@ -515,7 +506,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Anything]
 
-**Documentation:** Data file name for other energy source into the core. The &rsquo;other energy source&rsquo; is used for external core energy source.For example if someone want to test the early lunar core powered by precession (Dwyer, C. A., et al. (2011). A long-lived lunar dynamo driven by continuous mechanical stirring. Nature 479(7372): 212-214.)Format [Time(Gyr)   Energy rate(W)]
+**Documentation:** Data file name for other energy source into the core. The &rsquo;other energy source&rsquo; is used for external core energy source.For example if someone want to test the early lunar core powered by precession (Dwyer, C. A., et al. (2011). A long-lived lunar dynamo driven by continuous mechanical stirring. Nature 479(7372): 212-214.)Format [Time(Gyr)   Energy rate(W)]. The time values must be strictly increasing and cover the full simulation time.
 ::::
 
 (parameters:Boundary_20temperature_20model/Dynamic_20core/Radioactive_20heat_20source)=

@@ -1,0 +1,5 @@
+New: The 2d spherical shell geometry model now supports
+180 degree phi-periodic shells, including particle advection across
+the periodic boundary.
+<br>
+(Francesco Radica, 2026/05/21)

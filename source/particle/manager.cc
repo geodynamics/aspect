@@ -1089,7 +1089,7 @@ namespace aspect
                                Patterns::Selection ("random|histogram|point density function"),
                                "Algorithm used to add particles to cells. ");
             prm.declare_entry ("Point density kernel function", "cutoff c1 dealii",
-                               Patterns::Selection ("cutoff c1 dealii|cutoff w1 dealii|uniform|triangular|gaussian"),
+                               Patterns::Selection ("epanechnikov|cutoff c1 dealii|cutoff w1 dealii|uniform|triangular|gaussian"),
                                "The kernel function is summed at each particle location to generate a point "
                                "density function of the particle locations according to a process known as "
                                "kernel density estimation. Because kernel density estimation sums the value of "
@@ -1103,7 +1103,9 @@ namespace aspect
                                "value as long as the distance between particles is less than the selected bandwidth."
                                "The cutoff w1 and cutoff c1 dealii options call the deal.II functions called cutoffW1 and cutoffC1 respectively. "
                                "These are functions whose return values decrease with distance. A more detailed explanation on these two "
-                               "function are available in the deal.II documentation.");
+                               "function are available in the deal.II documentation. The epanechnikov function is a parabolic function "
+                               "which also returns a lower value as distance increases. The epanechnikov kernel is theoretically "
+                               "the most efficient possible kernel to use in kernel density estimation.");
             prm.declare_entry ("Bandwidth", "0.3",
                                Patterns::Double (0.3),"The bandwidth value is used to scale the kernel "
                                "function when generating the point density function of particles. "
@@ -1297,6 +1299,8 @@ namespace aspect
           kernel_function = ParticlePDF<dim>::KernelFunction::uniform;
         else if (kernel_function_string == "triangular")
           kernel_function = ParticlePDF<dim>::KernelFunction::triangular;
+        else if (kernel_function_string == "epanechnikov")
+          kernel_function = ParticlePDF<dim>::KernelFunction::epanechnikov;
         else if (kernel_function_string == "gaussian")
           kernel_function = ParticlePDF<dim>::KernelFunction::gaussian;
         else

@@ -34,6 +34,15 @@ gaussian_oscillating_data = [
     gaussian_df['Maximal particle distribution score: '].mean(),
 ]
 
+# epanechnikov kernel function, oscillating velocity
+epanechnikov_df = read_statistics('output_addition/output-epanechnikov/statistics')
+epanechnikov_oscillating_data = [
+    'Epanechnikov, oscillating V',
+    epanechnikov_df['Cell Score Standard Deviation: '].mean(),
+    epanechnikov_df['Average particle distribution score: '].mean(),
+    epanechnikov_df['Maximal particle distribution score: '].mean(),
+]
+
 # Cutoff-w1 kernel function, oscillating velocity
 cutoffw1_df = read_statistics('output_addition/output-cutoff-w1/statistics')
 cutoffw1_oscillating_data = [
@@ -90,6 +99,14 @@ histogram_constant_data = [
     histogram_constant_df['Maximal particle distribution score: '].mean()
 ]
 
+# epanechnikov kernel function, constant velocity
+epanechnikov_constant_df = read_statistics('output_addition/output-epanechnikov-constant-velocity/statistics')
+epanechnikov_constant_data = [
+    'Epanechnikov, constant V',
+    epanechnikov_constant_df['Cell Score Standard Deviation: '].mean(),
+    epanechnikov_constant_df['Average particle distribution score: '].mean(),
+    epanechnikov_constant_df['Maximal particle distribution score: '].mean(),
+]
 
 # Gaussian kernel function, constant velocity
 gaussian_constant_df = read_statistics('output_addition/output-gaussian-constant-velocity/statistics')
@@ -143,7 +160,8 @@ output_data_array_oscillating = [
     cutoffw1_oscillating_data,
     cutoffc1_oscillating_data,
     uniform_oscillating_data,
-    triangular_oscillating_data
+    triangular_oscillating_data,
+    epanechnikov_oscillating_data
 ]
 
 output_data_array_constant = [
@@ -153,7 +171,8 @@ output_data_array_constant = [
     cutoffw1_constant_data,
     cutoffc1_constant_data,
     uniform_constant_data,
-    triangular_constant_data
+    triangular_constant_data,
+    epanechnikov_constant_data
 ]
 
 column_names_output = [

@@ -14,6 +14,10 @@ set End time                     = 0.5
 set Use years instead of seconds = false
 set Output directory             = output_Shearbox_CPO_AV
 
+subsection Termination criteria
+  set End step = 0
+end
+
 subsection Initial composition model
   set List of model names = function
 

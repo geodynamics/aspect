@@ -219,7 +219,7 @@ namespace aspect
       std::vector<int> ji = {1,2,0}; // tuple of indices shifted by one
       std::vector<int> ki = {2,0,1}; // tuple of indices shifted by two
 
-      std::vector<double> Hi = {F, G, H, M, N, L};
+      std::vector<double> Hi = {F, G, H, L, M, N};
       const double gam = 4*(Hi[2]*Hi[1] + Hi[0]*Hi[2] + Hi[0]*Hi[1]);
 
       double anisotropic_invariant = 0.0;
@@ -288,6 +288,10 @@ namespace aspect
                strain_rate_3d);
 
           // Create constant value to use for AV
+          // const double A_o = fluidity_constant*std::exp(-530000/(8.314*in.temperature[q]));
+          // // const double n = 3.5; //n=3 for test against VPSC, n=3.5 for D-Rex in ASPECT
+          // // The values of A_o and 0.73 were picked so that Gamma = 3.5322e-15[1/(s*Pa^n)] if T=1600K and d=1000 microns
+          // const double Gamma = (A_o/(std::pow(grain_size,0.73)));
 
           const double A_o = fluidity_constant*std::exp(-activation_energy/(8.314*std::max(in.temperature[q],1.0e-10)));
           // 1.1e5*std::exp(-530000/(8.314*in.temperature[q]));
@@ -452,9 +456,8 @@ namespace aspect
                     }
 
                   unsigned int n_iterations = 0;
-                  const unsigned int max_iteration = 100;
                   double residual = scalar_viscosity;
-                  double threshold = 0.0001*scalar_viscosity;
+                  double threshold = relative_tolerance*scalar_viscosity;
                   // Here we convert stress to MPa to be consistent with the constitutive equation defined in Signorelli et al. (2021),
                   // in which the stress is in MPa.
                   SymmetricTensor<2,3> stress = scalar_viscosity * viscosity_tensor_3D_r4 * deviatoric_strain_rate; // 2 * / 1e6;
@@ -479,7 +482,7 @@ namespace aspect
                       const double scalar_viscosity_new = (1 / (Gamma * std::pow(Jhill,(n-1)/2)));
                       residual = std::abs(scalar_viscosity_new - scalar_viscosity);
                       scalar_viscosity = scalar_viscosity_new;
-                      threshold = 0.0001*scalar_viscosity;
+                      threshold = relative_tolerance*scalar_viscosity;
                       n_iterations++;
                     }
                 }
@@ -505,6 +508,16 @@ namespace aspect
 
               if (anisotropic_viscosity != nullptr)
                 {
+                  if ((this->simulator_is_past_initialization()) && (std::isfinite(determinant(deviatoric_strain_rate))))
+                    {
+                      // for the zero-th timestep calculating the scalar viscosity based on the strain-rate -> i.e. isotropic response
+                      // double edot_ii=std::max(std::max(deviatoric_strain_rate.norm(), 0.),
+                      //                               min_strain_rate);
+                      // out.viscosities[q] = 1/Gamma * std::pow(edot_ii,((1. - n)/n)); //
+                      double edot_ii=std::max(std::sqrt(std::max(-second_invariant(deviator(strain_rate)), 0.)),
+                                              min_strain_rate);
+                      out.viscosities[q] = 1/Gamma * std::pow(edot_ii,((1. - n)/n));
+                    }
                   // Assign an isotropic viscosity tensor
                   SymmetricTensor<2,6> viscosity_tensor;
                   viscosity_tensor[0][0] = 2.0/3.0;  // 4.0/9.0;
@@ -602,6 +615,12 @@ namespace aspect
           prm.declare_entry ("Use analytical inversion", "false",
                              Patterns::Bool (),
                              "Whether to use the analytical or the iterative inversion for the anisotropic scalar viscosity.");
+          prm.declare_entry ("Relative tolerance for iteration", "0.0001",
+                             Patterns::Double(),
+                             "The iteration for computing scalar viscosity is terminated when the relative change falls below the relative tolerance.");
+          prm.declare_entry ("Maximum number of iterations", "100",
+                             Patterns::Integer(),
+                             "To prevent excessive computation, the number of iterations with a maximum number of iterations.");
         }
         prm.leave_subsection();
       }
@@ -628,6 +647,8 @@ namespace aspect
           grain_size_exponent = prm.get_double("Grain size exponent");
           activation_energy = prm.get_double("Activation energy");
           use_analytical_inversion  = prm.get_bool ("Use analytical inversion");
+          relative_tolerance = prm.get_double("Relative tolerance for iteration");
+          max_iteration = prm.get_integer("Maximum number of iterations");
           CnI_F = dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Coefficients and intercept for F")));
           CnI_G = dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Coefficients and intercept for G")));
           CnI_H = dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Coefficients and intercept for H")));

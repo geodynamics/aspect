@@ -217,6 +217,15 @@ namespace aspect
 
 
   template <int dim>
+  unsigned int
+  SimulatorAccess<dim>::get_checkpoint_id () const
+  {
+    return simulator->last_checkpoint_id;
+  }
+
+
+
+  template <int dim>
   bool
   SimulatorAccess<dim>::convert_output_to_years () const
   {
@@ -908,6 +917,15 @@ namespace aspect
     Assert (simulator->stokes_matrix_free.get() != nullptr,
             ExcMessage("You can not call this function if the matrix-free Stokes solver is not used."));
     return *(simulator->stokes_matrix_free);
+  }
+
+
+
+  template <int dim>
+  const PrescribedSolution::Manager<dim> &
+  SimulatorAccess<dim>::get_prescribed_solution () const
+  {
+    return simulator->prescribed_solution_manager;
   }
 
 

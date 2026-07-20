@@ -91,6 +91,10 @@ namespace aspect
         double grain_size_exponent;
         bool use_analytical_inversion;
 
+        /** The iteration for computing scalar viscosity is terminated when the relative change falls below the relative tolerance. */
+        double relative_tolerance;
+        unsigned int max_iteration;
+
         EquationOfState::LinearizedIncompressible<dim> equation_of_state;
 
         void set_assemblers(const SimulatorAccess<dim> &,

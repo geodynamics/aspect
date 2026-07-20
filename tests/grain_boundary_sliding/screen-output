@@ -9,7 +9,7 @@ Number of degrees of freedom: 84 (50+9+25)
 
    Postprocessing:
      Writing graphical output:                          output-grain_boundary_sliding/solution/solution-00000
-     Average density / Average viscosity / Total mass:  3303 kg/m^3, 3.805e+15 Pa s, 3303 kg
+     Average density / Average viscosity / Total mass:  3303 kg/m^3, 3.496e+15 Pa s, 3303 kg
 
 *** Timestep 1:  t=0.025 seconds, dt=0.025 seconds
    Solving temperature system... 0 iterations.
@@ -17,7 +17,7 @@ Number of degrees of freedom: 84 (50+9+25)
    Solving Stokes system (AMG)... 1+0 iterations.
 
    Postprocessing:
-     Average density / Average viscosity / Total mass:  3303 kg/m^3, 3.805e+15 Pa s, 3303 kg
+     Average density / Average viscosity / Total mass:  3303 kg/m^3, 3.496e+15 Pa s, 3303 kg
 
 Termination requested by criterion: end time
 

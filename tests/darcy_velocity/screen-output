@@ -1,6 +1,11 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 Loading shared library <./libdarcy_velocity.debug.so>
 
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 Number of active cells: 2,048 (on 6 levels)
 Number of degrees of freedom: 44,070 (16,770+2,145+8,385+8,385+8,385)
 
@@ -9,14 +14,14 @@ Number of degrees of freedom: 44,070 (16,770+2,145+8,385+8,385+8,385)
    Solving porosity system ... 0 iterations.
    Solving fluid system ... 0 iterations.
    Solving Stokes system (GMG)... 8+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.06401e-16, 7.57063e-17, 1.69402e-16, 0.999906
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.95369e-16, 1.3527e-16, 1.73282e-16, 0.999906
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.999906
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving fluid system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.06401e-16, 7.57063e-17, 1.69402e-16, 3.71636e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.95369e-16, 1.3527e-16, 1.73282e-16, 3.71636e-09
       Relative nonlinear residual (total system) after nonlinear iteration 2: 3.71636e-09
 
 
@@ -27,21 +32,21 @@ Number of degrees of freedom: 44,070 (16,770+2,145+8,385+8,385+8,385)
 *** Timestep 1:  t=187.745 years, dt=187.745 years
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
-   Solving fluid system ... 17 iterations.
+   Solving fluid system ... 12 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.76026e-16, 1.62502e-16, 0.153152, 3.71636e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.153152
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64188e-16, 1.29561e-16, 0.169347, 3.71636e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.169347
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving fluid system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.76026e-16, 1.62502e-16, 8.478e-13, 3.71636e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64188e-16, 1.29561e-16, 4.46211e-13, 3.71636e-09
       Relative nonlinear residual (total system) after nonlinear iteration 2: 3.71636e-09
 
 
    Postprocessing:
-     Compositions min/max/mass:  0.2/0.2/4e+09 // -0.1357/1.131/4.872e+08
+     Compositions min/max/mass:  0.2/0.2/4e+09 // -0.0765/1.076/4.872e+08
      Compositions max depth [m]: -1.798e+308 // 6.094e+04
 
 *** Timestep 2:  t=375.49 years, dt=187.745 years
@@ -49,19 +54,19 @@ Number of degrees of freedom: 44,070 (16,770+2,145+8,385+8,385+8,385)
    Solving porosity system ... 0 iterations.
    Solving fluid system ... 16 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.01835e-16, 1.32239e-16, 0.0482778, 3.71636e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0482778
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.67628e-16, 1.73451e-16, 0.0528929, 3.71636e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0528929
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving fluid system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.01835e-16, 1.32239e-16, 4.35337e-13, 3.71636e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.67628e-16, 1.73451e-16, 4.94629e-13, 3.71636e-09
       Relative nonlinear residual (total system) after nonlinear iteration 2: 3.71636e-09
 
 
    Postprocessing:
-     Compositions min/max/mass:  0.2/0.2/4e+09 // -0.1747/1.142/4.872e+08
+     Compositions min/max/mass:  0.2/0.2/4e+09 // -0.07421/1.082/4.872e+08
      Compositions max depth [m]: -1.798e+308 // 6.094e+04
 
 *** Timestep 3:  t=500 years, dt=124.51 years
@@ -69,22 +74,27 @@ Number of degrees of freedom: 44,070 (16,770+2,145+8,385+8,385+8,385)
    Solving porosity system ... 0 iterations.
    Solving fluid system ... 14 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.40836e-16, 2.12626e-16, 0.0286959, 3.71636e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0286959
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.48098e-16, 1.66495e-16, 0.0272448, 3.71636e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0272448
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving fluid system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.40836e-16, 2.12487e-16, 4.06506e-13, 3.71636e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.48098e-16, 1.66495e-16, 3.73833e-13, 3.71636e-09
       Relative nonlinear residual (total system) after nonlinear iteration 2: 3.71636e-09
 
 
    Postprocessing:
-     Compositions min/max/mass:  0.2/0.2/4e+09 // -0.1528/1.137/4.872e+08
+     Compositions min/max/mass:  0.2/0.2/4e+09 // -0.04779/1.061/4.872e+08
      Compositions max depth [m]: -1.798e+308 // 5.973e+04
 
 Termination requested by criterion: end time
 
 
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
 
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------

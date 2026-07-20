@@ -26,6 +26,8 @@
 #include <aspect/boundary_temperature/interface.h>
 #include <aspect/simulator_access.h>
 
+#include <tuple>
+
 namespace aspect
 {
   namespace BoundaryTemperature
@@ -38,6 +40,13 @@ namespace aspect
     {
       struct CoreData
       {
+        /**
+         * Default constructor. Initialize everything to invalid values,
+         * and set is_initialized to false. The values will be updated
+         * in the first call of update() in DynamicCore class.
+         */
+        CoreData ();
+
         /**
          * Energy for specific heat, radioactive heating, gravitational contribution,
          * adiabatic contribution, and latent heat. These variables are updated each time step.
@@ -84,6 +93,12 @@ namespace aspect
 
         bool is_initialized;
       };
+
+      /**
+       * Updated values for light element concentration, CMB temperature,
+       * and inner core radius returned by solve_time_step().
+       */
+      using SolveTimeStepResult = std::tuple<double, double, double>;
     }
 
 
@@ -173,6 +188,26 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm) override;
 
+        /**
+         * Serialize the contents of this class as far as they are not read
+         * from input parameter files.
+         */
+        template <class Archive>
+        void
+        serialize (Archive &ar, const unsigned int version);
+
+        /**
+         * Save the state of this object.
+         */
+        void
+        save (std::map<std::string, std::string> &status_strings) const override;
+
+        /**
+         * Restore the state of the object.
+         */
+        void
+        load (const std::map<std::string, std::string> &status_strings) override;
+
       private:
 
         /**
@@ -190,6 +225,12 @@ namespace aspect
          * Temperatures at the outer boundaries.
          */
         double outer_temperature;
+
+        /**
+         * Boundary indicators of the spherical shell.
+         */
+        types::boundary_id inner_boundary_id;
+        types::boundary_id outer_boundary_id;
 
         /**
          * Initial CMB temperature changing rate
@@ -217,11 +258,6 @@ namespace aspect
         double Rc;
 
         /**
-         * (Heat capacity) * density
-         */
-        double CpRho;
-
-        /**
          * Initial light composition concentration
          */
         double X_init;
@@ -232,19 +268,9 @@ namespace aspect
         double Delta;
 
         /**
-         * Gravitational acceleration
-         */
-        double g;
-
-        /**
          * Pressure at the core mantle boundary
          */
         double P_CMB;
-
-        /**
-         * Pressure at the center of the core
-         */
-        double P_Core;
 
         /**
          * Parameters for core solidus following:
@@ -359,6 +385,13 @@ namespace aspect
         {
           double t;
           double w;
+
+          template <class Archive>
+          void serialize (Archive &ar, const unsigned int)
+          {
+            ar &t
+            & w;
+          }
         };
         std::vector<struct str_data_OES> data_OES;
         void read_data_OES();
@@ -385,10 +418,12 @@ namespace aspect
          *    However, the core solidus is influenced by light components (e.g. S) and its slope is very close to an adiabat. So there is an alternative
          *    scenario that the crystallization happens first at the core mantle boundary instead of at the center, which is called a 'snowing core'
          *    (Stewart, A. J., et al. (2007). "Mars: a new core-crystallization regime." Science 316(5829): 1323-1325.). This also
-         *    provides a valid solution for the solver. The return value of the function is true for a 'normal core', and false for 'snowing core'.
-         *    TODO: The current code is only able to treat the normal core scenario, treating 'snowing core' scenario may be possible and could be added.
+         *    provides a valid solution for the solver. The current code treats the
+         *    normal core scenario and throws for the unsupported snowing core case.
+         *
+         * @return A tuple containing the updated X, T, and R values.
          */
-        bool solve_time_step(double &X, double &T, double &R) const;
+        internal::SolveTimeStepResult solve_time_step() const;
 
         /**
          * Compute the difference between solidus and adiabatic temperature at inner
@@ -440,11 +475,6 @@ namespace aspect
          * Calculate density at given radius @p r.
          */
         double compute_rho(const double r) const;
-
-        /**
-         * Calculate gravitational acceleration at given radius @p r.
-         */
-        double compute_g(const double r) const;
 
         /**
          * Calculate the core temperature at given radius @p r and

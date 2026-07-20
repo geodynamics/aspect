@@ -193,7 +193,7 @@ namespace aspect
                                    "nondimensional",
                                    "A material model for nondimensionalized "
                                    "computations for compressible or incompressible "
-                                   "computations defined through Rayleigh number \text{Ra} "
+                                   "computations defined through Rayleigh number $\\text{Ra}$ "
                                    "and Dissipation number Di. This model is made "
                                    "to be used with the Boussinesq, ALA, or TALA "
                                    "formulation."

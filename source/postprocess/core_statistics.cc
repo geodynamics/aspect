@@ -34,9 +34,10 @@ namespace aspect
   {
     template <int dim>
     CoreStatistics<dim>::CoreStatistics()
-    {
-      core_data.is_initialized = false;
-    }
+      :
+      // leave the core_data variable in its uninitialized state
+      core_data()
+    {}
 
 
 

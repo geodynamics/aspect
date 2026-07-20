@@ -1916,6 +1916,7 @@ namespace aspect
       unsigned int                                              pre_refinement_step;
       unsigned int                                              nonlinear_iteration;
       unsigned int                                              nonlinear_solver_failures;
+      unsigned int                                              linear_solver_failures;
       /**
        * @}
        */

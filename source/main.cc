@@ -396,7 +396,7 @@ namespace
           {
             std::cerr << "***          You should not take everything literally!          ***\n"
                       << "*** Please pass the name of an existing parameter file instead. ***" << std::endl;
-            exit(1);
+            std::exit(1);
           }
 
         input_as_string = aspect::Utilities::read_and_distribute_file_content(parameter_file_name, comm);

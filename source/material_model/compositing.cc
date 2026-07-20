@@ -222,6 +222,20 @@ namespace aspect
       const unsigned int ind = model_property_map.find(Property::compressibility)->second;
       return models[ind]->is_compressible();
     }
+
+
+
+    template <int dim>
+    const Interface<dim> &
+    Compositing<dim>::
+    get_model_for_property(const Property::MaterialProperty property) const
+    {
+      auto it = model_property_map.find(property);
+      Assert(it != model_property_map.end(),
+             ExcMessage("Property not found in model_property_map"));
+
+      return *models[it->second];
+    }
   }
 }
 
