@@ -5,6 +5,24 @@
 ## **Subsection:** Particles 2
 
 
+::::{dropdown} __Parameter:__ {ref}`Active redistribution histogram granularity<parameters:Particles_202/Active_20redistribution_20histogram_20granularity>`
+:name: parameters:Particles_202/Active_20redistribution_20histogram_20granularity
+**Default value:** 2
+
+**Pattern:** [Integer range 2...2147483647 (inclusive)]
+
+**Documentation:** The number of subdivisions of each cell in each spatial dimension when evaluating cells for particle clustering when actively redistributing particles.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Active redistribution within cells<parameters:Particles_202/Active_20redistribution_20within_20cells>`
+:name: parameters:Particles_202/Active_20redistribution_20within_20cells
+**Default value:** false
+
+**Pattern:** [Bool]
+
+**Documentation:** Sometimes particles will cluster in one part of the cell, which can make the particles less useful for visualization. When this parameter is set to true, the particle manager will use a histogram to quantify the level of particle clustering in each cell. If the particles are sufficiently clustered, the particle manager will redistribute the particles in the cell so that they are more evenly spread throughout the cell.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Addition histogram granularity<parameters:Particles_202/Addition_20histogram_20granularity>`
 :name: parameters:Particles_202/Addition_20histogram_20granularity
 **Default value:** 3
@@ -36,9 +54,18 @@
 :name: parameters:Particles_202/Bandwidth
 **Default value:** 0.3
 
-**Pattern:** [Double 0.3...MAX_DOUBLE (inclusive)]
+**Pattern:** [Double 0.1...0.9 (inclusive)]
 
 **Documentation:** The bandwidth value is used to scale the kernel function when generating the point density function of particles. The bandwidth is measured as a fraction of the cells extent in one spatial dimension. For example, the default bandwidth of 0.3 represents a size equal to 30 percent of the cells size in one spatial dimension.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Distribution attempts max<parameters:Particles_202/Distribution_20attempts_20max>`
+:name: parameters:Particles_202/Distribution_20attempts_20max
+**Default value:** 10
+
+**Pattern:** [Integer range 1...100 (inclusive)]
+
+**Documentation:** The maximum amount of times to move a particle in order to reduce a cell&rsquo;s distribution score below the Maximum distribution score per cell before giving up. The particle manager will stop moving particles if the distribution score is brought below the Maximum distribution score per cell even if the number of particles moved is below this number.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Integration scheme<parameters:Particles_202/Integration_20scheme>`
@@ -147,6 +174,15 @@ The following properties are available:
 **Pattern:** [MultipleSelection none|remove particles|add particles|remove and add particles|repartition ]
 
 **Documentation:** Strategy that is used to balance the computational load across processors for adaptive meshes.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Maximum distribution score per cell<parameters:Particles_202/Maximum_20distribution_20score_20per_20cell>`
+:name: parameters:Particles_202/Maximum_20distribution_20score_20per_20cell
+**Default value:** 0.10
+
+**Pattern:** [Double 0.001...1 (inclusive)]
+
+**Documentation:** The maximum allowable distribution score a cell can have before its particles are redistributed inside the cell. The distribution score is measured using a histogram based method which is described in more detail in the documentation for the Particle Distribution Score plugin. Paticles are only redistributed within cells if the &lsquo;Active redistribution within cells&lsquo; parameter is set to true.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Maximum particles per cell<parameters:Particles_202/Maximum_20particles_20per_20cell>`
