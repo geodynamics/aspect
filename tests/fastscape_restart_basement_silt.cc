@@ -87,8 +87,9 @@ int f()
   // Copy the final topography of both the uninterrupted (1) and the resumed (2)
   // run as references for the testsuite to diff against.
   ret = system ("cd output-fastscape_restart_basement_silt ; "
-                "cp output1.tmp/topography/topography.00006 topography.000061;"
-                "cp output2.tmp/topography/topography.00006 topography.000062;"
+                "mkdir -p topography;"
+                "cp output1.tmp/topography/topography.00006 topography/topography.000061;"
+                "cp output2.tmp/topography/topography.00006 topography/topography.000062;"
                 "cp output1.tmp/statistics statistics1;"
                 "cp output2.tmp/statistics statistics2;"
                 "");
@@ -101,7 +102,7 @@ int f()
   // reference output, because reintroducing the basement/silt save() bug makes
   // the resumed run diverge by meters.
   ret = system ("cd output-fastscape_restart_basement_silt ; "
-                "if diff -q topography.000061 topography.000062 > /dev/null ; then "
+                "if diff -q topography/topography.000061 topography/topography.000062 > /dev/null ; then "
                 "  echo 'restart reproduces straight run: topography identical' ; "
                 "else "
                 "  echo 'ERROR: restart diverged from straight run' ; "
