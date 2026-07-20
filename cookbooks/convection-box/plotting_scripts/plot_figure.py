@@ -63,13 +63,18 @@ xtitle='X Axis',ytitle='Y Axis'
 xmag = float(abs(plot_spatial_bounds[1] - plot_spatial_bounds[0]))
 ymag = float(abs(plot_spatial_bounds[3] - plot_spatial_bounds[2]))
 
-# Multiplying the xmagnitude here results in an image with less white space.
-# Modifying plot_spatial_bounds directly will distort the actual pyvista mesh.
+# xmag is multiplied by 1.2 here in order to change the aspect ratio of the 
+# resulting image, in this case resulting in less white space on the 
+# top and bottom of the image.
 aspect_ratio = ymag / (xmag*1.2) 
 plotter.window_size = (1024, int(1024 * aspect_ratio))
 xmid = (plot_spatial_bounds[1] - plot_spatial_bounds[0]) /2
 ymid = (plot_spatial_bounds[3] - plot_spatial_bounds[2]) /2
-zoom = xmag * aspect_ratio * 1.875  # Zoom level - not sure why 1.875 works
+# zoom_level controls how close the camera should be to the mesh.
+# A smaller value will move the camera closer resulting in a more
+# zoomed in image.
+zoom_level = 1.875
+zoom = xmag * aspect_ratio * zoom_level  
 
 position = (xmid, ymid, zoom)
 focal_point = (xmid, ymid, 0)
