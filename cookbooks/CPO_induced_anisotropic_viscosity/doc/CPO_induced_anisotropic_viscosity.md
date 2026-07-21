@@ -159,7 +159,7 @@ with the anisotropic tensor for viscosity in Kelivin notation $V_{ij}$ and the n
     \dot{\varepsilon}_I &= \left[\sum_i\frac{2}{3\Gamma}(\dot{\varepsilon}_{ii}^2(4H_{i}+H_{j_i}+H_{k_i}) + 2\dot{\varepsilon}_{j_ij_i}\dot{\varepsilon}_{k_ik_i}(H_i-2H_{j_i}-2H_{k_i}))+ 3/H_{i+3}\dot{\varepsilon}_{j_ik_i}^2\right]^{1/2} \text{ .}
 \end{aligned}
 ```
-Here we use the convention $H_1=F,H_2=G,H_3=H$, $H_4=L,H_5=M,H_6=N$ and the shifted indicies $j=\{1,2,0\}$ and $k=\{2,0,1\}$. $\Gamma$ ($\gamma$ in {cite}`rathmann:lilien:2022`) is a short script for:
+Here we use the convention $H_1=F,H_2=G,H_3=H$, $H_4=L,H_5=M,H_6=N$ and the shifted indices $j=\{1,2,0\}$ and $k=\{2,0,1\}$. $\Gamma$ ($\gamma$ in {cite}`rathmann:lilien:2022`) is a short script for:
 ```{math}
 :label: eqn:factor_of_coefficients
 \Gamma =  4\sum_i H_{j_i}H_{k_i} \text{ .}
@@ -170,7 +170,7 @@ In the isotropic case ($H_i=0.5$, $H_{i+3}=1.5$) we then have a flowlaw of the f
 :label: eqn:isotropic_inverse_flow_law
 \begin{aligned}
 \tau_{ij} &= \eta(\dot{\varepsilon}_I) \dot{\varepsilon}^d_{ij} \text{ ,}
-\eta(\dot{\varepsilon}_I) &= \gamma^{-1/n}\dot{\epsilon}_I^{(1-n)/n} 
+\eta(\dot{\varepsilon}_I) &= \gamma^{-1/n}\dot{\epsilon}_I^{(1-n)/n}
 \left.\dot{\varepsilon}_I\right|_{\text{iso}} = \sqrt{\dot{\varepsilon}^d_{lm}\dot{\varepsilon}^d_{lm}}
 \end{aligned}
 ```
@@ -210,20 +210,20 @@ This shear box model uses an additional postprocessor, anisotropic stress, which
 Expected output of the shear box model using anisotropic viscosity material model, showing the anisotropic stress and stress postprocessor as tensor glyphs (blue disks) in Paraview. The arrows indicate the direction and magnitude of velocity.
 ```
 
-### 2d shear box 
+### 2d shear box
 
-For 2d applications a pseudo 3d strain-rate for texture development is constructed as, 
+For 2d applications a pseudo 3d strain-rate for texture development is constructed as,
 ```{math}
 
-\varepsilon_{ij}^{\text{3D}} = \begin{cases} 
+\varepsilon_{ij}^{\text{3D}} = \begin{cases}
     &\varepsilon_{ij}^{\text{2D}} \qquad & i,j < 3 \\
     &0 \qquad & i,j = 3
 \end{cases}  \text{ .}
 ```
-Then texture development, CPO frame and an inversion are computed as before. The out of plane components of the anisotropic viscosity tensor are discarded. 
+Then texture development, CPO frame and an inversion are computed as before. The out of plane components of the anisotropic viscosity tensor are discarded.
 
 ```{figure-md} fig:anisotropic_stress_shearbox_2d
-<img src="anisotropic_stress_2d_both.png" style="width:100.0%" />
+<img src="anisotropic_stress_2d.png" style="width:100.0%" />
 
 Expected output of the shear box model using anisotropic viscosity material model, showing the anisotropic stress and stress postprocessor as tensor glyphs (blue disks) in Paraview. The arrows indicate the direction and magnitude of velocity.
 ```

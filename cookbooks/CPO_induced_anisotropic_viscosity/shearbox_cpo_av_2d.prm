@@ -37,7 +37,7 @@ subsection Compositional fields
                                     particles, particles, particles, particles, \
                                     particles, particles, particles, particles, \
                                     particles, particles, particles, particles, \
-                                    static                       
+                                    static
   set Mapped particle properties = phi1:cpo mineral 0 phi1[0], eigvalue_a1:cpo mineral 0 eigenvalues a axis[0], eigvalue_a2:cpo mineral 0 eigenvalues a axis[1], eigvalue_a3:cpo mineral 0 eigenvalues a axis[2], \
                                    theta:cpo mineral 0 theta[0], eigvalue_b1:cpo mineral 0 eigenvalues b axis[0], eigvalue_b2:cpo mineral 0 eigenvalues b axis[1], eigvalue_b3:cpo mineral 0 eigenvalues b axis[2], \
                                    phi2:cpo mineral 0 phi2[0], eigvalue_c1:cpo mineral 0 eigenvalues c axis[0], eigvalue_c2:cpo mineral 0 eigenvalues c axis[1], eigvalue_c3:cpo mineral 0 eigenvalues c axis[2]
@@ -48,11 +48,6 @@ subsection Compositional fields
                         generic
 end
 
-# use static fields for the isotropic case 
-  # static, static, static, static, \
-  # static, static, static, static, \
-  # static, static, static, static, \
-  
 subsection Gravity model
   set Model name = vertical
 
