@@ -2314,8 +2314,6 @@ TEST_CASE("LPO elastic tensor decomposition")
 
 TEST_CASE("Utilities Euler Angles to and from Rotation matrix")
 {
-  const std::vector<double> approval_tests;
-
   // note, this is only testing consistency (can it convert back and forth) and
   // it only works for rotation matrices which are defined in the same way (z-x-z).
   {
