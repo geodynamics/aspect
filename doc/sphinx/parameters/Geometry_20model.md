@@ -343,7 +343,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Double -90...90 (inclusive)]
 
-**Documentation:** Maximum latitude of the chunk. This value is ignored if the simulation is in 2d. Units: degrees.
+**Documentation:** Maximum latitude of the chunk. This value is ignored if the simulation is in 2d. Units: \si{\degree}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Chunk maximum longitude<parameters:Geometry_20model/Chunk/Chunk_20maximum_20longitude>`
@@ -352,7 +352,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Double -180...360 (inclusive)]
 
-**Documentation:** Maximum longitude of the chunk. Units: degrees.
+**Documentation:** Maximum longitude of the chunk. Units: \si{\degree}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Chunk minimum latitude<parameters:Geometry_20model/Chunk/Chunk_20minimum_20latitude>`
@@ -361,7 +361,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Double -90...90 (inclusive)]
 
-**Documentation:** Minimum latitude of the chunk. This value is ignored if the simulation is in 2d. Units: degrees.
+**Documentation:** Minimum latitude of the chunk. This value is ignored if the simulation is in 2d. Units: \si{\degree}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Chunk minimum longitude<parameters:Geometry_20model/Chunk/Chunk_20minimum_20longitude>`
@@ -370,7 +370,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Double -180...360 (inclusive)]
 
-**Documentation:** Minimum longitude of the chunk. Units: degrees.
+**Documentation:** Minimum longitude of the chunk. Units: \si{\degree}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Chunk outer radius<parameters:Geometry_20model/Chunk/Chunk_20outer_20radius>`
@@ -426,7 +426,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Double -90...90 (inclusive)]
 
-**Documentation:** Maximum latitude of the chunk. This value is ignored if the simulation is in 2d. Units: degrees.
+**Documentation:** Maximum latitude of the chunk. This value is ignored if the simulation is in 2d. Units: \si{\degree}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Chunk maximum longitude<parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20maximum_20longitude>`
@@ -435,7 +435,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Double -180...360 (inclusive)]
 
-**Documentation:** Maximum longitude of the chunk. Units: degrees.
+**Documentation:** Maximum longitude of the chunk. Units: \si{\degree}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Chunk middle boundary radius<parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20middle_20boundary_20radius>`
@@ -453,7 +453,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Double -90...90 (inclusive)]
 
-**Documentation:** Minimum latitude of the chunk. This value is ignored if the simulation is in 2d. Units: degrees.
+**Documentation:** Minimum latitude of the chunk. This value is ignored if the simulation is in 2d. Units: \si{\degree}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Chunk minimum longitude<parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20minimum_20longitude>`
@@ -462,7 +462,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Double -180...360 (inclusive)]
 
-**Documentation:** Minimum longitude of the chunk. Units: degrees.
+**Documentation:** Minimum longitude of the chunk. Units: \si{\degree}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Chunk outer radius<parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20outer_20radius>`
@@ -802,7 +802,7 @@ The default value of 3,481,000 m equals the radius of a sphere with equal volume
 
 **Pattern:** [Double 0...360 (inclusive)]
 
-**Documentation:** Opening angle in degrees of the section of the shell that we want to build. The only opening angles that are allowed for this geometry are 90, 180, and 360 in 2d; and 90 and 360 in 3d. Units: degrees.
+**Documentation:** Opening angle in degrees of the section of the shell that we want to build. The only opening angles that are allowed for this geometry are 90, 180, and 360 in 2d; and 90 and 360 in 3d. Units: \si{\degree}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Outer radius<parameters:Geometry_20model/Spherical_20shell/Outer_20radius>`
