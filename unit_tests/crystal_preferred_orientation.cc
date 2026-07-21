@@ -2311,3 +2311,44 @@ TEST_CASE("LPO elastic tensor decomposition")
       }
   }
 }
+
+TEST_CASE("Utilities Euler Angles to and from Rotation matrix")
+{
+  // note, this is only testing consistency (can it convert back and forth) and
+  // it only works for rotation matrices which are defined in the same way (z-x-z).
+  {
+    auto rot1 = aspect::Utilities::zxz_euler_angles_to_rotation_matrix(-85,340,56);
+    auto ea1 = aspect::Utilities::zxz_euler_angles_from_rotation_matrix(rot1);
+    auto rot2 = aspect::Utilities::zxz_euler_angles_to_rotation_matrix(ea1[0],ea1[1],ea1[2]);
+    compare_rotation_matrices_approx(rot2, rot1);
+    auto ea2 = aspect::Utilities::zxz_euler_angles_from_rotation_matrix(rot2);
+    compare_3d_arrays_approx(ea2,ea1);
+    auto rot3 = aspect::Utilities::zxz_euler_angles_to_rotation_matrix(ea2[0],ea2[1],ea2[2]);
+    compare_rotation_matrices_approx(rot3, rot2);
+  }
+
+  {
+    auto rot1 = aspect::Utilities::zxz_euler_angles_to_rotation_matrix(90,180,270);
+    auto ea1 = aspect::Utilities::zxz_euler_angles_from_rotation_matrix(rot1);
+    auto rot2 = aspect::Utilities::zxz_euler_angles_to_rotation_matrix(ea1[0],ea1[1],ea1[2]);
+    compare_rotation_matrices_approx(rot2, rot1);
+    auto ea2 = aspect::Utilities::zxz_euler_angles_from_rotation_matrix(rot2);
+    compare_3d_arrays_approx(ea2,ea1);
+    auto rot3 = aspect::Utilities::zxz_euler_angles_to_rotation_matrix(ea2[0],ea2[1],ea2[2]);
+    compare_rotation_matrices_approx(rot3, rot2);
+  }
+
+  {
+    const std::array<double,3> ea0 = {{20,30,40}};
+    auto rot0 = aspect::Utilities::zxz_euler_angles_to_rotation_matrix(20,30,40);
+    auto ea1 = aspect::Utilities::zxz_euler_angles_from_rotation_matrix(rot0);
+    compare_3d_arrays_approx(ea1,ea0);
+    auto rot2 = aspect::Utilities::zxz_euler_angles_to_rotation_matrix(ea1[0],ea1[1],ea1[2]);
+    compare_rotation_matrices_approx(rot2, rot0);
+    auto ea2 = aspect::Utilities::zxz_euler_angles_from_rotation_matrix(rot2);
+    compare_3d_arrays_approx(ea2,ea1);
+    auto rot3 = aspect::Utilities::zxz_euler_angles_to_rotation_matrix(ea2[0],ea2[1],ea2[2]);
+    compare_rotation_matrices_approx(rot3, rot2);
+  }
+
+}
