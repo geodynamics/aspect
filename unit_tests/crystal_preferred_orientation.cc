@@ -29,7 +29,7 @@
 /**
  * Compare the given two std::array<double,3> entries with an epsilon (using Catch::Approx)
  */
-inline void compare_3d_arrays_approx(
+inline void check_3d_arrays_approx_equal(
   const std::array<double,3> &computed,
   const std::array<double,3> &expected)
 {
@@ -45,7 +45,7 @@ inline void compare_3d_arrays_approx(
 /**
  * Compare the given two std::array<double,3> entries with an epsilon (using Catch::Approx)
  */
-inline void compare_3d_arrays_approx(
+inline void check_3d_arrays_approx_equal(
   const std::vector<double> &computed,
   const std::vector<double> &expected)
 {
@@ -61,7 +61,7 @@ inline void compare_3d_arrays_approx(
 /**
  * Compare two rotation matrices
  */
-inline void compare_rotation_matrices_approx(
+inline void check_rotation_matrices_approx_equal(
   const std::array<std::array<double,3>,3> &computed,
   const std::array<std::array<double,3>,3> &expected)
 {
@@ -86,7 +86,7 @@ inline void compare_rotation_matrices_approx(
 /**
  * Compare two rotation matrices
  */
-inline void compare_rotation_matrices_approx(
+inline void check_rotation_matrices_approx_equal(
   const dealii::Tensor<2,3> &computed,
   const dealii::Tensor<2,3> &expected)
 {
@@ -2320,35 +2320,35 @@ TEST_CASE("Utilities Euler Angles to and from Rotation matrix")
     auto rot1 = aspect::Utilities::zxz_euler_angles_to_rotation_matrix(-85,340,56);
     auto ea1 = aspect::Utilities::zxz_euler_angles_from_rotation_matrix(rot1);
     auto rot2 = aspect::Utilities::zxz_euler_angles_to_rotation_matrix(ea1[0],ea1[1],ea1[2]);
-    compare_rotation_matrices_approx(rot2, rot1);
+    check_rotation_matrices_approx_equal(rot2, rot1);
     auto ea2 = aspect::Utilities::zxz_euler_angles_from_rotation_matrix(rot2);
-    compare_3d_arrays_approx(ea2,ea1);
+    check_3d_arrays_approx_equal(ea2,ea1);
     auto rot3 = aspect::Utilities::zxz_euler_angles_to_rotation_matrix(ea2[0],ea2[1],ea2[2]);
-    compare_rotation_matrices_approx(rot3, rot2);
+    check_rotation_matrices_approx_equal(rot3, rot2);
   }
 
   {
     auto rot1 = aspect::Utilities::zxz_euler_angles_to_rotation_matrix(90,180,270);
     auto ea1 = aspect::Utilities::zxz_euler_angles_from_rotation_matrix(rot1);
     auto rot2 = aspect::Utilities::zxz_euler_angles_to_rotation_matrix(ea1[0],ea1[1],ea1[2]);
-    compare_rotation_matrices_approx(rot2, rot1);
+    check_rotation_matrices_approx_equal(rot2, rot1);
     auto ea2 = aspect::Utilities::zxz_euler_angles_from_rotation_matrix(rot2);
-    compare_3d_arrays_approx(ea2,ea1);
+    check_3d_arrays_approx_equal(ea2,ea1);
     auto rot3 = aspect::Utilities::zxz_euler_angles_to_rotation_matrix(ea2[0],ea2[1],ea2[2]);
-    compare_rotation_matrices_approx(rot3, rot2);
+    check_rotation_matrices_approx_equal(rot3, rot2);
   }
 
   {
     const std::array<double,3> ea0 = {{20,30,40}};
     auto rot0 = aspect::Utilities::zxz_euler_angles_to_rotation_matrix(20,30,40);
     auto ea1 = aspect::Utilities::zxz_euler_angles_from_rotation_matrix(rot0);
-    compare_3d_arrays_approx(ea1,ea0);
+    check_3d_arrays_approx_equal(ea1,ea0);
     auto rot2 = aspect::Utilities::zxz_euler_angles_to_rotation_matrix(ea1[0],ea1[1],ea1[2]);
-    compare_rotation_matrices_approx(rot2, rot0);
+    check_rotation_matrices_approx_equal(rot2, rot0);
     auto ea2 = aspect::Utilities::zxz_euler_angles_from_rotation_matrix(rot2);
-    compare_3d_arrays_approx(ea2,ea1);
+    check_3d_arrays_approx_equal(ea2,ea1);
     auto rot3 = aspect::Utilities::zxz_euler_angles_to_rotation_matrix(ea2[0],ea2[1],ea2[2]);
-    compare_rotation_matrices_approx(rot3, rot2);
+    check_rotation_matrices_approx_equal(rot3, rot2);
   }
 
 }
