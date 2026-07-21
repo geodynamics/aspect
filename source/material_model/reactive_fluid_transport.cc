@@ -171,7 +171,12 @@ namespace aspect
       base_model->update();
     }
 
-
+    template <int dim>
+    const MaterialModel::Interface<dim> &
+    ReactiveFluidTransport<dim>::get_base_model() const
+    {
+      return *base_model;
+    }
 
     template <int dim>
     void
@@ -187,13 +192,23 @@ namespace aspect
           // Modify the viscosity from the base model based on the presence of fluid.
           if (in.requests_property(MaterialProperties::viscosity))
             {
-              // Scale the base model viscosity value based on the porosity.
+              // Scale the base model viscosity value based on the presence of fluid.
               for (unsigned int q=0; q<out.n_evaluation_points(); ++q)
                 {
                   const double porosity = std::max(in.composition[q][porosity_idx],0.0);
                   out.viscosities[q] *= (1.0 - porosity) * std::exp(- alpha_phi * porosity);
                 }
             }
+
+          // Keller et al. (2013) elastic force
+          const std::shared_ptr<ElasticOutputs<dim>> elastic_out
+            = out.template get_additional_output_object<ElasticOutputs<dim>>();
+          if (elastic_out != nullptr && in.requests_property(MaterialProperties::viscosity))
+            for (unsigned int q=0; q<out.n_evaluation_points(); ++q)
+              {
+                const double porosity = std::max(in.composition[q][porosity_idx],0.0);
+                elastic_out->elastic_force[q] *= (1.0 - porosity) * std::exp(- alpha_phi * porosity);
+              }
 
           // Fill the melt outputs if they exist. Note that the MeltOutputs class was originally
           // designed for two-phase flow material models in ASPECT that model the flow of melt,

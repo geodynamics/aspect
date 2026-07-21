@@ -1,0 +1,420 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 8 (on 1 levels)
+Number of degrees of freedom: 417 (102+42+102+18+51+51+51)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 9+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.83203e-16, 1.50809e-16, 0, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.83203e-16, 1.50809e-16, 0, 2.0832e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.0832e-08
+
+
+   Postprocessing:
+     RMS, max velocity:    5.77e-05 m/year, 0.0001 m/year
+     Writing point values: output-melt_compaction_elasticity/point_values.txt
+
+*** Timestep 1:  t=100 years, dt=100 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 5 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 1+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.16962e-16, 9.00009e-06, 0, 0.0810547
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0810547
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.34288e-16, 5.41996e-13, 0, 2.90845e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.90845e-09
+
+
+   Postprocessing:
+     RMS, max velocity:    5.77e-05 m/year, 0.0001 m/year
+     Writing point values: output-melt_compaction_elasticity/point_values.txt
+
+*** Timestep 2:  t=200 years, dt=100 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 1 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 1+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.26187e-16, 6.01087e-12, 0, 0.0213977
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0213977
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.60976e-16, 1.54888e-13, 0, 1.22057e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.22057e-09
+
+
+   Postprocessing:
+     RMS, max velocity:    5.77e-05 m/year, 0.0001 m/year
+     Writing point values: output-melt_compaction_elasticity/point_values.txt
+
+*** Timestep 3:  t=300 years, dt=100 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 1 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 1+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.82648e-16, 8.00484e-12, 0, 0.0167581
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0167581
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.5386e-16, 2.06341e-13, 0, 9.07115e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 9.07115e-10
+
+
+   Postprocessing:
+     RMS, max velocity:    5.77e-05 m/year, 0.0001 m/year
+     Writing point values: output-melt_compaction_elasticity/point_values.txt
+
+*** Timestep 4:  t=400 years, dt=100 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 1 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 1+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.6634e-16, 8.67184e-12, 0, 0.0129952
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0129952
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.95767e-16, 2.25596e-13, 0, 5.00575e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 5.00575e-10
+
+
+   Postprocessing:
+     RMS, max velocity:    5.77e-05 m/year, 0.0001 m/year
+     Writing point values: output-melt_compaction_elasticity/point_values.txt
+
+*** Timestep 5:  t=500 years, dt=100 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 1 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 8+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.67428e-16, 8.89361e-12, 0, 0.849808
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.849808
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 5 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 1+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.5813e-16, 6.0003e-06, 0, 1.16585e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 6.0003e-06
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.74164e-16, 3.63387e-13, 0, 4.41874e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 4.41874e-10
+
+
+   Postprocessing:
+     RMS, max velocity:    6.1e-15 m/year, 1.92e-14 m/year
+     Writing point values: output-melt_compaction_elasticity/point_values.txt
+
+*** Timestep 6:  t=600 years, dt=100 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 5 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 8+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.4886e-16, 8.0003e-06, 0, 1.07873
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.07873
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 5 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 1+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.381e-16, 6.00022e-06, 0, 1.16582e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 6.00022e-06
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.42629e-16, 3.62922e-13, 0, 6.43476e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 6.43476e-10
+
+
+   Postprocessing:
+     RMS, max velocity:    4.65e-15 m/year, 1.39e-14 m/year
+     Writing point values: output-melt_compaction_elasticity/point_values.txt
+
+*** Timestep 7:  t=700 years, dt=100 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 5 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 1+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.85281e-16, 6.66696e-07, 0, 0.110796
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.110796
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.99747e-16, 4.04656e-14, 0, 3.55185e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.55185e-09
+
+
+   Postprocessing:
+     RMS, max velocity:    3.71e-15 m/year, 8.63e-15 m/year
+     Writing point values: output-melt_compaction_elasticity/point_values.txt
+
+*** Timestep 8:  t=800 years, dt=100 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 4 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 1+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.24035e-16, 2.22232e-07, 0, 0.110796
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.110796
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.08643e-16, 3.43716e-13, 0, 4.14167e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 4.14167e-09
+
+
+   Postprocessing:
+     RMS, max velocity:    3.04e-15 m/year, 6.36e-15 m/year
+     Writing point values: output-melt_compaction_elasticity/point_values.txt
+
+*** Timestep 9:  t=900 years, dt=100 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 4 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 1+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.42841e-16, 7.40773e-08, 0, 0.110796
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.110796
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.72943e-16, 1.14554e-13, 0, 3.93761e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.93761e-09
+
+
+   Postprocessing:
+     RMS, max velocity:    2.45e-15 m/year, 6.06e-15 m/year
+     Writing point values: output-melt_compaction_elasticity/point_values.txt
+
+*** Timestep 10:  t=1000 years, dt=100 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 4 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 1+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.73118e-16, 2.46924e-08, 0, 0.110796
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.110796
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.37661e-16, 3.82099e-14, 0, 3.99743e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.99743e-09
+
+
+   Postprocessing:
+     RMS, max velocity:    2e-15 m/year, 5.49e-15 m/year
+     Writing point values: output-melt_compaction_elasticity/point_values.txt
+
+*** Timestep 11:  t=1100 years, dt=100 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 3 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 1+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.37441e-16, 8.23081e-09, 0, 0.110796
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.110796
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.82648e-16, 3.36731e-13, 0, 4.0287e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 4.0287e-09
+
+
+   Postprocessing:
+     RMS, max velocity:    1.64e-15 m/year, 4.81e-15 m/year
+     Writing point values: output-melt_compaction_elasticity/point_values.txt
+
+*** Timestep 12:  t=1200 years, dt=100 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 3 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 1+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.43686e-16, 2.7436e-09, 0, 0.110796
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.110796
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.73292e-16, 1.12166e-13, 0, 3.982e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.982e-09
+
+
+   Postprocessing:
+     RMS, max velocity:    1.34e-15 m/year, 4.11e-15 m/year
+     Writing point values: output-melt_compaction_elasticity/point_values.txt
+
+*** Timestep 13:  t=1300 years, dt=100 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 2 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 1+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.2417e-16, 9.14535e-10, 0, 0.110796
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.110796
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.71713e-16, 8.8863e-13, 0, 3.88434e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.88434e-09
+
+
+   Postprocessing:
+     RMS, max velocity:    1.09e-15 m/year, 3.43e-15 m/year
+     Writing point values: output-melt_compaction_elasticity/point_values.txt
+
+*** Timestep 14:  t=1400 years, dt=100 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 2 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 1+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.41965e-16, 3.04846e-10, 0, 0.110796
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.110796
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.74857e-16, 3.00009e-13, 0, 3.7794e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.7794e-09
+
+
+   Postprocessing:
+     RMS, max velocity:    8.76e-16 m/year, 2.83e-15 m/year
+     Writing point values: output-melt_compaction_elasticity/point_values.txt
+
+*** Timestep 15:  t=1500 years, dt=100 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 2 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 1+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.78456e-16, 1.01616e-10, 0, 0.110796
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.110796
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.1465e-16, 1.01311e-13, 0, 3.70156e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.70156e-09
+
+
+   Postprocessing:
+     RMS, max velocity:    7.03e-16 m/year, 2.31e-15 m/year
+     Writing point values: output-melt_compaction_elasticity/point_values.txt
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------

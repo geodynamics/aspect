@@ -277,7 +277,25 @@ namespace aspect
             - R = 1/eta M_p + K_D L_p for p
             S = - (1/eta + 1/viscosity_c)  M_p  for p_c
           */
+
           const double viscosity_c = melt_outputs->compaction_viscosities[q];
+          // Make sure the Schur-complement preconditioner
+          // stays consistent with the operator when compaction elasticity is on.
+          // The elastic pore modulus is K_phi = K_0 * phi^(-q) (q = 0.5, Keller, May &
+          // Kaus 2013, eq. 52), with K_0 the reference pore modulus.
+          // Set viscoelastic viscosity from elastic and viscous contributions
+          // (eq. 29).
+          const double dt = this->get_timestep();
+          const double K_0_pre = this->get_melt_handler().melt_parameters.reference_pore_modulus;
+          const unsigned int por_idx = introspection.compositional_index_for_name("porosity");
+          const double porosity = std::max(scratch.material_model_inputs.composition[q][por_idx], 0.0);
+          double viscosity_c_ve = viscosity_c;
+          if (dt > 0.0 && K_0_pre < 1e30 && porosity > 0.0)
+            {
+              const double K_phi = K_0_pre * std::pow(porosity, -0.5);
+              // viscosity_c has already been scaled by (1-porosity)
+              viscosity_c_ve = 1.0/(1.0/viscosity_c + 1.0/((1-porosity)*K_phi*dt));
+            }
           const double JxW = scratch.finite_element_values.JxW(q);
 
           for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
@@ -295,7 +313,7 @@ namespace aspect
                                              scratch.grad_phi_p[i] *
                                              scratch.grad_phi_p[j]
                                              +
-                                             (1./eta + 1./viscosity_c) * p_c_scale * p_c_scale *
+                                             (1./eta + 1./viscosity_c_ve) * p_c_scale * p_c_scale *
                                              pressure_scaling *
                                              pressure_scaling *
                                              (scratch.phi_p_c[i] * scratch.phi_p_c[j])
@@ -425,6 +443,8 @@ namespace aspect
         = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
       const std::shared_ptr<const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>> force
         = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>();
+      const std::shared_ptr<const MaterialModel::ElasticOutputs<dim>> elastic_outputs
+        = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::ElasticOutputs<dim>>();
 
       const double pressure_scaling = this->get_pressure_scaling();
 
@@ -434,10 +454,21 @@ namespace aspect
         scratch.finite_element_values[introspection.extractors.compositional_fields[porosity_index]].get_function_values(this->get_reaction_vector(),
             reactions);
 
-      for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
+      // Add viscoelasticity in compacting flow (Keller et al., 2013). K_phi is porosity-dependent, K_phi = K_0 * phi^(-q)
+      // (eq. 52), where K_0 is the reference pore modulus, and K_phi is formed for each quadrature point.
+      // The previous-timestep compaction pressure (dP^o) is needed for the elastic restoring source
+      // (eq. 44), so read p_c from the old solution. Skip dP^o
+      // when K_0 is at its large default or once non-zero timestep is set (dt > 0.0).
+      const double dt = this->get_timestep();
+      const double K_0 = this->get_melt_handler().melt_parameters.reference_pore_modulus;
+      const bool is_compaction_elasticity = (dt > 0.0 && K_0 < 1e30);
+      std::vector<double> old_pc_values(n_q_points, 0.0);
+      if (is_compaction_elasticity)
+        scratch.finite_element_values[ex_p_c].get_function_values(this->get_old_solution(), old_pc_values);
+
+      for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell;)
         {
           const unsigned int component_index_i = fe.system_to_component_index(i).first;
-
           if (is_velocity_or_pressures(introspection,p_c_component_index,p_f_component_index,component_index_i))
             {
               data.local_dof_indices[i_stokes] = scratch.local_dof_indices[i];
@@ -448,7 +479,7 @@ namespace aspect
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
-          for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
+          for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell;)
             {
               const unsigned int component_index_i = fe.system_to_component_index(i).first;
 
@@ -463,6 +494,10 @@ namespace aspect
                     {
                       scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
                       scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
+                    }
+                  else if (this->get_parameters().enable_elasticity)
+                    {
+                      scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
                     }
                   ++i_stokes;
                 }
@@ -498,6 +533,18 @@ namespace aspect
           const double K_D = this->get_melt_handler().limited_darcy_coefficient(melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q],
                                                                                 p_c_scale > 0);
           const double viscosity_c = melt_outputs->compaction_viscosities[q];
+          // Elastic pore modulus K_phi = K_0 * phi^(-q) (Keller, May & Kaus
+          // 2013, eq. 52). Only meaningful where there are pores (porosity > 0);
+          // elsewhere the poro-elastic compaction is inactive.
+          const bool cell_has_pore_elasticity = is_compaction_elasticity && porosity > 0.0;
+          const double K_phi = cell_has_pore_elasticity
+                               ? K_0 * std::pow(porosity, -0.5)
+                               : numbers::signaling_nan<double>();
+          // Combination of the viscous compaction viscosity and the elastic
+          // term. Reduces to viscosity_c when there is no pore elasticity.
+          const double viscosity_c_ve = cell_has_pore_elasticity
+                                        ? 1.0 / (1.0/viscosity_c + 1.0/((1-porosity)*K_phi*dt))
+                                        : viscosity_c;
           const Tensor<1,dim> density_gradient_f = melt_outputs->fluid_density_gradients[q];
           const double density_f = melt_outputs->fluid_densities[q];
           const double p_f_RHS = compute_fluid_pressure_rhs(this,
@@ -542,11 +589,25 @@ namespace aspect
                                    )
                                    * JxW;
 
+              if (elastic_outputs != nullptr && this->get_parameters().enable_elasticity)
+                data.local_rhs(i) += (elastic_outputs->elastic_force[q] * scratch.grads_phi_u[i])
+                                     * JxW;
+
+              if (cell_has_pore_elasticity)
+                data.local_rhs(i) += - pressure_scaling
+                                     * p_c_scale * p_c_scale / (K_phi * dt)
+                                     * old_pc_values[q] * scratch.phi_p_c[i] * JxW;
+
               if (scratch.rebuild_stokes_matrix)
                 for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
                   {
                     data.local_matrix(i,j) += ( (eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                                                - (eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
+                                                // The -2/3 eta (div u)(div v) deviatoric/compaction term only
+                                                // belongs in cells where the solid actually compacts (melt cells).
+                                                // In non-melt cells (p_c pinned, phi->0) the solid is incompressible,
+                                                // so gate it out there to recover the exact incompressible operator.
+                                                - ( (p_c_scale > 0.0 ? 1.0 : 0.0)
+                                                   * eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
                                                   )
                                                 - (pressure_scaling *
                                                    scratch.div_phi_u[i] * scratch.phi_p[j])
@@ -555,7 +616,7 @@ namespace aspect
                                                 - (pressure_scaling *
                                                    scratch.phi_p[i] * scratch.div_phi_u[j])
                                                 +
-                                                (- pressure_scaling * pressure_scaling / viscosity_c * p_c_scale * p_c_scale
+                                                (- pressure_scaling * pressure_scaling / viscosity_c_ve * p_c_scale * p_c_scale
                                                  * scratch.phi_p_c[i] * scratch.phi_p_c[j])
                                                 - pressure_scaling * scratch.div_phi_u[i] * scratch.phi_p_c[j] * p_c_scale
                                                 - pressure_scaling * scratch.phi_p_c[i] * scratch.div_phi_u[j] * p_c_scale
@@ -572,6 +633,28 @@ namespace aspect
             }
         }
 
+    }
+
+
+
+    template <int dim>
+    void
+    MeltStokesSystem<dim>::
+    create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
+    {
+      const unsigned int n_points = outputs.n_evaluation_points();
+
+      if (this->get_parameters().enable_elasticity &&
+          !outputs.template has_additional_output_object<MaterialModel::ElasticOutputs<dim>>())
+        {
+          outputs.additional_outputs.push_back(
+            std::make_unique<MaterialModel::ElasticOutputs<dim>> (n_points));
+        }
+
+      Assert(!this->get_parameters().enable_elasticity
+             ||
+             outputs.template get_additional_output_object<MaterialModel::ElasticOutputs<dim>>()->elastic_force.size()
+             == n_points, ExcInternalError());
     }
 
 
@@ -1806,6 +1889,14 @@ namespace aspect
                            "accuracy and convergence behavior of the melt velocity is important "
                            "(like in benchmark cases with an analytical solution), this parameter "
                            "should probably be set to 'false'.");
+        prm.declare_entry ("Reference pore modulus", "1e30",
+                           Patterns::Double (0),
+                           "Reference pore modulus $K_0$ of the solid matrix used for "
+                           "visco-elastic compaction (Keller, May \\& Kaus 2013). It sets the "
+                           "porosity-dependent elastic pore modulus "
+                           "$K_\\phi = K_0 \\, \\phi^{-q}$ (eq. 52), the elastic modulus "
+                           "governing compaction (eq. 32). The default (very large value) "
+                           "recovers purely viscous compaction. Units: \\si{\\pascal}.");
       }
       prm.leave_subsection();
 
@@ -1823,6 +1914,7 @@ namespace aspect
         heat_advection_by_melt = prm.get_bool("Heat advection by melt");
         use_discontinuous_p_c = prm.get_bool("Use discontinuous compaction pressure");
         average_melt_velocity = prm.get_bool("Average melt velocity");
+        reference_pore_modulus = prm.get_double("Reference pore modulus");
       }
       prm.leave_subsection();
     }
@@ -1843,12 +1935,31 @@ namespace aspect
   void
   MeltHandler<dim>::initialize () const
   {
-    // The additional terms in the temperature systems have not been ported
+    // The additional terms in the temperature system have not been ported
     // to the DG formulation:
-    AssertThrow(!this->get_parameters().use_discontinuous_temperature_discretization &&
-                !this->get_parameters().have_discontinuous_composition_discretization,
-                ExcMessage("Using discontinuous elements for temperature "
-                           "or composition in models with melt transport is currently not implemented.") );
+    AssertThrow(!this->get_parameters().use_discontinuous_temperature_discretization,
+                ExcMessage("Using discontinuous elements for temperature in models "
+                           "with melt transport is currently not implemented.") );
+
+    // Discontinuous elements for the compositional fields are likewise not
+    // implemented for melt transport, with the exception of the fields that
+    // represent elastic stress tensor components. Elasticity requires those to
+    // use a discontinuous discretization, so they are permitted here while all other
+    // discontinuous compositional fields (for example the porosity) are not.
+    {
+      const std::vector<bool> &composition_dg =
+        this->get_parameters().use_discontinuous_composition_discretization;
+      std::vector<bool> is_stress_field(composition_dg.size(), false);
+      if (this->introspection().composition_type_exists(CompositionalFieldDescription::stress))
+        for (const unsigned int c : this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::stress))
+          is_stress_field[c] = true;
+
+      for (unsigned int c=0; c<composition_dg.size(); ++c)
+        AssertThrow(!composition_dg[c] || is_stress_field[c],
+                    ExcMessage("Using discontinuous elements for compositional fields in "
+                               "models with melt transport is currently only implemented "
+                               "for fields that represent elastic stress tensor components.") );
+    }
     if (melt_parameters.use_discontinuous_p_c)
       AssertThrow(!this->model_has_prescribed_stokes_solution(),
                   ExcMessage("You can not use a discontinuous p_c in a model "
