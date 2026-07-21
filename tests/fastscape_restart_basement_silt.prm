@@ -27,11 +27,6 @@
 # of metres offshore, so the test guards the silt-fraction save independently
 # of the basement save.
 #
-# The checkpoint is placed at step 4 (Steps between checkpoint = 4), after
-# FastScape has been set up on its first execution step, to avoid the
-# "STOP CopyH - You need to run SetUp first" abort that a step-0/1 checkpoint
-# would trigger.
-#
 # Enable if: ASPECT_WITH_FASTSCAPE
 
 include $ASPECT_SOURCE_DIR/tests/fastscape_test_fixed_ghost_nodes.prm
@@ -40,7 +35,8 @@ set End time           = 1.2e5
 set Resume computation = false
 
 subsection Checkpointing
-  set Steps between checkpoint = 4
+  set Steps between checkpoint = 1
+  set Resume checkpoint = 2
 end
 
 subsection Mesh deformation
