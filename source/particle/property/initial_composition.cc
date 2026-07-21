@@ -20,6 +20,7 @@
 
 #include <aspect/particle/property/initial_composition.h>
 #include <aspect/initial_composition/interface.h>
+#include <aspect/prescribed_solution/interface.h>
 
 namespace aspect
 {
@@ -80,6 +81,43 @@ namespace aspect
 
         return property_information;
       }
+
+      template <int dim>
+      void
+      InitialComposition<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &/*inputs*/,
+                                                          typename ParticleHandler<dim>::particle_iterator_range &particles) const
+      {
+        const aspect::PrescribedSolution::Manager<dim> &prescribed_solution_manager = this->get_prescribed_solution();
+        const auto &plugin_objects = prescribed_solution_manager.get_active_plugins();
+
+
+        std::vector<Point<dim>> evaluation_points(1);
+        std::vector<unsigned int> component_indices(1);
+        std::vector<bool> component_is_constrained(1);
+        std::vector<double> constrained_component_value(1);
+
+        for (auto &particle : particles)
+          {
+            evaluation_points[0] = particle.get_location();
+
+            for (unsigned int j = 0; j < this->n_compositional_fields(); ++j)
+              {
+                component_indices[0] = this->introspection().component_indices.compositional_fields[j];
+                component_is_constrained[0] = false;
+                constrained_component_value[0] = 0.0;
+
+                for (const auto &plugin : plugin_objects)
+                  {
+                    typename DoFHandler<dim>::active_cell_iterator cell;
+                    plugin->constrain_solution(cell, evaluation_points, component_indices, component_is_constrained, constrained_component_value);
+                  }
+
+                if (component_is_constrained[0])
+                  particle.get_properties()[this->data_position+j] = constrained_component_value[0];
+              }
+          }
+      }
+
     }
   }
 }
