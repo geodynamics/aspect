@@ -15,7 +15,7 @@ for r in "2" "3" "4" "5"
 	
 	dofs=$((2 ** r * 5))
         # Extract errors and prepend the computed DoFs
-        ./aspect-release temp.prm | gawk -v dofs=$dofs '/Errors/ {print dofs, $5, $7, $9}' | sed 's/,//g' >> $filename
+        ./aspect temp.prm | gawk -v dofs=$dofs '/Errors/ {print dofs, $5, $7, $9}' | sed 's/,//g' >> $filename
 	
 	grep Solving output/log.txt
 	rm -f temp.prm

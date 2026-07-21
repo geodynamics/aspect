@@ -137,7 +137,11 @@ namespace aspect
             for (unsigned int i=0; i<property_names.size(); ++i, ++output_index)
               {
                 if (property_names[i] == "compaction viscosity")
-                  computed_quantities[q][output_index] = 1./melt_outputs->inverse_compaction_viscosities[q];
+                  computed_quantities[q][output_index] = melt_outputs->inverse_compaction_viscosities[q] > 0.0
+                                                         ?
+                                                         1./melt_outputs->inverse_compaction_viscosities[q]
+                                                         :
+                                                         0.0;
                 else if (property_names[i] == "inverse compaction viscosity")
                   computed_quantities[q][output_index] = melt_outputs->inverse_compaction_viscosities[q];
                 else if (property_names[i] == "fluid viscosity")
