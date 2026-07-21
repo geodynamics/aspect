@@ -716,7 +716,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of densities, $\rho$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\frac{\text{kg}}{\text{m}^3}$.
+**Documentation:** List of densities, $\rho$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\kg\per\m^3}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Effective viscosity coefficient<parameters:Material_20model/Diffusion_20dislocation/Effective_20viscosity_20coefficient>`
@@ -752,7 +752,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the specific heat $C_p$. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+**Documentation:** The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\kg}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Maximum strain rate ratio iterations<parameters:Material_20model/Diffusion_20dislocation/Maximum_20strain_20rate_20ratio_20iterations>`
@@ -770,7 +770,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Upper cutoff for effective viscosity. Units: $\text{Pa}\text{s}$.
+**Documentation:** Upper cutoff for effective viscosity. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Minimum strain rate<parameters:Material_20model/Diffusion_20dislocation/Minimum_20strain_20rate>`
@@ -788,7 +788,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Lower cutoff for effective viscosity. Units: $\text{Pa}\text{s}$.
+**Documentation:** Lower cutoff for effective viscosity. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Prefactors for diffusion creep<parameters:Material_20model/Diffusion_20dislocation/Prefactors_20for_20diffusion_20creep>`
@@ -815,7 +815,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** For calculating density by thermal expansivity. Units: $\text{K}$.
+**Documentation:** For calculating density by thermal expansivity. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Strain rate residual tolerance<parameters:Material_20model/Diffusion_20dislocation/Strain_20rate_20residual_20tolerance>`
@@ -860,7 +860,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of thermal expansivities for background mantle and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value.  Units: $\frac{1}{\text{K}}$.
+**Documentation:** List of thermal expansivities for background mantle and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Viscosity averaging scheme<parameters:Material_20model/Diffusion_20dislocation/Viscosity_20averaging_20scheme>`
