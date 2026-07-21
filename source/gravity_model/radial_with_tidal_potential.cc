@@ -74,11 +74,11 @@ namespace aspect
     void
     RadialWithTidalPotential<dim>::declare_parameters (ParameterHandler &prm)
     {
+      RadialConstant<dim>::declare_parameters(prm);
       prm.enter_subsection("Gravity model");
       {
         prm.enter_subsection("Radial with tidal potential");
         {
-          RadialConstant<dim>::declare_parameters(prm);
           prm.declare_entry ("Mass of perturbing body", "1.898e27",
                              Patterns::Double (),
                              "Mass of body that perturbs gravity of modeled body. "
@@ -111,12 +111,13 @@ namespace aspect
       AssertThrow (dim==3, ExcMessage ("The 'radial with tidal potential' gravity model "
                                        "can only be used in 3D."));
       
+      radialconstant.initialize_simulator(this->get_simulator());
+      radialconstant.parse_parameters(prm);
+
       prm.enter_subsection("Gravity model");
       {
         prm.enter_subsection("Radial with tidal potential");
         {
-          radialconstant.initialize_simulator(this->get_simulator());
-          radialconstant.parse_parameters(prm);
           M_p = prm.get_double ("Mass of perturbing body");
           a_s = prm.get_double ("Semimajor axis of orbit");
           const double time_scale = this->get_parameters().convert_to_years ? constants::year_in_seconds : 1.0;

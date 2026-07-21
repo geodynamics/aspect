@@ -48,7 +48,7 @@ end
 
 
 subsection Boundary velocity model
-  set Zero velocity boundary indicators = top, bottom
+  set Zero velocity boundary indicators = 0,1
 end
 
 
