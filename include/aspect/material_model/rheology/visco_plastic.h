@@ -85,6 +85,23 @@ namespace aspect
     };
 
     /**
+     * Diagnostic outputs for the differential dynamic friction mechanism.
+     * Tectonic regime uses -1 for convergence, 0 for transform/neutral, and
+     * +1 for divergence.
+     */
+    template <int dim>
+    class TectonicRegimeAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        TectonicRegimeAdditionalOutputs(const unsigned int n_points);
+
+        std::vector<double> get_nth_output(const unsigned int idx) const override;
+
+        std::vector<double> tectonic_divergence_indicator;
+        std::vector<double> tectonic_regime;
+    };
+
+    /**
      * A data structure with the output of calculate_isostrain_viscosities.
      */
     struct IsostrainViscosities

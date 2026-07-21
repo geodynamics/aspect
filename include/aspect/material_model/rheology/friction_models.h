@@ -15,7 +15,7 @@
 
   You should have received a copy of the GNU General Public License
   along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>. 
+  <http://www.gnu.org/licenses/>.
 */
 
 #ifndef _aspect_material_model_rheology_friction_models_h
@@ -30,6 +30,9 @@
 #include <aspect/material_model/rheology/drucker_prager.h>
 #include <deal.II/fe/component_mask.h>
 
+#include <boost/geometry/geometries/point.hpp>
+#include <boost/geometry/index/rtree.hpp>
+
 namespace aspect
 {
   namespace MaterialModel
@@ -43,9 +46,10 @@ namespace aspect
        *
        * For the type 'dynamic friction', the friction angle is rate dependent following
        * Equation 13 from \\cite{van_dinther_seismic_2013}.
-       * 
+       *
        * For the type 'differential dynamic friction', the dynamic angle depends on whether
-       * local flow is convergent or divergent.
+       * flow is convergent, divergent, or transform/neutral according to the
+       * projected divergence of the tangential surface velocity.
        */
       enum FrictionMechanism
       {
@@ -53,6 +57,17 @@ namespace aspect
         dynamic_friction,
         differential_dynamic_friction,
         function
+      };
+
+      /**
+       * Numeric codes used to visualize the tectonic regime selected by the
+       * differential dynamic friction mechanism.
+       */
+      enum TectonicRegime
+      {
+        convergent_regime = -1,
+        transform_or_neutral_regime = 0,
+        divergent_regime = 1
       };
 
       template <int dim>
@@ -81,8 +96,7 @@ namespace aspect
           compute_friction_angle(const double current_edot_ii,
                                  const unsigned int volume_fraction_index,
                                  const double static_friction_angle,
-                                 const Point<dim> &position,
-                                 const SymmetricTensor<2, dim> &strain_rate) const;
+                                 const Point<dim> &position) const;
 
           /**
            * A function that returns the selected type of friction dependence.
@@ -90,7 +104,39 @@ namespace aspect
           FrictionMechanism
           get_friction_mechanism () const;
 
+          /**
+           * Return the signed divergence indicator used to select the tectonic
+           * regime. This is the previous completed Stokes solution's
+           * surface-velocity divergence, projected downward.
+           */
+          double
+          compute_tectonic_divergence_indicator(const Point<dim> &position) const;
+
+          /**
+           * Classify the projected surface deformation using the convergence
+           * and divergence thresholds.
+           */
+          TectonicRegime
+          compute_tectonic_regime(const Point<dim> &position) const;
+
         private:
+          using SurfaceIndexPoint = boost::geometry::model::point<double, 3, boost::geometry::cs::cartesian>;
+          using SurfaceIndexValue = std::pair<SurfaceIndexPoint, double>;
+          using SurfaceIndex = boost::geometry::index::rtree<SurfaceIndexValue,
+                boost::geometry::index::quadratic<16>>;
+
+          /** Update the cached surface divergence after a nonlinear solve. */
+          void
+          update_surface_velocity_divergence();
+
+          /** Convert a model position to a depth-independent surface index point. */
+          SurfaceIndexPoint
+          make_surface_index_point(const Point<dim> &position) const;
+
+          /** Interpolate the cached surface divergence at a lateral position. */
+          double
+          interpolate_surface_velocity_divergence(const Point<dim> &position) const;
+
           /**
            * Select the mechanism to be used for the friction dependence.
            * Possible options: static friction | dynamic friction | differential_dynamic_friction | function |
@@ -145,13 +191,20 @@ namespace aspect
           std::vector<double> dynamic_angles_of_internal_friction_for_divergence;
 
           /**
-           * Thresholds on the strain rate trace to classify convergent regimes.
+           * Magnitude of negative horizontal divergence required to classify a
+           * convergent regime.
            */
           double convergence_threshold;
           /**
-           * Thresholds on the strain rate trace to classify divergent regimes.
+           * Positive horizontal divergence required to classify a divergent regime.
            */
           double divergence_threshold;
+
+          /** Maximum depth to which the surface classification is projected. */
+          double surface_regime_projection_depth;
+
+          /** Spatial index containing the most recently computed surface divergence. */
+          SurfaceIndex surface_divergence_index;
       };
     }
   }
