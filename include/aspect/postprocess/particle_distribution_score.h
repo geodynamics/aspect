@@ -84,6 +84,7 @@ namespace aspect
          * Sorts all of the particles within the cell into a deal.II table based on their position.
          * @param cell The cell for which to compute the particle distribution.
          * @param bucket_width The size (relative to the size of the cell) of each bucket in the table.
+         * @param particle_manager_index The particle manager to grab the particles from.
          * @return The table with the particle information.
          */
         Table<dim,unsigned int>
