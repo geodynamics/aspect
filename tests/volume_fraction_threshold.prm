@@ -1,0 +1,101 @@
+# This test verifies that the thresholded volume fraction calculation in the
+# visco plastic material model masks chemical compositions below the selected
+# threshold. The four regions contain 25%, 45%, 75%, and 100% continent. With
+# a 50% threshold and background/continent cohesions of 1/9 MPa, the expected
+# current cohesions are 1, 1, 7, and 9 MPa.
+
+set Dimension                        = 2
+set End time                         = 0
+set Output directory                 = output-volume_fraction_threshold
+set Nonlinear solver scheme          = single Advection, single Stokes
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent      = 4
+    set Y extent      = 1
+    set X repetitions = 4
+    set Y repetitions = 1
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 3
+  set Initial adaptive refinement        = 0
+  set Time steps between mesh refinement = 0
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators = left, right, bottom, top
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = left, right, bottom, top
+  set List of model names = box
+
+  subsection Box
+    set Left temperature   = 293
+    set Right temperature  = 293
+    set Bottom temperature = 293
+    set Top temperature    = 293
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 293
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields  = continent
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = if(x<1, 0.25, if(x<2, 0.45, if(x<3, 0.75, 1.0)))
+  end
+end
+
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    subsection Composition fractions
+      set Volume fraction calculation scheme = thresholded
+      set Minimum volume fraction             = 0.5
+    end
+
+    set Cohesions                                = 1e6, 9e6
+    set Angles of internal friction              = 0, 0
+    set Viscous flow law                         = dislocation
+    set Prefactors for dislocation creep         = 5e-23, 5e-23
+    set Stress exponents for dislocation creep   = 1, 1
+    set Activation energies for dislocation creep = 0, 0
+    set Activation volumes for dislocation creep  = 0, 0
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set List of output variables = named additional outputs
+    set Output format             = gnuplot
+  end
+end

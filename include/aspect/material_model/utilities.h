@@ -374,6 +374,31 @@ namespace aspect
                                          const std::vector<unsigned int> &indices_to_use);
 
       /**
+       * Enumeration for selecting how compositional field values are converted
+       * into fractions.
+       */
+      enum class CompositionFractionScheme
+      {
+        /** Use every selected compositional field. */
+        standard,
+
+        /** Set selected fields below a prescribed threshold to zero. */
+        thresholded
+      };
+
+      /**
+       * As above, but apply the selected @p scheme before computing and
+       * normalizing the background and compositional fractions. For the
+       * thresholded scheme, selected fields strictly smaller than
+       * @p minimum_fraction are set to zero.
+       */
+      std::vector<double>
+      compute_only_composition_fractions(const std::vector<double> &compositional_fields,
+                                         const std::vector<unsigned int> &indices_to_use,
+                                         const CompositionFractionScheme scheme,
+                                         const double minimum_fraction);
+
+      /**
        * For multicomponent material models: Given a vector of compositional
        * field values of length N, this function returns a vector of fractions
        * of length N+1, corresponding to the fraction of a ``background
@@ -394,6 +419,18 @@ namespace aspect
       std::vector<double>
       compute_composition_fractions(const std::vector<double> &compositional_fields,
                                     const ComponentMask &field_mask = ComponentMask());
+
+      /**
+       * As above, but apply the selected @p scheme before computing and
+       * normalizing the background and compositional fractions. For the
+       * thresholded scheme, selected fields strictly smaller than
+       * @p minimum_fraction are set to zero.
+       */
+      std::vector<double>
+      compute_composition_fractions(const std::vector<double> &compositional_fields,
+                                    const ComponentMask &field_mask,
+                                    const CompositionFractionScheme scheme,
+                                    const double minimum_fraction);
 
       /**
        * Given a vector of component masses,
