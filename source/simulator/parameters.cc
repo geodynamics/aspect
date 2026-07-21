@@ -97,9 +97,9 @@ namespace aspect
 
     prm.declare_entry ("Start time", "0.",
                        Patterns::Double (),
-                       "The start time of the simulation. Units: Years if the "
+                       "The start time of the simulation. Units: \\si{\\year} if the "
                        "'Use years instead of seconds' parameter is set; "
-                       "seconds otherwise.");
+                       "\\si{\\second} otherwise.");
 
     prm.declare_entry ("Timing output frequency", "100",
                        Patterns::Integer(0),
@@ -161,7 +161,7 @@ namespace aspect
                        "The default value is a value so that when converted from years into seconds "
                        "it equals the largest number representable by a floating "
                        "point number, implying an unlimited time step."
-                       "Units: Years or seconds, depending on the ``Use years instead of seconds'' parameter.");
+                       "Units: \\si{\\year} or \\si{\\second}, depending on the ``Use years instead of seconds'' parameter.");
 
     prm.declare_entry ("Maximum first time step",
                        /* boost::lexical_cast<std::string>(std::numeric_limits<double>::max() /
@@ -176,7 +176,7 @@ namespace aspect
                        "The default value is a value so that when converted from years into seconds "
                        "it equals the largest number representable by a floating "
                        "point number, implying an unlimited time step. "
-                       "Units: Years or seconds, depending on the ``Use years instead of seconds'' parameter.");
+                       "Units: \\si{\\year} or \\si{\\second}, depending on the ``Use years instead of seconds'' parameter.");
 
     prm.declare_entry ("Maximum relative increase in time step",
                        "91.0",
@@ -672,7 +672,7 @@ namespace aspect
                            "should use the parameter ``Reaction time steps per advection step'' and set "
                            "this parameter to the same (or larger) value as the ``Maximum time step'' "
                            "(which is 5.69e+300 by default). "
-                           "Units: Years or seconds, depending on the ``Use years instead of seconds'' "
+                           "Units: \\si{\\year} or \\si{\\second}, depending on the ``Use years instead of seconds'' "
                            "parameter.");
 
         prm.declare_entry ("Reaction time steps per advection step", "0",
@@ -1011,8 +1011,8 @@ namespace aspect
                          "If non-negative, resume from the checkpoint whose saved model "
                          "time is closest to this value. This option is ignored when "
                          "Resume checkpoint is set. "
-                         "Units: Years if the 'Use years instead "
-                         "of seconds' parameter is set; seconds otherwise.");
+                         "Units: \\si{\\year} if the 'Use years instead "
+                         "of seconds' parameter is set; \\si{\\second} otherwise.");
     }
     prm.leave_subsection ();
 

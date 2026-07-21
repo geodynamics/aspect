@@ -726,11 +726,11 @@ namespace aspect
         // Strain rate and stress limiting parameters
         prm.declare_entry ("Minimum viscosity", "1.e17",
                            Patterns::Double(0.),
-                           "Minimum effective viscosity. Units: $\\text{Pa}\\text{s}$.");
+                           "Minimum effective viscosity. Units: \\si{\\pascal\\second}.");
 
         prm.declare_entry ("Maximum viscosity", "1.e28",
                            Patterns::Double(0.),
-                           "Maximum effective viscosity. Units: $\\text{Pa}\\text{s}$.");
+                           "Maximum effective viscosity. Units: \\si{\\pascal\\second}.");
       }
 
 

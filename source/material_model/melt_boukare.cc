@@ -922,15 +922,15 @@ namespace aspect
                              Patterns::Double (0),
                              "The value of the constant viscosity $\\eta_0$ of the solid matrix. "
                              "This viscosity may be modified by both temperature and porosity "
-                             "dependencies. Units: $Pa \\, s$.");
+                             "dependencies. Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Reference bulk viscosity", "1e22",
                              Patterns::Double (0),
                              "The value of the constant bulk viscosity $\\xi_0$ of the solid matrix. "
                              "This viscosity may be modified by both temperature and porosity "
-                             "dependencies. Units: $Pa \\, s$.");
+                             "dependencies. Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Reference melt viscosity", "10",
                              Patterns::Double (0),
-                             "The value of the constant melt viscosity $\\eta_f$. Units: $Pa \\, s$.");
+                             "The value of the constant melt viscosity $\\eta_f$. Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Exponential melt weakening factor", "27",
                              Patterns::Double (),
                              "The porosity dependence of the viscosity. Units: dimensionless.");
@@ -949,11 +949,11 @@ namespace aspect
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0),
                              "The value of the thermal conductivity $k$. "
-                             "Units: $W/m/K$.");
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
           prm.declare_entry ("Reference permeability", "1e-8",
                              Patterns::Double(),
                              "Reference permeability of the solid host rock."
-                             "Units: $m^2$.");
+                             "Units: \\si{\\meter\\squared}.");
           prm.declare_entry ("Include melting and freezing", "true",
                              Patterns::Bool (),
                              "Whether to include melting and freezing (according to a simplified "
@@ -980,12 +980,12 @@ namespace aspect
                              Patterns::Double(),
                              "The melting temperature of one of the components in the melting "
                              "model, the Fe mantle endmember."
-                             "Units: K.");
+                             "Units: \\si{\\kelvin}.");
           prm.declare_entry ("Mg mantle melting temperature", "4821.2",
                              Patterns::Double(),
                              "The melting temperature of one of the components in the melting "
                              "model, the Mg mantle endmember."
-                             "Units: K.");
+                             "Units: \\si{\\kelvin}.");
           prm.declare_entry ("Fe number of moles", "0.48",
                              Patterns::Double(),
                              "The number of moles of Fe atoms mixing on a pseudosite in the "
@@ -1004,12 +1004,12 @@ namespace aspect
                              Patterns::Double(),
                              "Reference temperature used to compute the material properties"
                              "of the different endmember components."
-                             "Units: K.");
+                             "Units: \\si{\\kelvin}.");
           prm.declare_entry ("Reference pressure", "1e11",
                              Patterns::Double(),
                              "Reference pressure used to compute the material properties"
                              "of the different endmember components."
-                             "Units: Pa.");
+                             "Units: \\si{\\pascal}.");
 
           prm.declare_entry ("Endmember names", "FeSiO3_bridgmanite, MgSiO3_bridgmanite, FeO_periclase, MgO_periclase, FeO_melt, MgO_melt, SiO2_melt",
                              Patterns::List(Patterns::MultipleSelection("MgSiO3_bridgmanite|FeSiO3_bridgmanite|MgO_periclase|FeO_periclase|MgO_melt|FeO_melt|SiO2_melt")),
@@ -1029,7 +1029,7 @@ namespace aspect
           prm.declare_entry ("Molar masses", "0.1319287, 0.1003887, 0.0718444, 0.0403044, 0.0707624708, 0.048592178, 0.048592178",
                              Patterns::List(Patterns::Double(0)),
                              "Molar masses of the different endmembers"
-                             "Units: kg/mol.");
+                             "Units: \\si{\\kilogram\\per\\mole}.");
           prm.declare_entry ("Number of atoms", "5.0, 5.0, 2.0, 2.0, 2.092, 2.419, 2.419",
                              Patterns::List(Patterns::Double(0)),
                              "Number of atoms per in the formula of each endmember."
@@ -1037,17 +1037,17 @@ namespace aspect
           prm.declare_entry ("Reference volumes", "2.534e-05, 2.445e-05, 1.206e-05, 1.125e-05, 1.2325484447664221e-05, 1.218e-05, 1.218e-05",
                              Patterns::List(Patterns::Double(0)),
                              "Reference volumes of the different endmembers."
-                             "Units: $m^3$.");
+                             "Units: \\si{\\meter\\cubed}.");
           prm.declare_entry ("Reference thermal expansivities", "1.87e-05, 1.87e-05, 3.22e-05, 3.11e-05, 2.9614332469401705e-05, 2.06e-05, 2.06e-05",
                              Patterns::List(Patterns::Double(0)),
                              "List of thermal expansivities for each different endmember at the reference temperature "
                              "and reference pressure."
-                             "Units: 1/K.");
+                             "Units: \\si{\\per\\kelvin}.");
           prm.declare_entry ("Reference bulk moduli", "2.81e11, 2.51e+11, 1.52e11, 1.616e11, 166652774642.11273, 2.317e11, 2.317e11",
                              Patterns::List(Patterns::Double(0)),
                              "List of bulk moduli for each different endmember at the reference temperature "
                              "and reference pressure."
-                             "Units: Pa.");
+                             "Units: \\si{\\pascal}.");
           prm.declare_entry ("First derivatives of the bulk modulus", "4.14, 4.14, 4.9, 3.95, 5.0802472229003905, 4.25, 4.25",
                              Patterns::List(Patterns::Double()),
                              "The pressure derivative of the bulk modulus at the reference temperature and reference "
@@ -1057,38 +1057,38 @@ namespace aspect
                              Patterns::List(Patterns::Double()),
                              "The second pressure derivative of the bulk modulus at the reference temperature and reference "
                              "pressure for each different endmember component."
-                             "Units: 1/Pa.");
+                             "Units: \\si{\\per\\pascal}.");
           prm.declare_entry ("Einstein temperatures", "418.1, 561.0, 297.6, 540.2, 505.75, 558.1, 558.1",
                              Patterns::List(Patterns::Double(0)),
                              "List of Einstein temperatures for each different endmember."
-                             "Units: K.");
+                             "Units: \\si{\\kelvin}.");
           prm.declare_entry ("Reference enthalpies", "-1082910.0, -1442310.0, -262240.0, -601570.0, -195245.49100022088, -538009.8, -538009.8",
                              Patterns::List(Patterns::Double()),
                              "List of enthalpies at the reference temperature and reference "
                              "pressure for each different endmember component."
-                             "Units: J/mol.");
+                             "Units: \\si{\\joule\\per\\mole}.");
           prm.declare_entry ("Reference entropies", "95.0, 62.6, 58.6, 26.5, 95.0299295525918, 64.9, 64.9",
                              Patterns::List(Patterns::Double(0)),
                              "List of entropies at the reference temperature and reference "
                              "pressure for each different endmember component."
-                             "Units: J/K/mol.");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\mole}.");
           prm.declare_entry ("Reference specific heat capacities", "139.546209, 161.546581, 52.0016403, 73.1147154, 79.5326013, 79.5326013, 79.5326013",
                              Patterns::List(Patterns::Double(0)),
                              "List of specific heat capacities for each different endmember at the reference temperature "
                              "and reference pressure."
-                             "Units: J/kg/K.");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
           prm.declare_entry ("Linear coefficients for specific heat polynomial", "6.36191292e-03, -3.31714290e-03, 3.36163516e-03, -6.35318887e-03, -2.41909947e-03, -2.41909947e-03, -2.41909947e-03",
                              Patterns::List(Patterns::Double()),
                              "The first of three coefficients that are used to compute the specific heat capacities for each "
                              "different endmember at the reference temperature and reference pressure. "
                              "This coefficient describes the linear part of the temperature dependence. "
-                             "Units: J/kg/K/K.");
+                             "Units: \\si{\\joule\\per\\kilogram\\per\\kelvin\\squared}.");
           prm.declare_entry ("Second coefficients for specific heat polynomial", "-4.13886524e+06, -3.57533814e+06, -1.19540964e+06, -7.33679285e+05, -1.61692272e+06, -1.61692272e+06, -1.61692272e+06",
                              Patterns::List(Patterns::Double()),
                              "The second of three coefficients that are used to compute the specific heat capacities for each "
                              "different endmember at the reference temperature and reference pressure. This coefficient describes "
                              "the part of the temperature dependence that scales as the inverse of the square of the temperature. "
-                             "Units: J K/kg.");
+                             "Units: \\si{\\joule\\kelvin\\per\\kilogram}.");
           prm.declare_entry ("Third coefficients for specific heat polynomial", "-464.775577, -1112.54791, 25.5067110, -592.994207, -562.222634, -562.222634, -562.222634",
                              Patterns::List(Patterns::Double()),
                              "The third of three coefficients that are used to compute the specific heat capacities for each "

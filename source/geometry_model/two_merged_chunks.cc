@@ -475,19 +475,19 @@ namespace aspect
 
           prm.declare_entry ("Chunk minimum longitude", "0.",
                              Patterns::Double (-180., 360.), // enables crossing of either hemisphere
-                             "Minimum longitude of the chunk. Units: degrees.");
+                             "Minimum longitude of the chunk. Units: \\si{\\degree}.");
           prm.declare_entry ("Chunk maximum longitude", "1.",
                              Patterns::Double (-180., 360.), // enables crossing of either hemisphere
-                             "Maximum longitude of the chunk. Units: degrees.");
+                             "Maximum longitude of the chunk. Units: \\si{\\degree}.");
 
           prm.declare_entry ("Chunk minimum latitude", "0.",
                              Patterns::Double (-90., 90.),
                              "Minimum latitude of the chunk. This value is ignored "
-                             "if the simulation is in 2d. Units: degrees.");
+                             "if the simulation is in 2d. Units: \\si{\\degree}.");
           prm.declare_entry ("Chunk maximum latitude", "1.",
                              Patterns::Double (-90., 90.),
                              "Maximum latitude of the chunk. This value is ignored "
-                             "if the simulation is in 2d. Units: degrees.");
+                             "if the simulation is in 2d. Units: \\si{\\degree}.");
 
           prm.declare_entry ("Outer chunk radius repetitions", "1",
                              Patterns::Integer (1),

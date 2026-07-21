@@ -666,9 +666,9 @@ namespace aspect
                              "The time interval between each generation of "
                              "output files. A value of zero indicates that "
                              "output should be generated every time step.\n\n"
-                             "Units: years if the "
+                             "Units: \\si{\\year} if the "
                              "'Use years instead of seconds' parameter is set; "
-                             "seconds otherwise.");
+                             "\\si{\\second} otherwise.");
 
           prm.declare_entry ("Random number seed", "1",
                              Patterns::Integer (0),

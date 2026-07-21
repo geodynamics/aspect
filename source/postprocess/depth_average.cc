@@ -226,9 +226,9 @@ namespace aspect
                              "The time interval between each generation of "
                              "graphical output files. A value of zero indicates "
                              "that output should be generated in each time step. "
-                             "Units: years if the "
+                             "Units: \\si{\\year} if the "
                              "'Use years instead of seconds' parameter is set; "
-                             "seconds otherwise.");
+                             "\\si{\\second} otherwise.");
           prm.declare_entry ("Number of zones", "10",
                              Patterns::Integer (1),
                              "The number of zones in depth direction within which we "

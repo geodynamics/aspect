@@ -690,9 +690,9 @@ namespace aspect
                                  "The time interval between each generation of "
                                  "output files. A value of zero indicates that "
                                  "output should be generated every time step.\n\n"
-                                 "Units: years if the "
+                                 "Units: \\si{\\year} if the "
                                  "'Use years instead of seconds' parameter is set; "
-                                 "seconds otherwise.");
+                                 "\\si{\\second} otherwise.");
 
               // now also see about the file format we're supposed to write in
               // Note: "ascii" is a legacy format used by ASPECT before particle output

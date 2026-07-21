@@ -54,9 +54,9 @@ namespace aspect
         prm.declare_entry("Function expression", "1.0",
                           Patterns::Anything(),
                           "Expression for the time step size as a function of 'time'."
-                          "Units: years if the "
+                          "Units: \\si{\\year} if the "
                           "'Use years instead of seconds' parameter is set; "
-                          "seconds otherwise.");
+                          "\\si{\\second} otherwise.");
         prm.declare_entry("Variable names", "time",
                           Patterns::Anything(),
                           "Name for the variable representing the current time.");

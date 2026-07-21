@@ -138,7 +138,7 @@ namespace aspect
                              "in the Earth would be lower than the stresses introduced by the "
                              "boundary conditions. Only used if 'Limit stress contribution to shear heating' "
                              "is true. "
-                             "Units: Pa.");
+                             "Units: \\si{\\pascal}.");
           prm.declare_entry ("Friction angle for maximum shear stress", "0",
                              Patterns::Double (0),
                              "Friction angle for maximum shear stress that should be used for the computation "

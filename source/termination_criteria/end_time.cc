@@ -56,9 +56,9 @@ namespace aspect
                          "so that when converted from years to seconds it is approximately "
                          "equal to the largest number representable in floating point "
                          "arithmetic. For all practical purposes, this equals infinity. "
-                         "Units: Years if the "
+                         "Units: \\si{\\year} if the "
                          "'Use years instead of seconds' parameter is set; "
-                         "seconds otherwise.");
+                         "\\si{\\second} otherwise.");
     }
 
 

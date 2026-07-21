@@ -237,7 +237,7 @@ namespace aspect
         prm.declare_entry ("Heat capacity", "1.25e3",
                            Patterns::Double(0.),
                            "The value of the specific heat $C_p$. "
-                           "Units: \\si{\\joule\\per\\kelvin\\kg}.");
+                           "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
         prm.declare_entry ("Densities", "3300.",
                            Patterns::List(Patterns::Double(0.)),
                            "List of densities, $\\rho$, for background mantle and compositional fields, "
