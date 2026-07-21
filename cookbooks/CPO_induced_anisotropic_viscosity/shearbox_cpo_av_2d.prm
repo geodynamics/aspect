@@ -6,26 +6,22 @@
 set Additional shared libraries  = ./plugin/libCPO_induced_anisotropic_viscosity.debug.so
 set CFL number                   = 0.1
 set Timing output frequency      = 10000
-set Dimension                    = 3
+set Dimension                    = 2
 set Pressure normalization       = surface
 set Surface pressure             = 0
 set Nonlinear solver scheme      = single Advection, single Stokes
 set End time                     = 0.5
 set Use years instead of seconds = false
-set Output directory             = output_Shearbox_CPO_AV
-
-subsection Termination criteria
-  set End step = 0
-end
+set Output directory             = output_Shearbox_CPO_AV_2d
 
 subsection Initial composition model
   set List of model names = function
 
   subsection Function
     set Function expression = 0;\
-                              0; 0; 0; 0;\
-                              0; 0; 0; 0;\
-                              0; 0; 0; 0;\
+                              0; 1/3; 1/3; 1/3;\
+                              0; 1/3; 1/3; 1/3;\
+                              0; 1/3; 1/3; 1/3;\
                               0
   end
 end
@@ -41,7 +37,7 @@ subsection Compositional fields
                                     particles, particles, particles, particles, \
                                     particles, particles, particles, particles, \
                                     particles, particles, particles, particles, \
-                                    static
+                                    static                       
   set Mapped particle properties = phi1:cpo mineral 0 phi1[0], eigvalue_a1:cpo mineral 0 eigenvalues a axis[0], eigvalue_a2:cpo mineral 0 eigenvalues a axis[1], eigvalue_a3:cpo mineral 0 eigenvalues a axis[2], \
                                    theta:cpo mineral 0 theta[0], eigvalue_b1:cpo mineral 0 eigenvalues b axis[0], eigvalue_b2:cpo mineral 0 eigenvalues b axis[1], eigvalue_b3:cpo mineral 0 eigenvalues b axis[2], \
                                    phi2:cpo mineral 0 phi2[0], eigvalue_c1:cpo mineral 0 eigenvalues c axis[0], eigvalue_c2:cpo mineral 0 eigenvalues c axis[1], eigvalue_c3:cpo mineral 0 eigenvalues c axis[2]
@@ -56,7 +52,7 @@ end
   # static, static, static, static, \
   # static, static, static, static, \
   # static, static, static, static, \
-
+  
 subsection Gravity model
   set Model name = vertical
 
@@ -71,7 +67,6 @@ subsection Geometry model
   subsection Box
     set X extent = 1
     set Y extent = 1
-    set Z extent = 1
   end
 end
 
@@ -86,24 +81,22 @@ end
 
 subsection Boundary temperature model
   set List of model names = box
-  set Fixed temperature boundary indicators = bottom, top, front, back, left, right
+  set Fixed temperature boundary indicators = bottom, top, left, right
 
   subsection Box
     set Bottom temperature = 1600
     set Top temperature    = 1600
-    set Front temperature  = 1600
-    set Back temperature   = 1600
     set Left temperature   = 1600
     set Right temperature  = 1600
   end
 end
 
 subsection Boundary velocity model
-  set Prescribed velocity boundary indicators =  top:function, bottom:function, left:function, right:function, front:function, back:function
+  set Prescribed velocity boundary indicators =  top:function, bottom:function, left:function, right:function
 
   subsection Function
-    set Variable names = x,y,z,t
-    set Function expression = (z-0.5);0;0
+    set Variable names = x,y,t
+    set Function expression = (y-0.5);0
   end
 end
 
@@ -113,6 +106,7 @@ subsection Material model
 
   subsection CPO-induced Anisotropic Viscosity
     set Reference viscosity = 1e9
+    set Use analytical inversion = true
   end
 end
 

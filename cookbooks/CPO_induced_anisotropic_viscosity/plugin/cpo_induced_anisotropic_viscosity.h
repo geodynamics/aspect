@@ -85,11 +85,11 @@ namespace aspect
         std::vector<double> CnI_F, CnI_G, CnI_H, CnI_L, CnI_M, CnI_N;
 
         double grain_size;
-
         double stress_exponent;
         double activation_energy;
         double fluidity_constant;
         double grain_size_exponent;
+        bool use_analytical_inversion;
 
         /** The iteration for computing scalar viscosity is terminated when the relative change falls below the relative tolerance. */
         double relative_tolerance;
@@ -112,6 +112,15 @@ namespace aspect
          */
         void pseudoinverse(LAPACKFullMatrix<double> &A,
                            LAPACKFullMatrix<double> &A_pinv) const;
+
+        SymmetricTensor<2,6> viscosity_tensor_cpo_frame(const double F, const double G, const double H,
+                                                        const double L, const double M, const double N ) const;
+
+        double orthotropic_strain_rate_invariant( const Tensor<2,3> strain_rate_cpo_frame,
+                                                  const double F, const double G, const double H,
+                                                  const double L, const double M, const double N) const;
+
+        SymmetricTensor<4,dim> kelvin_to_r4_tensor(const Tensor<2,6> V) const;
 
         /**
          * This conversion from euler angles to rotation matrix is different from the function with the same name
