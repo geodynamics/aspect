@@ -195,7 +195,7 @@ else()
 endif()
 
 
-# Python
+# Python and Landlab
 set(ASPECT_WITH_PYTHON OFF CACHE BOOL "If enabled, ASPECT is configured with Python support.")
 message(STATUS "Using ASPECT_WITH_PYTHON = '${ASPECT_WITH_PYTHON}'")
 if(ASPECT_WITH_PYTHON)
@@ -209,7 +209,15 @@ if(ASPECT_WITH_PYTHON)
     message(FATAL_ERROR "Python not found. Consider disabling ASPECT_WITH_PYTHON.")
   endif()
 endif()
-
+set(ASPECT_WITH_LANDLAB OFF CACHE BOOL "If enabled, ASPECT is configured with Landlab support.")
+if(ASPECT_WITH_PYTHON)
+  message(STATUS "Using ASPECT_WITH_LANDLAB = '${ASPECT_WITH_LANDLAB}'")
+  # we could check here that we can "import landlab", but that can wait for a later time.
+else()
+  if (ASPECT_WITH_LANDLAB)
+    message(FATAL_ERROR "ASPECT_WITH_LANDLAB is enabled, but ASPECT_WITH_PYTHON=ON is required.")
+  endif()
+endif()
 
 # PerpleX
 find_package(PerpleX QUIET
