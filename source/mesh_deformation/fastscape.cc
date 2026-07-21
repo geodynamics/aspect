@@ -1609,10 +1609,11 @@ namespace aspect
           fastscape_copy_h_(elevation.data());
 
           basement.resize(fastscape_array_size);
-          fastscape_copy_h_(basement.data());
+          fastscape_copy_basement_(basement.data());
 
           silt_fraction.resize(fastscape_array_size);
-          fastscape_copy_h_(silt_fraction.data());
+          if (use_marine_component)
+            fastscape_copy_f_(silt_fraction.data());
         }
 
       // Serialize into a stringstream. Put the following into a code
