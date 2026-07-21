@@ -1,0 +1,26 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: RMS velocity (m/year)
+# 12: Max. velocity (m/year)
+# 13: Minimal temperature (K)
+# 14: Average temperature (K)
+# 15: Maximal temperature (K)
+# 16: Visualization file name
+# 17: Minimal pressure (Pa)
+# 18: Average pressure (Pa)
+# 19: Maximal pressure (Pa)
+# 20: Average density (kg/m^3)
+# 21: Average viscosity (Pa s)
+# 22: Total mass (kg)
+# 23: Average tidal heating rate (W/kg)
+# 24: Total tidal heating rate (W)
+0 0.000000000000e+00 0.000000000000e+00 48 552 240  0 0 0 0 0.00000000e+00 0.00000000e+00 1.00000000e+02 9.99999999e+01 1.00000000e+02 output-tidal_heating_latitude_2D/solution/solution-00000 0.00000000e+00 0.00000000e+00 0.00000000e+00 9.17000000e+02 1.00000000e+14 8.70474754e+14 8.15637557e-09 7.09991902e+06 
+1 1.000000000000e+05 1.000000000000e+05 48 552 240 10 0 0 0 0.00000000e+00 0.00000000e+00 1.06567124e+02 1.12198595e+02 1.18600255e+02 output-tidal_heating_latitude_2D/solution/solution-00001 0.00000000e+00 0.00000000e+00 0.00000000e+00 9.17000000e+02 1.00000000e+14 8.70474754e+14 8.15637557e-09 7.09991902e+06 

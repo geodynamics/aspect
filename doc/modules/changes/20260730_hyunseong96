@@ -1,0 +1,4 @@
+The heating model 'Tidal Heating' with the option 'latitudinal variation' now works for 2-dimensional spherical geometries.
+The model assumes that the 2D geometry represents the simplified latitudinal variation from Nimmo et al. (2007).
+<br>
+(Hyunseong Kim 2026/07/30)

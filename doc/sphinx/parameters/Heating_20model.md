@@ -47,7 +47,7 @@ The formula is interpreted as having units W/kg.
 
 &lsquo;shear heating with melt&rsquo;: Implementation of a standard model for shear heating of migrating melt, including bulk (compression) heating $\xi \left( \nabla \cdot \mathbf u_s \right)^2 $ and heating due to melt segregation $\frac{\eta_f \phi^2}{k} \left( \mathbf u_f - \mathbf u_s \right)^2 $. For full shear heating, this has to be used in combination with the heating model shear heating to also include shear heating for the solid part.
 
-&lsquo;tidal heating&rsquo;: A tidal heating implementation related to diurnal tides. The default equation ignores regional (radial/lateral) changes. This equation is the Eq.12 from Tobie et al. (2003) (https://doi.org/10.1029/2003JE002099). Selecting &rsquo;latitudinal variation&rsquo; from &rsquo;Custom distribution of tidal strain rate&rsquo; allows simplified latitudinal variation with cosine function, &rsquo;Maximum tidal strain rate&rsquo; and &rsquo;Minimum tidal strain rate. Latitudinal variation of tidal strain rate is shown in Fig.3 from Nimmo et al. (2007) (https://doi.org/10.1016/j.icarus.2007.04.021). Unit: \si{\watt\per\meter\cubed}.
+&lsquo;tidal heating&rsquo;: A tidal heating implementation related to diurnal tides. The default equation ignores regional (radial/lateral) changes. This equation is the Eq.12 from Tobie et al. (2003) (https://doi.org/10.1029/2003JE002099). Selecting &rsquo;latitudinal variation&rsquo; from &rsquo;Custom distribution of tidal strain rate&rsquo; allows simplified latitudinal variation with cosine function, &rsquo;Maximum tidal strain rate&rsquo; and &rsquo;Minimum tidal strain rate. Latitudinal variation of tidal strain rate is shown in Fig.3 from Nimmo et al. (2007) (https://doi.org/10.1016/j.icarus.2007.04.021). On 2D geometry, y axis works as polar axis for latitudinal variation. Unit: \si{\watt\per\meter\cubed}.
 ::::
 
 (parameters:Heating_20model/Adiabatic_20heating)=
@@ -285,7 +285,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Selection constant|latitudinal variation ]
 
-**Documentation:** Choose how the time-averaged tidal strain rate is distributed. If &rsquo;constant&rsquo;, the tidal strain rate is fixed to &rsquo;Constant tidal strain rate&rsquo;. If &rsquo;latitudinal variation&rsquo;, &rsquo;Maximum tidal strain rate&rsquo; and &rsquo;Minimum tidal strain rate&rsquo; are used.
+**Documentation:** Choose how the time-averaged tidal strain rate is distributed. If &rsquo;constant&rsquo;, the tidal strain rate is fixed to &rsquo;Constant tidal strain rate&rsquo;. If &rsquo;latitudinal variation&rsquo;, &rsquo;Maximum tidal strain rate&rsquo; and &rsquo;Minimum tidal strain rate&rsquo; are used. On 2D geometry, y axis works as polar axis for latitudinal variation.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Elastic shear modulus<parameters:Heating_20model/Tidal_20heating/Elastic_20shear_20modulus>`
