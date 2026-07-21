@@ -63,7 +63,7 @@ namespace aspect
           prm.declare_entry ("Magnitude at bottom", "10.7",
                              Patterns::Double (),
                              "Magnitude of the radial gravity vector "
-                             "at the bottom of the domain. `Bottom' means the"
+                             "at the bottom of the domain. `Bottom' means the "
                              "maximum depth in the chosen geometry, and for "
                              "example represents the core-mantle boundary in "
                              "the case of the `spherical shell' geometry model, "
