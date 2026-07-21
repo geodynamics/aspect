@@ -121,11 +121,15 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = visualization
+  set List of postprocessors = visualization, topography
 
   subsection Visualization
     set Time between graphical output = 500e3
     set Interpolate output = false
     set Output format =  gnuplot
+  end
+  subsection Topography
+    set Output to file = true
+    set Time between text output = 500e3
   end
 end
