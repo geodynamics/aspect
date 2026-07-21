@@ -900,6 +900,29 @@ namespace aspect
            */
           unsigned int n_phases_total_chemical_compositions;
       };
+
+      template <int dim>
+      class OrthotropicRheology
+      {
+        public:
+          SymmetricTensor<2,6>
+          viscosity_tensor_cpo_frame(const double F, const double G, const double H, const double L, const double M, const double N) const;
+
+          SymmetricTensor<2,6>
+          fluidity_tensor_cpo_frame(const double F, const double G, const double H, const double L, const double M, const double N) const;
+
+          double
+          stress_invariant(const SymmetricTensor<2,3> stress_cpo_frame, 
+                           const double F, const double G, const double H,
+                           const double L, const double M, const double N) const;
+          
+          double
+          strain_rate_invariant(const SymmetricTensor<2,3> strain_rate_cpo_frame, 
+                                const double F, const double G, const double H,
+                                const double L, const double M, const double N) const;
+        private: 
+      };
+
     }
   }
 }

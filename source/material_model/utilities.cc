@@ -1781,6 +1781,122 @@ namespace aspect
             n_phases_total_chemical_compositions += n_phases_per_composition[i+1];
           }
       }
+      
+      template<int dim>
+      SymmetricTensor<2,6>
+      OrthotropicRheology<dim>::viscosity_tensor_cpo_frame(const double F, const double G, const double H,                                                   
+                                                           const double L, const double M, const double N) const
+      {
+        // based on Hill 1948 (https://doi.org/10.1098/rspa.1948.0045)
+        // Signorelli 2021 (https://dx.doi.org/10.46298/jtcam.6737)
+        // rathmann 2021 (https://doi.org/10.1017/jog.2022.33)
+        // formulated in terms of Hill coefficients
+        
+        std::vector<int> ji = {1,2,0}; // tuple of indices shifted by one
+        std::vector<int> ki = {2,0,1}; // tuple of indices shifted by two
+
+        SymmetricTensor<2,6> visc_tensor;
+        std::vector<double> Hi = {F, G, H, L, M, N};
+
+        const double gam = 4*(Hi[2]*Hi[1] + Hi[0]*Hi[2] + Hi[0]*Hi[1]);
+
+        for (unsigned int i=0; i < 3; ++i)
+          {
+            // upper left part
+            visc_tensor[i][i] = 2/(3*gam)*(4*Hi[i] + Hi[ji[i]] + Hi[ki[i]]);
+            visc_tensor[ji[i]][ki[i]] = 2/(3*gam)*(Hi[i] - 2*Hi[ji[i]] - 2*Hi[ki[i]]);
+            // sym: visc_tensor[ki[i]][ji[i]] = visc_tensor[ji[i]][ki[i]];
+
+            // lower right part
+            visc_tensor[i+3][i+3] = 3/(2*Hi[i+3]);
+          }
+        return visc_tensor;
+      }
+
+      template<int dim>
+      double
+      OrthotropicRheology<dim>::strain_rate_invariant(const SymmetricTensor<2,3> strain_rate_cpo_frame,
+                                                      const double F, const double G, const double H,
+                                                      const double L, const double M, const double N) const
+      {
+        // rathmann 2021 (https://doi.org/10.1017/jog.2022.33)
+        // formulated in terms of Hill coefficients
+
+        std::vector<int> ji = {1,2,0}; // tuple of indices shifted by one
+        std::vector<int> ki = {2,0,1}; // tuple of indices shifted by two
+
+        std::vector<double> Hi = {F, G, H, L, M, N};
+        const double gam = 4*(Hi[2]*Hi[1] + Hi[0]*Hi[2] + Hi[0]*Hi[1]);
+
+        double anisotropic_invariant = 0.0;
+
+        for (unsigned int i=0; i < 3; ++i)
+          {
+            anisotropic_invariant += ( 2/(3*gam)*Utilities::fixed_power<2>(strain_rate_cpo_frame[i][i])*(4*Hi[i]+Hi[ji[i]]+Hi[ki[i]])
+                                      + 2/(3*gam)*2*strain_rate_cpo_frame[ji[i]][ji[i]]*strain_rate_cpo_frame[ki[i]][ki[i]]*(Hi[i] - 2*Hi[ji[i]] - 2*Hi[ki[i]])
+                                      + 3/Hi[i+3]*Utilities::fixed_power<2>(strain_rate_cpo_frame[ji[i]][ki[i]])
+                                    );
+          }
+
+        return std::pow(anisotropic_invariant, 0.5);
+      }
+
+      template<int dim>
+      SymmetricTensor<2,6>
+      OrthotropicRheology<dim>::fluidity_tensor_cpo_frame(const double F, const double G, const double H,
+                                                          const double L, const double M, const double N) const
+      {
+        // based on Hill 1948 (https://doi.org/10.1098/rspa.1948.0045)
+        // Signorelli 2021 (https://dx.doi.org/10.46298/jtcam.6737)
+        // rathmann 2021 (https://doi.org/10.1017/jog.2022.33)
+
+        std::vector<int> ji = {1,2,0}; // tuple of indices shifted by one
+        std::vector<int> ki = {2,0,1}; // tuple of indices shifted by two
+
+        SymmetricTensor<2,6> fluidity_tensor;
+        std::vector<double> Hi = {F, G, H, L, M, N};
+
+        for (unsigned int i=0; i < 3; ++i)
+          {
+            // upper left part
+            fluidity_tensor[i][i] = Hi[ji[i]] + Hi[ki[i]];
+            fluidity_tensor[ji[i]][ki[i]] = - Hi[i];
+            // sym: visc_tensor[ki[i]][ji[i]] = visc_tensor[ji[i]][ki[i]];
+
+            // lower right part
+            fluidity_tensor[i+3][i+3] = Hi[i+3];
+          }
+        return fluidity_tensor;
+      }
+
+
+      template<int dim>
+      double
+      OrthotropicRheology<dim>::stress_invariant(const SymmetricTensor<2,3> stress_cpo_frame,
+                                                 const double F, const double G, const double H,
+                                                 const double L, const double M, const double N) const
+      {
+        // based on Hill 1948 (https://doi.org/10.1098/rspa.1948.0045)
+        // Signorelli 2021 (https://dx.doi.org/10.46298/jtcam.6737)
+        // rathmann 2021 (https://doi.org/10.1017/jog.2022.33)
+
+        std::vector<int> ji = {1,2,0}; // tuple of indices shifted by one
+        std::vector<int> ki = {2,0,1}; // tuple of indices shifted by two
+
+        std::vector<double> Hi = {F, G, H, L, M, N};
+        const double gam = 4*(Hi[2]*Hi[1] + Hi[0]*Hi[2] + Hi[0]*Hi[1]);
+
+        double yield_function = 0.0;
+
+        for (unsigned int i=0; i < 3; ++i)
+          {
+            // factor of 2/3 for consistency with invariant definition
+            yield_function += 2/3*(Hi[i]*Utilities::fixed_power<2>(stress_cpo_frame[ji[i]][ji[i]] - stress_cpo_frame[ki[i]][ki[i]]) + 2*Hi[i+3]*Utilities::fixed_power<2>(stress_cpo_frame[ji[i]][ki[i]]));
+          }
+
+        return std::pow(yield_function, 0.5);
+      }
+    
     }
   }
 }
