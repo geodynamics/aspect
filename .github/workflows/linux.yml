@@ -6,6 +6,11 @@ on:
       - 'main'
       - 'aspect-*'
   pull_request:
+      types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
   workflow_dispatch:
 
 concurrency:
@@ -22,6 +27,7 @@ env:
 
 jobs:
   linux-nounity:
+    if: contains(github.event.pull_request.labels.*.name, 'ready to test')
     #linux build with unity/precompiled headers disabled
     name: no-unity-build
     runs-on: [ubuntu-22.04]
@@ -110,6 +116,7 @@ jobs:
         git diff --exit-code
 
   tests:
+    if: contains(github.event.pull_request.labels.*.name, 'ready to test')
     #linux build including tests
     name: tests
     runs-on: [ubuntu-22.04]
