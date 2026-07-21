@@ -280,6 +280,18 @@ namespace aspect
          */
         std::unique_ptr<MaterialUtilities::PhaseFunctionDiscrete<dim>> phase_function_discrete;
 
+        /**
+         * Scheme used to convert chemical compositional fields into volume
+         * fractions.
+         */
+        MaterialUtilities::CompositionFractionScheme composition_fraction_scheme;
+
+        /**
+         * In the thresholded scheme, chemical compositions below this value
+         * are treated as absent.
+         */
+        double minimum_composition_fraction;
+
     };
 
   }
