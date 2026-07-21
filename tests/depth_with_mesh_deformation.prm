@@ -46,8 +46,8 @@ subsection Mesh deformation
   set Additional tangential mesh velocity boundary indicators = left, right
 
   subsection Boundary function
-    set Function constants  = y2s = 31536000, v = 0.1
-    set Function expression           = 0; if(x>50e3, v/y2s, 0)
+    set Function constants  = y2s = 31536000, v = 0.1, year_in_seconds=31556952
+    set Function expression           = 0; if(x>50e3, v/y2s*year_in_seconds, 0)
   end
 
 end

@@ -68,8 +68,9 @@ subsection Mesh deformation
 
   subsection Boundary function
     set Variable names      = x,y,t
-    set Function constants = m_per_yr=1, rm=5371000, ra=6371000
-    set Function expression = 0.0 ; (x*x+y*y<rm*rm) ? 0.0 : 3 * y/6371000 * sin(t/1e6) / 1e8
+    # year_in_seconds = 60*60*24*365.2425
+    set Function constants = m_per_yr=1, rm=5371000, ra=6371000, year_in_seconds=31556952
+    set Function expression = 0.0 ; (x*x+y*y<rm*rm) ? 0.0 : 3 * y/6371000 * sin(t/1e6) / 1e8 * year_in_seconds
   end
 end
 

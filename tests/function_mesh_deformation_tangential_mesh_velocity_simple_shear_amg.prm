@@ -78,8 +78,9 @@ subsection Mesh deformation
   # +m_per_Myr on the left to -m_per_Myr on the right
   subsection Boundary function
     set Variable names      = x,y,t
-    set Function constants = m_per_Myr=10000., halfwidth=1e5, Myr_per_second=3.168808781e-14
-    set Function expression = 0;  -m_per_Myr*(x-halfwidth)/halfwidth*Myr_per_second
+    # yr_in_seconds = 60*60*24*365.2425
+    set Function constants = m_per_Myr=10000., halfwidth=1e5, Myr_per_year=1e-6,Myr_per_second=3.168808781e-14,yr_in_second=31556952
+    set Function expression = 0;  -m_per_Myr*(x-halfwidth)/halfwidth*Myr_per_second*yr_in_second
   end
 end
 
