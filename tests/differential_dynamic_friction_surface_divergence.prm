@@ -1,0 +1,83 @@
+# Enable if: QUICK_TEST
+#
+# Verify tectonic-regime-dependent dynamic friction using a prescribed,
+# divergence-free velocity field. Its tangential surface divergence is
+# negative on the left, zero in the center, and positive on the right.
+
+set Dimension                              = 2
+set Use years instead of seconds           = false
+set End time                               = 0
+set Nonlinear solver scheme                = single Advection, no Stokes
+
+subsection Prescribed Stokes solution
+  set Model name = function
+
+  subsection Velocity function
+    set Variable names      = x,z
+    set Function constants  = a=2e-14, w=0.08
+    set Function expression = a*w*log(cosh((x-0.5)/w)); -a*z*tanh((x-0.5)/w)
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    set Friction mechanism = differential dynamic friction
+    set Surface regime projection depth = 2
+
+    set Angles of internal friction = 30
+    set Dynamic characteristic strain rate = 1e-18
+    set Dynamic friction smoothness exponent = 2
+    set Dynamic angles of internal friction = 5
+    set Dynamic angles of internal friction for convergent flow = 2
+    set Dynamic angles of internal friction for divergent flow = 1
+    set Convergence threshold = 1e-15
+    set Divergence threshold = 1e-15
+
+    set Cohesions = 1e6
+    set Maximum yield stress = 1e50
+    set Reference strain rate = 1e-15
+    set Minimum strain rate = 1e-30
+    set Prefactors for diffusion creep = 1e-15
+    set Activation energies for diffusion creep = 0
+    set Activation volumes for diffusion creep = 0
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 293
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = initial temperature
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 3
+  set Initial adaptive refinement        = 0
+  set Time steps between mesh refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Output format = gnuplot
+    set Interpolate output = false
+    set List of output variables = named additional outputs, strain rate
+  end
+end

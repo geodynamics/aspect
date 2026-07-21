@@ -43,6 +43,11 @@ namespace aspect
         names.emplace_back("plastic_yielding");
         return names;
       }
+
+      std::vector<std::string> make_tectonic_regime_additional_outputs_names()
+      {
+        return {"tectonic_divergence_indicator", "tectonic_regime"};
+      }
     }
 
     template <int dim>
@@ -123,6 +128,15 @@ namespace aspect
 
 
     template <int dim>
+    TectonicRegimeAdditionalOutputs<dim>::TectonicRegimeAdditionalOutputs(const unsigned int n_points)
+      : NamedAdditionalMaterialOutputs<dim>(make_tectonic_regime_additional_outputs_names()),
+        tectonic_divergence_indicator(n_points, numbers::signaling_nan<double>()),
+        tectonic_regime(n_points, numbers::signaling_nan<double>())
+    {}
+
+
+
+    template <int dim>
     std::vector<double>
     ViscosityAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
@@ -140,6 +154,18 @@ namespace aspect
       DEAL_II_ASSERT_UNREACHABLE();
 
       return {};
+    }
+
+
+
+    template <int dim>
+    std::vector<double>
+    TectonicRegimeAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
+    {
+      AssertIndexRange (idx, 2);
+      if (idx == 0)
+        return tectonic_divergence_indicator;
+      return tectonic_regime;
     }
 
 
@@ -420,8 +446,7 @@ namespace aspect
             output_parameters.drucker_prager_parameters[j].angle_internal_friction = friction_models.compute_friction_angle(effective_edot_ii,
                                                                                      j,
                                                                                      output_parameters.drucker_prager_parameters[j].angle_internal_friction,
-                                                                                     in.position[i],
-                                                                                     in.strain_rate[i]);
+                                                                                     in.position[i]);
 
             // Step 5: plastic yielding
 
@@ -1007,6 +1032,14 @@ namespace aspect
             out.additional_outputs.push_back(
               std::make_unique<PlasticAdditionalOutputs<dim>> (n_points));
           }
+
+        if (friction_models.get_friction_mechanism() == differential_dynamic_friction
+            && out.template has_additional_output_object<TectonicRegimeAdditionalOutputs<dim>>() == false)
+          {
+            const unsigned int n_points = out.n_evaluation_points();
+            out.additional_outputs.push_back(
+              std::make_unique<TectonicRegimeAdditionalOutputs<dim>> (n_points));
+          }
       }
 
       template <int dim>
@@ -1052,6 +1085,17 @@ namespace aspect
                 plastic_out->yield_stresses[i] += volume_fractions[j] * drucker_prager_plasticity.compute_yield_stress(pressure_for_plasticity,
                                                   drucker_prager_parameters);
               }
+          }
+
+
+        const std::shared_ptr<TectonicRegimeAdditionalOutputs<dim>> tectonic_out
+          = out.template get_additional_output_object<TectonicRegimeAdditionalOutputs<dim>>();
+        if (tectonic_out != nullptr)
+          {
+            tectonic_out->tectonic_divergence_indicator[i]
+              = friction_models.compute_tectonic_divergence_indicator(in.position[i]);
+            tectonic_out->tectonic_regime[i]
+              = static_cast<double>(friction_models.compute_tectonic_regime(in.position[i]));
           }
       }
 
@@ -1126,6 +1170,7 @@ namespace aspect
 #define INSTANTIATE(dim) \
   template class PlasticAdditionalOutputs<dim>; \
   template class ViscosityAdditionalOutputs<dim>; \
+  template class TectonicRegimeAdditionalOutputs<dim>; \
   \
   namespace Rheology \
   { \
