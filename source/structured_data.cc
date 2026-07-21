@@ -392,7 +392,7 @@ namespace aspect
             {
               AssertThrow(new_points_per_direction[i] != 0,
                           ExcMessage("Could not successfully read in the file header of the "
-                                     "ascii data file <" + filename + ">. One header line has to "
+                                     "ascii data file\n<" + filename + ">.\nOne header line has to "
                                      "be of the format: '#POINTS: N1 [N2] [N3]', where N1 and "
                                      "potentially N2 and N3 have to be the number of data points "
                                      "in their respective dimension. Check for typos in this line "
@@ -427,8 +427,8 @@ namespace aspect
                   else if (name_column_index != 0)
                     AssertThrow (n_components+dim == name_column_index,
                                  ExcMessage("The number of expected data columns and the "
-                                            "list of column names at the beginning of the data file "
-                                            + filename + " do not match. The file should contain "
+                                            "list of column names at the beginning of the data file\n"
+                                            + filename + "\ndo not match. The file should contain "
                                             + Utilities::int_to_string(name_column_index) + " column "
                                             "names (one for each dimension and one per data column), "
                                             "but it only has " + Utilities::int_to_string(n_components+dim) +
@@ -448,7 +448,7 @@ namespace aspect
                       AssertThrow(std::find(column_names.begin(),column_names.end(),column_name_or_data)
                                   == column_names.end(),
                                   ExcMessage("There are multiple fields named " + column_name_or_data +
-                                             " in the data file " + filename + ". Please remove duplication to "
+                                             " in the data file\n" + filename + ".\nPlease remove duplication to "
                                              "allow for unique association between column and name."));
 
                       column_names.push_back(column_name_or_data);
@@ -463,7 +463,7 @@ namespace aspect
           Table<dim,double> data_table;
           data_table.TableBase<dim,double>::reinit(new_points_per_direction);
           AssertThrow (n_components != numbers::invalid_unsigned_int,
-                       ExcMessage("ERROR: number of n_components in " + filename + " could not be "
+                       ExcMessage("ERROR: number of n_components in\n" + filename + "\ncould not be "
                                   "determined automatically. Either add a header with column "
                                   "names or pass the number of columns in the StructuredData "
                                   "constructor."));
@@ -494,8 +494,8 @@ namespace aspect
             number_of_entries += 1;
 
           AssertThrow ((number_of_entries) == column_names.size()+dim,
-                       ExcMessage("ERROR: The number of columns in the data file " + filename +
-                                  " is incorrect. It needs to have " + Utilities::int_to_string(column_names.size()+dim) +
+                       ExcMessage("ERROR: The number of columns in the data file\n" + filename +
+                                  "\nis incorrect. It needs to have " + Utilities::int_to_string(column_names.size()+dim) +
                                   " columns, but the first row has " + Utilities::int_to_string(number_of_entries) +
                                   " columns."));
 
@@ -521,7 +521,7 @@ namespace aspect
                               ExcMessage("Invalid coordinate in column "
                                          + Utilities::int_to_string(column_num) + " in row "
                                          + Utilities::int_to_string(row_num)
-                                         + " in file " + filename +
+                                         + " in file\n" + filename +
                                          "\nThis class expects the coordinates to be structured, meaning "
                                          "the coordinate values in each coordinate direction repeat exactly "
                                          "each time. This also means each row in the data file has to have "
@@ -1043,11 +1043,11 @@ namespace aspect
 
 
           AssertThrow(Utilities::fexists(filename, this->get_mpi_communicator()) || filename_is_url(filename),
-                      ExcMessage (std::string("Ascii data file <")
+                      ExcMessage (std::string("Ascii data file\n<")
                                   +
                                   filename
                                   +
-                                  "> not found!"));
+                                  ">\nnot found!"));
           lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator());
 
           if (time_dependent == true)
@@ -1591,11 +1591,11 @@ namespace aspect
         {
           const std::string filename = this->data_directory + data_file_names[i];
           AssertThrow(Utilities::fexists(filename, this->get_mpi_communicator()) || filename_is_url(filename),
-                      ExcMessage (std::string("Ascii data file <")
+                      ExcMessage (std::string("Ascii data file\n<")
                                   +
                                   filename
                                   +
-                                  "> not found!"));
+                                  ">\nnot found!"));
 
           lookups.push_back(std::make_unique<Utilities::StructuredDataLookup<dim-1>> (n_components,
                                                                                        this->scale_factor));
@@ -1732,11 +1732,11 @@ namespace aspect
 
 
       AssertThrow(Utilities::fexists(filename, this->get_mpi_communicator()) || filename_is_url(filename),
-                  ExcMessage (std::string("Ascii data file <")
+                  ExcMessage (std::string("Ascii data file\n<")
                               +
                               filename
                               +
-                              "> not found!"));
+                              ">\nnot found!"));
 
       if (slice_data == true)
         {
@@ -1886,11 +1886,11 @@ namespace aspect
       const std::string filename = this->data_directory + this->data_file_name;
 
       AssertThrow(Utilities::fexists(filename, communicator) || filename_is_url(filename),
-                  ExcMessage (std::string("Ascii data file <")
+                  ExcMessage (std::string("Ascii data file\n<")
                               +
                               filename
                               +
-                              "> not found!"));
+                              ">\nnot found!"));
       lookup->load_file(filename,communicator);
     }
 
