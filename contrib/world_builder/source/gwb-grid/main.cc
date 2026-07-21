@@ -28,6 +28,7 @@
 #include "world_builder/assert.h"
 #include "world_builder/coordinate_system.h"
 #include "world_builder/nan.h"
+#include "world_builder/objects/natural_coordinate.h"
 #include "world_builder/point.h"
 #include "world_builder/utilities.h"
 #include "world_builder/world.h"
@@ -94,13 +95,14 @@ void filter_vtu_mesh(int dim,
 
   const std::size_t n_cells = input_mesh.types().size();
   std::uint64_t dst_cellid = 0;
+  unsigned int tag_index   = 5;
   for (std::size_t cellidx = 0; cellidx <n_cells; ++cellidx)
     {
       int highest_tag = -1;
       for (size_t idx=cellidx*n_vert_per_cell; idx<(cellidx+1)*n_vert_per_cell; ++idx)
         {
           const std::size_t src_vid = static_cast<size_t>(input_mesh.connectivity()[idx]);
-          highest_tag = std::max(highest_tag,static_cast<int>(input_data[2][src_vid]));
+          highest_tag = std::max(highest_tag,static_cast<int>(input_data[tag_index][src_vid]));
         }
       if (highest_tag < 0 || include_tag[static_cast<size_t>(highest_tag)]==false)
         continue;
@@ -118,10 +120,21 @@ void filter_vtu_mesh(int dim,
               vertex_index_map[src_vid] = dst_vid;
 
               for (unsigned int i=0; i<3; ++i)
-                output_mesh.points().push_back(input_mesh.points()[src_vid*3+i]);
+                output_mesh.points().emplace_back(input_mesh.points()[src_vid*3+i]);
 
               for (unsigned int d=0; d<input_data.size(); ++d)
-                output_data[d].push_back(input_data[d][src_vid]);
+                // The following line checks if we are accessing the velocity data, which is
+                // currently stored as the third property after depth and temperature, and if so,
+                // we need to copy all 3 components.
+                if (d == 4)
+                  {
+                    for (unsigned int i=0; i<3; ++i)
+                      output_data[d].push_back(input_data[d][src_vid*3+i]);
+                  }
+                else
+                  {
+                    output_data[d].push_back(input_data[d][src_vid]);
+                  }
             }
 
           output_mesh.connectivity().push_back(dst_vid);
@@ -212,9 +225,9 @@ void project_on_sphere(double radius, double &x_, double &y_, double &z_)
   const double theta = std::atan2(in_point[1],in_point[0]);
   const double phi = std::acos(in_point[2]/r);
 
-  x_ = radius * std::cos(theta) * std::sin(phi);
-  y_ = radius * std::sin(theta) * std::sin(phi);
-  z_ = radius * std::cos(phi);
+  x_ = radius * FT::cos(theta) * FT::sin(phi);
+  y_ = radius * FT::sin(theta) * FT::sin(phi);
+  z_ = radius * FT::cos(phi);
 
 }
 
@@ -342,7 +355,7 @@ int main(int argc, char **argv)
       if (find_command_line_option(argv, argv+argc, "-h") || find_command_line_option(argv, argv+argc, "--help"))
         {
           std::cout << "World Builder Grid Visualization tool.\n"
-                    <<  "This program loads a world builder file and generates a visualization on a structured grid "
+                    <<  "This program loads a World Builder file and generates a visualization on a structured grid "
                     << "based on information specified in a separate .grid configuration file.\n\n"
                     << "Usage:\n"
                     << argv[0] << " [-j N] [--filtered] [--by-tag] example.wb example.grid\n\n"
@@ -430,7 +443,7 @@ int main(int argc, char **argv)
       /**
        * Try to start the world builder
        */
-      std::cout << "[2/6] Starting the world builder with " << number_of_threads << " threads...                         \r";
+      std::cout << "[2/6] Starting the World Builder with " << number_of_threads << " threads...                         \r";
       std::cout.flush();
 
       std::unique_ptr<WorldBuilder::World> world;
@@ -440,7 +453,7 @@ int main(int argc, char **argv)
         }
       catch (std::exception &e)
         {
-          std::cerr << "Could not start the World builder from file '" << wb_file << "', error: " << e.what() << "\n";
+          std::cerr << "Could not start the World Builder from file '" << wb_file << "', error: " << e.what() << "\n";
 
 #ifdef WB_WITH_MPI
           MPI_Finalize();
@@ -494,7 +507,7 @@ int main(int argc, char **argv)
           data.push_back(line);
         }
 
-      std::string vtu_output_format = "RawBinaryCompressed";
+      std::string vtu_output_format = "ASCII";//"RawBinaryCompressed";
       // Read config from data if present
       for (auto &line_i : data)
         {
@@ -554,12 +567,12 @@ int main(int argc, char **argv)
       WBAssertThrow(!std::isnan(z_max), "z_max is not a number:" << z_max << ". This value has probably not been provided in the grid file.");
 
 
-      WBAssertThrow(n_cell_x != 0, "n_cell_z may not be equal to zero: " << n_cell_x << '.');
+      WBAssertThrow(n_cell_x != 0, "n_cell_x may not be equal to zero: " << n_cell_x << '.');
       // int's cannot generally be nan's (see https://stackoverflow.com/questions/3949457/can-an-integer-be-nan-in-c),
       // but visual studio is giving problems over this, so it is taken out for now.
-      //WBAssertThrow(!std::isnan(n_cell_x), "n_cell_z is not a number:" << n_cell_x << '.');
+      //WBAssertThrow(!std::isnan(n_cell_x), "n_cell_x is not a number:" << n_cell_x << '.');
 
-      WBAssertThrow(dim == 3 || n_cell_z != 0, "In 3d n_cell_z may not be equal to zero: " << n_cell_y << '.');
+      WBAssertThrow(dim == 2 || n_cell_y != 0, "In 3d n_cell_y may not be equal to zero: " << n_cell_y << '.');
       // int's cannot generally be nan's (see https://stackoverflow.com/questions/3949457/can-an-integer-be-nan-in-c),
       // but visual studio is giving problems over this, so it is taken out for now.
       //WBAssertThrow(!std::isnan(n_cell_z), "n_cell_z is not a number:" << n_cell_y << '.');
@@ -601,7 +614,8 @@ int main(int argc, char **argv)
       std::vector<double> grid_x(0);
       std::vector<double> grid_y(0);
       std::vector<double> grid_z(0);
-      std::vector<double> grid_depth(0);
+      std::vector<double> grid_depth_wrt_surface(0);
+      std::vector<double> grid_depth_wrt_reference(0);
 
       std::vector<std::vector<size_t> > grid_connectivity(0);
 
@@ -644,7 +658,8 @@ int main(int argc, char **argv)
           if (dim == 3)
             grid_y.resize(n_p);
 
-          grid_depth.resize(n_p);
+          grid_depth_wrt_surface.resize(n_p);
+          grid_depth_wrt_reference.resize(n_p);
 
           // compute positions
           size_t counter = 0;
@@ -656,7 +671,14 @@ int main(int argc, char **argv)
                     {
                       grid_x[counter] = x_min + static_cast<double>(i) * dx;
                       grid_z[counter] = z_min + static_cast<double>(j) * dz;
-                      grid_depth[counter] = (surface - z_min) - static_cast<double>(j) * dz;
+                      grid_depth_wrt_surface[counter] = (surface - z_min) - static_cast<double>(j) * dz;
+
+                      const double topography = world->properties(std::array<double,2>({{grid_x[counter],grid_z[counter]}}), grid_depth_wrt_surface[counter], {{{6,0,0}}})[0];
+                      const double domain_height = z_max - z_min + topography;
+                      const double cell_height = domain_height / static_cast<double>(n_cell_z);
+                      grid_z[counter] = z_min + static_cast<double>(j) * cell_height;
+                      grid_depth_wrt_surface[counter]   = domain_height - (static_cast<double>(j)) * cell_height;
+                      grid_depth_wrt_reference[counter] = grid_depth_wrt_surface[counter] - topography;
                       counter++;
                     }
                 }
@@ -674,7 +696,14 @@ int main(int argc, char **argv)
                               grid_x[counter] = x_min + static_cast<double>(i) * dx;
                               grid_y[counter] = y_min + static_cast<double>(j) * dy;
                               grid_z[counter] = z_min + static_cast<double>(k) * dz;
-                              grid_depth[counter] = (surface - z_min) - static_cast<double>(k) * dz;
+                              grid_depth_wrt_surface[counter] = (surface - z_min) - static_cast<double>(k) * dz;
+
+                              const double topography = world->properties(std::array<double,3>({{grid_x[counter],grid_y[counter], grid_z[counter]}}), grid_depth_wrt_surface[counter], {{{6,0,0}}})[0];
+                              const double domain_height = z_max - z_min + topography;
+                              const double cell_height = domain_height / static_cast<double>(n_cell_z);
+                              grid_z[counter] = z_min + static_cast<double>(k) * cell_height;
+                              grid_depth_wrt_surface[counter]   = domain_height - (static_cast<double>(k)) * cell_height;
+                              grid_depth_wrt_reference[counter] = grid_depth_wrt_surface[counter] - topography;
                               counter++;
                             }
                         }
@@ -690,52 +719,124 @@ int main(int argc, char **argv)
                             {
                               // position is defined by the vtk file format
                               // position 0 of this cell
-                              grid_x[counter] = x_min + static_cast<double>(i) * dx;
-                              grid_y[counter] = y_min + static_cast<double>(j) * dy;
-                              grid_z[counter] = z_min + static_cast<double>(k) * dz;
-                              grid_depth[counter] = (surface - z_min) - static_cast<double>(k) * dz;
+                              {
+                                grid_x[counter] = x_min + static_cast<double>(i) * dx;
+                                grid_y[counter] = y_min + static_cast<double>(j) * dy;
+                                grid_z[counter] = z_min + static_cast<double>(k) * dz;
+                                grid_depth_wrt_surface[counter] = (surface - z_min) - static_cast<double>(k) * dz;
+
+                                const double topography = world->properties(std::array<double,3>({{grid_x[counter],grid_y[counter], grid_z[counter]}}), grid_depth_wrt_surface[counter], {{{6,0,0}}})[0];
+                                const double domain_height = z_max - z_min + topography;
+                                const double cell_height = domain_height / static_cast<double>(n_cell_z);
+                                grid_z[counter] = z_min + static_cast<double>(k) * cell_height;
+                                grid_depth_wrt_surface[counter]   = domain_height - (static_cast<double>(k)) * cell_height;
+                                grid_depth_wrt_reference[counter] = grid_depth_wrt_surface[counter] - topography;
+                              }
                               counter++;
                               // position 1 of this cell
-                              grid_x[counter] = x_min + (static_cast<double>(i) + 1.0) * dx;
-                              grid_y[counter] = y_min + static_cast<double>(j) * dy;
-                              grid_z[counter] = z_min + static_cast<double>(k) * dz;
-                              grid_depth[counter] = (surface - z_min) - static_cast<double>(k) * dz;
+                              {
+                                grid_x[counter] = x_min + (static_cast<double>(i) + 1.0) * dx;
+                                grid_y[counter] = y_min + static_cast<double>(j) * dy;
+                                grid_z[counter] = z_min + static_cast<double>(k) * dz;
+                                grid_depth_wrt_surface[counter] = (surface - z_min) - static_cast<double>(k) * dz;
+
+                                const double topography = world->properties(std::array<double,3>({{grid_x[counter],grid_y[counter], grid_z[counter]}}), grid_depth_wrt_surface[counter], {{{6,0,0}}})[0];
+                                const double domain_height = z_max - z_min + topography;
+                                const double cell_height = domain_height / static_cast<double>(n_cell_z);
+                                grid_z[counter] = z_min + static_cast<double>(k) * cell_height;
+                                grid_depth_wrt_surface[counter]   = domain_height - (static_cast<double>(k)) * cell_height;
+                                grid_depth_wrt_reference[counter] = grid_depth_wrt_surface[counter] - topography;
+                              }
                               counter++;
                               // position 2 of this cell
-                              grid_x[counter] = x_min + (static_cast<double>(i) + 1.0) * dx;
-                              grid_y[counter] = y_min + (static_cast<double>(j) + 1.0) * dy;
-                              grid_z[counter] = z_min + static_cast<double>(k) * dz;
-                              grid_depth[counter] = (surface - z_min) - static_cast<double>(k) * dz;
+                              {
+                                grid_x[counter] = x_min + (static_cast<double>(i) + 1.0) * dx;
+                                grid_y[counter] = y_min + (static_cast<double>(j) + 1.0) * dy;
+                                grid_z[counter] = z_min + static_cast<double>(k) * dz;
+                                grid_depth_wrt_surface[counter] = (surface - z_min) - static_cast<double>(k) * dz;
+
+                                const double topography = world->properties(std::array<double,3>({{grid_x[counter],grid_y[counter], grid_z[counter]}}), grid_depth_wrt_surface[counter], {{{6,0,0}}})[0];
+                                const double domain_height = z_max - z_min + topography;
+                                const double cell_height = domain_height / static_cast<double>(n_cell_z);
+                                grid_z[counter] = z_min + static_cast<double>(k) * cell_height;
+                                grid_depth_wrt_surface[counter]   = domain_height - (static_cast<double>(k)) * cell_height;
+                                grid_depth_wrt_reference[counter] = grid_depth_wrt_surface[counter] - topography;
+                              }
                               counter++;
                               // position 3 of this cell
-                              grid_x[counter] = x_min + static_cast<double>(i) * dx;
-                              grid_y[counter] = y_min + (static_cast<double>(j) + 1.0) * dy;
-                              grid_z[counter] = z_min + static_cast<double>(k) * dz;
-                              grid_depth[counter] = (surface - z_min) - static_cast<double>(k) * dz;
+                              {
+                                grid_x[counter] = x_min + static_cast<double>(i) * dx;
+                                grid_y[counter] = y_min + (static_cast<double>(j) + 1.0) * dy;
+                                grid_z[counter] = z_min + static_cast<double>(k) * dz;
+                                grid_depth_wrt_surface[counter] = (surface - z_min) - static_cast<double>(k) * dz;
+
+                                const double topography = world->properties(std::array<double,3>({{grid_x[counter],grid_y[counter], grid_z[counter]}}), grid_depth_wrt_surface[counter], {{{6,0,0}}})[0];
+                                const double domain_height = z_max - z_min + topography;
+                                const double cell_height = domain_height / static_cast<double>(n_cell_z);
+                                grid_z[counter] = z_min + static_cast<double>(k) * cell_height;
+                                grid_depth_wrt_surface[counter]   = domain_height - (static_cast<double>(k)) * cell_height;
+                                grid_depth_wrt_reference[counter] = grid_depth_wrt_surface[counter] - topography;
+                              }
                               counter++;
                               // position 0 of this cell
-                              grid_x[counter] = x_min + static_cast<double>(i) * dx;
-                              grid_y[counter] = y_min + static_cast<double>(j) * dy;
-                              grid_z[counter] = z_min + (static_cast<double>(k) + 1.0) * dz;
-                              grid_depth[counter] = (surface - z_min) - (static_cast<double>(k) + 1.0) * dz;
+                              {
+                                grid_x[counter] = x_min + static_cast<double>(i) * dx;
+                                grid_y[counter] = y_min + static_cast<double>(j) * dy;
+                                grid_z[counter] = z_min + (static_cast<double>(k) + 1.0) * dz;
+                                grid_depth_wrt_surface[counter] = (surface - z_min) - (static_cast<double>(k) + 1.0) * dz;
+
+                                const double topography = world->properties(std::array<double,3>({{grid_x[counter],grid_y[counter], grid_z[counter]}}), grid_depth_wrt_surface[counter], {{{6,0,0}}})[0];
+                                const double domain_height = z_max - z_min + topography;
+                                const double cell_height = domain_height / static_cast<double>(n_cell_z);
+                                grid_z[counter] = z_min + (static_cast<double>(k) + 1.0) * cell_height;
+                                grid_depth_wrt_surface[counter]   = domain_height - (static_cast<double>(k) + 1.0) * cell_height;
+                                grid_depth_wrt_reference[counter] = grid_depth_wrt_surface[counter] - topography;
+                              }
                               counter++;
                               // position 1 of this cell
-                              grid_x[counter] = x_min + (static_cast<double>(i) + 1.0) * dx;
-                              grid_y[counter] = y_min + static_cast<double>(j) * dy;
-                              grid_z[counter] = z_min + (static_cast<double>(k) + 1.0) * dz;
-                              grid_depth[counter] = (surface - z_min) - (static_cast<double>(k) + 1.0) * dz;
+                              {
+                                grid_x[counter] = x_min + (static_cast<double>(i) + 1.0) * dx;
+                                grid_y[counter] = y_min + static_cast<double>(j) * dy;
+                                grid_z[counter] = z_min + (static_cast<double>(k) + 1.0) * dz;
+                                grid_depth_wrt_surface[counter] = (surface - z_min) - (static_cast<double>(k) + 1.0) * dz;
+
+                                const double topography = world->properties(std::array<double,3>({{grid_x[counter],grid_y[counter], grid_z[counter]}}), grid_depth_wrt_surface[counter], {{{6,0,0}}})[0];
+                                const double domain_height = z_max - z_min + topography;
+                                const double cell_height = domain_height / static_cast<double>(n_cell_z);
+                                grid_z[counter] = z_min + (static_cast<double>(k) + 1.0) * cell_height;
+                                grid_depth_wrt_surface[counter]   = domain_height - (static_cast<double>(k) + 1.0) * cell_height;
+                                grid_depth_wrt_reference[counter] = grid_depth_wrt_surface[counter] - topography;
+                              }
                               counter++;
                               // position 2 of this cell
-                              grid_x[counter] = x_min + (static_cast<double>(i) + 1.0) * dx;
-                              grid_y[counter] = y_min + (static_cast<double>(j) + 1.0) * dy;
-                              grid_z[counter] = z_min + (static_cast<double>(k) + 1.0) * dz;
-                              grid_depth[counter] = (surface - z_min) - (static_cast<double>(k) + 1.0) * dz;
+                              {
+                                grid_x[counter] = x_min + (static_cast<double>(i) + 1.0) * dx;
+                                grid_y[counter] = y_min + (static_cast<double>(j) + 1.0) * dy;
+                                grid_z[counter] = z_min + (static_cast<double>(k) + 1.0) * dz;
+                                grid_depth_wrt_surface[counter] = (surface - z_min) - (static_cast<double>(k) + 1.0) * dz;
+
+                                const double topography = world->properties(std::array<double,3>({{grid_x[counter],grid_y[counter], grid_z[counter]}}), grid_depth_wrt_surface[counter], {{{6,0,0}}})[0];
+                                const double domain_height = z_max - z_min + topography;
+                                const double cell_height = domain_height / static_cast<double>(n_cell_z);
+                                grid_z[counter] = z_min + (static_cast<double>(k) + 1.0) * cell_height;
+                                grid_depth_wrt_surface[counter]   = domain_height - (static_cast<double>(k) + 1.0) * cell_height;
+                                grid_depth_wrt_reference[counter] = grid_depth_wrt_surface[counter] - topography;
+                              }
                               counter++;
                               // position 3 of this cell
-                              grid_x[counter] = x_min + static_cast<double>(i) * dx;
-                              grid_y[counter] = y_min + (static_cast<double>(j) + 1.0) * dy;
-                              grid_z[counter] = z_min + (static_cast<double>(k) + 1.0) * dz;
-                              grid_depth[counter] = (surface - z_min) - (static_cast<double>(k) + 1.0) * dz;
+                              {
+                                grid_x[counter] = x_min + static_cast<double>(i) * dx;
+                                grid_y[counter] = y_min + (static_cast<double>(j) + 1.0) * dy;
+                                grid_z[counter] = z_min + (static_cast<double>(k) + 1.0) * dz;
+                                grid_depth_wrt_surface[counter] = (surface - z_min) - (static_cast<double>(k) + 1.0) * dz;
+
+                                const double topography = world->properties(std::array<double,3>({{grid_x[counter],grid_y[counter], grid_z[counter]}}), grid_depth_wrt_surface[counter], {{{6,0,0}}})[0];
+                                const double domain_height = z_max - z_min + topography;
+                                const double cell_height = domain_height / static_cast<double>(n_cell_z);
+                                grid_z[counter] = z_min + (static_cast<double>(k) + 1.0) * cell_height;
+                                grid_depth_wrt_surface[counter]   = domain_height - (static_cast<double>(k) + 1.0) * cell_height;
+                                grid_depth_wrt_reference[counter] = grid_depth_wrt_surface[counter] - topography;
+                              }
                               WBAssert(counter < n_p, "Assert counter smaller then n_P: counter = " << counter << ", n_p = " << n_p);
                               counter++;
                             }
@@ -810,51 +911,53 @@ int main(int argc, char **argv)
            */
           WBAssertThrow(dim == 2, "The annulus only works in 2d.");
 
+          // z_min is the inner radius and z_max is the outer radius of the annulus
 
-          const double inner_radius = z_min;
-          const double outer_radius = z_max;
+          const double outer_circumference = 2.0 * Consts::PI * z_max;
 
-          const double l_outer = 2.0 * Consts::PI * outer_radius;
+          const double cell_height = (z_max - z_min) / static_cast<double>(n_cell_z);
 
-          const double lr = outer_radius - inner_radius;
-          const double dr = lr / static_cast<double>(n_cell_z);
-
-          const size_t n_cell_t = static_cast<size_t>((2.0 * Consts::PI * outer_radius)/dr);
+          const size_t n_cell_circumference = static_cast<size_t>(outer_circumference/cell_height);
 
           // compute the amount of cells
-          n_cell = n_cell_t *n_cell_z;
-          n_p = n_cell_t *(n_cell_z + 1);  // one less then cartesian because two cells overlap.
+          n_cell = n_cell_circumference *n_cell_z;
+          n_p = n_cell_circumference *(n_cell_z + 1);  // one less then cartesian because two cells overlap.
 
-          const double sx = l_outer / static_cast<double>(n_cell_t);
-          const double sz = dr;
+
+          const double cell_width = outer_circumference / static_cast<double>(n_cell_circumference);
 
           grid_x.resize(n_p);
           grid_z.resize(n_p);
-          grid_depth.resize(n_p);
+          grid_depth_wrt_surface.resize(n_p);
+          grid_depth_wrt_reference.resize(n_p);
 
           size_t counter = 0;
-          for (size_t j = 0; j <= n_cell_z; ++j)
+          for (size_t vertical_i = 0; vertical_i <= n_cell_z; ++vertical_i)
             {
-              for (size_t i = 1; i <= n_cell_t; ++i)
+              for (size_t horizontal_i = 1; horizontal_i <= n_cell_circumference; ++horizontal_i)
                 {
-                  grid_x[counter] = (static_cast<double>(i) - 1.0) * sx;
-                  grid_z[counter] = static_cast<double>(j) * sz;
-                  counter++;
-                }
-            }
+                  const double grid_x_cart = (static_cast<double>(horizontal_i) - 1.0) * cell_width;
+                  const double grid_z_cart = static_cast<double>(vertical_i) * cell_height;
+                  const double theta = grid_x_cart / outer_circumference * 2.0 * Consts::PI;
+                  const double grid_x_rad = FT::cos(theta) * (z_min + grid_z_cart);
+                  const double grid_z_rad = FT::sin(theta) * (z_min + grid_z_cart);
+                  const double grid_depth_wrt_surface_local = z_max - std::sqrt(grid_x_rad * grid_x_rad + grid_z_rad * grid_z_rad);
 
-          counter = 0;
-          for (size_t j = 1; j <= n_cell_z+1; ++j)
-            {
-              for (size_t i = 1; i <= n_cell_t; ++i)
-                {
-                  const double xi = grid_x[counter];
-                  const double zi = grid_z[counter];
-                  const double theta = xi / l_outer * 2.0 * Consts::PI;
-                  grid_x[counter] = std::cos(theta) * (inner_radius + zi);
-                  grid_z[counter] = std::sin(theta) * (inner_radius + zi);
-                  grid_depth[counter] = outer_radius - std::sqrt(grid_x[counter] * grid_x[counter] + grid_z[counter] * grid_z [counter]);
-                  grid_depth[counter] = (std::fabs(grid_depth[counter]) < 1e-8 ? 0 : grid_depth[counter]);
+                  const double topography = world->properties(std::array<double,2>({{grid_x_rad,grid_z_rad}}), grid_depth_wrt_surface_local, {{{6,0,0}}})[0];
+
+                  const double outer_circumference_local = 2.0 * Consts::PI * (z_max+topography);
+                  const double cell_height_local = (z_max - z_min + topography) / static_cast<double>(n_cell_z);
+                  const double cell_width_local = outer_circumference_local / static_cast<double>(n_cell_circumference);
+
+                  const double grid_x_topo_cart = (static_cast<double>(horizontal_i) - 1.0) * cell_width_local;
+                  const double grid_z_topo_cart = static_cast<double>(vertical_i) * cell_height_local;
+                  const double theta_topo = grid_x_topo_cart / outer_circumference_local * 2.0 * Consts::PI;
+
+                  grid_x[counter] = FT::cos(theta_topo) * (z_min + grid_z_topo_cart);
+                  grid_z[counter] = FT::sin(theta_topo) * (z_min + grid_z_topo_cart);
+                  grid_depth_wrt_surface[counter] = z_max + topography - std::sqrt(grid_x[counter] * grid_x[counter] + grid_z[counter] * grid_z[counter]);
+                  grid_depth_wrt_reference[counter] = grid_depth_wrt_surface[counter] - topography;
+
                   counter++;
                 }
             }
@@ -863,17 +966,17 @@ int main(int argc, char **argv)
           counter = 0;
           for (size_t j = 1; j <= n_cell_z; ++j)
             {
-              for (size_t i = 1; i <= n_cell_t; ++i)
+              for (size_t i = 1; i <= n_cell_circumference; ++i)
                 {
                   std::vector<size_t> cell_connectivity(4);
                   cell_connectivity[0] = counter + 1;
                   cell_connectivity[1] = counter + 1 + 1;
-                  cell_connectivity[2] = i + j * n_cell_t + 1;
-                  cell_connectivity[3] = i + j * n_cell_t;
-                  if (i == n_cell_t)
+                  cell_connectivity[2] = i + j * n_cell_circumference + 1;
+                  cell_connectivity[3] = i + j * n_cell_circumference;
+                  if (i == n_cell_circumference)
                     {
-                      cell_connectivity[1] = cell_connectivity[1] - n_cell_t;
-                      cell_connectivity[2] = cell_connectivity[2] - n_cell_t;
+                      cell_connectivity[1] = cell_connectivity[1] - n_cell_circumference;
+                      cell_connectivity[2] = cell_connectivity[2] - n_cell_circumference;
                     }
                   grid_connectivity[counter][0] = cell_connectivity[1] - 1;
                   grid_connectivity[counter][1] = cell_connectivity[0] - 1;
@@ -909,13 +1012,14 @@ int main(int argc, char **argv)
 
           const double dlong = opening_angle_long_rad / static_cast<double>(n_cell_x);
           const double dlat = dim == 3 ? opening_angle_lat_rad / static_cast<double>(n_cell_y) : 0.;
-          const double lr = outer_radius - inner_radius;
-          const double dr = lr / static_cast<double>(n_cell_z);
 
           grid_x.resize(n_p);
           grid_y.resize(dim == 3 ? n_p : 0);
           grid_z.resize(n_p);
-          grid_depth.resize(n_p);
+          grid_depth_wrt_surface.resize(n_p);
+          grid_depth_wrt_reference.resize(n_p);
+          std::vector<double> domain_height(n_p);
+          std::vector<double> cell_height(n_p);
 
           std::cout << "[4/6] Building the grid: stage 1 of 3                        \r";
           std::cout.flush();
@@ -923,28 +1027,68 @@ int main(int argc, char **argv)
           if (dim == 2)
             {
               for (size_t i = 1; i <= n_cell_x + 1; ++i)
-                for (size_t j = 1; j <= n_cell_z + 1; ++j)
-                  {
-                    grid_x[counter] = x_min + (static_cast<double>(i) - 1.0) * dlong;
-                    grid_z[counter] = inner_radius + (static_cast<double>(j) - 1.0) * dr;
-                    grid_depth[counter] = lr - (static_cast<double>(j) - 1.0) * dr;
-                    counter++;
-                  }
+                {
+                  const double longitude = x_min + (static_cast<double>(i) - 1.0) * dlong;
+                  const double cos_long = FT::cos(longitude);
+                  const double sin_long = FT::sin(longitude);
+                  for (size_t j = 1; j <= n_cell_z + 1; ++j)
+                    {
+                      grid_x[counter] = longitude;
+                      const double domain_height_local = outer_radius - inner_radius;
+                      const double cell_height_local = domain_height_local / static_cast<double>(n_cell_z);
+                      const double radius = inner_radius + (static_cast<double>(j) - 1.0) * cell_height_local;
+
+                      const double x = radius * cos_long;
+                      const double z = radius * sin_long;
+                      const double topography = world->properties(std::array<double,2>({{x,z}}), 0, {{{6,0,0}}})[0];
+
+                      domain_height [counter]= outer_radius + topography - inner_radius;
+                      cell_height[counter] = domain_height[counter] / static_cast<double>(n_cell_z);
+                      grid_z[counter] = inner_radius + (static_cast<double>(j) - 1.0) * cell_height[counter];
+                      grid_depth_wrt_surface[counter] = domain_height[counter] - (static_cast<double>(j) - 1.0) * cell_height[counter];
+                      grid_depth_wrt_reference[counter] = grid_depth_wrt_surface[counter] - topography;
+                      counter++;
+                    }
+                }
             }
           else
             {
               if (compress_size)
                 {
                   for (size_t i = 1; i <= n_cell_x + 1; ++i)
-                    for (size_t j = 1; j <= n_cell_y + 1; ++j)
-                      for (size_t k = 1; k <= n_cell_z + 1; ++k)
+                    {
+                      const double longitude = x_min + (static_cast<double>(i) - 1.0) * dlong;
+                      const double sin_long = FT::sin(longitude);
+                      const double cos_long = FT::cos(longitude);
+                      for (size_t j = 1; j <= n_cell_y + 1; ++j)
                         {
-                          grid_x[counter] = x_min + (static_cast<double>(i) - 1.0) * dlong;
-                          grid_y[counter] = y_min + (static_cast<double>(j) - 1.0) * dlat;
-                          grid_z[counter] = inner_radius + (static_cast<double>(k) - 1.0) * dr;
-                          grid_depth[counter] = lr - (static_cast<double>(k) - 1.0) * dr;
-                          counter++;
+
+                          const double latitutde = y_min + (static_cast<double>(j) - 1.0) * dlat;
+                          const double cos_lat = FT::cos(latitutde);
+                          const double sin_lat = FT::sin(latitutde);
+                          for (size_t k = 1; k <= n_cell_z + 1; ++k)
+                            {
+                              grid_x[counter] = longitude;
+                              grid_y[counter] = latitutde;
+                              domain_height[counter] = outer_radius - inner_radius;
+                              cell_height[counter] = domain_height[counter] / static_cast<double>(n_cell_z);
+                              grid_z[counter] = inner_radius + (static_cast<double>(k) - 1.0) * cell_height[counter];
+                              const double radius = grid_z[counter];
+                              const double x = radius * cos_lat * cos_long;
+                              const double y = radius * cos_lat * sin_long;
+                              const double z = radius * sin_lat;
+
+                              const double topography = world->properties({{x,y,z}}, 0, {{{6,0,0}}})[0];
+
+                              domain_height[counter] = outer_radius + topography - inner_radius;
+                              cell_height[counter] = domain_height[counter] / static_cast<double>(n_cell_z);
+                              grid_z[counter] = inner_radius + (static_cast<double>(k) - 1.0) * cell_height[counter];
+                              grid_depth_wrt_surface[counter]   = domain_height[counter] - (static_cast<double>(k) - 1.0) * cell_height[counter];
+                              grid_depth_wrt_reference[counter] = grid_depth_wrt_surface[counter] - topography;
+                              counter++;
+                            }
                         }
+                    }
                 }
               else
                 {
@@ -956,52 +1100,172 @@ int main(int argc, char **argv)
                             {
                               // position is defined by the vtk file format
                               // position 0 of this cell
-                              grid_x[counter] = x_min + static_cast<double>(i) * dlong;
-                              grid_y[counter] = y_min + static_cast<double>(j) * dlat;
-                              grid_z[counter] = inner_radius + static_cast<double>(k) * dr;
-                              grid_depth[counter] = lr - static_cast<double>(k) * dr;
+                              {
+                                grid_x[counter] = x_min + static_cast<double>(i) * dlong;
+                                grid_y[counter] = y_min + static_cast<double>(j) * dlat;
+                                grid_z[counter] = inner_radius + static_cast<double>(k) * cell_height[counter];
+                                const double longitude = grid_x[counter];
+                                const double latitutde = grid_y[counter];
+                                const double radius = grid_z[counter];
+                                grid_depth_wrt_surface[counter] = domain_height[counter] - static_cast<double>(k) * cell_height[counter];
+
+                                const double x = radius * FT::cos(latitutde) * FT::cos(longitude);
+                                const double y = radius * FT::cos(latitutde) * FT::sin(longitude);
+                                const double z = radius * FT::sin(latitutde);
+                                const double topography = world->properties({{x,y,z}}, grid_depth_wrt_surface[counter], {{{6,0,0}}})[0];
+                                domain_height[counter] = outer_radius + topography - inner_radius;
+                                cell_height[counter] = domain_height[counter] / static_cast<double>(n_cell_z);
+                                grid_z[counter] = inner_radius + (static_cast<double>(k) - 1.0) * cell_height[counter];
+                                grid_depth_wrt_surface[counter] = domain_height[counter] - static_cast<double>(k) * cell_height[counter];
+                                grid_depth_wrt_reference[counter] = grid_depth_wrt_surface[counter] - topography;
+                              }
                               counter++;
                               // position 1 of this cell
-                              grid_x[counter] = x_min + (static_cast<double>(i) + 1.0) * dlong;
-                              grid_y[counter] = y_min + static_cast<double>(j) * dlat;
-                              grid_z[counter] = inner_radius + static_cast<double>(k) * dr;
-                              grid_depth[counter] = lr - static_cast<double>(k) * dr;
+                              {
+                                grid_x[counter] = x_min + (static_cast<double>(i) + 1.0) * dlong;
+                                grid_y[counter] = y_min + static_cast<double>(j) * dlat;
+                                grid_z[counter] = inner_radius + static_cast<double>(k) * cell_height[counter];
+                                const double longitude = grid_x[counter];
+                                const double latitutde = grid_y[counter];
+                                const double radius = grid_z[counter];
+                                grid_depth_wrt_surface[counter] = domain_height[counter] - static_cast<double>(k) * cell_height[counter];
+
+                                const double x = radius * FT::cos(latitutde) * FT::cos(longitude);
+                                const double y = radius * FT::cos(latitutde) * FT::sin(longitude);
+                                const double z = radius * FT::sin(latitutde);
+                                const double topography = world->properties({{x,y,z}}, grid_depth_wrt_surface[counter], {{{6,0,0}}})[0];
+                                domain_height[counter] = outer_radius + topography - inner_radius;
+                                cell_height[counter] = domain_height[counter] / static_cast<double>(n_cell_z);
+                                grid_z[counter] = inner_radius + (static_cast<double>(k) - 1.0) * cell_height[counter];
+                                grid_depth_wrt_surface[counter] = domain_height[counter] - static_cast<double>(k) * cell_height[counter];
+                                grid_depth_wrt_reference[counter] = grid_depth_wrt_surface[counter] - topography;
+                              }
                               counter++;
                               // position 2 of this cell
-                              grid_x[counter] = x_min + (static_cast<double>(i) + 1.0) * dlong;
-                              grid_y[counter] = y_min + (static_cast<double>(j) + 1.0) * dlat;
-                              grid_z[counter] = inner_radius + static_cast<double>(k) * dr;
-                              grid_depth[counter] = lr - static_cast<double>(k) * dr;
+                              {
+                                grid_x[counter] = x_min + (static_cast<double>(i) + 1.0) * dlong;
+                                grid_y[counter] = y_min + (static_cast<double>(j) + 1.0) * dlat;
+                                grid_z[counter] = inner_radius + static_cast<double>(k) * cell_height[counter];
+                                const double longitude = grid_x[counter];
+                                const double latitutde = grid_y[counter];
+                                const double radius = grid_z[counter];
+                                grid_depth_wrt_surface[counter] = domain_height[counter] - static_cast<double>(k) * cell_height[counter];
+
+                                const double x = radius * FT::cos(latitutde) * FT::cos(longitude);
+                                const double y = radius * FT::cos(latitutde) * FT::sin(longitude);
+                                const double z = radius * FT::sin(latitutde);
+                                const double topography = world->properties({{x,y,z}}, grid_depth_wrt_surface[counter], {{{6,0,0}}})[0];
+                                domain_height[counter] = outer_radius + topography - inner_radius;
+                                cell_height[counter] = domain_height[counter] / static_cast<double>(n_cell_z);
+                                grid_z[counter] = inner_radius + (static_cast<double>(k) - 1.0) * cell_height[counter];
+                                grid_depth_wrt_surface[counter] = domain_height[counter] - static_cast<double>(k) * cell_height[counter];
+                                grid_depth_wrt_reference[counter] = grid_depth_wrt_surface[counter] - topography;
+                              }
                               counter++;
                               // position 3 of this cell
-                              grid_x[counter] = x_min + static_cast<double>(i) * dlong;
-                              grid_y[counter] = y_min + (static_cast<double>(j) + 1.0) * dlat;
-                              grid_z[counter] = inner_radius + static_cast<double>(k) * dr;
-                              grid_depth[counter] = lr - static_cast<double>(k) * dr;
+                              {
+                                grid_x[counter] = x_min + static_cast<double>(i) * dlong;
+                                grid_y[counter] = y_min + (static_cast<double>(j) + 1.0) * dlat;
+                                grid_z[counter] = inner_radius + static_cast<double>(k) * cell_height[counter];
+                                const double longitude = grid_x[counter];
+                                const double latitutde = grid_y[counter];
+                                const double radius = grid_z[counter];
+                                grid_depth_wrt_surface[counter] = domain_height[counter] - static_cast<double>(k) * cell_height[counter];
+
+                                const double x = radius * FT::cos(latitutde) * FT::cos(longitude);
+                                const double y = radius * FT::cos(latitutde) * FT::sin(longitude);
+                                const double z = radius * FT::sin(latitutde);
+                                const double topography = world->properties({{x,y,z}}, grid_depth_wrt_surface[counter], {{{6,0,0}}})[0];
+                                domain_height[counter] = outer_radius + topography - inner_radius;
+                                cell_height[counter] = domain_height[counter] / static_cast<double>(n_cell_z);
+                                grid_z[counter] = inner_radius + (static_cast<double>(k) - 1.0) * cell_height[counter];
+                                grid_depth_wrt_surface[counter] = domain_height[counter] - static_cast<double>(k) * cell_height[counter];
+                                grid_depth_wrt_reference[counter] = grid_depth_wrt_surface[counter] - topography;
+                              }
                               counter++;
                               // position 0 of this cell
-                              grid_x[counter] = x_min + static_cast<double>(i) * dlong;
-                              grid_y[counter] = y_min + static_cast<double>(j) * dlat;
-                              grid_z[counter] = inner_radius + (static_cast<double>(k) + 1.0) * dr;
-                              grid_depth[counter] = lr - (static_cast<double>(k) + 1.0) * dr;
+                              {
+                                grid_x[counter] = x_min + static_cast<double>(i) * dlong;
+                                grid_y[counter] = y_min + static_cast<double>(j) * dlat;
+                                grid_z[counter] = inner_radius + (static_cast<double>(k) + 1.0) * cell_height[counter];
+                                const double longitude = grid_x[counter];
+                                const double latitutde = grid_y[counter];
+                                const double radius = grid_z[counter];
+                                grid_depth_wrt_surface[counter] = domain_height[counter] - (static_cast<double>(k) + 1.0) * cell_height[counter];
+
+                                const double x = radius * FT::cos(latitutde) * FT::cos(longitude);
+                                const double y = radius * FT::cos(latitutde) * FT::sin(longitude);
+                                const double z = radius * FT::sin(latitutde);
+                                const double topography = world->properties({{x,y,z}}, grid_depth_wrt_surface[counter], {{{6,0,0}}})[0];
+                                domain_height[counter] = outer_radius + topography - inner_radius;
+                                cell_height[counter] = domain_height[counter] / static_cast<double>(n_cell_z);
+                                grid_z[counter] = inner_radius + (static_cast<double>(k) - 1.0) * cell_height[counter];
+                                grid_depth_wrt_surface[counter] = domain_height[counter] - (static_cast<double>(k) + 1.0) * cell_height[counter];
+                                grid_depth_wrt_reference[counter] = grid_depth_wrt_surface[counter] - topography;
+                              }
                               counter++;
                               // position 1 of this cell
-                              grid_x[counter] = x_min + (static_cast<double>(i) + 1.0) * dlong;
-                              grid_y[counter] = y_min + static_cast<double>(j) * dlat;
-                              grid_z[counter] = inner_radius + (static_cast<double>(k) + 1.0) * dr;
-                              grid_depth[counter] = lr - (static_cast<double>(k) + 1.0) * dr;
+                              {
+                                grid_x[counter] = x_min + (static_cast<double>(i) + 1.0) * dlong;
+                                grid_y[counter] = y_min + static_cast<double>(j) * dlat;
+                                grid_z[counter] = inner_radius + (static_cast<double>(k) + 1.0) * cell_height[counter];
+                                const double longitude = grid_x[counter];
+                                const double latitutde = grid_y[counter];
+                                const double radius = grid_z[counter];
+                                grid_depth_wrt_surface[counter] = domain_height[counter] - (static_cast<double>(k) + 1.0) * cell_height[counter];
+
+                                const double x = radius * FT::cos(latitutde) * FT::cos(longitude);
+                                const double y = radius * FT::cos(latitutde) * FT::sin(longitude);
+                                const double z = radius * FT::sin(latitutde);
+                                const double topography = world->properties({{x,y,z}}, grid_depth_wrt_surface[counter], {{{6,0,0}}})[0];
+                                domain_height[counter] = outer_radius + topography - inner_radius;
+                                cell_height[counter] = domain_height[counter] / static_cast<double>(n_cell_z);
+                                grid_z[counter] = inner_radius + (static_cast<double>(k) - 1.0) * cell_height[counter];
+                                grid_depth_wrt_surface[counter] = domain_height[counter] - (static_cast<double>(k) + 1.0) * cell_height[counter];
+                                grid_depth_wrt_reference[counter] = grid_depth_wrt_surface[counter] - topography;
+                              }
                               counter++;
                               // position 2 of this cell
-                              grid_x[counter] = x_min + (static_cast<double>(i) + 1.0) * dlong;
-                              grid_y[counter] = y_min + (static_cast<double>(j) + 1.0) * dlat;
-                              grid_z[counter] = inner_radius + (static_cast<double>(k) + 1.0) * dr;
-                              grid_depth[counter] = lr - (static_cast<double>(k) + 1.0) * dr;
+                              {
+                                grid_x[counter] = x_min + (static_cast<double>(i) + 1.0) * dlong;
+                                grid_y[counter] = y_min + (static_cast<double>(j) + 1.0) * dlat;
+                                grid_z[counter] = inner_radius + (static_cast<double>(k) + 1.0) * cell_height[counter];
+                                const double longitude = grid_x[counter];
+                                const double latitutde = grid_y[counter];
+                                const double radius = grid_z[counter];
+                                grid_depth_wrt_surface[counter] = domain_height[counter] - (static_cast<double>(k) + 1.0) * cell_height[counter];
+
+                                const double x = radius * FT::cos(latitutde) * FT::cos(longitude);
+                                const double y = radius * FT::cos(latitutde) * FT::sin(longitude);
+                                const double z = radius * FT::sin(latitutde);
+                                const double topography = world->properties({{x,y,z}}, grid_depth_wrt_surface[counter], {{{6,0,0}}})[0];
+                                domain_height[counter] = outer_radius + topography - inner_radius;
+                                cell_height[counter] = domain_height[counter] / static_cast<double>(n_cell_z);
+                                grid_z[counter] = inner_radius + (static_cast<double>(k) - 1.0) * cell_height[counter];
+                                grid_depth_wrt_surface[counter] = domain_height[counter] - (static_cast<double>(k) + 1.0) * cell_height[counter];
+                                grid_depth_wrt_reference[counter] = grid_depth_wrt_surface[counter] - topography;
+                              }
                               counter++;
                               // position 3 of this cell
-                              grid_x[counter] = x_min + static_cast<double>(i) * dlong;
-                              grid_y[counter] = y_min + (static_cast<double>(j) + 1.0) * dlat;
-                              grid_z[counter] = inner_radius + (static_cast<double>(k) + 1.0) * dr;
-                              grid_depth[counter] = lr - (static_cast<double>(k) + 1.0) * dr;
+                              {
+                                grid_x[counter] = x_min + static_cast<double>(i) * dlong;
+                                grid_y[counter] = y_min + (static_cast<double>(j) + 1.0) * dlat;
+                                grid_z[counter] = inner_radius + (static_cast<double>(k) + 1.0) * cell_height[counter];
+                                const double longitude = grid_x[counter];
+                                const double latitutde = grid_y[counter];
+                                const double radius = grid_z[counter];
+                                grid_depth_wrt_surface[counter] = domain_height[counter] - (static_cast<double>(k) + 1.0) * cell_height[counter];
+
+                                const double x = radius * FT::cos(latitutde) * FT::cos(longitude);
+                                const double y = radius * FT::cos(latitutde) * FT::sin(longitude);
+                                const double z = radius * FT::sin(latitutde);
+                                const double topography = world->properties({{x,y,z}}, grid_depth_wrt_surface[counter], {{{6,0,0}}})[0];
+                                domain_height[counter] = outer_radius + topography - inner_radius;
+                                cell_height[counter] = domain_height[counter] / static_cast<double>(n_cell_z);
+                                grid_z[counter] = inner_radius + (static_cast<double>(k) - 1.0) * cell_height[counter];
+                                grid_depth_wrt_surface[counter] = domain_height[counter] - (static_cast<double>(k) + 1.0) * cell_height[counter];
+                                grid_depth_wrt_reference[counter] = grid_depth_wrt_surface[counter] - topography;
+                              }
                               WBAssert(counter < n_p, "Assert counter smaller then n_P: counter = " << counter << ", n_p = " << n_p);
                               counter++;
                             }
@@ -1020,8 +1284,8 @@ int main(int argc, char **argv)
                   const double longitude = grid_x[i];
                   const double radius = grid_z[i];
 
-                  grid_x[i] = radius * std::cos(longitude);
-                  grid_z[i] = radius * std::sin(longitude);
+                  grid_x[i] = radius * FT::cos(longitude);
+                  grid_z[i] = radius * FT::sin(longitude);
                 }
             }
           else
@@ -1033,9 +1297,9 @@ int main(int argc, char **argv)
                   const double latitutde = grid_y[i];
                   const double radius = grid_z[i];
 
-                  grid_x[i] = radius * std::cos(latitutde) * std::cos(longitude);
-                  grid_y[i] = radius * std::cos(latitutde) * std::sin(longitude);
-                  grid_z[i] = radius * std::sin(latitutde);
+                  grid_x[i] = radius * FT::cos(latitutde) * FT::cos(longitude);
+                  grid_y[i] = radius * FT::cos(latitutde) * FT::sin(longitude);
+                  grid_z[i] = radius * FT::sin(latitutde);
                 }
             }
           std::cout << "[4/6] Building the grid: stage 3 of 3                        \r";
@@ -1407,7 +1671,8 @@ int main(int argc, char **argv)
           grid_x.resize(n_p);
           grid_y.resize(n_p);
           grid_z.resize(n_p);
-          grid_depth.resize(n_p);
+          grid_depth_wrt_surface.resize(n_p);
+          grid_depth_wrt_reference.resize(n_p);
           grid_connectivity.resize(n_cell,std::vector<size_t>(n_v));
 
 
@@ -1430,6 +1695,7 @@ int main(int argc, char **argv)
                   project_on_sphere(radius, temp_shell_grid_x[j], temp_shell_grid_y[j], temp_shell_grid_z[j]);
                 }
 
+
               const size_t i_beg =  i * shell_n_p;
               const size_t i_end = (i+1) * shell_n_p;
               counter = 0;
@@ -1441,8 +1707,14 @@ int main(int argc, char **argv)
                   grid_x[j] = temp_shell_grid_x[counter];
                   grid_y[j] = temp_shell_grid_y[counter];
                   grid_z[j] = temp_shell_grid_z[counter];
-                  grid_depth[j] = outer_radius - std::sqrt(grid_x[j] * grid_x[j] + grid_y[j] * grid_y[j] + grid_z[j] * grid_z[j]);
-                  grid_depth[j] = (std::fabs(grid_depth[j]) < 1e-8 ? 0 : grid_depth[j]);
+                  grid_depth_wrt_surface[j] = outer_radius - std::sqrt(grid_x[j] * grid_x[j] + grid_y[j] * grid_y[j] + grid_z[j] * grid_z[j]);
+                  grid_depth_wrt_surface[j] = (std::fabs(grid_depth_wrt_surface[j]) < 1e-8 ? 0 : grid_depth_wrt_surface[j]);
+                  const double topography = world->properties({{grid_x[j],grid_y[j],grid_z[j]}}, grid_depth_wrt_surface[counter], {{{6,0,0}}})[0];
+
+                  grid_x[j] = temp_shell_grid_x[counter]+topography*(double(i)/double(n_cell_z));
+                  grid_y[j] = temp_shell_grid_y[counter]+topography*(double(i)/double(n_cell_z));
+                  grid_z[j] = temp_shell_grid_z[counter]+topography*(double(i)/double(n_cell_z));
+                  grid_depth_wrt_reference[j] = grid_depth_wrt_surface[j] - topography;
 
                   counter++;
                 }
@@ -1554,8 +1826,11 @@ int main(int argc, char **argv)
       // Create tuples with (name, association, number of components) for each data set
       std::vector<vtu11::DataSetInfo> dataSetInfo
       {
-        { "Depth", vtu11::DataSetType::PointData, 1 },
+        { "Depth wrt surface", vtu11::DataSetType::PointData, 1 },
+        { "Depth wrt reference", vtu11::DataSetType::PointData, 1 },
+        { "Topography", vtu11::DataSetType::PointData, 1 },
         { "Temperature", vtu11::DataSetType::PointData, 1 },
+        { "velocity", vtu11::DataSetType::PointData, 3 },
         { "Tag", vtu11::DataSetType::PointData, 1 },
       };
       for (size_t c = 0; c < compositions; ++c)
@@ -1567,7 +1842,10 @@ int main(int argc, char **argv)
       std::cout.flush();
 
       std::vector<std::array<unsigned ,3>> properties;
+      properties.push_back({{6,0,0}}); // topography
       properties.push_back({{1,0,0}}); // temperature
+
+      properties.push_back({{5,0,0}}); // velocity
 
       properties.push_back({{4,0,0}}); // tag
 
@@ -1576,24 +1854,32 @@ int main(int argc, char **argv)
 
 
       // compute temperature
-      std::vector<vtu11::DataSetData> data_set(3+compositions);
-      data_set[0] = grid_depth;
-      data_set[1].resize(n_p);
+      std::vector<vtu11::DataSetData> data_set(6+compositions);
+      data_set[0] = grid_depth_wrt_surface;
+      data_set[1] = grid_depth_wrt_reference;
+
       data_set[2].resize(n_p);
+      data_set[3].resize(n_p);
+      data_set[4].resize(n_p*3);
+      data_set[5].resize(n_p);
       for (size_t c = 0; c < compositions; ++c)
-        data_set[3+c].resize(n_p);
+        data_set[6+c].resize(n_p);
 
       if (dim == 2)
         {
           pool.parallel_for(0, n_p, [&] (size_t i)
           {
             const std::array<double,2> coords = {{grid_x[i], grid_z[i]}};
-            std::vector<double> output = world->properties(coords, grid_depth[i],properties);
-            data_set[1][i] = output[0];
-            data_set[2][i] = output[1];
+            std::vector<double> output = world->properties(coords, grid_depth_wrt_surface[i],properties);
+            data_set[2][i] = output[0];
+            data_set[3][i] = output[1];
+            data_set[4][3*i] = output[2];
+            data_set[4][3*i+1] = output[3];
+            data_set[4][3*i+2] = output[4];
+            data_set[5][i] = output[5];
             for (size_t c = 0; c < compositions; ++c)
               {
-                data_set[3+c][i] = output[2+c];
+                data_set[6+c][i] = output[6+c];
               }
           });
         }
@@ -1602,12 +1888,16 @@ int main(int argc, char **argv)
           pool.parallel_for(0, n_p, [&] (size_t i)
           {
             const std::array<double,3> coords = {{grid_x[i], grid_y[i], grid_z[i]}};
-            std::vector<double> output = world->properties(coords, grid_depth[i],properties);
-            data_set[1][i] = output[0];
-            data_set[2][i] = output[1];
+            std::vector<double> output = world->properties(coords, grid_depth_wrt_surface[i],properties);
+            data_set[2][i] = output[0];
+            data_set[3][i] = output[1];
+            data_set[4][3*i] = output[2];
+            data_set[4][3*i+1] = output[3];
+            data_set[4][3*i+2] = output[4];
+            data_set[5][i] = output[5];
             for (size_t c = 0; c < compositions; ++c)
               {
-                data_set[3+c][i] = output[2+c];
+                data_set[6+c][i] = output[6+c];
               }
           });
         }
@@ -1633,7 +1923,7 @@ int main(int argc, char **argv)
 
             vtu11::Vtu11UnstructuredMesh filtered_mesh {filtered_points, filtered_connectivity, filtered_offsets, filtered_types};
             std::vector<vtu11::DataSetData> filtered_data_set;
-
+            //std::cout << "flag 6: filtered_mesh.points.size() = " << filtered_mesh.points_.size() <<std::endl;
             filter_vtu_mesh(static_cast<int>(dim), include_tag, mesh, data_set, filtered_mesh, filtered_data_set);
             vtu11::writeVtu( file_without_extension + ".filtered.vtu", filtered_mesh, dataSetInfo, filtered_data_set, vtu_output_format );
           }
