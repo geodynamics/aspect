@@ -541,14 +541,14 @@ namespace aspect
           while (in >> temp_data);
 
           AssertThrow(in.eof(),
-                      ExcMessage ("While reading the data file '" + filename + "' the ascii data "
+                      ExcMessage ("While reading the data file\n'" + filename + "'\nthe ascii data "
                                   "plugin has encountered an error before the end of the file. "
                                   "Please check for malformed data values (e.g. NaN) or superfluous "
                                   "lines at the end of the data file."));
 
           const std::size_t n_expected_data_entries = (n_components + dim) * data_table.n_elements();
           AssertThrow(read_data_entries == n_expected_data_entries,
-                      ExcMessage ("While reading the data file '" + filename + "' the ascii data "
+                      ExcMessage ("While reading the data file\n'" + filename + "'\nthe ascii data "
                                   "plugin has reached the end of the file, but has not found the "
                                   "expected number of data values considering the spatial dimension, "
                                   "data columns, and number of lines prescribed by the POINTS header "
