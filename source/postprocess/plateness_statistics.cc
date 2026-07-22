@@ -96,9 +96,13 @@ namespace aspect
         Utilities::MPI::sum(local_total_deformation, this->get_mpi_communicator());
 
       AssertThrow(global_total_area > 0.0,
-                  ExcMessage("PlatenessStatistics: top boundary area is zero."));
+                  ExcMessage("The plateness statistics postprocessor found no nonzero area "
+                             "on the top boundary. A nonzero surface area is required to "
+                             "normalize F80 and F90."));
       AssertThrow(global_total_deformation > 0.0,
-                  ExcMessage("PlatenessStatistics: total surface deformation is zero."));
+                  ExcMessage("The total deformation on the top boundary is zero. F80, F90, "
+                             "and the corresponding plateness values are undefined when "
+                             "there is no surface deformation."));
 
       const std::vector<std::vector<std::pair<double,double>>> gathered_deformation_area_pairs =
         Utilities::MPI::gather(this->get_mpi_communicator(), local_deformation_area_pairs);
