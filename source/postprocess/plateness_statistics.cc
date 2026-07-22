@@ -87,11 +87,13 @@ namespace aspect
                   }
               }
 
-      const MPI_Comm comm = this->get_mpi_communicator();
-      const unsigned int my_rank = Utilities::MPI::this_mpi_process(comm);
+      const unsigned int my_rank =
+        Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
 
-      const double global_total_area = Utilities::MPI::sum(local_total_area, comm);
-      const double global_total_deformation = Utilities::MPI::sum(local_total_deformation, comm);
+      const double global_total_area =
+        Utilities::MPI::sum(local_total_area, this->get_mpi_communicator());
+      const double global_total_deformation =
+        Utilities::MPI::sum(local_total_deformation, this->get_mpi_communicator());
 
       AssertThrow(global_total_area > 0.0,
                   ExcMessage("PlatenessStatistics: top boundary area is zero."));
@@ -99,7 +101,7 @@ namespace aspect
                   ExcMessage("PlatenessStatistics: total surface deformation is zero."));
 
       const std::vector<std::vector<std::pair<double,double>>> gathered_deformation_area_pairs =
-        Utilities::MPI::gather(comm, local_deformation_area_pairs);
+        Utilities::MPI::gather(this->get_mpi_communicator(), local_deformation_area_pairs);
 
       double f80 = 1.0;
       double f90 = 1.0;
@@ -150,8 +152,8 @@ namespace aspect
             }
         }
 
-      MPI_Bcast(&f80, 1, MPI_DOUBLE, 0, comm);
-      MPI_Bcast(&f90, 1, MPI_DOUBLE, 0, comm);
+      MPI_Bcast(&f80, 1, MPI_DOUBLE, 0, this->get_mpi_communicator());
+      MPI_Bcast(&f90, 1, MPI_DOUBLE, 0, this->get_mpi_communicator());
 
       const double p80 = 1.0 - f80 / reference_fraction;
       const double p90 = 1.0 - f90 / reference_fraction;
