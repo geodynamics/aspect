@@ -327,6 +327,14 @@ namespace aspect
         };
 
         /**
+         * Enum class to keep track of which velocity if used to advect particles
+         */
+        enum class ParticleVelocity
+        {
+          unspecified, solid, fluid
+        };
+
+        /**
          * The granularity to use when applying a point density function method for
          * adding particles when cells fall below the minimum number of particles allowed.
          * Granularity represents the number of subdivisions of the cell in each dimension
@@ -407,6 +415,11 @@ namespace aspect
          * Algorithm for adding particles to cell.
          */
         AdditionAlgorithm addition_algorithm;
+
+        /**
+         * Velocity for particle advection
+         */
+        ParticleVelocity particle_velocity;
 
         /**
          * Lower limit for particle number per cell. This limit is

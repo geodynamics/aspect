@@ -757,8 +757,14 @@ namespace aspect
                    ExcMessage("The integrator requires the old old solution vector, but it is not available."));
 
 
-      const bool use_fluid_velocity = this->include_melt_transport() &&
-                                      property_manager->get_data_info().fieldname_exists("melt_presence");
+      bool use_fluid_velocity = false;
+      if (particle_velocity == ParticleVelocity::unspecified && this->include_melt_transport() && property_manager->get_data_info().fieldname_exists("melt_presence"))
+        use_fluid_velocity = true;
+      else if (particle_velocity == ParticleVelocity::fluid && this->include_melt_transport())
+        // bool use_fluid_velocity = this->include_melt_transport() && particle_velocity == ParticleVelocity::fluid;
+        use_fluid_velocity = true;
+      else if (particle_velocity == ParticleVelocity::solid)
+        use_fluid_velocity=false;
 
       auto &velocity_evaluator = evaluator.get_velocity_or_fluid_velocity_evaluator(use_fluid_velocity);
       auto &mapping_info = evaluator.get_mapping_info();
@@ -1167,6 +1173,10 @@ namespace aspect
                                "whether this transport is happening. This parameter is "
                                "deprecated and will be removed in the future. Ghost particle "
                                "updates are always performed. Please set the parameter to `true'.");
+            prm.declare_entry ("Particle advection velocity","unspecified",
+                               Patterns::Selection ("unspecified|fluid|solid"),
+                               "This parameter determines which velocity would be used "
+                               "to advect a particular particle world.");
 
             Generator::declare_parameters<dim>(prm);
             Integrator::declare_parameters<dim>(prm);
@@ -1327,6 +1337,15 @@ namespace aspect
           {
             AssertThrow(false, ExcNotImplemented());
           }
+
+        // Particle velocity which will be used to advect particles
+        const std::string particle_velocity_string = prm.get("Particle advection velocity");
+        if (particle_velocity_string == "solid")
+          particle_velocity = ParticleVelocity::solid;
+        else if (particle_velocity_string == "fluid")
+          particle_velocity = ParticleVelocity::fluid;
+        else if (particle_velocity_string == "unspecified")
+          particle_velocity = ParticleVelocity::unspecified;
 
 
         this->get_computing_timer().enter_subsection("Particles: Initialization");
