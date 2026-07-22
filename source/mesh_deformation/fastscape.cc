@@ -741,7 +741,7 @@ namespace aspect
                         volume_fraction_sum += composition_values_array[c][0];
                       }
                   }
-                
+
                 for (unsigned int corner = 0; corner < face_corners.size(); ++corner)
                   {
                     const Point<dim> vertex = fe_face_values.quadrature_point(corner);
@@ -773,7 +773,7 @@ namespace aspect
                             const double index = std::round(indx)+fastscape_nx*ys;
 
                             local_aspect_values[0].push_back(vertex(dim-1) - grid_extent[dim-1].second);
-                            
+
                             // In local_aspect_values[1], we store integer indices even though the
                             // type of the left hand side is 'double'. We will have to cast back
                             // when we read from local_aspect_values[1].
@@ -917,14 +917,14 @@ namespace aspect
 
       std::vector<int> global_to_local(bedrock_transport_coefficient_array.size(),-1);
       for (unsigned int i = 0; i < local_aspect_values[1].size(); ++i)
-      {
-        const int global_index = local_aspect_values[1][i];
-        AssertThrow(static_cast<std::size_t>(global_index) < global_to_local.size(),
-                    ExcMessage("global_index out of range for global_to_local"));
-        global_to_local[global_index] = i;
-      }
+        {
+          const int global_index = local_aspect_values[1][i];
+          AssertThrow(static_cast<std::size_t>(global_index) < global_to_local.size(),
+                      ExcMessage("global_index out of range for global_to_local"));
+          global_to_local[global_index] = i;
+        }
       this->get_pcout() << "   Updating FastScape erodibility parameters from distribution functions..." << std::endl;
-      
+
       // Initialize the bedrock river incision rate and transport coefficient,
       // and check that there are no empty mesh points due to
       // an improperly set maximum_surface_refinement_level, additional_refinement_levels,
@@ -949,11 +949,11 @@ namespace aspect
           if (index >= 0 && static_cast<std::size_t>(index) < local_aspect_values[dim+3].size())
             {
               bedrock_river_incision_rate_local = time_scaling_factor * local_aspect_values[dim+2][index];
-              bedrock_transport_coefficient_local = time_scaling_factor * local_aspect_values[dim+3][index]; 
+              bedrock_transport_coefficient_local = time_scaling_factor * local_aspect_values[dim+3][index];
               sand_transport_coefficient_local = time_scaling_factor * local_aspect_values[4+dim][index];
-              silt_transport_coefficient_local = time_scaling_factor * local_aspect_values[5+dim][index];             
+              silt_transport_coefficient_local = time_scaling_factor * local_aspect_values[5+dim][index];
             }
-          
+
           bedrock_river_incision_rate_array[i] =
             (use_kf_distribution_function)
             ?  // update with time scaling
@@ -969,7 +969,7 @@ namespace aspect
           // If the elevation is above sea level, we set the marine diffusion coefficients to signaling NaN to indicate that they are not used.
           sand_transport_coefficient_array[i] = 0;
           silt_transport_coefficient_array[i] = 0;
-          
+
           // If the elevation is below sea level, we set the marine diffusion coefficients to depend on water depth with a exponential decay. The deeper the water, the smaller the diffusion coefficients.
           if (elevation[i] < current_sea_level)
             {
@@ -981,9 +981,9 @@ namespace aspect
             {
               fastscape_mesh_filled = false;
             }
-            
+
         }
-      
+
 
       fastscape_mesh_filled = Utilities::MPI::broadcast(this->get_mpi_communicator(), fastscape_mesh_filled, 0);
       AssertThrow (fastscape_mesh_filled == true,
