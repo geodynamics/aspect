@@ -289,8 +289,11 @@ namespace aspect
         {
           prm.declare_entry("Reference fraction", "0.6",
                             Patterns::Double(0.0, 1.0),
-                            "Reference area fraction used to define plateness as "
-                            "p = 1 - F/reference_fraction.");
+                            "Reference surface-area fraction used to normalize the plateness "
+                            "values. The default value of 0.6 is commonly used for F80, based "
+                            "on internally heated isoviscous reference calculations. Changing "
+                            "this parameter changes the zero point of p80 and p90, but does not "
+                            "change the computed F80 and F90 values.");
         }
         prm.leave_subsection();
       }
@@ -327,9 +330,16 @@ namespace aspect
                                   "plateness statistics",
                                   "A postprocessor that computes surface plateness diagnostics "
                                   "on the top boundary using the second invariant of the deviatoric "
-                                  "strain-rate tensor. It computes F80 and F90, the fractional top-boundary "
-                                  "area required to account for 80% and 90% of the total surface deformation, "
-                                  "and also outputs p80 = 1 - F80/reference_fraction and "
-                                  "p90 = 1 - F90/reference_fraction.")
+                                  "strain-rate tensor. F80 and F90 are the smallest fractions of the "
+                                  "top-boundary area that contain 80% and 90% of the integrated strain-rate "
+                                  "invariant, respectively. Smaller values indicate more strongly localized "
+                                  "surface deformation. The corresponding plateness values are computed as "
+                                  "p = 1 - F/reference_fraction. A value of one represents the limiting case "
+                                  "of deformation localized into an infinitesimally small area, zero corresponds "
+                                  "to the chosen reference fraction, and negative values indicate deformation "
+                                  "that is more distributed than the reference case. For example, with the "
+                                  "default reference fraction of 0.6, p = 0.5 corresponds to F = 0.3. Plateness "
+                                  "is a relative diagnostic whose interpretation depends on the reference "
+                                  "fraction, model setup, and numerical resolution.")
   }
 }
