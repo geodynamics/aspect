@@ -21,6 +21,7 @@
 #include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/melt.h>
 
 #ifdef ASPECT_WITH_LIBDAP
 #include <D4Connect.h>
@@ -475,6 +476,43 @@ namespace aspect
             }
         }
       return var_name_list;
+    }
+
+
+
+    template <int dim>
+    Tensor<1, dim>
+    calculate_approximate_darcy_velocity (const MaterialModel::MaterialModelInputs<dim> &in,
+                                          const MaterialModel::MaterialModelOutputs<dim> &out,
+                                          const std::shared_ptr<const MaterialModel::MeltOutputs<dim>> fluid_out,
+                                          const Tensor<1, dim> &solid_velocity,
+                                          const Tensor<1, dim> &gravity,
+                                          const unsigned int porosity_idx,
+                                          const unsigned int q,
+                                          const bool use_pressure_gradient_for_darcy_field)
+    {
+      const double porosity = std::max(in.composition[q][porosity_idx], 1e-10);
+      const double solid_density = out.densities[q];
+      const double fluid_density = fluid_out->fluid_densities[q];
+      const double fluid_viscosity = fluid_out->fluid_viscosities[q];
+      const double permeability = fluid_out->permeabilities[q];
+      Tensor<1,dim> fluid_velocity;
+
+      if (use_pressure_gradient_for_darcy_field)
+        {
+          const Tensor<1,dim> pressure_gradient = in.pressure_gradient[q];
+          fluid_velocity = solid_velocity -
+                           permeability / fluid_viscosity / porosity *
+                           (pressure_gradient - gravity * fluid_density);
+        }
+
+      else
+        {
+          fluid_velocity = solid_velocity -
+                           permeability / fluid_viscosity / porosity *
+                           gravity * (solid_density - fluid_density);
+        }
+      return fluid_velocity;
     }
 
 
@@ -3475,6 +3513,16 @@ namespace aspect
                                              std::vector<double> &)> &function, \
                    LinearAlgebra::BlockVector &vec_result); \
   \
+  template \
+  Tensor<1, dim> \
+  calculate_approximate_darcy_velocity (const MaterialModel::MaterialModelInputs<dim> &in, \
+                                        const MaterialModel::MaterialModelOutputs<dim> &out, \
+                                        std::shared_ptr<const MaterialModel::MeltOutputs<dim>> fluid_out, \
+                                        const Tensor<1, dim> &solid_velocity, \
+                                        const Tensor<1, dim> &gravity, \
+                                        const unsigned int porosity_idx, \
+                                        unsigned int q, \
+                                        bool use_pressure_gradient_for_darcy_field); \
   namespace Tensors \
   { \
     template \

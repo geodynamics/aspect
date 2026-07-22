@@ -708,24 +708,15 @@ namespace aspect
           // The second term on the right-hand side of Darcy's law only contributes to the component of the
           // fluid velocity parallel to the gravity vector, which is proportional to the
           // buoyancy of the fluid phase.
-          const double rho_s = scratch.material_model_outputs.densities[q];
-          const double rho_f = melt_outputs->fluid_densities[q];
           const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
           const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
-          const double porosity         = std::max(scratch.material_model_inputs.composition[q][porosity_index],1e-10);
-          const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q] / porosity;
           const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
 
-          Tensor<1,dim> current_u_f;
-          // Get the pressure gradient if needed
-          if (this->get_parameters().use_pressure_gradient_for_darcy_field)
-            {
-              const Tensor<1,dim> pressure_gradient = scratch.material_model_inputs.pressure_gradient[q];
-              current_u_f = current_u - K_D * (pressure_gradient - rho_f * gravity);
-            }
-          // Otherwise just use the buoyancy term
-          else
-            current_u_f = current_u - K_D * (rho_s - rho_f) * gravity;
+          Tensor<1,dim> current_u_f =
+            aspect::Utilities::calculate_approximate_darcy_velocity(scratch.material_model_inputs, scratch.material_model_outputs,
+                                                                    melt_outputs, current_u,
+                                                                    gravity, porosity_index, q,
+                                                                    this->get_parameters().use_pressure_gradient_for_darcy_field);
 
           // Subtract the mesh velocity for ALE corrections, if necessary.
           if (this->get_parameters().mesh_deformation_enabled)
@@ -792,6 +783,9 @@ namespace aspect
           // Get the pressure gradient if needed
           if (this->get_parameters().use_pressure_gradient_for_darcy_field)
             {
+              // Use the average of the pressure gradients and solid velocities from the last two
+              // timesteps to compute the fluid velocity. This approximates a mid point
+              // integration through time.
               const Tensor<1,dim> pressure_gradient = (scratch.old_pressure_gradients[q] +
                                                        scratch.old_old_pressure_gradients[q]) / 2;
               u_f = (scratch.old_velocity_values[q] +

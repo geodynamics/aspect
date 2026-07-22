@@ -1,8 +1,9 @@
 #########################################################
 # This is a test for advecting a porosity field with the 
-# Darcy velocity while using the pressure gradient. When
-# including the pressure gradient, the expression for the 
-# Darcy velocity is:
+# Darcy velocity while approximating the fluid pressure
+# gradient as being equivalent to the solid pressure gradient.
+# With this approximation, the expression for the Darcy
+# velocity is:
 # u_f = u_s - K_D / phi * (grad_P - rho_f * g)
 # u_f = fluid velocity # m/yr
 # u_s = solid velocity # m/yr

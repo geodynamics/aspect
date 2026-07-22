@@ -1,3 +1,4 @@
+
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,526 (578+81+289+289+289)
 
@@ -21,5 +22,6 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Max Darcy velocity: 0.00278 m/year
 
 Termination requested by criterion: end time
+
 
 

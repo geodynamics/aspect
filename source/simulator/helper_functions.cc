@@ -2337,23 +2337,13 @@ namespace aspect
 
                     if (consider_darcy_velocity)
                       {
-                        const double porosity = std::max(in.composition[q][porosity_idx], 1e-10);
                         const Tensor<1,dim> gravity = gravity_model->gravity_vector(in.position[q]);
-                        const double solid_density = out.densities[q];
-                        const double fluid_viscosity = fluid_out->fluid_viscosities[q];
-                        const double fluid_density = fluid_out->fluid_densities[q];
-                        const double permeability = fluid_out->permeabilities[q];
-                        Tensor<1,dim> boundary_darcy_velocity;
-                        if (this->parameters.use_pressure_gradient_for_darcy_field)
-                          {
-                            const Tensor<1,dim> pressure_gradient = in.pressure_gradient[q];
-                            boundary_darcy_velocity = permeability / fluid_viscosity / porosity * (pressure_gradient - fluid_density * gravity);
-                          }
-                        else
-                          {
-                            boundary_darcy_velocity = permeability / fluid_viscosity / porosity * (solid_density - fluid_density) * gravity;
-                          }
-
+                        Tensor<1,dim> boundary_darcy_velocity =
+                          aspect::Utilities::calculate_approximate_darcy_velocity(in,
+                                                                                  out,
+                                                                                  fluid_out, boundary_velocity,
+                                                                                  gravity, porosity_idx, q,
+                                                                                  parameters.use_pressure_gradient_for_darcy_field);
                         integrated_flow += (boundary_darcy_velocity * fe_face_values.normal_vector(q)) *
                                            fe_face_values.JxW(q);
                       }

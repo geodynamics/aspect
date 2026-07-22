@@ -21,6 +21,7 @@
 #include <aspect/simulator.h>
 #include <aspect/simulator/assemblers/interface.h>
 #include <aspect/melt.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/fe/fe_values.h>
@@ -189,21 +190,14 @@ namespace aspect
         if (use_darcy_velocity)
           {
             const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
-            const double porosity = std::max(scratch.material_model_inputs.composition[q][porosity_index], 1e-10);
-            const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
-            const double rho_s = scratch.material_model_outputs.densities[q];
-            const double rho_f = melt_outputs->fluid_densities[q];
             const Tensor<1,dim> gravity = gravity_model.get()->gravity_vector(scratch.finite_element_values.quadrature_point(q));
-            Tensor<1,dim> darcy_velocity;
-            if (this->parameters.use_pressure_gradient_for_darcy_field)
-              {
-                const Tensor<1,dim> pressure_gradient = scratch.material_model_inputs.pressure_gradient[q];
-                darcy_velocity = velocity - K_D * (pressure_gradient - gravity * rho_f) / porosity;
-              }
-            else
-              {
-                darcy_velocity = velocity - K_D * (rho_s - rho_f) * gravity / porosity;
-              }
+            Tensor<1,dim> darcy_velocity =
+              aspect::Utilities::calculate_approximate_darcy_velocity(scratch.material_model_inputs,
+                                                                      scratch.material_model_outputs,
+                                                                      melt_outputs, velocity,
+                                                                      gravity, porosity_index, q,
+                                                                      parameters.use_pressure_gradient_for_darcy_field);
+
             velocity_norm = darcy_velocity.norm();
           }
 
