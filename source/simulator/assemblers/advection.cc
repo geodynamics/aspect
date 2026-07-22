@@ -715,11 +715,22 @@ namespace aspect
           const double porosity         = std::max(scratch.material_model_inputs.composition[q][porosity_index],1e-10);
           const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q] / porosity;
           const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
-          Tensor<1,dim> current_u_f = current_u - K_D * (rho_s - rho_f) * gravity;
+
+          Tensor<1,dim> current_u_f;
+          // Get the pressure gradient if needed
+          if (this->get_parameters().use_pressure_gradient_for_darcy_field)
+            {
+              const Tensor<1,dim> pressure_gradient = scratch.material_model_inputs.pressure_gradient[q];
+              current_u_f = current_u - K_D * (pressure_gradient - rho_f * gravity);
+            }
+          // Otherwise just use the buoyancy term
+          else
+            current_u_f = current_u - K_D * (rho_s - rho_f) * gravity;
 
           // Subtract the mesh velocity for ALE corrections, if necessary.
           if (this->get_parameters().mesh_deformation_enabled)
             current_u_f -= scratch.mesh_velocity_values[q];
+
           const double JxW = scratch.finite_element_values.JxW(q);
 
           // Perform the assembly. We only need to loop over advection
@@ -769,29 +780,44 @@ namespace aspect
       for (unsigned int q=0; q < n_q_points; ++q)
         {
 
-          const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
           const double rho_s = scratch.material_model_outputs.densities[q];
           const double rho_f = melt_outputs->fluid_densities[q];
           const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
           const double porosity         = std::max(scratch.material_model_inputs.composition[q][porosity_index], 1e-10);
+          const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q] / porosity;
+
           const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
 
-          const Tensor<1,dim> u = (scratch.old_velocity_values[q] +
-                                   scratch.old_old_velocity_values[q]) / 2
-                                  - K_D*(rho_s - rho_f)*gravity/porosity;
+          Tensor<1,dim> u_f;
+          // Get the pressure gradient if needed
+          if (this->get_parameters().use_pressure_gradient_for_darcy_field)
+            {
+              const Tensor<1,dim> pressure_gradient = (scratch.old_pressure_gradients[q] +
+                                                       scratch.old_old_pressure_gradients[q]) / 2;
+              u_f = (scratch.old_velocity_values[q] +
+                     scratch.old_old_velocity_values[q]) / 2
+                    - K_D * (pressure_gradient - rho_f * gravity);
+            }
+          // Otherwise just use the buoyancy term
+          else
+            {
+              u_f = (scratch.old_velocity_values[q] +
+                     scratch.old_old_velocity_values[q]) / 2
+                    - K_D * (rho_s - rho_f) * gravity;
+            }
 
           const double dField_dt = (this->get_old_timestep() == 0.0) ? 0.0 :
                                    (
                                      ((scratch.old_field_values)[q] - (scratch.old_old_field_values)[q])
                                      / this->get_old_timestep());
-          const double u_grad_field = u * (scratch.old_field_grads[q] +
-                                           scratch.old_old_field_grads[q]) / 2;
+          const double u_f_grad_field = u_f * (scratch.old_field_grads[q] +
+                                               scratch.old_old_field_grads[q]) / 2;
 
           const double dreaction_term_dt = (this->get_old_timestep() == 0) ? 0.0 :
                                            scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]
                                            / this->get_old_timestep();
 
-          residuals[q] = std::abs(dField_dt + u_grad_field - dreaction_term_dt);
+          residuals[q] = std::abs(dField_dt + u_f_grad_field - dreaction_term_dt);
         }
       return residuals;
     }
