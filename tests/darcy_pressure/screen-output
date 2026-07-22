@@ -1,0 +1,25 @@
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 1,526 (578+81+289+289+289)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 13+0 iterations.
+
+   Postprocessing:
+     Max Darcy velocity: 0.00278 m/year
+
+*** Timestep 1:  t=200 years, dt=200 years
+   Solving composition reactions... in 4 substep(s).
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 7 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 2+0 iterations.
+
+   Postprocessing:
+     Max Darcy velocity: 0.00278 m/year
+
+Termination requested by criterion: end time
+
+

@@ -131,7 +131,7 @@ namespace aspect
                                          (permeability / fluid_viscosity / porosity) *
                                          gravity * (solid_density - fluid_density);
                       }
-                    
+
                     local_max_fluid_velocity = std::max (darcy_velocity.norm(),
                                                          local_max_fluid_velocity);
                   }
