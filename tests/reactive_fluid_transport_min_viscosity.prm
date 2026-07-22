@@ -1,0 +1,32 @@
+# This model tests that the minimum viscosity within the reactive fluid transport model
+# correctly stops the viscosity from decreasing below a threshold in the presence
+# of fluids. The model prescribes a porosity of 10 % and an exponential fluid 
+# weakening factor of 30. Without a minimum value for the viscosity, this would 
+# result in the material viscosity of 4.481e17 Pa s, which is below the minimum
+# value that is specified in the Visco Plastic base material model. By setting
+# the parameter Minimum weakened viscosity to 1e19 Pa s, we ensure that the viscosity 
+# of the material does not drop below this value, even in the presence of fluids.
+include $ASPECT_SOURCE_DIR/tests/reactive_fluid_transport_zero_solubility.prm
+
+set Output directory = reactive_fluid_transport_min_viscosity
+set End time         = 0
+
+# 10 % porosity initially.
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0.1; 0.0
+  end
+end
+
+subsection Material model
+  subsection Reactive Fluid Transport Model
+    set Exponential fluid weakening factor = 30
+    set Minimum weakened viscosity         = 1e19
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = material statistics
+end

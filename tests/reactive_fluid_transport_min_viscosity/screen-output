@@ -1,0 +1,22 @@
+
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 74 (18+7+18+4+9+9+9)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.3813e-16, 4.89778e-17, 0, 1.55195e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.55195e-09
+
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  3000 kg/m^3, 1e+19 Pa s, 1.2e+10 kg
+
+Termination requested by criterion: end time
+
+
+
