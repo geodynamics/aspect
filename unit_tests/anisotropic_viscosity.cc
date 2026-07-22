@@ -237,7 +237,7 @@ TEST_CASE("OrthotropicRheology Functions in 3D")
   * check rotation of viscosity tensor
   */ 
 
-  // tensor part of correct rotation
+  // tensor part of correct rotation in lab frame
   SymmetricTensor<2,3> orthotropic_stress_tensor_part = symmetrize(transpose(rot_to_cpo)*(full_viscosity_tensor*test_strain_rate_cpo)*rot_to_cpo);
 
   // rotation using full stiffness_matrix
@@ -250,16 +250,51 @@ TEST_CASE("OrthotropicRheology Functions in 3D")
   // not yet implemented
   // SymmetricTensor<2,6> viscosity_tensor_lab = aspect::Utilities::rotate_kelvin_tensor(transpose(rot_to_cpo), viscosity_tensor)
   
-   
   // full_viscosity_tensor_lab = ortho_rheo_3d.kelvin_to_r4_tensor(viscosity_tensor_lab)
 
   /*
-  * back and forth computations in cpo frame (example usage)
-  */ 
-  // orthotropic_strain_rate_inv = ortho_rheo_3d.strain_rate_invariant(test_strain_rate_cpo, F_rand, G_rand, H_rand, L_rand, M_rand, N_rand);
+  * backwards then forward computation (example usage)
+  */
 
-  // SymmetricTensor<2,3> orthotropic_stress_cpo = ( std::pow(test_prefactor, -1/test_stress_exponent)*std::pow(orthotropic_strain_rate_inv, (1-test_stress_exponent)/test_stress_exponent)*full_viscosity_tensor*test_strain_rate_cpo );
+  // computing the invariant, notice that strain_rate is in cpo frame
+  orthotropic_strain_rate_inv = ortho_rheo_3d.strain_rate_invariant(test_strain_rate_cpo, F_rand, G_rand, H_rand, L_rand, M_rand, N_rand);
+
+  // computing anisotropic stress
+  orthotropic_stress = ( std::pow(test_prefactor, -1/test_stress_exponent)*std::pow(orthotropic_strain_rate_inv, (1-test_stress_exponent)/test_stress_exponent)*full_viscosity_tensor_lab*test_strain_rate);
   
+  // computing stress invariant
+  SymmetricTensor<2,3> orthotropic_stress_cpo = symmetrize(rot_to_cpo*orthotropic_stress*transpose(rot_to_cpo));
+
+  orthotropic_stress_inv = ortho_rheo_3d.stress_invariant(orthotropic_stress_cpo, F_rand, G_rand, H_rand, L_rand, M_rand, N_rand);
+
+  SymmetricTensor<4,3> full_fluidity_tensor_lab = aspect::Utilities::Tensors::rotate_full_stiffness_tensor(transpose(rot_to_cpo), full_fluidity_tensor);
+  
+  // computing orthotropic strain_rate 
+  orthotropic_strain_rate = test_prefactor*std::pow( orthotropic_stress_inv, test_stress_exponent-1 )*full_fluidity_tensor_lab*orthotropic_stress ;
+  
+  INFO("check backward forward rheology in lab frame");
+  compare_tensors_approx(orthotropic_strain_rate, test_strain_rate_dev) ;
+
+  /*
+  * forward then backward computation
+  */
+  
+  // computing the invariant, notice that strain_rate is in cpo frame
+  orthotropic_stress_inv = ortho_rheo_3d.stress_invariant(test_stress_cpo, F_rand, G_rand, H_rand, L_rand, M_rand, N_rand);
+
+  // computing anisotropic strain:rate
+  orthotropic_strain_rate = test_prefactor*std::pow( orthotropic_stress_inv, test_stress_exponent-1 )*full_fluidity_tensor_lab*test_stress ;
+  
+  // computing strain_rate invariant
+  SymmetricTensor<2,3> orthotropic_strain_rate_cpo = symmetrize(rot_to_cpo*orthotropic_strain_rate*transpose(rot_to_cpo));
+
+  orthotropic_strain_rate_inv = ortho_rheo_3d.strain_rate_invariant(orthotropic_strain_rate_cpo, F_rand, G_rand, H_rand, L_rand, M_rand, N_rand);
+  
+  // computing orthotropic stress
+  orthotropic_stress = ( std::pow(test_prefactor, -1/test_stress_exponent)*std::pow(orthotropic_strain_rate_inv, (1-test_stress_exponent)/test_stress_exponent)*full_viscosity_tensor_lab*orthotropic_strain_rate);
+  
+  INFO("check forward backward rheology in lab frame");
+  compare_tensors_approx(orthotropic_stress, test_stress_dev) ;
 
 }
 
