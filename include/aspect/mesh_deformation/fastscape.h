@@ -662,7 +662,6 @@ namespace aspect
          * Flag to use orographic controls.
          */
         bool use_orographic_controls;
-        
         /**
          * @}
          */
