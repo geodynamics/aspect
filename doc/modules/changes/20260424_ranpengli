@@ -1,4 +1,0 @@
-Added: An option to specify chemical compositions and their entropies 
-via functions when computing adiabatic profile of the entropy model.
-<br>
-(Ranpeng Li, 2026/04/24)
