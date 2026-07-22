@@ -222,6 +222,7 @@ namespace aspect
                                                     std::cref(*geometry_model))),
     material_model (MaterialModel::create_material_model<dim>(prm)),
     gravity_model (GravityModel::create_gravity_model<dim>(prm)),
+    prescribed_dilation (PrescribedDilation::create_prescribed_dilation_model<dim>(prm)),
     prescribed_stokes_solution (PrescribedStokesSolution::create_prescribed_stokes_solution<dim>(prm)),
     adiabatic_conditions (AdiabaticConditions::create_adiabatic_conditions<dim>(prm)),
 #ifdef ASPECT_WITH_WORLD_BUILDER
@@ -343,6 +344,11 @@ namespace aspect
       sim->initialize_simulator (*this);
     gravity_model->parse_parameters (prm);
     gravity_model->initialize ();
+
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(prescribed_dilation.get()))
+      sim->initialize_simulator (*this);
+    prescribed_dilation->parse_parameters (prm);
+    prescribed_dilation->initialize ();
 
     // Create the initial temperature and condition plugins, and then
     // initialize them. Some of these objects store std::shared_ptrs
@@ -684,6 +690,7 @@ namespace aspect
     geometry_model->update();
     material_model->update();
     gravity_model->update();
+    prescribed_dilation->update();
     heating_model_manager.update();
     adiabatic_conditions->update();
     mesh_refinement_manager.update();
