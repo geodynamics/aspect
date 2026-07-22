@@ -156,8 +156,8 @@ namespace aspect
             }
         }
 
-      MPI_Bcast(&f80, 1, MPI_DOUBLE, 0, this->get_mpi_communicator());
-      MPI_Bcast(&f90, 1, MPI_DOUBLE, 0, this->get_mpi_communicator());
+      f80 = Utilities::MPI::broadcast(this->get_mpi_communicator(), f80, 0);
+      f90 = Utilities::MPI::broadcast(this->get_mpi_communicator(), f90, 0);
 
       const double p80 = 1.0 - f80 / reference_fraction;
       const double p90 = 1.0 - f90 / reference_fraction;
