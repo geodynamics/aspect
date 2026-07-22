@@ -71,6 +71,11 @@ _siunitx_symbols = {
     "second": "s",
     "W": "W",
     "watt": "W",
+    "hour": "h",
+    "hours": "h",
+    "year": "yr",
+    "years": "yr",
+    "yr": "yr",
 }
 
 _siunitx_prefixes = {
