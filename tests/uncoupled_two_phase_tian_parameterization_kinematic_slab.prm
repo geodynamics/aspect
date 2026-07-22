@@ -16,7 +16,7 @@ subsection Mesh refinement
 end
 
 subsection Compositional fields
-  set Compositional field methods = darcy field, field, field, field, field, field
+  set Compositional field methods = simple darcy field, field, field, field, field, field
 end
 
 # Slightly change composition model to ensure that there is bound_fluid

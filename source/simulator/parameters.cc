@@ -1415,7 +1415,7 @@ namespace aspect
                          "the user's responsibility to check that the chosen material model "
                          "and other plugins interpret the compositional fields as intended.");
       prm.declare_entry ("Compositional field methods", "",
-                         Patterns::List (Patterns::Selection("field|particles|volume of fluid|static|melt field|darcy field|prescribed field|prescribed field with diffusion")),
+                         Patterns::List (Patterns::Selection("field|particles|volume of fluid|static|melt field|simple darcy field|prescribed field|prescribed field with diffusion")),
                          "A comma separated list denoting the solution method of each "
                          "compositional field. Each entry of the list must be "
                          "one of the currently implemented field methods."
@@ -2262,8 +2262,8 @@ namespace aspect
             compositional_field_methods[i] = AdvectionFieldMethod::static_field;
           else if (x_compositional_field_methods[i] == "melt field")
             compositional_field_methods[i] = AdvectionFieldMethod::fem_melt_field;
-          else if (x_compositional_field_methods[i] == "darcy field")
-            compositional_field_methods[i] = AdvectionFieldMethod::fem_darcy_field;
+          else if (x_compositional_field_methods[i] == "simple darcy field")
+            compositional_field_methods[i] = AdvectionFieldMethod::fem_simple_darcy_field;
           else if (x_compositional_field_methods[i] == "prescribed field")
             compositional_field_methods[i] = AdvectionFieldMethod::prescribed_field;
           else if (x_compositional_field_methods[i] == "prescribed field with diffusion")
@@ -2295,14 +2295,14 @@ namespace aspect
                    ExcMessage ("The list of names for the mapped particle property fields needs to either be empty or have a length equal to "
                                "the number of compositional fields that are interpolated from particle properties."));
 
-      if (std::find(compositional_field_methods.begin(), compositional_field_methods.end(), AdvectionFieldMethod::fem_darcy_field)
+      if (std::find(compositional_field_methods.begin(), compositional_field_methods.end(), AdvectionFieldMethod::fem_simple_darcy_field)
           != compositional_field_methods.end())
         {
           const unsigned int porosity_idx = std::find(names_of_compositional_fields.begin(), names_of_compositional_fields.end(), "porosity")
                                             - names_of_compositional_fields.begin();
           AssertThrow (porosity_idx != n_compositional_fields,
                        ExcMessage ("The Darcy advection field method only works if there is a compositional field named 'porosity'"));
-          AssertThrow (compositional_field_methods[porosity_idx] == AdvectionFieldMethod::fem_darcy_field,
+          AssertThrow (compositional_field_methods[porosity_idx] == AdvectionFieldMethod::fem_simple_darcy_field,
                        ExcMessage ("When using the Darcy advection field method, the porosity field must be advected with the Darcy method."));
         }
 

@@ -37,9 +37,9 @@ include $ASPECT_SOURCE_DIR/tests/tian_peridotite.prm
 set End time                               = 1e2
 set Maximum time step                      = 1e2
 
-# Set the advection method to be darcy field
+# Set the advection method to be a simple darcy field
 subsection Compositional fields
-  set Compositional field methods = darcy field, field, field, field, field, field
+  set Compositional field methods = simple darcy field, field, field, field, field, field
 end
 
 # Change the Reaction solver type to fixed step, so that we know how to scale the

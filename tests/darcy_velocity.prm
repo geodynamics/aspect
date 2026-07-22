@@ -88,7 +88,7 @@ end
 subsection Compositional fields
   set Number of fields = 2
   set Names of fields = porosity, fluid
-  set Compositional field methods = darcy field, darcy field
+  set Compositional field methods = simple darcy field, simple darcy field
   set Types of fields = porosity, generic
 end
 

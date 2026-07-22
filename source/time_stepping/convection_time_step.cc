@@ -39,7 +39,7 @@ namespace aspect
       if (this->introspection().composition_type_exists(CompositionalFieldDescription::porosity))
         {
           porosity_idx = this->introspection().find_composition_type(CompositionalFieldDescription::porosity);
-          if (this->get_parameters().compositional_field_methods[porosity_idx] == Parameters<dim>::AdvectionFieldMethod::fem_darcy_field)
+          if (this->get_parameters().compositional_field_methods[porosity_idx] == Parameters<dim>::AdvectionFieldMethod::fem_simple_darcy_field)
             consider_darcy_timestep = true;
         }
 

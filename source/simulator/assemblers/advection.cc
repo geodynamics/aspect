@@ -642,9 +642,9 @@ namespace aspect
       const AdvectionField advection_field = *scratch.advection_field;
 
       Assert(advection_field.advection_method(introspection)
-             == Parameters<dim>::AdvectionFieldMethod::fem_darcy_field,
+             == Parameters<dim>::AdvectionFieldMethod::fem_simple_darcy_field,
              ExcMessage("The 'DarcySystem' assembler can only be executed for fields "
-                        "that use the advection method 'darcy field'."));
+                        "that use the advection method 'simple darcy field'."));
 
       const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
       const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
@@ -652,7 +652,7 @@ namespace aspect
       const bool use_supg = (this->get_parameters().advection_stabilization_method
                              == Parameters<dim>::AdvectionStabilizationMethod::supg);
       AssertThrow(use_supg == false,
-                  ExcMessage("The Darcy field advection method does not support the use of SUPG"));
+                  ExcMessage("The 'DarcySystem' advection method does not support the use of SUPG"));
 
       const bool   use_bdf2_scheme = (this->get_timestep_number() > 1);
       const double time_step = this->get_timestep();

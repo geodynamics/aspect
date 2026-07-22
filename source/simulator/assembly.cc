@@ -161,7 +161,7 @@ namespace aspect
             std::make_unique<aspect::Assemblers::DiffusionSystem<dim>>());
 
         // Add the darcy assemblers if we have fields that use this method
-        if (i>0 && parameters.compositional_field_methods[i-1] == Parameters<dim>::AdvectionFieldMethod::fem_darcy_field)
+        if (i>0 && parameters.compositional_field_methods[i-1] == Parameters<dim>::AdvectionFieldMethod::fem_simple_darcy_field)
           assemblers->advection_system[i].push_back(
             std::make_unique<aspect::Assemblers::DarcySystem<dim>>());
 

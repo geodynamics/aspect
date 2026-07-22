@@ -1,7 +1,7 @@
 #########################################################
 # This is a test for limiting the time step when advecting
-# a field with the 'darcy field' method without setting
-# Include melt transport = true. With the 'darcy field'
+# a field with the 'simple darcy field' method without setting
+# Include melt transport = true. With the 'simple darcy field'
 # advection method, the field is advected using the Darcy
 # velocity, which is expressed as:
 #
@@ -89,12 +89,12 @@ end
 
 # porosity and bound_fluid are required compositional fields when
 # using the reactive fluid transport. Set the porosity field method
-# to 'darcy field' so that the fluid is adveted with the Darcy
+# to 'simple darcy field' so that the fluid is advected with the Darcy
 # velocity.
 subsection Compositional fields
   set Number of fields = 2
   set Names of fields = porosity, bound_fluid
-  set Compositional field methods = darcy field, field
+  set Compositional field methods = simple darcy field, field
 end
 
 # Initialize a porosity of 2% (0.02) everywhere.

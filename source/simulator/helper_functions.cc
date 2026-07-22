@@ -2208,7 +2208,7 @@ namespace aspect
     // transport is included).
     if (is_composition)
       {
-        if (introspection.compositional_field_methods[composition_index] == Parameters<dim>::AdvectionFieldMethod::fem_darcy_field)
+        if (introspection.compositional_field_methods[composition_index] == Parameters<dim>::AdvectionFieldMethod::fem_simple_darcy_field)
           {
             consider_darcy_velocity = true;
             porosity_idx = introspection.find_composition_type(CompositionalFieldDescription::porosity);

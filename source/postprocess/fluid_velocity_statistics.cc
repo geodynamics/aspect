@@ -42,7 +42,7 @@ namespace aspect
       const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
       AssertThrow(this->get_parameters().include_melt_transport ||
-                  this->get_parameters().compositional_field_methods[porosity_idx] == Parameters<dim>::AdvectionFieldMethod::fem_darcy_field,
+                  this->get_parameters().compositional_field_methods[porosity_idx] == Parameters<dim>::AdvectionFieldMethod::fem_simple_darcy_field,
                   ExcMessage("The 'fluid velocity statistics' postprocessor requires advecting the 'porosity' compositional "
                              "field by either the darcy velocity or the melt velocity."));
 

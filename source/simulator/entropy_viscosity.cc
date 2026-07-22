@@ -163,7 +163,7 @@ namespace aspect
 
     std::vector<Tensor<1,dim>> old_fluid_velocity_values(scratch.finite_element_values.n_quadrature_points);
     std::vector<Tensor<1,dim>> old_old_fluid_velocity_values(scratch.finite_element_values.n_quadrature_points);
-    const bool use_darcy_velocity = (advection_field.advection_method(introspection) == Parameters<dim>::AdvectionFieldMethod::fem_darcy_field);
+    const bool use_darcy_velocity = (advection_field.advection_method(introspection) == Parameters<dim>::AdvectionFieldMethod::fem_simple_darcy_field);
 
     std::shared_ptr<const MaterialModel::MeltOutputs<dim>> melt_outputs;
     if (use_darcy_velocity)

@@ -2,7 +2,7 @@
 # Because the porosity composition is less dense than the solid, the porosity will rise to the 
 # surface of the model and flow out of the top of the box. This tests the implementation of 
 # composition dependent outflow boundary conditions for when a composition is advected with the 
-# Darcy field advection method.
+# simple Darcy field advection method.
 set Dimension                              = 2
 set Use years instead of seconds           = true
 set End time                               = 50
@@ -90,7 +90,7 @@ end
 subsection Compositional fields
   set Number of fields            = 3
   set Names of fields             = porosity, bound_fluid, solid_phase
-  set Compositional field methods = darcy field, field, field
+  set Compositional field methods = simple darcy field, field, field
 end
 
 subsection Melt settings

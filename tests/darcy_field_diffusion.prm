@@ -1,7 +1,7 @@
 #########################################################
 # This test is built off of the darcy convection step test, but increases the 
 # stabilization parameters to show that the diffusion of the porosity with the 
-# "darcy field" advection method works.
+# "simple darcy field" advection method works.
 #########################################################
 
 include $ASPECT_SOURCE_DIR/tests/darcy_convection_step.prm
