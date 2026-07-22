@@ -1,17 +1,26 @@
-# Viscoelastic bending beam with two-phase melt transport at zero porosity.
+# This test checks whether the viscoelastic bending beam benchmark
+# run successfully with two-phase flow. In particular, this benchmark is a good test to
+# ensure that a model using active particles to track both viscoelastic
+# stresses and lithologies, which affect material properties, works.
 
-include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_bending_beam/viscoelastic_bending_beam_particles.prm
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_bending_beam/viscoelastic_bending_beam.prm
 
-set Nonlinear solver scheme = iterated Advection and Stokes
+# For particles, the stress update is done by the particle property elastic stress,
+# so we do not use the operator splitting.
+set Use operator splitting                 = false
 
+set End time         = 2e3
+set Output directory = melt_viscoelastic_bending_beam_particles
+set Max nonlinear iterations               = 5
+
+# Significantly reduce resolution
 subsection Geometry model
+  set Model name = box
+
   subsection Box
     set X repetitions = 15
     set Y repetitions = 10
   end
-end
-subsection Termination criteria
-  set End step = 3
 end
 
 subsection Melt settings
@@ -25,6 +34,7 @@ subsection Compositional fields
   set Compositional field methods = particles, particles, particles, particles, particles, particles, particles, field, field
   set Mapped particle properties  = ve_stress_xx:ve_stress_xx, ve_stress_yy:ve_stress_yy, ve_stress_xy:ve_stress_xy, ve_stress_xx_old:ve_stress_xx_old, ve_stress_yy_old:ve_stress_yy_old, ve_stress_xy_old:ve_stress_xy_old, beam:initial beam
 end
+
 subsection Initial composition model
   subsection Function
     set Function expression = 0; 0; 0; 0; 0; 0; if (x<=4.5e3 && y>=2.5e3 && y<=3.0e3, 1, 0); 0; 0
@@ -60,15 +70,16 @@ subsection Material model
 end
 
 subsection Particles
-  set Minimum particles per cell = 4
-  set Maximum particles per cell = 8
-  subsection Generator
+  set Minimum particles per cell  = 25
+  set Maximum particles per cell  = 35
+  set Load balancing strategy     = remove and add particles
+  set List of particle properties = initial composition, elastic stress
+  set Interpolation scheme        = linear least squares
+  set Particle generator name     = random uniform
+
+  subsection Generator 
     subsection Random uniform
-      set Number of particles = 900
+      set Number of particles = 4.5e3
     end
   end
-end
-
-subsection Postprocess
-  set List of postprocessors = velocity statistics
 end
