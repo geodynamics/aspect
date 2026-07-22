@@ -1,9 +1,11 @@
+# MPI: 2
+
 # Verify the plateness statistics postprocessor using the prescribed pure-shear
 # velocity u=(x,-y,0). Its strain-rate second invariant is uniform on the
 # surface, so analytically F80=0.8 and F90=0.9. With a reference fraction of
 # 0.6, the corresponding plateness values are p80=-1/3 and p90=-1/2. The
-# discrete values differ slightly because complete quadrature weights are
-# accumulated when each threshold is crossed.
+# computed values differ slightly because of the curved finite-element
+# representation of the spherical shell.
 
 set Dimension                    = 3
 set Use years instead of seconds = false

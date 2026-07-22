@@ -27,7 +27,9 @@
 #include <deal.II/base/mpi.h>
 
 #include <algorithm>
+#include <array>
 #include <cmath>
+#include <limits>
 #include <sstream>
 #include <utility>
 #include <vector>
@@ -36,6 +38,147 @@ namespace aspect
 {
   namespace Postprocess
   {
+    namespace
+    {
+      /**
+       * Compute the surface-area fractions that contain 80% and 90% of the
+       * total deformation without collecting the quadrature-point data on one
+       * MPI process. The algorithm bisects the global range of strain-rate
+       * invariants and uses global sums to determine how much deformation lies
+       * above each trial threshold. At the final threshold, it includes only
+       * the fraction of the equal-strain-rate area needed to reach the target
+       * deformation exactly.
+       *
+       * Each entry in @p local_deformation_area_pairs contains a strain-rate
+       * invariant as its first value and its quadrature-point area as its
+       * second value.
+       */
+      std::array<double,2>
+      compute_deformation_area_fractions(const std::vector<std::pair<double,double>> &local_deformation_area_pairs,
+                                         const double global_total_deformation,
+                                         const double global_total_area,
+                                         const MPI_Comm mpi_communicator)
+      {
+        const std::array<double,2> target_fractions = {{0.8, 0.9}};
+
+        double local_minimum_strain_rate = std::numeric_limits<double>::max();
+        double local_maximum_strain_rate = std::numeric_limits<double>::lowest();
+        for (const auto &entry : local_deformation_area_pairs)
+          {
+            local_minimum_strain_rate = std::min(local_minimum_strain_rate, entry.first);
+            local_maximum_strain_rate = std::max(local_maximum_strain_rate, entry.first);
+          }
+
+        const double global_minimum_strain_rate =
+          Utilities::MPI::min(local_minimum_strain_rate, mpi_communicator);
+        const double global_maximum_strain_rate =
+          Utilities::MPI::max(local_maximum_strain_rate, mpi_communicator);
+
+        if (global_minimum_strain_rate == global_maximum_strain_rate)
+          return target_fractions;
+
+        std::array<double,2> lower_thresholds;
+        std::array<double,2> upper_thresholds;
+        lower_thresholds.fill(std::nextafter(global_minimum_strain_rate,
+                                             std::numeric_limits<double>::lowest()));
+        upper_thresholds.fill(std::nextafter(global_maximum_strain_rate,
+                                             std::numeric_limits<double>::max()));
+
+        for (unsigned int iteration=0; iteration<std::numeric_limits<double>::digits; ++iteration)
+          {
+            double test_thresholds[2];
+            for (unsigned int i=0; i<target_fractions.size(); ++i)
+              {
+                test_thresholds[i] =
+                  (lower_thresholds[i] > 0.0
+                   ? std::sqrt(lower_thresholds[i] * upper_thresholds[i])
+                   : 0.5 * (lower_thresholds[i] + upper_thresholds[i]));
+
+                if (test_thresholds[i] <= lower_thresholds[i] ||
+                    test_thresholds[i] >= upper_thresholds[i])
+                  test_thresholds[i] = lower_thresholds[i];
+              }
+
+            double local_deformation_above_threshold[2] = {0.0, 0.0};
+            for (const auto &entry : local_deformation_area_pairs)
+              for (unsigned int i=0; i<target_fractions.size(); ++i)
+                if (entry.first > test_thresholds[i])
+                  local_deformation_above_threshold[i] += entry.first * entry.second;
+
+            double global_deformation_above_threshold[2];
+            Utilities::MPI::sum(local_deformation_above_threshold,
+                                mpi_communicator,
+                                global_deformation_above_threshold);
+
+            for (unsigned int i=0; i<target_fractions.size(); ++i)
+              if (global_deformation_above_threshold[i] > target_fractions[i] * global_total_deformation)
+                lower_thresholds[i] = test_thresholds[i];
+              else
+                upper_thresholds[i] = test_thresholds[i];
+          }
+
+        double local_cutoff_strain_rates[2] = {std::numeric_limits<double>::max(),
+                                               std::numeric_limits<double>::max()
+                                              };
+        for (const auto &entry : local_deformation_area_pairs)
+          for (unsigned int i=0; i<target_fractions.size(); ++i)
+            if (entry.first > lower_thresholds[i])
+              local_cutoff_strain_rates[i] = std::min(local_cutoff_strain_rates[i], entry.first);
+
+        double cutoff_strain_rates[2];
+        Utilities::MPI::min(local_cutoff_strain_rates,
+                            mpi_communicator,
+                            cutoff_strain_rates);
+
+        for (unsigned int i=0; i<target_fractions.size(); ++i)
+          Assert(cutoff_strain_rates[i] != std::numeric_limits<double>::max(),
+                 ExcInternalError());
+
+        constexpr unsigned int deformation_above_offset = 0;
+        constexpr unsigned int area_above_offset = 2;
+        constexpr unsigned int area_at_cutoff_offset = 4;
+
+        double local_sums[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+        for (const auto &entry : local_deformation_area_pairs)
+          for (unsigned int i=0; i<target_fractions.size(); ++i)
+            if (entry.first > cutoff_strain_rates[i])
+              {
+                local_sums[deformation_above_offset+i] += entry.first * entry.second;
+                local_sums[area_above_offset+i] += entry.second;
+              }
+            else if (entry.first == cutoff_strain_rates[i])
+              local_sums[area_at_cutoff_offset+i] += entry.second;
+
+        double global_sums[6];
+        Utilities::MPI::sum(local_sums, mpi_communicator, global_sums);
+
+        std::array<double,2> area_fractions;
+        for (unsigned int i=0; i<target_fractions.size(); ++i)
+          {
+            const double remaining_deformation =
+              target_fractions[i] * global_total_deformation - global_sums[deformation_above_offset+i];
+            const double deformation_at_cutoff =
+              cutoff_strain_rates[i] * global_sums[area_at_cutoff_offset+i];
+            const double tolerance = 100.0 * std::numeric_limits<double>::epsilon() * global_total_deformation;
+
+            Assert(remaining_deformation >= -tolerance &&
+                   remaining_deformation <= deformation_at_cutoff + tolerance,
+                   ExcInternalError());
+
+            const double area_at_cutoff =
+              std::clamp(remaining_deformation / cutoff_strain_rates[i],
+                         0.0,
+                         global_sums[area_at_cutoff_offset+i]);
+
+            area_fractions[i] =
+              (global_sums[area_above_offset+i] + area_at_cutoff) / global_total_area;
+          }
+
+        return area_fractions;
+      }
+    }
+
+
     template <int dim>
     std::pair<std::string,std::string>
     PlatenessStatistics<dim>::execute(TableHandler &statistics)
@@ -87,9 +230,6 @@ namespace aspect
                   }
               }
 
-      const unsigned int my_rank =
-        Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
-
       const double global_total_area =
         Utilities::MPI::sum(local_total_area, this->get_mpi_communicator());
       const double global_total_deformation =
@@ -104,60 +244,13 @@ namespace aspect
                              "and the corresponding plateness values are undefined when "
                              "there is no surface deformation."));
 
-      const std::vector<std::vector<std::pair<double,double>>> gathered_deformation_area_pairs =
-        Utilities::MPI::gather(this->get_mpi_communicator(), local_deformation_area_pairs);
-
-      double f80 = 1.0;
-      double f90 = 1.0;
-
-      if (my_rank == 0)
-        {
-          std::vector<std::pair<double,double>> deformation_area_pairs;
-          std::size_t n_deformation_area_pairs = 0;
-          for (const auto &local_pairs : gathered_deformation_area_pairs)
-            n_deformation_area_pairs += local_pairs.size();
-
-          deformation_area_pairs.reserve(n_deformation_area_pairs);
-
-          for (const auto &local_pairs : gathered_deformation_area_pairs)
-            deformation_area_pairs.insert(deformation_area_pairs.end(),
-                                          local_pairs.begin(),
-                                          local_pairs.end());
-
-          std::sort(deformation_area_pairs.begin(),
-                    deformation_area_pairs.end(),
-                    [](const auto &a, const auto &b)
-          {
-            return a.first > b.first;
-          });
-
-          double cumulative_deformation = 0.0;
-          double cumulative_area = 0.0;
-          bool found_f80 = false;
-          bool found_f90 = false;
-
-          for (const auto &entry : deformation_area_pairs)
-            {
-              cumulative_deformation += entry.first * entry.second;
-              cumulative_area += entry.second;
-
-              if (!found_f80 && cumulative_deformation >= 0.8 * global_total_deformation)
-                {
-                  f80 = cumulative_area / global_total_area;
-                  found_f80 = true;
-                }
-
-              if (!found_f90 && cumulative_deformation >= 0.9 * global_total_deformation)
-                {
-                  f90 = cumulative_area / global_total_area;
-                  found_f90 = true;
-                  break;
-                }
-            }
-        }
-
-      f80 = Utilities::MPI::broadcast(this->get_mpi_communicator(), f80, 0);
-      f90 = Utilities::MPI::broadcast(this->get_mpi_communicator(), f90, 0);
+      const std::array<double,2> area_fractions =
+        compute_deformation_area_fractions(local_deformation_area_pairs,
+                                           global_total_deformation,
+                                           global_total_area,
+                                           this->get_mpi_communicator());
+      const double f80 = area_fractions[0];
+      const double f90 = area_fractions[1];
 
       const double p80 = 1.0 - f80 / reference_fraction;
       const double p90 = 1.0 - f90 / reference_fraction;
