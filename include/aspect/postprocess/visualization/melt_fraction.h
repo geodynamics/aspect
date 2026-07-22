@@ -24,6 +24,8 @@
 
 #include <aspect/postprocess/visualization.h>
 #include <aspect/simulator_access.h>
+#include <aspect/material_model/reaction_model/katz2003_mantle_melting.h>
+#include <aspect/material_model/reaction_model/pyroxenite_melting.h>
 
 #include <deal.II/numerics/data_postprocessor.h>
 
@@ -69,45 +71,11 @@ namespace aspect
           parse_parameters (ParameterHandler &prm) override;
 
         private:
-          /**
-           * Parameters for anhydrous melting of peridotite after Katz, 2003
-           */
-
-          // for the solidus temperature
-          double A1;   // °C
-          double A2; // °C/Pa
-          double A3; // °C/(Pa^2)
-
-          // for the lherzolite liquidus temperature
-          double B1;   // °C
-          double B2;   // °C/Pa
-          double B3; // °C/(Pa^2)
-
-          // for the liquidus temperature
-          double C1;   // °C
-          double C2;  // °C/Pa
-          double C3; // °C/(Pa^2)
-
-          // for the reaction coefficient of pyroxene
-          double r1;     // cpx/melt
-          double r2;     // cpx/melt/GPa
-          double M_cpx;  // mass fraction of pyroxenite
-
-          // melt fraction exponent
-          double beta;
-
-          /**
-           * Parameters for melting of pyroxenite after Sobolev et al., 2011
-           */
-
-          // for the melting temperature
-          double D1;    // °C
-          double D2;  // °C/Pa
-          double D3; // °C/(Pa^2)
-
-          // for the melt-fraction dependence of productivity
-          double E1;
-          double E2;
+          /*
+          * Object for computing the melt parameters
+          */
+          MaterialModel::ReactionModel::Katz2003MantleMelting<dim> katz2003_model;
+          MaterialModel::ReactionModel::PyroxeniteMelting<dim> pyroxenite_model;
       };
     }
   }

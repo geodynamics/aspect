@@ -41,7 +41,7 @@ end
 
 subsection Compositional fields
   set Number of fields = 1
-  set Names of fields = pyroxenite
+  set Names of fields = composition_2
 end
 
 # The next section deals with the initial conditions for the
