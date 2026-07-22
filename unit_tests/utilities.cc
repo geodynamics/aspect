@@ -634,15 +634,14 @@ TEST_CASE("Rotate Kelvin Tensor")
   dealii::Tensor<2,3> rotation = aspect::Utilities::zxz_euler_angles_to_rotation_matrix(EA[0], EA[1], EA[1]);
 
   // generate an symmetric tensor in kelvin notation
-  // full matrix necessary for dealii::Physics::Notation::Kelvin::to_tensor 
-  dealii::FullMatrix<double> kelvin_tensor_fm(6,6); 
+  // full matrix necessary for dealii::Physics::Notation::Kelvin::to_tensor
+  dealii::FullMatrix<double> kelvin_tensor_fm(6,6);
   dealii::SymmetricTensor<2,6> kelvin_tensor;
   for (unsigned short int i1 = 0; i1 < 6; ++i1)
     {
       for (unsigned short int i2 = i1; i2 < 6; ++i2)
         {
-          kelvin_tensor_fm[i1][i2] = 2.5*i1 + 3.4*i2 + 3.0;
-          kelvin_tensor_fm[i2][i1] = 2.5*i1 + 3.4*i2 + 3.0;
+          kelvin_tensor_fm[i1][i2] = kelvin_tensor_fm[i2][i1] = 2.5*i1 + 3.4*i2 + 3.0;
           kelvin_tensor[i1][i2]    = kelvin_tensor_fm[i1][i2];
         }
     }

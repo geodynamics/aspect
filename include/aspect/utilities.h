@@ -1336,8 +1336,8 @@ namespace aspect
       rotate_voigt_stiffness_matrix(const Tensor<2,3> &rotation_tensor, const SymmetricTensor<2,6> &input_tensor);
 
       /**
-      * Rotate a symmetric 6x6 tensor in kelvin notation
-      */
+       * Rotate a symmetric 6x6 tensor in kelvin notation
+       */
       SymmetricTensor<2,6>
       rotate_kelvin_tensor(const Tensor<2,3> &rotation_tensor, const SymmetricTensor<2,6> &input_tensor);
 
