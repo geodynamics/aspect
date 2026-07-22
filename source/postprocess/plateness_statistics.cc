@@ -71,17 +71,11 @@ namespace aspect
 
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
                   {
-                    const SymmetricTensor<2,dim> eps = strain_rate[q];
-
                     const SymmetricTensor<2,dim> dev_eps =
-                      (this->get_material_model().is_compressible()
-                       ?
-                       eps - (trace(eps) / static_cast<double>(dim)) * unit_symmetric_tensor<dim>()
-                       :
-                       eps);
+                      Utilities::Tensors::consistent_deviator(strain_rate[q]);
 
                     const double e_ii =
-                      std::sqrt(std::fabs(second_invariant(dev_eps)));
+                      std::sqrt(std::max(-Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(dev_eps), 0.0));
 
                     const double area = fe_face_values.JxW(q);
 
