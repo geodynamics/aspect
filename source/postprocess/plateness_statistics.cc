@@ -71,11 +71,11 @@ namespace aspect
 
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
                   {
-                    const SymmetricTensor<2,dim> dev_eps =
+                    const SymmetricTensor<2,dim> deviatoric_strain_rate =
                       Utilities::Tensors::consistent_deviator(strain_rate[q]);
 
                     const double e_ii =
-                      std::sqrt(std::max(-Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(dev_eps), 0.0));
+                      std::sqrt(std::max(-Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(deviatoric_strain_rate), 0.0));
 
                     const double area = fe_face_values.JxW(q);
 
