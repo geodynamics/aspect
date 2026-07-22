@@ -1,6 +1,6 @@
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/geometry-model/initial-topography-model/ascii-data/global_1deg.txt.gz.
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/global_1deg.txt.gz.
 
 Number of active cells: 768 (on 2 levels)
 Number of degrees of freedom: 28,690 (20,790+970+6,930)

@@ -2,22 +2,22 @@
 Loading shared library <./libtomography_based_plate_motions_cookbook-2.debug.so>
 
 
-   Loading Ascii data boundary file ASPECT_DIR/cookbooks/tomography_based_plate_motions/input_data/input_topography_smooth_gauss.txt.
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/input_topography_smooth_gauss.txt.
 
 
-   Loading Ascii data boundary file ASPECT_DIR/cookbooks/tomography_based_plate_motions/input_data/crustal_structure_2D.txt.
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/crustal_structure_2D.txt.
 
 
-   Loading Ascii data initial file ASPECT_DIR/cookbooks/tomography_based_plate_motions/input_data/upper_mantle_TM1_2D.txt.
+   Loading Ascii data initial file $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/upper_mantle_TM1_2D.txt.
 
 
-   Loading Ascii data boundary file ASPECT_DIR/cookbooks/tomography_based_plate_motions/input_data/LAB_CAM2016_2D.txt.
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/LAB_CAM2016_2D.txt.
 
 
-   Loading Ascii data initial file ASPECT_DIR/cookbooks/tomography_based_plate_motions/input_data/LLNL_model_cropped_cratons_faults.txt.gz.
+   Loading Ascii data initial file $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/LLNL_model_cropped_cratons_faults.txt.gz.
 
 
-   Loading Ascii data boundary file ASPECT_DIR/cookbooks/tomography_based_plate_motions/input_data/slab2_depth_thickness_2D.txt.gz.
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/slab2_depth_thickness_2D.txt.gz.
 
 Number of active cells: 48 (on 2 levels)
 Number of degrees of freedom: 2,232 (480+72+240+240+240+240+240+240+240)

@@ -1,6 +1,6 @@
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/test/cookbook_files/chunk_3d_south.0.txt.
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/data/test/cookbook_files/chunk_3d_south.0.txt.
 
 
    From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
@@ -11,7 +11,7 @@
    will continue unchanged from the last known state into the future).
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/test/cookbook_files/chunk_3d_west.0.txt.
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/data/test/cookbook_files/chunk_3d_west.0.txt.
 
 
    From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
@@ -22,7 +22,7 @@
    will continue unchanged from the last known state into the future).
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/test/cookbook_files/chunk_3d_east.0.txt.
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/data/test/cookbook_files/chunk_3d_east.0.txt.
 
 
    From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
@@ -33,7 +33,7 @@
    will continue unchanged from the last known state into the future).
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/test/cookbook_files/chunk_3d_north.0.txt.
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/data/test/cookbook_files/chunk_3d_north.0.txt.
 
 
    From this timestep onwards, ASPECT will not attempt to load new Ascii data files.

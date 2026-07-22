@@ -1,6 +1,6 @@
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/fail_4.txt.
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/fail_4.txt.
 
 TimerOutput objects finalize timed values printed to the
 screen by communicating over MPI in their destructors.
@@ -17,7 +17,7 @@ The violated condition was:
     Utilities::fexists(filename, this->get_mpi_communicator()) || filename_is_url(filename)
 Additional information: 
     Ascii data file
-    <ASPECT_DIR/data/boundary-velocity/ascii-data/test/fail_4.txt>
+    <$ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/fail_4.txt>
     not found!
 
 Stacktrace:
