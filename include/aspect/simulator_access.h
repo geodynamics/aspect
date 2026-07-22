@@ -53,6 +53,11 @@ namespace aspect
     template <int dim> class Interface;
   }
 
+  namespace PrescribedDilation
+  {
+    template <int dim> class Interface;
+  }
+
   namespace HeatingModel
   {
     template <int dim> class Manager;
@@ -596,6 +601,12 @@ namespace aspect
        */
       const GravityModel::Interface<dim> &
       get_gravity_model () const;
+
+      /**
+       * Return a reference to the prescribed dilation plugin.
+       */
+      const PrescribedDilation::Interface<dim> &
+      get_prescribed_dilation () const;
 
       /**
        * Return a reference to the initial topography model.
