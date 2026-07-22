@@ -642,6 +642,7 @@ namespace aspect
     MeltStokesSystem<dim>::
     create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
     {
+      MeltInterface<dim>::create_additional_material_model_outputs(outputs);
       const unsigned int n_points = outputs.n_evaluation_points();
 
       if (this->get_parameters().enable_elasticity &&
