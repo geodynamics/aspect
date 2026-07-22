@@ -3100,6 +3100,12 @@ namespace aspect
       SymmetricTensor<2,6>
       rotate_kelvin_tensor(const Tensor<2,3> &rotation_tensor, const SymmetricTensor<2,6> &input_tensor)
       {
+        // rotating a 4th order tensor represented as a matrix in kelvin notation
+        // by computing $C'=MCM^T$ and using the same principle as in (Carcione, J. M. (2007).
+        // Wave Fields in Real Media: Wave Propagation in Anisotropic, Anelastic,
+        // Porous and Electromagnetic Media. Netherlands: Elsevier Science. Pages 8-9).
+        // though this time using kelvin notation
+
         Tensor<2,6> rotation_matrix;
         rotation_matrix[0][0] = Utilities::fixed_power<2>(rotation_tensor[0][0]);
         rotation_matrix[0][1] = Utilities::fixed_power<2>(rotation_tensor[0][1]);
