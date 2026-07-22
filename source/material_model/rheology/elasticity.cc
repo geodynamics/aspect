@@ -96,7 +96,7 @@ namespace aspect
                            "for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
                            "those corresponding to chemical compositions. "
-                           "The default value of 75 GPa is representative of mantle rocks. Units: Pa.");
+                           "The default value of 75 GPa is representative of mantle rocks. Units: \\si{\\pascal}.");
         prm.declare_entry ("Use fixed elastic time step", "unspecified",
                            Patterns::Selection("true|false|unspecified"),
                            "Select whether the material time scale in the viscoelastic constitutive "
@@ -113,8 +113,8 @@ namespace aspect
                            Patterns::Double (0.),
                            "The fixed elastic time step $dte$. It is always used during the first "
                            "timestep; afterwards on if 'Used fixed elastic time step' is true. "
-                           "Units: years if the 'Use years instead of seconds' parameter is set; "
-                           "seconds otherwise.");
+                           "Units: \\si{\\year} if the 'Use years instead of seconds' parameter is set; "
+                           "\\si{\\second} otherwise.");
         prm.declare_entry ("Stabilization time scale factor", "1.",
                            Patterns::Double (1.),
                            "A stabilization factor for the elastic stresses that influences how fast "
@@ -132,7 +132,7 @@ namespace aspect
         prm.declare_entry ("Elastic damper viscosity", "0.0",
                            Patterns::Double (0.),
                            "Viscosity of a viscous damper that acts in parallel with the elastic "
-                           "element to stabilize behavior. Units: $\\text{Pa}\\text{s}$");
+                           "element to stabilize behavior. Units: \\si{\\pascal\\second}");
       }
 
 

@@ -139,11 +139,11 @@ namespace aspect
                              "Reference pressure $P_0$. Units: \\si{\\pascal}.");
           prm.declare_entry ("Reference temperature", "298.15",
                              Patterns::Double (0.),
-                             "Reference temperature $T_0$. Units: $\\text{K}$.");
+                             "Reference temperature $T_0$. Units: \\si{\\kelvin}.");
           prm.declare_entry ("Reference density", "3300.",
                              Patterns::Double (0.),
                              "The density at the reference pressure and temperature. "
-                             "Units: $\\frac{\\text{kg}}{\\text{m}^3}$.");
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Reference isothermal bulk modulus", "125e9",
                              Patterns::Double (0.),
                              "The isothermal bulk modulus at the reference pressure and temperature. "
@@ -156,19 +156,19 @@ namespace aspect
           prm.declare_entry ("Reference thermal expansivity", "2e-5",
                              Patterns::Double (0.),
                              "The thermal expansion coefficient at the reference pressure and temperature. "
-                             "Units: $\\frac{1}{\\text{K}}$.");
+                             "Units: \\si{\\per\\kelvin}.");
           prm.declare_entry ("Einstein temperature", "600.",
                              Patterns::Double (0.),
                              "The Einstein temperature at the reference pressure and temperature. "
-                             "Units: $\\text{K}$.");
+                             "Units: \\si{\\kelvin}.");
           prm.declare_entry ("Viscosity", "1e21",
                              Patterns::Double (0.),
                              "The value of the constant viscosity $\\eta_0$. "
-                             "Units: $\\text{Pa}\\text{s}$.");
+                             "Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0.),
                              "The value of the constant thermal conductivity $k$. "
-                             "Units: $\\frac{\\text{W}}{\\text{m}\\text{K}}$.");
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
 
           prm.enter_subsection("Reference heat capacity function");
           {

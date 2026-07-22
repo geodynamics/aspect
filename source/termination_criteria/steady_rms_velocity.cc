@@ -126,9 +126,9 @@ namespace aspect
                              Patterns::Double (0.),
                              "The minimum length of simulation time that the system "
                              "should be in steady state before termination."
-                             "Units: years if the "
+                             "Units: \\si{\\year} if the "
                              "'Use years instead of seconds' parameter is set; "
-                             "seconds otherwise.");
+                             "\\si{\\second} otherwise.");
         }
         prm.leave_subsection ();
       }

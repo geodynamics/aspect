@@ -48,7 +48,7 @@ namespace aspect
         prm.declare_entry ("Wall time",
                            "24.",
                            Patterns::Double (0.),
-                           "The wall time of the simulation. Unit: hours.");
+                           "The wall time of the simulation. Unit: \\si{\\hour}.");
       }
       prm.leave_subsection ();
     }

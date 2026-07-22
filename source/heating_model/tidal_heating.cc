@@ -116,18 +116,18 @@ namespace aspect
                              Patterns::Double (0),
                              "The orbital/tidal frequency that produces the heating. "
                              "Default value is the diurnal tidal frequency of Europa, ~3.551 days. "
-                             "Units: 1/s.");
+                             "Units: \\si{\\per\\second}.");
           prm.declare_entry ("Elastic shear modulus", "3.3e9",
                              Patterns::Double (0),
                              "Elastic shear modulus of the material. "
                              "For simplicity, this parameter will be used even if elasticity is set in the material model. "
                              "Default value is for Europa's icy shell. "
-                             "Units: Pa.");
+                             "Units: \\si{\\pascal}.");
           prm.declare_entry ("Constant tidal strain rate", "2e-10",
                              Patterns::Double (0),
                              "Time-averaged strain rate by a lunar diurnal tide that is simplified to be constant regardless of location. "
                              "Default value is for the diurnal tide of Europa from Tobie et al. (2003). "
-                             "Units: 1/s.");
+                             "Units: \\si{\\per\\second}.");
           prm.declare_entry ("Custom distribution of tidal strain rate", "constant",
                              Patterns::Selection("constant|latitudinal variation"),
                              "Choose how the time-averaged tidal strain rate is distributed. "
@@ -138,13 +138,13 @@ namespace aspect
                              "Maximum time-averaged tidal strain rate by lunar diurnal tide at the poles. "
                              "This parameter will be used when 'Custom distribution of tidal strain rate' is 'latitudinal variation'. "
                              "Default value is for Europa at pole from Nimmo et al. (2007). "
-                             "Units: 1/s.");
+                             "Units: \\si{\\per\\second}.");
           prm.declare_entry ("Minimum tidal strain rate", "1.67e-10",
                              Patterns::Double (0),
                              "Minimum time-averaged tidal strain rate by lunar diurnal tide at the equator. "
                              "This parameter will be used when 'Custom distribution of tidal strain rate' is 'latitudinal variation'. "
                              "Default value is for Europa at Equator from Nimmo et al. (2007). "
-                             "Units: 1/s.");
+                             "Units: \\si{\\per\\second}.");
         }
         prm.leave_subsection();
       }
@@ -194,6 +194,6 @@ namespace aspect
                                   "Selecting 'latitudinal variation' from 'Custom distribution of tidal strain rate' allows simplified latitudinal variation "
                                   "with cosine function, 'Maximum tidal strain rate' and 'Minimum tidal strain rate. "
                                   "Latitudinal variation of tidal strain rate is shown in Fig.3 from Nimmo et al. (2007) (https://doi.org/10.1016/j.icarus.2007.04.021). "
-                                  "Unit: W/m^3.")
+                                  "Unit: \\si{\\watt\\per\\meter\\cubed}.")
   }
 }

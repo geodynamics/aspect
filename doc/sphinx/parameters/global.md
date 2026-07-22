@@ -53,7 +53,7 @@ For more information, see the section in the manual that discusses the general m
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The end time of the simulation. The default value is a number so that when converted from years to seconds it is approximately equal to the largest number representable in floating point arithmetic. For all practical purposes, this equals infinity. Units: Years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The end time of the simulation. The default value is a number so that when converted from years to seconds it is approximately equal to the largest number representable in floating point arithmetic. For all practical purposes, this equals infinity. Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Linear solver failure strategy<parameters:Linear_20solver_20failure_20strategy>`
@@ -91,7 +91,7 @@ For more information, see the section in the manual that discusses the general m
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Set a maximum time step size for only the first timestep. Generally the time step based on the CFL number should be sufficient, but for complicated models or benchmarking it may be useful to limit the first time step to some value, especially when using the free surface, which needs to settle to prevent instabilities. This should in that case be combined with a value set for &ldquo;Maximum relative increase in time step&rdquo;. The default value is a value so that when converted from years into seconds it equals the largest number representable by a floating point number, implying an unlimited time step. Units: Years or seconds, depending on the &ldquo;Use years instead of seconds&rdquo; parameter.
+**Documentation:** Set a maximum time step size for only the first timestep. Generally the time step based on the CFL number should be sufficient, but for complicated models or benchmarking it may be useful to limit the first time step to some value, especially when using the free surface, which needs to settle to prevent instabilities. This should in that case be combined with a value set for &ldquo;Maximum relative increase in time step&rdquo;. The default value is a value so that when converted from years into seconds it equals the largest number representable by a floating point number, implying an unlimited time step. Units: \si{\year} or \si{\second}, depending on the &ldquo;Use years instead of seconds&rdquo; parameter.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Maximum relative increase in time step<parameters:Maximum_20relative_20increase_20in_20time_20step>`
@@ -113,7 +113,7 @@ Units: \%.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Set a maximum time step size for the solver to use. Generally the time step based on the CFL number should be sufficient, but for complicated models or benchmarking it may be useful to limit the time step to some value. The default value is a value so that when converted from years into seconds it equals the largest number representable by a floating point number, implying an unlimited time step.Units: Years or seconds, depending on the &ldquo;Use years instead of seconds&rdquo; parameter.
+**Documentation:** Set a maximum time step size for the solver to use. Generally the time step based on the CFL number should be sufficient, but for complicated models or benchmarking it may be useful to limit the time step to some value. The default value is a value so that when converted from years into seconds it equals the largest number representable by a floating point number, implying an unlimited time step.Units: \si{\year} or \si{\second}, depending on the &ldquo;Use years instead of seconds&rdquo; parameter.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Nonlinear solver failure strategy<parameters:Nonlinear_20solver_20failure_20strategy>`
@@ -207,7 +207,7 @@ In order to use this parameter, your cluster must obviously be using the Lustre 
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The start time of the simulation. Units: Years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The start time of the simulation. Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Surface pressure<parameters:Surface_20pressure>`
