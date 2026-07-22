@@ -762,6 +762,12 @@ namespace aspect
                          "MaterialModel output PrescribedPlasticDilation.");
     }
     prm.leave_subsection();
+      
+    prm.declare_entry ("Use prescribed dilation plugin", "false",
+                        Patterns::Bool (),
+                        "Whether to use the prescribed dilation plugin to set right hand sides for the Stokes solver."
+                        "In the continuity equation the added term is (pdp.x + pdp.y [+ pdp.z]) * dV."
+                        "In the momentum equation the added term is 2 * eta * (pdp.x [+ pdp.y]) * dV.");
 
     // next declare parameters that pertain to the equations to be
     // solved, along with boundary conditions etc. note that at this
