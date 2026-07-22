@@ -4858,6 +4858,15 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 **Documentation:** List of constant viscosity prefactors (i.e., multiplicative factors) for background material and compositional fields, for a total of N+1 where N is the number of all compositional fields or only those corresponding to chemical compositions. Units: none.
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Convergence threshold<parameters:Material_20model/Visco_20Plastic/Convergence_20threshold>`
+:name: parameters:Material_20model/Visco_20Plastic/Convergence_20threshold
+**Default value:** 1e-15
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Magnitude of negative tangential surface-velocity divergence required to classify flow as convergent. Units: \si{\per\second}.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Cutoff stresses for Peierls creep<parameters:Material_20model/Visco_20Plastic/Cutoff_20stresses_20for_20Peierls_20creep>`
 :name: parameters:Material_20model/Visco_20Plastic/Cutoff_20stresses_20for_20Peierls_20creep
 **Default value:** 0.0
@@ -4903,13 +4912,40 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 **Documentation:** List of densities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\kilogram\per\meter\cubed}.
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Divergence threshold<parameters:Material_20model/Visco_20Plastic/Divergence_20threshold>`
+:name: parameters:Material_20model/Visco_20Plastic/Divergence_20threshold
+**Default value:** 1e-15
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Positive tangential surface-velocity divergence required to classify flow as divergent. Units: \si{\per\second}.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Dynamic angles of internal friction<parameters:Material_20model/Visco_20Plastic/Dynamic_20angles_20of_20internal_20friction>`
 :name: parameters:Material_20model/Visco_20Plastic/Dynamic_20angles_20of_20internal_20friction
 **Default value:** 2
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of dynamic angles of internal friction, $\phi$, for background material and compositional fields, for a total of N$+$1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. Dynamic angles of friction are used as the current friction angle when the effective strain rate is well above the &rsquo;dynamic characteristic strain rate&rsquo;. Units: \si{\degree}.
+**Documentation:** List of dynamic angles of internal friction, $\phi$, for background material and compositional fields, for a total of N$+$1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. Dynamic angles of friction are used as the current friction angle when the effective strain rate is well above the &rsquo;dynamic characteristic strain rate&rsquo;. For the &rsquo;differential dynamic friction&rsquo; mechanism these values apply to transform or neutral flow. Units: \si{\degree}.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Dynamic angles of internal friction for convergent flow<parameters:Material_20model/Visco_20Plastic/Dynamic_20angles_20of_20internal_20friction_20for_20convergent_20flow>`
+:name: parameters:Material_20model/Visco_20Plastic/Dynamic_20angles_20of_20internal_20friction_20for_20convergent_20flow
+**Default value:** 2
+
+**Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** Dynamic friction angles for convergent flow. Units: \si{\degree}.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Dynamic angles of internal friction for divergent flow<parameters:Material_20model/Visco_20Plastic/Dynamic_20angles_20of_20internal_20friction_20for_20divergent_20flow>`
+:name: parameters:Material_20model/Visco_20Plastic/Dynamic_20angles_20of_20internal_20friction_20for_20divergent_20flow
+**Default value:** 4
+
+**Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** Dynamic friction angles for divergent flow. Units: \si{\degree}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Dynamic characteristic strain rate<parameters:Material_20model/Visco_20Plastic/Dynamic_20characteristic_20strain_20rate>`
@@ -4979,13 +5015,15 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 :name: parameters:Material_20model/Visco_20Plastic/Friction_20mechanism
 **Default value:** none
 
-**Pattern:** [Selection none|dynamic friction|function ]
+**Pattern:** [Selection none|dynamic friction|differential dynamic friction|function ]
 
 **Documentation:** Whether to make the friction angle dependent on strain rate or not. This rheology is intended to be used together with the visco-plastic rheology model.
 
 \item &ldquo;none&rdquo;: No dependence of the friction angle is applied.
 
 \item &ldquo;dynamic friction&rdquo;: The friction angle is rate dependent.When &rsquo;dynamic angles of internal friction&rsquo; are specified, the friction angle will be weakened for high strain rates with: $\mu = \mu_d + \frac{\mu_s-\mu_d}{1+\frac{\dot{\epsilon}_{ii}}{\dot{\epsilon}_C}}^x$  where $\mu_s$ and $\mu_d$ are the friction angles at low and high strain rates, respectively. $\dot{\epsilon}_{ii}$ is the second invariant of the strain rate and $\dot{\epsilon}_C$ is the &rsquo;dynamic characteristic strain rate&rsquo; where $\mu = (\mu_s+\mu_d)/2$. The &rsquo;dynamic friction smoothness exponent&rsquo; x controls how smooth or step-like the change from $\mu_s$ to $\mu_d$ is. The equation is modified after Equation (13) in {cite}`van_dinther_seismic_2013`. $\mu_s$ and $\mu_d$ can be specified by setting &rsquo;Angles of internal friction&rsquo; and &rsquo;Dynamic angles of internal friction&rsquo;, respectively. This relationship is similar to rate-and-state friction constitutive relationships, which are applicable to the strength of rocks during earthquakes.
+
+\item &ldquo;differential dynamic friction&rdquo;: As for &ldquo;dynamic friction&rdquo;, but the dynamic angle is selected from convergent, divergent, and transform/neutral values using the divergence of tangential velocity on the top boundary. The surface field is smoothed and projected down to the specified depth. This indicator remains meaningful in an incompressible model because it is not the divergence of the full velocity field.
 
 \item &ldquo;function&rdquo;: Specify the friction angle as a function of space and time for background material and compositional fields, for a total of N$+$1 values, where N is the number of all compositional fields corresponding to chemical compositions.
 ::::
@@ -5494,6 +5532,15 @@ If a compositional field named &rsquo;noninitial\_plastic\_strain&rsquo; is incl
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of stress limiter exponents, $n_{\text{lim}}$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. Units: none.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Surface regime projection depth<parameters:Material_20model/Visco_20Plastic/Surface_20regime_20projection_20depth>`
+:name: parameters:Material_20model/Visco_20Plastic/Surface_20regime_20projection_20depth
+**Default value:** 200e3
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Maximum depth to which the surface-velocity-divergence classification is projected. Below this depth the default dynamic friction angle is selected. Units: \si{\meter}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal conductivities<parameters:Material_20model/Visco_20Plastic/Thermal_20conductivities>`

@@ -99,8 +99,8 @@ namespace aspect
               // where μ_d is derived from target_angle and μ_s from static friction angle.
               const double mu = std::tan(target_angle)
                                 + (std::tan(static_friction_angle) - std::tan(target_angle))
-                                  / (1. + std::pow((current_edot_ii / dynamic_characteristic_strain_rate),
-                                                  dynamic_friction_smoothness_exponent));
+                                / (1. + std::pow((current_edot_ii / dynamic_characteristic_strain_rate),
+                                                 dynamic_friction_smoothness_exponent));
 
               const double dynamic_friction_angle = std::atan(mu);
               Assert((mu < 1) && (0 < dynamic_friction_angle) && (dynamic_friction_angle <= 1.6),
@@ -290,7 +290,8 @@ namespace aspect
                       local_samples.push_back({boost::geometry::get<0>(index_point),
                                                boost::geometry::get<1>(index_point),
                                                boost::geometry::get<2>(index_point),
-                                               surface_divergence});
+                                               surface_divergence
+                                              });
                     }
                 }
 
@@ -396,28 +397,28 @@ namespace aspect
                            "Units: none.");
 
         prm.declare_entry ("Convergence threshold", "1e-15",
-                          Patterns::Double(0),
-                          "Magnitude of negative tangential surface-velocity divergence required "
-                          "to classify flow as convergent. Units: \\si{\\per\\second}.");
+                           Patterns::Double(0),
+                           "Magnitude of negative tangential surface-velocity divergence required "
+                           "to classify flow as convergent. Units: \\si{\\per\\second}.");
 
         prm.declare_entry ("Divergence threshold", "1e-15",
-                          Patterns::Double(0),
-                          "Positive tangential surface-velocity divergence required to classify "
-                          "flow as divergent. Units: \\si{\\per\\second}.");
+                           Patterns::Double(0),
+                           "Positive tangential surface-velocity divergence required to classify "
+                           "flow as divergent. Units: \\si{\\per\\second}.");
 
         prm.declare_entry ("Surface regime projection depth", "200e3",
-                          Patterns::Double(0),
-                          "Maximum depth to which the surface-velocity-divergence classification "
-                          "is projected. Below this depth the default dynamic friction angle is "
-                          "selected. Units: \\si{\\meter}.");
+                           Patterns::Double(0),
+                           "Maximum depth to which the surface-velocity-divergence classification "
+                           "is projected. Below this depth the default dynamic friction angle is "
+                           "selected. Units: \\si{\\meter}.");
 
         prm.declare_entry ("Dynamic angles of internal friction for convergent flow", "2",
-          Patterns::List(Patterns::Double(0)),
-          "Dynamic friction angles for convergent flow. Units: \\si{\\degree}.");
+                           Patterns::List(Patterns::Double(0)),
+                           "Dynamic friction angles for convergent flow. Units: \\si{\\degree}.");
 
         prm.declare_entry ("Dynamic angles of internal friction for divergent flow", "4",
-          Patterns::List(Patterns::Double(0)),
-          "Dynamic friction angles for divergent flow. Units: \\si{\\degree}.");
+                           Patterns::List(Patterns::Double(0)),
+                           "Dynamic friction angles for divergent flow. Units: \\si{\\degree}.");
 
         /**
          * If friction is specified as a function input.
@@ -472,9 +473,9 @@ namespace aspect
         if (friction_mechanism == differential_dynamic_friction)
           this->get_signals().post_nonlinear_solver.connect(
             [this](const SolverControl &)
-            {
-              this->update_surface_velocity_divergence();
-            });
+          {
+            this->update_surface_velocity_divergence();
+          });
 
 
         // Retrieve the list of composition names
@@ -499,14 +500,14 @@ namespace aspect
         options_convergence.list_of_allowed_keys = compositional_field_names;
 
         dynamic_angles_of_internal_friction_for_convergence = Utilities::MapParsing::parse_map_to_double_array (prm.get("Dynamic angles of internal friction for convergent flow"),
-                                              options_convergence);
+                                                              options_convergence);
 
         // --- Divergent dynamic angles ---
         Utilities::MapParsing::Options options_divergence(chemical_field_names, "Dynamic angles of internal friction for divergent flow");
         options_divergence.list_of_allowed_keys = compositional_field_names;
 
         dynamic_angles_of_internal_friction_for_divergence = Utilities::MapParsing::parse_map_to_double_array (prm.get("Dynamic angles of internal friction for divergent flow"),
-                                              options_divergence);
+                                                             options_divergence);
 
 
         // Convert angles from degrees to radians
