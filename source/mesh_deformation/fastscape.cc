@@ -270,8 +270,8 @@ namespace aspect
       // Get the x and y repetitions used in the parameter file so
       // the FastScape cell size can be properly set.
       const std::array<unsigned int, dim> repetitions = (box_geometry != nullptr
-                                                          ? box_geometry->get_repetitions()
-                                                          : two_merged_boxes_geometry->get_repetitions());
+                                                         ? box_geometry->get_repetitions()
+                                                         : two_merged_boxes_geometry->get_repetitions());
 
       // Set number of x points, which is generally 1+(FastScape refinement level)^2.
       // The FastScape refinement level is a combination of the maximum ASPECT refinement level
