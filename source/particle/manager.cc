@@ -707,6 +707,15 @@ namespace aspect
 
 
 
+    template<int dim>
+    typename Manager<dim>::ParticleVelocity
+    Manager<dim>::get_particle_velocity_choice() const
+    {
+      return particle_velocity;
+    }
+
+
+
     template <int dim>
     void
     Manager<dim>::local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
@@ -727,9 +736,8 @@ namespace aspect
                    ExcMessage("The integrator requires the old old solution vector, but it is not available."));
 
 
-      const bool use_fluid_velocity = this->include_melt_transport() &&
-                                      property_manager->get_data_info().fieldname_exists("melt_presence");
 
+      const bool use_fluid_velocity = (particle_velocity == ParticleVelocity::fluid);
       auto &velocity_evaluator = evaluator.get_velocity_or_fluid_velocity_evaluator(use_fluid_velocity);
       auto &mapping_info = evaluator.get_mapping_info();
       mapping_info.reinit(cell, {positions.data(),positions.size()});
@@ -1137,6 +1145,16 @@ namespace aspect
                                "whether this transport is happening. This parameter is "
                                "deprecated and will be removed in the future. Ghost particle "
                                "updates are always performed. Please set the parameter to `true'.");
+            prm.declare_entry ("Particle advection velocity", "automatic",
+                               Patterns::Selection ("automatic|fluid|solid"),
+                               "This parameter determines which velocity will be used "
+                               "to advect a particular particle world. This can be the solid velocity "
+                               "(if option 'solid' is chosen), or the fluid velocity obtained by solving "
+                               "the coupled Stokes/Darcy equations in simulations with melt transport "
+                               "(if 'fluid' is chosen). If 'automatic' is chosen, particles are advected with "
+                               "the melt velocity in case both melt transport is turned on and the "
+                               "particle property 'melt particle' is used in the simulation.)");
+
 
             Generator::declare_parameters<dim>(prm);
             Integrator::declare_parameters<dim>(prm);
@@ -1328,6 +1346,28 @@ namespace aspect
         interpolator->initialize();
 
         this->get_computing_timer().leave_subsection("Particles: Initialization");
+
+        // Particle velocity which will be used to advect particles
+        const std::string particle_velocity_string = prm.get("Particle advection velocity");
+        if (particle_velocity_string == "automatic")
+          {
+            // If "Particle advection velocity" is not explicitly defined by user, it reverts to old behaviour for backward compatibility
+            if (this->include_melt_transport() && property_manager->get_data_info().fieldname_exists("melt_presence"))
+              {
+                particle_velocity = ParticleVelocity::fluid;
+              }
+            else
+              particle_velocity = ParticleVelocity::solid;
+          }
+        else if (particle_velocity_string == "fluid")
+          {
+            AssertThrow(this->include_melt_transport(), ExcMessage("The particle velocity is set to 'fluid', but melt transport is not included in the simulation."));
+            particle_velocity = ParticleVelocity::fluid;
+          }
+        else
+          {
+            particle_velocity = ParticleVelocity::solid;
+          }
       }
       prm.leave_subsection ();
     }

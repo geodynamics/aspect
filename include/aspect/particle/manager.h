@@ -103,6 +103,15 @@ namespace aspect
         Manager(Manager &&) noexcept;
 
         /**
+         * Enum class to keep track of which velocity is used to advect particles
+         */
+        enum class ParticleVelocity
+        {
+          solid,
+          fluid,
+        };
+
+        /**
          * Initialize the particle manager.
          */
         void initialize();
@@ -293,6 +302,13 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm, const unsigned int particle_manager);
 
+        /**
+         * Return whether particles managed by this particle manager are advected
+         * using the solid velocity or the fluid velocity.
+         */
+        ParticleVelocity
+        get_particle_velocity_choice() const;
+
       private:
         struct ParticleLoadBalancing
         {
@@ -407,6 +423,11 @@ namespace aspect
          * Algorithm for adding particles to cell.
          */
         AdditionAlgorithm addition_algorithm;
+
+        /**
+         * Velocity for particle advection
+         */
+        ParticleVelocity particle_velocity;
 
         /**
          * Lower limit for particle number per cell. This limit is

@@ -19,6 +19,7 @@
  */
 
 #include <aspect/particle/property/velocity.h>
+#include <aspect/particle/manager.h>
 
 namespace aspect
 {
@@ -40,11 +41,21 @@ namespace aspect
       Velocity<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &inputs,
                                                 typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
+        const typename aspect::Particle::Manager<dim>::ParticleVelocity particle_velocity = this->get_particle_manager(this->get_particle_manager_index()).get_particle_velocity_choice();
         unsigned int p = 0;
         for (auto &particle: particles)
           {
             for (unsigned int i = 0; i < dim; ++i)
-              particle.get_properties()[this->data_position+i] = inputs.solution[p][this->introspection().component_indices.velocities[i]];
+
+              switch (particle_velocity)
+                {
+                  case aspect::Particle::Manager<dim>::ParticleVelocity::solid:
+                    particle.get_properties()[this->data_position+i] = inputs.solution[p][this->introspection().component_indices.velocities[i]];
+                    break;
+                  case aspect::Particle::Manager<dim>::ParticleVelocity::fluid:
+                    particle.get_properties()[this->data_position+i] = inputs.solution[p][this->introspection().variable("fluid velocity").first_component_index +i];
+                    break;
+                }
             ++p;
           }
       }
@@ -60,8 +71,18 @@ namespace aspect
       UpdateFlags
       Velocity<dim>::get_update_flags (const unsigned int component) const
       {
-        if (this->introspection().component_masks.velocities[component] == true)
-          return update_values;
+        const typename aspect::Particle::Manager<dim>::ParticleVelocity particle_velocity = this->get_particle_manager(this->get_particle_manager_index()).get_particle_velocity_choice();
+        switch (particle_velocity)
+          {
+            case aspect::Particle::Manager<dim>::ParticleVelocity::solid:
+              if (this->introspection().component_masks.velocities[component] == true)
+                return update_values;
+              break;
+            case aspect::Particle::Manager<dim>::ParticleVelocity::fluid:
+              if (this->introspection().variable("fluid velocity").component_mask[component] == true)
+                return update_values;
+              break;
+          }
 
         return update_default;
       }
@@ -88,7 +109,8 @@ namespace aspect
                                         "velocity",
                                         "Implementation of a plugin in which the particle "
                                         "property is defined as the recent velocity at "
-                                        "this position.")
+                                        "this position. The velocity depends on whether the particle "
+                                        "world is being advected with a solid or fluid velocity.")
     }
   }
 }
