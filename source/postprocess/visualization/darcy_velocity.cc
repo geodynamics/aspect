@@ -95,14 +95,14 @@ namespace aspect
               {
                 const Tensor<1,dim> pressure_gradient = in.pressure_gradient[q];
                 darcy_velocity = (solid_velocity -
-                                  permeability / fluid_viscosity / porosity * 
+                                  permeability / fluid_viscosity / porosity *
                                   (pressure_gradient - gravity * fluid_density)) * velocity_scaling_factor;
               }
             else
               {
                 darcy_velocity = (solid_velocity -
                                   permeability / fluid_viscosity / porosity * gravity *
-                                 (solid_density - fluid_density)) * velocity_scaling_factor;
+                                  (solid_density - fluid_density)) * velocity_scaling_factor;
               }
 
             for (unsigned int k=0; k<dim; ++k)
