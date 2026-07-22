@@ -98,37 +98,37 @@ namespace aspect
       class DisjointSet
       {
         public:
-        explicit DisjointSet(const unsigned int size)
-          : parent_indices(size), tree_depths(size, 0)
-        {
-          for (unsigned int index = 0; index < size; ++index)
-            parent_indices[index] = index;
-        }
+          explicit DisjointSet(const unsigned int size)
+            : parent_indices(size), tree_depths(size, 0)
+          {
+            for (unsigned int index = 0; index < size; ++index)
+              parent_indices[index] = index;
+          }
 
-        unsigned int find_root(const unsigned int index)
-        {
-          if (parent_indices[index] != index)
-            parent_indices[index] = find_root(parent_indices[index]);
-          return parent_indices[index];
-        }
+          unsigned int find_root(const unsigned int index)
+          {
+            if (parent_indices[index] != index)
+              parent_indices[index] = find_root(parent_indices[index]);
+            return parent_indices[index];
+          }
 
-        void merge(const unsigned int first_index,
-                   const unsigned int second_index)
-        {
-          unsigned int first_root = find_root(first_index);
-          unsigned int second_root = find_root(second_index);
+          void merge(const unsigned int first_index,
+                     const unsigned int second_index)
+          {
+            unsigned int first_root = find_root(first_index);
+            unsigned int second_root = find_root(second_index);
 
-          if (first_root == second_root)
-            return;
+            if (first_root == second_root)
+              return;
 
-          if (tree_depths[first_root] < tree_depths[second_root])
-            std::swap(first_root, second_root);
+            if (tree_depths[first_root] < tree_depths[second_root])
+              std::swap(first_root, second_root);
 
-          parent_indices[second_root] = first_root;
+            parent_indices[second_root] = first_root;
 
-          if (tree_depths[first_root] == tree_depths[second_root])
-            ++tree_depths[first_root];
-        }
+            if (tree_depths[first_root] == tree_depths[second_root])
+              ++tree_depths[first_root];
+          }
 
         private:
           std::vector<unsigned int> parent_indices;
@@ -717,7 +717,7 @@ namespace aspect
                         std::swap(first_vertex_key, second_vertex_key);
 
                       EdgeRecord &surface_edge =
-                        surface_edges[{first_vertex_key, second_vertex_key}];
+                        surface_edges[ {first_vertex_key, second_vertex_key}];
                       surface_edge.incident_face_indices.push_back(face_index);
                       surface_edge.length =
                         point_distance(face_vertices[first_vertex_index],
