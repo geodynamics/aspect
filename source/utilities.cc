@@ -3097,6 +3097,54 @@ namespace aspect
         return symmetrize((rotation_matrix*input_tensor)*rotation_matrix_transposed);
       }
 
+      SymmetricTensor<2,6>
+      rotate_kelvin_tensor(const Tensor<2,3> &rotation_tensor, const SymmetricTensor<2,6> &input_tensor)
+      {
+        Tensor<2,6> rotation_matrix;
+        rotation_matrix[0][0] = Utilities::fixed_power<2>(rotation_tensor[0][0]);
+        rotation_matrix[0][1] = Utilities::fixed_power<2>(rotation_tensor[0][1]);
+        rotation_matrix[0][2] = Utilities::fixed_power<2>(rotation_tensor[0][2]);
+        rotation_matrix[0][3] = numbers::SQRT2*rotation_tensor[0][1]*rotation_tensor[0][2];
+        rotation_matrix[0][4] = numbers::SQRT2*rotation_tensor[0][0]*rotation_tensor[0][2];
+        rotation_matrix[0][5] = numbers::SQRT2*rotation_tensor[0][0]*rotation_tensor[0][1];
+
+        rotation_matrix[1][0] = Utilities::fixed_power<2>(rotation_tensor[1][0]);
+        rotation_matrix[1][1] = Utilities::fixed_power<2>(rotation_tensor[1][1]);
+        rotation_matrix[1][2] = Utilities::fixed_power<2>(rotation_tensor[1][2]);
+        rotation_matrix[1][3] = numbers::SQRT2*rotation_tensor[1][1]*rotation_tensor[1][2];
+        rotation_matrix[1][4] = numbers::SQRT2*rotation_tensor[1][0]*rotation_tensor[1][2];
+        rotation_matrix[1][5] = numbers::SQRT2*rotation_tensor[1][0]*rotation_tensor[1][1];
+
+        rotation_matrix[2][0] = Utilities::fixed_power<2>(rotation_tensor[2][0]);
+        rotation_matrix[2][1] = Utilities::fixed_power<2>(rotation_tensor[2][1]);
+        rotation_matrix[2][2] = Utilities::fixed_power<2>(rotation_tensor[2][2]);
+        rotation_matrix[2][3] = numbers::SQRT2*rotation_tensor[2][1]*rotation_tensor[2][2];
+        rotation_matrix[2][4] = numbers::SQRT2*rotation_tensor[2][0]*rotation_tensor[2][2];
+        rotation_matrix[2][5] = numbers::SQRT2*rotation_tensor[2][0]*rotation_tensor[2][1];
+
+        rotation_matrix[3][0] = numbers::SQRT2*rotation_tensor[1][0]*rotation_tensor[2][0];
+        rotation_matrix[3][1] = numbers::SQRT2*rotation_tensor[1][1]*rotation_tensor[2][1];
+        rotation_matrix[3][2] = numbers::SQRT2*rotation_tensor[1][2]*rotation_tensor[2][2];
+        rotation_matrix[3][3] = rotation_tensor[1][1]*rotation_tensor[2][2]+rotation_tensor[1][2]*rotation_tensor[2][1];
+        rotation_matrix[3][4] = rotation_tensor[1][0]*rotation_tensor[2][2]+rotation_tensor[1][2]*rotation_tensor[2][0];
+        rotation_matrix[3][5] = rotation_tensor[1][0]*rotation_tensor[2][1]+rotation_tensor[1][1]*rotation_tensor[2][0];
+
+        rotation_matrix[4][0] = numbers::SQRT2*rotation_tensor[0][0]*rotation_tensor[2][0];
+        rotation_matrix[4][1] = numbers::SQRT2*rotation_tensor[0][1]*rotation_tensor[2][1];
+        rotation_matrix[4][2] = numbers::SQRT2*rotation_tensor[0][2]*rotation_tensor[2][2];
+        rotation_matrix[4][3] = rotation_tensor[0][1]*rotation_tensor[2][2]+rotation_tensor[0][2]*rotation_tensor[2][1];
+        rotation_matrix[4][4] = rotation_tensor[0][0]*rotation_tensor[2][2]+rotation_tensor[0][2]*rotation_tensor[2][0];
+        rotation_matrix[4][5] = rotation_tensor[0][0]*rotation_tensor[2][1]+rotation_tensor[0][1]*rotation_tensor[2][0];
+
+        rotation_matrix[5][0] = numbers::SQRT2*rotation_tensor[0][0]*rotation_tensor[1][0];
+        rotation_matrix[5][1] = numbers::SQRT2*rotation_tensor[0][1]*rotation_tensor[1][1];
+        rotation_matrix[5][2] = numbers::SQRT2*rotation_tensor[0][2]*rotation_tensor[1][2];
+        rotation_matrix[5][3] = rotation_tensor[0][1]*rotation_tensor[1][2]+rotation_tensor[0][2]*rotation_tensor[1][1];
+        rotation_matrix[5][4] = rotation_tensor[0][0]*rotation_tensor[1][2]+rotation_tensor[0][2]*rotation_tensor[1][0];
+        rotation_matrix[5][5] = rotation_tensor[0][0]*rotation_tensor[1][1]+rotation_tensor[0][1]*rotation_tensor[1][0];
+
+        return symmetrize((rotation_matrix*input_tensor)*transpose(rotation_matrix));
+      }
 
 
       SymmetricTensor<2,6>
