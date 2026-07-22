@@ -9,7 +9,7 @@
 :name: parameters:Postprocess/List_20of_20postprocessors
 **Default value:**
 
-**Pattern:** [MultipleSelection ODE statistics|Stokes residual|basic statistics|boundary densities|boundary pressures|boundary strain rate residual statistics|boundary velocity residual statistics|command|composition statistics|composition velocity statistics|core statistics|crystal preferred orientation|current surface|depth average|domain volume statistics|dynamic topography|entropy statistics|entropy viscosity statistics|fluid velocity statistics|geoid|global statistics|gravity calculation|heat flux densities|heat flux map|heat flux statistics|heating statistics|load balance statistics|mass flux statistics|material statistics|matrix statistics|maximum depth of field|melt statistics|memory statistics|mobility statistics|particle count statistics|particle distribution score|particle distribution statistics|particles|point values|pressure statistics|rotation statistics|sea level|spherical velocity statistics|temperature statistics|timing statistics|topography|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization|volume of fluid statistics ]
+**Pattern:** [MultipleSelection ODE statistics|Stokes residual|basic statistics|boundary densities|boundary pressures|boundary strain rate residual statistics|boundary velocity residual statistics|command|composition statistics|composition velocity statistics|core statistics|crystal preferred orientation|current surface|depth average|domain volume statistics|dynamic topography|entropy statistics|entropy viscosity statistics|fluid velocity statistics|geoid|global statistics|gravity calculation|heat flux densities|heat flux map|heat flux statistics|heating statistics|load balance statistics|mass flux statistics|material statistics|matrix statistics|maximum depth of field|melt statistics|memory statistics|mobility statistics|particle count statistics|particle distribution score|particle distribution statistics|particles|plateness statistics|point values|pressure statistics|rotation statistics|sea level|spherical velocity statistics|temperature statistics|timing statistics|topography|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization|volume of fluid statistics ]
 
 **Documentation:** A comma separated list of postprocessor objects that should be run at the end of each time step. Some of these postprocessors will declare their own parameters which may, for example, include that they will actually do something only every so many time steps or years. Alternatively, the text &lsquo;all&rsquo; indicates that all available postprocessors should be run after each time step.
 
@@ -111,6 +111,8 @@ In geodynamics, the term &ldquo;mass flux&rdquo; is often understood to be the q
 &lsquo;particle distribution statistics&rsquo;: A postprocessor that computes some statistics about the particle distribution within grid cells. In particular it calculates a point-density function for every cell and derives the maximum, minimum, and standard deviation values for every cell. The postprocessor reports the average of these values from every cell. It also reports the absolute maximum and minimum values across all cells. These sorts of statistics are useful to determine whether schemes that move, add, remove, or otherwise change the number of particles associated with each cell result in a roughly uniform distribution of particles in each cell, or whether particles tend to cluster in some parts of cells leaving other parts mostly empty. For example, comparing the maximum standard deviations of different load balancing schemes applied to a given test case illuminates which load balancing method creates more clustered particles. The maximum and minimum values of these point-density functions are also useful in the same way. These statistical values are computed from the point-density function and make up a quantitative description of particle clustering which is intended to supplement qualitative descriptions of particle clustering. The goal behind describing particle clustering numerically is to assist in developing new methods to add and delete particles which maintain roughly uniform particle density within cells.
 
 &lsquo;particles&rsquo;: A Postprocessor that creates particles that follow the velocity field of the simulation. The particles can be generated and propagated in various ways and they can carry a number of constant or time-varying properties. The postprocessor can write output positions and properties of all particles at chosen intervals, although this is not mandatory. It also allows other parts of the code to query the particles for information.
+
+&lsquo;plateness statistics&rsquo;: A postprocessor that computes surface plateness diagnostics on the top boundary using the second invariant of the deviatoric strain-rate tensor. It computes F80 and F90, the fractional top-boundary area required to account for 80% and 90% of the total surface deformation, and also outputs p80 = 1 - F80/reference_fraction and p90 = 1 - F90/reference_fraction.
 
 &lsquo;point values&rsquo;: A postprocessor that evaluates the solution (i.e., velocity, pressure, temperature, and compositional fields along with other fields that are treated as primary variables) at the end of every time step or after a user-specified time interval at a given set of points and then writes this data into the file <point\_values.txt> in the output directory. The points at which the solution should be evaluated are specified in the section `Postprocess/Point values` in the input file.
 
@@ -921,6 +923,17 @@ Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set;
 **Documentation:** The time interval between each generation of output files. A value of zero indicates that output should be generated every time step.
 
 Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+::::
+
+(parameters:Postprocess/Plateness_20statistics)=
+## **Subsection:** Postprocess / Plateness statistics
+::::{dropdown} __Parameter:__ {ref}`Reference fraction<parameters:Postprocess/Plateness_20statistics/Reference_20fraction>`
+:name: parameters:Postprocess/Plateness_20statistics/Reference_20fraction
+**Default value:** 0.6
+
+**Pattern:** [Double 0...1 (inclusive)]
+
+**Documentation:** Reference area fraction used to define plateness as p = 1 - F/reference_fraction.
 ::::
 
 (parameters:Postprocess/Point_20values)=
