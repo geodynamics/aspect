@@ -290,7 +290,7 @@ namespace aspect
           const unsigned int por_idx = introspection.compositional_index_for_name("porosity");
           const double porosity = std::max(scratch.material_model_inputs.composition[q][por_idx], 0.0);
           double viscosity_c_ve = viscosity_c;
-          if (dt > 0.0 && K_0_pre < 1e30 && porosity > 0.0)
+          if (dt > 0.0 && porosity > 0.0)
             {
               const double K_phi = K_0_pre * std::pow(porosity, -0.5);
               // viscosity_c has already been scaled by (1-porosity)
@@ -606,7 +606,7 @@ namespace aspect
                                                 // belongs in cells where the solid actually compacts (melt cells).
                                                 // In non-melt cells (p_c pinned, phi->0) the solid is incompressible,
                                                 // so gate it out there to recover the exact incompressible operator.
-                                                - ( (p_c_scale > 0.0 ? 1.0 : 0.0)
+                                                - ( (this->get_parameters().enable_elasticity && !(p_c_scale > 0.0) ? 0.0 : 1.0)
                                                     * eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
                                                   )
                                                 - (pressure_scaling *
