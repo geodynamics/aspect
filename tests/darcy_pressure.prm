@@ -1,0 +1,165 @@
+#########################################################
+# This is a test for advecting a porosity field with the 
+# Darcy velocity while using the pressure gradient. When
+# including the pressure gradient, the expression for the 
+# Darcy velocity is:
+# u_f = u_s - K_D / phi * (grad_P - rho_f * g)
+# u_f = fluid velocity # m/yr
+# u_s = solid velocity # m/yr
+# K_D = Darcy Coefficient # m3 s / kg
+# k = permeability # m2 / s
+# eta_f = fluid viscosity # Pa s
+# phi = porosity
+# rho_f = fluid density # kg/m3
+# grad_P = pressure gradient # Pa/m
+# g = gravity # m/s2
+#
+# Additionally, K_D and k can be expanded into:
+# K_D = k / eta_f
+# k = k_0 * phi**3 * (1 - phi)**2
+#
+# Where k_0 is the reference permeability. The test is a 100 km x 100 km 2D
+# box with a uniform porosity of 0.01 (1%) everywhere. The fluid has a
+# density of 1000 kg/m3, and a viscosity of 10 Pa s, and the solid has a
+# density of 3000 kg/m3 with a viscosity of 1e50, effectively making the solid immobile.
+# The reference permeability is 1e-6, and gravity is set to 0. We impose a pressure of
+# 1 MPa at the left boundary, and a pressure of 0.1 MPa at the right boundary. This creates
+# a horizontal pressure gradient, which should result in a darcy velocity of 0.00278 m/yr.
+# The fluid velocity statistics postprocessor shows that this is indeed the velocity that 
+# ASPECT predicts.
+############### Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 200
+set Use years instead of seconds           = true
+set Nonlinear solver scheme                = single Advection, single Stokes
+set Max nonlinear iterations               = 10
+set CFL number                             = 1.0
+set Output directory                       = output-darcy_pressure
+set Pressure normalization                 = no
+set Surface pressure                       = 0
+set Maximum time step                      = 200
+set Use operator splitting                 = true
+set Adiabatic surface temperature          = 293
+
+# 100 km x 100 km box
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 100e3
+    set Y extent = 100e3
+    set X repetitions = 1
+    set Y repetitions = 1
+  end
+end
+
+# Uniform temperature of 293 K
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 293
+  end
+end
+
+# Fixed temperature
+subsection Boundary temperature model
+  set List of model names = box
+  set Fixed temperature boundary indicators   = top, bottom, left, right
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = porosity, bound_fluid
+  set Compositional field methods = darcy field, field
+  set Use pressure gradient for darcy field = true
+end
+
+# Define an initial blob of porosity with a max value of 1% in the middle of the model.
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y,t
+    set Function constants  = pi=3.1415926, x0=50000, y0=50000, c=5000
+    set Function expression = 0.01 * exp(-((x-x0)*(x-x0)+(y-y0)*(y-y0))/(2*c*c)); 0.0
+  end
+end
+
+# Impose a traction in the x-direction on the left and right boundaries to create a
+# pressure gradient.
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = left x:function, right x:function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = mag=1e6
+    set Function expression = if(x<=50e3, mag, -mag/10); 0
+  end
+end
+
+# Fix the velocity at the top and bottom, and restrict the vertical velocity
+# on the side boundaries.
+subsection Boundary velocity model
+  set Zero velocity boundary indicators = bottom, top
+  set Prescribed velocity boundary indicators = left y: function, right y: function
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 0.0;0.0
+  end
+end
+
+# Disable gravity so that the fluid only moves in the direction of the pressure
+# gradient.
+subsection Gravity model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 0; 0
+  end
+end
+
+
+# The reactive fluid transport model allows us to set the parameters which
+# influence fluid velocity, such as the fluid viscosity, fluid density, and
+# the reference permeability. We set the fluid weakening factors (shear to
+# bulk viscosity ratio, exponential fluid weakening factor) to 0 for
+# simplicity. We use the zero solubility fluid-solid reaction scheme to prevent
+# the fluid from partitioning into the solid.
+subsection Material model
+  set Model name = reactive fluid transport
+
+  subsection Reactive Fluid Transport Model
+    set Fluid-solid reaction scheme        = zero solubility
+    set Base model                         = simpler
+    set Reference fluid density            = 1000 # density of water
+    set Reference fluid viscosity          = 10
+    set Reference permeability             = 1e-6
+    set Shear to bulk viscosity ratio      = 0
+    set Exponential fluid weakening factor = 0
+  end
+
+  # Set the solid density to 3000 kg/m3, and set the minimum/maximum viscosity
+  # to 1e21 Pa s for an isoviscous model.
+  subsection Simpler model
+    set Reference density             = 3000
+    set Viscosity                     = 1e50
+    set Thermal expansion coefficient = 0
+    set Thermal conductivity          = 0
+    set Reference specific heat       = 0
+  end
+
+end
+
+# Set the global refinement to 3
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+  set Time steps between mesh refinement = 0
+end
+
+# Output the fluid velocity statistics.
+subsection Postprocess
+  set List of postprocessors = fluid velocity statistics
+end
