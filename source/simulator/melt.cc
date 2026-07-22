@@ -607,7 +607,7 @@ namespace aspect
                                                 // In non-melt cells (p_c pinned, phi->0) the solid is incompressible,
                                                 // so gate it out there to recover the exact incompressible operator.
                                                 - ( (p_c_scale > 0.0 ? 1.0 : 0.0)
-                                                   * eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
+                                                    * eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
                                                   )
                                                 - (pressure_scaling *
                                                    scratch.div_phi_u[i] * scratch.phi_p[j])
