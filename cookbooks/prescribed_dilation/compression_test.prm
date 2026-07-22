@@ -21,7 +21,7 @@ subsection Gravity model
   set Model name = vertical
 
   subsection Vertical
-    set Magnitude = 1e4   # = Ra
+    set Magnitude = 0   # = Ra
   end
 end
 
@@ -48,12 +48,15 @@ subsection Boundary temperature model
 end
 
 subsection Boundary velocity model
-  set Tangential velocity boundary indicators = left, right, bottom
+  # set Tangential velocity boundary indicators = left, right, bottom
+  set Zero velocity boundary indicators = left, right
 end
 
-subsection Mesh deformation
-  set Mesh deformation boundary indicators = top:free surface
-end
+# subsection Boundary traction model
+
+# subsection Mesh deformation
+#   set Mesh deformation boundary indicators = top:free surface
+# end
 
 subsection Material model
   set Model name = simple
@@ -93,12 +96,14 @@ end
 # The final part is to prescribe the dilation
 
 set Use prescribed dilation plugin = true
-# subsection Prescribed dilation
-#   set Model name = function
-#   subsection Function
-#     set Coordinate system = cartesian
-#     set Variable names = x,y,t
-#     set Function constants = sigma_r=0.1, sigma_t=0.1
-#     set Function expression = -10.0*exp ( -( (x-0.5)^2+(y-0.5)^2 ) / ( 2.0*sigma_r^2 ) ) * exp ( -(t-0.25)^2 / ( 2.0*sigma_t^2 ) )
-#   end
-# end
+subsection Prescribed dilation
+  set Model name = function
+  subsection Function
+    set Coordinate system = cartesian
+    set Variable names = x,y,t
+    set Function constants = sigma_r=0.1, sigma_t=0.1
+    # set Function expression = -10.0*exp ( -( (x-0.5)^2+(y-0.5)^2 ) / ( 2.0*sigma_r^2 ) ) * exp ( -(t-0.25)^2 / ( 2.0*sigma_t^2 ) ); 0
+    # set Function expression = 0;0
+    set Function expression = 0.0; if ( x > 0.4 && x < 0.6 && y > 0.4 && y < 0.6, 1.0, 0.0 )
+  end
+end
