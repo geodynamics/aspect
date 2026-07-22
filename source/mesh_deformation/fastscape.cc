@@ -298,7 +298,7 @@ namespace aspect
       // Create a folder for the FastScape visualization files.
       Utilities::create_directory (this->get_output_directory() + "fastscape/",
                                    this->get_mpi_communicator(),
-                                   false);
+                                   true /*do not print message in log file*/);
 
       last_output_time = 0;
     }
