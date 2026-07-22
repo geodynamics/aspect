@@ -5658,6 +5658,26 @@ If a compositional field named &rsquo;noninitial\_plastic\_strain&rsquo; is incl
 **Documentation:** Select what type of yield mechanism to use between Drucker Prager and stress limiter options.
 ::::
 
+(parameters:Material_20model/Visco_20Plastic/Composition_20fractions)=
+## **Subsection:** Material model / Visco Plastic / Composition fractions
+::::{dropdown} __Parameter:__ {ref}`Minimum volume fraction<parameters:Material_20model/Visco_20Plastic/Composition_20fractions/Minimum_20volume_20fraction>`
+:name: parameters:Material_20model/Visco_20Plastic/Composition_20fractions/Minimum_20volume_20fraction
+**Default value:** 0.0
+
+**Pattern:** [Double 0...1 (inclusive)]
+
+**Documentation:** For the thresholded scheme, chemical compositional field values strictly smaller than this value are set to zero before the background fraction is computed and all fractions are normalized.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Volume fraction calculation scheme<parameters:Material_20model/Visco_20Plastic/Composition_20fractions/Volume_20fraction_20calculation_20scheme>`
+:name: parameters:Material_20model/Visco_20Plastic/Composition_20fractions/Volume_20fraction_20calculation_20scheme
+**Default value:** standard
+
+**Pattern:** [Selection standard|thresholded ]
+
+**Documentation:** Whether all chemical compositional fields contribute to volume fractions, or fields below a minimum fraction are treated as absent.
+::::
+
 (parameters:Material_20model/Visco_20Plastic/Friction_20function)=
 ## **Subsection:** Material model / Visco Plastic / Friction function
 ::::{dropdown} __Parameter:__ {ref}`Coordinate system<parameters:Material_20model/Visco_20Plastic/Friction_20function/Coordinate_20system>`
