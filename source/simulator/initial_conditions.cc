@@ -507,31 +507,42 @@ namespace aspect
           return adiabatic_conditions->pressure(p);
         };
 
-        // First grab the correct pressure to work on:
-        const FEVariable<dim> &pressure_variable
-          = introspection.variable("pressure");
-        const unsigned int pressure_comp = pressure_variable.first_component_index;
-        const ComponentMask pressure_component_mask = pressure_variable.component_mask;
-
         // interpolate the pressure given by the adiabatic conditions
         // object onto the solution space. note that interpolate
         // wants a function that represents all components of the
         // solution vector, so create such a function object
         // that is simply zero for all velocity components
         std::vector<std::function<double(const Point<dim> &)>> functions(introspection.n_components,
-                                                                          [&](const Point<dim> &p) -> double
+                                                                          [&](const Point<dim> &) -> double
         {
           return 0.0;
         });
-        // the pressure is given by the adiabatic pressure:
-        functions[pressure_comp] = adiabatic_pressure;
 
-        if (parameters.include_melt_transport)
+        ComponentMask pressure_component_mask;
+
+        // Grab the correct pressure to work on:
+        const FEVariable<dim> &pressure_variable
+          = parameters.include_melt_transport ?
+            introspection.variable("fluid pressure")
+            : introspection.variable("pressure");
+
+        if (!parameters.include_melt_transport)
           {
-            // and so is the fluid pressure:
-            const FEVariable<dim> &fluid_pressure_variable = introspection.variable("fluid pressure");
-            const unsigned int component_index = fluid_pressure_variable.first_component_index;
+            const unsigned int pressure_comp = pressure_variable.first_component_index;
+            pressure_component_mask = pressure_variable.component_mask;
+            // the pressure is given by the adiabatic pressure:
+            functions[pressure_comp] = adiabatic_pressure;
+          }
+        else // with melt transport
+          {
+            // and so are the fluid and the total pressure:
+            const unsigned int component_index = pressure_variable.first_component_index;
             functions[component_index] = adiabatic_pressure;
+
+            const FEVariable<dim> &total_pressure_variable = introspection.variable("total pressure");
+            const unsigned int total_component_index = total_pressure_variable.first_component_index;
+            functions[total_component_index] = adiabatic_pressure;
+            pressure_component_mask = pressure_variable.component_mask | total_pressure_variable.component_mask;
           }
 
         FunctionFromFunctionObjects<dim> function_object(functions);

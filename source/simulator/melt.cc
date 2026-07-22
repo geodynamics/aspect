@@ -1440,7 +1440,7 @@ namespace aspect
                            "advection equation. Only used if Include melt transport is true. "
                            "If this is set to false, only the solid velocity is used (as in models "
                            "without melt migration).");
-        prm.declare_entry ("Use discontinuous compaction pressure", "true",
+        prm.declare_entry ("Use discontinuous compaction pressure", "false",
                            Patterns::Bool (),
                            "Whether to use a discontinuous element for the compaction pressure or not. "
                            "From our preliminary tests, continuous elements seem to work better in models "

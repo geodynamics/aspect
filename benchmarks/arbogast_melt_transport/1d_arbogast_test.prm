@@ -1,6 +1,6 @@
 #########################################################
 # This is a test for the melt solver and in particular
-# the interafce between regions with melt (coupled Stokes
+# the interface between regions with melt (coupled Stokes
 # Darc flow) and regions with no melt (only Stokes flow).
 # The example is taken from
 # Arbogast, T., Hesse, M. A., & Taicher, A. L. (2017).
@@ -47,7 +47,7 @@ set Output directory                       = output
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0
-set Use years in output instead of seconds = false
+set Use years instead of seconds           = false
 set Adiabatic surface temperature          = 1600
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 50

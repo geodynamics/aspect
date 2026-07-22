@@ -59,9 +59,9 @@ namespace aspect
           if (property_name == "fluid density gradient")
             for (unsigned int i=0; i<dim; ++i)
               solution_names.emplace_back("fluid_density_gradient");
-          else if (property_name == "total pressure")
+          else if (property_name == "compaction pressure")
             {
-              solution_names.emplace_back("p_t");
+              solution_names.emplace_back("p_c");
             }
           else
             {
@@ -158,20 +158,17 @@ namespace aspect
                       }
                     --output_index;
                   }
-                else if (property_names[i] == "total pressure")
+                else if (property_names[i] == "compaction pressure")
                   {
-                    const unsigned int pc_comp_idx = this->introspection().variable("total pressure").first_component_index;
-                    computed_quantities[q][output_index] = input_data.solution_values[q][pc_comp_idx];
+                    const unsigned int pt_comp_idx = this->introspection().variable("total pressure").first_component_index;
+                    const unsigned int pf_comp_idx = this->introspection().variable("fluid pressure").first_component_index;
+                    computed_quantities[q][output_index] = input_data.solution_values[q][pt_comp_idx]
+                                                           - input_data.solution_values[q][pf_comp_idx];
                   }
                 else if (property_names[i] == "darcy coefficient")
                   {
                     const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
                     computed_quantities[q][output_index] = K_D;
-                  }
-                else if (property_names[i] == "darcy coefficient no cutoff")
-                  {
-                    const double K_D_no_cut = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
-                    computed_quantities[q][output_index] = K_D_no_cut;
                   }
                 else if (property_names[i] == "compaction length")
                   {
@@ -206,7 +203,7 @@ namespace aspect
               const std::string pattern_of_names
                 = "compaction viscosity|inverse compaction viscosity|fluid viscosity|permeability|"
                   "fluid density|fluid density gradient|"
-                  "darcy coefficient|darcy coefficient no cutoff|"
+                  "darcy coefficient|compaction pressure|"
                   "compaction length";
 
               prm.declare_entry("List of properties",
@@ -242,9 +239,6 @@ namespace aspect
                           ExcMessage("The list of strings for the parameter "
                                      "'Postprocess/Visualization/Melt material properties/List of properties' contains entries more than once. "
                                      "This is not allowed. Please check your parameter file."));
-
-              // Always output total pressure
-              property_names.insert(property_names.begin(),"total pressure");
             }
             prm.leave_subsection();
           }

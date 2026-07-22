@@ -300,7 +300,7 @@ namespace aspect
                                                  * (p[dim-1]-delta_ - z_coordinate1) / (z_coordinate2 - z_coordinate1);
 
             values[dim+2+dim+2] = AnalyticSolutions::interpolate(p[dim-1]-delta_,offset_); //porosity
-            values[dim+1] = interpolated_pressure;                                   //compaction pressure
+            values[dim+1] = interpolated_pressure;                                         //total pressure
           }
 
         private:
@@ -449,7 +449,7 @@ namespace aspect
               {
                 double porosity = in.composition[i][porosity_idx];
 
-                melt_out->inverse_compaction_viscosities[i] = (1.0 - porosity) / xi_0;
+                melt_out->inverse_compaction_viscosities[i] = 1. / ((1.0 - porosity) * xi_0);
                 melt_out->fluid_viscosities[i]= eta_f;
                 melt_out->permeabilities[i]= reference_permeability * Utilities::fixed_power<3>(porosity);
                 melt_out->fluid_densities[i]= reference_rho_f;
@@ -748,16 +748,20 @@ namespace aspect
       // do the same stuff we do in depth average
       std::vector<double> volume(max_points,0.0);
       std::vector<double> pressure(max_points,0.0);
-      std::vector<double> p_c(n_q_points);
+      std::vector<double> p_total(n_q_points);
+      std::vector<double> p_fluid(n_q_points);
       double local_max_pressure = 0.0;
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
             fe_values.reinit (cell);
-            fe_values[this->introspection().variable("compaction pressure").extractor_scalar()]
+            fe_values[this->introspection().variable("total pressure").extractor_scalar()]
             .get_function_values (this->get_solution(),
-                                  p_c);
+                                  p_total);
+            fe_values[this->introspection().variable("fluid pressure").extractor_scalar()]
+            .get_function_values (this->get_solution(),
+                                  p_fluid);
 
             for (unsigned int q=0; q<n_q_points; ++q)
               {
@@ -765,10 +769,11 @@ namespace aspect
                 const unsigned int idx = static_cast<unsigned int>((z*(max_points-1))/max_depth);
                 AssertThrow(idx < max_points, ExcInternalError());
 
-                pressure[idx] += p_c[q] * fe_values.JxW(q);
+                // compaction pressure = total pressure minus fluid pressure
+                pressure[idx] += (p_total[q] - p_fluid[q]) * fe_values.JxW(q);
                 volume[idx] += fe_values.JxW(q);
 
-                local_max_pressure = std::max (local_max_pressure, std::abs(p_c[q]));
+                local_max_pressure = std::max (local_max_pressure, std::abs(p_total[q] - p_fluid[q]));
               }
           }
 
@@ -962,10 +967,13 @@ namespace aspect
       Vector<float> cellwise_errors_f (this->get_triangulation().n_active_cells());
       Vector<float> cellwise_errors_p (this->get_triangulation().n_active_cells());
 
-      // get correct components for porosity and compaction pressure
+      // get correct components for porosity and total pressure
       const unsigned int n_total_comp = this->introspection().n_components;
       ComponentSelectFunction<dim> comp_f(dim+2+dim+2, n_total_comp);
       ComponentSelectFunction<dim> comp_p(dim+1, n_total_comp);
+
+      // TODO: compute compaction pressure from total pressure
+
 
       const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.pressure).degree+1);
 
@@ -994,7 +1002,7 @@ namespace aspect
          << ", " << std::abs(delta);
 
 
-      return std::make_pair("Errors e_f, e_p_c_bar, e_c, delta:", os.str());
+      return std::make_pair("Errors e_f, e_p_total, e_c, delta:", os.str());
     }
 
   }
