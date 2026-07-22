@@ -970,7 +970,7 @@ namespace aspect
       const char *dirname_char=dirname.c_str();
       const unsigned int dirname_length = dirname.length();
       const GeometryModel::Box<dim> &geometry =
-            Plugins::get_plugin_as_type<const GeometryModel::Box<dim>>(this->get_geometry_model());
+        Plugins::get_plugin_as_type<const GeometryModel::Box<dim>>(this->get_geometry_model());
 
       // This is used so that the FastScape visualization defaults to showing
       // up slightly above the ASPECT surface.
@@ -1075,8 +1075,8 @@ namespace aspect
             this->get_pcout() << "      Writing FastScape VTK..." << std::endl;
 
             const double time_in_years_or_seconds = (this->convert_output_to_years() ?
-                                         this->get_time() / year_in_seconds :
-                                         this->get_time());
+                                                     this->get_time() / year_in_seconds :
+                                                     this->get_time());
 
             // up the counter of the number of the file by one, but not in
             // the very first output step. if we run postprocessors on all
@@ -1101,7 +1101,7 @@ namespace aspect
                                  &model_height,
                                  &model_dim,
                                  &ghost_node_adjustment,
-                                 &time_in_years_or_seconds);                              
+                                 &time_in_years_or_seconds);
 #else
             (void)extra_vtk_field;
             (void)vexp;
