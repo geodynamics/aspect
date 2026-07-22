@@ -502,11 +502,14 @@ namespace aspect
         LinearAlgebra::BlockVector system_tmp;
         system_tmp.reinit (system_rhs);
 
+        auto adiabatic_pressure = [&](const Point<dim> &p) -> double
+        {
+          return adiabatic_conditions->pressure(p);
+        };
+
         // First grab the correct pressure to work on:
         const FEVariable<dim> &pressure_variable
-          = parameters.include_melt_transport ?
-            introspection.variable("fluid pressure")
-            : introspection.variable("pressure");
+          = introspection.variable("pressure");
         const unsigned int pressure_comp = pressure_variable.first_component_index;
         const ComponentMask pressure_component_mask = pressure_variable.component_mask;
 
@@ -515,16 +518,26 @@ namespace aspect
         // wants a function that represents all components of the
         // solution vector, so create such a function object
         // that is simply zero for all velocity components
-        VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
-          [&](const Point<dim> &p) -> double
+        std::vector<std::function<double(const Point<dim> &)>> functions(introspection.n_components,
+                                                                          [&](const Point<dim> &p) -> double
         {
-          return adiabatic_conditions->pressure(p);
-        },
-        pressure_comp,
-        introspection.n_components);
+          return 0.0;
+        });
+        // the pressure is given by the adiabatic pressure:
+        functions[pressure_comp] = adiabatic_pressure;
+
+        if (parameters.include_melt_transport)
+          {
+            // and so is the fluid pressure:
+            const FEVariable<dim> &fluid_pressure_variable = introspection.variable("fluid pressure");
+            const unsigned int component_index = fluid_pressure_variable.first_component_index;
+            functions[component_index] = adiabatic_pressure;
+          }
+
+        FunctionFromFunctionObjects<dim> function_object(functions);
 
         VectorTools::interpolate (*mapping, dof_handler,
-                                  vector_function_object,
+                                  function_object,
                                   system_tmp,
                                   pressure_component_mask);
 
