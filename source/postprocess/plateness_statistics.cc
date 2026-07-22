@@ -29,6 +29,7 @@
 #include <algorithm>
 #include <cmath>
 #include <sstream>
+#include <utility>
 #include <vector>
 
 namespace aspect
@@ -54,7 +55,7 @@ namespace aspect
       const types::boundary_id top_boundary_id =
         this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
 
-      std::vector<double> local_flat_data;
+      std::vector<std::pair<double,double>> local_deformation_area_pairs;
       double local_total_area = 0.0;
       double local_total_deformation = 0.0;
 
@@ -79,8 +80,7 @@ namespace aspect
 
                     const double area = fe_face_values.JxW(q);
 
-                    local_flat_data.push_back(e_ii);
-                    local_flat_data.push_back(area);
+                    local_deformation_area_pairs.emplace_back(e_ii, area);
 
                     local_total_area += area;
                     local_total_deformation += e_ii * area;
@@ -89,7 +89,6 @@ namespace aspect
 
       const MPI_Comm comm = this->get_mpi_communicator();
       const unsigned int my_rank = Utilities::MPI::this_mpi_process(comm);
-      const unsigned int n_ranks = Utilities::MPI::n_mpi_processes(comm);
 
       const double global_total_area = Utilities::MPI::sum(local_total_area, comm);
       const double global_total_deformation = Utilities::MPI::sum(local_total_deformation, comm);
@@ -99,35 +98,8 @@ namespace aspect
       AssertThrow(global_total_deformation > 0.0,
                   ExcMessage("PlatenessStatistics: total surface deformation is zero."));
 
-      const int local_size = static_cast<int>(local_flat_data.size());
-      std::vector<int> recv_counts;
-      if (my_rank == 0)
-        recv_counts.resize(n_ranks);
-
-      MPI_Gather(&local_size, 1, MPI_INT,
-                 my_rank == 0 ? recv_counts.data() : nullptr, 1, MPI_INT,
-                 0, comm);
-
-      std::vector<int> displs;
-      std::vector<double> global_flat_data;
-
-      if (my_rank == 0)
-        {
-          displs.resize(n_ranks, 0);
-          int total_size = 0;
-          for (unsigned int i=0; i<n_ranks; ++i)
-            {
-              displs[i] = total_size;
-              total_size += recv_counts[i];
-            }
-          global_flat_data.resize(total_size);
-        }
-
-      MPI_Gatherv(local_flat_data.data(), local_size, MPI_DOUBLE,
-                  my_rank == 0 ? global_flat_data.data() : nullptr,
-                  my_rank == 0 ? recv_counts.data() : nullptr,
-                  my_rank == 0 ? displs.data() : nullptr,
-                  MPI_DOUBLE, 0, comm);
+      const std::vector<std::vector<std::pair<double,double>>> gathered_deformation_area_pairs =
+        Utilities::MPI::gather(comm, local_deformation_area_pairs);
 
       double f80 = 1.0;
       double f90 = 1.0;
@@ -135,10 +107,16 @@ namespace aspect
       if (my_rank == 0)
         {
           std::vector<std::pair<double,double>> deformation_area_pairs;
-          deformation_area_pairs.reserve(global_flat_data.size()/2);
+          std::size_t n_deformation_area_pairs = 0;
+          for (const auto &local_pairs : gathered_deformation_area_pairs)
+            n_deformation_area_pairs += local_pairs.size();
 
-          for (unsigned int i=0; i+1<global_flat_data.size(); i += 2)
-            deformation_area_pairs.emplace_back(global_flat_data[i], global_flat_data[i+1]);
+          deformation_area_pairs.reserve(n_deformation_area_pairs);
+
+          for (const auto &local_pairs : gathered_deformation_area_pairs)
+            deformation_area_pairs.insert(deformation_area_pairs.end(),
+                                          local_pairs.begin(),
+                                          local_pairs.end());
 
           std::sort(deformation_area_pairs.begin(),
                     deformation_area_pairs.end(),
