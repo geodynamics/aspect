@@ -1785,7 +1785,7 @@ namespace aspect
       template<int dim>
       SymmetricTensor<2,6>
       OrthotropicRheology<dim>::viscosity_tensor_cpo_frame(const double F, const double G, const double H,                                                   
-                                                           const double L, const double M, const double N) const
+                                                           const double L, const double M, const double N) 
       {
         // based on Hill 1948 (https://doi.org/10.1098/rspa.1948.0045)
         // Signorelli 2021 (https://dx.doi.org/10.46298/jtcam.6737)
@@ -1803,12 +1803,12 @@ namespace aspect
         for (unsigned int i=0; i < 3; ++i)
           {
             // upper left part
-            visc_tensor[i][i] = 2/(3*gam)*(4*Hi[i] + Hi[ji[i]] + Hi[ki[i]]);
-            visc_tensor[ji[i]][ki[i]] = 2/(3*gam)*(Hi[i] - 2*Hi[ji[i]] - 2*Hi[ki[i]]);
+            visc_tensor[i][i] = 2./(3.*gam)*(4.*Hi[i] + Hi[ji[i]] + Hi[ki[i]]);
+            visc_tensor[ji[i]][ki[i]] = 2./(3.*gam)*(Hi[i] - 2.*Hi[ji[i]] - 2.*Hi[ki[i]]);
             // sym: visc_tensor[ki[i]][ji[i]] = visc_tensor[ji[i]][ki[i]];
 
             // lower right part
-            visc_tensor[i+3][i+3] = 3/(2*Hi[i+3]);
+            visc_tensor[i+3][i+3] = 3./(2.*Hi[i+3]);
           }
         return visc_tensor;
       }
@@ -1817,7 +1817,7 @@ namespace aspect
       double
       OrthotropicRheology<dim>::strain_rate_invariant(const SymmetricTensor<2,3> strain_rate_cpo_frame,
                                                       const double F, const double G, const double H,
-                                                      const double L, const double M, const double N) const
+                                                      const double L, const double M, const double N)
       {
         // rathmann 2021 (https://doi.org/10.1017/jog.2022.33)
         // formulated in terms of Hill coefficients
@@ -1832,19 +1832,16 @@ namespace aspect
 
         for (unsigned int i=0; i < 3; ++i)
           {
-            anisotropic_invariant += ( 2/(3*gam)*Utilities::fixed_power<2>(strain_rate_cpo_frame[i][i])*(4*Hi[i]+Hi[ji[i]]+Hi[ki[i]])
-                                      + 2/(3*gam)*2*strain_rate_cpo_frame[ji[i]][ji[i]]*strain_rate_cpo_frame[ki[i]][ki[i]]*(Hi[i] - 2*Hi[ji[i]] - 2*Hi[ki[i]])
-                                      + 3/Hi[i+3]*Utilities::fixed_power<2>(strain_rate_cpo_frame[ji[i]][ki[i]])
-                                    );
+            anisotropic_invariant += ( 2/(3*gam)*Utilities::fixed_power<2>(strain_rate_cpo_frame[i][i])*(4*Hi[i]+Hi[ji[i]]+Hi[ki[i]]) + 2/(3*gam)*2*strain_rate_cpo_frame[ji[i]][ji[i]]*strain_rate_cpo_frame[ki[i]][ki[i]]*(Hi[i] - 2*Hi[ji[i]] - 2*Hi[ki[i]]) + 3/Hi[i+3]*Utilities::fixed_power<2>(strain_rate_cpo_frame[ji[i]][ki[i]]));
           }
 
-        return std::pow(anisotropic_invariant, 0.5);
+        return std::pow(0.5*anisotropic_invariant, 0.5);
       }
 
       template<int dim>
       SymmetricTensor<2,6>
       OrthotropicRheology<dim>::fluidity_tensor_cpo_frame(const double F, const double G, const double H,
-                                                          const double L, const double M, const double N) const
+                                                          const double L, const double M, const double N)
       {
         // based on Hill 1948 (https://doi.org/10.1098/rspa.1948.0045)
         // Signorelli 2021 (https://dx.doi.org/10.46298/jtcam.6737)
@@ -1866,7 +1863,7 @@ namespace aspect
             // lower right part
             fluidity_tensor[i+3][i+3] = Hi[i+3];
           }
-        return fluidity_tensor;
+        return 2.0/3.0*fluidity_tensor;
       }
 
 
@@ -1874,7 +1871,7 @@ namespace aspect
       double
       OrthotropicRheology<dim>::stress_invariant(const SymmetricTensor<2,3> stress_cpo_frame,
                                                  const double F, const double G, const double H,
-                                                 const double L, const double M, const double N) const
+                                                 const double L, const double M, const double N)
       {
         // based on Hill 1948 (https://doi.org/10.1098/rspa.1948.0045)
         // Signorelli 2021 (https://dx.doi.org/10.46298/jtcam.6737)
@@ -1884,19 +1881,52 @@ namespace aspect
         std::vector<int> ki = {2,0,1}; // tuple of indices shifted by two
 
         std::vector<double> Hi = {F, G, H, L, M, N};
-        const double gam = 4*(Hi[2]*Hi[1] + Hi[0]*Hi[2] + Hi[0]*Hi[1]);
-
+        
         double yield_function = 0.0;
 
         for (unsigned int i=0; i < 3; ++i)
           {
             // factor of 2/3 for consistency with invariant definition
-            yield_function += 2/3*(Hi[i]*Utilities::fixed_power<2>(stress_cpo_frame[ji[i]][ji[i]] - stress_cpo_frame[ki[i]][ki[i]]) + 2*Hi[i+3]*Utilities::fixed_power<2>(stress_cpo_frame[ji[i]][ki[i]]));
+            yield_function += 1./3.*(Hi[i]*Utilities::fixed_power<2>(stress_cpo_frame[ji[i]][ji[i]] - stress_cpo_frame[ki[i]][ki[i]]) \
+            + 2.*Hi[i+3]*Utilities::fixed_power<2>(stress_cpo_frame[ji[i]][ki[i]]));
           }
 
         return std::pow(yield_function, 0.5);
       }
-    
+      
+      template<int dim>
+      SymmetricTensor<4,dim>
+      OrthotropicRheology<dim>::kelvin_to_r4_tensor(const SymmetricTensor<2,6> V)
+      {
+        // Converts rank 2 kelvin notation viscosity tensor to full rank 4 tensor necessary in the assembler
+        // recast into FullMatrix type with shape 6x6 for 3d or 3x3 for 2d applications
+        FullMatrix<double> V_mat((dim==3) ? 6 : 3 , (dim==3) ? 6 : 3);
+        if (dim == 3)
+          {
+            for (unsigned int vi=0; vi<6; ++vi)
+              {
+                for (unsigned int vj=0; vj<6; ++vj)
+                  {
+                    V_mat[vi][vj] = V[vi][vj];
+                  }
+              }
+          }
+        else // (dim == 2) // discard out of plane components
+          {
+            for (unsigned int vi=0; vi<3; ++vi)
+              {
+                for (unsigned int vj=0; vj<3; ++vj)
+                  {
+                    V_mat[vi][vj] = V[((vi == 2) ? 5 : vi)][((vj == 2) ? 5 : vj)];
+                  }
+              }
+          }
+
+        SymmetricTensor<4,dim> V_r4;
+        dealii::Physics::Notation::Kelvin::to_tensor(V_mat, V_r4);
+        return V_r4;
+      }
+
     }
   }
 }
@@ -1917,7 +1947,8 @@ namespace aspect
                                                               MaterialModelOutputs<dim> &); \
   template struct PhaseFunctionInputs<dim>; \
   template class PhaseFunction<dim>; \
-  template class PhaseFunctionDiscrete<dim>;
+  template class PhaseFunctionDiscrete<dim>; \
+  template class OrthotropicRheology<dim>;
 
       ASPECT_INSTANTIATE(INSTANTIATE)
 
