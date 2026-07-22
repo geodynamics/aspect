@@ -1,0 +1,6 @@
+Added: A new plateness statistics postprocessor that measures localization
+of the surface strain rate. The postprocessor reports the surface fractions
+containing 80% and 90% of the total deformation and their normalized
+plateness values.
+<br>
+(Michael Pons, 2026/07/22)
