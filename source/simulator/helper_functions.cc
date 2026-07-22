@@ -2324,11 +2324,15 @@ namespace aspect
                         if (this->parameters.use_pressure_gradient_for_darcy_field)
                           {
                             const Tensor<1,dim> pressure_gradient = in.pressure_gradient[q];
-                            boundary_darcy_velocity = permeability / fluid_viscosity / porosity * (pressure_gradient - fluid_density * gravity);
+                            boundary_darcy_velocity = boundary_velocity -
+                                                      permeability / fluid_viscosity / porosity *
+                                                      (pressure_gradient - fluid_density * gravity);
                           }
                         else
                           {
-                            boundary_darcy_velocity = permeability / fluid_viscosity / porosity * (solid_density - fluid_density) * gravity;
+                            boundary_darcy_velocity = boundary_velocity -
+                                                      permeability / fluid_viscosity / porosity *
+                                                      (solid_density - fluid_density) * gravity;
                           }
 
                         integrated_flow += (boundary_darcy_velocity * fe_face_values.normal_vector(q)) *

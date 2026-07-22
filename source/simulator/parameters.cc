@@ -1517,8 +1517,8 @@ namespace aspect
                          "divided by this maximum.");
       prm.declare_entry ("Use pressure gradient for darcy field", "false",
                          Patterns::Bool (),
-                         "Whether to use the pressure gradient for the darcy field. "
-                         "Set to true to use the pressure gradient, false to just use buoyancy.");
+                         "Whether to use the pressure gradient for the darcy field. Set to true "
+                         "to use the pressure gradient, false to just use buoyancy forces.");
     }
     prm.leave_subsection ();
 

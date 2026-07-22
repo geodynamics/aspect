@@ -792,6 +792,9 @@ namespace aspect
           // Get the pressure gradient if needed
           if (this->get_parameters().use_pressure_gradient_for_darcy_field)
             {
+              // Use the average of the pressure gradients and solid velocities from the last two
+              // timesteps to compute the fluid velocity. This approximates a mid point
+              // integration through time.
               const Tensor<1,dim> pressure_gradient = (scratch.old_pressure_gradients[q] +
                                                        scratch.old_old_pressure_gradients[q]) / 2;
               u_f = (scratch.old_velocity_values[q] +

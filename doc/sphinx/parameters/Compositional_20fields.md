@@ -81,3 +81,12 @@ Each entry of the list must be one of several recognized types: * &ldquo;chemica
 
 Note that while ASPECT&rsquo;s functionality can make use of the field types, not all of the code will make use of it. It is the user&rsquo;s responsibility to check that the chosen material model and other plugins interpret the compositional fields as intended.
 ::::
+
+::::{dropdown} __Parameter:__ {ref}`Use pressure gradient for darcy field<parameters:Compositional_20fields/Use_20pressure_20gradient_20for_20darcy_20field>`
+:name: parameters:Compositional_20fields/Use_20pressure_20gradient_20for_20darcy_20field
+**Default value:** false
+
+**Pattern:** [Bool]
+
+**Documentation:** Whether to use the pressure gradient for the darcy field. Set to true to use the pressure gradient, false to just use buoyancy forces.
+::::
