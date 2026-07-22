@@ -1,0 +1,5 @@
+Added: An extensible framework for solid-state reaction kinetics. Current kinetic models include interface-controlled growth and eutectoid
+decomposition from the Cahn1956 (site-saturated) family.
+<br>
+(Buchanan Kerswell, 2026/07/23)
+
