@@ -51,9 +51,15 @@ namespace aspect
                   vertically_up /= gravity_norm;
 
                 // angle of 30 degrees upward
-                const bool upward_flow = in.velocity[i] * vertically_up > in.velocity[i].norm() * 0.5;
-                const bool within_crust = depth < crustal_thickness && upward_flow;
-                const bool within_lithosphere = depth < crustal_thickness + lithosphere_thickness && upward_flow;
+                const double degree_to_rad = numbers::PI/180.0;
+                const double crustal_angle = std::sin(upward_angle_for_crust * degree_to_rad);
+                const double lithospheric_angle = std::sin(upward_angle_for_lithosphere * degree_to_rad);
+
+                const bool upward_flow_crust = in.velocity[i] * vertically_up > in.velocity[i].norm() * crustal_angle;
+                const bool upward_flow_lithosphere = in.velocity[i] * vertically_up > in.velocity[i].norm() * lithospheric_angle;
+
+                const bool within_crust = depth < crustal_thickness && upward_flow_crust;
+                const bool within_lithosphere = depth < crustal_thickness + lithosphere_thickness && upward_flow_lithosphere;
 
                 // In the crust, we convert every material to basalt.
                 if (within_crust)
@@ -73,9 +79,17 @@ namespace aspect
                     else if (c == harzburgite_index)
                       {
                         // Lithosphere composition changes linearly with depth, but only background mantle
-                        // is converted (whereas basalt is not).
-                        const double harzburgite_change = (crustal_thickness + lithosphere_thickness - depth) / lithosphere_thickness
+                        // is converted (whereas basalt is not).                       
+                      
+                      double harzburgite_change;
+                        if (if_gradient_in_lithosphere)
+                        
+                          harzburgite_change = (crustal_thickness + lithosphere_thickness - depth) / lithosphere_thickness
                                                           * (1.0 - in.composition[i][basalt_index]);
+                        
+                        else
+                          harzburgite_change = 1.0 - in.composition[i][basalt_index];
+                        
                         // If we already have more harzburgite than the change, we do not change it.
                         if (in.composition[i][c] >= harzburgite_change)
                           out.reaction_terms[i][c] = 0.0;
@@ -109,6 +123,19 @@ namespace aspect
                            "Thickness of the lithosphere layer generated "
                            "below the crust."
                            "Units: \\si{\\meter}.");
+        prm.declare_entry ("Angle of upward for Crustal formation", "30",
+                           Patterns::Double (),
+                           "Angle for Crust, 0 mean that as soon as the particle reach the depth, they all become crust/basalt "
+                           "Units: \\si{\\degree}.");
+        prm.declare_entry ("Angle of upward for Lithospheric formation", "30",
+                           Patterns::Double (),
+                           "Angle for Lithosphere"
+                           "Units: \\si{\\degree}.");
+        prm.declare_entry ("Gradient in Lithosphere", "true",
+                           Patterns::Bool (),
+                           "Set if there is a linear gradient of harzburgite in lithosphere"
+                           "Units: \\si{\\degree}.");
+
       }
 
 
@@ -119,6 +146,10 @@ namespace aspect
       {
         crustal_thickness     = prm.get_double ("Crustal thickness");
         lithosphere_thickness = prm.get_double ("Lithosphere thickness");
+        upward_angle_for_crust = prm.get_double ("Angle of upward for Crustal formation");
+        upward_angle_for_lithosphere = prm.get_double ("Angle of upward for Lithospheric formation");
+        if_gradient_in_lithosphere = prm.get_bool ("Gradient in Lithosphere");
+
 
         AssertThrow(this->introspection().compositional_name_exists("basalt") &&
                     this->introspection().compositional_name_exists("harzburgite"),
