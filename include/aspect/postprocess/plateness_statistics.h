@@ -32,9 +32,18 @@ namespace aspect
     /**
      * A postprocessor that computes surface plateness diagnostics on the top
      * boundary using the second invariant of the deviatoric strain-rate
-     * tensor. It computes F80 and F90, the fractions of the top-boundary area
-     * required to account for 80% and 90% of the total surface deformation,
-     * and the corresponding plateness values p80 and p90.
+     * tensor. F80 and F90 are the smallest fractions of the top-boundary area
+     * that contain 80% and 90% of the integrated strain-rate invariant,
+     * respectively. Consequently, smaller values indicate more strongly
+     * localized surface deformation.
+     *
+     * The corresponding plateness values are computed as
+     * p = 1 - F/reference_fraction. A value of one represents the limiting
+     * case of deformation localized into an infinitesimally small area, zero
+     * corresponds to the chosen reference fraction, and negative values
+     * indicate deformation that is more distributed than the reference case.
+     * Plateness is a relative diagnostic whose interpretation depends on the
+     * reference fraction, model setup, and numerical resolution.
      *
      * @ingroup Postprocessing
      */
@@ -65,7 +74,8 @@ namespace aspect
       private:
         /**
          * The reference surface-area fraction used to compute plateness as
-         * p = 1 - F/reference_fraction.
+         * p = 1 - F/reference_fraction. Changing this value changes the zero
+         * point of p80 and p90, but not the computed F80 and F90 values.
          */
         double reference_fraction;
     };
