@@ -999,6 +999,59 @@ namespace aspect
             }
         }
     }
+    
+    template <int dim>
+    void
+    StokesPrescribedDilation<dim>::
+    execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+             internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
+    {
+      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>&> (scratch_base);
+      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>&> (data_base);
+
+      const Introspection<dim> &introspection = this->introspection();
+      const FiniteElement<dim> &fe = this->get_fe();
+      const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
+      const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+      const double pressure_scaling = this->get_pressure_scaling();
+
+      const PrescribedDilation::Interface<dim> &prescribed_dilation = this->get_prescribed_dilation();
+
+      for (unsigned int q=0; q<n_q_points; ++q)
+        {
+          for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
+            {
+              if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
+                {
+                  scratch.phi_p[i_stokes] = scratch.finite_element_values[introspection.extractors.pressure].value (i, q);
+                  scratch.div_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
+                  ++i_stokes;
+                }
+              ++i;
+            }
+
+          const Tensor<1,dim> dilvector = prescribed_dilation.dilation_vector (scratch.finite_element_values.quadrature_point(q));
+          const double eta = scratch.material_model_outputs.viscosities[q];
+          const double JxW = scratch.finite_element_values.JxW(q);
+
+          for (unsigned int i=0, i_stokes=0; i<stokes_dofs_per_cell; ++i)
+            {
+              if ( dim == 2 )
+                data.local_rhs(i_stokes) += -pressure_scaling * 
+                                            (dilvector[0] + dilvector[1])
+                                            * scratch.phi_p[i_stokes]*JxW;
+              else
+                data.local_rhs(i_stokes) += -pressure_scaling * 
+                                            (dilvector[0] + dilvector[1] + dilvector[2])
+                                            * scratch.phi_p[i_stokes]*JxW;
+              
+              const unsigned int index_horizon=fe.system_to_component_index(i).first;
+              if (introspection.is_stokes_component(index_horizon))
+                if (index_horizon<dim)
+                  data.local_rhs(i_stokes) += 2.0*eta * dilvector[index_horizon] * scratch.div_phi_u[i_stokes] * JxW;
+            }
+        }
+    }
   }
 } // namespace aspect
 

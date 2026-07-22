@@ -137,6 +137,9 @@ namespace aspect
       assemblers->stokes_system.push_back(
         std::make_unique<aspect::Assemblers::StokesPressureRHSCompatibilityModification<dim>>());
 
+    if (parameters.use_prescribed_dilation_plugin)
+      assemblers->stokes_system.push_back(
+        std::make_unique<aspect::Assemblers::StokesPrescribedDilation<dim>>());
   }
 
   template <int dim>
