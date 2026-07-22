@@ -70,7 +70,7 @@ namespace aspect
 
       private:
         /**
-         * 
+         *
          */
         RadialConstant<dim> radialconstant;
 
