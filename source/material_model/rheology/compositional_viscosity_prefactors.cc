@@ -92,6 +92,15 @@ namespace aspect
               factored_viscosities = base_viscosity*std::pow(point_water_fugacity, r);
               break;
             }
+            case interface_weakening
+            { 
+	      for (i=0;)
+              if (weakening_field_names) 
+              {
+               factored_viscosities = base_viscosity*interface_weakening_factor;
+              }
+              break; 
+            }
           }
         return factored_viscosities;
       }
@@ -129,13 +138,27 @@ namespace aspect
                            "required by ASPECT for dislocation creep is r/n, where n is the stress exponent "
                            "for dislocation creep, which typically is 3.5. Units: none.");
 
+        prm.declare_entry ("Interface weakening factor", "1.0",
+                           Patterns::Double(0.),
+                           "Degree of weakening of the non-plastic, non-elastic component at the interface" 
+                           "between two compositions. This is only applied in the Viscosity prefactor scheme" 
+                           "'Interface weakening'. Units: none.");
+
+        prm.declare_entry ("Interface weakening compositions",
+                           Patterns::List(Patterns::String),
+                           "List of compositions to apply interface weakening to. This is only"
+                           "applied when using the Viscosity prefactor scheme 'Interface" 
+                           "weakening'. Units: none.");
+
         prm.declare_entry ("Viscosity prefactor scheme", "none",
-                           Patterns::Selection("none|HK04 olivine hydration"),
+                           Patterns::Selection("none|HK04 olivine hydration|interface composition"),
                            "Select what type of viscosity multiplicative prefactor scheme to apply. "
-                           "Allowed entries are 'none', and 'HK04 olivine hydration'. HK04 olivine "
-                           "hydration calculates the viscosity change due to hydrogen incorporation "
+                           "Allowed entries are 'none', 'HK04 olivine hydration', and 'interface weakening'." 
+                           "HK04 olivine hydration calculates the viscosity change due to hydrogen incorporation "
                            "into olivine following Hirth & Kohlstedt 2004 (10.1029/138GM06). none "
-                           "does not modify the viscosity. Units: none.");
+                           "does not modify the viscosity. Interface weakening reduces the non-yielding, anelastic, 
+                           "contribution by a constant amount. Units: none.");
+
       }
 
 
@@ -171,6 +194,12 @@ namespace aspect
                                                    options);
             minimum_mass_fraction_water_for_dry_creep = Utilities::MapParsing::parse_map_to_double_array (prm.get("Minimum mass fraction bound water content for fugacity"),
                                                         options);
+          }
+        if (prm.get ("Viscosity prefactor scheme") == "interface weakening")
+          {
+            std::vector<std::string> weakening_field_names = Utilities::split_string_list(prm.get("Interface weakening compositions"));
+            const double interface_weakening_factor = prm.get_double ("Interface weakening coefficient");
+            viscosity_prefactor_scheme = interface_weakening;
           }
       }
     }
