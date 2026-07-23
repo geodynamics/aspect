@@ -534,12 +534,82 @@ namespace aspect
     template <class Archive>
     void Manager<dim>::serialize (Archive &ar, const unsigned int)
     {
-      // Note that although Boost claims to handle serialization of pointers
+      // Although Boost claims to handle serialization of pointers
       // correctly, at least for the case of unique_ptr it seems to not work.
       // It works correctly when archiving the content of the pointer instead.
       ar
       &(*particle_handler)
       ;
+
+      std::vector<std::string> rank_states;
+
+      // Save the state of the particle manager, generator,
+      // and random number generator to a string stream on every rank,
+      // and gather the strings on all ranks to the root rank. This is
+      // the right approach because we only save the state of the
+      // particle manager on the root rank (see the create_snapshot() function
+      // in checkpoint_restart.cc). Usually that's good enough because
+      // the state of plugins should be the same on all ranks. However,
+      // if the state of plugins is different on different ranks (for example
+      // if plugins use random number generators), this approach will not
+      // work. In that case, we need to save the state of plugins on all
+      // ranks, transfer the state to the root rank, and then save it to the
+      // checkpoint file. This is what we do here.
+      if constexpr (Archive::is_saving::value)
+        {
+          std::ostringstream os;
+          {
+            aspect::oarchive oa (os);
+            property_manager->save(oa, 0);
+
+            std::map<std::string, std::string> generator_state;
+            generator->save(generator_state);
+            oa << generator_state;
+
+            std::ostringstream random_number_generator_state;
+            random_number_generator_state << random_number_generator;
+            oa << random_number_generator_state.str();
+          }
+
+          const std::string local_state = os.str();
+          rank_states
+            = Utilities::MPI::gather(this->get_mpi_communicator(), local_state);
+        }
+
+      // Now serialize the vector of strings on the root rank.
+      ar &rank_states;
+
+      // If we are loading, we need to restore the state of the particle manager, generator,
+      // and random number generator from the string stream on the root rank. We
+      // read the serialized data on all processes, so we don't have to distribute the
+      // data from the root rank to all other ranks.
+      if constexpr (Archive::is_loading::value)
+        {
+          const unsigned int n_processes
+            = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
+          const unsigned int my_rank
+            = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
+
+          AssertThrow(rank_states.size() == n_processes,
+                      ExcMessage("The number of MPI processes used to resume the "
+                                 "particle checkpoint does not match the number used "
+                                 "to create it."));
+
+          std::istringstream is (rank_states[my_rank]);
+          aspect::iarchive ia (is);
+          property_manager->load(ia, 0);
+
+          std::map<std::string, std::string> generator_state;
+          ia >> generator_state;
+          generator->load(generator_state);
+
+          std::string random_number_generator_state;
+          ia >> random_number_generator_state;
+          std::istringstream random_number_generator_stream(random_number_generator_state);
+          random_number_generator_stream >> random_number_generator;
+          AssertThrow(!random_number_generator_stream.fail(),
+                      ExcMessage("Could not restore the particle manager random number generator."));
+        }
     }
   }
 }
