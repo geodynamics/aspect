@@ -2157,6 +2157,15 @@ namespace aspect
             parameters.additional_refinement_times
             .erase (parameters.additional_refinement_times.begin());
           }
+
+        // we need to remove additional_checkpoint_times that are in the past
+        while ((parameters.additional_checkpoint_times.size() > 0)
+               &&
+               (parameters.additional_checkpoint_times.front () < time+time_step))
+          {
+            parameters.additional_checkpoint_times
+            .erase (parameters.additional_checkpoint_times.begin());
+          }
       }
     else
       {
