@@ -2,6 +2,7 @@
 # run successfully. In particular, this benchmark is a good test to
 # ensure that a model with compositional fields that affect material
 # properties works.
+# Should be identical to viscoelastic_bending_beam.prm at the zero porosity limit
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_bending_beam/viscoelastic_bending_beam.prm
 
