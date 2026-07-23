@@ -1,9 +1,4 @@
 
-
-The output directory <output-fastscape_test_fixed_ghost_nodes/fastscape/> provided in the input file appears not to exist.
-ASPECT will create it for you.
-
-
 Number of active cells: 200 (on 2 levels)
 Number of degrees of freedom: 7,119 (1,722+231+861+861+861+861+861+861)
 
