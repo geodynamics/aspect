@@ -95,11 +95,7 @@ namespace aspect
       check_diffusion_time_step(mesh_deformation_dof_handler, boundary_ids);
 
       // Set up constraints
-#if DEAL_II_VERSION_GTE(9,6,0)
       AffineConstraints<double> matrix_constraints(mesh_locally_relevant, mesh_locally_relevant);
-#else
-      AffineConstraints<double> matrix_constraints(mesh_locally_relevant);
-#endif
 
       DoFTools::make_hanging_node_constraints(mesh_deformation_dof_handler, matrix_constraints);
 

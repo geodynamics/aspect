@@ -580,7 +580,7 @@ namespace aspect
 
     template <int dim>
     std::string
-    GPlates<dim>::create_filename (const int timestep) const
+    GPlates<dim>::create_filename (const unsigned int timestep) const
     {
       std::string templ = data_directory+velocity_file_name;
       const int size = templ.length();

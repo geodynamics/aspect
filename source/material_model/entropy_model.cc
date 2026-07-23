@@ -504,7 +504,7 @@ namespace aspect
                              "The value of the angle of internal friction, $\\phi$."
                              "For a value of zero, in 2D the von Mises criterion is retrieved. "
                              "Angles higher than 30 degrees are harder to solve numerically."
-                             "Units: degrees.");
+                             "Units: \\si{\\degree}.");
           prm.declare_entry ("Cohesion", "1e20",
                              Patterns::Double (0.),
                              "The value of the cohesion, $C$. The extremely large default"

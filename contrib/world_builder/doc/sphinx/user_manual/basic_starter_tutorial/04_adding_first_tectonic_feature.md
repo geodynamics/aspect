@@ -68,5 +68,5 @@ There are some other options that will be covered later. The file below shows th
 :alt: Basic Starter Tutorial section 16 highres result. 
 :align: center
 
-Basic Starter Tutorial section 04. The top part of the figure shows where the composition has been assigned as an object (green box). Here, the composition has been assigned the value 0. The bottom figure shows the temperature as viewed slightly from below. This shows that the overriding oceanic plate has a temperature of 293K that extends from the surface to the bottom of the model.
+Basic Starter Tutorial section 04. The top part of the figure shows where the composition has been assigned as an object (green box). Here, the composition with label 0 has been assigned the value 1. The bottom figure shows the temperature as viewed slightly from below. This shows that the overriding oceanic plate has a temperature of 293K that extends from the surface to the bottom of the model.
 ```

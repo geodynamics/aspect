@@ -116,7 +116,7 @@ namespace aspect
           prm.declare_entry ("Reference density", "1.0",
                              Patterns::Double (0.),
                              "Reference density $\\rho_0$. "
-                             "Units: $\\frac{\\text{kg}}{\\text{m}^3}$.");
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Ra", "1e4",
                              Patterns::Double (0.),
                              "Rayleigh number Ra");
@@ -130,7 +130,7 @@ namespace aspect
           prm.declare_entry ("Reference specific heat", "1.0",
                              Patterns::Double (0.),
                              "The value of the specific heat $C_p$. "
-                             "Units: $\\frac{\\text{J}}{\\text{K}\\text{kg}}$.");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
           prm.declare_entry ("Viscosity temperature prefactor", "0.0",
                              Patterns::Double (0.),
                              "Exponential temperature prefactor for viscosity.");

@@ -713,9 +713,7 @@ namespace aspect
     // We put the constraints we compute into a separate AffineConstraints<double> so we can check
     // if the set of constraints has changed. If it did, we need to update the sparsity patterns.
     AffineConstraints<double> new_current_constraints(
-#if DEAL_II_VERSION_GTE(9,6,0)
       dof_handler.locally_owned_dofs(),
-#endif
       introspection.index_sets.system_relevant_set
     );
     new_current_constraints.merge (constraints);
@@ -1547,11 +1545,7 @@ namespace aspect
 
 
     // Reconstruct the constraint-matrix:
-#if DEAL_II_VERSION_GTE(9,6,0)
     constraints.reinit (dof_handler.locally_owned_dofs(), introspection.index_sets.system_relevant_set);
-#else
-    constraints.reinit(introspection.index_sets.system_relevant_set);
-#endif
 
     // Set up the constraints for periodic boundary conditions:
 

@@ -979,7 +979,7 @@ namespace aspect
                              "The only opening angles that are allowed for "
                              "this geometry are 90, 180, and 360 in 2d; "
                              "and 90 and 360 in 3d. "
-                             "Units: degrees.");
+                             "Units: \\si{\\degree}.");
           prm.declare_entry ("Cells along circumference", "0",
                              Patterns::Integer (0),
                              "The number of cells in circumferential direction that are "

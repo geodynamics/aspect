@@ -2,6 +2,10 @@
 Code structure
 ==============
 
-```{todo}
-Go through how the code is actually structured with directories and from core to utilities and pugins.
-```
+The main file that is responsible for creating and accessing the GWB world is `source/world_builder/world.cc`. When creating a new GWB world it uses the parameterizations from the worldbuilder (`*.wb`) input file. External programs, such as `gwb-dat` or `gwb-grid` or other software such as ASPECT or SEPRAN, can then use the provided interfaces to ask about certain properties (e.g. temperature, composition) on any location.
+
+GWB determines where a given point lies in the World amongst the specified tectonic features. This happens mostly through utility functions, which compute the distance of point from a feature.  These and several other utility functions are defined in the `source/world_builder/utilities.cc`.
+
+The available features are described in the `features` directory. The interface class, which defines all feature models—such as continental plates, plumes, oceanic plates, and faults—is located in `source/world_builder/features/interface.cc`. This class includes member functions that are implemented individually within each feature's class. For instance, both `source/world_builder/continental_plate.cc` and `source/world_builder/fault.cc` override the `declare_entries` function from the `Interface` class to include all the parameters required for their respective feature models.
+
+For each feature model, the GWB calculates properties such as temperature and composition using the available distributions, which are located in the sub-directory corresponding to that feature model. For example, all available functions describing the composition values of a `fault` are stored in the `source/world_builder/features/fault_models/composition` directory. Similar to feature model types, property types are derived from their respective Interface class, defined in the interface.cc file within the same folder. In this case, the interface file would be `source/world_builder/features/fault_models/composition/interface.cc`.

@@ -312,7 +312,7 @@ It is worth comparing this postprocessor with the visualization postprocessor ca
 
 **Documentation:** The time interval between each generation of output files. A value of zero indicates that output should be generated every time step.
 
-Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Write in background thread<parameters:Postprocess/Crystal_20Preferred_20Orientation/Write_20in_20background_20thread>`
@@ -393,7 +393,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The time interval between each generation of graphical output files. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The time interval between each generation of graphical output files. A value of zero indicates that output should be generated in each time step. Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 (parameters:Postprocess/Dynamic_20core_20statistics)=
@@ -762,7 +762,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The time interval between each generation of gravity output files. A value of 0 indicates that output should be generated in each time step. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The time interval between each generation of gravity output files. A value of 0 indicates that output should be generated in each time step. Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Time steps between gravity output<parameters:Postprocess/Gravity_20calculation/Time_20steps_20between_20gravity_20output>`
@@ -880,7 +880,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 **Documentation:** The time interval between each generation of output files. A value of zero indicates that output should be generated every time step.
 
-Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Write in background thread<parameters:Postprocess/Particles/Write_20in_20background_20thread>`
@@ -920,7 +920,7 @@ Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set;
 
 **Documentation:** The time interval between each generation of output files. A value of zero indicates that output should be generated every time step.
 
-Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 (parameters:Postprocess/Point_20values)=
@@ -940,7 +940,7 @@ Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set;
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The time interval between each generation of point values output. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The time interval between each generation of point values output. A value of zero indicates that output should be generated in each time step. Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Use natural coordinates<parameters:Postprocess/Point_20values/Use_20natural_20coordinates>`
@@ -1034,7 +1034,7 @@ Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set;
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The time interval between each generation of text output files. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The time interval between each generation of text output files. A value of zero indicates that output should be generated in each time step. Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Water density<parameters:Postprocess/Sea_20level/Water_20density>`
@@ -1063,7 +1063,7 @@ Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set;
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The time interval between each generation of text output files. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The time interval between each generation of text output files. A value of zero indicates that output should be generated in each time step. Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 (parameters:Postprocess/Visualization)=
@@ -1418,7 +1418,7 @@ Physical units: $\frac{1}{\text{s}}$.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The time interval between each generation of graphical output files. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The time interval between each generation of graphical output files. A value of zero indicates that output should be generated in each time step. Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Time steps between graphical output<parameters:Postprocess/Visualization/Time_20steps_20between_20graphical_20output>`

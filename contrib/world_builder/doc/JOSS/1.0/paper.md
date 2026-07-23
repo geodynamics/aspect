@@ -48,7 +48,7 @@ affiliations:
    index: 2
  - name: GEOMAR Helmholtz-Zentrum für Ozeanforschung, Kiel, Germany
    index: 3
- - name: Universiy of Florida, USA
+ - name: University of Florida, USA
    index: 4
  - name: Clemson University, USA
    index: 5

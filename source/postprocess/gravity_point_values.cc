@@ -677,9 +677,9 @@ namespace aspect
                              "The time interval between each generation of "
                              "gravity output files. A value of 0 indicates "
                              "that output should be generated in each time step. "
-                             "Units: years if the "
+                             "Units: \\si{\\year} if the "
                              "'Use years instead of seconds' parameter is set; "
-                             "seconds otherwise.");
+                             "\\si{\\second} otherwise.");
           prm.declare_entry ("Time steps between gravity output", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
                              Patterns::Integer(0,std::numeric_limits<int>::max()),
                              "The maximum number of time steps between each generation of "

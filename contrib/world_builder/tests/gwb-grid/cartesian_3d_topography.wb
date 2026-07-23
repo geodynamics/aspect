@@ -1,0 +1,35 @@
+{
+  "version":"1.1",
+  "coordinate system":{"model":"cartesian"},
+    "surface temperature":293.15,
+  "force surface temperature":true,
+  "features":
+  [
+    {"model":"continental plate", "name":"Continent plate A", "coordinates":[[-1e3,10e3],[41e3,10e3],[41e3,15e3],[-1e3,15e3]], "min depth":-1e2,
+     "topography models":[{"model":"uniform","topography":5000}],
+     "temperature models":[{"model":"uniform", "min depth":-1e2, "max depth":95e3, "temperature":500}],
+     "composition models":[{"model":"uniform", "compositions":[0], "min depth":-1e2}]},
+
+    {"model":"continental plate", "name":"Continent plate B", "coordinates":[[20e3,12e3],[31e3,12e3],[31e3,15e3],[20e3,15e3]], "min depth":-1e2,
+     "topography models":[{"model":"uniform","topography":7000}],
+     "temperature models":[{"model":"uniform", "min depth":-1e2, "max depth":95e3, "temperature":500}],
+     "composition models":[{"model":"uniform", "compositions":[1], "min depth":-1e2}]},
+
+    {"model":"continental plate", "name":"Continent plate C", "coordinates":[[10e3,12e3],[20e3,12e3],[20e3,15e3],[10e3,15e3]], "min depth":-1e2,
+     "topography models":[{"model":"uniform","topography":-1000}],
+     "temperature models":[{"model":"uniform", "min depth":-1e2, "max depth":95e3, "temperature":500}],
+     "composition models":[{"model":"uniform", "compositions":[2], "min depth":-1e2}]},
+
+      // no topography and everywhere in the continent. Should not change any topography
+    {"model":"continental plate", "name":"Continent plate D", "coordinates":[[-1e3,10e3],[41e3,10e3],[41e3,15e3],[-1e3,15e3]], "min depth":-1e2,
+     "composition models":[{"model":"uniform", "compositions":[3], "min depth":-1e2, "max depth":25e3}]},
+
+    {"model":"oceanic plate", "name":"oceanic plate A", "coordinates":[[-1e3,0],[41e3,0],[41e3,10e3],[-1e3,10e3]], "min depth":-1e2,
+     "temperature models":[{"model":"half space model", "max depth":95e3, "min depth":-1e2, "spreading velocity":0.005, "ridge coordinates":[[[10,0], [10,5]],[[20,5],[20,10]]]}],
+     "composition models":[{"model":"uniform", "compositions":[4], "min depth":-1e2}]},
+
+    {"model":"oceanic plate", "name":"oceanic plate B", "coordinates":[[12.5e3,2.5e3],[17.5e3,2.5e3],[17.5e3,5e3],[12.5e3,5e3]], "min depth":-1e2,
+     "topography models":[{"model":"uniform", "topography":1000}],
+     "composition models":[{"model":"uniform", "compositions":[5], "min depth":-1e2}]}
+  ]
+}

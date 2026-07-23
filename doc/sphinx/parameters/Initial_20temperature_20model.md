@@ -142,7 +142,7 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The age of the lower thermal boundary layer, used for the calculation of the half-space cooling model temperature. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The age of the lower thermal boundary layer, used for the calculation of the half-space cooling model temperature. Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Age top boundary layer<parameters:Initial_20temperature_20model/Adiabatic/Age_20top_20boundary_20layer>`
@@ -151,7 +151,7 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The age of the upper thermal boundary layer, used for the calculation of the half-space cooling model temperature. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The age of the upper thermal boundary layer, used for the calculation of the half-space cooling model temperature. Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Amplitude<parameters:Initial_20temperature_20model/Adiabatic/Amplitude>`
@@ -160,7 +160,7 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The amplitude (in K) of the initial spherical temperature perturbation at the bottom of the model domain. This perturbation will be added to the adiabatic temperature profile, but not to the bottom thermal boundary layer. Instead, the maximum of the perturbation and the bottom boundary layer temperature will be used.
+**Documentation:** The amplitude (in \si{\kelvin}) of the initial spherical temperature perturbation at the bottom of the model domain. This perturbation will be added to the adiabatic temperature profile, but not to the bottom thermal boundary layer. Instead, the maximum of the perturbation and the bottom boundary layer temperature will be used.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Cooling model<parameters:Initial_20temperature_20model/Adiabatic/Cooling_20model>`
@@ -214,7 +214,7 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The Radius (in m) of the initial spherical temperature perturbation at the bottom of the model domain.
+**Documentation:** The Radius (in \si{\meter}) of the initial spherical temperature perturbation at the bottom of the model domain.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Scale factor<parameters:Initial_20temperature_20model/Adiabatic/Scale_20factor>`
@@ -497,7 +497,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the isotherm that is assumed at the Lithosphere-Asthenosphere boundary. Units: $\text{K}$.
+**Documentation:** The value of the isotherm that is assumed at the Lithosphere-Asthenosphere boundary. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Surface temperature<parameters:Initial_20temperature_20model/Continental_20geotherm/Surface_20temperature>`
@@ -506,7 +506,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the surface temperature. Units: $\text{K}$.
+**Documentation:** The value of the surface temperature. Units: \si{\kelvin}.
 ::::
 
 (parameters:Initial_20temperature_20model/Function)=
@@ -886,7 +886,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal expansion coefficient $\beta$. Units: $\frac{1}{\text{K}}$.
+**Documentation:** The value of the thermal expansion coefficient $\beta$. Units: \si{\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Use thermal expansion coefficient from material model<parameters:Initial_20temperature_20model/S40RTS_20perturbation/Use_20thermal_20expansion_20coefficient_20from_20material_20model>`
@@ -1025,7 +1025,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal expansion coefficient $\beta$. Units: $\frac{1}{\text{K}}$.
+**Documentation:** The value of the thermal expansion coefficient $\beta$. Units: \si{\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Use thermal expansion coefficient from material model<parameters:Initial_20temperature_20model/SAVANI_20perturbation/Use_20thermal_20expansion_20coefficient_20from_20material_20model>`

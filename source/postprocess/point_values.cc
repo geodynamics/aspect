@@ -195,9 +195,9 @@ namespace aspect
                              "The time interval between each generation of "
                              "point values output. A value of zero indicates "
                              "that output should be generated in each time step. "
-                             "Units: years if the "
+                             "Units: \\si{\\year} if the "
                              "'Use years instead of seconds' parameter is set; "
-                             "seconds otherwise.");
+                             "\\si{\\second} otherwise.");
           prm.declare_entry("Evaluation points", "",
                             // a list of points, separated by semicolons; each point has
                             // exactly 'dim' components/coordinates, separated by commas

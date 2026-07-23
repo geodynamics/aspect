@@ -332,7 +332,7 @@ namespace aspect
          * Create a filename out of the name template.
          */
         std::string
-        create_filename (const int timestep) const;
+        create_filename (const unsigned int timestep) const;
     };
   }
 }

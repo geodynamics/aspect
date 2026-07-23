@@ -1,0 +1,69 @@
+# Regression test for FastScape checkpoint/restart of the basement and silt
+# fraction fields. A model with a marine component is run to the End time in
+# one go (writing checkpoints along the way), then resumed from the last
+# checkpoint and continued to the same End time. Because FastScape runs
+# deterministically on the root process, a correct restart must reproduce the
+# uninterrupted run bit-for-bit.
+#
+# This exercises the bug where FastScape<dim>::save() snapshotted the basement
+# and silt fraction arrays with the surface-elevation accessor
+# (fastscape_copy_h_) instead of fastscape_copy_basement_ / fastscape_copy_f_.
+# With that bug the restarted sediment thickness (elevation - basement)
+# collapses to ~0, so the resumed run diverges from the straight run. The stock
+# fastscape tests use identical bedrock and sediment erosion parameters and can
+# never see this; here the sediment is deliberately far more incisive and
+# diffusive than the bedrock so the corruption is observable in the topography.
+#
+# To exercise the silt-fraction half of the restart (not just the basement),
+# two things are set up. First, the sea level is raised (the base model only
+# floods a thin strip) so a substantial part of the domain is marine and the
+# silt fraction is actually used. Second, the silt and sand marine transport
+# coefficients are made distinct, which
+# lets the silt fraction evolve away from its reference value and feed back on
+# the topography. Silt is set larger than sand (finer material travels farther),
+# which is also the ordering for which the marine diffusion stays convergent at
+# this basin depth. With basement restored correctly but the silt fraction
+# still taken from the surface elevation, this configuration diverges by tens
+# of metres offshore, so the test guards the silt-fraction save independently
+# of the basement save.
+#
+# Enable if: ASPECT_WITH_FASTSCAPE
+
+include $ASPECT_SOURCE_DIR/tests/fastscape_test_fixed_ghost_nodes.prm
+
+set End time           = 1.2e5
+set Resume computation = false
+
+subsection Checkpointing
+  set Steps between checkpoint = 1
+  set Resume checkpoint = 2
+end
+
+subsection Mesh deformation
+  subsection Fastscape
+    subsection Erosional parameters
+      set Bedrock river incision rate  = 1e-5
+      set Sediment river incision rate = 2e-4
+      set Bedrock diffusivity          = 1e-2
+      set Sediment diffusivity         = 5e-1
+    end
+
+    # Raise the sea level so a substantial part of the domain is marine, and
+    # give silt and sand distinct transport coefficients (silt > sand) so the
+    # marine silt fraction evolves away from its reference value. Together these exercise the silt-fraction part of
+    # the checkpoint/restart.
+    set Use marine component = true
+    subsection Marine parameters
+      set Sea level                  = 0
+      set Silt transport coefficient = 5e2
+      set Sand transport coefficient = 5e1
+    end
+  end
+end
+
+subsection Postprocess
+  subsection Topography
+    set Time between text output = 1.2e5
+    set Output to file           = true
+  end
+end

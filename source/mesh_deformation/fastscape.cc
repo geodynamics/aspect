@@ -298,7 +298,7 @@ namespace aspect
       // Create a folder for the FastScape visualization files.
       Utilities::create_directory (this->get_output_directory() + "fastscape/",
                                    this->get_mpi_communicator(),
-                                   false);
+                                   true /*do not print message in log file*/);
 
       last_output_time = 0;
     }
@@ -1606,13 +1606,24 @@ namespace aspect
         {
           const unsigned int fastscape_array_size = fastscape_nx*fastscape_ny;
           elevation.resize(fastscape_array_size);
-          fastscape_copy_h_(elevation.data());
-
           basement.resize(fastscape_array_size);
-          fastscape_copy_h_(basement.data());
-
           silt_fraction.resize(fastscape_array_size);
-          fastscape_copy_h_(silt_fraction.data());
+
+          // Only copy data from FastScape if Fastscape has been set up
+          // in the initialize_fastscape function, which happens at the beginning of timestep 1.
+          // We check against timestep 2, because checkpointing is done after advancing the timestep.
+          // Otherwise FastScape will return an error message and ASPECT will terminate.
+          if (this->get_timestep_number() >= 2)
+            {
+              fastscape_copy_h_(elevation.data());
+              fastscape_copy_basement_(basement.data());
+              if (use_marine_component)
+                fastscape_copy_f_(silt_fraction.data());
+            }
+          else
+            {
+              this->get_pcout() << "*** FastScape has not been set up yet, so checkpointed FastScape data is set to zero." << std::endl;
+            }
         }
 
       // Serialize into a stringstream. Put the following into a code
