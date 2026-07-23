@@ -13,8 +13,8 @@ resolution-markers = [
 ]
 
 [[package]]
-name = "aspect"
-version = "0.1.0"
+name = "aspect-with-python"
+version = "0.0.0"
 source = { virtual = "." }
 dependencies = [
     { name = "landlab" },
