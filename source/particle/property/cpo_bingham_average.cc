@@ -24,6 +24,8 @@
 #include <aspect/utilities.h>
 #include <aspect/simulator.h>
 
+#include <boost/serialization/map.hpp>
+
 namespace aspect
 {
   namespace Particle
@@ -404,6 +406,32 @@ namespace aspect
             n_samples = n_grains;
         }
         prm.leave_subsection ();
+      }
+
+
+
+      template <int dim>
+      void
+      CpoBinghamAverage<dim>::save (std::map<std::string, std::string> &status_strings) const
+      {
+        std::ostringstream os;
+        os << random_number_generator;
+        status_strings["CpoBinghamAverage"] = os.str();
+      }
+
+
+
+      template <int dim>
+      void
+      CpoBinghamAverage<dim>::load (const std::map<std::string, std::string> &status_strings)
+      {
+        const auto saved_state = status_strings.find("CpoBinghamAverage");
+        if (saved_state != status_strings.end())
+          {
+            std::istringstream is (saved_state->second);
+            is >> random_number_generator;
+            AssertThrow(!is.fail(), ExcMessage("Could not restore the CPO Bingham average random number generator."));
+          }
       }
     }
   }
