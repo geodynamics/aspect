@@ -569,7 +569,7 @@ namespace aspect
     do_pressure_rhs_compatibility_modification = ((material_model->is_compressible() && !parameters.include_melt_transport)
                                                   ||
                                                   (parameters.include_melt_transport && !material_model->is_compressible())
-                                                  || parameters.enable_prescribed_dilation)
+                                                  || parameters.enable_prescribed_dilation || parameters.use_prescribed_dilation_plugin)
                                                  &&
                                                  (open_velocity_boundary_indicators.size() == 0);
 
