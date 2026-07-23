@@ -1034,8 +1034,15 @@ namespace aspect
           // const double eta = scratch.material_model_outputs.viscosities[q];
           const double JxW = scratch.finite_element_values.JxW(q);
 
-          for ( unsigned int i=0; i<stokes_dofs_per_cell; ++i )
-            data.local_rhs(i) += -pressure_scaling * dilvector[0] * scratch.phi_p[i]*JxW;
+          for ( unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/ )
+          {
+            if ( introspection.is_stokes_component(fe.system_to_component_index(i).first) )
+            {
+              data.local_rhs(i_stokes) += -pressure_scaling * dilvector[0] * scratch.phi_p[i_stokes]*JxW;
+              ++i_stokes;
+            }
+            ++i;
+          }
 
           // for (unsigned int i=0; i<stokes_dofs_per_cell; /*increment at end of loop*/)
           //   {
