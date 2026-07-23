@@ -188,7 +188,7 @@ Since the AV material model computes viscosity based on the evolving CPO stored 
 ```{literalinclude} min_particles_per_cell.part.prm
 ```
 
-- **CPO particle property**: The CPO particle property must be stored for use by the AV model. This requires enabling the particle and crystal preferred orientation postprocessors and the relevant subsections for them, including the CPO Bingham Average plugin, which calculates the Hill coefficients. We set the mobility, nucleation efficienty, and threshold GBS values following {cite:t}`hansen:etal:2016`, for grain boundary mobility, grain nucleation, and grain boundary sliding, respectively.
+- **CPO particle property**: The CPO particle property must be stored for use by the AV model. This requires enabling the particle and crystal preferred orientation postprocessors and the relevant subsections for them, including the CPO Bingham Average plugin, which calculates the Hill coefficients. We set the mobility, nucleation efficiently, and threshold GBS values following {cite:t}`hansen:etal:2016`, for grain boundary mobility, grain nucleation, and grain boundary sliding, respectively.
 
 ```{literalinclude} cpo_particle_property.part.prm
 ```
