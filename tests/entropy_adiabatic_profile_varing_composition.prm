@@ -1,5 +1,5 @@
 # This test shows the adiabatic profile is computed correctly or not. The set up is same as entropy_multicomponent_5, 
-# but it has a adiabatic profile computed during initialization, and it ends right after.
+# but it has an adiabatic profile computed during initialization, and it ends right after.
 # The percentage of Fo increases from 0% to 100%, while En decreases from 100% to 0%. Averaged entropy is set to a constant value of 2070.
 
 
@@ -137,4 +137,3 @@ subsection Postprocess
 end
 
 set End time                               = 0e8
-

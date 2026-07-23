@@ -138,13 +138,13 @@ namespace aspect
           in.pressure[0] = pressures[i];
 
           AssertThrow(reference_composition == reference_function || entropy_indices.size() == 1,
-                  ExcMessage("If you have more than one chemical composition, please specify the composition at each depth"
-                            "using functions for the adiabat profile calculation"));
+                      ExcMessage("If you have more than one chemical composition, please specify the composition at each depth"
+                                 "using functions for the adiabat profile calculation"));
 
           for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
             {
-              // If there is only one chemical composition, we use one entropy value for the 
-              // adiabat calculation, since entropy is constant along an adiabat. This value is 
+              // If there is only one chemical composition, we use one entropy value for the
+              // adiabat calculation, since entropy is constant along an adiabat. This value is
               // specified by Surface entropy.
               if (reference_composition == surface_constant)
                 if (this->introspection().get_composition_descriptions()[c].type == CompositionalFieldDescription::entropy)
@@ -153,17 +153,17 @@ namespace aspect
                   in.composition[0][c] = initial_composition_manager->initial_composition(this->get_geometry_model().representative_point(0), c);
 
               // If there are multiple entropy compositions, which could have different entropies,
-              // the chemical compositions and compositions' entropies should be specified by a function. 
-              // At every point of the depth, we calculalte the adiabatic temperature using the 
+              // the chemical compositions and compositions' entropies should be specified by a function.
+              // At every point of the depth, we calculate the adiabatic temperature using the
               // multi-composition entropy equilibration.
               else if (reference_composition == reference_function)
                 {
-              // The function is written in terms of y coordinate.
-              // This is consistent with the initial composition funciton.                 
-              double depth = this->get_geometry_model().depth(representative_point);
-              const double y = this->get_geometry_model().maximal_depth() - depth;
-              const Point<1> p(y);
-                 
+                  // The function is written in terms of y coordinate.
+                  // This is consistent with the initial composition function.
+                  double depth = this->get_geometry_model().depth(representative_point);
+                  const double y = this->get_geometry_model().maximal_depth() - depth;
+                  const Point<1> p(y);
+
                   for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                     in.composition[0][c] = composition_function->value(p, c);
                 }
