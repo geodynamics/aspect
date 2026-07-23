@@ -5,6 +5,15 @@
 ## **Subsection:** Checkpointing
 
 
+::::{dropdown} __Parameter:__ {ref}`Additional checkpoint times<parameters:Checkpointing/Additional_20checkpoint_20times>`
+:name: parameters:Checkpointing/Additional_20checkpoint_20times
+**Default value:**
+
+**Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** A list of times so that if the end time of a time step is beyond this time, an additional checkpoint is created. These checkpoint times are independent of the checkpoint frequency specified by &ldquo;Time between checkpoint&rdquo; and &ldquo;Steps between checkpoint&rdquo;, therefore additional checkpoints can also be created if these parameters are both set to zero. The additional checkpoints are numbered consequetively starting from &ldquo;Number of checkpoints to keep&rdquo; + 1. If a time step is so large that it crosses multiple additional checkpoint times, only one checkpoint is created, and the rest of that time step&rsquo;s checkpoints are not taken into account in the checkpoint numbering. Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Number of checkpoints to keep<parameters:Checkpointing/Number_20of_20checkpoints_20to_20keep>`
 :name: parameters:Checkpointing/Number_20of_20checkpoints_20to_20keep
 **Default value:** 3
