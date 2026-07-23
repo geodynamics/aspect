@@ -563,7 +563,10 @@ namespace aspect
                &&
                (parameters.additional_checkpoint_times.front () < time))
           {
-            create_snapshot(time);
+            // TODO avoid checkpointing the same time step multiple times
+            // if the time step size encompasses multiple additional checkpoint times.
+            ++last_additional_checkpoint_id;
+            create_snapshot(true);
             parameters.additional_checkpoint_times
             .erase (parameters.additional_checkpoint_times.begin());
           }

@@ -913,7 +913,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/checkpoint_restart.cc</code>.
        */
-      void create_snapshot(const double additional_checkpoint_time = numbers::signaling_nan<double>());
+      void create_snapshot(const bool additional_checkpoint = false);
 
       /**
        * Restore the state of this program from a set of files in the output
@@ -1840,6 +1840,13 @@ namespace aspect
        * contain the last valid checkpoint written.
        */
       unsigned int last_checkpoint_id;
+
+      /**
+       * Additional checkpointing happens in folders numbered starting from
+       * n_checkpoints_to_keep+1, e.g. by default /restart/04/.
+       * This variable holds the last index used for the additional snapshots.
+       */
+      unsigned int last_additional_checkpoint_id;
 
       /**
        * In output_statistics(), where we output the statistics object above,
