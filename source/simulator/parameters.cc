@@ -1957,6 +1957,7 @@ namespace aspect
       if (convert_to_years == true)
         for (double &additional_checkpoint_time : additional_checkpoint_times)
           additional_checkpoint_time *= year_in_seconds;
+      n_additional_checkpoints_to_keep = additional_checkpoint_times.size();
       n_checkpoints_to_keep = prm.get_integer ("Number of checkpoints to keep");
       resume_checkpoint_id  = prm.get_integer ("Resume checkpoint");
       resume_time           = prm.get_double ("Resume time");

@@ -781,6 +781,7 @@ namespace aspect
     int                            checkpoint_steps;
     std::vector<double>            additional_checkpoint_times;
     unsigned int                   n_checkpoints_to_keep;
+    unsigned int                   n_additional_checkpoints_to_keep;
     unsigned int                   resume_checkpoint_id;
     double                         resume_time;
     /**
