@@ -1781,17 +1781,17 @@ namespace aspect
             n_phases_total_chemical_compositions += n_phases_per_composition[i+1];
           }
       }
-      
+
       template<int dim>
       SymmetricTensor<2,6>
-      OrthotropicRheology<dim>::viscosity_tensor_cpo_frame(const double F, const double G, const double H,                                                   
-                                                           const double L, const double M, const double N) 
+      OrthotropicRheology<dim>::viscosity_tensor_cpo_frame(const double F, const double G, const double H,
+                                                           const double L, const double M, const double N)
       {
         // based on Hill 1948 (https://doi.org/10.1098/rspa.1948.0045)
         // Signorelli 2021 (https://dx.doi.org/10.46298/jtcam.6737)
         // rathmann 2021 (https://doi.org/10.1017/jog.2022.33)
         // formulated in terms of Hill coefficients
-        
+
         std::vector<int> ji = {1,2,0}; // tuple of indices shifted by one
         std::vector<int> ki = {2,0,1}; // tuple of indices shifted by two
 
@@ -1881,19 +1881,19 @@ namespace aspect
         std::vector<int> ki = {2,0,1}; // tuple of indices shifted by two
 
         std::vector<double> Hi = {F, G, H, L, M, N};
-        
+
         double yield_function = 0.0;
 
         for (unsigned int i=0; i < 3; ++i)
           {
             // factor of 2/3 for consistency with invariant definition
             yield_function += 1./3.*(Hi[i]*Utilities::fixed_power<2>(stress_cpo_frame[ji[i]][ji[i]] - stress_cpo_frame[ki[i]][ki[i]]) \
-            + 2.*Hi[i+3]*Utilities::fixed_power<2>(stress_cpo_frame[ji[i]][ki[i]]));
+                                     + 2.*Hi[i+3]*Utilities::fixed_power<2>(stress_cpo_frame[ji[i]][ki[i]]));
           }
 
         return std::pow(yield_function, 0.5);
       }
-      
+
       template<int dim>
       SymmetricTensor<4,dim>
       OrthotropicRheology<dim>::kelvin_to_r4_tensor(const SymmetricTensor<2,6> V)

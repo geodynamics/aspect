@@ -27,7 +27,7 @@
 #include <deal.II/fe/component_mask.h>
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/parameter_handler.h>
-#include <deal.II/physics/notation.h> 
+#include <deal.II/physics/notation.h>
 
 #include <mpi.h>
 
@@ -913,22 +913,22 @@ namespace aspect
           fluidity_tensor_cpo_frame(const double F, const double G, const double H, const double L, const double M, const double N);
 
           double
-          stress_invariant(const SymmetricTensor<2,3> stress_cpo_frame, 
+          stress_invariant(const SymmetricTensor<2,3> stress_cpo_frame,
                            const double F, const double G, const double H,
                            const double L, const double M, const double N);
-          
+
           double
-          strain_rate_invariant(const SymmetricTensor<2,3> strain_rate_cpo_frame, 
+          strain_rate_invariant(const SymmetricTensor<2,3> strain_rate_cpo_frame,
                                 const double F, const double G, const double H,
                                 const double L, const double M, const double N);
 
           /*
-          * overload of dealii::Physics::Notation::Kelvin::to_tensor 
+          * overload of dealii::Physics::Notation::Kelvin::to_tensor
           */
           SymmetricTensor<4,dim>
           kelvin_to_r4_tensor(const SymmetricTensor<2,6> V);
-          
-        private: 
+
+        private:
       };
 
     }
