@@ -42,6 +42,32 @@ namespace aspect
 
 
       template <int dim>
+      void
+      Interface<dim>::save (std::map<std::string, std::string> &status_strings) const
+      {
+        std::ostringstream os;
+        os << random_number_generator;
+        status_strings["ParticleGenerator"] = os.str();
+      }
+
+
+
+      template <int dim>
+      void
+      Interface<dim>::load (const std::map<std::string, std::string> &status_strings)
+      {
+        const auto saved_state = status_strings.find("ParticleGenerator");
+        if (saved_state != status_strings.end())
+          {
+            std::istringstream is (saved_state->second);
+            is >> random_number_generator;
+            AssertThrow(!is.fail(), ExcMessage("Could not restore the particle generator random number generator."));
+          }
+      }
+
+
+
+      template <int dim>
       std::pair<Particles::internal::LevelInd,Particle<dim>>
       Interface<dim>::generate_particle(const Point<dim> &position,
                                         const types::particle_index id) const
