@@ -10,7 +10,7 @@ Pull Request Checklist. Please read and check each box with an X. Delete any par
 
 * [ ] I have followed the [instructions for indenting my code](../blob/main/CONTRIBUTING.md#making-aspect-better).
 * I followed the [AI Policy](../blob/main/CONTRIBUTING.md#policy-on-usage-of-ai):
-  - [ ] Significant parts were done by AI (please add a sentence below).
+  - [ ] Significant parts of this PR were written by AI (please add a sentence below).
   - [ ] AI has not been used in significant ways.
 
 *If yes, please describe your usage of AI models in the creation of this pull request*
