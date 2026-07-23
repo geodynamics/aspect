@@ -784,7 +784,7 @@ namespace aspect
                         // In local_aspect_values[1], we store integer indices even though the
                         // type of the left hand side is 'double'. We will have to cast back
                         // when we read from local_aspect_values[1].
-                        local_aspect_values[1].push_back(index-1);
+                        local_aspect_values[1].push_back(static_cast<double>(index-1));
 
                         for (unsigned int d=0; d<dim; ++d)
                           {
@@ -809,7 +809,7 @@ namespace aspect
     {
       for (unsigned int i=0; i<local_aspect_values[1].size(); ++i)
         {
-          // In get_aspect_values(), we store an integer value in local_aspect_values[1][...].
+          // In get_aspect_values(), we store an integer value as a double in local_aspect_values[1][...].
           // Explicitly cast it back.
           const unsigned int index = static_cast<unsigned int>(local_aspect_values[1][i]);
           elevation[index] = local_aspect_values[0][i];
@@ -845,9 +845,9 @@ namespace aspect
           // Now, place the numbers into the correct place based off the index.
           for (unsigned int i=0; i<local_aspect_values[1].size(); ++i)
             {
-              // In get_aspect_values(), we store an integer value in local_aspect_values[1][...].
+              // In get_aspect_values(), we store an integer value as a double in local_aspect_values[1][...].
               // Explicitly cast it back.
-              const unsigned int index = local_aspect_values[1][i];
+              const unsigned int index = static_cast<unsigned int>(local_aspect_values[1][i]);
               elevation[index] = local_aspect_values[0][i];
               velocity_x[index] = local_aspect_values[2][i];
               velocity_z[index] = local_aspect_values[dim+1][i];
