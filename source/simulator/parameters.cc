@@ -40,10 +40,20 @@ namespace aspect
   template <int dim>
   Parameters<dim>::Parameters (ParameterHandler &prm,
                                const MPI_Comm mpi_communicator)
+    :
+    compositional_field_advection_function (dim)
   {
     parse_parameters (prm, mpi_communicator);
   }
 
+  // template <int dim>
+  // void
+  // Parameters<dim>::update()
+  // {
+  //   // we get time passed as seconds (always) but may want
+  //   // to reinterpret it in years
+  //   compositional_field_advection_function.update();
+  // }
 
   template <int dim>
   void
@@ -1415,7 +1425,7 @@ namespace aspect
                          "the user's responsibility to check that the chosen material model "
                          "and other plugins interpret the compositional fields as intended.");
       prm.declare_entry ("Compositional field methods", "",
-                         Patterns::List (Patterns::Selection("field|particles|volume of fluid|static|melt field|darcy field|prescribed field|prescribed field with diffusion")),
+                         Patterns::List (Patterns::Selection("field|particles|volume of fluid|static|melt field|darcy field|function defined field|prescribed field|prescribed field with diffusion")),
                          "A comma separated list denoting the solution method of each "
                          "compositional field. Each entry of the list must be "
                          "one of the currently implemented field methods."
@@ -1515,6 +1525,21 @@ namespace aspect
                          "at every point and the global maximum is determined. "
                          "Second, the compositional fields to be normalized are "
                          "divided by this maximum.");
+      prm.enter_subsection ("Function defined fields");
+      {
+        prm.declare_entry ("Coordinate system", "depth",
+                           Patterns::Selection ("depth|cartesian|spherical"),
+                           "A selection that determines the assumed coordinate "
+                           "system for the function variables. Allowed values "
+                           "are `depth', `cartesian' and `spherical'. `depth' "
+                           "will create a function, in which only the first "
+                           "variable is non-zero, which is interpreted to "
+                           "be the depth of the point. `spherical' coordinates "
+                           "are interpreted as r,phi or r,phi,theta in 2d/3d "
+                           "respectively with theta being the polar angle.");
+        Functions::ParsedFunction<dim>::declare_parameters (prm, dim);
+      }
+      prm.leave_subsection ();
     }
     prm.leave_subsection ();
 
@@ -1962,6 +1987,26 @@ namespace aspect
     prm.enter_subsection ("Compositional fields");
     {
       n_compositional_fields = prm.get_integer ("Number of fields");
+
+      prm.enter_subsection ("Function defined fields");
+      {
+        compositional_field_advection_function_coordinate_system = Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
+      }
+      try
+        {
+          compositional_field_advection_function.parse_parameters (prm);
+        }
+      catch (...)
+        {
+          std::cerr << "ERROR: FunctionParser failed to parse\n"
+                    << "\t'Compositional fields/Function defined fields'\n"
+                    << "with expression\n"
+                    << "\t'" << prm.get("Function expression") << "'"
+                    << "More information about the cause of the parse error \n"
+                    << "is shown below.\n";
+          throw;
+        }
+      prm.leave_subsection();
     }
     prm.leave_subsection();
 
@@ -2264,6 +2309,8 @@ namespace aspect
             compositional_field_methods[i] = AdvectionFieldMethod::fem_melt_field;
           else if (x_compositional_field_methods[i] == "darcy field")
             compositional_field_methods[i] = AdvectionFieldMethod::fem_darcy_field;
+          else if (x_compositional_field_methods[i] == "function defined field")
+            compositional_field_methods[i] = AdvectionFieldMethod::fem_function_field;
           else if (x_compositional_field_methods[i] == "prescribed field")
             compositional_field_methods[i] = AdvectionFieldMethod::prescribed_field;
           else if (x_compositional_field_methods[i] == "prescribed field with diffusion")

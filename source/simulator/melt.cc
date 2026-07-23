@@ -1739,6 +1739,8 @@ namespace aspect
             ||
             (i>0 && this->get_parameters().compositional_field_methods[i-1] == Parameters<dim>::AdvectionFieldMethod::fem_field)
             ||
+            (i>0 && this->get_parameters().compositional_field_methods[i-1] == Parameters<dim>::AdvectionFieldMethod::fem_function_field)
+            ||
             (i>0 && this->get_parameters().compositional_field_methods[i-1] == Parameters<dim>::AdvectionFieldMethod::fem_melt_field))
           assemblers.advection_system[i].push_back(
             std::make_unique<Assemblers::MeltAdvectionSystem<dim>> ());

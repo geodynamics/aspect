@@ -23,6 +23,7 @@
 
 
 #include <aspect/simulator/assemblers/interface.h>
+#include <deal.II/base/parsed_function.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -46,6 +47,10 @@ namespace aspect
         compute_residual(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base) const override;
     };
 
+    /**
+     * This class creates an advection assembler that advects a compositional field
+     * with an approximate form of the Darcy velocity.
+     */
     template <int dim>
     class DarcySystem : public Assemblers::Interface<dim>, public Assemblers::AdvectionStabilizationInterface<dim>,
       public SimulatorAccess<dim>
@@ -60,6 +65,23 @@ namespace aspect
 
         void
         create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
+    };
+
+    /**
+     * This class creates an advection assembler that uses a user-defined function to advect a
+     * compositional field.
+     */
+    template <int dim>
+    class FunctionSystem : public Assemblers::Interface<dim>, public Assemblers::AdvectionStabilizationInterface<dim>,
+      public SimulatorAccess<dim>
+    {
+      public:
+        void
+        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
+
+        std::vector<double>
+        compute_residual(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base) const override;
     };
 
     /**

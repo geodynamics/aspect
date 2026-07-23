@@ -153,6 +153,11 @@ namespace aspect
           assemblers->advection_system[i].push_back(
             std::make_unique<aspect::Assemblers::AdvectionSystem<dim>>());
 
+        // Add the function assembler if the advection field uses the function field method.
+        if ((i>0 && parameters.compositional_field_methods[i-1] == Parameters<dim>::AdvectionFieldMethod::fem_function_field))
+          assemblers->advection_system[i].push_back(
+            std::make_unique<aspect::Assemblers::FunctionSystem<dim>>());
+
         // Only add the diffusion assembler if advection field i uses the prescribed_field_with_diffusion method.
         if ((i==0 && parameters.temperature_method == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
             ||
@@ -169,7 +174,9 @@ namespace aspect
              && parameters.temperature_method == Parameters<dim>::AdvectionFieldMethod::fem_field)
             ||
             (i>0 && parameters.use_discontinuous_composition_discretization[i-1]
-             && parameters.compositional_field_methods[i-1] == Parameters<dim>::AdvectionFieldMethod::fem_field))
+             &&
+             (parameters.compositional_field_methods[i-1] == Parameters<dim>::AdvectionFieldMethod::fem_field
+              || parameters.compositional_field_methods[i-1] == Parameters<dim>::AdvectionFieldMethod::fem_function_field)))
           {
             assemblers->advection_system_on_boundary_face[i].push_back(
               std::make_unique<aspect::Assemblers::AdvectionSystemBoundaryFace<dim>>());
@@ -204,7 +211,10 @@ namespace aspect
           }
 
         if (i > 0 && parameters.use_discontinuous_composition_discretization[i-1]
-            && parameters.compositional_field_methods[i-1] == Parameters<dim>::AdvectionFieldMethod::fem_field)
+            &&
+            ((parameters.compositional_field_methods[i-1] == Parameters<dim>::AdvectionFieldMethod::fem_field)
+             ||
+             (parameters.compositional_field_methods[i-1] == Parameters<dim>::AdvectionFieldMethod::fem_function_field)))
           {
             assemblers->advection_system_assembler_on_face_properties[i].need_face_material_model_data = true;
             assemblers->advection_system_assembler_on_face_properties[i].need_face_finite_element_evaluation = true;
@@ -219,8 +229,11 @@ namespace aspect
 
         for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
           {
-            if (parameters.use_discontinuous_composition_discretization[c]
-                && parameters.compositional_field_methods[c] == Parameters<dim>::AdvectionFieldMethod::fem_field)
+            if ((parameters.use_discontinuous_composition_discretization[c]
+                 && parameters.compositional_field_methods[c] == Parameters<dim>::AdvectionFieldMethod::fem_field)
+                ||
+                (parameters.use_discontinuous_composition_discretization[c]
+                 && parameters.compositional_field_methods[c] == Parameters<dim>::AdvectionFieldMethod::fem_function_field))
               {
                 dc_composition = true;
                 break;

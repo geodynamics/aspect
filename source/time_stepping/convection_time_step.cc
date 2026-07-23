@@ -35,6 +35,7 @@ namespace aspect
                                                this->get_parameters().stokes_velocity_degree);
 
       bool consider_darcy_timestep = false;
+      bool consider_function_timestep = false;
       unsigned int porosity_idx = numbers::invalid_unsigned_int;
       if (this->introspection().composition_type_exists(CompositionalFieldDescription::porosity))
         {
@@ -43,9 +44,14 @@ namespace aspect
             consider_darcy_timestep = true;
         }
 
+      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+        if (this->get_parameters().compositional_field_methods[c] == Parameters<dim>::AdvectionFieldMethod::fem_function_field)
+          consider_function_timestep = true;
+
+      const bool update_more_flags = consider_function_timestep || consider_darcy_timestep;
       const UpdateFlags update_flags
         = UpdateFlags(
-            consider_darcy_timestep
+            update_more_flags
             ?
             update_values |
             update_gradients |
@@ -100,6 +106,22 @@ namespace aspect
                                                           gravity * (solid_density - fluid_density);
                     max_local_velocity = std::max(max_local_velocity, fluid_velocity.norm());
                   }
+
+                if (consider_function_timestep)
+                  {
+                    Tensor<1,dim> function_velocity;
+                    const Point<dim> position = fe_values.quadrature_point(q);
+                    const Functions::ParsedFunction<dim> &compositional_field_advection_function = this->get_parameters().compositional_field_advection_function;
+                    for (unsigned int d=0; d<dim; ++d)
+                      {
+                        function_velocity[d] = compositional_field_advection_function.value(position,d);
+
+                        if (this->get_parameters().convert_to_years)
+                          function_velocity[d] /= year_in_seconds;
+                      }
+                    max_local_velocity = std::max(max_local_velocity, function_velocity.norm());
+                  }
+
                 max_local_velocity = std::max (max_local_velocity,
                                                velocity_values[q].norm());
               }

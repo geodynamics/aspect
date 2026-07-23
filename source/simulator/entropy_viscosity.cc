@@ -164,6 +164,7 @@ namespace aspect
     std::vector<Tensor<1,dim>> old_fluid_velocity_values(scratch.finite_element_values.n_quadrature_points);
     std::vector<Tensor<1,dim>> old_old_fluid_velocity_values(scratch.finite_element_values.n_quadrature_points);
     const bool use_darcy_velocity = (advection_field.advection_method(introspection) == Parameters<dim>::AdvectionFieldMethod::fem_darcy_field);
+    const bool use_function_velocity = (advection_field.advection_method(introspection) == Parameters<dim>::AdvectionFieldMethod::fem_function_field);
 
     std::shared_ptr<const MaterialModel::MeltOutputs<dim>> melt_outputs;
     if (use_darcy_velocity)
@@ -185,6 +186,22 @@ namespace aspect
         const Tensor<1,dim> velocity = (scratch.old_velocity_values[q] +
                                         scratch.old_old_velocity_values[q]) / 2;
         double velocity_norm = velocity.norm();
+
+        if (use_function_velocity)
+          {
+            Tensor<1,dim> function_velocity;
+            const Point<dim> position = scratch.finite_element_values.quadrature_point(q);
+            const Functions::ParsedFunction<dim> &compositional_field_advection_function = parameters.compositional_field_advection_function;
+            for (unsigned int d=0; d<dim; ++d)
+              {
+                function_velocity[d] = compositional_field_advection_function.value(position,d);
+
+                if (parameters.convert_to_years)
+                  function_velocity[d] /= year_in_seconds;
+              }
+
+            velocity_norm = std::max(function_velocity.norm(), velocity_norm);
+          }
 
         if (use_darcy_velocity)
           {
