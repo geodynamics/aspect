@@ -188,6 +188,13 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm) override;
 
+        template <class Archive>
+        void
+        serialize (Archive &ar, const unsigned int)
+        {
+          ar &termination_manager;
+        }
+
         /**
          * For the current plugin subsystem, write a connection graph of all of the
          * plugins we know about, in the format that the
