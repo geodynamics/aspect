@@ -51,6 +51,18 @@ namespace aspect
         public:
           MeltFraction ();
 
+          /**
+           * Percentage of material that is molten for a given @p temperature and
+           * @p pressure (assuming equilibrium conditions) for a given melting model.
+           */
+          double
+          melt_fraction (const double temperature,
+                         const double pressure,
+                         const std::string &melting_model) const;
+
+          /**
+           * Evaluate the melt fraction for a given set of input data.
+           */
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
                                 std::vector<Vector<double>> &computed_quantities) const override;
@@ -162,6 +174,11 @@ namespace aspect
            * This variable is read from the parameter file through a parameter called 'E2'.
            */
           double E2;
+
+          /**
+           * List of names of the melting models that are not peridotite.
+           */
+          std::vector<std::string> melting_model;
       };
     }
   }

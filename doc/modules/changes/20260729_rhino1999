@@ -1,0 +1,6 @@
+Changed: The melt fraction visualization postprocessor has been restructured to allow
+more general usage in the future. To compute the melt fraction of pyroxenite,
+"pyroxenite" must now be listed not only in the compositional fields subsection but also
+in the melt fraction visualization subsection.
+<br>
+(Qianyi Lu, 2026/07/29)
