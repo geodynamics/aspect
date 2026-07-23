@@ -1,0 +1,26 @@
+# Test that we can create additional checkpoints at specified times, and that we can resume from them.
+
+##################################################################
+include $ASPECT_SOURCE_DIR/tests/diffusion.prm
+
+set Dimension = 2
+set Output directory = output_checkpoint
+
+# The end time of the simulation. Units: years if the 'Use years in output
+# instead of seconds' parameter is set; seconds otherwise.
+set End time                               = 8e7
+
+# A flag indicating whether the computation should be resumed from a
+# previously saved state (if true) or start from scratch (if false).
+set Resume computation                     = false
+
+# The start time of the simulation. Units: years if the 'Use years in output
+# instead of seconds' parameter is set; seconds otherwise.
+set Start time                             = 0
+
+
+subsection Checkpointing
+  set Time between checkpoint                = 0
+  set Steps between checkpoint               = 6
+  set Additional checkpoint times            = 1.5e7, 2.7e7, 3.1e7
+end
