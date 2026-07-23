@@ -34,7 +34,7 @@ where $\gamma$ is the part of fluidity (the inverse of viscosity) which is tempe
 \gamma=\gamma_0 exp \left(\frac{-Q}{RT} \right) /d^m \text{ .}
 ```
 
-$\gamma_0=1.1\times 10^{5}$ is the isotropic fluidity, $Q=530$ $kJ/mol$ is the activation energy, $R=8.314 m^3 \cdot Pa \cdot K^{−1} \cdot$ $mol^{−1}$ is the gas constant, $d=0.001$ $m$ is the grain size, and $m=0.73$ is the grain size exponent. These values for olivine are taken from rock experiments performed by {cite:t}`hansen:etal:2016` and {cite:t}`HK04`. $J(\sigma_{ij})$ is the yield potential, where $\sigma_{ij}$ is the (anisotropic) stress computed using the tensorial and scalar component of the anisotropic viscosity:
+$\gamma_0=1.1\times 10^{5}$ is the isotropic fluidity, $Q=530$ $kJ/mol$ is the activation energy, $R=8.314$ m$^3 \cdot$ Pa $\cdot$ K$^{−1} \cdot$ mol$^{−1}$ is the gas constant, $d=0.001$ m is the grain size, and $m=0.73$ is the grain size exponent. These values for olivine are taken from rock experiments performed by {cite:t}`hansen:etal:2016` and {cite:t}`HK04`. $J(\sigma_{ij})$ is the yield potential, where $\sigma_{ij}$ is the (anisotropic) stress computed using the tensorial and scalar component of the anisotropic viscosity:
 
 ```{math}
 :label: eqn:yield_potential
@@ -79,7 +79,7 @@ N = 7.873 a_1^2 - 7.934 a_1 - 2.588 a_2 + \frac{0.030}{a_3} + 7.606 b_1^2 - 5.46
 
 ### CPO Reference Frame
 
-Since the Hill coefficients are defined in the microscopic CPO reference frame, and parameters computed in ASPECT are in the macroscopic model reference frame, several reference frame conversions are needed. We determine the mean CPO orientation from the eigenvectors associated with the largest eigenvalues of the second-order orientation tensor (or covariance matrix) for all three symmetry axes. The corresponding eigenvalues quantify the dispersion of orientations around these mean orientation {cite}`bingham:1974`.
+Since the Hill coefficients are defined in the microscopic CPO reference frame, and parameters computed in ASPECT are in the macroscopic model reference frame, several reference frame conversions are needed. We determine the mean CPO orientation from the eigenvectors associated with the largest eigenvalues of the second-order orientation tensor (or covariance matrix) for all three symmetry axes. The corresponding eigenvalues quantify the dispersion of orientations around the mean orientation {cite}`bingham:1974`.
 
 First, we need to rotate $\sigma_{ij}$ in {math:numref}`eqn:yield_potential` from the model reference frame to the CPO reference frame so that $J(\sigma_{ij})$ is in the CPO reference frame. This is achieved by constructing a matrix from the eigenvectors corresponding with the largest eigenvalues of the covariance matrix for the a-, b-, and c-axis of olivine textures and then we assign the rotation matrix R:
 
@@ -92,7 +92,7 @@ R = \left[
 \texttt{max\_eigenvector}_{a3} & \texttt{max\_eigenvector}_{b3} & \texttt{max\_eigenvector}_{c3}
 \end{matrix} \right]
 ```
-As sometimes the 3 primary eigenvectors do not compose an othrogonal frame, therefore a singular value decomposition is used to orthogonalize the rotationn matrix $R$. We compute the rotation matrix $R$ on the particles and further convert it to Euler angles for computation and memory efficiency. These properties need to be interpolated from particles to fields to be used in the material model. As a result, the anisotropic viscosity material model requires at least one particle in each cell so that all cells can have the texture parameters (Euler angles and eigenvalues) for constructing the rotation matrix R and compute the Hill coefficients. In the material model, the interpolated Euler angles are converted to the rotation matrix again. We use the same notation R to describe the rotation matrix used in the material model in the following paragraphs.
+As sometimes the 3 primary eigenvectors do not compose an othrogonal frame, a singular value decomposition is used to orthogonalize the rotation matrix $R$. We compute the rotation matrix $R$ on the particles and further convert it to Euler angles for computation and memory efficiency. These properties need to be interpolated from particles to fields to be used in the material model. As a result, the anisotropic viscosity material model requires at least one particle in each cell so that all cells can have the texture parameters (Euler angles and eigenvalues) for constructing the rotation matrix R and computing the Hill coefficients. In the material model, the interpolated Euler angles are converted to the rotation matrix again. We use the same notation R to describe the rotation matrix used in the material model in the following paragraphs.
 
 At the current stage averages between angles are computed using scalar arithmetic average tools implemented in ASPECT. For more exact treatment we plan to implement a circular average or quaternion average based on {cite}`markley:etal:2007`.
 
@@ -188,7 +188,7 @@ Since the AV material model computes viscosity based on the evolving CPO stored 
 ```{literalinclude} min_particles_per_cell.part.prm
 ```
 
-- **CPO particle property**: The CPO particle property must be stored for use by the AV model. This requires enabling the particle and crystal preferred orientation postprocessors and the relevant subsections for them, including the CPO Bingham Average plugin, which calculates the Hill coefficients:
+- **CPO particle property**: The CPO particle property must be stored for use by the AV model. This requires enabling the particle and crystal preferred orientation postprocessors and the relevant subsections for them, including the CPO Bingham Average plugin, which calculates the Hill coefficients. We set the mobility, nucleation efficienty, and threshold GBS values following {cite:t}`hansen:etal:2016`, for grain boundary mobility, grain nucleation, and grain boundary sliding, respectively.
 
 ```{literalinclude} cpo_particle_property.part.prm
 ```

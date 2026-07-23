@@ -139,14 +139,6 @@ namespace aspect
       cpo_bingham_avg_c.push_back (this->introspection().compositional_index_for_name("eigvalue_c3"));
     }
 
-    // template <>
-    // void
-    // CPO_AV_3D<2>::evaluate (const MaterialModel::MaterialModelInputs<2> &,
-    //                         MaterialModel::MaterialModelOutputs<2> &) const
-    // {
-    //   Assert (false, ExcNotImplemented());
-    // }
-
     template<int dim>
     SymmetricTensor<4,dim>
     CPO_AV_3D<dim>::kelvin_to_r4_tensor(const Tensor<2,6> V) const
@@ -157,22 +149,14 @@ namespace aspect
       if (dim == 3)
         {
           for (unsigned int vi=0; vi<6; ++vi)
-            {
-              for (unsigned int vj=0; vj<6; ++vj)
-                {
-                  V_mat[vi][vj] = V[vi][vj];
-                }
-            }
+            for (unsigned int vj=0; vj<6; ++vj)
+              V_mat[vi][vj] = V[vi][vj];
         }
       else // (dim == 2) // discard out of plane components
         {
           for (unsigned int vi=0; vi<3; ++vi)
-            {
-              for (unsigned int vj=0; vj<3; ++vj)
-                {
-                  V_mat[vi][vj] = V[((vi == 2) ? 5 : vi)][((vj == 2) ? 5 : vj)];
-                }
-            }
+            for (unsigned int vj=0; vj<3; ++vj)
+              V_mat[vi][vj] = V[((vi == 2) ? 5 : vi)][((vj == 2) ? 5 : vj)];
         }
 
       SymmetricTensor<4,dim> V_r4;
@@ -199,7 +183,6 @@ namespace aspect
           // upper left part
           visc_tensor[i][i] = 2/(3*gam)*(4*Hi[i] + Hi[ji[i]] + Hi[ki[i]]);
           visc_tensor[ji[i]][ki[i]] = 2/(3*gam)*(Hi[i] - 2*Hi[ji[i]] - 2*Hi[ki[i]]);
-          // sym: visc_tensor[ki[i]][ji[i]] = visc_tensor[ji[i]][ki[i]];
 
           // lower right part
           visc_tensor[i+3][i+3] = 3/(2*Hi[i+3]);
@@ -288,14 +271,7 @@ namespace aspect
                strain_rate_3d);
 
           // Create constant value to use for AV
-          // const double A_o = fluidity_constant*std::exp(-530000/(8.314*in.temperature[q]));
-          // // const double n = 3.5; //n=3 for test against VPSC, n=3.5 for D-Rex in ASPECT
-          // // The values of A_o and 0.73 were picked so that Gamma = 3.5322e-15[1/(s*Pa^n)] if T=1600K and d=1000 microns
-          // const double Gamma = (A_o/(std::pow(grain_size,0.73)));
-
           const double A_o = fluidity_constant*std::exp(-activation_energy/(8.314*std::max(in.temperature[q],1.0e-10)));
-          // 1.1e5*std::exp(-530000/(8.314*in.temperature[q]));
-          // The values of A_o and 0.73 were picked so that Gamma = 3.5322e-15[1/(s*Pa^n)] if T=1600K and d=1000 microns
           const double Gamma = (A_o/(std::pow(grain_size, grain_size_exponent)));
 
           // The computation of the viscosity tensor is only necessary after the simulator has been initialized
@@ -407,22 +383,14 @@ namespace aspect
                   // Thus we compute the Moore-Penrose pseudo inverse using SVD
                   LAPACKFullMatrix<double> A_mat_lapack(6,6), pinvA_mat_lapack(6,6);
                   for (unsigned int ai=0; ai<6; ++ai)
-                    {
-                      for (unsigned int aj=0; aj<6; ++aj)
-                        {
-                          A_mat_lapack(ai,aj) = A[ai][aj];
-                        }
-                    }
+                    for (unsigned int aj=0; aj<6; ++aj)
+                      A_mat_lapack(ai,aj) = A[ai][aj];
                   pseudoinverse(A_mat_lapack, pinvA_mat_lapack);
 
                   SymmetricTensor<2,6> invA;
                   for (unsigned int ai=0; ai<6; ++ai)
-                    {
-                      for (unsigned int aj=0; aj<6; ++aj)
-                        {
-                          invA[ai][aj] = pinvA_mat_lapack(ai,aj);
-                        }
-                    }
+                    for (unsigned int aj=0; aj<6; ++aj)
+                      invA[ai][aj] = pinvA_mat_lapack(ai,aj);
 
                   // Calculate the viscosity tensor in the CPO frame
                   const Tensor<2,6> viscosity_tensor = transpose(R_CPO_K) * invA * R_CPO_K;
@@ -502,9 +470,6 @@ namespace aspect
                   if ((this->simulator_is_past_initialization()) && (std::isfinite(determinant(deviatoric_strain_rate))))
                     {
                       // for the zero-th timestep calculating the scalar viscosity based on the strain-rate -> i.e. isotropic response
-                      // double edot_ii=std::max(std::max(deviatoric_strain_rate.norm(), 0.),
-                      //                               min_strain_rate);
-                      // out.viscosities[q] = 1/Gamma * std::pow(edot_ii,((1. - n)/n)); //
                       double edot_ii=std::max(std::sqrt(std::max(-second_invariant(deviator(strain_rate)), 0.)),
                                               min_strain_rate);
                       out.viscosities[q] = 1/Gamma * std::pow(edot_ii,((1. - n)/n));
@@ -599,7 +564,7 @@ namespace aspect
                              "Activation energy for Arhenius temperature dependence of rheology");
           prm.declare_entry ("Grain size exponent", "0.73",
                              Patterns::Double(),
-                             "Exponent for grainsize dependence");
+                             "Exponent for grain size dependence");
           prm.declare_entry ("Stress exponent", "3.5",
                              Patterns::Double(),
                              "Stress exponent for non-linear rheology");
