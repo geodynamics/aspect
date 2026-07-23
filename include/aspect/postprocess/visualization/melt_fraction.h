@@ -51,6 +51,24 @@ namespace aspect
         public:
           MeltFraction ();
 
+          /**
+           * Percentage of material that is molten for a given @p temperature and
+           * @p pressure (assuming equilibrium conditions). Melting model after Katz,
+           * 2003, for dry peridotite.
+           */
+          double
+          melt_fraction_peridotite (const double temperature,
+                         const double pressure) const;
+
+          /**
+           * Percentage of material that is molten for a given @p temperature and
+           * @p pressure (assuming equilibrium conditions). Melting model after Sobolev,
+           * 2011, for pyroxenite.
+           */
+          double
+          melt_fraction_pyroxenite (const double temperature,
+                           const double pressure) const;
+
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
                                 std::vector<Vector<double>> &computed_quantities) const override;
@@ -108,6 +126,9 @@ namespace aspect
           // for the melt-fraction dependence of productivity
           double E1;
           double E2;
+
+          // Whether to use multiple melting models (peridotite and X)
+          bool multiple_melting_model;
       };
     }
   }
