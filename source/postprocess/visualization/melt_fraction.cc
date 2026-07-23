@@ -45,7 +45,7 @@ namespace aspect
       double
       MeltFraction<dim>::
       melt_fraction_peridotite (const double temperature,
-                     const double pressure) const
+                                const double pressure) const
       {
         // anhydrous melting of peridotite after Katz, 2003
         const double T_solidus  = A1 + 273.15
@@ -84,12 +84,12 @@ namespace aspect
       double
       MeltFraction<dim>::
       melt_fraction_pyroxenite (const double temperature,
-                     const double pressure) const
+                                const double pressure) const
       {
         // melting of pyroxenite after Sobolev et al., 2011
         const double T_melting = D1 + 273.15
-                                  + D2 * pressure
-                                  + D3 * pressure * pressure;
+                                 + D2 * pressure
+                                 + D3 * pressure * pressure;
 
         const double discriminant = E1*E1/(E2*E2*4) + (temperature-T_melting)/E2;
 
@@ -291,11 +291,11 @@ namespace aspect
                                  "the melt fraction of pyroxenite. "
                                  "$\\frac{^\\circ\\text{C}}{\\text{Pa}^2}$.");
               prm.declare_entry ("Use multiple melting models", "false",
-                                Patterns::Bool(),
-                                "This parameter determines whether to use multiple melting models. "
-                                "If set to 'false', it will visualize the melt fraction of peridotite.  "
-                                "If set to 'true', it will visualize the melt fraction of peridotite and "
-                                " pyroxenite. ");
+                                 Patterns::Bool(),
+                                 "This parameter determines whether to use multiple melting models. "
+                                 "If set to 'false', it will visualize the melt fraction of peridotite.  "
+                                 "If set to 'true', it will visualize the melt fraction of peridotite and "
+                                 " pyroxenite. ");
             }
             prm.leave_subsection();
           }
@@ -334,12 +334,12 @@ namespace aspect
               E2              = prm.get_double ("E2");
               multiple_melting_model = prm.get_bool ("Use multiple melting models");
 
-              if (multiple_melting_model) 
+              if (multiple_melting_model)
                 {
-                  AssertThrow(this->introspection().compositional_name_exists("melting_comp_1"), 
-                            ExcMessage("The parameter 'Use multiple melting models' is set to true," 
-                                       " but there is no compositional field called 'melting_comp_1'. "
-                                       "Please add a compositional field with this name to the input file."));
+                  AssertThrow(this->introspection().compositional_name_exists("melting_comp_1"),
+                              ExcMessage("The parameter 'Use multiple melting models' is set to true,"
+                                         " but there is no compositional field called 'melting_comp_1'. "
+                                         "Please add a compositional field with this name to the input file."));
                 }
             }
             prm.leave_subsection();

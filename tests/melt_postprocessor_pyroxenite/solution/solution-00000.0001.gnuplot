@@ -4,7 +4,7 @@
 #
 # For a description of the GNUPLOT format see the GNUPLOT manual.
 #
-# <x> <y> <velocity> <velocity> <p> <T> <pyroxenite> <melt_fraction> 
+# <x> <y> <velocity> <velocity> <p> <T> <melting_comp_1> <melt_fraction> 
 0 4 0 -2.12006e-08 4e+09 1373.15 1 0 
 0.5625 4 -4.26178e-09 -1.78803e-08 4e+09 1429.4 1 0 
 

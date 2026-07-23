@@ -58,7 +58,7 @@ namespace aspect
            */
           double
           melt_fraction_peridotite (const double temperature,
-                         const double pressure) const;
+                                    const double pressure) const;
 
           /**
            * Percentage of material that is molten for a given @p temperature and
@@ -67,7 +67,7 @@ namespace aspect
            */
           double
           melt_fraction_pyroxenite (const double temperature,
-                           const double pressure) const;
+                                    const double pressure) const;
 
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
