@@ -1,6 +1,6 @@
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/initial-temperature/adiabatic-boundary/adiabatic_boundary.txt.
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/data/initial-temperature/adiabatic-boundary/adiabatic_boundary.txt.
 
 Number of active cells: 512 (on 4 levels)
 Number of degrees of freedom: 20,381 (14,739+729+4,913)

@@ -1,6 +1,6 @@
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/mesh-deformation/ascii-data/spherical_shell_2d.txt.
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/data/mesh-deformation/ascii-data/spherical_shell_2d.txt.
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)

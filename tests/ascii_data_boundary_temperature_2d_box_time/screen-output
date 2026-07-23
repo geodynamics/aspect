@@ -1,9 +1,9 @@
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-temperature/ascii-data/test/box_2d_left.0.txt.
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/data/boundary-temperature/ascii-data/test/box_2d_left.0.txt.
 
 
-   Also loading next Ascii data boundary file ASPECT_DIR/data/boundary-temperature/ascii-data/test/box_2d_left.1.txt.
+   Also loading next Ascii data boundary file $ASPECT_SOURCE_DIR/data/boundary-temperature/ascii-data/test/box_2d_left.1.txt.
 
 Number of active cells: 80 (on 3 levels)
 Number of degrees of freedom: 1,212 (738+105+369)
@@ -37,7 +37,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
 
 *** Timestep 3:  t=247338 years, dt=82382.7 years
 
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-temperature/ascii-data/test/box_2d_left.2.txt.
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/data/boundary-temperature/ascii-data/test/box_2d_left.2.txt.
 
    Solving temperature system... 16 iterations.
    Solving Stokes system (GMG)... 8+0 iterations.
@@ -58,7 +58,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
 
 *** Timestep 5:  t=411925 years, dt=82275.2 years
 
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-temperature/ascii-data/test/box_2d_left.3.txt.
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/data/boundary-temperature/ascii-data/test/box_2d_left.3.txt.
 
 
    From this timestep onwards, ASPECT will not attempt to load new Ascii data files.

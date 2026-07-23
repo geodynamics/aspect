@@ -48,8 +48,8 @@ while (<$in>)
     s/\# Time =.*//;
     s/\# Date =.*//;
 
-    # replace current source directory by ASPECT_DIR
-    s/\Q$aspect_src_dir\E/ASPECT_DIR/g;
+    # replace current source directory by $ASPECT_SOURCE_DIR
+    s/\Q$aspect_src_dir\E/\$ASPECT_SOURCE_DIR/g;
 
     # Exceptions
     s/line <\d+> of file <.*\//file </;
