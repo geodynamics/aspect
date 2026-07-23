@@ -279,23 +279,6 @@ namespace aspect
           */
 
           const double viscosity_c = melt_outputs->compaction_viscosities[q];
-          // Make sure the Schur-complement preconditioner
-          // stays consistent with the operator when compaction elasticity is on.
-          // The elastic pore modulus is K_phi = K_0 * phi^(-q) (q = 0.5, Keller, May &
-          // Kaus 2013, eq. 52), with K_0 the reference pore modulus.
-          // Set viscoelastic viscosity from elastic and viscous contributions
-          // (eq. 29).
-          const double dt = this->get_timestep();
-          const double K_0_pre = this->get_melt_handler().melt_parameters.reference_pore_modulus;
-          const unsigned int por_idx = introspection.compositional_index_for_name("porosity");
-          const double porosity = std::max(scratch.material_model_inputs.composition[q][por_idx], 0.0);
-          double viscosity_c_ve = viscosity_c;
-          if (dt > 0.0 && porosity > 0.0)
-            {
-              const double K_phi = K_0_pre * std::pow(porosity, -0.5);
-              // viscosity_c has already been scaled by (1-porosity)
-              viscosity_c_ve = 1.0/(1.0/viscosity_c + 1.0/((1-porosity)*K_phi*dt));
-            }
           const double JxW = scratch.finite_element_values.JxW(q);
 
           for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
@@ -313,7 +296,7 @@ namespace aspect
                                              scratch.grad_phi_p[i] *
                                              scratch.grad_phi_p[j]
                                              +
-                                             (1./eta + 1./viscosity_c_ve) * p_c_scale * p_c_scale *
+                                             (1./eta + 1./viscosity_c) * p_c_scale * p_c_scale *
                                              pressure_scaling *
                                              pressure_scaling *
                                              (scratch.phi_p_c[i] * scratch.phi_p_c[j])
@@ -455,18 +438,6 @@ namespace aspect
         scratch.finite_element_values[introspection.extractors.compositional_fields[porosity_index]].get_function_values(this->get_reaction_vector(),
             reactions);
 
-      // Add viscoelasticity in compacting flow (Keller et al., 2013). K_phi is porosity-dependent, K_phi = K_0 * phi^(-q)
-      // (eq. 52), where K_0 is the reference pore modulus, and K_phi is formed for each quadrature point.
-      // The previous-timestep compaction pressure (dP^o) is needed for the elastic restoring source
-      // (eq. 44), so read p_c from the old solution. Skip dP^o
-      // when K_0 is at its large default or once non-zero timestep is set (dt > 0.0).
-      const double dt = this->get_timestep();
-      const double K_0 = this->get_melt_handler().melt_parameters.reference_pore_modulus;
-      const bool is_compaction_elasticity = (dt > 0.0 && K_0 < 1e30);
-      std::vector<double> old_pc_values(n_q_points, 0.0);
-      if (is_compaction_elasticity)
-        scratch.finite_element_values[ex_p_c].get_function_values(this->get_old_solution(), old_pc_values);
-
       for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell;)
         {
           const unsigned int component_index_i = fe.system_to_component_index(i).first;
@@ -534,18 +505,6 @@ namespace aspect
           const double K_D = this->get_melt_handler().limited_darcy_coefficient(melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q],
                                                                                 p_c_scale > 0);
           const double viscosity_c = melt_outputs->compaction_viscosities[q];
-          // Elastic pore modulus K_phi = K_0 * phi^(-q) (Keller, May & Kaus
-          // 2013, eq. 52). Only meaningful where there are pores (porosity > 0);
-          // elsewhere the poro-elastic compaction is inactive.
-          const bool cell_has_pore_elasticity = is_compaction_elasticity && porosity > 0.0;
-          const double K_phi = cell_has_pore_elasticity
-                               ? K_0 * std::pow(porosity, -0.5)
-                               : numbers::signaling_nan<double>();
-          // Combination of the viscous compaction viscosity and the elastic
-          // term. Reduces to viscosity_c when there is no pore elasticity.
-          const double viscosity_c_ve = cell_has_pore_elasticity
-                                        ? 1.0 / (1.0/viscosity_c + 1.0/((1-porosity)*K_phi*dt))
-                                        : viscosity_c;
           const Tensor<1,dim> density_gradient_f = melt_outputs->fluid_density_gradients[q];
           const double density_f = melt_outputs->fluid_densities[q];
           const double p_f_RHS = compute_fluid_pressure_rhs(this,
@@ -594,11 +553,6 @@ namespace aspect
                 data.local_rhs(i) += (elastic_outputs->elastic_force[q] * scratch.grads_phi_u[i])
                                      * JxW;
 
-              if (cell_has_pore_elasticity)
-                data.local_rhs(i) += - pressure_scaling
-                                     * p_c_scale * p_c_scale / (K_phi * dt)
-                                     * old_pc_values[q] * scratch.phi_p_c[i] * JxW;
-
               if (scratch.rebuild_stokes_matrix)
                 for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
                   {
@@ -615,7 +569,7 @@ namespace aspect
                                                 // operator adjoint to the grad(p) term
                                                 - (pressure_scaling *
                                                    scratch.phi_p[i] * scratch.div_phi_u[j]) +
-                                                (-pressure_scaling * pressure_scaling / viscosity_c_ve * p_c_scale * p_c_scale * scratch.phi_p_c[i] * scratch.phi_p_c[j]) - pressure_scaling * scratch.div_phi_u[i] * scratch.phi_p_c[j] * p_c_scale - pressure_scaling * scratch.phi_p_c[i] * scratch.div_phi_u[j] * p_c_scale - K_D * pressure_scaling * pressure_scaling * (scratch.grad_phi_p[i] * scratch.grad_phi_p[j]) + (this->get_material_model().is_compressible() ? K_D * pressure_scaling * pressure_scaling / density_f * scratch.phi_p[i] * (scratch.grad_phi_p[j] * density_gradient_f) : 0.0)) *
+                                                (-pressure_scaling * pressure_scaling / viscosity_c * p_c_scale * p_c_scale * scratch.phi_p_c[i] * scratch.phi_p_c[j]) - pressure_scaling * scratch.div_phi_u[i] * scratch.phi_p_c[j] * p_c_scale - pressure_scaling * scratch.phi_p_c[i] * scratch.div_phi_u[j] * p_c_scale - K_D * pressure_scaling * pressure_scaling * (scratch.grad_phi_p[i] * scratch.grad_phi_p[j]) + (this->get_material_model().is_compressible() ? K_D * pressure_scaling * pressure_scaling / density_f * scratch.phi_p[i] * (scratch.grad_phi_p[j] * density_gradient_f) : 0.0)) *
                                                JxW;
                   }
             }
@@ -1878,14 +1832,6 @@ namespace aspect
                            "accuracy and convergence behavior of the melt velocity is important "
                            "(like in benchmark cases with an analytical solution), this parameter "
                            "should probably be set to 'false'.");
-        prm.declare_entry ("Reference pore modulus", "1e30",
-                           Patterns::Double (0),
-                           "Reference pore modulus $K_0$ of the solid matrix used for "
-                           "visco-elastic compaction (Keller, May \\& Kaus 2013). It sets the "
-                           "porosity-dependent elastic pore modulus "
-                           "$K_\\phi = K_0 \\, \\phi^{-q}$ (eq. 52), the elastic modulus "
-                           "governing compaction (eq. 32). The default (very large value) "
-                           "recovers purely viscous compaction. Units: \\si{\\pascal}.");
       }
       prm.leave_subsection();
 
@@ -1903,7 +1849,6 @@ namespace aspect
         heat_advection_by_melt = prm.get_bool("Heat advection by melt");
         use_discontinuous_p_c = prm.get_bool("Use discontinuous compaction pressure");
         average_melt_velocity = prm.get_bool("Average melt velocity");
-        reference_pore_modulus = prm.get_double("Reference pore modulus");
       }
       prm.leave_subsection();
     }
