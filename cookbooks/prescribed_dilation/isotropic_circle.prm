@@ -32,11 +32,11 @@ subsection Geometry model
     set Box origin Y coordinate = -1
     set X extent = 2
     set Y extent = 2
-    set Lithospheric thickness = 0.15
+    set Lithospheric thickness = 0.075
     set Use merged grids = true
-    set Y repetitions = 37
-    set Y repetitions lithosphere = 3
-    set X repetitions = 40
+    set Y repetitions = 74
+    set Y repetitions lithosphere = 6
+    set X repetitions = 80
   end
 end
 

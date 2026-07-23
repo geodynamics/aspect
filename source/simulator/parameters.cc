@@ -1788,6 +1788,7 @@ namespace aspect
     pressure_normalization          = prm.get("Pressure normalization");
 
     use_operator_splitting          = prm.get_bool("Use operator splitting");
+    use_prescribed_dilation_plugin  = prm.get_bool("Use prescribed dilation plugin");
 
     prm.enter_subsection ("Mesh refinement");
     {
