@@ -137,24 +137,33 @@ namespace aspect
           in.position[0] = representative_point;
           in.pressure[0] = pressures[i];
 
+          AssertThrow(reference_composition == reference_function || entropy_indices.size() == 1,
+                  ExcMessage("If you have more than one chemical composition, please specify the composition at each depth"
+                            "using functions for the adiabat profile calculation"));
+
           for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
             {
-              // Set all chemical composition to the initial composition, except the entropies, which
-              // are set to the surface entropy (since entropy is constant along an adiabat).
-              // If there are multiple entropy components, which could have different entropies,
-              // we set one bulk entropy (which is the surface entropy) and calculate the equilibrated
-              // profile using the multi-component entropy method.
+              // If there is only one chemical composition, we use one entropy value for the 
+              // adiabat calculation, since entropy is constant along an adiabat. This value is 
+              // specified by Surface entropy.
               if (reference_composition == surface_constant)
                 if (this->introspection().get_composition_descriptions()[c].type == CompositionalFieldDescription::entropy)
                   in.composition[0][c] = surface_entropy;
                 else
                   in.composition[0][c] = initial_composition_manager->initial_composition(this->get_geometry_model().representative_point(0), c);
 
-              // The chemical compositions and component's entropies can also be specified by a function. Each components
-              // will be equiliabrated using the multi-component entropy method.
+              // If there are multiple entropy compositions, which could have different entropies,
+              // the chemical compositions and compositions' entropies should be specified by a function. 
+              // At every point of the depth, we calculalte the adiabatic temperature using the 
+              // multi-composition entropy equilibration.
               else if (reference_composition == reference_function)
                 {
-                  const Point<1> p(representative_point[1]);
+              // The function is written in terms of y coordinate.
+              // This is consistent with the initial composition funciton.                 
+              double depth = this->get_geometry_model().depth(representative_point);
+              const double y = this->get_geometry_model().maximal_depth() - depth;
+              const Point<1> p(y);
+                 
                   for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                     in.composition[0][c] = composition_function->value(p, c);
                 }
@@ -315,10 +324,10 @@ namespace aspect
           Functions::ParsedFunction<1>::declare_parameters (prm, 1);
           prm.declare_entry ("Composition profile", "surface constant",
                              Patterns::Selection("surface constant|function"),
-                             " Select the composition profile that is used to compute the"
-                             " depth-dependent adiabatic profile. The default 'surface constant'"
-                             " use the composition at the surface for all depth. You can instead "
-                             " use 'function' to specify a depth-dependent composition variation");
+                             " Select between two ways for calculating the adiabatic profile. "
+                             " The default 'surface constant' specifies the entropy value of the adiabat."
+                             " If you have more than one chemical composition, please use 'function' to "
+                             " specify a depth-dependent composition variation for the adiabat profile ");
         }
         prm.leave_subsection();
       }

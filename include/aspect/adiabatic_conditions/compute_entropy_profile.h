@@ -150,7 +150,7 @@ namespace aspect
 
         /**
          * Function object that computes the reference composition profile
-         * if the reference_composition variable is set to function.
+         * if the reference_composition variable is set to reference_function.
          */
         std::unique_ptr<Functions::ParsedFunction<1>> composition_function;
 
