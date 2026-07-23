@@ -21,6 +21,7 @@
 
 #include <aspect/mesh_deformation/fastscape.h>
 #include <aspect/geometry_model/box.h>
+#include <aspect/geometry_model/two_merged_boxes.h>
 #include <deal.II/numerics/vector_tools.h>
 #include <aspect/postprocess/visualization.h>
 #include <ctime>
@@ -196,11 +197,14 @@ namespace aspect
     {
       CitationInfo::add("fastscape");
 
-      AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
-                  ExcMessage("FastScape can only be run with a box geometry model."));
-
-      const GeometryModel::Box<dim> *geometry
+      const GeometryModel::Box<dim> *box_geometry
         = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
+      const GeometryModel::TwoMergedBoxes<dim> *two_merged_boxes_geometry
+        = dynamic_cast<const GeometryModel::TwoMergedBoxes<dim>*> (&this->get_geometry_model());
+
+      AssertThrow(box_geometry != nullptr || two_merged_boxes_geometry != nullptr,
+                  ExcMessage("FastScape can only be run with the 'box' or "
+                             "'box with lithosphere boundary indicators' geometry models."));
 
       // Find the id associated with the top boundary and boundaries that call mesh deformation.
       const types::boundary_id top_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
@@ -248,16 +252,26 @@ namespace aspect
                                   "Please change it to type generic so that it does not affect material properties."));
         }
 
-      // The first entry represents the minimum coordinates of the model domain, the second the model extent.
+      const Point<dim> origin = (box_geometry != nullptr
+                                 ? box_geometry->get_origin()
+                                 : two_merged_boxes_geometry->get_origin());
+      const Point<dim> extents = (box_geometry != nullptr
+                                  ? box_geometry->get_extents()
+                                  : two_merged_boxes_geometry->get_extents());
+
+      // The first entry represents the minimum coordinate of the model domain,
+      // and the second the model extent.
       for (unsigned int d=0; d<dim; ++d)
         {
-          grid_extent[d].first = geometry->get_origin()[d];
-          grid_extent[d].second = geometry->get_extents()[d];
+          grid_extent[d].first = origin[d];
+          grid_extent[d].second = extents[d];
         }
 
       // Get the x and y repetitions used in the parameter file so
       // the FastScape cell size can be properly set.
-      const std::array<unsigned int, dim> repetitions = geometry->get_repetitions();
+      const std::array<unsigned int, dim> repetitions = (box_geometry != nullptr
+                                                         ? box_geometry->get_repetitions()
+                                                         : two_merged_boxes_geometry->get_repetitions());
 
       // Set number of x points, which is generally 1+(FastScape refinement level)^2.
       // The FastScape refinement level is a combination of the maximum ASPECT refinement level

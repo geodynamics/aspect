@@ -334,6 +334,17 @@ namespace aspect
       return extents;
     }
 
+
+
+    template <int dim>
+    const std::array<unsigned int, dim> &
+    TwoMergedBoxes<dim>::get_repetitions () const
+    {
+      return lower_repetitions;
+    }
+
+
+
     template <int dim>
     Point<dim>
     TwoMergedBoxes<dim>::get_origin () const
