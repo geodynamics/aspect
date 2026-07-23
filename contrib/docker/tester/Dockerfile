@@ -11,9 +11,12 @@ RUN DEBIAN_FRONTEND=noninteractive apt update && apt upgrade -yq && \
   texlive-plain-generic texlive-base texlive-latex-recommended \
   texlive-latex-base texlive-fonts-recommended \
   texlive-bibtex-extra lmodern texlive-latex-extra \
-  texlive-science graphviz python3-pip python-setuptools
+  texlive-science graphviz python3-pip python-setuptools libpython3-dev
 
 RUN pip3 install cpp-coveralls
+
+# install uv:
+COPY --from=ghcr.io/astral-sh/uv:0.11.31 /uv /uvx /usr/local/bin/
 
 COPY local.cfg /opt/
 
