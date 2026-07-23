@@ -261,7 +261,9 @@ namespace aspect
                   reaction_time_step_size = this->get_timestep() / static_cast<double>(number_of_reaction_steps);
                   reaction_fraction       = reaction_time_step_size / fluid_reaction_time_scale;
                 }
-
+              
+              const std::vector<CompositionalFieldDescription> &composition_descriptions =
+                this->introspection().get_composition_descriptions();
               std::vector<double> eq_free_fluid_fractions(out.n_evaluation_points());
               melt_fractions(in, eq_free_fluid_fractions, &out);
 
@@ -335,7 +337,8 @@ namespace aspect
                       else if (c == porosity_idx && this->get_timestep_number() > 0)
                         // Apply the volume fraction change to the porosity, which is a volume fraction
                         reaction_rate_out->reaction_rates[q][c] = porosity_change / reaction_time_step_size;
-                      else
+                      else if (composition_descriptions[c].type != CompositionalFieldDescription::stress)
+                        // leave stress rates alone — the base model filled them with the elastic stress update
                         reaction_rate_out->reaction_rates[q][c] = 0.0;
                     }
                 }
