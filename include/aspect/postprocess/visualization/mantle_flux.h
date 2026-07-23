@@ -42,8 +42,8 @@ namespace aspect
        */
       template <int dim>
       class MantleFlux : public DataPostprocessor<dim>,
-                         public SimulatorAccess<dim>,
-                         public Interface<dim>
+        public SimulatorAccess<dim>,
+        public Interface<dim>
       {
         public:
           /**

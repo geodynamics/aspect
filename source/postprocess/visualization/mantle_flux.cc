@@ -47,7 +47,8 @@ namespace aspect
         return {"mantle_structure",
                 "temperature_anomaly_flux_density",
                 "thermal_buoyancy_mass_flux_density",
-                "thermal_buoyancy_force_rate_density"};
+                "thermal_buoyancy_force_rate_density"
+               };
       }
 
 
@@ -99,9 +100,9 @@ namespace aspect
                 ExcInternalError());
 
         MaterialModel::MaterialModelInputs<dim> material_inputs(input_data,
-                                                                 this->introspection());
+                                                                this->introspection());
         MaterialModel::MaterialModelOutputs<dim> material_outputs(n_quadrature_points,
-                                                                   this->n_compositional_fields());
+                                                                  this->n_compositional_fields());
         material_inputs.requested_properties =
           MaterialModel::MaterialProperties::density |
           MaterialModel::MaterialProperties::thermal_expansion_coefficient;

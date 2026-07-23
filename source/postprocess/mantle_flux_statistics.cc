@@ -262,9 +262,9 @@ namespace aspect
                               update_quadrature_points | update_JxW_values);
 
       MaterialModel::MaterialModelInputs<dim> material_inputs(quadrature.size(),
-                                                               this->n_compositional_fields());
+                                                              this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> material_outputs(quadrature.size(),
-                                                                 this->n_compositional_fields());
+                                                                this->n_compositional_fields());
       material_inputs.requested_properties =
         MaterialModel::MaterialProperties::density |
         MaterialModel::MaterialProperties::thermal_expansion_coefficient;
@@ -283,17 +283,17 @@ namespace aspect
       unsigned int next_cluster_id = 0;
 
       enum FluxComponent
-        {
-          plume_volume_flux,
-          slab_volume_flux,
-          plume_temperature_flux,
-          slab_temperature_flux,
-          plume_buoyancy_mass_flux,
-          slab_buoyancy_mass_flux,
-          plume_buoyancy_force_rate,
-          slab_buoyancy_force_rate,
-          n_flux_components
-        };
+      {
+        plume_volume_flux,
+        slab_volume_flux,
+        plume_temperature_flux,
+        slab_temperature_flux,
+        plume_buoyancy_mass_flux,
+        slab_buoyancy_mass_flux,
+        plume_buoyancy_force_rate,
+        slab_buoyancy_force_rate,
+        n_flux_components
+      };
 
       for (const double requested_depth : measurement_depths)
         {
@@ -571,7 +571,7 @@ namespace aspect
         prm.enter_subsection("Mantle flux statistics");
         {
           measurement_depths = Utilities::string_to_double(
-            Utilities::split_string_list(prm.get("Measurement depths")));
+                                 Utilities::split_string_list(prm.get("Measurement depths")));
           measurement_half_thickness = prm.get_double("Measurement layer half thickness");
           cold_temperature_threshold = prm.get_double("Cold temperature anomaly threshold");
           hot_temperature_threshold = prm.get_double("Hot temperature anomaly threshold");
