@@ -37,6 +37,8 @@ Using this definition, the plugin then solves for one time step, i.e., using as 
 This surface velocity is used to deform the surface and as a boundary condition for solving the Laplace equation to determine the mesh velocity in the domain interior. Diffusion can be applied every timestep, mimicking surface processes of erosion and deposition, or at a user-defined timestep interval to purely smooth the surface topography to avoid too great a distortion of mesh elements when a free surface is also used.
 
 &lsquo;free surface&rsquo;: A plugin that computes the deformation of surface vertices according to the solution of the flow problem. In particular this means if the surface of the domain is left open to flow, this flow will carry the mesh with it. The implementation was described in {cite}`rose_freesurface`, with the stabilization of the free surface originally described in {cite}`kaus:etal:2010`.
+
+&lsquo;isostacy&rsquo;: A mesh deformation model that computes an initial isostatic surface deformation by balancing the mass of vertical columns.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Mesh deformation mapping order<parameters:Mesh_20deformation/Mesh_20deformation_20mapping_20order>`
@@ -148,4 +150,51 @@ If the function you are describing represents a vector-valued function with mult
 **Pattern:** [Selection normal|vertical ]
 
 **Documentation:** After each time step the free surface must be advected in the direction of the velocity field. Mass conservation requires that the mesh velocity is in the normal direction of the surface. However, for steep topography or large curvature, advection in the normal direction can become ill-conditioned, and instabilities in the mesh can form. Projection of the mesh velocity onto the local vertical direction can preserve the mesh quality better, but at the cost of slightly poorer mass conservation of the domain.
+::::
+
+(parameters:Mesh_20deformation/Isostacy)=
+## **Subsection:** Mesh deformation / Isostacy
+::::{dropdown} __Parameter:__ {ref}`Compensation depth<parameters:Mesh_20deformation/Isostacy/Compensation_20depth>`
+:name: parameters:Mesh_20deformation/Isostacy/Compensation_20depth
+**Default value:** 500000
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The depth above which the model is assumed to be in isostatic equilibrium. The implementation assumes that material flows horizontally at this depth to balance column masses. Consequently, the reference density used for the isostatic compensation is taken as the density of the material at the compensation depth.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Isostatic length scale<parameters:Mesh_20deformation/Isostacy/Isostatic_20length_20scale>`
+:name: parameters:Mesh_20deformation/Isostacy/Isostatic_20length_20scale
+**Default value:** 500e3
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The characteristic horizontal length scale (in m) over which topographic loads are assumed to attain isostatic compensation. The computed isostatic topography is smoothed with a Gaussian filter whose half-power wavelength is given by this value. Set to 0 to disable Gaussian filtering.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Maximum isostatic topography<parameters:Mesh_20deformation/Isostacy/Maximum_20isostatic_20topography>`
+:name: parameters:Mesh_20deformation/Isostacy/Maximum_20isostatic_20topography
+**Default value:** 10000
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The maximum absolute value of the computed initial isostatic topography. If the calculated topography exceeds this magnitude, it is limited to this value to prevent unrealistically large initial surface deformations.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Number of lateral points<parameters:Mesh_20deformation/Isostacy/Number_20of_20lateral_20points>`
+:name: parameters:Mesh_20deformation/Isostacy/Number_20of_20lateral_20points
+**Default value:** 2000
+
+**Pattern:** [Integer range 2...2147483647 (inclusive)]
+
+**Documentation:** The number of equally spaced lateral sampling points used to sample the mesh surface. For each sampling point, a vertical column is constructed through the model domain to compute the column mass, which is subsequently used to determine the isostatic topography.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Number of vertical points<parameters:Mesh_20deformation/Isostacy/Number_20of_20vertical_20points>`
+:name: parameters:Mesh_20deformation/Isostacy/Number_20of_20vertical_20points
+**Default value:** 2000
+
+**Pattern:** [Integer range 2...2147483647 (inclusive)]
+
+**Documentation:** The number of equally spaced vertical sampling points used within each column. These points are used to sample the material properties along the column and numerically integrate the column mass for the isostatic topography calculation.
 ::::
