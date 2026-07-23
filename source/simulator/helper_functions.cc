@@ -548,6 +548,27 @@ namespace aspect
         (timestep_number % parameters.checkpoint_steps == 0))
       write_checkpoint = true;
 
+    /*
+     * See if an additional checkpoint needs to be created. Time has already been advanced
+     * to the next timestep.
+     * TODO if through the other criteria we already determined that a checkpoint needs to be created, 
+     * we can copy the checkpoint.
+     */
+    if ((parameters.additional_checkpoint_times.size() > 0)
+        &&
+        (parameters.additional_checkpoint_times.front () < time))
+      {
+        // Loop over as many times as this is necessary
+        while ((parameters.additional_checkpoint_times.size() > 0)
+               &&
+               (parameters.additional_checkpoint_times.front () < time))
+          {
+            create_snapshot(time);
+            parameters.additional_checkpoint_times
+            .erase (parameters.additional_checkpoint_times.begin());
+          }
+      }
+
     // Do a checkpoint if indicated by checkpoint parameters
     if (write_checkpoint)
       {

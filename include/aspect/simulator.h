@@ -913,7 +913,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/checkpoint_restart.cc</code>.
        */
-      void create_snapshot();
+      void create_snapshot(const double additional_checkpoint_time = numbers::signaling_nan<double>());
 
       /**
        * Restore the state of this program from a set of files in the output
