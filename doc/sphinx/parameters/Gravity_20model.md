@@ -9,7 +9,7 @@
 :name: parameters:Gravity_20model/Model_20name
 **Default value:** unspecified
 
-**Pattern:** [Selection ascii data|function|radial constant|radial linear|vertical|unspecified ]
+**Pattern:** [Selection ascii data|function|radial constant|radial linear|radial with tidal potential|vertical|unspecified ]
 
 **Documentation:** Select one of the following models:
 
@@ -20,6 +20,8 @@
 &lsquo;radial constant&rsquo;: A gravity model in which the gravity has a constant magnitude and the direction is radial (pointing inward if the value is positive). The magnitude is read from the parameter file in subsection &rsquo;Radial constant&rsquo;.
 
 &lsquo;radial linear&rsquo;: A gravity model which is radial (pointing inward if the gravity is positive) and the magnitude changes linearly with depth. The magnitude of gravity at the surface and bottom is read from the input file in a section &ldquo;Gravity model/Radial linear&rdquo;.
+
+&lsquo;radial with tidal potential&rsquo;: A gravity model that is the sum of the &lsquo;radial constant&rsquo; model (which is radial, pointing inward if the gravity is positive), and a term that results from a tidal potential and that leads to a gravity field that varies with latitude and longitude. There are two components of tidal potential: pulling of perturbing body and nonsynchronous rotation of modeled body. Nonsynchronous rotation occurs in planetary bodies where a liquid layer decouples rotation of surrounding solid layers. The magnitude of gravity for the radial constant part is read from the input file in a section &lsquo;Gravity model/Radial constant&rsquo;; the parameters that describe the tidal potential contribution are read from a section &lsquo;Gravity model/Radial with tidal potential&rsquo;. This module only works in 3D spherical geometry.
 
 &lsquo;vertical&rsquo;: A gravity model in which the gravity direction is vertical (pointing downward for positive values) and at a constant magnitude by default equal to one.
 ::::
@@ -124,6 +126,35 @@ If the function you are describing represents a vector-valued function with mult
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Magnitude of the radial gravity vector at the surface of the domain. Units: \si{\meter\per\second\squared}.
+::::
+
+(parameters:Gravity_20model/Radial_20with_20tidal_20potential)=
+## **Subsection:** Gravity model / Radial with tidal potential
+::::{dropdown} __Parameter:__ {ref}`Mass of perturbing body<parameters:Gravity_20model/Radial_20with_20tidal_20potential/Mass_20of_20perturbing_20body>`
+:name: parameters:Gravity_20model/Radial_20with_20tidal_20potential/Mass_20of_20perturbing_20body
+**Default value:** 1.898e27
+
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Mass of body that perturbs gravity of modeled body. The default value is chosen for modeling Europa, therefore, it is the mass of Jupiter. Units is $kg$.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Period of nonsynchronous rotation<parameters:Gravity_20model/Radial_20with_20tidal_20potential/Period_20of_20nonsynchronous_20rotation>`
+:name: parameters:Gravity_20model/Radial_20with_20tidal_20potential/Period_20of_20nonsynchronous_20rotation
+**Default value:** 10000
+
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Period of nonsynchronous rotation (NSR). The default value is the period of NSR on Europa&rsquo;s icy shell. Units is $year$ when &rsquo;Use years instead of seconds&rsquo; is true, and $second$ when &rsquo;Use years instead of seconds&rsquo; is false.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Semimajor axis of orbit<parameters:Gravity_20model/Radial_20with_20tidal_20potential/Semimajor_20axis_20of_20orbit>`
+:name: parameters:Gravity_20model/Radial_20with_20tidal_20potential/Semimajor_20axis_20of_20orbit
+**Default value:** 670900000
+
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The length of the semimajor axis of the orbit that cause the tidal perturbation. For example, tidal perturbation on Europa happens by Europa orbiting Jupiter, and that on Earth, if Moon is in consideration, happens by Moon orbiting Earth. The default value is for the semimajor axis of Europa&rsquo;s orbit. Units is $m$.
 ::::
 
 (parameters:Gravity_20model/Vertical)=
