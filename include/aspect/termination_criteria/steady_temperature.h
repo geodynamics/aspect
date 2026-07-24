@@ -61,6 +61,12 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm) override;
 
+        void
+        save (std::map<std::string, std::string> &status_strings) const override;
+
+        void
+        load (const std::map<std::string, std::string> &status_strings) override;
+
       private:
         double                                  necessary_time_in_steady_state;
         double                                  allowed_relative_deviation;
