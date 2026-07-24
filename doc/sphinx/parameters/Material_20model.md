@@ -995,6 +995,15 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Documentation:** The path to the model data. The path may also include the special text &rsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT.
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Fraction of maximum specific heat capacity for transition from exact value<parameters:Material_20model/Entropy_20model/Fraction_20of_20maximum_20specific_20heat_20capacity_20for_20transition_20from_20exact_20value>`
+:name: parameters:Material_20model/Entropy_20model/Fraction_20of_20maximum_20specific_20heat_20capacity_20for_20transition_20from_20exact_20value
+**Default value:** 0.1
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The fraction of the maximum specific heat capacity that defines the transition point where the effective specific heat capacity starts to deviate from the exact value given by the thermodynamic lookup table.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Lateral viscosity file name<parameters:Material_20model/Entropy_20model/Lateral_20viscosity_20file_20name>`
 :name: parameters:Material_20model/Entropy_20model/Lateral_20viscosity_20file_20name
 **Default value:** constant_lateral_vis_prefactor.txt
@@ -1029,6 +1038,15 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The relative cutoff value for lateral viscosity variations caused by temperature deviations. The viscosity may vary laterally by this factor squared.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Maximum specific heat capacity<parameters:Material_20model/Entropy_20model/Maximum_20specific_20heat_20capacity>`
+:name: parameters:Material_20model/Entropy_20model/Maximum_20specific_20heat_20capacity
+**Default value:** 1e50
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The maximum allowed value for the specific heat capacity.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Maximum thermal conductivity<parameters:Material_20model/Entropy_20model/Maximum_20thermal_20conductivity>`
