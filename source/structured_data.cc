@@ -1038,6 +1038,7 @@ namespace aspect
           current_file_number = first_data_file_number;
 
           const std::string filename (create_filename (current_file_number, boundary_id));
+          const std::string pretty_name = Utilities::replace_in_string(filename, ASPECT_SOURCE_DIR, "$ASPECT_SOURCE_DIR");
 
           this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
                             << filename << '.' << std::endl << std::endl;
@@ -1046,7 +1047,7 @@ namespace aspect
           AssertThrow(Utilities::fexists(filename, this->get_mpi_communicator()) || filename_is_url(filename),
                       ExcMessage (std::string("Ascii data file <")
                                   +
-                                  filename
+                                  pretty_name
                                   +
                                   "> not found!"));
           lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator());
@@ -1591,10 +1592,11 @@ namespace aspect
       for (unsigned int i=0; i<number_of_layer_boundaries; ++i)
         {
           const std::string filename = this->data_directory + data_file_names[i];
+          const std::string pretty_name = Utilities::replace_in_string(filename, ASPECT_SOURCE_DIR, "$ASPECT_SOURCE_DIR");
           AssertThrow(Utilities::fexists(filename, this->get_mpi_communicator()) || filename_is_url(filename),
                       ExcMessage (std::string("Ascii data file <")
                                   +
-                                  filename
+                                  pretty_name
                                   +
                                   "> not found!"));
 
@@ -1727,6 +1729,7 @@ namespace aspect
     AsciiDataInitial<dim>::initialize (const unsigned int n_components)
     {
       const std::string filename = this->data_directory + this->data_file_name;
+      const std::string pretty_name = Utilities::replace_in_string(filename, ASPECT_SOURCE_DIR, "$ASPECT_SOURCE_DIR");
 
       this->get_pcout() << std::endl << "   Loading Ascii data initial file "
                         << filename << '.' << std::endl << std::endl;
@@ -1735,7 +1738,7 @@ namespace aspect
       AssertThrow(Utilities::fexists(filename, this->get_mpi_communicator()) || filename_is_url(filename),
                   ExcMessage (std::string("Ascii data file <")
                               +
-                              filename
+                              pretty_name
                               +
                               "> not found!"));
 
@@ -1885,11 +1888,12 @@ namespace aspect
       lookup = std::make_unique<Utilities::StructuredDataLookup<1>> (this->scale_factor);
 
       const std::string filename = this->data_directory + this->data_file_name;
+      const std::string pretty_name = Utilities::replace_in_string(filename, ASPECT_SOURCE_DIR, "$ASPECT_SOURCE_DIR");
 
       AssertThrow(Utilities::fexists(filename, communicator) || filename_is_url(filename),
                   ExcMessage (std::string("Ascii data file <")
                               +
-                              filename
+                              pretty_name
                               +
                               "> not found!"));
       lookup->load_file(filename,communicator);
