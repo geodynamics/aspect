@@ -57,8 +57,8 @@ subsection Material model
     set Densities = 3300, 0, 0, 2700, 2900, 3300
 
     set Prefactors for dislocation creep          = background: 7.37e-15, \
-                                                    upper_crust: 1.37e-26, \
-                                                    lower_crust: 5.71e-23, \
+                                                    upper_crust: 8.57e-28, \
+                                                    lower_crust: 7.13e-18, \
                                                     lithospheric_mantle: 7.37e-15
 
     set Stress exponents for dislocation creep    = background: 3.5, \
