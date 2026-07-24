@@ -27,6 +27,7 @@
 #include <deal.II/fe/component_mask.h>
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/parameter_handler.h>
+#include <deal.II/physics/notation.h>
 
 #include <mpi.h>
 
@@ -900,6 +901,36 @@ namespace aspect
            */
           unsigned int n_phases_total_chemical_compositions;
       };
+
+      template <int dim>
+      class OrthotropicRheology
+      {
+        public:
+          SymmetricTensor<2,6>
+          viscosity_tensor_cpo_frame(const double F, const double G, const double H, const double L, const double M, const double N);
+
+          SymmetricTensor<2,6>
+          fluidity_tensor_cpo_frame(const double F, const double G, const double H, const double L, const double M, const double N);
+
+          double
+          stress_invariant(const SymmetricTensor<2,3> stress_cpo_frame,
+                           const double F, const double G, const double H,
+                           const double L, const double M, const double N);
+
+          double
+          strain_rate_invariant(const SymmetricTensor<2,3> strain_rate_cpo_frame,
+                                const double F, const double G, const double H,
+                                const double L, const double M, const double N);
+
+          /*
+          * overload of dealii::Physics::Notation::Kelvin::to_tensor
+          */
+          SymmetricTensor<4,dim>
+          kelvin_to_r4_tensor(const SymmetricTensor<2,6> V);
+
+        private:
+      };
+
     }
   }
 }
