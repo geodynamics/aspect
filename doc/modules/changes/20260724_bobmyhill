@@ -1,0 +1,8 @@
+New: The entropy method is now stabilized by two additions:
+the heat capacity lookup is now interpolated in log space,
+and the heat capacity is also optionally limited,
+asymptotically approaching a maximum value at high exact values.
+This particularly stabilizes problems dominated by thermal
+diffusion involving near-univariant reactions.
+<br>
+(Bob Myhill, Ranpeng Li, 2026/07/24)
