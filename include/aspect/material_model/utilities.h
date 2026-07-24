@@ -437,6 +437,23 @@ namespace aspect
 
 
       /**
+       * Utilities for material models with multiple phases
+       */
+      namespace PhaseUtilities
+      {
+        /**
+         * Enumeration for selecting which averaging scheme to use when
+         * averaging the properties of different phases.
+         * Select between arithmetic and logarithmic.
+         */
+        enum PhaseAveragingOperation
+        {
+          arithmetic,
+          logarithmic
+        };
+      }
+
+      /**
        * For multicomponent material models:
        * Material models compute output quantities such as the viscosity, the
        * density, etc. For some models, these values depend strongly on the
@@ -459,7 +476,16 @@ namespace aspect
                             const std::vector<double> &parameter_values,
                             const CompositionalAveragingOperation &average_type);
 
-
+      /**
+       * Overloaded average_value function to account for the case when there
+       * may be phase transitions for each composition.
+       */
+      double average_value(const std::vector<double> &volume_fractions,
+                           const std::vector<double> &phase_function_values,
+                           const std::vector<unsigned int> &n_phase_transitions_per_composition,
+                           const std::vector<double> &parameter_values,
+                           const enum CompositionalAveragingOperation &average_type,
+                           const PhaseUtilities::PhaseAveragingOperation operation = PhaseUtilities::PhaseAveragingOperation::arithmetic);
 
       /**
        * This function computes averages of multicomponent thermodynamic properties
@@ -483,25 +509,6 @@ namespace aspect
                                               const unsigned int i,
                                               MaterialModelOutputs<dim> &out);
 
-
-
-      /**
-       * Utilities for material models with multiple phases
-       */
-      namespace PhaseUtilities
-      {
-        /**
-         * Enumeration for selecting which averaging scheme to use when
-         * averaging the properties of different phases.
-         * Select between arithmetic and logarithmic.
-         */
-        enum PhaseAveragingOperation
-        {
-          arithmetic,
-          logarithmic
-        };
-      }
-
       /**
        * Material models compute output quantities such as the viscosity, the
        * density, etc. For some models, these values may depend on the phase in
@@ -522,9 +529,18 @@ namespace aspect
                                   const std::vector<unsigned int> &n_phase_transitions_per_composition,
                                   const std::vector<double> &parameter_values,
                                   const unsigned int composition_index,
-                                  const PhaseUtilities::PhaseAveragingOperation operation = PhaseUtilities::arithmetic);
+                                  const PhaseUtilities::PhaseAveragingOperation operation = PhaseUtilities::PhaseAveragingOperation::arithmetic);
 
-
+      /**
+       * Overloaded phase_average_value function where @p start_phase_index
+       * is passed as an argument.
+       */
+      double phase_average_value(const std::vector<double> &phase_function_values,
+                                 const std::vector<double> &parameter_values,
+                                 const unsigned int composition_index,
+                                 const unsigned int start_phase_index,
+                                 const unsigned int n_phase_transitions_for_composition,
+                                 const PhaseUtilities::PhaseAveragingOperation operation = PhaseUtilities::PhaseAveragingOperation::arithmetic);
 
       /**
        * A data structure with all inputs for the

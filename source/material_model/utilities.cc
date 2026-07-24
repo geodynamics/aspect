@@ -1080,6 +1080,37 @@ namespace aspect
 
 
 
+      double
+      average_value (const std::vector<double> &volume_fractions,
+                     const std::vector<double> &phase_function_values,
+                     const std::vector<unsigned int> &n_phase_transitions_per_composition,
+                     const std::vector<double> &parameter_values,
+                     const enum CompositionalAveragingOperation &average_type,
+                     const PhaseUtilities::PhaseAveragingOperation operation)
+      {
+        // Calculate base index and assign base value
+        unsigned int composition_index = 0;
+        unsigned int start_phase_index = 0;
+        std::vector<double> values;
+
+        for (auto &n_phase_transitions_for_composition : n_phase_transitions_per_composition)
+          {
+            values.push_back(phase_average_value(phase_function_values,
+                                                 parameter_values,
+                                                 composition_index,
+                                                 start_phase_index,
+                                                 n_phase_transitions_per_composition[composition_index],
+                                                 operation));
+
+            start_phase_index += n_phase_transitions_for_composition + 1;
+            ++composition_index;
+          }
+
+        return average_value(volume_fractions, values, average_type);
+      }
+
+
+
       template <int dim>
       void
       fill_averaged_equation_of_state_outputs(const EquationOfStateOutputs<dim> &eos_outputs,
@@ -1111,14 +1142,33 @@ namespace aspect
         for (unsigned int i=0; i<composition_index; ++i)
           start_phase_index += n_phase_transitions_per_composition[i] + 1;
 
+        const double value = phase_average_value(phase_function_values,
+                                                 parameter_values,
+                                                 composition_index,
+                                                 start_phase_index,
+                                                 n_phase_transitions_per_composition[composition_index],
+                                                 operation);
+
+        return value;
+      }
+
+
+
+      double phase_average_value (const std::vector<double> &phase_function_values,
+                                  const std::vector<double> &parameter_values,
+                                  const unsigned int composition_index,
+                                  const unsigned int start_phase_index,
+                                  const unsigned int n_phase_transitions_for_composition,
+                                  const PhaseUtilities::PhaseAveragingOperation operation)
+      {
         double averaged_parameter = parameter_values[start_phase_index];
-        if (n_phase_transitions_per_composition[composition_index] > 0)
+        if (n_phase_transitions_for_composition > 0)
           {
             // Do averaging when there are multiple phases
             if (operation == PhaseUtilities::logarithmic)
               averaged_parameter = std::log(averaged_parameter);
 
-            for (unsigned int i=0; i<n_phase_transitions_per_composition[composition_index]; ++i)
+            for (unsigned int i=0; i<n_phase_transitions_for_composition; ++i)
               {
                 const unsigned int phase_index = start_phase_index + i;
 
@@ -1139,6 +1189,7 @@ namespace aspect
               averaged_parameter = std::exp(averaged_parameter);
           }
         return averaged_parameter;
+
       }
 
 
