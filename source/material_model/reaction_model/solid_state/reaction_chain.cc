@@ -76,16 +76,23 @@ namespace aspect
 
         template <int dim>
         void
-        ReactionChain<dim>::declare_parameters(ParameterHandler &prm, const std::vector<std::string> &phase_names)
+        ReactionChain<dim>::declare_parameters(ParameterHandler &prm)
         {
           prm.enter_subsection("Reaction chain");
           {
-            for (unsigned int i = 0; i + 1 < phase_names.size(); ++i)
+            const std::string default_phases = "olivine, wadsleyite, ringwoodite, postspinel";
+            prm.declare_entry("Phase names",
+                              default_phases,
+                              Patterns::List(Patterns::Anything()),
+                              "Comma-separated list of phase names defining the sequential chain.");
+            const std::vector<std::string> default_phase_names = Utilities::split_string_list(default_phases);
+
+            for (unsigned int i = 0; i + 1 < default_phase_names.size(); ++i)
               {
-                prm.enter_subsection(phase_names[i] + " " + phase_names[i+1]);
+                prm.enter_subsection(default_phase_names[i] + " " + default_phase_names[i+1]);
                 {
                   prm.declare_entry("Enable transformation", "true", Patterns::Bool(),
-                                    "Whether to enable the " + phase_names[i] + " <-> " + phase_names[i+1] + " transformation.");
+                                    "Whether to enable the " + default_phase_names[i] + " <-> " + default_phase_names[i+1] + " transformation.");
                   Utilities::AsciiDataProfile<dim>::declare_parameters(prm, "$ASPECT_SOURCE_DIR/data/material-model/reaction-chain/", "profile.tsv");
                   prm.declare_entry("Data directory", "$ASPECT_SOURCE_DIR/data/material-model/reaction-chain/",
                                     Patterns::DirectoryName(), "Directory containing this transformation's thermodynamic data file.");
@@ -103,9 +110,9 @@ namespace aspect
 
         template <int dim>
         void
-        ReactionChain<dim>::parse_parameters(ParameterHandler &prm, const std::vector<std::string> &phase_names_in)
+        ReactionChain<dim>::parse_parameters(ParameterHandler &prm)
         {
-          phase_names = phase_names_in;
+          phase_names = Utilities::split_string_list(prm.get("Phase names"));
           reactions.resize(phase_names.size() - 1);
 
           for (unsigned int i = 0; i < reactions.size(); ++i)
@@ -150,6 +157,13 @@ namespace aspect
                 step.dV_idx = step.profile.get_column_index_from_name("delta_molar_volume");
               }
         }
+
+        template <int dim>
+        const std::vector<std::string> &ReactionChain<dim>::get_phase_names() const
+        {
+          return phase_names;
+        }
+
       }
     }
   }

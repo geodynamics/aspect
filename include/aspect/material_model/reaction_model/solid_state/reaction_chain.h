@@ -82,11 +82,13 @@ namespace aspect
 
             std::vector<double> compute_phase_mass_fractions(const std::vector<double> &xi_clamped) const;
 
-            static void declare_parameters(ParameterHandler &prm, const std::vector<std::string> &phase_names);
+            static void declare_parameters(ParameterHandler &prm);
 
-            void parse_parameters(ParameterHandler &prm, const std::vector<std::string> &phase_names);
+            void parse_parameters(ParameterHandler &prm);
 
             void initialize();
+
+            const std::vector<std::string> &get_phase_names() const;
         };
       }
     }
