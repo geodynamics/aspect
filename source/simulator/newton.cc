@@ -52,7 +52,8 @@ namespace aspect
     assemblers.stokes_system.push_back(std::make_unique<aspect::Assemblers::NewtonStokesIncompressibleTerms<dim>>());
 
     if (this->get_material_model().is_compressible() ||
-        this->get_parameters().enable_prescribed_dilation)
+        this->get_parameters().enable_prescribed_dilation ||
+        this->get_parameters().use_prescribed_dilation_plugin)
       {
         // The compressible part of the preconditioner is only necessary if we use the simplified A block
         if (this->get_parameters().use_full_A_block_preconditioner == false)
@@ -109,6 +110,10 @@ namespace aspect
     if (this->pressure_rhs_needs_compatibility_modification())
       assemblers.stokes_system.push_back(
         std::make_unique<aspect::Assemblers::StokesPressureRHSCompatibilityModification<dim>>());
+    
+    if (this->get_parameters().use_prescribed_dilation_plugin)
+      assemblers.stokes_system.push_back(
+        std::make_unique<aspect::Assemblers::StokesPrescribedDilation<dim>>());
   }
 
 
