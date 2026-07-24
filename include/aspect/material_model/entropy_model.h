@@ -133,17 +133,16 @@ namespace aspect
 
         /**
          * Parameters limiting the specific heat capacity.
-         * max_specific_heat defines the maximum specific heat capacity allowed by the model.
-         * This value is defined by the 'Maximum specific heat capacity' parameter.
-         * transition_specific_heat is the specific heat capacity value at which the
+         * max_limit_specific_heat defines the maximum specific heat capacity allowed by the model.
+         * This value is defined by the 'Maximum limited specific heat capacity' parameter.
+         * max_exact_specific_heat is the exact specific heat capacity value at which the
          * transition from exact to limited specific heat capacity occurs.
-         * This value is controlled by the
-         * 'Fraction of maximum specific heat capacity for transition from exact value' parameter.
-         * ln_fraction_transition_specific_heat is the natural logarithm of the ratio of these two values.
+         * This value is defined by the 'Maximum exact specific heat capacity' parameter.
+         * ln_ratio_max_exact_max_limit_specific_heat is the natural logarithm of the ratio of these two values.
          */
-        double max_specific_heat;
-        double transition_specific_heat;
-        double ln_fraction_transition_specific_heat;
+        double max_limit_specific_heat;
+        double max_exact_specific_heat;
+        double ln_ratio_max_exact_max_limit_specific_heat;
 
         /**
          * Iteration parameters for multicomponent equilibration.

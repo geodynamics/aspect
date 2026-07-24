@@ -62,10 +62,6 @@ subsection Compositional fields
 end
 
 subsection Boundary velocity model
-  set Tangential velocity boundary indicators = bottom, left, right
-end
-
-subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom
 end
 
@@ -100,18 +96,19 @@ subsection Material model
   set Model name = entropy model
 
   subsection Entropy model
-    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/entropy-table/ol-en-table/
-    set Material file name               = forsterite_to_wadsleyite_sharp.txt, forsterite_to_wadsleyite_sharp.txt
-    set Maximum viscosity                = 1e25
-    set Minimum viscosity                = 1e25
-    set Lateral viscosity file name      = constant_lateral_vis_prefactor.txt
-    set Thermal conductivity formulation = constant
-    set Thermal conductivity             = 1000
-    set Maximum specific heat capacity   = 1e5
-    set Fraction of maximum specific heat capacity for transition from exact value = 0.1
+    set Data directory     = $ASPECT_SOURCE_DIR/data/material-model/entropy-table/ol-en-table/
+    set Material file name = forsterite_to_wadsleyite_sharp.txt, forsterite_to_wadsleyite_sharp.txt
+
+    set Maximum viscosity                      = 1e25
+    set Minimum viscosity                      = 1e25
+    set Lateral viscosity file name            = constant_lateral_vis_prefactor.txt
+    set Thermal conductivity formulation       = constant
+    set Thermal conductivity                   = 1000
+    set Maximum limited specific heat capacity = 1e5
+    set Maximum exact specific heat capacity   = 1e4
   
     set Maximum iteration for multicomponent equilibration = 15
-    set Multicomponent equilibration tolerance = 1e-6
+    set Multicomponent equilibration tolerance             = 1e-6
 
   end
 end

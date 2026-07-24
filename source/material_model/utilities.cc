@@ -795,12 +795,12 @@ namespace aspect
                                   const std::string &data_directory,
                                   const std::string &material_file_name)
         {
-          material_lookup = std::make_unique<Utilities::StructuredDataLookup<2>>(7,1.0);
+          material_lookup = std::make_unique<Utilities::StructuredDataLookup<2>>(7,1.0,std::set<unsigned int> {3});
 
           // Load the material data file.
           // The specific heat should be read in as the logarithm of the specific heat
           material_lookup->load_file(data_directory+material_file_name,
-                                     comm, {3});
+                                     comm);
         }
 
 

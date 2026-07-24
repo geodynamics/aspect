@@ -55,12 +55,28 @@ namespace aspect
 
     template <int dim>
     StructuredDataLookup<dim>::StructuredDataLookup(const unsigned int n_components,
+                                                    const double scale_factor,
+                                                    const std::set<unsigned int> &log_components)
+      :
+      n_components(n_components),
+      data(n_components),
+      maximum_component_value(n_components),
+      scale_factor(scale_factor),
+      log_components(log_components),
+      coordinate_values_are_equidistant(false)
+    {}
+
+
+
+    template <int dim>
+    StructuredDataLookup<dim>::StructuredDataLookup(const unsigned int n_components,
                                                     const double scale_factor)
       :
       n_components(n_components),
       data(n_components),
       maximum_component_value(n_components),
       scale_factor(scale_factor),
+      log_components(),
       coordinate_values_are_equidistant(false)
     {}
 
@@ -73,6 +89,7 @@ namespace aspect
       data(),
       maximum_component_value(),
       scale_factor(scale_factor),
+      log_components(),
       coordinate_values_are_equidistant(false)
     {}
 
@@ -340,8 +357,7 @@ namespace aspect
     template <int dim>
     void
     StructuredDataLookup<dim>::load_ascii(const std::string &filename,
-                                          const MPI_Comm comm,
-                                          const std::set<unsigned int> &log_components)
+                                          const MPI_Comm comm)
     {
       const std::string pretty_name = Utilities::replace_in_string(filename, ASPECT_SOURCE_DIR, "$ASPECT_SOURCE_DIR");
       const unsigned int root_process = 0;
@@ -864,14 +880,13 @@ namespace aspect
     template <int dim>
     void
     StructuredDataLookup<dim>::load_file(const std::string &filename,
-                                         const MPI_Comm communicator,
-                                         const std::set<unsigned int> &log_components)
+                                         const MPI_Comm communicator)
     {
       const bool is_netcdf_filename = std::regex_search(filename, std::regex("\\.(nc|NC)$"));
       if (is_netcdf_filename)
         load_netcdf(filename);
       else
-        load_ascii(filename, communicator, log_components);
+        load_ascii(filename, communicator);
     }
 
     template <int dim>

@@ -10,7 +10,7 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving entropy__qtz40 system ... 0 iterations.
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 1, 1.889e-16, 2.06111e-16, 3.12752e-16, 0
+      Relative nonlinear residuals (temperature, compositional fields): 1, 1.889e-16, 6.59316e-17, 2.03698e-16, 0
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Copying properties into prescribed temperature field... done.
@@ -20,8 +20,8 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving entropy__qtz40 system ... 0 iterations.
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 2.12019e-16, 1.889e-16, 2.06111e-16, 3.12752e-16, 0
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.12752e-16
+      Relative nonlinear residuals (temperature, compositional fields): 7.24302e-17, 1.889e-16, 6.59316e-17, 2.03698e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.03698e-16
 
 
    Postprocessing:
@@ -34,14 +34,14 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
 *** Timestep 1:  t=200000 years, dt=200000 years
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
-   Solving temperature system... 2 iterations.
+   Solving temperature system... 1 iterations.
    Solving percent_qtz40 system ... 0 iterations.
    Solving entropy_qtz60 system ... 0 iterations.
    Solving entropy__qtz40 system ... 0 iterations.
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 0.00091929, 1.889e-16, 1.08845e-16, 1.59665e-16, 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.00091929, 1.889e-16, 8.27877e-17, 2.69646e-16, 0
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00091929
 
    Copying properties into prescribed temperature field... done.
@@ -52,8 +52,8 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 9.13953e-16, 1.889e-16, 5.11583e-16, 5.5718e-16, 0
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 9.13953e-16
+      Relative nonlinear residuals (temperature, compositional fields): 7.49993e-16, 1.889e-16, 5.67995e-16, 4.37369e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.49993e-16
 
 
    Postprocessing:
@@ -66,14 +66,14 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
 *** Timestep 2:  t=400000 years, dt=200000 years
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
-   Solving temperature system... 2 iterations.
+   Solving temperature system... 1 iterations.
    Solving percent_qtz40 system ... 0 iterations.
    Solving entropy_qtz60 system ... 0 iterations.
    Solving entropy__qtz40 system ... 0 iterations.
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000886765, 5.33799e-17, 1.13054e-16, 6.29085e-17, 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.000886765, 5.33799e-17, 1.05727e-16, 1.35759e-16, 0
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000886765
 
    Copying properties into prescribed temperature field... done.
@@ -84,8 +84,8 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 1.46253e-16, 5.33799e-17, 1.4981e-16, 9.57013e-17, 0
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.4981e-16
+      Relative nonlinear residuals (temperature, compositional fields): 1.24463e-16, 5.33799e-17, 2.17813e-16, 1.95783e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.17813e-16
 
 
    Postprocessing:
@@ -105,7 +105,7 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 0.00085833, 5.33799e-17, 1.36361e-16, 1.46249e-16, 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.00085833, 5.33799e-17, 1.87742e-16, 2.06009e-16, 0
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00085833
 
    Copying properties into prescribed temperature field... done.
@@ -116,8 +116,8 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 2.42563e-16, 5.33799e-17, 1.64469e-16, 1.95926e-16, 0
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.42563e-16
+      Relative nonlinear residuals (temperature, compositional fields): 5.94415e-17, 5.33799e-17, 4.41346e-16, 3.4364e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 4.41346e-16
 
 
    Postprocessing:
@@ -130,14 +130,14 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
 *** Timestep 4:  t=800000 years, dt=200000 years
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving percent_qtz40 system ... 0 iterations.
    Solving entropy_qtz60 system ... 0 iterations.
    Solving entropy__qtz40 system ... 0 iterations.
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000833077, 5.33799e-17, 2.165e-16, 1.79982e-16, 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.000833077, 5.33799e-17, 1.23672e-16, 1.70713e-16, 0
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000833077
 
    Copying properties into prescribed temperature field... done.
@@ -148,8 +148,8 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 3.64533e-17, 5.33799e-17, 1.63208e-16, 9.64538e-17, 0
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.63208e-16
+      Relative nonlinear residuals (temperature, compositional fields): 9.18288e-16, 5.33799e-17, 3.49919e-16, 4.27832e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 9.18288e-16
 
 
    Postprocessing:
@@ -169,7 +169,7 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000810364, 5.33799e-17, 1.52846e-16, 1.02431e-16, 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.000810364, 5.33799e-17, 1.83854e-16, 1.9163e-16, 0
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000810364
 
    Copying properties into prescribed temperature field... done.
@@ -180,8 +180,8 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 8.12024e-16, 5.33799e-17, 5.39443e-16, 3.49602e-16, 0
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 8.12024e-16
+      Relative nonlinear residuals (temperature, compositional fields): 1.12216e-15, 5.33799e-17, 6.70882e-16, 5.385e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.12216e-15
 
 
    Postprocessing:
@@ -201,7 +201,7 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000789724, 5.33799e-17, 1.48147e-16, 1.96115e-16, 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.000789724, 5.33799e-17, 1.31376e-16, 5.30732e-16, 0
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000789724
 
    Copying properties into prescribed temperature field... done.
@@ -212,8 +212,8 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 7.51747e-16, 5.33799e-17, 3.54809e-16, 3.54728e-16, 0
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.51747e-16
+      Relative nonlinear residuals (temperature, compositional fields): 2.83839e-16, 5.33799e-17, 1.20018e-16, 1.99208e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.83839e-16
 
 
    Postprocessing:
@@ -226,14 +226,14 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
 *** Timestep 7:  t=1.4e+06 years, dt=200000 years
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
-   Solving temperature system... 2 iterations.
+   Solving temperature system... 1 iterations.
    Solving percent_qtz40 system ... 0 iterations.
    Solving entropy_qtz60 system ... 0 iterations.
    Solving entropy__qtz40 system ... 0 iterations.
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000770805, 5.33799e-17, 2.1471e-16, 1.88809e-16, 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.000770805, 5.33799e-17, 2.42734e-16, 9.64351e-17, 0
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000770805
 
    Copying properties into prescribed temperature field... done.
@@ -244,8 +244,8 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 1.0002e-15, 5.33799e-17, 6.86866e-16, 4.00525e-16, 0
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.0002e-15
+      Relative nonlinear residuals (temperature, compositional fields): 8.89087e-16, 5.33799e-17, 3.58106e-16, 1.53923e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 8.89087e-16
 
 
    Postprocessing:
@@ -258,14 +258,14 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
 *** Timestep 8:  t=1.6e+06 years, dt=200000 years
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
-   Solving temperature system... 2 iterations.
+   Solving temperature system... 1 iterations.
    Solving percent_qtz40 system ... 0 iterations.
    Solving entropy_qtz60 system ... 0 iterations.
    Solving entropy__qtz40 system ... 0 iterations.
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000753338, 5.33799e-17, 1.26093e-16, 1.80057e-16, 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.000753338, 5.33799e-17, 1.53746e-16, 2.03624e-16, 0
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000753338
 
    Copying properties into prescribed temperature field... done.
@@ -276,8 +276,8 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 9.80405e-16, 5.33799e-17, 3.48611e-16, 4.04804e-16, 0
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 9.80405e-16
+      Relative nonlinear residuals (temperature, compositional fields): 5.91237e-16, 5.33799e-17, 4.3335e-16, 6.80551e-17, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 5.91237e-16
 
 
    Postprocessing:
@@ -297,7 +297,7 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000737111, 5.33799e-17, 1.27847e-16, 1.0533e-16, 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.000737111, 5.33799e-17, 2.23896e-16, 1.79401e-16, 0
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000737111
 
    Copying properties into prescribed temperature field... done.
@@ -308,8 +308,8 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 1.04506e-15, 5.33799e-17, 4.42779e-16, 1.68019e-16, 0
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.04506e-15
+      Relative nonlinear residuals (temperature, compositional fields): 2.47907e-16, 5.33799e-17, 1.33331e-16, 4.9159e-17, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.47907e-16
 
 
    Postprocessing:
@@ -329,7 +329,7 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000721958, 5.33799e-17, 5.263e-17, 7.61552e-17, 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.000721958, 5.33799e-17, 3.20725e-16, 1.6036e-16, 0
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000721958
 
    Copying properties into prescribed temperature field... done.
@@ -340,8 +340,8 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 1.04614e-15, 5.33799e-17, 3.66812e-16, 2.29898e-16, 0
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.04614e-15
+      Relative nonlinear residuals (temperature, compositional fields): 1.21251e-15, 5.33799e-17, 4.19342e-16, 1.81185e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.21251e-15
 
 
    Postprocessing:
@@ -361,7 +361,7 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000707743, 5.33799e-17, 1.22521e-16, 8.67302e-17, 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.000707743, 5.33799e-17, 2.51026e-16, 2.03534e-16, 0
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000707743
 
    Copying properties into prescribed temperature field... done.
@@ -372,8 +372,8 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 8.05059e-16, 5.33799e-17, 4.49775e-16, 5.26318e-16, 0
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 8.05059e-16
+      Relative nonlinear residuals (temperature, compositional fields): 1.49101e-16, 5.33799e-17, 1.3173e-16, 1.2957e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.49101e-16
 
 
    Postprocessing:
@@ -393,7 +393,7 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000694353, 5.33799e-17, 1.31808e-16, 6.42442e-17, 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.000694353, 5.33799e-17, 2.3451e-16, 3.39309e-16, 0
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000694353
 
    Copying properties into prescribed temperature field... done.
@@ -404,8 +404,8 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 9.86739e-16, 5.33799e-17, 4.32511e-16, 3.42336e-16, 0
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 9.86739e-16
+      Relative nonlinear residuals (temperature, compositional fields): 2.80394e-16, 5.33799e-17, 3.21505e-16, 7.29525e-17, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.21505e-16
 
 
    Postprocessing:
@@ -418,14 +418,14 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
 *** Timestep 13:  t=2.6e+06 years, dt=200000 years
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
-   Solving temperature system... 2 iterations.
+   Solving temperature system... 1 iterations.
    Solving percent_qtz40 system ... 0 iterations.
    Solving entropy_qtz60 system ... 0 iterations.
    Solving entropy__qtz40 system ... 0 iterations.
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000681697, 5.33799e-17, 5.94027e-17, 4.76717e-17, 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.000681697, 5.33799e-17, 1.12893e-16, 7.57337e-17, 0
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000681697
 
    Copying properties into prescribed temperature field... done.
@@ -436,8 +436,8 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 8.03822e-16, 5.33799e-17, 3.78558e-16, 1.77154e-16, 0
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 8.03822e-16
+      Relative nonlinear residuals (temperature, compositional fields): 1.00901e-15, 5.33799e-17, 6.61418e-16, 3.74502e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.00901e-15
 
 
    Postprocessing:
@@ -457,7 +457,7 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000669772, 5.33799e-17, 2.42538e-16, 1.35393e-16, 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.000669772, 5.33799e-17, 9.98478e-17, 1.06406e-16, 0
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000669772
 
    Copying properties into prescribed temperature field... done.
@@ -468,8 +468,8 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 1.09444e-15, 5.33799e-17, 4.56157e-16, 5.16083e-16, 0
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.09444e-15
+      Relative nonlinear residuals (temperature, compositional fields): 9.87071e-16, 5.33799e-17, 4.55975e-16, 2.01891e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 9.87071e-16
 
 
    Postprocessing:
@@ -482,14 +482,14 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
 *** Timestep 15:  t=3e+06 years, dt=200000 years
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving percent_qtz40 system ... 0 iterations.
    Solving entropy_qtz60 system ... 0 iterations.
    Solving entropy__qtz40 system ... 0 iterations.
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 0.0109768, 5.33799e-17, 2.19251e-16, 2.08201e-16, 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.0109768, 5.33799e-17, 2.23903e-16, 2.10125e-16, 0
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0109768
 
    Copying properties into prescribed temperature field... done.
@@ -500,8 +500,8 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 8.6711e-16, 5.33799e-17, 2.23705e-15, 1.95878e-15, 0
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.23705e-15
+      Relative nonlinear residuals (temperature, compositional fields): 4.97746e-15, 5.33799e-17, 1.26635e-14, 9.94275e-15, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.26635e-14
 
 
    Postprocessing:
@@ -514,14 +514,14 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
 *** Timestep 16:  t=3.2e+06 years, dt=200000 years
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
-   Solving temperature system... 2 iterations.
+   Solving temperature system... 1 iterations.
    Solving percent_qtz40 system ... 0 iterations.
    Solving entropy_qtz60 system ... 0 iterations.
    Solving entropy__qtz40 system ... 0 iterations.
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 0.00893612, 5.33799e-17, 7.49461e-17, 4.02012e-17, 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.00893612, 5.33799e-17, 2.33545e-16, 3.19534e-16, 0
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00893612
 
    Copying properties into prescribed temperature field... done.
@@ -532,8 +532,8 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 8.01506e-16, 5.33799e-17, 4.80505e-16, 3.82378e-16, 0
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 8.01506e-16
+      Relative nonlinear residuals (temperature, compositional fields): 4.33393e-16, 5.33799e-17, 1.73223e-16, 9.30113e-17, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 4.33393e-16
 
 
    Postprocessing:
@@ -546,14 +546,14 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
 *** Timestep 17:  t=3.4e+06 years, dt=200000 years
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
-   Solving temperature system... 2 iterations.
+   Solving temperature system... 1 iterations.
    Solving percent_qtz40 system ... 0 iterations.
    Solving entropy_qtz60 system ... 0 iterations.
    Solving entropy__qtz40 system ... 0 iterations.
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000492929, 5.33799e-17, 1.20209e-16, 3.19597e-16, 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.000492929, 5.33799e-17, 1.09287e-16, 1.7339e-16, 0
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000492929
 
    Copying properties into prescribed temperature field... done.
@@ -564,8 +564,8 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 1.04566e-15, 5.33799e-17, 6.13671e-16, 4.89648e-16, 0
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.04566e-15
+      Relative nonlinear residuals (temperature, compositional fields): 5.31873e-16, 5.33799e-17, 2.08209e-16, 3.51399e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 5.31873e-16
 
 
    Postprocessing:
@@ -585,7 +585,7 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000489356, 5.33799e-17, 7.17514e-17, 1.65645e-16, 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.000489356, 5.33799e-17, 2.00757e-16, 2.4259e-16, 0
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000489356
 
    Copying properties into prescribed temperature field... done.
@@ -596,8 +596,8 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 1.02825e-16, 5.33799e-17, 7.07189e-17, 6.22831e-17, 0
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.02825e-16
+      Relative nonlinear residuals (temperature, compositional fields): 3.40965e-16, 5.33799e-17, 2.06179e-16, 1.05214e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.40965e-16
 
 
    Postprocessing:
@@ -610,14 +610,14 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
 *** Timestep 19:  t=3.8e+06 years, dt=200000 years
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving percent_qtz40 system ... 0 iterations.
    Solving entropy_qtz60 system ... 0 iterations.
    Solving entropy__qtz40 system ... 0 iterations.
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000485853, 5.33799e-17, 2.12246e-16, 1.72706e-16, 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.000485853, 5.33799e-17, 7.16645e-17, 1.62281e-16, 0
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000485853
 
    Copying properties into prescribed temperature field... done.
@@ -628,8 +628,8 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 1.29264e-16, 5.33799e-17, 2.22375e-16, 1.71885e-16, 0
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.22375e-16
+      Relative nonlinear residuals (temperature, compositional fields): 6.54432e-16, 5.33799e-17, 4.06661e-16, 3.41151e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 6.54432e-16
 
 
    Postprocessing:
@@ -642,14 +642,14 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
 *** Timestep 20:  t=4e+06 years, dt=200000 years
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
-   Solving temperature system... 1 iterations.
+   Solving temperature system... 2 iterations.
    Solving percent_qtz40 system ... 0 iterations.
    Solving entropy_qtz60 system ... 0 iterations.
    Solving entropy__qtz40 system ... 0 iterations.
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000482397, 5.33799e-17, 2.28923e-16, 1.04516e-16, 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.000482397, 5.33799e-17, 4.4717e-16, 4.86173e-16, 0
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000482397
 
    Copying properties into prescribed temperature field... done.
@@ -660,8 +660,8 @@ Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
    Solving composition reactions... in 1 substep(s).
    Copying properties into prescribed temperature field... done.
    Copying properties into prescribed compositional field density_field... done.
-      Relative nonlinear residuals (temperature, compositional fields): 1.49861e-16, 5.33799e-17, 2.13367e-16, 4.79738e-16, 0
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 4.79738e-16
+      Relative nonlinear residuals (temperature, compositional fields): 3.53986e-16, 5.33799e-17, 2.28923e-16, 1.61508e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.53986e-16
 
 
    Postprocessing:

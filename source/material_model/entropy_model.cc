@@ -298,12 +298,12 @@ namespace aspect
           // the use of the exact specific heat capacity at low values.
           const double c_p = MaterialUtilities::average_value (mass_fractions, eos_outputs.specific_heat_capacities, MaterialUtilities::arithmetic);
 
-          if (c_p < transition_specific_heat)
+          if (c_p < max_exact_specific_heat)
             out.specific_heat[i] = c_p;
           else
             {
-              const double fraction_max_c_p = std::exp(ln_fraction_transition_specific_heat * std::exp((std::log(c_p/transition_specific_heat))/ln_fraction_transition_specific_heat));
-              out.specific_heat[i] = max_specific_heat * fraction_max_c_p;
+              const double fraction_max_c_p = std::exp(ln_ratio_max_exact_max_limit_specific_heat * std::exp((std::log(c_p/max_exact_specific_heat))/ln_ratio_max_exact_max_limit_specific_heat));
+              out.specific_heat[i] = max_limit_specific_heat * fraction_max_c_p;
             }
           out.compressibilities[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs.compressibilities, MaterialUtilities::arithmetic);
 
@@ -528,15 +528,14 @@ namespace aspect
                              "exceeding the yield stress. Units: \\si{\\pascal}.");
 
           // Specific heat capacity limiting parameters
-          prm.declare_entry ("Maximum specific heat capacity", "1e50",
+          prm.declare_entry ("Maximum limited specific heat capacity", "1e50",
                              Patterns::Double (0.),
                              "The maximum allowed value for the specific heat capacity.");
 
-          prm.declare_entry("Fraction of maximum specific heat capacity for transition from exact value", "0.1",
+          prm.declare_entry("Maximum exact specific heat capacity", "1e50",
                             Patterns::Double(0.),
-                            "The fraction of the maximum specific heat capacity that defines the transition point "
-                            "where the effective specific heat capacity starts to deviate from the exact value "
-                            "given by the thermodynamic lookup table.");
+                            "The maximum specific heat capacity that is exactly equal "
+                            "to the value given by the thermodynamic lookup table.");
 
           // Multicomponent equilibration parameters
           prm.declare_entry ("Maximum iteration for multicomponent equilibration", "50",
@@ -610,13 +609,16 @@ namespace aspect
 
           // Plasticity parameters
           angle_of_internal_friction   = prm.get_double ("Angle of internal friction") * constants::degree_to_radians;
-          cohesion                     = prm.get_double("Cohesion");
+          cohesion                     = prm.get_double ("Cohesion");
 
           // Specific heat capacity limiting parameters
-          max_specific_heat    = prm.get_double("Maximum specific heat capacity");
-          const double fraction_max_specific_heat = prm.get_double("Fraction of maximum specific heat capacity for transition from exact value");
-          ln_fraction_transition_specific_heat = std::log(fraction_max_specific_heat);
-          transition_specific_heat = fraction_max_specific_heat * max_specific_heat;
+          max_limit_specific_heat      = prm.get_double ("Maximum limited specific heat capacity");
+          max_exact_specific_heat      = prm.get_double ("Maximum exact specific heat capacity");
+
+          AssertThrow(max_limit_specific_heat >= max_exact_specific_heat,
+                      ExcMessage("The maximum limited specific heat capacity must be greater than or equal to the maximum exact specific heat capacity."));
+
+          ln_ratio_max_exact_max_limit_specific_heat = std::log(max_exact_specific_heat / max_limit_specific_heat);
 
           // Multicomponent equilibration parameters
           multicomponent_max_iteration = prm.get_double("Maximum iteration for multicomponent equilibration");
