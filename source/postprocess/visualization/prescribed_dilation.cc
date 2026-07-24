@@ -52,9 +52,10 @@ namespace aspect
         Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
         Assert (input_data.solution_values[0].size() == this->introspection().n_components,           ExcInternalError());
 
+        const aspect::PrescribedDilation::Interface<dim> &prescribed_dilation = this->get_prescribed_dilation();
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
-            computed_quantities[q](0) = this->get_prescribed_dilation().dilation_vector (input_data.evaluation_points[q])[0];
+            computed_quantities[q](0) = prescribed_dilation.dilation (input_data.evaluation_points[q]);
           }
       }
     }

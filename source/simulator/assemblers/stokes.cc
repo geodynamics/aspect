@@ -1030,7 +1030,7 @@ namespace aspect
               ++i;
             }
 
-          const Tensor<1,dim> dilvector = prescribed_dilation.dilation_vector (scratch.finite_element_values.quadrature_point(q));
+          const double dilation = prescribed_dilation.dilation (scratch.finite_element_values.quadrature_point(q));
           // const double eta = scratch.material_model_outputs.viscosities[q];
           const double JxW = scratch.finite_element_values.JxW(q);
 
@@ -1038,7 +1038,7 @@ namespace aspect
           {
             if ( introspection.is_stokes_component(fe.system_to_component_index(i).first) )
             {
-              data.local_rhs(i_stokes) += -pressure_scaling * dilvector[0] * scratch.phi_p[i_stokes]*JxW;
+              data.local_rhs(i_stokes) += -pressure_scaling * dilation * scratch.phi_p[i_stokes]*JxW;
               ++i_stokes;
             }
             ++i;

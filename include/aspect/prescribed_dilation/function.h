@@ -56,9 +56,9 @@ namespace aspect
         void update () override;
 
         /**
-         * Return the gravity vector as a function of position.
+         * Return the dilation as a function of position.
          */
-        Tensor<1,dim> dilation_vector (const Point<dim> &position) const override;
+        double dilation (const Point<dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files.

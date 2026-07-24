@@ -46,9 +46,9 @@ namespace aspect
     {
       public:
         /**
-         * Return the dilation vector as a function of position.
+         * Return the dilation as a function of position.
          */
-        virtual Tensor<1,dim> dilation_vector (const Point<dim> &position) const = 0;
+        virtual double dilation (const Point<dim> &position) const = 0;
     };
 
 

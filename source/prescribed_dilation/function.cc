@@ -32,21 +32,18 @@ namespace aspect
     template <int dim>
     Function<dim>::Function ()
       :
-      function (dim)
+      function (1)
     {}
 
     template <int dim>
-    Tensor<1,dim>
+    double
     Function<dim>::
-    dilation_vector (const Point<dim> &position) const
+    dilation (const Point<dim> &position) const
     {
-      Tensor<1,dim> dilation;
       const Utilities::NaturalCoordinate<dim> point =
         this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system);
       const Point<dim> point_in_coordinate_system = Utilities::convert_array_to_point<dim>(point.get_coordinates());
-      for (unsigned int d=0; d<dim; ++d)
-        dilation[d] = function.value(point_in_coordinate_system,d);
-      return dilation;
+      return function.value(point_in_coordinate_system);
     }
 
 
@@ -84,7 +81,7 @@ namespace aspect
                              "parameter is non-zero, which is interpreted to "
                              "be the depth of the point.");
 
-          Functions::ParsedFunction<dim>::declare_parameters (prm, dim);
+          Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
         }
         prm.leave_subsection();
       }
