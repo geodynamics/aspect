@@ -1662,37 +1662,36 @@ namespace aspect
                                 std::vector<VariableDeclaration<dim>> &variables)
   {
 
-    if (!parameters.include_melt_transport)
-      return;
+    if (parameters.include_melt_transport)
+      {
+        // We modify the existing FE variables: u p T c1 c2 to read: u p_f p_c u_f p T c1 c2
 
-    // We modify the existing FE variables: u p T c1 c2 to read: u p_f p_c u_f p T c1 c2
+        variables.insert(variables.begin()+1,
+                         VariableDeclaration<dim>(
+                           "fluid pressure",
+                           std::make_shared<FE_Q<dim>>(parameters.stokes_velocity_degree-1),
+                           1,
+                           0)); // same block as p_c even without a direct solver!
 
-    variables.insert(variables.begin()+1,
-                     VariableDeclaration<dim>(
-                       "fluid pressure",
-                       std::make_shared<FE_Q<dim>>(parameters.stokes_velocity_degree-1),
-                       1,
-                       0)); // same block as p_c even without a direct solver!
+        variables.insert(variables.begin()+2,
+                         VariableDeclaration<dim>(
+                           "compaction pressure",
+                           melt_parameters.use_discontinuous_p_c
+                           ?
+                           std::shared_ptr<FiniteElement<dim>>(
+                             std::make_shared<FE_DGP<dim>>(parameters.stokes_velocity_degree-1))
+                           :
+                           std::shared_ptr<FiniteElement<dim>>(
+                             std::make_shared<FE_Q<dim>>(parameters.stokes_velocity_degree-1)),
+                           1,
+                           1));
 
-    variables.insert(variables.begin()+2,
-                     VariableDeclaration<dim>(
-                       "compaction pressure",
-                       melt_parameters.use_discontinuous_p_c
-                       ?
-                       std::shared_ptr<FiniteElement<dim>>(
-                         std::make_shared<FE_DGP<dim>>(parameters.stokes_velocity_degree-1))
-                       :
-                       std::shared_ptr<FiniteElement<dim>>(
-                         std::make_shared<FE_Q<dim>>(parameters.stokes_velocity_degree-1)),
-                       1,
-                       1));
-
-    variables.insert(variables.begin()+3,
-                     VariableDeclaration<dim>("fluid velocity",
-                                              std::make_shared<FE_Q<dim>>(parameters.stokes_velocity_degree),
-                                              dim,
-                                              1));
-
+        variables.insert(variables.begin()+3,
+                         VariableDeclaration<dim>("fluid velocity",
+                                                  std::make_shared<FE_Q<dim>>(parameters.stokes_velocity_degree),
+                                                  dim,
+                                                  1));
+      }
   }
 
 
