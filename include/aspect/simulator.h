@@ -913,7 +913,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/checkpoint_restart.cc</code>.
        */
-      void create_snapshot();
+      void create_snapshot(const bool additional_checkpoint = false);
 
       /**
        * Restore the state of this program from a set of files in the output
@@ -1836,10 +1836,24 @@ namespace aspect
 
       /**
        * Checkpointing happens in rotating folders /restart/01/, /restart/02/,
-       * etc.. This variable holds the last index used and as such should
+       * etc.. and potentially additional, non-rotating folders.
+       * This variable holds the last index used and as such should
        * contain the last valid checkpoint written.
        */
       unsigned int last_checkpoint_id;
+
+      /**
+       * The id of the last checkpoint created based on wall time or time step
+       * number period.
+       */
+      unsigned int last_regular_checkpoint_id;
+
+      /**
+       * Additional checkpointing happens in folders numbered starting from
+       * n_checkpoints_to_keep+1, e.g. by default /restart/04/.
+       * This variable holds the last index used for the additional snapshots.
+       */
+      unsigned int last_additional_checkpoint_id;
 
       /**
        * In output_statistics(), where we output the statistics object above,

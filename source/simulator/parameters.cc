@@ -995,6 +995,16 @@ namespace aspect
                          "If 0 and time between checkpoint is not specified, "
                          "checkpointing will not be performed. "
                          "Units: None.");
+      prm.declare_entry ("Additional checkpoint times", "",
+                         Patterns::List (Patterns::Double (0.)),
+                         "A list of times so that if the end time of a time step "
+                         "is beyond this time, an additional checkpoint "
+                         "is created. These checkpoint times are independent of the "
+                         "checkpoint frequency specified by ``Time between checkpoint'' "
+                         "and ``Steps between checkpoint'', but will only be created "
+                         "if either of them is set to a nonzero value. "
+                         "Units: \\si{\\year} if the 'Use years instead "
+                         "of seconds' parameter is set; \\si{\\second} otherwise.");
       prm.declare_entry ("Number of checkpoints to keep", "3",
                          Patterns::Integer (1),
                          "The number of checkpoint slots to rotate through in the "
@@ -1937,6 +1947,17 @@ namespace aspect
     {
       checkpoint_time_secs = prm.get_integer ("Time between checkpoint");
       checkpoint_steps     = prm.get_integer ("Steps between checkpoint");
+      // Extract the list of times at which additional checkpointing is requested,
+      // sort them and convert them to seconds if needed.
+      additional_checkpoint_times
+        = Utilities::string_to_double
+          (Utilities::split_string_list(prm.get ("Additional checkpoint times")));
+      std::sort (additional_checkpoint_times.begin(),
+                 additional_checkpoint_times.end());
+      if (convert_to_years == true)
+        for (double &additional_checkpoint_time : additional_checkpoint_times)
+          additional_checkpoint_time *= year_in_seconds;
+      n_additional_checkpoints_to_keep = additional_checkpoint_times.size();
       n_checkpoints_to_keep = prm.get_integer ("Number of checkpoints to keep");
       resume_checkpoint_id  = prm.get_integer ("Resume checkpoint");
       resume_time           = prm.get_double ("Resume time");

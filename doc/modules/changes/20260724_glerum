@@ -1,0 +1,7 @@
+ Added: Checkpointing can now also be
+ requested at specific model times, in
+ combination with, or without, checkpointing
+ after a specific amount of wall time or
+ number of time steps.
+ <br>
+ (Anne Glerum 2026/07/24)

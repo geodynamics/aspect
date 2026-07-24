@@ -59,7 +59,7 @@ namespace aspect
     template <int dim>
     unsigned int checkpoint_id_width(const Parameters<dim> &parameters)
     {
-      return std::max(2U, static_cast<unsigned int>(std::to_string(parameters.n_checkpoints_to_keep).size()));
+      return std::max(2U, static_cast<unsigned int>(std::to_string(parameters.n_checkpoints_to_keep+parameters.additional_checkpoint_times.size()).size()));
     }
 
     template <int dim>
@@ -312,7 +312,7 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::create_snapshot()
+  void Simulator<dim>::create_snapshot(const bool additional_checkpoint)
   {
     computing_timer.enter_subsection("Create snapshot");
 
@@ -320,8 +320,16 @@ namespace aspect
     total_walltime_until_last_snapshot += wall_timer.wall_time();
     wall_timer.restart();
 
-    // This will rotate from 01 to n_checkpoints_to_keep including:
-    const unsigned int checkpoint_id = (last_checkpoint_id % parameters.n_checkpoints_to_keep) + 1;
+    unsigned int checkpoint_id = 0;
+    if (!additional_checkpoint)
+      {
+        // This will rotate from 01 to n_checkpoints_to_keep including:
+        checkpoint_id = (last_regular_checkpoint_id % parameters.n_checkpoints_to_keep) + 1;
+      }
+    else
+      {
+        checkpoint_id = last_additional_checkpoint_id;
+      }
 
     const std::string checkpoint_path = checkpoint_path_from_id(parameters, checkpoint_id);
     Utilities::create_directory(checkpoint_path, mpi_communicator, true);
@@ -376,6 +384,10 @@ namespace aspect
 
       // Update the checkpoint ID to the current checkpoint ID.
       last_checkpoint_id = checkpoint_id;
+      // Also update the last regular ID if required. The last additional
+      // ID is already set in the calling function.
+      if (!additional_checkpoint)
+        last_regular_checkpoint_id = checkpoint_id;
 
       // Serialize into a stringstream. Put the following into a code
       // block of its own to ensure the destruction of the 'oa'
@@ -489,9 +501,9 @@ namespace aspect
   {
     if (parameters.resume_checkpoint_id != 0)
       {
-        AssertThrow(parameters.resume_checkpoint_id <= parameters.n_checkpoints_to_keep,
+        AssertThrow(parameters.resume_checkpoint_id <= parameters.n_checkpoints_to_keep + parameters.n_additional_checkpoints_to_keep,
                     ExcMessage("The requested value for 'Resume checkpoint' is larger than the configured "
-                               "'Number of checkpoints to keep'."));
+                               "'Number of checkpoints to keep' plus the number of additional checkpoint times."));
 
         const unsigned int checkpoint_id = parameters.resume_checkpoint_id;
         const std::string checkpoint_path = checkpoint_path_from_id(parameters, checkpoint_id);
@@ -508,7 +520,7 @@ namespace aspect
         unsigned int best_checkpoint_id = numbers::invalid_unsigned_int;
         double best_time_distance = std::numeric_limits<double>::max();
 
-        for (unsigned int checkpoint_id = 1; checkpoint_id <= parameters.n_checkpoints_to_keep; ++checkpoint_id)
+        for (unsigned int checkpoint_id = 1; checkpoint_id <= parameters.n_checkpoints_to_keep + parameters.n_additional_checkpoints_to_keep; ++checkpoint_id)
           {
             const std::string checkpoint_path = checkpoint_path_from_id(parameters, checkpoint_id);
             if (!Utilities::fexists(checkpoint_path + "metadata.txt", mpi_communicator))
@@ -817,7 +829,7 @@ namespace aspect
 #define INSTANTIATE(dim) \
   template unsigned int Simulator<dim>::determine_last_good_snapshot() const; \
   template unsigned int Simulator<dim>::determine_resume_snapshot() const; \
-  template void Simulator<dim>::create_snapshot(); \
+  template void Simulator<dim>::create_snapshot(const bool additional_checkpoint); \
   template void Simulator<dim>::resume_from_snapshot();
 
   ASPECT_INSTANTIATE(INSTANTIATE)

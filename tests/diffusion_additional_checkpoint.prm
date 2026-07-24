@@ -1,0 +1,20 @@
+# Test that we can create additional checkpoints at specified times, and that we can resume from them.
+
+##################################################################
+include $ASPECT_SOURCE_DIR/tests/diffusion.prm
+
+set Dimension = 2
+
+set End time                               = 8e7
+
+set Resume computation                     = false
+
+set Start time                             = 0
+
+
+subsection Checkpointing
+  set Time between checkpoint                = 0
+  set Steps between checkpoint               = 6
+  set Additional checkpoint times            = 1.5e7, 2.7e7, 3.1e7
+  set Resume time                            = 3.2e7
+end
