@@ -41,7 +41,7 @@ end
 
 subsection Compositional fields
   set Number of fields = 1
-  set Names of fields = pyroxenite
+  set Names of fields = melting_comp_1
 end
 
 # The next section deals with the initial conditions for the
@@ -136,5 +136,9 @@ subsection Postprocess
     set Output format = gnuplot
     set Time between graphical output = 0.01
     set List of output variables = melt fraction
+
+    subsection Melt fraction
+      set Use multiple melting models  = true
+    end
   end
 end
