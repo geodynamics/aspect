@@ -349,6 +349,12 @@ namespace aspect
         mutable double last_output_time;
 
         /**
+         * Consecutively counted number indicating the how-manyth time we will
+         * create output the next time we get to it.
+         */
+        mutable unsigned int output_file_number;
+
+        /**
          * @name Fastscape boundary conditions
          * @{
          */
