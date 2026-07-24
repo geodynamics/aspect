@@ -74,8 +74,8 @@ namespace aspect
       // If we restarted from a checkpoint we will fill this particle handler
       // later with its serialized variables and stored particles
       particle_handler = std::make_unique<ParticleHandler<dim>>(this->get_triangulation(),
-                                                                 this->get_mapping(),
-                                                                 property_manager->get_n_property_components());
+                                                                this->get_mapping(),
+                                                                property_manager->get_n_property_components());
 
       particle_handler_backup.initialize(this->get_triangulation(),
                                          this->get_mapping(),
@@ -360,7 +360,7 @@ namespace aspect
                             const Point<dim> selected_min_density_position = min_density_positions[min_density_position_index];
 
                             std::pair<Particles::internal::LevelInd,Particles::Particle<dim>> new_particle =
-                              generator->generate_particle(cell,local_next_particle_index,selected_min_density_position);
+                                                                                             generator->generate_particle(cell,local_next_particle_index,selected_min_density_position);
 
                             const std::vector<double> particle_properties =
                               property_manager->initialize_late_particle(new_particle.second.get_location(),
@@ -512,7 +512,7 @@ namespace aspect
                               }
 
                             std::pair<Particles::internal::LevelInd,Particles::Particle<dim>> new_particle =
-                              generator->generate_particle(cell,local_next_particle_index,new_particle_location);
+                                                                                             generator->generate_particle(cell,local_next_particle_index,new_particle_location);
 
                             const std::vector<double> particle_properties =
                               property_manager->initialize_late_particle(new_particle.second.get_location(),
@@ -706,6 +706,19 @@ namespace aspect
     }
 
 
+    template<int dim>
+    bool
+    Manager<dim>::get_particle_velocity_choice() const
+    {
+      if (particle_velocity == ParticleVelocity::fluid && this->include_melt_transport())
+        return true;
+
+      if (particle_velocity==ParticleVelocity::solid)
+        return false;
+
+      const bool default_option = (particle_velocity == ParticleVelocity::unspecified && this->include_melt_transport() && property_manager->get_data_info().fieldname_exists("melt_presence"));
+      return default_option;
+    }
 
     template <int dim>
     void
@@ -727,9 +740,8 @@ namespace aspect
                    ExcMessage("The integrator requires the old old solution vector, but it is not available."));
 
 
-      const bool use_fluid_velocity = this->include_melt_transport() &&
-                                      property_manager->get_data_info().fieldname_exists("melt_presence");
 
+      const bool use_fluid_velocity = get_particle_velocity_choice();
       auto &velocity_evaluator = evaluator.get_velocity_or_fluid_velocity_evaluator(use_fluid_velocity);
       auto &mapping_info = evaluator.get_mapping_info();
       mapping_info.reinit(cell, {positions.data(),positions.size()});
@@ -859,7 +871,7 @@ namespace aspect
             mapping_flags |= update_flags[i];
 
           std::unique_ptr<SolutionEvaluator<dim>> evaluator = construct_solution_evaluator(*this,
-                                                               mapping_flags);
+                                                              mapping_flags);
 
           // FEPointEvaluation uses different evaluation flags than the common UpdateFlags.
           // Translate between the two.
@@ -913,7 +925,7 @@ namespace aspect
                           "It is safe to uncomment this assertion, but you can expect a performance penalty."));
 
         std::unique_ptr<SolutionEvaluator<dim>> evaluator = construct_solution_evaluator(*this,
-                                                             update_values);
+                                                            update_values);
 
         // Loop over all cells and advect the particles cell-wise
         for (const auto &cell : this->get_dof_handler().active_cell_iterators())
@@ -1137,6 +1149,10 @@ namespace aspect
                                "whether this transport is happening. This parameter is "
                                "deprecated and will be removed in the future. Ghost particle "
                                "updates are always performed. Please set the parameter to `true'.");
+            prm.declare_entry ("Particle advection velocity","unspecified",
+                               Patterns::Selection ("unspecified|fluid|solid"),
+                               "This parameter determines which velocity would be used "
+                               "to advect a particular particle world.");
 
             Generator::declare_parameters<dim>(prm);
             Integrator::declare_parameters<dim>(prm);
@@ -1292,6 +1308,15 @@ namespace aspect
             AssertThrow(false, ExcNotImplemented());
           }
 
+        // Particle velocity which will be used to advect particles
+        const std::string particle_velocity_string = prm.get("Particle advection velocity");
+        if (particle_velocity_string == "solid")
+          particle_velocity = ParticleVelocity::solid;
+        else if (particle_velocity_string == "fluid")
+          particle_velocity = ParticleVelocity::fluid;
+        else if (particle_velocity_string == "unspecified")
+          particle_velocity = ParticleVelocity::unspecified;
+
 
         this->get_computing_timer().enter_subsection("Particles: Initialization");
 
@@ -1348,3 +1373,4 @@ namespace aspect
 #undef INSTANTIATE
   }
 }
+

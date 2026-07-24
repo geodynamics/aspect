@@ -293,6 +293,12 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm, const unsigned int particle_manager);
 
+        /*
+        * This function chooses whether to use solid or fluid velocity based on user-input
+        */
+        bool
+        get_particle_velocity_choice() const;
+
       private:
         struct ParticleLoadBalancing
         {
@@ -324,6 +330,14 @@ namespace aspect
           histogram,
           point_density_function,
           monte_carlo,
+        };
+
+        /**
+         * Enum class to keep track of which velocity if used to advect particles
+         */
+        enum class ParticleVelocity
+        {
+          unspecified, solid, fluid
         };
 
         /**
@@ -407,6 +421,11 @@ namespace aspect
          * Algorithm for adding particles to cell.
          */
         AdditionAlgorithm addition_algorithm;
+
+        /**
+         * Velocity for particle advection
+         */
+        ParticleVelocity particle_velocity;
 
         /**
          * Lower limit for particle number per cell. This limit is
@@ -545,3 +564,4 @@ namespace aspect
 }
 
 #endif
+

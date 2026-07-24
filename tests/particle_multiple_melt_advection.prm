@@ -1,14 +1,12 @@
-# This is a test for the melt particle functionality.
+# This is a test for the different particle world velocity functionality.
 # It is the same setup as in the rising_melt_blob test,
 # with added passive particles that move with the melt
-# velocity. The test checks if the particles are moving
-# correctly, and if they are correctly labelled with the
-# property 'melt presence' if the porosity is above a
-# threshold at their location.
+# velocity when specified. The test checks if the particles are moving
+# correctly with the assigned velocity in the parameter file.
 
 set Dimension                              = 2
 set Start time                             = 0
-set End time                               = 3000
+set End time                               = 6000
 set Use years instead of seconds           = true
 set Adiabatic surface temperature          = 1600
 set Nonlinear solver scheme                = iterated Advection and Stokes
@@ -139,8 +137,12 @@ subsection Postprocess
   end
 
   subsection Particles
-    set Time between data output      = 0
+    set Time between data output      = 6000
     set Data output format            = ascii
+  end
+  subsection Particles 2
+    set Time between data output = 6000
+    set Data output format = ascii
   end
 end
 
@@ -155,8 +157,22 @@ subsection Solver parameters
 end
 
 subsection Particles
+  set Number of particle systems = 2
   set Particle generator name       = reference cell
   set List of particle properties   = melt particle, velocity
+  set Particle advection velocity = solid 
+
+  subsection Generator
+    subsection Reference cell
+      set Number of particles per cell per direction = 1
+    end
+  end
+end
+
+subsection Particles 2
+  set Particle generator name       = reference cell
+  set List of particle properties   = melt particle, velocity
+  set Particle advection velocity = fluid 
 
   subsection Generator
     subsection Reference cell

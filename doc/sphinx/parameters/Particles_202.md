@@ -176,6 +176,15 @@ The following properties are available:
 **Documentation:** Algorithm used to add particles to cells.
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Particle advection velocity<parameters:Particles_202/Particle_20advection_20velocity>`
+:name: parameters:Particles_202/Particle_20advection_20velocity
+**Default value:** unspecified
+
+**Pattern:** [Selection unspecified|fluid|solid ]
+
+**Documentation:** This parameter determines which velocity would be used to advect a particular particle world.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Particle generator name<parameters:Particles_202/Particle_20generator_20name>`
 :name: parameters:Particles_202/Particle_20generator_20name
 **Default value:** random uniform
