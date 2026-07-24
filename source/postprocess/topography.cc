@@ -39,6 +39,15 @@ namespace aspect
 {
   namespace Postprocess
   {
+
+    template <int dim>
+    Topography<dim>::Topography()
+      : last_output_time(std::numeric_limits<double>::lowest())
+    {
+    }
+
+
+
     template <int dim>
     std::pair<std::string,std::string>
     Topography<dim>::execute (TableHandler &statistics)
@@ -125,7 +134,7 @@ namespace aspect
       // if this is the first time we get here, set the last output time
       // to the current time - output_interval. this makes sure we
       // always produce data during the first time step
-      if (std::isnan(last_output_time))
+      if (last_output_time < this->get_parameters().start_time - output_interval)
         last_output_time = this->get_time() - output_interval;
 
       // Just return stats if text output is not required at all or not needed at this time

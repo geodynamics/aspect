@@ -46,11 +46,21 @@ namespace aspect
   namespace Postprocess
   {
     template <int dim>
+    SeaLevel<dim>::SeaLevel()
+      : last_output_time(std::numeric_limits<double>::lowest())
+    {
+    }
+
+
+
+    template <int dim>
     void
     SeaLevel<dim>::initialize()
     {
       Assert(false, ExcNotImplemented(""));
     }
+
+
 
     template <>
     void
@@ -356,7 +366,7 @@ namespace aspect
       // If this is the first time we get here, set the last output time
       // to the current time - output_interval. This makes sure we
       // always produce data during the first time step.
-      if (std::isnan(last_output_time))
+      if (last_output_time < this->get_parameters().start_time - output_interval)
         {
           last_output_time = this->get_time() - output_interval;
         }

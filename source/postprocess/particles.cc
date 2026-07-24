@@ -321,7 +321,7 @@ namespace aspect
           // if this is the first time we get here, set the last output time
           // to the current time - output_interval. this makes sure we
           // always produce data during the first time step
-          if (std::isnan(last_output_time[particle_manager]))
+          if (last_output_time[particle_manager] < this->get_parameters().start_time - output_interval[particle_manager])
             last_output_time[particle_manager] = this->get_time() - output_interval[particle_manager];
 
           const Particle::Manager<dim> &manager = this->get_particle_manager(particle_manager);
@@ -817,7 +817,7 @@ namespace aspect
               exclude_output_properties[particle_manager].emplace_back("internal: integrator properties");
 
               // Add a non-sensical value for each particle manager.
-              last_output_time.emplace_back(std::numeric_limits<double>::quiet_NaN());
+              last_output_time.emplace_back(std::numeric_limits<double>::lowest());
               output_file_number.emplace_back(numbers::invalid_unsigned_int);
             }
             prm.leave_subsection ();

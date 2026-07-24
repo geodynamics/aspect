@@ -48,7 +48,7 @@ namespace aspect
       output_interval (0),
       // initialize this to a nonsensical value; set it to the actual time
       // the first time around we get to check it
-      last_output_time (std::numeric_limits<double>::quiet_NaN()),
+      last_output_time (std::numeric_limits<double>::lowest()),
       maximum_timesteps_between_outputs (std::numeric_limits<int>::max()),
       last_output_timestep (numbers::invalid_unsigned_int),
       output_file_number (numbers::invalid_unsigned_int)
@@ -190,7 +190,7 @@ namespace aspect
       const int dim = 3;
 
       // Check time to see if we output gravity
-      if (std::isnan(last_output_time))
+      if (last_output_time < this->get_parameters().start_time - output_interval)
         {
           last_output_time = this->get_time() - output_interval;
           last_output_timestep = this->get_timestep_number();
