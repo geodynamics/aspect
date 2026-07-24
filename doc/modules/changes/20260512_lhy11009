@@ -1,0 +1,3 @@
+Added: additional named outputs for diffusion and dislocation viscosities in the visco-plastic material model, including rheology-specific handling of inactive flow laws and visualization support through the additional material output system.
+<br>
+(Haoyuan Li, 2026/05/12)

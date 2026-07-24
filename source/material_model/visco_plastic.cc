@@ -251,6 +251,8 @@ namespace aspect
               isostrain_viscosities.composition_yielding.clear();
               isostrain_viscosities.composition_viscosities.clear();
               isostrain_viscosities.drucker_prager_parameters.clear();
+              isostrain_viscosities.diffusion_viscosities.clear();
+              isostrain_viscosities.dislocation_viscosities.clear();
 
               out.viscosities[i] = numbers::signaling_nan<double>();
 
@@ -270,11 +272,14 @@ namespace aspect
           // TODO only when requests_property is set to reaction_terms
           rheology->strain_rheology.fill_reaction_outputs(in, i, rheology->min_strain_rate, plastic_yielding, out);
 
-          // Fill plastic outputs if they exist.
+          // Fill plastic outputs and additional viscosity outputs if they exist.
           // The values in isostrain_viscosities only make sense when the calculate_isostrain_viscosities function
           // has been called.
           if (in.requests_property(MaterialProperties::additional_outputs))
-            rheology->fill_plastic_outputs(i, volume_fractions, plastic_yielding, in, out, isostrain_viscosities);
+            {
+              rheology->fill_plastic_outputs(i, volume_fractions, plastic_yielding, in, out, isostrain_viscosities);
+              rheology->fill_viscosity_outputs(i, volume_fractions, out, isostrain_viscosities);
+            }
 
           if (this->get_parameters().enable_elasticity)
             {
@@ -476,6 +481,7 @@ namespace aspect
     ViscoPlastic<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       rheology->create_plastic_outputs(out);
+      rheology->create_viscosity_outputs(out);
 
       if (this->get_parameters().enable_elasticity)
         rheology->elastic_rheology.create_elastic_additional_outputs(out);
