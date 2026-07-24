@@ -1566,8 +1566,7 @@ namespace aspect
     // The level triangulations inherit the manifolds of the simulator
     // triangulation, so both mappings describe the same geometry.
     if (const MappingQ<dim> *mapping_q = dynamic_cast<const MappingQ<dim>*>(&this->get_mapping()))
-      if (dynamic_cast<const MappingQCache<dim>*>(mapping_q) != nullptr &&
-          !this->get_parameters().mesh_deformation_enabled)
+      if (dynamic_cast<const MappingQCache<dim>*>(mapping_q) != nullptr)
         {
           if (level_triangulation_mapping.get() == nullptr)
             level_triangulation_mapping = std::make_unique<MappingQ<dim>>(mapping_q->get_degree());

@@ -66,8 +66,8 @@ Number of degrees of freedom: 3,065 (1,878+248+939)
      RMS, max velocity:        0.0869 m/year, 0.271 m/year
      Temperature min/avg/max:  -10.55 K, 160.8 K, 4273 K
 
-Number of active cells: 264 (on 5 levels)
-Number of degrees of freedom: 3,936 (2,410+321+1,205)
+Number of active cells: 246 (on 5 levels)
+Number of degrees of freedom: 3,726 (2,282+303+1,141)
 
 Termination requested by criterion: end time
 

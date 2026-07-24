@@ -1,5 +1,5 @@
-# Test that the default solver can use GMG in a 2d spherical shell with phi
-# periodicity and adaptive refinement.
+# Test that the global coarsening GMG solver works in a 2d spherical shell
+# with phi periodicity and adaptive refinement.
 
 # Enable if: QUICK_TEST
 # MPI: 2
@@ -81,6 +81,11 @@ subsection Postprocess
 end
 
 subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+    set Stokes GMG type    = global coarsening
+  end
+
   subsection Matrix Free
     set Output details = true
   end

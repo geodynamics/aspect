@@ -28,7 +28,6 @@
 
 #include <aspect/geometry_model/interface.h>
 #include <aspect/geometry_model/ellipsoidal_chunk.h>
-#include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/heating_model/interface.h>
 #include <aspect/heating_model/adiabatic_heating.h>
 #include <aspect/material_model/interface.h>
@@ -2791,17 +2790,6 @@ namespace aspect
   void
   Simulator<dim>::select_default_solver_and_averaging()
   {
-    const bool has_periodic_boundaries = (geometry_model->get_periodic_boundary_pairs().size() > 0);
-
-    // Periodic boundaries are supported by the GMG solver if the geometry is
-    // a (phi-periodic) spherical shell, for which the global coarsening GMG
-    // builds the (rotational) periodicity constraints on every level. Other
-    // periodic geometries (e.g. periodic boxes) are not selected by default,
-    // because the local smoothing GMG does not support hanging nodes on
-    // periodic boundaries, which adaptive refinement can create at any time.
-    const bool has_gmg_supported_periodic_boundaries
-      = (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(geometry_model.get()) != nullptr);
-
     if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::default_solver)
       {
         // Catch all situations that are not supported by the GMG solver:
@@ -2809,7 +2797,7 @@ namespace aspect
         //   - Ellipsoidal geometry
         //   - Locally conservative discretization
         //   - Implicit reference density profile
-        //   - Periodic boundaries (except phi-periodic spherical shells)
+        //   - Periodic boundaries
         //   - Stokes velocity degree not 2 or 3
         //   - Material averaging explicitly disabled
         //   - Robin boundary conditions
@@ -2818,7 +2806,7 @@ namespace aspect
             parameters.use_locally_conservative_discretization == true ||
             (material_model->is_compressible() == true && parameters.formulation_mass_conservation ==
              Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile) ||
-            (has_periodic_boundaries && !has_gmg_supported_periodic_boundaries) ||
+            (geometry_model->get_periodic_boundary_pairs().size()) > 0 ||
             (parameters.stokes_velocity_degree < 2 || parameters.stokes_velocity_degree > 3) ||
             parameters.material_averaging == MaterialModel::MaterialAveraging::none ||
             boundary_convective_heating_manager.get_fixed_convective_heating_boundary_indicators().size() != 0)
@@ -2830,30 +2818,8 @@ namespace aspect
           {
             // GMG is supported for all other cases
             parameters.stokes_solver_type = Parameters<dim>::StokesSolverType::block_gmg;
-
-            // For periodic spherical shells only the global coarsening GMG
-            // supports the rotational periodicity constraints on all levels
-            // (and hanging nodes on the periodic boundary). Select it.
-            if (has_periodic_boundaries &&
-                parameters.stokes_gmg_type == Parameters<dim>::StokesGMGType::local_smoothing)
-              parameters.stokes_gmg_type = Parameters<dim>::StokesGMGType::global_coarsening;
           }
       }
-
-    // If the user explicitly requested the GMG solver for a periodic
-    // spherical shell, require the global coarsening variant: the local
-    // smoothing multigrid transfer cannot represent the rotational
-    // periodicity constraints on the level meshes and does not support
-    // hanging nodes on periodic boundaries.
-    AssertThrow(!(parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg &&
-                  has_periodic_boundaries &&
-                  has_gmg_supported_periodic_boundaries &&
-                  parameters.stokes_gmg_type == Parameters<dim>::StokesGMGType::local_smoothing),
-                ExcMessage("The 'block GMG' Stokes solver for spherical shells with "
-                           "periodic boundaries requires the global coarsening multigrid "
-                           "variant. Please set 'Stokes GMG type = global coarsening' in "
-                           "subsection 'Solver parameters/Stokes solver parameters', or "
-                           "use 'Stokes solver type = default solver'."));
 
     // Now pick an appropriate material averaging for the chosen solver
     if (parameters.material_averaging == MaterialModel::MaterialAveraging::default_averaging)
