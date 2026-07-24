@@ -1273,8 +1273,8 @@ namespace aspect
         double residual_p = 0.0;
         if (parameters.include_melt_transport)
           residual_p = system_matrix.block(1,1).residual (residual.block(1),
-                                                                     linearized_stokes_variables.block(1),
-                                                                     system_rhs.block(1));
+                                                          linearized_stokes_variables.block(1),
+                                                          system_rhs.block(1));
         else
           residual_p = system_rhs.block(pressure_block_index).l2_norm();
         return std::sqrt(residual_u*residual_u+residual_p*residual_p);

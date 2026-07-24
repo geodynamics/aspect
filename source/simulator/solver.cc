@@ -729,7 +729,15 @@ namespace aspect
                                                                  pressure_block_index).residual (distributed_stokes_solution.block(velocity_block_index),
                                                                      linearized_stokes_initial_guess.block(pressure_block_index),
                                                                      system_rhs.block(velocity_block_index));
-            const double pressure_residual = system_rhs.block(pressure_block_index).l2_norm();
+
+            double pressure_residual = 0.0;
+            if (!parameters.include_melt_transport)
+              pressure_residual = system_rhs.block(pressure_block_index).l2_norm();
+            else
+              pressure_residual = system_matrix.block(pressure_block_index,
+                                                      pressure_block_index).residual (distributed_stokes_solution.block(pressure_block_index),
+                                                                                      linearized_stokes_initial_guess.block(pressure_block_index),
+                                                                                      system_rhs.block(pressure_block_index));
 
             solver_tolerance = parameters.linear_stokes_solver_tolerance *
                                std::sqrt(velocity_residual*velocity_residual+pressure_residual*pressure_residual);

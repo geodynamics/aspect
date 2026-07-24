@@ -139,12 +139,12 @@ namespace aspect
 
     Vector<float> cellwise_errors_u (this->get_triangulation().n_active_cells());
     Vector<float> cellwise_errors_p (this->get_triangulation().n_active_cells());
-    Vector<float> cellwise_errors_p_c (this->get_triangulation().n_active_cells());
+    Vector<float> cellwise_errors_p_t (this->get_triangulation().n_active_cells());
 
     ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim),
                                         n_total_comp);
     ComponentSelectFunction<dim> comp_p(dim, n_total_comp);
-    ComponentSelectFunction<dim> comp_p_c(dim+1, n_total_comp);
+    ComponentSelectFunction<dim> comp_p_t(dim+1, n_total_comp);
 
     VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
                                        this->get_solution(),
@@ -163,17 +163,17 @@ namespace aspect
     VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
                                        this->get_solution(),
                                        ref_func,
-                                       cellwise_errors_p_c,
+                                       cellwise_errors_p_t,
                                        quadrature_formula,
                                        VectorTools::L2_norm,
-                                       &comp_p_c);
+                                       &comp_p_t);
 
     std::ostringstream os;
     os << std::scientific
        << "ndofs= " << this->get_solution().size()
        << " u_L2= " << std::sqrt(Utilities::MPI::sum(cellwise_errors_u.norm_sqr(),MPI_COMM_WORLD))
        << " p_L2= "  << std::sqrt(Utilities::MPI::sum(cellwise_errors_p.norm_sqr(),MPI_COMM_WORLD))
-       << " p_c_L2= "  << std::sqrt(Utilities::MPI::sum(cellwise_errors_p_c.norm_sqr(),MPI_COMM_WORLD))
+       << " p_t_L2= "  << std::sqrt(Utilities::MPI::sum(cellwise_errors_p_t.norm_sqr(),MPI_COMM_WORLD))
        ;
 
     return std::make_pair("Errors", os.str());

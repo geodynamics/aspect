@@ -1338,7 +1338,7 @@ namespace aspect
                        "fluid pressure",
                        std::make_shared<FE_Q<dim>>(parameters.stokes_velocity_degree-1),
                        1,
-                       0)); // same block as p_c even without a direct solver!
+                       0)); // same block as p_t even without a direct solver!
 
     variables.insert(variables.begin()+2,
                      VariableDeclaration<dim>(
