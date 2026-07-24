@@ -131,18 +131,19 @@ namespace aspect
         AssertThrow(melt_outputs != nullptr,
                     ExcMessage("Need MeltOutputs from the material model for computing the melt properties."));
 
-        const double p_c_scale = Plugins::get_plugin_as_type<const MaterialModel::MeltInterface<dim>>(this->get_material_model()).p_c_scale(in,
-                                 out,
-                                 this->get_melt_handler(),
-                                 true);
-
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             unsigned output_index = 0;
+            const double e = this->get_melt_handler().melt_parameters.regularization;
             for (unsigned int i=0; i<property_names.size(); ++i, ++output_index)
               {
+                const double stabilized_inverse_compaction_viscosity = std::sqrt(std::pow(melt_outputs->inverse_compaction_viscosities[q], 2) + e*e);
                 if (property_names[i] == "compaction viscosity")
-                  computed_quantities[q][output_index] = melt_outputs->compaction_viscosities[q];
+                  computed_quantities[q][output_index] = 1./stabilized_inverse_compaction_viscosity;
+                else if (property_names[i] == "inverse compaction viscosity")
+                  computed_quantities[q][output_index] = stabilized_inverse_compaction_viscosity;
+                else if (property_names[i] == "unstabilized inverse compaction viscosity")
+                  computed_quantities[q][output_index] = melt_outputs->inverse_compaction_viscosities[q];
                 else if (property_names[i] == "fluid viscosity")
                   computed_quantities[q][output_index] = melt_outputs->fluid_viscosities[q];
                 else if (property_names[i] == "permeability")
@@ -159,30 +160,27 @@ namespace aspect
                   }
                 else if (property_names[i] == "compaction pressure")
                   {
-                    const unsigned int pc_comp_idx = this->introspection().variable("compaction pressure").first_component_index;
-                    const double p_c_bar = input_data.solution_values[q][pc_comp_idx];
-
-                    computed_quantities[q][output_index] = p_c_scale * p_c_bar;
+                    const unsigned int pt_comp_idx = this->introspection().variable("total pressure").first_component_index;
+                    const unsigned int pf_comp_idx = this->introspection().variable("fluid pressure").first_component_index;
+                    computed_quantities[q][output_index] = input_data.solution_values[q][pt_comp_idx]
+                                                           - input_data.solution_values[q][pf_comp_idx];
                   }
                 else if (property_names[i] == "darcy coefficient")
                   {
-                    const double K_D = this->get_melt_handler().limited_darcy_coefficient(melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q], p_c_scale > 0);
+                    const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
                     computed_quantities[q][output_index] = K_D;
-                  }
-                else if (property_names[i] == "darcy coefficient no cutoff")
-                  {
-                    const double K_D_no_cut = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
-                    computed_quantities[q][output_index] = K_D_no_cut;
-                  }
-                else if (property_names[i] == "is melt cell")
-                  {
-                    computed_quantities[q][output_index] = this->get_melt_handler().is_melt_cell(in.current_cell)? 1.0 : 0.0;
                   }
                 else if (property_names[i] == "compaction length")
                   {
-                    const double compaction_length = std::sqrt((out.viscosities[q] + 4./3. * melt_outputs->compaction_viscosities[q])
-                                                               * melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q]);
-                    computed_quantities[q][output_index] = compaction_length;
+                    if (melt_outputs->inverse_compaction_viscosities[q] > 0.)
+                      {
+                        const double compaction_length = std::sqrt((out.viscosities[q] + (4./3.) / melt_outputs->inverse_compaction_viscosities[q])
+                                                                   * melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q]);
+                        computed_quantities[q][output_index] = compaction_length;
+                      }
+                    else
+                      // compaction viscosity generally scales with 1/phi, while permeability scales with phi^2...phi^3.
+                      computed_quantities[q][output_index] = 0.0;
                   }
                 else
                   AssertThrow(false, ExcNotImplemented());
@@ -203,9 +201,9 @@ namespace aspect
             prm.enter_subsection("Melt material properties");
             {
               const std::string pattern_of_names
-                = "compaction viscosity|fluid viscosity|permeability|"
-                  "fluid density|fluid density gradient|is melt cell|"
-                  "darcy coefficient|darcy coefficient no cutoff|"
+                = "compaction viscosity|inverse compaction viscosity|unstabilized inverse compaction viscosity|"
+                  "fluid viscosity|permeability|fluid density|fluid density gradient|"
+                  "darcy coefficient|compaction pressure|"
                   "compaction length";
 
               prm.declare_entry("List of properties",
@@ -241,9 +239,6 @@ namespace aspect
                           ExcMessage("The list of strings for the parameter "
                                      "'Postprocess/Visualization/Melt material properties/List of properties' contains entries more than once. "
                                      "This is not allowed. Please check your parameter file."));
-
-              // Always output compaction pressure
-              property_names.insert(property_names.begin(),"compaction pressure");
             }
             prm.leave_subsection();
           }

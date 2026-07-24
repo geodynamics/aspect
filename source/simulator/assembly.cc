@@ -400,7 +400,7 @@ namespace aspect
                                         + finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell;
 
     if (parameters.include_melt_transport)
-      stokes_dofs_per_cell += finite_element.base_element(introspection.variable("compaction pressure").base_index).dofs_per_cell;
+      stokes_dofs_per_cell += finite_element.base_element(introspection.variable("total pressure").base_index).dofs_per_cell;
 
     auto worker = [&](const typename DoFHandler<dim>::active_cell_iterator &cell,
                       internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch,
@@ -555,7 +555,7 @@ namespace aspect
         // in the case of melt transport we have an AMG preconditioner for the lower right block.
         dealii::ComponentMask cm_pressure = introspection.component_masks.pressure;
         if (parameters.include_melt_transport)
-          cm_pressure = cm_pressure | introspection.variable("compaction pressure").component_mask;
+          cm_pressure = cm_pressure | introspection.variable("total pressure").component_mask;
 
         LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
         Amg_data.elliptic = true;
@@ -838,7 +838,7 @@ namespace aspect
                                         + finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell;
 
     if (parameters.include_melt_transport)
-      stokes_dofs_per_cell += finite_element.base_element(introspection.variable("compaction pressure").base_index).dofs_per_cell;
+      stokes_dofs_per_cell += finite_element.base_element(introspection.variable("total pressure").base_index).dofs_per_cell;
 
     const bool use_reference_density_profile = (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::reference_density_profile)
                                                || (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile);

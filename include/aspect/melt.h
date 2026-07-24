@@ -86,11 +86,13 @@ namespace aspect
                      const unsigned int n_comp);
 
         /**
-         * Compaction viscosity values $\xi$ at the given positions.
-         * This parameter describes the resistance of the solid matrix
+         * Inverse of the compaction viscosity values $\xi$ at the given positions.
+         * The compaction viscosity parameter describes the resistance of the solid matrix
          * in a two-phase simulation to dilation and compaction.
+         * We have to use the inverse because the compaction viscosity goes to infinity
+         * for zero porosity in many (realistic) material descriptions.
          */
-        std::vector<double> compaction_viscosities;
+        std::vector<double> inverse_compaction_viscosities;
 
         /**
          * Fluid (melt) viscosity values $\eta_f$ at the given positions.
@@ -224,28 +226,6 @@ namespace aspect
          * permeability divided by fluid viscosity. Units: m^2/Pa/s.
          */
         virtual double reference_darcy_coefficient () const = 0;
-
-        /**
-         * Returns the cell-averaged and cut-off value of p_c_scale,
-         * the factor we use to rescale the compaction pressure and to
-         * decide if a cell is a melt cell.
-         * The last input argument @p consider_is_melt_cell determines if
-         * this computation takes into account if a cell is a "melt cell".
-         * Melt cells are cells where we solve the melt transport equations,
-         * as indicated by the entries stored in the is_melt_cell vector of
-         * the melt handler. In case @p consider_is_melt_cell is set to true,
-         * this function returns a value of zero if the cell is not a melt cell.
-         * If @p consider_is_melt_cell is set to false the computation
-         * disregards the information about which cells are melt cells,
-         * and computes p_c_scale from the cell-averaged Darcy coefficient
-         * for all cells. This is needed for example when we want to update
-         * the is_melt_cell vector and need to find out which cells should be
-         * marked as melt cells.
-         */
-        double p_c_scale (const MaterialModel::MaterialModelInputs<dim> &inputs,
-                          const MaterialModel::MaterialModelOutputs<dim> &outputs,
-                          const MeltHandler<dim> &melt_handler,
-                          const bool consider_is_melt_cell) const;
     };
 
 
@@ -421,6 +401,8 @@ namespace aspect
        * be averaged cell-wise.
        */
       bool average_melt_velocity;
+
+      double regularization;
     };
   }
 
@@ -505,31 +487,6 @@ namespace aspect
                                                        const typename DoFHandler<dim>::active_cell_iterator &cell,
                                                        internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
                                                        internal::Assembly::CopyData::StokesSystem<dim>      &data) const;
-
-      /**
-       * Constrain the compaction pressure to zero in all cells that are not
-       * "melt cells" (cells where the porosity is above a given threshold).
-       * This reverts the system of equations we solve back to the Stokes
-       * system without melt transport for these cells.
-       */
-      void add_current_constraints(AffineConstraints<double> &constraints);
-
-      /**
-       * Returns the entry of the private variable is_melt_cell_vector for the
-       * cell given in the input, describing if we have melt transport in this
-       * cell or not.
-       */
-      bool is_melt_cell(const typename DoFHandler<dim>::active_cell_iterator &cell) const;
-
-      /**
-       * Given the Darcy coefficient @p K_D as computed by the material model,
-       * limit the coefficient to a minimum value (computed as the K_D
-       * variation threshold given in the input file times the reference Darcy
-       * coefficient) in melt cells and return this value. If @p is_melt_cell
-       * is false, return zero.
-       */
-      double limited_darcy_coefficient(const double K_D,
-                                       const bool is_melt_cell) const;
 
       /**
        * Return a pointer to the boundary fluid pressure.

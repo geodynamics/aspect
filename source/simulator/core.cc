@@ -805,9 +805,6 @@ namespace aspect
         }
     }
 
-    if (parameters.include_melt_transport)
-      melt_handler->add_current_constraints (new_current_constraints);
-
     // Update and let the prescribed solution plugins constrain parts of the solution:
     prescribed_solution_manager.update();
     prescribed_solution_manager.constrain_solution(new_current_constraints);
@@ -1022,14 +1019,8 @@ namespace aspect
                   }
 
                 coupling[x.velocities[d]][
-                  introspection.variable("compaction pressure").first_component_index] = DoFTools::always;
-                coupling[introspection.variable("compaction pressure").first_component_index]
-                [x.velocities[d]]
-                  = DoFTools::always;
-                coupling[x.velocities[d]]
-                [introspection.variable("fluid pressure").first_component_index]
-                  = DoFTools::always;
-                coupling[introspection.variable("fluid pressure").first_component_index]
+                  introspection.variable("total pressure").first_component_index] = DoFTools::always;
+                coupling[introspection.variable("total pressure").first_component_index]
                 [x.velocities[d]]
                   = DoFTools::always;
               }
@@ -1037,8 +1028,14 @@ namespace aspect
             coupling[introspection.variable("fluid pressure").first_component_index]
             [introspection.variable("fluid pressure").first_component_index]
               = DoFTools::always;
-            coupling[introspection.variable("compaction pressure").first_component_index]
-            [introspection.variable("compaction pressure").first_component_index]
+            coupling[introspection.variable("total pressure").first_component_index]
+            [introspection.variable("total pressure").first_component_index]
+              = DoFTools::always;
+            coupling[introspection.variable("total pressure").first_component_index]
+            [introspection.variable("fluid pressure").first_component_index]
+              = DoFTools::always;
+            coupling[introspection.variable("fluid pressure").first_component_index]
+            [introspection.variable("total pressure").first_component_index]
               = DoFTools::always;
           }
         else
@@ -1317,12 +1314,12 @@ namespace aspect
       {
         coupling[introspection.variable("fluid pressure").first_component_index]
         [introspection.variable("fluid pressure").first_component_index] = DoFTools::always;
-        coupling[introspection.variable("compaction pressure").first_component_index]
-        [introspection.variable("compaction pressure").first_component_index] = DoFTools::always;
-        coupling[introspection.variable("compaction pressure").first_component_index]
+        coupling[introspection.variable("total pressure").first_component_index]
+        [introspection.variable("total pressure").first_component_index] = DoFTools::always;
+        coupling[introspection.variable("total pressure").first_component_index]
         [introspection.variable("fluid pressure").first_component_index] = DoFTools::always;
         coupling[introspection.variable("fluid pressure").first_component_index]
-        [introspection.variable("compaction pressure").first_component_index] = DoFTools::always;
+        [introspection.variable("total pressure").first_component_index] = DoFTools::always;
       }
     else
       coupling[x.pressure][x.pressure] = DoFTools::always;
@@ -1627,7 +1624,7 @@ namespace aspect
         {
           introspection.index_sets.locally_owned_melt_pressure_dofs = system_index_set & Utilities::extract_locally_active_dofs_with_component(dof_handler,
                                                                       introspection.variable("fluid pressure").component_mask|
-                                                                      introspection.variable("compaction pressure").component_mask);
+                                                                      introspection.variable("total pressure").component_mask);
           introspection.index_sets.locally_owned_fluid_pressure_dofs = system_index_set & Utilities::extract_locally_active_dofs_with_component(dof_handler,
                                                                        introspection.variable("fluid pressure").component_mask);
         }
