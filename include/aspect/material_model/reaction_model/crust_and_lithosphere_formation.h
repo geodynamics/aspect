@@ -82,6 +82,9 @@ namespace aspect
            */
           double crustal_thickness;
           double lithosphere_thickness;
+          double upward_angle_for_crust;
+          double upward_angle_for_lithosphere;
+          bool if_gradient_in_lithosphere;
 
           /**
            * The indices of the compositional fields that store the basalt and
