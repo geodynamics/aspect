@@ -26,6 +26,7 @@
 #include <aspect/simulator_access.h>
 
 #include <array>
+#include <set>
 
 namespace aspect
 {
@@ -150,7 +151,8 @@ namespace aspect
          */
         void
         load_ascii(const std::string &filename,
-                   const MPI_Comm communicator);
+                   const MPI_Comm communicator,
+                   const std::set<unsigned int> &log_components = {});
 
         /**
          * Fill the current object with data read from a NetCDF file
@@ -177,10 +179,17 @@ namespace aspect
          * - ASCII files (typically ending in .txt)
          * - gzip compressed ASCII files (ending in .gz)
          * - URLs starting with "http" (handled by libDAB)
+         *
+         * @param filename The name of the file to load.
+         * The file format is determined by the file extension.
+         * @param communicator The MPI communicator to use for loading the file.
+         * @param log_components A set of component indices for which to
+         * compute the logarithm of the data values (for ascii files).
          */
         void
         load_file(const std::string &filename,
-                  const MPI_Comm communicator);
+                  const MPI_Comm communicator,
+                  const std::set<unsigned int> &log_components = {});
 
         /**
          * Returns the computed data (velocity, temperature, etc. - according

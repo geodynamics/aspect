@@ -340,7 +340,8 @@ namespace aspect
     template <int dim>
     void
     StructuredDataLookup<dim>::load_ascii(const std::string &filename,
-                                          const MPI_Comm comm)
+                                          const MPI_Comm comm,
+                                          const std::set<unsigned int> &log_components)
     {
       const std::string pretty_name = Utilities::replace_in_string(filename, ASPECT_SOURCE_DIR, "$ASPECT_SOURCE_DIR");
       const unsigned int root_process = 0;
@@ -534,7 +535,20 @@ namespace aspect
                 {
                   // This is a data value, so scale and store:
                   const unsigned int component = column_num - dim;
-                  data_tables[component](idx) = temp_data * scale_factor;
+
+                  if (log_components.find(component) != log_components.end())
+                    {
+                      AssertThrow(temp_data > 0.0,
+                                  ExcMessage("The data value in column "
+                                             + Utilities::int_to_string(component) + " in row "
+                                             + Utilities::int_to_string(row_num)
+                                             + " in file " + filename +
+                                             "\nThis class expects the data values to be strictly positive, because "
+                                             "you have requested the logarithm of the data value to be stored. Please check your data file."));
+                      data_tables[component](idx) = std::log(temp_data * scale_factor);
+                    }
+                  else
+                    data_tables[component](idx) = temp_data * scale_factor;
                 }
 
               ++read_data_entries;
@@ -850,13 +864,14 @@ namespace aspect
     template <int dim>
     void
     StructuredDataLookup<dim>::load_file(const std::string &filename,
-                                         const MPI_Comm communicator)
+                                         const MPI_Comm communicator,
+                                         const std::set<unsigned int> &log_components)
     {
       const bool is_netcdf_filename = std::regex_search(filename, std::regex("\\.(nc|NC)$"));
       if (is_netcdf_filename)
         load_netcdf(filename);
       else
-        load_ascii(filename, communicator);
+        load_ascii(filename, communicator, log_components);
     }
 
     template <int dim>
@@ -870,27 +885,30 @@ namespace aspect
       if (crash_if_not_in_range)
         {
           const std::vector<double> &x_coordinates = get_interpolation_point_coordinates(0);
+          const std::vector<double> &y_coordinates = get_interpolation_point_coordinates(1);
 
           AssertThrow (position[0] >= (x_coordinates[0] * (1. - 10. * std::numeric_limits<double>::epsilon())) && position[0] <= (x_coordinates[x_coordinates.size()-1] * (1. + 10. * std::numeric_limits<double>::epsilon())),
-                       ExcMessage("The requested position "
+                       ExcMessage("The requested x position "
                                   + std::to_string(position[0])
                                   + " is outside the range of the data (minimum value = "
                                   + std::to_string(x_coordinates[0])
                                   + " , maximum value = "
                                   + std::to_string(x_coordinates[x_coordinates.size()-1])
-                                  + ")."
+                                  + "). "
+                                  + "The requested y position is " + std::to_string(position[1])
+                                  + "."
                                  ));
 
-          const std::vector<double> &y_coordinates = get_interpolation_point_coordinates(1);
-
           AssertThrow (position[1] >= (y_coordinates[0] * (1. - 10. * std::numeric_limits<double>::epsilon())) && position[1] <= (y_coordinates[y_coordinates.size()-1] * (1. + 10. * std::numeric_limits<double>::epsilon())),
-                       ExcMessage("The requested position "
+                       ExcMessage("The requested y position "
                                   + std::to_string(position[1])
                                   + " is outside the range of the data (minimum value = "
                                   + std::to_string(y_coordinates[0])
                                   + " , maximum value = "
                                   + std::to_string(y_coordinates[y_coordinates.size()-1])
-                                  + ")."
+                                  + "). "
+                                  + "The requested x position is " + std::to_string(position[0])
+                                  + "."
                                  ));
         }
 
