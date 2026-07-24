@@ -96,12 +96,18 @@ namespace aspect
           {
             none,
             hk04_olivine_hydration,
+            interface_weakening,
           } viscosity_prefactor_scheme;
 
           // Initialize variables for the water fugacity calculation, from HK04
           std::vector<double> diffusion_water_fugacity_exponents;
           std::vector<double> dislocation_water_fugacity_exponents;
           std::vector<double> minimum_mass_fraction_water_for_dry_creep;
+
+          // Variables for the interface weakening scheme
+          std::vector<std::string> weakening_field_names;
+          std::vector<double> interface_weakening_factors;
+          double interface_weakening_threshold;
 
           // From Hirth & Kohlstedt 2004, equation 6
           const double A_H2O = 2.6e-5; // 1/Pa
