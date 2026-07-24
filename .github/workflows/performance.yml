@@ -1,0 +1,231 @@
+name: linux
+
+on:
+  push:
+    branches:
+      - 'main'
+      - 'aspect-*'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.actor }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  OMPI_MCA_btl_base_warn_component_unused: 0
+  OMPI_MCA_mpi_yield_when_idle: 1
+  OMPI_MCA_rmaps_base_oversubscribe: 1
+  OMPI_ALLOW_RUN_AS_ROOT: 1
+  OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
+  OMPI_MCA_btl_vader_single_copy_mechanism: none
+
+jobs:
+  performance:
+    #linux build including tests
+    name: tests
+    runs-on: [ubuntu-22.04]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: "geodynamics/aspect-tester:jammy-dealii-9.6-v3"
+            build-with-fastscape: "OFF"
+            run-tests: "ON"
+            compare-tests: "ON"
+            result-file: "changes-test-results-9.6.diff"
+            container-options: '--user 0 --name container'
+            use-tpetra: "OFF"
+          - image: "geodynamics/aspect-tester:jammy-dealii-9.7-v4"
+            build-with-fastscape: "OFF"
+            run-tests: "ON"
+            compare-tests: "OFF"
+            result-file: "changes-test-results-9.7.diff"
+            container-options: '--user 0 --name container'
+            use-tpetra: "OFF"
+          - image: "geodynamics/aspect-tester:jammy-dealii-master"
+            build-with-fastscape: "ON"
+            run-tests: "ON"
+            compare-tests: "OFF"
+            result-file: "changes-test-results-master.diff"
+            container-options: '--user 0 --name container'
+            use-tpetra: "OFF"
+          - image: "geodynamics/aspect-tester:jammy-dealii-master"
+            run-tests: "ON"
+            compare-tests: "OFF"
+            result-file: "changes-test-results-master-tpetra.diff"
+            container-options: '--user 0 --name container'
+            use-tpetra: "ON"
+    container: 
+      image: "geodynamics/aspect-tester:jammy-dealii-9.7-v4"
+      options: '--user 0 --name container'
+
+    steps:
+    - uses: actions/checkout@v7
+    - uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+    - name: Checkout cbdr
+      uses: actions/checkout@v6
+      with:
+        repository: MFraters/cbdr
+        ref: github_actions_fix
+        path: cbdr
+    - name: retrieve cache cbdr
+      uses: actions/cache@v5
+      with:
+        path: |
+          ~/.cargo/bin/
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
+          ~/.cargo/git/
+          target/
+          ./target/
+          ${{github.workspace}}/cbdr/
+          ${{github.workspace}}/cbdr/target/
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+    - name: retrieve cache main
+      uses: actions/cache@v5
+      with:
+        path: |
+          ${{github.workspace}}/main/
+        key: ${{ runner.os }}-aspect-main-v1}}
+
+
+    - name: retrieve cache feature
+      uses: actions/cache@v5
+      with:
+        path: |
+          ${{github.workspace}}/feature/
+        key: ${{ runner.os }}-aspect-feature-${{ github.event.number }}-v1}}
+    - name: Checkout cbdr
+      uses: actions/checkout@v6
+      with:
+        repository: MFraters/cbdr
+        ref: github_actions_fix
+        path: cbdr
+        clean: false
+
+
+    - name: Checkout feature
+      uses: actions/checkout@v6
+      with:
+        path: feature/source
+        clean: false
+
+    - name: Checkout main
+      uses: actions/checkout@v6
+      with:
+        ref: main
+        path: main/source
+        clean: false
+    - name: cd Build Environment
+      run: |
+            cd ${{github.workspace}}/cbdr/;
+            cargo build --release;
+    - name: compile main
+      run: |
+        mkdir build
+        cd main/build
+        cmake \
+        -D CMAKE_BUILD_TYPE=Release \
+        -G 'Ninja' \
+        -D CMAKE_CXX_FLAGS='-Werror' \
+        -D ASPECT_ADDITIONAL_CXX_FLAGS='-O3 -Wdeprecated-declarations' \
+        -D ASPECT_TEST_GENERATOR='Ninja' \
+        -D ASPECT_PRECOMPILE_HEADERS=ON \
+        -D ASPECT_UNITY_BUILD=ON \
+        -D ASPECT_WITH_FASTSCAPE=OFF \
+        -D ASPECT_RUN_ALL_TESTS=OFF \
+        -D ASPECT_COMPARE_TEST_RESULTS=OFF \
+        -D ASPECT_USE_TPETRA=OFF \
+        -D CMAKE_UNITY_BUILD_BATCH_SIZE=8 \
+        ..
+        ninja -j 4
+    - name: compile feature
+      run: |
+        mkdir build
+        cd feature/build
+        cmake \
+        -D CMAKE_BUILD_TYPE=Release \
+        -G 'Ninja' \
+        -D CMAKE_CXX_FLAGS='-Werror' \
+        -D ASPECT_ADDITIONAL_CXX_FLAGS='-O3 -Wdeprecated-declarations' \
+        -D ASPECT_TEST_GENERATOR='Ninja' \
+        -D ASPECT_PRECOMPILE_HEADERS=ON \
+        -D ASPECT_UNITY_BUILD=ON \
+        -D ASPECT_WITH_FASTSCAPE=OFF \
+        -D ASPECT_RUN_ALL_TESTS=OFF \
+        -D ASPECT_COMPARE_TEST_RESULTS=OFF \
+        -D ASPECT_USE_TPETRA=OFF \
+        -D CMAKE_UNITY_BUILD_BATCH_SIZE=8 \
+        ..
+        ninja -j 4
+    - name: make results dir
+      shell: bash
+      run: |
+            rm -rf ${{github.workspace}}/benchmark_${{matrix.benchmark_number}}_results/;
+            mkdir -p ${{github.workspace}}/benchmark_${{matrix.benchmark_number}}_results/
+    - name: prepare benchmarks
+      shell: bash
+      run: | 
+             cp ${{github.workspace}}/feature/source/cookbooks/continental_extension.prm ${{github.workspace}}/continental_extension.prm
+             echo "subsection Mesh refinement" >> ${{github.workspace}}/continental_extension.prm  
+             echo "set Initial global refinement = 0" >> ${{github.workspace}}/continental_extension.prm  
+             echo "end" >> ${{github.workspace}}/continental_extension.prm  
+    - name: run benchmark
+      shell: bash
+      run: |
+            cd ${{github.workspace}}/cbdr/;
+            time cargo run --release sample --timeout=900s "main:${{github.workspace}}/main/build/./aspect-release  ${{github.workspace}}/continental_extension.prm" "feature:${{github.workspace}}/feature/build/./aspect-release ${{github.workspace}}/continental_extension.prm" > ${{github.workspace}}/result_01.csv;
+            cat ${{github.workspace}}/result_01.csv;
+            cat ${{github.workspace}}/result_01.csv | cargo run --release analyze --disable-dynamic-printing > ${{github.workspace}}/benchmark_01_results/analyze_01.log ||:;
+            cat ${{github.workspace}}/benchmark_01_results/analyze_01.log
+    - name: Retrieve benchmark 1
+        id: retrieve_benchmark_1
+        env:
+          benchmark_number: 1
+        run: |
+          set -e
+          file="${{ github.workspace }}/analyze_${{ env.benchmark_number }}.log"
+          cat "$file"
+          line=$(grep wall_time "$file" | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g')
+          samples=$(grep samples "$file" | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g')
+          {
+            echo "wall_time_1_main_mean=$(echo "$line" | awk '{print $2}')"
+            echo "wall_time_1_main_std_dev=$(echo "$line" | awk '{print $4}')"
+            echo "wall_time_1_main_samples=$(echo "$samples" | awk '{print $2}')"
+            echo "wall_time_1_feature_mean=$(echo "$line" | awk '{print $5}')"
+            echo "wall_time_1_feature_std_dev=$(echo "$line" | awk '{print $7}')"
+            echo "wall_time_1_feature_samples=$(echo "$samples" | awk '{print $3}')"
+            echo "wall_time_1_CI_low=$(echo "$line" | sed 's/\[/ /g; s/\]/ /g' | awk '{print $8}')"
+            echo "wall_time_1_CI_high=$(echo "$line" | sed 's/\[/ /g; s/\]/ /g' | awk '{print $10}')"
+          } >> "$GITHUB_OUTPUT"
+    - name: Find Comment
+        id: find_comment
+        continue-on-error: true
+        uses: peter-evans/find-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ steps.retrieve_pull_request_number.outputs.pull_request_number }}
+          comment-author: 'github-actions[bot]'
+
+    - name: Create or update comment
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+          issue-number: ${{ steps.retrieve_pull_request_number.outputs.pull_request_number }}
+          body: |
+            | Benchmark | Main | Feature | Difference (99.9% CI) |
+            | --- | --- | --- | --- |
+            | Continental extension | ${{ steps.retrieve_benchmark_1.outputs.wall_time_1_main_mean }} ± ${{ steps.retrieve_benchmark_1.outputs.wall_time_1_main_std_dev }} (s=${{ steps.retrieve_benchmark_1.outputs.wall_time_1_main_samples }})| ${{ steps.retrieve_benchmark_1.outputs.wall_time_1_feature_mean }} ± ${{ steps.retrieve_benchmark_1.outputs.wall_time_1_feature_std_dev }} (s=${{ steps.retrieve_benchmark_1.outputs.wall_time_1_feature_samples }})| ${{ steps.retrieve_benchmark_1.outputs.wall_time_1_CI_low }} .. ${{ steps.retrieve_benchmark_1.outputs.wall_time_1_CI_high }} |
+          edit-mode: replace
