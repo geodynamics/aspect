@@ -1,0 +1,15 @@
+New: Elasticity can now be combined with two-phase melt transport. The melt
+Stokes assembler adds the stored elastic (deviatoric) shear stress as a force
+on the solid momentum equation, and can optionally treat the compaction of the
+solid matrix as visco-elastic via a new "Reference pore modulus" parameter in
+the "Melt settings" subsection (following Keller, May & Kaus, 2013, who define
+the porosity-dependent elastic pore modulus K_phi = K_0 phi^(-1/2)). 
+
+The default value recovers purely viscous compaction, so existing models are unchanged (i.e. in cells without melt the melt momentum operator reduces exactly to the incompressible Stokes equation). Because elasticity requires the stress fields to use a
+discontinuous discretization, melt transport now permits discontinuous elements
+for those stress fields (while other compositional fields and the temperature
+must still be continuous). In addition, visco-plastic strain weakening and the
+elastic-stress and strain-invariant particle properties now work when the
+visco-plastic model is wrapped by the reactive fluid transport model.
+<br>
+(Ryan Stoner, 2026/07/14)

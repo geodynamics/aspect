@@ -41,6 +41,15 @@
 **Documentation:** The factor by how much the Darcy coefficient K\_D in a cell can be smaller than the reference Darcy coefficient for this cell still to be considered a melt cell (for which the melt transport equations are solved). For smaller Darcy coefficients, the Stokes equations (without melt) are solved instead. Only used if &ldquo;Include melt transport&rdquo; is true.
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Reference pore modulus<parameters:Melt_20settings/Reference_20pore_20modulus>`
+:name: parameters:Melt_20settings/Reference_20pore_20modulus
+**Default value:** 1e30
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Reference pore modulus $K_0$ of the solid matrix used for visco-elastic compaction (Keller, May \& Kaus 2013). It sets the porosity-dependent elastic pore modulus $K_\phi = K_0 \, \phi^{-1/2}$ (their eq.~52), the elastic modulus governing compaction (their eq.~32). A finite value turns the compaction channel into a Maxwell element with effective compaction viscosity $\xi^*_{ve} = 1/(1/\xi + 1/(K_\phi \Delta t))$ and an elastic restoring source $\Delta P^o/(K_\phi \Delta t)$ added to the compaction pressure equation. The default (very large value) recovers purely viscous compaction. Units: \si{\pascal}.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Use discontinuous compaction pressure<parameters:Melt_20settings/Use_20discontinuous_20compaction_20pressure>`
 :name: parameters:Melt_20settings/Use_20discontinuous_20compaction_20pressure
 **Default value:** true

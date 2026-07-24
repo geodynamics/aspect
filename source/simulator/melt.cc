@@ -277,6 +277,7 @@ namespace aspect
             - R = 1/eta M_p + K_D L_p for p
             S = - (1/eta + 1/viscosity_c)  M_p  for p_c
           */
+
           const double viscosity_c = melt_outputs->compaction_viscosities[q];
           const double JxW = scratch.finite_element_values.JxW(q);
 
@@ -405,6 +406,7 @@ namespace aspect
       const FiniteElement<dim> &fe = this->get_fe();
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+      const bool is_melt_cell = this->get_melt_handler().is_melt_cell(scratch.material_model_inputs.current_cell);
 
       Assert(Plugins::plugin_type_matches<const MaterialModel::MeltInterface<dim>>(this->get_material_model()),
              ExcMessage("Error: The current material model needs to be derived from MeltInterface to use melt transport."));
@@ -425,6 +427,8 @@ namespace aspect
         = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
       const std::shared_ptr<const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>> force
         = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>();
+      const std::shared_ptr<const MaterialModel::ElasticOutputs<dim>> elastic_outputs
+        = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::ElasticOutputs<dim>>();
 
       const double pressure_scaling = this->get_pressure_scaling();
 
@@ -434,10 +438,9 @@ namespace aspect
         scratch.finite_element_values[introspection.extractors.compositional_fields[porosity_index]].get_function_values(this->get_reaction_vector(),
             reactions);
 
-      for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
+      for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell;)
         {
           const unsigned int component_index_i = fe.system_to_component_index(i).first;
-
           if (is_velocity_or_pressures(introspection,p_c_component_index,p_f_component_index,component_index_i))
             {
               data.local_dof_indices[i_stokes] = scratch.local_dof_indices[i];
@@ -448,7 +451,7 @@ namespace aspect
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
-          for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
+          for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell;)
             {
               const unsigned int component_index_i = fe.system_to_component_index(i).first;
 
@@ -463,6 +466,10 @@ namespace aspect
                     {
                       scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
                       scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
+                    }
+                  else if (this->get_parameters().enable_elasticity)
+                    {
+                      scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
                     }
                   ++i_stokes;
                 }
@@ -542,36 +549,55 @@ namespace aspect
                                    )
                                    * JxW;
 
+              if (elastic_outputs != nullptr && this->get_parameters().enable_elasticity)
+                data.local_rhs(i) += (elastic_outputs->elastic_force[q] * scratch.grads_phi_u[i])
+                                     * JxW;
+
               if (scratch.rebuild_stokes_matrix)
                 for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
                   {
-                    data.local_matrix(i,j) += ( (eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                                                - (eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
-                                                  )
-                                                - (pressure_scaling *
-                                                   scratch.div_phi_u[i] * scratch.phi_p[j])
+                    data.local_matrix(i, j) += ((eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
+                                                // The -2/3 eta (div u)(div v) deviatoric/compaction term only
+                                                // belongs in cells where the solid actually compacts (melt cells).
+                                                // In non-melt cells (p_c pinned, phi->0) the solid is incompressible,
+                                                // so gate it out there to exactly recover the exact incompressible operator.
+                                                - (((!is_melt_cell && !this->get_material_model().is_compressible()) ? 0.0 : 1.0)
+                                                 * eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j])) -
+                                                (pressure_scaling *
+                                                 scratch.div_phi_u[i] * scratch.phi_p[j])
                                                 // finally the term -div(u). note the negative sign to make this
                                                 // operator adjoint to the grad(p) term
                                                 - (pressure_scaling *
-                                                   scratch.phi_p[i] * scratch.div_phi_u[j])
-                                                +
-                                                (- pressure_scaling * pressure_scaling / viscosity_c * p_c_scale * p_c_scale
-                                                 * scratch.phi_p_c[i] * scratch.phi_p_c[j])
-                                                - pressure_scaling * scratch.div_phi_u[i] * scratch.phi_p_c[j] * p_c_scale
-                                                - pressure_scaling * scratch.phi_p_c[i] * scratch.div_phi_u[j] * p_c_scale
-                                                - K_D * pressure_scaling * pressure_scaling *
-                                                (scratch.grad_phi_p[i] * scratch.grad_phi_p[j])
-                                                + (this->get_material_model().is_compressible()
-                                                   ?
-                                                   K_D * pressure_scaling * pressure_scaling / density_f
-                                                   * scratch.phi_p[i] * (scratch.grad_phi_p[j] * density_gradient_f)
-                                                   :
-                                                   0.0))
-                                              * JxW;
+                                                   scratch.phi_p[i] * scratch.div_phi_u[j]) +
+                                                (-pressure_scaling * pressure_scaling / viscosity_c * p_c_scale * p_c_scale * scratch.phi_p_c[i] * scratch.phi_p_c[j]) - pressure_scaling * scratch.div_phi_u[i] * scratch.phi_p_c[j] * p_c_scale - pressure_scaling * scratch.phi_p_c[i] * scratch.div_phi_u[j] * p_c_scale - K_D * pressure_scaling * pressure_scaling * (scratch.grad_phi_p[i] * scratch.grad_phi_p[j]) + (this->get_material_model().is_compressible() ? K_D * pressure_scaling * pressure_scaling / density_f * scratch.phi_p[i] * (scratch.grad_phi_p[j] * density_gradient_f) : 0.0)) *
+                                               JxW;
                   }
             }
         }
 
+    }
+
+
+
+    template <int dim>
+    void
+    MeltStokesSystem<dim>::
+    create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
+    {
+      MeltInterface<dim>::create_additional_material_model_outputs(outputs);
+      const unsigned int n_points = outputs.n_evaluation_points();
+
+      if (this->get_parameters().enable_elasticity &&
+          !outputs.template has_additional_output_object<MaterialModel::ElasticOutputs<dim>>())
+        {
+          outputs.additional_outputs.push_back(
+            std::make_unique<MaterialModel::ElasticOutputs<dim>> (n_points));
+        }
+
+      Assert(!this->get_parameters().enable_elasticity
+             ||
+             outputs.template get_additional_output_object<MaterialModel::ElasticOutputs<dim>>()->elastic_force.size()
+             == n_points, ExcInternalError());
     }
 
 
@@ -1841,12 +1867,31 @@ namespace aspect
   void
   MeltHandler<dim>::initialize () const
   {
-    // The additional terms in the temperature systems have not been ported
+    // The additional terms in the temperature system have not been ported
     // to the DG formulation:
-    AssertThrow(!this->get_parameters().use_discontinuous_temperature_discretization &&
-                !this->get_parameters().have_discontinuous_composition_discretization,
-                ExcMessage("Using discontinuous elements for temperature "
-                           "or composition in models with melt transport is currently not implemented.") );
+    AssertThrow(!this->get_parameters().use_discontinuous_temperature_discretization,
+                ExcMessage("Using discontinuous elements for temperature in models "
+                           "with melt transport is currently not implemented.") );
+
+    // Discontinuous elements for the compositional fields are likewise not
+    // implemented for melt transport, with the exception of the fields that
+    // represent elastic stress tensor components. Elasticity requires those to
+    // use a discontinuous discretization, so they are permitted here while all other
+    // discontinuous compositional fields (for example the porosity) are not.
+    {
+      const std::vector<bool> &composition_dg =
+        this->get_parameters().use_discontinuous_composition_discretization;
+      std::vector<bool> is_stress_field(composition_dg.size(), false);
+      if (this->introspection().composition_type_exists(CompositionalFieldDescription::stress))
+        for (const unsigned int c : this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::stress))
+          is_stress_field[c] = true;
+
+      for (unsigned int c=0; c<composition_dg.size(); ++c)
+        AssertThrow(!composition_dg[c] || is_stress_field[c],
+                    ExcMessage("Using discontinuous elements for compositional fields in "
+                               "models with melt transport is currently only implemented "
+                               "for fields that represent elastic stress tensor components.") );
+    }
     if (melt_parameters.use_discontinuous_p_c)
       AssertThrow(!this->model_has_prescribed_stokes_solution(),
                   ExcMessage("You can not use a discontinuous p_c in a model "

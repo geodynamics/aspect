@@ -1,0 +1,145 @@
+# Visco-elastic (Maxwell) compaction of the solid matrix under two-phase melt
+# transport, tested against the analytical Maxwell stress-relaxation solution.
+#
+# A 1-D column of porous, melt-bearing solid (porosity = 0.1 everywhere) is
+# compacted by a prescribed downward velocity on all boundaries for t < 500 yr,
+# then held at fixed strain (velocity = 0) for t > 500 yr. During the hold the
+# solid does not deform (div u = 0), so the purely viscous compaction pressure
+# would be zero; with a finite reference pore modulus K_0 the compaction channel
+# is a Maxwell element and the compaction pressure instead relaxes as
+#
+#     p_c(t) = p_c(t_hold) * exp(-(t - t_hold) / tau),   tau = xi / K_phi
+#
+# with xi the (viscous) compaction viscosity and K_phi the elastic pore modulus.
+# Following Keller, May & Kaus (2013, eq. 52), K_phi is porosity-dependent,
+# K_phi = K_0 * phi^(-1/2), with K_0 the reference pore modulus. Here the base
+# shear viscosity is 1e20 Pa s, the shear-to-bulk ratio is 1, phi_0 = 0.05 and
+# phi = 0.1, so xi = 1e20 * 0.05/0.1 = 5e19 Pa s. With K_0 = 1e9 Pa the initial
+# elastic pore modulus is K_phi = 1e9 * 0.1^(-1/2) ~= 3.16e9 Pa, so
+# tau = xi / K_phi = 5e19 / 3.16e9 ~= 1.58e10 s ~= 500 yr. (As the porosity
+# evolves during the run, K_phi and tau track it via eq. 52.) The point-values
+# postprocessor records the compaction pressure over time so this exponential
+# relaxation is captured in the reference output; a purely viscous run (large
+# default K_0) instead should yield p_c ~ 0 during the hold.
+
+set Dimension                              = 2
+set End time                               = 1500
+set Use years instead of seconds           = true
+set Maximum time step                      = 100
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Nonlinear solver tolerance             = 1e-6
+set Max nonlinear iterations               = 20
+set Adiabatic surface temperature          = 1600
+set Pressure normalization                 = surface
+set Use operator splitting                 = false
+
+subsection Melt settings
+  set Include melt transport                    = true
+  set Reference pore modulus                    = 1e9
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block AMG
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent      = 1e3
+    set Y extent      = 1e4
+    set X repetitions = 1
+    set Y repetitions = 8
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 0
+  set Initial adaptive refinement        = 0
+  set Time steps between mesh refinement = 0
+end
+
+# Load (compact) for t < 500 yr, then hold everything fixed.
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left: function, right: function, bottom: function, top: function
+  subsection Function
+    set Variable names      = x,y,t
+    set Function expression = 0; if(t<500, -1e-8*y, 0)
+  end
+end
+
+# Drained top (fluid pressure fixed), no fluid flux elsewhere.
+subsection Boundary fluid pressure model
+  set Plugin name = density
+  subsection Density
+    set Density formulation = fluid density
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields  = porosity, bound_fluid
+end
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Function expression = 0.1; 0.0
+  end
+end
+subsection Boundary composition model
+  set List of model names = initial composition
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names = initial temperature
+  subsection Initial temperature
+    set Maximal temperature = 1600
+    set Minimal temperature = 1600
+  end
+end
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 1600
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+subsection Material model
+  set Model name = reactive fluid transport
+  subsection Reactive Fluid Transport Model
+    set Base model                                       = visco plastic
+    set Reference fluid density                          = 2500
+    set Shear to bulk viscosity ratio                    = 1.0
+    set Reference fluid viscosity                        = 100
+    set Reference permeability                           = 1e-8
+    set Exponential fluid weakening factor               = 0
+    set Fluid reaction time scale for operator splitting = 1e3
+    set Fluid-solid reaction scheme                      = no reaction
+  end
+  subsection Visco Plastic
+    set Reference temperature              = 1600
+    set Prefactors for diffusion creep     = 5e-21
+    set Viscous flow law                   = diffusion
+    set Densities                          = 3000
+    set Viscosity averaging scheme         = harmonic
+    set Minimum viscosity                  = 1e20
+    set Maximum viscosity                  = 1e20
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, point values
+  subsection Point values
+    set Time between point values output = 0
+    set Evaluation points = 500,2500 ; 500,5000 ; 500,7500
+  end
+end

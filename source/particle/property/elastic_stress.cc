@@ -22,6 +22,7 @@
 #include <aspect/material_model/visco_plastic.h>
 #include <aspect/material_model/viscoelastic.h>
 #include <aspect/initial_composition/interface.h>
+#include <aspect/material_model/reactive_fluid_transport.h>
 #include <aspect/particle/world.h>
 
 namespace aspect
@@ -47,7 +48,9 @@ namespace aspect
       {
         AssertThrow((Plugins::plugin_type_matches<const MaterialModel::ViscoPlastic<dim>>(this->get_material_model())
                      ||
-                     Plugins::plugin_type_matches<const MaterialModel::Viscoelastic<dim>>(this->get_material_model())),
+                     Plugins::plugin_type_matches<const MaterialModel::Viscoelastic<dim>>(this->get_material_model())
+                     ||
+                     Plugins::plugin_type_matches<const MaterialModel::ReactiveFluidTransport<dim>>(this->get_material_model())),
                     ExcMessage("This particle property only makes sense in combination with the viscoelastic or visco_plastic material model."));
 
         AssertThrow(this->get_parameters().enable_elasticity == true,
@@ -161,8 +164,12 @@ namespace aspect
                   material_inputs_cell.current_cell = cell;
                   material_inputs_cell.requested_properties = MaterialModel::MaterialProperties::reaction_rates;
                   material_outputs_cell = MaterialModel::MaterialModelOutputs<dim>(n_particles_in_cell, this->n_compositional_fields());
-                  // The reaction rates are stored in additional outputs
-                  this->get_material_model().create_additional_named_outputs(material_outputs_cell);
+                  const MaterialModel::Interface<dim> &elastic_model =
+                    Plugins::plugin_type_matches<const MaterialModel::ReactiveFluidTransport<dim>>(this->get_material_model())
+                    ? Plugins::get_plugin_as_type<const MaterialModel::ReactiveFluidTransport<dim>>(this->get_material_model()).get_base_model()
+                    : this->get_material_model();
+
+                  elastic_model.create_additional_named_outputs(material_outputs_cell);
 
                   const std::shared_ptr<MaterialModel::ReactionRateOutputs<dim>> reaction_rate_outputs
                     = material_outputs_cell.template get_additional_output_object<MaterialModel::ReactionRateOutputs<dim>>();
@@ -238,9 +245,7 @@ namespace aspect
                       material_inputs_cell.strain_rate[i] = symmetrize (grad_u);
                     }
 
-                  // Evaluate the material model to get the reaction rates
-                  // for all the particles in the current cell.
-                  this->get_material_model().evaluate (material_inputs_cell,material_outputs_cell);
+                  elastic_model.evaluate (material_inputs_cell,material_outputs_cell);
 
                   // Update all particles in the current cell.
                   particle = particles_in_cell.begin();
@@ -337,7 +342,14 @@ namespace aspect
               grad_u[d] = inputs.gradients[p][d];
             material_inputs.strain_rate[0] = symmetrize (grad_u);
 
-            this->get_material_model().evaluate (material_inputs,material_outputs);
+            // Elasticity is handled by the base viscoplastic/viscoelastic model,
+            // which may be wrapped by the reactive fluid transport model.
+            const MaterialModel::Interface<dim> &elastic_model =
+              Plugins::plugin_type_matches<const MaterialModel::ReactiveFluidTransport<dim>>(this->get_material_model())
+              ? Plugins::get_plugin_as_type<const MaterialModel::ReactiveFluidTransport<dim>>(this->get_material_model()).get_base_model()
+              : this->get_material_model();
+
+            elastic_model.evaluate (material_inputs,material_outputs);
 
             // Apply the stress rotation to the ve_stress_* fields, not the ve_stress_*_old fields.
             for (unsigned int i = 0; i < SymmetricTensor<2,dim>::n_independent_components ; ++i)

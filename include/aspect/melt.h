@@ -298,6 +298,9 @@ namespace aspect
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                 internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
+
+        void
+        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
     };
 
 
@@ -421,6 +424,20 @@ namespace aspect
        * be averaged cell-wise.
        */
       bool average_melt_velocity;
+
+      /**
+       * Reference pore modulus K_0 of the solid matrix, used for visco-elastic
+       * compaction (Keller, May & Kaus 2013). It sets the porosity-dependent
+       * elastic pore modulus K_phi = K_0 * phi^(-1/2) (their eq. 52), which is
+       * the elastic modulus governing compaction (their eq. 32). A finite value
+       * turns the compaction channel into a Maxwell element: the effective
+       * compaction viscosity becomes xi*_ve = 1/(1/xi + 1/(K_phi dt)) and an
+       * elastic restoring source dP^o/(K_phi dt) (dP^o = old compaction pressure)
+       * is added to the compaction pressure equation. The default (a very large
+       * value) recovers purely viscous compaction, so existing models are
+       * unchanged.
+       */
+      double reference_pore_modulus;
     };
   }
 

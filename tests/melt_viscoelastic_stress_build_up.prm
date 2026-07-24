@@ -35,13 +35,13 @@
 #  Global parameters
 set Dimension                              = 2
 set Start time                             = 0
-set End time                               = 250e3
+set End time                               = 10e3
 set Use years instead of seconds           = true
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Nonlinear solver tolerance             = 1e-5
 set Max nonlinear iterations               = 100
 set CFL number                             = 0.5
-set Maximum time step                      = 1000
+set Maximum time step                      = 5000
 set Output directory                       = output
 set Pressure normalization                 = surface
 set Surface pressure                       = 0.
@@ -114,9 +114,9 @@ end
 
 # Number and name of compositional fields
 subsection Compositional fields
-  set Number of fields = 6
-  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old
-  set Types of fields  = stress, stress, stress, stress, stress, stress
+  set Number of fields = 8
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old, porosity, bound_fluid
+  set Types of fields  = stress, stress, stress, stress, stress, stress, porosity, generic
 end
 
 # Spatial domain of different compositional fields
@@ -126,7 +126,7 @@ subsection Initial composition model
   subsection Function
     set Variable names      = x,y
     set Function constants  =
-    set Function expression = 0; 0; 0; 0; 0; 0;
+    set Function expression = 0; 0; 0; 0; 0; 0; 0; 0;
   end
 end
 
@@ -163,14 +163,22 @@ end
 
 # Material model
 subsection Material model
-  set Model name = viscoelastic
+  set Model name = reactive fluid transport
+  subsection Reactive Fluid Transport Model
+    set Base model                  = viscoelastic
+    set Reference fluid density     = 2800
+    set Reference fluid viscosity   = 10
+    set Reference permeability      = 1e-8
+    set Fluid reaction time scale for operator splitting = 5e3
+    set Fluid-solid reaction scheme = zero solubility 
+  end
 
   subsection Viscoelastic
     set Densities                   = 2800
     set Viscosities                 = 1.e22
     set Elastic shear moduli        = 1.e10
     set Use fixed elastic time step = false
-    set Fixed elastic time step     = 1e3
+    set Fixed elastic time step     = 5e3
     set Viscosity averaging scheme  = harmonic
   end
 end

@@ -139,6 +139,13 @@ namespace aspect
         void
         create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
+        /**
+         * Return the base material model, so callers can query solid
+         * properties (e.g. plastic yielding) that live in the wrapped model.
+         */
+        const MaterialModel::Interface<dim> &
+        get_base_model() const;
+
       private:
 
         /**
