@@ -609,6 +609,15 @@ namespace aspect
     return *simulator->gravity_model.get();
   }
 
+  template <int dim>
+  const PrescribedDilation::Interface<dim> &
+  SimulatorAccess<dim>::get_prescribed_dilation () const
+  {
+    Assert (simulator->prescribed_dilation.get() != nullptr,
+            ExcMessage("You can not call this function if no such model is actually available."));
+    return *simulator->prescribed_dilation.get();
+  }
+
 
   template <int dim>
   const AdiabaticConditions::Interface<dim> &

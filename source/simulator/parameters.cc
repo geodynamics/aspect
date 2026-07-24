@@ -763,6 +763,12 @@ namespace aspect
     }
     prm.leave_subsection();
 
+    prm.declare_entry ("Use prescribed dilation plugin", "false",
+                       Patterns::Bool (),
+                       "Whether to use the prescribed dilation plugin to set right hand side for the Stokes solver."
+                       "In the continuity equation the added term is (pdp.x + pdp.y [+ pdp.z]) * dV."
+                       "Additionally, usage of the deviatoric stress tensor in the momentum equation is always enforced.");
+
     // next declare parameters that pertain to the equations to be
     // solved, along with boundary conditions etc. note that at this
     // point we do not know yet which geometry model we will use, so
@@ -1782,6 +1788,7 @@ namespace aspect
     pressure_normalization          = prm.get("Pressure normalization");
 
     use_operator_splitting          = prm.get_bool("Use operator splitting");
+    use_prescribed_dilation_plugin  = prm.get_bool("Use prescribed dilation plugin");
 
     prm.enter_subsection ("Mesh refinement");
     {
@@ -2487,6 +2494,7 @@ namespace aspect
     GeometryModel::declare_parameters <dim>(prm);
     InitialTopographyModel::declare_parameters <dim>(prm);
     GravityModel::declare_parameters<dim> (prm);
+    PrescribedDilation::declare_parameters<dim> (prm);
     InitialTemperature::Manager<dim>::declare_parameters (prm);
     InitialComposition::Manager<dim>::declare_parameters (prm);
     PrescribedSolution::Manager<dim>::declare_parameters (prm);
