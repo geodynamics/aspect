@@ -1,0 +1,24 @@
+
+Number of active cells: 1,408 (on 4 levels)
+Number of degrees of freedom: 30,718 (11,682+1,513+5,841+5,841+5,841)
+
+Number of mesh deformation degrees of freedom: 11,682
+   Solving mesh displacement system... 4 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Solving continental_crust system ... 0 iterations.
+   Solving oceanic_crust system ... 0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0/1/1.431e+11 // 0/1/2.867e+10
+     Temperature min/avg/max:   273 K, 1507 K, 1573 K
+     RMS, max velocity:         0.0387 m/year, 0.063 m/year
+     Writing graphical output:  output-isostatic_topography_box_2d/solution/solution-00000
+     Topography min/max:        -1990 m, 1990 m
+
+Termination requested by criterion: end time
+
+
+
