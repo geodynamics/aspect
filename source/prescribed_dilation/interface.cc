@@ -31,7 +31,7 @@ namespace aspect
 {
   namespace PrescribedDilation
   {
-// -------------------------------- Deal with registering gravity models and automating
+// -------------------------------- Deal with registering prescribed dilation models and automating
 // -------------------------------- their setup and selection at run time
 
     namespace
@@ -70,16 +70,6 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      // If one sets the model name to an empty string in the input file,
-      // ParameterHandler produces an error while reading the file. However,
-      // if one omits specifying any model name at all (not even setting it to
-      // the empty string) then the value we get here is the empty string. If
-      // we don't catch this case here, we end up with awkward downstream
-      // errors because the value obviously does not conform to the Pattern.
-      AssertThrow(model_name != "unspecified",
-                  ExcMessage("You need to select a Prescribed dilation model "
-                             "(`set Model name' in `subsection Prescribed dilation')."));
-
       return std::get<dim>(registered_plugins).create_plugin (model_name,
                                                               "Prescribed dilation::Model name");
     }
@@ -95,8 +85,8 @@ namespace aspect
       {
         const std::string pattern_of_names
           = std::get<dim>(registered_plugins).get_pattern_of_names ();
-        prm.declare_entry ("Model name", "unspecified",
-                           Patterns::Selection (pattern_of_names+"|unspecified"),
+        prm.declare_entry ("Model name", "function",
+                           Patterns::Selection (pattern_of_names),
                            "Select one of the following models:\n\n"
                            +
                            std::get<dim>(registered_plugins).get_description_string());
