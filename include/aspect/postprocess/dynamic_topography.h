@@ -57,6 +57,20 @@ namespace aspect
         topography_vector() const;
 
         /**
+         * Return the density value used above the top surface when converting
+         * normal traction to dynamic topography.
+         */
+        double
+        get_density_above() const;
+
+        /**
+         * Return the density value used below the bottom surface when converting
+         * normal traction to dynamic topography.
+         */
+        double
+        get_density_below() const;
+
+        /**
          * Return the cell-wise topography vector as calculated by the CBF formulation,
          * where indices of the vector correspond to cell indices.
          * This vector is considerably smaller than the full topography vector returned

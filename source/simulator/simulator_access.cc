@@ -874,6 +874,18 @@ namespace aspect
 
 
   template <int dim>
+  const Adjoint::Manager<dim> &
+  SimulatorAccess<dim>::get_adjoint_manager () const
+  {
+    Assert (simulator->adjoint_manager != nullptr,
+            ExcInternalError());
+
+    return *(simulator->adjoint_manager);
+  }
+
+
+
+  template <int dim>
   unsigned int
   SimulatorAccess<dim>::n_particle_managers() const
   {

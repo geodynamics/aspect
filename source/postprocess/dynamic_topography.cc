@@ -391,6 +391,26 @@ namespace aspect
       return topo_vector;
     }
 
+
+
+    template <int dim>
+    double
+    DynamicTopography<dim>::
+    get_density_above() const
+    {
+      return density_above;
+    }
+
+
+
+    template <int dim>
+    double
+    DynamicTopography<dim>::
+    get_density_below() const
+    {
+      return density_below;
+    }
+
     /**
      * Return the cellwise topography vector as calculated by CBF formulation
      */

@@ -37,6 +37,7 @@
 #endif
 
 #include <aspect/simulator/assemblers/interface.h>
+#include <aspect/adjoint/manager.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 #include <aspect/material_model/rheology/elasticity.h>
 #include <aspect/time_stepping/repeat_on_nonlinear_fail.h>
@@ -181,6 +182,7 @@ namespace aspect
     simulator_is_past_initialization (false),
     assemblers (std::make_unique<Assemblers::Manager<dim>>()),
     parameters (prm, mpi_communicator_),
+    adjoint_manager (std::make_unique<Adjoint::Manager<dim>>()),
     melt_handler (parameters.include_melt_transport ?
                   std::make_unique<MeltHandler<dim>>(prm) :
                   nullptr),
@@ -304,6 +306,10 @@ namespace aspect
     // geometry model's description of symbolic names for boundary parts. note that
     // the geometry model is the only model whose run time parameters are already read
     // at the time it is created
+    adjoint_manager->initialize_simulator(*this);
+    adjoint_manager->parse_parameters(prm);
+    adjoint_manager->initialize();
+
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(initial_topography_model.get()))
       sim->initialize_simulator (*this);
     initial_topography_model->initialize ();
@@ -899,6 +905,7 @@ namespace aspect
           case Parameters<dim>::NonlinearSolver::Kind::no_Advection_single_Stokes_first_timestep_only:
           case Parameters<dim>::NonlinearSolver::Kind::no_Advection_iterated_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::no_Advection_iterated_defect_correction_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::no_Advection_adjoint_Stokes:
             return false;
         }
       Assert(false, ExcNotImplemented());
@@ -917,6 +924,7 @@ namespace aspect
           case Parameters<dim>::NonlinearSolver::Kind::no_Advection_single_Stokes_first_timestep_only:
           case Parameters<dim>::NonlinearSolver::Kind::no_Advection_iterated_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::no_Advection_iterated_defect_correction_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::no_Advection_adjoint_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_single_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_defect_correction_Stokes:
@@ -2010,6 +2018,12 @@ namespace aspect
             case NonlinearSolver::no_Advection_iterated_defect_correction_Stokes:
             {
               solve_no_advection_iterated_defect_correction_stokes();
+              break;
+            }
+
+            case NonlinearSolver::no_Advection_adjoint_Stokes:
+            {
+              solve_stokes_adjoint();
               break;
             }
 

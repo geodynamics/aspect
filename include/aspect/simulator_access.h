@@ -130,6 +130,11 @@ namespace aspect
     template <int dim> class Manager;
   }
 
+  namespace Adjoint
+  {
+    template <int dim> class Manager;
+  }
+
   template <int dim> class MeltHandler;
   template <int dim> class VolumeOfFluidHandler;
 
@@ -999,6 +1004,12 @@ namespace aspect
        */
       const Postprocess::Manager<dim> &
       get_postprocess_manager () const;
+
+      /**
+       * Return a reference to the adjoint manager.
+       */
+      const Adjoint::Manager<dim> &
+      get_adjoint_manager () const;
 
       /**
        * Returns the number of active particle managers.
