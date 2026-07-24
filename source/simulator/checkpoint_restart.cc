@@ -322,14 +322,14 @@ namespace aspect
 
     unsigned int checkpoint_id = 0;
     if (!additional_checkpoint)
-    {
-    // This will rotate from 01 to n_checkpoints_to_keep including:
-      checkpoint_id = (last_checkpoint_id % parameters.n_checkpoints_to_keep) + 1;
-    }
+      {
+        // This will rotate from 01 to n_checkpoints_to_keep including:
+        checkpoint_id = (last_regular_checkpoint_id % parameters.n_checkpoints_to_keep) + 1;
+      }
     else
-    {
-      checkpoint_id = last_additional_checkpoint_id;
-    }
+      {
+        checkpoint_id = last_additional_checkpoint_id;
+      }
 
     const std::string checkpoint_path = checkpoint_path_from_id(parameters, checkpoint_id);
     Utilities::create_directory(checkpoint_path, mpi_communicator, true);
@@ -384,6 +384,10 @@ namespace aspect
 
       // Update the checkpoint ID to the current checkpoint ID.
       last_checkpoint_id = checkpoint_id;
+      // Also update the last regular ID if required. The last additional
+      // ID is already set in the calling function.
+      if (!additional_checkpoint)
+        last_regular_checkpoint_id = checkpoint_id;
 
       // Serialize into a stringstream. Put the following into a code
       // block of its own to ensure the destruction of the 'oa'

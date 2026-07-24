@@ -551,7 +551,7 @@ namespace aspect
     /*
      * See if an additional checkpoint needs to be created. Time has already been advanced
      * to the next timestep.
-     * TODO if through the other criteria we already determined that a checkpoint needs to be created, 
+     * TODO if through the other criteria we already determined that a checkpoint needs to be created,
      * we can copy the checkpoint.
      */
     if ((parameters.additional_checkpoint_times.size() > 0)

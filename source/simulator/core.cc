@@ -211,6 +211,7 @@ namespace aspect
                      TimerOutput::wall_times),
     total_walltime_until_last_snapshot(0.),
     last_checkpoint_id (numbers::invalid_unsigned_int),
+    last_regular_checkpoint_id (numbers::invalid_unsigned_int),
     last_additional_checkpoint_id (parameters.n_checkpoints_to_keep),
     initial_topography_model(InitialTopographyModel::create_initial_topography_model<dim>(prm)),
     geometry_model (GeometryModel::create_geometry_model<dim>(prm)),
@@ -2171,6 +2172,7 @@ namespace aspect
       {
         // This will cause the next checkpoint to be written to be 01:
         last_checkpoint_id = 0;
+        last_regular_checkpoint_id = 0;
 
         time = parameters.start_time;
 

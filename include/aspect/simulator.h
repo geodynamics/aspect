@@ -1836,10 +1836,17 @@ namespace aspect
 
       /**
        * Checkpointing happens in rotating folders /restart/01/, /restart/02/,
-       * etc.. This variable holds the last index used and as such should
+       * etc.. and potentially additional, non-rotating folders.
+       * This variable holds the last index used and as such should
        * contain the last valid checkpoint written.
        */
       unsigned int last_checkpoint_id;
+
+      /**
+       * The id of the last checkpoint created based on wall time or time step
+       * number period.
+       */
+      unsigned int last_regular_checkpoint_id;
 
       /**
        * Additional checkpointing happens in folders numbered starting from
