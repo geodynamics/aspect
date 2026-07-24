@@ -67,7 +67,7 @@ subsection Material model
     #    Rybacki et al. (2006), J. Geophys. Res., v.111(B3).
     #    "Influence of water fugacity and activation volume on the flow properties of fine-grained
     #    anorthite aggregates"
-    # Note that the viscous pre-factors below are scaled to plane strain from unixial strain experiments.
+    # Note that the viscous pre-factors below are scaled to plane strain from uniaxial strain experiments.
     # For ease of identification, fields tracking strain are assigned prefactors of 1e-50
     set Prefactors for dislocation creep          = background: 7.37e-15, \
                                                     crust_upper: 1.37e-26, \

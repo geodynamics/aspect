@@ -1,5 +1,5 @@
 # This setup checks that mass is conserved when reactions occur.
-# The model starts with a Gaussian porosity distributon that
+# The model starts with a Gaussian porosity distribution that
 # solidifies over time, decreasing the density in the model.
 # According to this change in mass, material flows out of the box
 # at the top. At refinement 5, the outflow should be about

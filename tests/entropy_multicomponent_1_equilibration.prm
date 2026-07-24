@@ -48,7 +48,7 @@ subsection Temperature field
   set Temperature method = prescribed field with diffusion
 end
 
-# Fosterite is our background field
+# Forsterite is our background field
 subsection Compositional fields
   set Number of fields = 4
   set Names of fields = percent_enstatite, entropy_forsterite, entropy_enstatite, density_field

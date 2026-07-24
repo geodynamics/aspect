@@ -1,4 +1,4 @@
-# This test defines an initial block of porosity implaced in a solid within a 2D cartesian box.
+# This test defines an initial block of porosity emplaced in a solid within a 2D cartesian box.
 # Because the porosity composition is less dense than the solid, the porosity will rise to the 
 # surface of the model and flow out of the top of the box. This tests the implementation of 
 # composition dependent outflow boundary conditions for when a composition is advected with the 

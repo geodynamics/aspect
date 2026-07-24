@@ -33,7 +33,7 @@ subsection Discretization
   # As specified in the Compositional field subsection, the first three
   # fields are tracked by particles and the last two are tracked by fields.
   # The Compositional polynomial degree must be the same for all
-  # compositions tracked by particles (rihgt now), while it can vary for compositions
+  # compositions tracked by particles (right now), while it can vary for compositions
   # tracked by fields.
   set Composition polynomial degree           = 1,1,1,2,1
   set Stokes velocity polynomial degree       = 2
@@ -98,8 +98,8 @@ end
 
 # Number and name of compositional fields
 # The eleven compositional fields represent:
-# 1-6. fields representing viscoleastic stresses
-# 7.   The plastic strain that accumualates over time, with the initial plastic strain removed
+# 1-6. fields representing viscoelastic stresses
+# 7.   The plastic strain that accumulates over time, with the initial plastic strain removed
 # 8.   The plastic strain that accumulated over time, including the initial plastic strain values
 # 9.   The upper crust
 # 10.  The lower crust
@@ -270,7 +270,7 @@ subsection Material model
     #    Rybacki et al. (2006), J. Geophys. Res., v.111(B3).
     #    "Influence of water fugacity and activation volume on the flow properties of fine-grained
     #    anorthite aggregates"
-    # Note that the viscous pre-factors below are scaled to plane strain from unixial strain experiments.
+    # Note that the viscous pre-factors below are scaled to plane strain from uniaxial strain experiments.
     # For ease of identification, fields tracking strain are assigned prefactors of 1e-50
     set Prefactors for dislocation creep          = background: 7.37e-15, \
                                                     crust_upper: 1.37e-26, \

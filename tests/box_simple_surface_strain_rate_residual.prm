@@ -1,6 +1,6 @@
 ##### simple test to check the boundary strain rate residual statistics and
 ##### visualization postprocessor. The input data has zero strain rate so
-##### to check that the posprocessor is working : the output `strain rate`
+##### to check that the postprocessor is working : the output `strain rate`
 ##### and `boundary strain rate residual` are equal in magnitude and opposite
 ##### in signs.
 

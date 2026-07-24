@@ -1,4 +1,4 @@
-# This test defines an initial blob of porosity implaced in a solid within a 2D cartesian box.
+# This test defines an initial blob of porosity emplaced in a solid within a 2D cartesian box.
 # Because the porosity blob is less dense, the blob will rise to the surface of the model and
 # flow out of the top of the box. Additionally, there is an imposed solid inflow at the top boundary,
 # and so one composition will be outflowing (the porosity) while another is inflowing (the solid).

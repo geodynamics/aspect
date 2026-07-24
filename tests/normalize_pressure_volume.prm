@@ -1,5 +1,5 @@
 # test that pressure "volume" normalization works correctly.
-# note that the solution is kind of non-sensical..
+# note that the solution is kind of nonsensical..
 
 set Dimension = 2
 set CFL number                             = 1.0
