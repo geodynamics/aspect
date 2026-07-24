@@ -99,11 +99,36 @@ namespace aspect
                                       this->get_mpi_communicator());
       vec = vec_distributed;
 
-      DerivativeApproximation::approximate_gradient  (this->get_mapping(),
-                                                      this->get_dof_handler(),
-                                                      vec,
-                                                      indicators,
-                                                      this->introspection().component_indices.temperature);
+      try
+        {
+          DerivativeApproximation::approximate_gradient  (this->get_mapping(),
+                                                          this->get_dof_handler(),
+                                                          vec,
+                                                          indicators,
+                                                          this->introspection().component_indices.temperature);
+        }
+      catch (std::exception &exc)
+        {
+          std::cerr << std::endl << std::endl
+                    << "----------------------------------------------------"
+                    << std::endl;
+          std::cerr << "Exception on MPI process <"
+                    << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                    << "> while running mesh refinement plugin <"
+                    << "thermal energy density"
+                    << ">: " << std::endl
+                    << "The mesh refinement plugin failed to compute a thermal energy density gradient. "
+                    << "This could be caused by having a constant temperature in the model. If this is "
+                    << "the case, please set an other mesh refinement strategy. DEAL.II error:"
+                    << exc.what() << std::endl
+                    << "Aborting!" << std::endl
+                    << "----------------------------------------------------"
+                    << std::endl;
+
+          // terminate the program!
+          MPI_Abort (MPI_COMM_WORLD, 1);
+        }
+
 
       // Scale gradient in each cell with the correct power of h. Otherwise,
       // error indicators do not reduce when refined if there is a density
