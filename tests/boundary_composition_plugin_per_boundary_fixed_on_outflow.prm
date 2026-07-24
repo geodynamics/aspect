@@ -1,0 +1,11 @@
+# A test for specifying fixed compositions for only
+# a subset of the compositional fields when the composition
+# is also fixed on outflow boundaries.
+include $ASPECT_SOURCE_DIR/tests/boundary_composition_plugin_per_boundary.prm
+
+set Dimension                              = 2
+
+subsection Boundary composition model
+  # The right boundary experiences outflow
+  set Allow fixed composition on outflow boundaries = true
+end

@@ -402,7 +402,7 @@ namespace aspect
               ?
               boundary_temperature_manager.get_fixed_temperature_boundary_indicators()
               :
-              boundary_composition_manager.get_fixed_composition_boundary_indicators();
+              boundary_composition_manager.get_fixed_boundaries_for_field(advection_field.compositional_variable);
             const std::set<types::boundary_id> &tangential_velocity_boundaries =
               boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
             const std::set<types::boundary_id> &zero_velocity_boundaries =
