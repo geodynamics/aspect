@@ -19,6 +19,7 @@
  */
 
 #include <aspect/particle/property/function.h>
+#include <aspect/geometry_model/interface.h>
 
 namespace aspect
 {
@@ -37,8 +38,11 @@ namespace aspect
       Function<dim>::initialize_one_particle_property(const Point<dim> &position,
                                                       std::vector<double> &data) const
       {
+        // convert the position into the selected coordinate system
+        const Utilities::NaturalCoordinate<dim> point = this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system);
+
         for (unsigned int i = 0; i < n_components; ++i)
-          data.push_back(function->value(position, i));
+          data.push_back(function->value(Utilities::convert_array_to_point<dim>(point.get_coordinates()), i));
       }
 
       template <int dim>
@@ -56,6 +60,16 @@ namespace aspect
       {
         prm.enter_subsection("Function");
         {
+          prm.declare_entry ("Coordinate system", "cartesian",
+                             Patterns::Selection ("cartesian|spherical|depth"),
+                             "A selection that determines the assumed coordinate "
+                             "system for the function variables. Allowed values "
+                             "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
+                             "are interpreted as r,phi or r,phi,theta in 2d/3d "
+                             "respectively with theta being the polar angle. `depth' "
+                             "will create a function, in which only the first "
+                             "parameter is non-zero, which is interpreted to "
+                             "be the depth of the point.");
           prm.declare_entry ("Number of components", "1",
                              Patterns::Integer (0),
                              "The number of function components where each component is described "
@@ -71,20 +85,24 @@ namespace aspect
       Function<dim>::parse_parameters (ParameterHandler &prm)
       {
         prm.enter_subsection("Function");
-        n_components = prm.get_integer ("Number of components");
-        try
+        {
+          n_components = prm.get_integer ("Number of components");
+          try
           {
             function = std::make_unique<Functions::ParsedFunction<dim>>(n_components);
             function->parse_parameters (prm);
           }
-        catch (...)
+          catch (...)
           {
             std::cerr << "ERROR: FunctionParser failed to parse\n"
-                      << "\t'Particles.Function'\n"
-                      << "with expression\n"
-                      << "\t'" << prm.get("Function expression") << "'";
+              << "\t'Particles.Function'\n"
+              << "with expression\n"
+              << "\t'" << prm.get("Function expression") << "'";
             throw;
           }
+
+          coordinate_system = Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
+        }
         prm.leave_subsection();
       }
     }
