@@ -67,7 +67,7 @@ void signal_connector (aspect::SimulatorSignals<dim> &/*signals*/)
 {
   f();
   std::cout << "exiting..." << std::endl;
-  std::exit(0); // let's exist and not actually run ASPECT...
+  std::exit(0); // let's exit and not actually run ASPECT...
 }
 
 ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>,
