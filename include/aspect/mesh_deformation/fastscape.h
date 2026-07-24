@@ -148,6 +148,8 @@ namespace aspect
         void fill_fastscape_arrays(std::vector<double> &elevation,
                                    std::vector<double> &bedrock_transport_coefficient_array,
                                    std::vector<double> &bedrock_river_incision_rate_array,
+                                   std::vector<double> &sand_transport_coefficient,
+                                   std::vector<double> &silt_transport_coefficient,
                                    std::vector<double> &velocity_x,
                                    std::vector<double> &velocity_y,
                                    std::vector<double> &velocity_z,
@@ -475,7 +477,7 @@ namespace aspect
          * otherwise, the units are ${m^(1-2drainage_area_exponent)/s}$. Then a time scale factor will be applied to
          * convert it into  ${m^(1-2drainage_area_exponent)/yr}$ for Fastscape.
          */
-        double constant_bedrock_river_incision_rate;
+        std::vector<double> constant_bedrock_river_incision_rate;
 
         /**
          * Sediment river incision rate for the stream power law.
@@ -509,7 +511,7 @@ namespace aspect
          * convert it into  ${m^2/yr}$ for Fastscape.
          * This function is only used only if use_kf_distribution_function is false.
          */
-        double constant_bedrock_transport_coefficient;
+        std::vector<double> constant_bedrock_transport_coefficient;
 
         /**
          * Sediment transport coefficient for hillslope diffusion.
@@ -595,14 +597,20 @@ namespace aspect
         double sand_silt_averaging_depth;
 
         /**
+         * Submarine diffusion decay coefficient for the exponential decay of the marine diffusion coefficient with depth. Units: 1/m.
+         */
+        double lambda_decay_coefficient;
+
+        /**
          * Sand marine transport coefficient. (marine diffusion, m^2/yr.)
          */
-        double sand_transport_coefficient;
+        std::vector<double> sand_transport_coefficient
+        ;
 
         /**
          * Silt marine transport coefficient. (marine diffusion, m^2/yr.)
          */
-        double silt_transport_coefficient;
+        std::vector<double> silt_transport_coefficient;
 
         /**
          * Flag to use the marine component of FastScape.
