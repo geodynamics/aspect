@@ -1,0 +1,15 @@
+
+Number of active cells: 768 (on 2 levels)
+Number of degrees of freedom: 28,690 (20,790+970+6,930)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     Mantle flux statistics:   Depth 500 km: plume flux=5705.65 km^3/yr, slab flux=5705.65 km^3/yr, plume temperature flux=1.12378e+06 K km^3/yr, slab temperature flux=1.12378e+06 K km^3/yr, plume buoyancy mass flux=1.47162e+14 kg/yr, slab buoyancy mass flux=1.49516e+14 kg/yr, plume buoyancy force rate=1.47162e+15 N/yr, slab buoyancy force rate=1.49516e+15 N/yr, plumes=1, slabs=1. 
+     Writing graphical output: output-mantle_flux_statistics_3d/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
+ 
