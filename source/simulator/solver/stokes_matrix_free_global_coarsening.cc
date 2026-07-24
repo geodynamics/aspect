@@ -29,6 +29,8 @@
 #include <aspect/melt.h>
 #include <aspect/newton.h>
 
+#include <deal.II/fe/mapping_q.h>
+#include <deal.II/fe/mapping_q_cache.h>
 #include <deal.II/numerics/vector_tools.h>
 
 #include <deal.II/matrix_free/tools.h>
@@ -368,7 +370,7 @@ namespace aspect
         AffineConstraints<double> cs;
         std::shared_ptr<MatrixFree<dim,double>>
         mf(new MatrixFree<dim,double>());
-        mf->reinit(this->get_mapping(), dofhandlers_projection[l], cs, QGauss<1>(degree+1));
+        mf->reinit(get_level_triangulation_mapping(), dofhandlers_projection[l], cs, QGauss<1>(degree+1));
         temp_ops[l].initialize(mf);
       }
 
@@ -1552,32 +1554,37 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
+  const Mapping<dim> &
+  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::get_level_triangulation_mapping()
+  {
+    // The simulator uses a MappingQCache for curved geometries, which caches
+    // the geometry of the cells of the simulator triangulation. The level
+    // triangulations created by create_geometric_coarsening_sequence() are
+    // separate, repartitioned triangulations, on which evaluating that cache
+    // is invalid (and crashes once the partitions differ). Build an
+    // equivalent manifold-based mapping of the same degree for them instead.
+    // The level triangulations inherit the manifolds of the simulator
+    // triangulation, so both mappings describe the same geometry.
+    if (const MappingQ<dim> *mapping_q = dynamic_cast<const MappingQ<dim>*>(&this->get_mapping()))
+      if (dynamic_cast<const MappingQCache<dim>*>(mapping_q) != nullptr)
+        {
+          if (level_triangulation_mapping.get() == nullptr)
+            level_triangulation_mapping = std::make_unique<MappingQ<dim>>(mapping_q->get_degree());
+          return *level_triangulation_mapping;
+        }
+
+    return this->get_mapping();
+  }
+
+
+
+  template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::setup_dofs()
   {
-    // Periodic boundary conditions with hanging nodes on the boundary currently
-    // cause the GMG not to converge. We catch this case early to provide the
-    // user with a reasonable error message:
-    {
-      bool have_periodic_hanging_nodes = false;
-      for (const auto &cell : this->get_triangulation().active_cell_iterators())
-        if (cell->is_locally_owned())
-          for (const auto f : cell->face_indices())
-            {
-              if (cell->has_periodic_neighbor(f))
-                {
-                  const auto &neighbor = cell->periodic_neighbor(f);
-                  // This way, we can only detect the case where the neighbor is coarser,
-                  // but this is fine as the other owner covers that situation:
-                  if (neighbor->level()<cell->level())
-                    have_periodic_hanging_nodes = true;
-                }
-            }
-
-      have_periodic_hanging_nodes = (dealii::Utilities::MPI::max(have_periodic_hanging_nodes ? 1 : 0, this->get_mpi_communicator())) == 1;
-      AssertThrow(have_periodic_hanging_nodes==false, ExcNotImplemented());
-    }
-
-    const Mapping<dim> &mapping = this->get_mapping();
+    // Mapping used on the level triangulations of the multigrid hierarchy;
+    // see get_level_triangulation_mapping() for why this can differ from
+    // the simulator mapping.
+    const Mapping<dim> &mapping = get_level_triangulation_mapping();
 
     // This vector will be refilled with the new MatrixFree objects below:
     matrix_free_objects.clear();
@@ -1624,6 +1631,8 @@ namespace aspect
             constraint.reinit(locally_relevant_dofs);
 #endif
 
+            this->get_geometry_model().make_periodicity_constraints(dof_handler,
+                                                                    constraint);
 
             std::set<types::boundary_id> dirichlet_boundary = this->get_boundary_velocity_manager().get_zero_boundary_velocity_indicators();
             for (const auto boundary_id: this->get_boundary_velocity_manager().get_prescribed_boundary_velocity_indicators())
@@ -1734,6 +1743,9 @@ namespace aspect
 #else
             constraint.reinit(locally_relevant_dofs);
 #endif
+
+            this->get_geometry_model().make_periodicity_constraints(dof_handler,
+                                                                    constraint);
 
             DoFTools::make_hanging_node_constraints(dof_handler, constraint);
             constraint.close();
