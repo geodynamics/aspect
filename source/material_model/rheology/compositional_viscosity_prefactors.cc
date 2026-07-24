@@ -92,14 +92,21 @@ namespace aspect
               factored_viscosities = base_viscosity*std::pow(point_water_fugacity, r);
               break;
             }
-            case interface_weakening
-            { 
-	      for (i=0;)
-              if (weakening_field_names) 
-              {
-               factored_viscosities = base_viscosity*interface_weakening_factor;
-              }
-              break; 
+            case interface_weakening:
+            {
+              const unsigned int fA_idx = this->introspection().compositional_index_for_name(weakening_field_names[0]);
+              const unsigned int fB_idx = this->introspection().compositional_index_for_name(weakening_field_names[1]);
+
+              const double fA = in.composition[q][fA_idx];
+              const double fB = in.composition[q][fB_idx];
+              const double blend = std::min(std::min(fA, fB) / interface_weakening_threshold, 1.0);
+
+              if (blend > interface_weakening_threshold)
+                {
+                  factored_viscosities *= interface_weakening_factors[composition_index];
+                }
+
+              break;
             }
           }
         return factored_viscosities;
@@ -138,25 +145,32 @@ namespace aspect
                            "required by ASPECT for dislocation creep is r/n, where n is the stress exponent "
                            "for dislocation creep, which typically is 3.5. Units: none.");
 
-        prm.declare_entry ("Interface weakening factor", "1.0",
-                           Patterns::Double(0.),
-                           "Degree of weakening of the non-plastic, non-elastic component at the interface" 
-                           "between two compositions. This is only applied in the Viscosity prefactor scheme" 
+        prm.declare_entry ("Interface weakening factors", "1.0",
+                           Patterns::Anything(),
+                           "Map from compositional field name to the degree of weakening of the "
+                           "non-plastic, non-elastic component at the interface"
+                           "between two compositions. This is only applied in the Viscosity prefactor scheme"
                            "'Interface weakening'. Units: none.");
 
-        prm.declare_entry ("Interface weakening compositions",
-                           Patterns::List(Patterns::String),
-                           "List of compositions to apply interface weakening to. This is only"
-                           "applied when using the Viscosity prefactor scheme 'Interface" 
-                           "weakening'. Units: none.");
+        prm.declare_entry("Interface weakening compositions", "",
+                          Patterns::List(Patterns::Anything()),
+                          "List of exactly two compositional field names. Both fields "
+                          "must simultaneously present above the threshold, the viscosity is scaled. "
+                          "Only used by the 'interface weakening' scheme. Units: none.");
+
+        prm.declare_entry ("Interface weakening threshold", "1e-2",
+                           Patterns::Double(0.),
+                           "Threshold to trigger weakening of the non-plastic, non-elastic component at the interface"
+                           "between two compositions. This is only applied in the Viscosity prefactor scheme"
+                           " 'Interface weakening'. Units: none.");
 
         prm.declare_entry ("Viscosity prefactor scheme", "none",
-                           Patterns::Selection("none|HK04 olivine hydration|interface composition"),
+                           Patterns::Selection("none|HK04 olivine hydration|interface weakening"),
                            "Select what type of viscosity multiplicative prefactor scheme to apply. "
-                           "Allowed entries are 'none', 'HK04 olivine hydration', and 'interface weakening'." 
+                           "Allowed entries are 'none', 'HK04 olivine hydration', and 'interface weakening'."
                            "HK04 olivine hydration calculates the viscosity change due to hydrogen incorporation "
                            "into olivine following Hirth & Kohlstedt 2004 (10.1029/138GM06). none "
-                           "does not modify the viscosity. Interface weakening reduces the non-yielding, anelastic, 
+                           "does not modify the viscosity. Interface weakening reduces the non-yielding, anelastic, "
                            "contribution by a constant amount. Units: none.");
 
       }
@@ -197,8 +211,17 @@ namespace aspect
           }
         if (prm.get ("Viscosity prefactor scheme") == "interface weakening")
           {
-            std::vector<std::string> weakening_field_names = Utilities::split_string_list(prm.get("Interface weakening compositions"));
-            const double interface_weakening_factor = prm.get_double ("Interface weakening coefficient");
+            weakening_field_names = Utilities::split_string_list(prm.get("Interface weakening compositions"));
+            AssertThrow(weakening_field_names.size() == 2, ExcMessage("'Interface weakening compositions' must list exactly two field names."));
+            std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
+            std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
+            compositional_field_names.insert(compositional_field_names.begin(), "background");
+            chemical_field_names.insert(chemical_field_names.begin(), "background");
+
+            Utilities::MapParsing::Options options(chemical_field_names, "Interface weakening factors");
+            options.list_of_allowed_keys = compositional_field_names;
+            interface_weakening_factors = Utilities::MapParsing::parse_map_to_double_array (prm.get("Interface weakening factors"), options);
+            interface_weakening_threshold = prm.get_double("Interface weakening threshold");
             viscosity_prefactor_scheme = interface_weakening;
           }
       }
