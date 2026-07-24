@@ -331,6 +331,16 @@ namespace aspect
      */
     boost::signals2::signal<void (Particle::Manager<dim> &)> post_restore_particles;
 
+
+    /**
+     * A signal that is triggered after particles have been restored to their position
+     * and property values from the beginning of the current timestep. This happens
+     * at the beginning of each nonlinear iteration (except for the first iteration of the timestep)
+     * of iterative advection schemes.
+     * Parameters are a reference to a ParticleManager.
+     */
+    boost::signals2::signal<void (Particle::Manager<dim> &)> post_nonlinear_solver_loop;
+
   };
 
 

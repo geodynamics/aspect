@@ -51,10 +51,9 @@ namespace aspect
           void initialize () override;
 
           /**
-           * Function to update particles after they have been restored
-           * to their position and values from the beginning of the timestep.
-           * This restoring happens at the beginning of nonlinear iterations
-           * of iterative Advection solver schemes.
+           * Function to update the stresses on the particles after the
+           * nonlinear solver, similar to the operator split for stresses
+           * carried on fields.
            */
           void
           update_particles (typename Particle::Manager<dim> &particle_manager) const;
