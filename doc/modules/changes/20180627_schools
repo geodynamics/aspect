@@ -1,0 +1,5 @@
+New: There is now a visualization postprocessor that outputs 
+the seismic velocities and velocity anomalies, calculated from 
+porosity, for models with melt.
+<br>
+(Joe Schools, 2018/06/27)
