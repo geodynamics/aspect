@@ -77,6 +77,8 @@ namespace aspect
          * used in the histogram which computes the density
          * distribution score.  For example, a value of 2 means
          * $2\times 2=4$ buckets in 2D.
+         *
+         * This variable is read from the parameter file through a parameter called 'Granularity'.
          */
         unsigned int granularity;
 

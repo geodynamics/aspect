@@ -105,6 +105,7 @@ namespace aspect
       private:
         /**
          * Interval between the generation of gravity output.
+         * This variable is read from the parameter file through a parameter called 'Time between gravity output'.
          */
         double output_interval;
 
@@ -116,6 +117,7 @@ namespace aspect
 
         /**
          * Maximum number of steps between the generation of gravity output.
+         * This variable is read from the parameter file through a parameter called 'Time steps between gravity output'.
          */
         unsigned int maximum_timesteps_between_outputs;
 
@@ -134,6 +136,7 @@ namespace aspect
         /**
          * end_time is taken from parameter file. It is used to tell the
          * postprocessor to write gravity output at the end time.
+         * This variable is read from the parameter file through a parameter called 'End time'.
          */
         double end_time;
 
@@ -150,6 +153,7 @@ namespace aspect
         /**
          * Set the precision of the gravity acceleration, potential and gradients
          * in the gravity output and statistics file.
+         * This variable is read from the parameter file through a parameter called 'Precision in gravity output'.
          */
         unsigned int precision;
 
@@ -158,11 +162,13 @@ namespace aspect
          * gravity is calculated near the surface or inside the model. An increase in the
          * quadrature element adds accuracy to the gravity solution from noise due to the
          * model grid.
+         * This variable is read from the parameter file through a parameter called 'Quadrature degree increase'.
          */
         unsigned int quadrature_degree_increase;
 
         /**
          * Parameter for the fibonacci spiral sampling scheme:
+         * This variable is read from the parameter file through a parameter called 'Number points fibonacci spiral'.
          */
         unsigned int n_points_spiral;
 
@@ -171,6 +177,7 @@ namespace aspect
          * Gravity may be calculated for a sets of points along the radius (e.g. depth
          * profile) between a minimum and maximum radius. Number of points along the radius
          * is specified with n_points_radius.
+         * This variable is read from the parameter file through a parameter called 'Number points radius'.
          */
         unsigned int n_points_radius;
 
@@ -179,6 +186,7 @@ namespace aspect
          * Gravity may be calculated for a sets of points along the longitude (e.g. satellite
          * mapping) between a minimum and maximum longitude. Number of points along the
          * longitude is specified with n_points_longitude.
+         * This variable is read from the parameter file through a parameter called 'Number points longitude'.
          */
         unsigned int n_points_longitude;
 
@@ -187,6 +195,7 @@ namespace aspect
          * Gravity may be calculated for a sets of points along the latitude (e.g. satellite
          * mapping) between a minimum and maximum latitude. Number of points along the
          * latitude is specified with n_points_latitude.
+         * This variable is read from the parameter file through a parameter called 'Number points latitude'.
          */
         unsigned int n_points_latitude;
 
@@ -194,6 +203,7 @@ namespace aspect
          * Parameter for the map and fibonacci spiral sampling scheme:
          * Prescribe a minimum radius for a sampling coverage at a specific height.
          * May be set in- or outside the model domain.
+         * This variable is read from the parameter file through a parameter called 'Minimum radius'.
          */
         double minimum_radius;
 
@@ -202,12 +212,14 @@ namespace aspect
          * Maximum radius for the radius range.
          * May be set in- or outside the model domain.
          * No need to specify maximum_radius if n_points_radius is 1.
+         * This variable is read from the parameter file through a parameter called 'Maximum radius'.
          */
         double maximum_radius;
 
         /**
          * Parameter for the map sampling scheme:
          * Minimum longitude for longitude range.
+         * This variable is read from the parameter file through a parameter called 'Minimum longitude'.
          */
         double minimum_colongitude;
 
@@ -215,12 +227,14 @@ namespace aspect
          * Parameter for the map sampling scheme:
          * Maximum longitude for the longitude range.
          * No need to specify maximum_longitude if n_points_longitude is 1.
+         * This variable is read from the parameter file through a parameter called 'Maximum longitude'.
          */
         double maximum_colongitude;
 
         /**
          * Parameter for the map sampling scheme:
          * Minimum latitude for the latitude range.
+         * This variable is read from the parameter file through a parameter called 'Minimum latitude'.
          */
         double minimum_colatitude;
 
@@ -228,6 +242,7 @@ namespace aspect
          * Parameter for the map sampling scheme:
          * Maximum latitude for the latitude range.
          * No need to specify maximum_latitude if n_points_latitude is 1.
+         * This variable is read from the parameter file through a parameter called 'Maximum latitude'.
          */
         double maximum_colatitude;
 
@@ -237,6 +252,7 @@ namespace aspect
          * acceleration and gradients in the domain filled with a constant density.
          * 2) calculate the density difference of the density given by the material
          * model and a constant density, in order to compute gravity anomalies.
+         * This variable is read from the parameter file through a parameter called 'Reference density'.
          */
         double reference_density;
 
@@ -254,6 +270,7 @@ namespace aspect
          * Parameter for the list of points sampling scheme:
          * List of radius coordinates for the list of points sampling scheme.
          * Must follow the same order as the lists of longitude and latitude.
+         * This variable is read from the parameter file through a parameter called 'List of radius'.
          */
         std::vector<double> radius_list;
 
@@ -261,6 +278,7 @@ namespace aspect
          * Parameter for the list of points sampling scheme:
          * List of longitude coordinates for the list of points sampling scheme.
          * Must follow the same order as the lists of radius and latitude.
+         * This variable is read from the parameter file through a parameter called 'List of longitude'.
          */
         std::vector<double> longitude_list;
 
@@ -268,6 +286,8 @@ namespace aspect
          * Parameter for the list of points sampling scheme:
          * List of latitude coordinates for the list of points sampling scheme.
          * Must follow the same order as the lists of longitude and longitude.
+         *
+         * This variable is read from the parameter file through a parameter called 'List of latitude'.
          */
         std::vector<double> latitude_list;
 

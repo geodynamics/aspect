@@ -183,6 +183,7 @@ namespace aspect
         /**
          * List of interval between output (in years if appropriate simulation
          * parameter is set, otherwise seconds) for each particle manager.
+         * This variable is read from the parameter file through a parameter called 'Time between data output'.
          */
         std::vector<double> output_interval;
 
@@ -251,6 +252,7 @@ namespace aspect
          * file using MPI I/O when writing on a parallel filesystem. 0 means
          * no grouping (and no parallel I/O). 1 will generate one big file
          * containing the whole solution.
+         * This variable is read from the parameter file through a parameter called 'Number of grouped files'.
          */
         unsigned int group_files;
 
@@ -260,6 +262,7 @@ namespace aspect
          * move this file to a network file system. If this variable is
          * set to a non-empty string it will be interpreted as a temporary
          * storage location.
+         * This variable is read from the parameter file through a parameter called 'Temporary output location'.
          */
         std::string temporary_output_location;
 
@@ -268,6 +271,7 @@ namespace aspect
          * progress of the rest of the model run. Setting this variable to
          * 'true' moves this process into a background thread, while the
          * rest of the model continues.
+         * This variable is read from the parameter file through a parameter called 'Write in background thread'.
          */
         bool write_in_background_thread;
 
@@ -280,6 +284,8 @@ namespace aspect
         /**
          * Stores the particle property fields which are excluded from output
          * to the visualization file for each particle manager.
+         *
+         * This variable is read from the parameter file through a parameter called 'Exclude output properties'.
          */
         std::vector<std::vector<std::string>> exclude_output_properties;
 

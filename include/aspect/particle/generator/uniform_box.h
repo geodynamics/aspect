@@ -69,12 +69,16 @@ namespace aspect
         private:
           /**
            * Number of initial particles to create.
+           * This variable is read from the parameter file through a parameter
+           * called 'Number of particles'.
            */
           types::particle_index n_particles;
 
           /**
            * The minimum coordinates of the particle region, i.e. one corner of
            * the n-dimensional box region in which particles are generated.
+           * This variable is read from the parameter file through parameters
+           * called 'Minimum x', 'Minimum y', and 'Minimum z'.
            */
           Point<dim> P_min;
 
@@ -82,6 +86,9 @@ namespace aspect
            * The maximum coordinates of the particle region, i.e. the opposite
            * corner of the n-dimensional box region in which particles are
            * generated.
+           *
+           * This variable is read from the parameter file through parameters
+           * called 'Maximum x', 'Maximum y', and 'Maximum z'.
            */
           Point<dim> P_max;
       };

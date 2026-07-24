@@ -69,6 +69,7 @@ namespace aspect
          * number variables are in fact twice the wave number in a
          * mathematical sense. This allows the user to prescribe a single
          * up-/downswing or half periods.
+         * This variable is read from the parameter file through a parameter called 'Vertical wave number'.
          */
         int vertical_wave_number;
 
@@ -76,6 +77,7 @@ namespace aspect
          * The lateral wave number  of the harmonic perturbation in the first
          * dimension. This is the only lateral wave number in 2D and equals
          * the degree of the spherical harmonics in a 3D spherical shell.
+         * This variable is read from the parameter file through a parameter called 'Lateral wave number one'.
          */
         int lateral_wave_number_1;
 
@@ -83,11 +85,13 @@ namespace aspect
          * The lateral wave number of the harmonic perturbation in the second
          * dimension. This is not used in 2D and equals the order of the
          * spherical harmonics in a 3D spherical shell.
+         * This variable is read from the parameter file through a parameter called 'Lateral wave number two'.
          */
         int lateral_wave_number_2;
 
         /**
          * The maximal magnitude of the harmonic perturbation.
+         * This variable is read from the parameter file through a parameter called 'Magnitude'.
          */
         double magnitude;
 
@@ -96,6 +100,8 @@ namespace aspect
          * in an incompressible material model. In case of a compressible
          * material model the perturbation is applied on top of an adiabatic
          * profile and this variable is not used at all.
+         *
+         * This variable is read from the parameter file through a parameter called 'Reference temperature'.
          */
         double reference_temperature;
     };

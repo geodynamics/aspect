@@ -63,7 +63,16 @@ namespace aspect
           parse_parameters (ParameterHandler &prm) override;
 
         private:
+          /**
+           * This variable is read from the parameter file through a parameter
+           * called 'Data directory'.
+           */
           std::string data_directory;
+
+          /**
+           * This variable is read from the parameter file through a parameter
+           * called 'Data file name'.
+           */
           std::string data_filename;
       };
 

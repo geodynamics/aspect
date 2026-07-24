@@ -110,32 +110,45 @@ namespace aspect
          * Age of the upper thermal boundary layer at the surface of the
          * model. If set to zero, no boundary layer will be present in the
          * model.
+         * This variable is read from the parameter file through the 'Age top
+         * boundary layer' parameter.
          */
         double age_top_boundary_layer;
 
-        /* Age of the lower thermal boundary layer. */
+        /**
+         * Age of the lower thermal boundary layer. This variable is read from
+         * the parameter file through the 'Age bottom boundary layer' parameter.
+         */
         double age_bottom_boundary_layer;
 
         /**
          * Radius (in m) of the initial temperature perturbation at the bottom
          * of the model domain.
+         * This variable is read from the parameter file through the 'Radius'
+         * parameter.
          */
         double radius;
         /**
          * Amplitude (in K) of the initial temperature perturbation at the
          * bottom of the model domain.
+         * This variable is read from the parameter file through the 'Amplitude'
+         * parameter.
          */
         double amplitude;
-        /*
+        /**
          * Position of the initial temperature perturbation (in the
          * center or at the boundary of the model domain).
+         * This variable is read from the parameter file through the 'Position'
+         * parameter.
          */
         std::string perturbation_position;
 
-        /*
+        /**
          * Deviation from adiabaticity in a subadiabatic mantle
          * temperature profile. 0 for an adiabatic temperature
          * profile.
+         * This variable is read from the parameter file through the
+         * 'Subadiabaticity' parameter.
          */
         double subadiabaticity;
 
@@ -144,14 +157,18 @@ namespace aspect
          */
         BoundaryLayerAgeModel::Kind top_boundary_layer_age_model;
 
-        /*
+        /**
          * Whether to use the half space cooling model, or the plate cooling
          * model
+         * This variable is read from the parameter file through the 'Cooling
+         * model' parameter.
          */
         std::string cooling_model;
 
-        /*
+        /**
          * Depth to the base of the lithosphere for plate cooling model, in m
+         * This variable is read from the parameter file through the
+         * 'Lithosphere thickness' parameter.
          */
         double lithosphere_thickness;
 
@@ -170,6 +187,8 @@ namespace aspect
         /**
          * The coordinate representation to evaluate the function. Possible
          * choices are depth, cartesian and spherical.
+         *
+         * This variable is read from the parameter file through a parameter called 'Coordinate system'.
          */
         Utilities::Coordinates::CoordinateSystem coordinate_system;
 

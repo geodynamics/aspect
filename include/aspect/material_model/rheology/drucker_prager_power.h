@@ -128,22 +128,26 @@ namespace aspect
           /**
            * The angles of internal friction (phi) are input
            * by the user in degrees, but stored as radians.
+           * This variable is read from the parameter file through a parameter called 'Angles of internal friction'.
            */
           std::vector<double> angles_internal_friction;
 
           /**
            * The cohesion is provided and stored in Pa.
+           * This variable is read from the parameter file through a parameter called 'Cohesions'.
            */
           std::vector<double> cohesions;
 
           /**
            * The yield stress is limited to a constant value, stored in Pa.
+           * This variable is read from the parameter file through a parameter called 'Maximum yield stress'.
            */
           double max_yield_stress;
 
           /**
            * The reference strain rate at which the stress is equal to the
            * "yield stress".
+           * This variable is read from the parameter file through a parameter called 'Reference plastic strain rate'.
            */
           double drucker_prager_edot_ref;
 
@@ -155,6 +159,8 @@ namespace aspect
 
           /**
            * The stress exponent n of the pseudo-plastic element.
+           *
+           * This variable is read from the parameter file through a parameter called 'Plastic stress exponent'.
            */
           double drucker_prager_stress_exponent;
 

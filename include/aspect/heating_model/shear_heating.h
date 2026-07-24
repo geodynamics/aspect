@@ -88,9 +88,17 @@ namespace aspect
          * in the DruckerPrager rheology model can be used to define a
          * maximum stress computed from the given cohesion and friction
          * angle.
+         * This variable is read from the parameter file through the 'Limit
+         * stress contribution to shear heating' parameter.
          */
         bool limit_stress;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Cohesion for maximum shear stress'.
+         */
         double cohesion;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Friction angle for maximum shear stress'.
+         */
         double friction_angle;
         MaterialModel::Rheology::DruckerPrager<dim> drucker_prager_plasticity;
     };
@@ -142,7 +150,7 @@ namespace aspect
          * If this object is created and filled by the material model
          * it will replace the default viscous dissipation rate
          * computed by the shear heating model.
-        */
+         */
         std::vector<double> prescribed_shear_heating_rates;
     };
   }

@@ -86,6 +86,7 @@ namespace aspect
            * Number of depth slices used to define average
            * seismic shear wave velocities from which anomalies
            * are calculated.
+           * This variable is read from the parameter file through a parameter called 'Number of depth slices'.
            */
           unsigned int n_slices;
       };
@@ -146,6 +147,8 @@ namespace aspect
            * Number of depth slices used to define average
            * seismic compressional wave velocities from which anomalies
            * are calculated.
+           *
+           * This variable is read from the parameter file through a parameter called 'Number of depth slices'.
            */
           unsigned int n_slices;
       };

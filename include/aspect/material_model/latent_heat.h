@@ -92,27 +92,68 @@ namespace aspect
          */
 
       private:
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Reference density'.
+         */
         double reference_rho;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Reference temperature'.
+         */
         double reference_T;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Viscosity'.
+         */
         double eta;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Composition viscosity prefactor'.
+         */
         double composition_viscosity_prefactor;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Thermal viscosity exponent'.
+         */
         double thermal_viscosity_exponent;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Thermal expansion coefficient'.
+         */
         double thermal_alpha;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Reference specific heat'.
+         */
         double reference_specific_heat;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Compressibility'.
+         */
         double reference_compressibility;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Maximum viscosity'.
+         */
         double maximum_viscosity;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Minimum viscosity'.
+         */
         double minimum_viscosity;
 
         /**
          * The thermal conductivity.
+         *
+         * This variable is read from the parameter file through a parameter called 'Thermal conductivity'.
          */
         double k_value;
 
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Density differential for compositional field 1'.
+         */
         double compositional_delta_rho;
 
         // list of depth (or pressure), width and Clapeyron slopes
         // for the different phase transitions
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Phase transition density jumps'.
+         */
         std::vector<double> density_jumps;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Corresponding phase for density jump'.
+         */
         std::vector<int> transition_phases;
         std::vector<double> phase_prefactors;
 

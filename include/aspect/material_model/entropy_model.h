@@ -122,7 +122,13 @@ namespace aspect
 
       private:
 
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Angle of internal friction'.
+         */
         double angle_of_internal_friction;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Cohesion'.
+         */
         double cohesion;
 
         /**
@@ -131,15 +137,26 @@ namespace aspect
          * reach the tolerance value, which is the maximum temperature difference between the different components
          * when they are considered in equilibrium.
          * If the maximum iteration is reached but the temperature has not been equilibrated, the model will abort.
+         * This variable is read from the parameter file through a parameter called 'Maximum iteration for multicomponent equilibration'.
          */
         double multicomponent_max_iteration;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Multicomponent equilibration tolerance'.
+         */
         double multicomponent_tolerance;
 
         /**
          * Minimum/Maximum viscosity and lateral viscosity variations.
+         * This variable is read from the parameter file through a parameter called 'Minimum viscosity'.
          */
         double min_eta;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Maximum viscosity'.
+         */
         double max_eta;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Maximum lateral viscosity variation'.
+         */
         double max_lateral_eta_variation;
 
         /**
@@ -162,9 +179,17 @@ namespace aspect
                                          std::vector<double> &composition_equilibrated_S) const;
         /**
          * Information about the location of data files.
+         *
+         * This variable is read from the parameter file through a parameter called 'Data directory'.
          */
         std::string data_directory;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Material file name'.
+         */
         std::vector<std::string> material_file_names;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Lateral viscosity file name'.
+         */
         std::string lateral_viscosity_file_name;
 
         /**

@@ -140,6 +140,9 @@ namespace aspect
            * weighted average with the stress values interpolated from the compositional
            * fields to the particle location. The default value of 1 is more accurate,
            * but can be less stable.
+           *
+           * This variable is read from the parameter file through a parameter
+           * called 'Particle stress value weight'.
            */
           double particle_weight;
       };

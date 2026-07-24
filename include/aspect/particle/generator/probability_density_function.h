@@ -89,6 +89,8 @@ namespace aspect
         private:
           /**
            * Number of particles to create
+           * This variable is read from the parameter file through a parameter
+           * called 'Number of particles'.
            */
           types::particle_index n_particles;
 
@@ -99,12 +101,17 @@ namespace aspect
            * on the integral of the density over each of the cells, and then
            * once we know how many particles we want on each cell, choose their
            * locations randomly within each cell.
+           * This variable is read from the parameter file through a parameter
+           * called 'Random cell selection'.
            */
           bool random_cell_selection;
 
           /**
            * The seed for the random number generator that controls the
            * particle generation.
+           *
+           * This variable is read from the parameter file through a parameter
+           * called 'Random number seed'.
            */
           unsigned int random_number_seed;
 

@@ -70,6 +70,9 @@ namespace aspect
            * By default, every cell needs to contain particles to use this interpolator
            * plugin. If this parameter is set to true, cells are allowed to have no particles,
            * in which case the interpolator will return 0 for the cell's properties.
+           *
+           * This variable is read from the parameter file through a parameter
+           * called 'Allow cells without particles'.
            */
           bool allow_cells_without_particles;
       };

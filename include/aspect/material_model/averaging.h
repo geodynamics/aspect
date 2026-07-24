@@ -148,11 +148,14 @@ namespace aspect
         /**
          * The bell shape limit variable stores the maximum extend of the bell
          * shape for the Normalized Weighed Distance (NWD) averages.
+         * This variable is read from the parameter file through a parameter called 'Bell shape limit'.
          */
         double bell_shape_limit;
         /**
          * The averaging operation variable stores the chosen averaging
          * operation.
+         *
+         * This variable is read from the parameter file through a parameter called 'Averaging operation'.
          */
         AveragingOperation averaging_operation;
         /**

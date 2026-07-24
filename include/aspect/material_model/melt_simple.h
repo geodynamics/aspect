@@ -117,15 +117,42 @@ namespace aspect
 
 
       private:
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Use full compressibility'.
+         */
         bool model_is_compressible;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Thermal expansion coefficient'.
+         */
         double thermal_expansivity;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Reference shear viscosity'.
+         */
         double eta_0;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Reference specific heat'.
+         */
         double reference_specific_heat;
         double thermal_conductivity;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Solid compressibility'.
+         */
         double compressibility;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Thermal viscosity exponent'.
+         */
         double thermal_viscosity_exponent;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Reference temperature'.
+         */
         double reference_T;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Depletion density change'.
+         */
         double depletion_density_change;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Reference solid density'.
+         */
         double reference_rho_solid;
 
 

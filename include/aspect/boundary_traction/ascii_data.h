@@ -113,12 +113,15 @@ namespace aspect
         /**
          * Whether to specify traction in x, y, z components, or
          * r, phi, theta components.
+         * This variable is read from the parameter file through a parameter called 'Use spherical unit vectors'.
          */
         bool use_spherical_unit_vectors;
 
         /**
         * Whether to prescribe pressure (default: true) or full traction vector (false)
         * at the boundary. If true, only 1 component will be used for the boundary condition.
+        *
+        * This variable is read from the parameter file through a parameter called 'Prescribe pressure instead of full traction'.
         */
         bool prescribe_pressure_instead_of_full_traction;
 

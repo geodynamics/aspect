@@ -185,15 +185,26 @@ namespace aspect
 
           /**
            * Enumeration for selecting which type of viscosity averaging to use.
+           * This variable is read from the parameter file through a parameter called 'Viscosity averaging scheme'.
            */
           ViscosityAveraging::Kind viscosity_averaging_scheme;
 
           /**
            * Whether to use different deformation mechanisms.
+           * This variable is read from the parameter file through a parameter called 'Include diffusion creep in composite rheology'.
            */
           bool use_diffusion_creep;
+          /**
+           *  This variable is read from the parameter file through a parameter called 'Include dislocation creep in composite rheology'.
+           */
           bool use_dislocation_creep;
+          /**
+           *  This variable is read from the parameter file through a parameter called 'Include Peierls creep in composite rheology'.
+           */
           bool use_peierls_creep;
+          /**
+           *  This variable is read from the parameter file through a parameter called 'Include Drucker Prager plasticity in composite rheology'.
+           */
           bool use_drucker_prager;
 
           /**
@@ -226,6 +237,7 @@ namespace aspect
           /**
            * The maximum viscosity, imposed via an isoviscous damper
            * in series with the composite viscoplastic element.
+           * This variable is read from the parameter file through a parameter called 'Maximum viscosity'.
            */
           double maximum_viscosity;
 
@@ -251,6 +263,7 @@ namespace aspect
 
           /**
            * The minimum strain rate allowed by the rheology.
+           * This variable is read from the parameter file through a parameter called 'Minimum strain rate'.
            */
           double minimum_strain_rate;
 
@@ -258,12 +271,15 @@ namespace aspect
            * The log strain rate threshold which must be passed
            * before successful termination of the Newton iteration
            * to determine the creep stress.
+           * This variable is read from the parameter file through a parameter called 'Strain rate residual tolerance'.
            */
           double log_strain_rate_residual_threshold;
 
           /**
            * The maximum number of iterations allowed to determine
            * the creep stress.
+           *
+           * This variable is read from the parameter file through a parameter called 'Maximum creep strain rate iterations'.
            */
           unsigned int stress_max_iteration_number;
 

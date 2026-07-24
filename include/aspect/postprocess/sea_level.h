@@ -121,14 +121,24 @@ namespace aspect
 
         /**
          * Information about the location of topography data files.
+         * This variable is read from the parameter file through a parameter called 'Data directory topography'.
          */
         std::string data_directory_topography;
+
+        /**
+         * This variable is read from the parameter file through a parameter called 'Data file name topography'.
+         */
         std::string data_file_name_topography;
 
         /**
          * Information about the location of ice height data files.
+         * This variable is read from the parameter file through a parameter called 'Data directory ice height'.
          */
         std::string data_directory_ice_height;
+
+        /**
+         * This variable is read from the parameter file through a parameter called 'Data file name ice height'.
+         */
         std::string data_file_name_ice_height;
 
         /**
@@ -139,11 +149,13 @@ namespace aspect
 
         /**
          * The density of water.
+         * This variable is read from the parameter file through a parameter called 'Water density'.
          */
         double density_water;
 
         /**
          * The density of ice.
+         * This variable is read from the parameter file through a parameter called 'Ice density'.
          */
         double density_ice;
 
@@ -154,6 +166,7 @@ namespace aspect
 
         /**
          * Whether or not to produce text files with sea level values.
+         * This variable is read from the parameter file through a parameter called 'Output to file'.
          */
         bool write_to_file;
 
@@ -161,6 +174,8 @@ namespace aspect
          * Interval between the generation of text output. This parameter
          * is read from the input file and consequently is not part of the
          * state that needs to be saved and restored.
+         *
+         * This variable is read from the parameter file through a parameter called 'Time between text output'.
          */
         double output_interval;
 

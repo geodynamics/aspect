@@ -91,6 +91,8 @@ namespace aspect
          * Controls whether output the total excess entropy or the individual entropy terms
          * (i.e. entropy for specific heat, radioactive heating, gravitational contribution,
          * and adiabatic contribution).
+         *
+         * This variable is read from the parameter file through a parameter called 'Excess entropy only'.
          */
         bool   excess_entropy_only;
 

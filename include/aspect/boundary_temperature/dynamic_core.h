@@ -218,11 +218,13 @@ namespace aspect
 
         /**
          * Temperature at the inner boundary.
+         * This variable is read from the parameter file through a parameter called 'Inner temperature'.
          */
         double inner_temperature;
 
         /**
          * Temperatures at the outer boundaries.
+         * This variable is read from the parameter file through a parameter called 'Outer temperature'.
          */
         double outer_temperature;
 
@@ -234,16 +236,19 @@ namespace aspect
 
         /**
          * Initial CMB temperature changing rate
+         * This variable is read from the parameter file through a parameter called 'dT over dt'.
          */
         double init_dT_dt;
 
         /**
          * Initial inner core radius changing rate
+         * This variable is read from the parameter file through a parameter called 'dR over dt'.
          */
         double init_dR_dt;
 
         /**
          * Initial light composition changing rate
+         * This variable is read from the parameter file through a parameter called 'dX over dt'.
          */
         double init_dX_dt;
 
@@ -259,16 +264,19 @@ namespace aspect
 
         /**
          * Initial light composition concentration
+         * This variable is read from the parameter file through a parameter called 'Initial light composition'.
          */
         double X_init;
 
         /**
          * Partition coefficient of the light element
+         * This variable is read from the parameter file through a parameter called 'Delta'.
          */
         double Delta;
 
         /**
          * Pressure at the core mantle boundary
+         * This variable is read from the parameter file through a parameter called 'CMB pressure'.
          */
         double P_CMB;
 
@@ -278,81 +286,113 @@ namespace aspect
          *   Tm(p)= Tm0*(1-Theta)*(1+Tm1*p+Tm2*p^2)
          * if depend on composition X
          *   Tm(p)= Tm0*(1-Theta*X)*(1+Tm1*p+Tm2*p^2)
+         * This variable is read from the parameter file through a parameter called 'Tm0'.
          */
         double Tm0;
+
+        /**
+         * This variable is read from the parameter file through a parameter called 'Tm1'.
+         */
         double Tm1;
+
+        /**
+         * This variable is read from the parameter file through a parameter called 'Tm2'.
+         */
         double Tm2;
+
+        /**
+         * This variable is read from the parameter file through a parameter called 'Theta'.
+         */
         double Theta;
+
+        /**
+         * This variable is read from the parameter file through a parameter called 'Composition dependency'.
+         */
         bool composition_dependency;
 
         /**
          * If using the Fe-FeS system solidus from Buono & Walker (2011) instead.
+         * This variable is read from the parameter file through a parameter called 'Use BW11'.
          */
         bool use_bw11;
 
-        //Variables for formulation of \cite NPB+04
         /**
+         * Variables for formulation of \cite NPB+04
+         *
          * Compressibility at zero pressure
+         * This variable is read from the parameter file through a parameter called 'K0'.
          */
         double K0;
 
         /**
          * Thermal expansivity
+         * This variable is read from the parameter file through a parameter called 'Alpha'.
          */
         double Alpha;
 
         /**
          * Density at zero pressure
+         * This variable is read from the parameter file through a parameter called 'Rho0'.
          */
         double Rho_0;
 
         /**
          * Density at the center of the planet
+         * This variable is read from the parameter file through a parameter called 'Core density'.
          */
         double Rho_cen;
 
         /**
          * Latent heat of fusion
+         * This variable is read from the parameter file through a parameter called 'Lh'.
          */
         double Lh;
 
         /**
          * Heat of reaction
+         * This variable is read from the parameter file through a parameter called 'Rh'.
          */
         double Rh;
 
         /**
          * Compositional expansion coefficient
+         * This variable is read from the parameter file through a parameter called 'Beta composition'.
          */
         double Beta_c;
 
         /**
          * Heat conductivity of the core
+         * This variable is read from the parameter file through a parameter called 'Core conductivity'.
          */
         double k_c;
 
         /**
          * Heat capacity
+         * This variable is read from the parameter file through a parameter called 'Core heat capacity'.
          */
         double Cp;
 
         /**
          * Number of radioheating element in core
+         * This variable is read from the parameter file through a parameter called 'Number of radioactive heating elements'.
          */
         unsigned int n_radioheating_elements;
 
         /**
          * Heating rates of different elements
+         * This variable is read from the parameter file through a parameter called 'Heating rates'.
          */
         std::vector<double> heating_rate;
 
         /**
          * Half life of different elements
+         * This variable is read from the parameter file through a parameter called 'Half life times'.
          */
         std::vector<double> half_life;
 
         /**
          * Initial concentration of different elements
+         * This variable is read from the parameter file through a parameter called 'Initial concentrations'.
          */
         std::vector<double> initial_concentration;
 
@@ -369,6 +409,7 @@ namespace aspect
 
         /**
          * Max iterations for the core energy balance solver.
+         * This variable is read from the parameter file through a parameter called 'Max iteration'.
          */
         unsigned int max_steps;
 
@@ -379,6 +420,8 @@ namespace aspect
 
         /**
          * Other energy source into the core, e.g. the mechanical stirring of the moon.
+         *
+         * This variable is read from the parameter file through a parameter called 'File name'.
          */
         std::string name_OES;
         struct str_data_OES

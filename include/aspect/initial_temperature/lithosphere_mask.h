@@ -79,11 +79,13 @@ namespace aspect
 
           /**
            * Directory in which the LAB depth file is present.
+           * This variable is read from the parameter file through a parameter called 'Data directory'.
            */
           std::string data_directory;
 
           /**
            * File name of the LAB depth file.
+           * This variable is read from the parameter file through a parameter called 'LAB depth filename'.
            */
           std::string LAB_file_name;
 
@@ -105,6 +107,7 @@ namespace aspect
            * This parameter gives the maximum depth of the lithosphere. The
            * model returns nans below this depth. This parameter is only used if LAB
            * depth source is set to 'Value'.
+           * This variable is read from the parameter file through a parameter called 'Maximum lithosphere depth'.
            */
           double max_depth;
       };
@@ -151,6 +154,8 @@ namespace aspect
       private:
         /**
          * This parameter gives the initial temperature set within the lithosphere.
+         *
+         * This variable is read from the parameter file through a parameter called 'Lithosphere temperature'.
          */
         double lithosphere_temperature;
 

@@ -112,28 +112,94 @@ namespace aspect
 
 
       private:
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Reference solid density'.
+         */
         double reference_rho_s;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Reference melt density'.
+         */
         double reference_rho_f;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Reference temperature'.
+         */
         double reference_T;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Reference shear viscosity'.
+         */
         double eta_0;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Reference bulk viscosity'.
+         */
         double xi_0;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Reference melt viscosity'.
+         */
         double eta_f;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Thermal viscosity exponent'.
+         */
         double thermal_viscosity_exponent;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Thermal bulk viscosity exponent'.
+         */
         double thermal_bulk_viscosity_exponent;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Thermal expansion coefficient'.
+         */
         double thermal_expansivity;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Reference specific heat'.
+         */
         double reference_specific_heat;
         double thermal_conductivity;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Reference permeability'.
+         */
         double reference_permeability;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Exponential melt weakening factor'.
+         */
         double alpha_phi;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Depletion density change'.
+         */
         double depletion_density_change;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Depletion solidus change'.
+         */
         double depletion_solidus_change;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Pressure solidus change'.
+         */
         double pressure_solidus_change;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Surface solidus'.
+         */
         double surface_solidus;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Solid compressibility'.
+         */
         double compressibility;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Melt compressibility'.
+         */
         double melt_compressibility;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Include melting and freezing'.
+         */
         bool include_melting_and_freezing;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Melting time scale for operator splitting'.
+         */
         double melting_time_scale;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Exponential depletion strengthening factor'.
+         */
         double alpha_depletion;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Maximum Depletion viscosity change'.
+         */
         double delta_eta_depletion_max;
 
         // entropy change upon melting

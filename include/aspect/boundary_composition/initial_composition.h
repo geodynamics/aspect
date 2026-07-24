@@ -95,8 +95,15 @@ namespace aspect
       private:
         /**
          * Compositions at the inner and outer boundaries.
+         * This variable is read from the parameter file through a parameter called 'Minimal composition'.
          */
         double min_composition;
+
+        /**
+         * Compositions at the inner and outer boundaries.
+         *
+         * This variable is read from the parameter file through a parameter called 'Maximal composition'.
+         */
         double max_composition;
 
         /**
