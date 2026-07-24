@@ -30,7 +30,7 @@
 
 namespace aspect
 {
-  namespace PrescribedDilation 
+  namespace PrescribedDilation
   {
     /**
      * A class that implements gravity based on a functional description

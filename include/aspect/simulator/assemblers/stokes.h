@@ -221,8 +221,8 @@ namespace aspect
     };
 
     /**
-     * This class adds source terms to the right hand side of the momentum
-     * equation and the continuity equation. The prescribed quantity is taken from
+     * This class adds source term to the right hand side of the
+     * continuity equation. The prescribed quantity is taken from
      * PrescribedDilation plugin.
      */
     template <int dim>

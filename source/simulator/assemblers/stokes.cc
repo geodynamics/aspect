@@ -999,7 +999,7 @@ namespace aspect
             }
         }
     }
-    
+
     template <int dim>
     void
     StokesPrescribedDilation<dim>::

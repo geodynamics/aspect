@@ -107,7 +107,7 @@ namespace aspect
         catch (...)
           {
             std::cerr << "ERROR: FunctionParser failed to parse\n"
-                      << "\t'Gravity Model.Function'\n"
+                      << "\t'Prescribed dilation.Function'\n"
                       << "with expression\n"
                       << "\t'" << prm.get("Function expression") << "'"
                       << "More information about the cause of the parse error \n"
@@ -128,12 +128,12 @@ namespace aspect
   namespace PrescribedDilation
   {
     ASPECT_REGISTER_PRESCRIBED_DILATION_MODEL(Function,
-                                  "function",
-                                  "Gravity is given in terms of an explicit formula "
-                                  "that is elaborated in the parameters in section "
-                                  "``Gravity model|Function''. The format of these "
-                                  "functions follows the syntax understood by the "
-                                  "muparser library, see "
-                                  "{ref}\\`sec:run-aspect:parameters-overview:muparser-format\\`.")
+                                              "function",
+                                              "Prescribed dilation is given in terms of an explicit formula "
+                                              "that is elaborated in the parameters in section "
+                                              "``Prescribed dilation|Function''. The format of these "
+                                              "functions follows the syntax understood by the "
+                                              "muparser library, see "
+                                              "{ref}\\`sec:run-aspect:parameters-overview:muparser-format\\`.")
   }
 }

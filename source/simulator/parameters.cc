@@ -762,12 +762,12 @@ namespace aspect
                          "MaterialModel output PrescribedPlasticDilation.");
     }
     prm.leave_subsection();
-      
+
     prm.declare_entry ("Use prescribed dilation plugin", "false",
-                        Patterns::Bool (),
-                        "Whether to use the prescribed dilation plugin to set right hand side for the Stokes solver."
-                        "In the continuity equation the added term is (pdp.x + pdp.y [+ pdp.z]) * dV."
-                        "Additionally, usage of the deviatoric stress tensor in the momentum equation is always enforced.");
+                       Patterns::Bool (),
+                       "Whether to use the prescribed dilation plugin to set right hand side for the Stokes solver."
+                       "In the continuity equation the added term is (pdp.x + pdp.y [+ pdp.z]) * dV."
+                       "Additionally, usage of the deviatoric stress tensor in the momentum equation is always enforced.");
 
     // next declare parameters that pertain to the equations to be
     // solved, along with boundary conditions etc. note that at this

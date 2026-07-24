@@ -110,7 +110,7 @@ namespace aspect
     if (this->pressure_rhs_needs_compatibility_modification())
       assemblers.stokes_system.push_back(
         std::make_unique<aspect::Assemblers::StokesPressureRHSCompatibilityModification<dim>>());
-    
+
     if (this->get_parameters().use_prescribed_dilation_plugin)
       assemblers.stokes_system.push_back(
         std::make_unique<aspect::Assemblers::StokesPrescribedDilation<dim>>());
