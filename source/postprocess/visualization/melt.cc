@@ -134,15 +134,15 @@ namespace aspect
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             unsigned output_index = 0;
+            const double e = this->get_melt_handler().melt_parameters.regularization;
             for (unsigned int i=0; i<property_names.size(); ++i, ++output_index)
               {
+                const double stabilized_inverse_compaction_viscosity = std::sqrt(std::pow(melt_outputs->inverse_compaction_viscosities[q], 2) + e*e);
                 if (property_names[i] == "compaction viscosity")
-                  computed_quantities[q][output_index] = melt_outputs->inverse_compaction_viscosities[q] > 0.0
-                                                         ?
-                                                         1./melt_outputs->inverse_compaction_viscosities[q]
-                                                         :
-                                                         0.0;
+                  computed_quantities[q][output_index] = 1./stabilized_inverse_compaction_viscosity;
                 else if (property_names[i] == "inverse compaction viscosity")
+                  computed_quantities[q][output_index] = stabilized_inverse_compaction_viscosity;
+                else if (property_names[i] == "unstabilized inverse compaction viscosity")
                   computed_quantities[q][output_index] = melt_outputs->inverse_compaction_viscosities[q];
                 else if (property_names[i] == "fluid viscosity")
                   computed_quantities[q][output_index] = melt_outputs->fluid_viscosities[q];
@@ -201,8 +201,8 @@ namespace aspect
             prm.enter_subsection("Melt material properties");
             {
               const std::string pattern_of_names
-                = "compaction viscosity|inverse compaction viscosity|fluid viscosity|permeability|"
-                  "fluid density|fluid density gradient|"
+                = "compaction viscosity|inverse compaction viscosity|unstabilized inverse compaction viscosity|"
+                  "fluid viscosity|permeability|fluid density|fluid density gradient|"
                   "darcy coefficient|compaction pressure|"
                   "compaction length";
 

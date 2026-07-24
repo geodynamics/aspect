@@ -662,12 +662,6 @@ namespace aspect
       const FEValuesExtractors::Vector ex_u_f = introspection.variable("fluid velocity").extractor_vector();
       scratch.finite_element_values[ex_u_f].get_function_values (this->get_solution(),fluid_velocity_values);
 
-      // average divergence u over the cell (needed for porosity advection)
-      double divergence_u = 0.0;
-      if (this->get_melt_handler().is_porosity(*scratch.advection_field))
-        for (unsigned int q=0; q<n_q_points; ++q)
-          divergence_u += scratch.current_velocity_divergences[q] * 1./n_q_points;
-
       for (unsigned int q=0; q<n_q_points; ++q)
         {
           // precompute the values of shape functions and their gradients.
@@ -735,7 +729,7 @@ namespace aspect
                                              compute_melting_RHS (this,
                                                                   scratch,
                                                                   q,
-                                                                  divergence_u)
+                                                                  scratch.current_velocity_divergences[q])
                                              :
                                              0.0);
 
@@ -760,7 +754,7 @@ namespace aspect
           const double melt_transport_LHS =
             (this->get_melt_handler().is_porosity(*scratch.advection_field)
              ?
-             divergence_u
+             scratch.current_velocity_divergences[q]
              + (this->get_material_model().is_compressible()
                 ?
                 scratch.material_model_outputs.compressibilities[q]
@@ -846,12 +840,6 @@ namespace aspect
                                                  scratch.material_model_outputs,
                                                  scratch.heating_model_outputs);
 
-      // average divergence u over the cell (needed for porosity advection)
-      double divergence_u = 0.0;
-      if (this->get_melt_handler().is_porosity(*scratch.advection_field))
-        for (unsigned int q=0; q<n_q_points; ++q)
-          divergence_u += scratch.current_velocity_divergences[q] * 1./n_q_points;
-
       for (unsigned int q=0; q < n_q_points; ++q)
         {
           const Tensor<1,dim> u = (scratch.old_velocity_values[q] +
@@ -895,7 +883,7 @@ namespace aspect
                                                  compute_melting_RHS (this,
                                                                       scratch,
                                                                       q,
-                                                                      divergence_u)
+                                                                      scratch.current_velocity_divergences[q])
                                                  :
                                                  0.0);
 

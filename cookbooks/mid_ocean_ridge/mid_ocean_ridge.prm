@@ -164,6 +164,7 @@ subsection Melt settings
   # We want to solve the McKenzie Equations to track the flow of melt.
   set Include melt transport = true
   set Heat advection by melt = true
+  set Compaction viscosity regularization factor = 1e-28
 end
 
 ##################### Composition ########################
@@ -242,7 +243,7 @@ subsection Postprocess
     # we always visualize the compaction pressure 'p_c' if this postprocessor is
     # used.
     subsection Melt material properties
-      set List of properties = compaction viscosity, permeability, fluid density, is melt cell
+      set List of properties = compaction viscosity, permeability, fluid density, inverse compaction viscosity
     end
   end
 end
