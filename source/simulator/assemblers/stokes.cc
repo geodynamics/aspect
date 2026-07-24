@@ -1019,30 +1019,27 @@ namespace aspect
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
+          const double dilation = prescribed_dilation.dilation (scratch.finite_element_values.quadrature_point(q));
+          const double JxW = scratch.finite_element_values.JxW(q);
           for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
             {
               if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
                 {
                   scratch.phi_p[i_stokes] = scratch.finite_element_values[introspection.extractors.pressure].value (i, q);
-                  // scratch.div_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
+                  data.local_rhs(i_stokes) += -pressure_scaling * dilation * scratch.phi_p[i_stokes]*JxW;
                   ++i_stokes;
                 }
               ++i;
             }
 
-          const double dilation = prescribed_dilation.dilation (scratch.finite_element_values.quadrature_point(q));
-          // const double eta = scratch.material_model_outputs.viscosities[q];
-          const double JxW = scratch.finite_element_values.JxW(q);
-
-          for ( unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/ )
-          {
-            if ( introspection.is_stokes_component(fe.system_to_component_index(i).first) )
-            {
-              data.local_rhs(i_stokes) += -pressure_scaling * dilation * scratch.phi_p[i_stokes]*JxW;
-              ++i_stokes;
-            }
-            ++i;
-          }
+          // for ( unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/ )
+          // {
+          //   if ( introspection.is_stokes_component(fe.system_to_component_index(i).first) )
+          //   {
+          //     ++i_stokes;
+          //   }
+          //   ++i;
+          // }
 
           // for (unsigned int i=0; i<stokes_dofs_per_cell; /*increment at end of loop*/)
           //   {
