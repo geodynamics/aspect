@@ -33,8 +33,8 @@ namespace aspect
       InitialComposition<dim>::initialize_one_particle_property(const Point<dim> &position,
                                                                 std::vector<double> &data) const
       {
-        for (unsigned int i = 0; i < this->n_compositional_fields(); ++i)
-          data.push_back(this->get_initial_composition_manager().initial_composition(position,i));
+        for (const unsigned int composition_index : selected_compositional_field_indices)
+          data.push_back(this->get_initial_composition_manager().initial_composition(position,composition_index));
       }
 
 
@@ -52,10 +52,9 @@ namespace aspect
       AdvectionField
       InitialComposition<dim>::advection_field_for_boundary_initialization (const unsigned int property_component) const
       {
-        Assert (property_component < this->n_compositional_fields(),
+        Assert (property_component < selected_compositional_field_indices.size(),
                 ExcInternalError());
-
-        return AdvectionField::composition(property_component);
+        return AdvectionField::composition(selected_compositional_field_indices[property_component]);
       }
 
 
@@ -72,13 +71,12 @@ namespace aspect
 
         std::vector<std::pair<std::string,unsigned int>> property_information;
 
-        for (unsigned int i = 0; i < this->n_compositional_fields(); ++i)
+        for (const unsigned int composition_index : selected_compositional_field_indices)
           {
             std::ostringstream field_name;
-            field_name << "initial " << this->introspection().name_for_compositional_index(i);
+            field_name << "initial " << this->introspection().name_for_compositional_index(composition_index);
             property_information.emplace_back(field_name.str(),1);
           }
-
         return property_information;
       }
 
@@ -100,9 +98,11 @@ namespace aspect
           {
             evaluation_points[0] = particle.get_location();
 
-            for (unsigned int j = 0; j < this->n_compositional_fields(); ++j)
+
+            unsigned int local_index=0;
+            for (const unsigned int composition_index : selected_compositional_field_indices)
               {
-                component_indices[0] = this->introspection().component_indices.compositional_fields[j];
+                component_indices[0] = this->introspection().component_indices.compositional_fields[composition_index];
                 component_is_constrained[0] = false;
                 constrained_component_value[0] = 0.0;
 
@@ -113,11 +113,52 @@ namespace aspect
                   }
 
                 if (component_is_constrained[0])
-                  particle.get_properties()[this->data_position+j] = constrained_component_value[0];
+                  particle.get_properties()[this->data_position+local_index] = constrained_component_value[0];
+                local_index++;
               }
           }
       }
 
+      template<int dim>
+      void InitialComposition<dim>::declare_parameters(ParameterHandler &prm)
+      {
+        prm.enter_subsection("Initial composition");
+        {
+          prm.declare_entry("Selected compositional fields",
+                            "all",
+                            Patterns::List(Patterns::Anything()),
+                            "A list that determines which compositional fields to "
+                            "track on this particle manager. The default value 'all' means "
+                            "every composition field is tracked on every particle manager." );
+        }
+        prm.leave_subsection();
+      }
+
+
+
+      template<int dim>
+      void InitialComposition<dim>::parse_parameters(ParameterHandler &prm)
+      {
+        prm.enter_subsection("Initial composition");
+        {
+          if (prm.get("Selected compositional fields") == "all")
+            {
+              for (unsigned int i=0; i<this->n_compositional_fields(); ++i)
+                {
+                  selected_compositional_field_indices.push_back(i);
+                }
+            }
+          else
+            {
+              const std::vector<std::string> selected_fields = Utilities::split_string_list(prm.get("Selected compositional fields"));
+              for (const std::string &selected_field : selected_fields)
+                {
+                  selected_compositional_field_indices.push_back(this->introspection().compositional_index_for_name(selected_field));
+                }
+            }
+        }
+        prm.leave_subsection();
+      }
     }
   }
 }
@@ -133,9 +174,12 @@ namespace aspect
                                         "initial composition",
                                         "Implementation of a plugin in which the particle "
                                         "property is given as the initial composition "
-                                        "at the particle's initial position. The particle "
-                                        "gets as many properties as there are "
-                                        "compositional fields.")
+                                        "at the particle's initial position. The "
+                                        "'Selected compositional fields' chooses which "
+                                        "compositional fields to track on this particle "
+                                        "manager. If no 'Selected compositional fields' "
+                                        "are chosen, the particle manager gets as many "
+                                        "properties as there are compositional fields.")
     }
   }
 }
