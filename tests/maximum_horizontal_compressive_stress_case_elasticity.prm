@@ -95,10 +95,9 @@ end
 
 # Number and name of compositional fields
 subsection Compositional fields
-  set Number of fields = 12
+  set Number of fields = 6
   set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_zz, ve_stress_xy, ve_stress_xz, ve_stress_yz, \
-                         ve_stress_xx_old, ve_stress_yy_old, ve_stress_zz_old, ve_stress_xy_old, ve_stress_xz_old, ve_stress_yz_old
-  set Types of fields = stress, stress, stress, stress, stress, stress, stress, stress, stress, stress, stress, stress
+  set Types of fields = stress, stress, stress, stress, stress, stress
 end
 
 # Spatial domain of different compositional fields
@@ -108,7 +107,7 @@ subsection Initial composition model
   subsection Function
     set Variable names      = x, y, z
     set Function constants  = 
-    set Function expression = 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0;
+    set Function expression = 0; 0; 0; 0; 0; 0
   end
 end
 

@@ -75,7 +75,7 @@ subsection Discretization
   # DG for viscoelastic stresses
   set Use discontinuous composition discretization = true
   subsection Stabilization parameters
-    set Use limiter for discontinuous composition solution = false, false, false, false, false, false, true, true, true
+    set Use limiter for discontinuous composition solution = false, false, false, true, true, true
     set Global composition maximum = 1.
     set Global composition minimum = 0.
   end
@@ -100,9 +100,9 @@ end
 
 # Number and name of compositional fields
 subsection Compositional fields
-  set Number of fields = 9
-  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old, block,                air,                  inclusion
-  set Types of fields  = stress,       stress,       stress,       stress,       stress,       stress, chemical composition, chemical composition, chemical composition
+  set Number of fields = 6
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, block,                air,                  inclusion
+  set Types of fields  = stress,       stress,       stress, chemical composition, chemical composition, chemical composition
 end
 
 # Spatial domain of different compositional fields
@@ -112,7 +112,7 @@ subsection Initial composition model
   subsection Function
     set Variable names      = x,y
     set Function constants  =
-    set Function expression = 0; 0; 0; 0; 0; 0; \
+    set Function expression = 0; 0; 0; \
                               if ( ( x<43.75e3 && y>25.e3 && y<75.e3) || (x>56.25e3 && y>25.e3 && y<75.e3) || (y>56.25e3 && y<75.e3 && x>=43.75e3 && x<=56.25e3) || (y<43.75e3 && y>25.e3 && x>=43.75e3 && x<=56.25e3), 1, 0); \
                               if (y<=25.e3 || y>=75.e3, 1, 0); \
                               if (y<=56.25e3 && y>=43.75e3 && x>=43.75e3 && x<=56.25e3, 1, 0);

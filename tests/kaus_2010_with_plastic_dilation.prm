@@ -50,7 +50,7 @@ subsection Discretization
   # DG for viscoelastic stresses
   set Use discontinuous composition discretization = true
   subsection Stabilization parameters
-    set Use limiter for discontinuous composition solution = false, false, false, false, false, false, false, true
+    set Use limiter for discontinuous composition solution = false, false, false, false, true
     set Global composition maximum = 1.
     set Global composition minimum = 0.
   end
@@ -86,16 +86,13 @@ end
 
 # Number and name of compositional fields
 subsection Compositional fields
-  set Number of fields = 8
-  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old, plastic_strain, inclusion
+  set Number of fields = 5
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, plastic_strain, inclusion
   set Types of fields  = stress, stress, stress, stress, stress, stress, strain, chemical composition
   set Compositional field methods = particles
   set Mapped particle properties  = ve_stress_xx: ve_stress_xx, \
                                     ve_stress_yy: ve_stress_yy, \
                                     ve_stress_xy: ve_stress_xy, \
-                                    ve_stress_xx_old: ve_stress_xx_old, \
-                                    ve_stress_yy_old: ve_stress_yy_old, \
-                                    ve_stress_xy_old: ve_stress_xy_old, \
                                     plastic_strain: plastic_strain, \
                                     inclusion: initial inclusion
 end
@@ -107,7 +104,7 @@ subsection Initial composition model
   subsection Function
     set Variable names      = x,y
     set Function constants  =
-    set Function expression = 0; 0; 0; 0; 0; 0; 0; \
+    set Function expression = 0; 0; 0; 0; \
                               if (y<=0.4e3 && x>=19.6e3 && x<=20.4e3, 1, 0);
   end
 end

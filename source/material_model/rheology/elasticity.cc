@@ -201,9 +201,18 @@ namespace aspect
                       ExcMessage("If stresses are tracked on particles, the stress update is applied by the particle property 'elastic stress' "
                                  "and operator splitting should not be turned on. "));
 
-        // Check that 3+3 in 2D or 6+6 in 3D stress fields exist.
-        AssertThrow((this->introspection().get_number_of_fields_of_type(CompositionalFieldDescription::stress) == 2*SymmetricTensor<2,dim>::n_independent_components),
-                    ExcMessage("Rheology model Elasticity requires 3+3 in 2D or 6+6 in 3D fields of type stress."));
+        if (require_unrotated_viscoelastic_stress())
+          {
+            // Check that 3+3 in 2D or 6+6 in 3D stress fields exist.
+            AssertThrow((this->introspection().get_number_of_fields_of_type(CompositionalFieldDescription::stress) == 2*n_independent_components),
+                        ExcMessage("Rheology model Elasticity requires 3+3 in 2D or 6+6 in 3D fields of type stress."));
+          }
+        else
+          {
+            // Check that 3 in 2D or 6 in 3D stress fields exist.
+            AssertThrow((this->introspection().get_number_of_fields_of_type(CompositionalFieldDescription::stress) == n_independent_components),
+                        ExcMessage("Rheology model Elasticity requires 3 in 2D or 6 in 3D fields of type stress."));
+          }
 
         // Check that the compositional fields representing the viscoelastic
         // stress tensor components are both named correctly and listed in the right order
@@ -223,7 +232,9 @@ namespace aspect
         // to extract the fields representing the viscoelastic stress tensor components,
         // so check that they are listed without interruption by other fields.
         // They do not, however, have to be the first fields listed.
-        AssertThrow(((stress_field_indices[2*n_independent_components-1] - stress_field_indices[0]) == (2*n_independent_components-1)),
+        const unsigned int n_viscoelastic_stress_components = (require_unrotated_viscoelastic_stress()) ? 2*n_independent_components : n_independent_components;
+
+        AssertThrow(((stress_field_indices[n_viscoelastic_stress_components-1] - stress_field_indices[0]) == n_viscoelastic_stress_components-1),
                     ExcMessage("Rheology model Elasticity requires that the compositional fields representing stress tensor components are listed in consecutive order."));
 
         AssertThrow(stress_field_names[0] == "ve_stress_xx",
@@ -238,15 +249,18 @@ namespace aspect
                         ExcMessage("Rheology model Elasticity only works if the third "
                                    "compositional field representing stress tensor components is called ve_stress_xy."));
 
-            AssertThrow(stress_field_names[3] == "ve_stress_xx_old",
-                        ExcMessage("Rheology model Elasticity only works if the fourth "
-                                   "compositional field representing stress tensor components is called ve_stress_xx_old."));
-            AssertThrow(stress_field_names[4] == "ve_stress_yy_old",
-                        ExcMessage("Rheology model Elasticity only works if the fifth "
-                                   "compositional field representing stress tensor components is called ve_stress_yy_old."));
-            AssertThrow(stress_field_names[5] == "ve_stress_xy_old",
-                        ExcMessage("Rheology model Elasticity only works if the sixth "
-                                   "compositional field representing stress tensor components is called ve_stress_xy_old."));
+            if (require_unrotated_viscoelastic_stress())
+              {
+                AssertThrow(stress_field_names[3] == "ve_stress_xx_old",
+                            ExcMessage("Rheology model Elasticity only works if the fourth "
+                                       "compositional field representing stress tensor components is called ve_stress_xx_old."));
+                AssertThrow(stress_field_names[4] == "ve_stress_yy_old",
+                            ExcMessage("Rheology model Elasticity only works if the fifth "
+                                       "compositional field representing stress tensor components is called ve_stress_yy_old."));
+                AssertThrow(stress_field_names[5] == "ve_stress_xy_old",
+                            ExcMessage("Rheology model Elasticity only works if the sixth "
+                                       "compositional field representing stress tensor components is called ve_stress_xy_old."));
+              }
           }
         else if (dim == 3)
           {
@@ -263,24 +277,27 @@ namespace aspect
                         ExcMessage("Rheology model Elasticity only works if the sixth "
                                    "compositional field representing stress tensor components is called ve_stress_yz."));
 
-            AssertThrow(stress_field_names[6] == "ve_stress_xx_old",
-                        ExcMessage("Rheology model Elasticity only works if the seventh "
-                                   "compositional field representing stress tensor components is called ve_stress_xx_old."));
-            AssertThrow(stress_field_names[7] == "ve_stress_yy_old",
-                        ExcMessage("Rheology model Elasticity only works if the eighth "
-                                   "compositional field representing stress tensor components is called ve_stress_yy_old."));
-            AssertThrow(stress_field_names[8] == "ve_stress_zz_old",
-                        ExcMessage("Rheology model Elasticity only works if the ninth "
-                                   "compositional field representing stress tensor components is called ve_stress_zz_old."));
-            AssertThrow(stress_field_names[9] == "ve_stress_xy_old",
-                        ExcMessage("Rheology model Elasticity only works if the tenth "
-                                   "compositional field representing stress tensor components is called ve_stress_xy_old."));
-            AssertThrow(stress_field_names[10] == "ve_stress_xz_old",
-                        ExcMessage("Rheology model Elasticity only works if the eleventh "
-                                   "compositional field representing stress tensor components is called ve_stress_xz_old."));
-            AssertThrow(stress_field_names[11] == "ve_stress_yz_old",
-                        ExcMessage("Rheology model Elasticity only works if the twelfth "
-                                   "compositional field representing stress tensor components is called ve_stress_yz_old."));
+            if (require_unrotated_viscoelastic_stress())
+              {
+                AssertThrow(stress_field_names[6] == "ve_stress_xx_old",
+                            ExcMessage("Rheology model Elasticity only works if the seventh "
+                                       "compositional field representing stress tensor components is called ve_stress_xx_old."));
+                AssertThrow(stress_field_names[7] == "ve_stress_yy_old",
+                            ExcMessage("Rheology model Elasticity only works if the eighth "
+                                       "compositional field representing stress tensor components is called ve_stress_yy_old."));
+                AssertThrow(stress_field_names[8] == "ve_stress_zz_old",
+                            ExcMessage("Rheology model Elasticity only works if the ninth "
+                                       "compositional field representing stress tensor components is called ve_stress_zz_old."));
+                AssertThrow(stress_field_names[9] == "ve_stress_xy_old",
+                            ExcMessage("Rheology model Elasticity only works if the tenth "
+                                       "compositional field representing stress tensor components is called ve_stress_xy_old."));
+                AssertThrow(stress_field_names[10] == "ve_stress_xz_old",
+                            ExcMessage("Rheology model Elasticity only works if the eleventh "
+                                       "compositional field representing stress tensor components is called ve_stress_xz_old."));
+                AssertThrow(stress_field_names[11] == "ve_stress_yz_old",
+                            ExcMessage("Rheology model Elasticity only works if the twelfth "
+                                       "compositional field representing stress tensor components is called ve_stress_yz_old."));
+              }
           }
         else
           AssertThrow(false, ExcNotImplemented());
@@ -431,10 +448,14 @@ namespace aspect
                 const SymmetricTensor<2,dim> stress_0_advected (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index],
                                                                 &in.composition[i][stress_start_index]+n_independent_components));
 
-                // Get the old stress that is used to interpolate to timestep $t+\Delta t_c$. It is stored on the
-                // second set of n_independent_components fields, e.g. in 2D on field 3, 4 and 5.
-                const SymmetricTensor<2,dim> stress_old (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index+n_independent_components],
-                                                         &in.composition[i][stress_start_index+n_independent_components]+n_independent_components));
+                SymmetricTensor<2,dim> stress_old = numbers::signaling_nan<SymmetricTensor<2, dim>>();
+                if (require_unrotated_viscoelastic_stress())
+                  {
+                    // Get the old stress that is used to interpolate to timestep $t+\Delta t_c$. It is stored on the
+                    // second set of n_independent_components fields, e.g. in 2D on field 3, 4 and 5.
+                    stress_old = Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index+n_independent_components],
+                                                                              &in.composition[i][stress_start_index+n_independent_components]+n_independent_components);
+                  }
 
                 // Average effective creep viscosity
                 // Use the viscosity corresponding to the stresses selected above.
@@ -456,8 +477,10 @@ namespace aspect
 
                 if (elastic_out != nullptr)
                   {
-                    elastic_out->elastic_force[i] = -1. * (viscosity_ratio * stress_0_advected
-                                                           + (1. - timestep_ratio) * (1. - viscosity_ratio) * stress_old);
+                    elastic_out->elastic_force[i] = -1. * viscosity_ratio * stress_0_advected;
+
+                    if (require_unrotated_viscoelastic_stress())
+                      elastic_out->elastic_force[i] -= (1. - timestep_ratio) * (1. - viscosity_ratio) * stress_old;
 
                     // The viscoelastic strain rate is needed only when the Newton method is selected.
                     const typename Parameters<dim>::NonlinearSolver::Kind nonlinear_solver = this->get_parameters().nonlinear_solver;
@@ -467,9 +490,11 @@ namespace aspect
                                                                    in.strain_rate[i], stress_0_advected, stress_old, effective_creep_viscosity, average_elastic_shear_moduli[i]);
                   }
 
-                // Apply the stress update to get the total stress of timestep t.
-                const SymmetricTensor<2, dim> stress = 2. * effective_creep_viscosity * deviatoric_strain_rate + viscosity_ratio * stress_0_advected +
-                                                       (1. - timestep_ratio) * (1. - viscosity_ratio) * stress_old;
+                // Apply the stress update to get the total stress of timestep $t+\Delta t_c$.
+                SymmetricTensor<2, dim> stress = 2. * effective_creep_viscosity * deviatoric_strain_rate + viscosity_ratio * stress_0_advected;
+
+                if (require_unrotated_viscoelastic_stress())
+                  stress += (1. - timestep_ratio) * (1. - viscosity_ratio) * stress_old;
 
                 // Obtain the computational timestep by multiplying the ratio between the computational
                 // and elastic timestep $\frac{\Delta t_c}{\Delta t_{el}}$ with the elastic timestep.
@@ -515,13 +540,23 @@ namespace aspect
             const SymmetricTensor<2, dim> deviatoric_strain_rate = Utilities::Tensors::consistent_deviator(in.strain_rate[i]);
             const SymmetricTensor<2,dim> stress_0_advected (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index],
                                                             &in.composition[i][stress_start_index]+n_independent_components));
-            const SymmetricTensor<2,dim> stress_old (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index+n_independent_components],
-                                                     &in.composition[i][stress_start_index+n_independent_components]+n_independent_components));
+
+            SymmetricTensor<2,dim> stress_old = numbers::signaling_nan<SymmetricTensor<2, dim>>();
+            if (require_unrotated_viscoelastic_stress())
+              {
+                // Get the old stress that is used to interpolate to timestep $t+\Delta t_c$. It is stored on the
+                // second set of n_independent_components fields, e.g. in 2D on field 3, 4 and 5.
+                stress_old = Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index+n_independent_components],
+                                                                          &in.composition[i][stress_start_index+n_independent_components]+n_independent_components);
+              }
 
             const double elastic_viscosity = calculate_elastic_viscosity(average_elastic_shear_moduli[i]);
 
-            // Apply the stress update to get the total deviatoric stress of timestep t.
-            elastic_additional_out->deviatoric_stress[i] = 2. * eta * deviatoric_strain_rate + eta / elastic_viscosity * stress_0_advected + (1. - timestep_ratio) * (1. - eta / elastic_viscosity) * stress_old;
+            // Apply the stress update to get the total deviatoric stress of timestep $t+\Delta t_c$.
+            elastic_additional_out->deviatoric_stress[i] = 2. * eta * deviatoric_strain_rate + eta / elastic_viscosity * stress_0_advected;
+            if (require_unrotated_viscoelastic_stress())
+              elastic_additional_out->deviatoric_stress[i] += (1. - timestep_ratio) * (1. - eta / elastic_viscosity) * stress_old;
+
             elastic_additional_out->elastic_shear_moduli[i] = average_elastic_shear_moduli[i];
             elastic_additional_out->elastic_viscosity[i] = elastic_viscosity;
           }
@@ -694,13 +729,18 @@ namespace aspect
                 const SymmetricTensor<2, dim> stress_0_t (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index],
                                                           &in.composition[i][stress_start_index]+n_independent_components));
 
-                // Get the old stress that is used to interpolate to timestep $t+\Delta t_c$. It is stored on the
-                // second set of n_independent_components fields, e.g. in 2D on field 3, 4 and 5.
-                // The old stress was advected into the previous timestep, but not rotated.
-                // Below we update it to full stress of the previous timestep, so that it can be
-                // advected into the current timestep.
-                const SymmetricTensor<2, dim>  stress_old (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index+n_independent_components],
-                                                           &in.composition[i][stress_start_index+n_independent_components]+n_independent_components));
+                SymmetricTensor<2,dim> stress_old = numbers::signaling_nan<SymmetricTensor<2, dim>>();
+                if (require_unrotated_viscoelastic_stress())
+                  {
+                    // Get the old stress that is used to interpolate to the current computational time step
+                    // if it differs from the elastic time step. It is stored on the
+                    // second set of n_independent_components fields, e.g. in 2D on field 3, 4 and 5.
+                    // The old stress was advected into the current timestep, but not rotated.
+                    // Below we update it to full stress of the current timestep after using it to
+                    // compute the full stress.
+                    stress_old = Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index+n_independent_components],
+                                                                              &in.composition[i][stress_start_index+n_independent_components]+n_independent_components);
+                  }
 
                 // $\eta^{t}_{effcreep}$. This viscosity has been calculated with the timestep_ratio dtc/dte.
                 const double effective_creep_viscosity = effective_creep_viscosities[i];
@@ -714,11 +754,13 @@ namespace aspect
                 // The ratio between the computational and elastic timestep $\frac{\Delta t_c} / {\Delta t_{el}}$.
                 const double timestep_ratio = calculate_timestep_ratio();
 
-                // Compute the total stress at time t.
-                const SymmetricTensor<2, dim>
+                // Compute the total stress at time $t$.
+                SymmetricTensor<2, dim>
                 stress_t = 2. * effective_creep_viscosity * Utilities::Tensors::consistent_deviator(in.strain_rate[i])
-                           + effective_creep_viscosity / elastic_viscosity * stress_0_t
-                           + (1. - timestep_ratio) * (1. - effective_creep_viscosity / elastic_viscosity) * stress_old;
+                           + effective_creep_viscosity / elastic_viscosity * stress_0_t;
+
+                if (require_unrotated_viscoelastic_stress())
+                  stress_t += (1. - timestep_ratio) * (1. - effective_creep_viscosity / elastic_viscosity) * stress_old;
 
                 // Fill reaction rates.
                 // During this timestep, the reaction rates will be multiplied
@@ -739,17 +781,31 @@ namespace aspect
                                                                        &reaction_rate_out->reaction_rates[i][stress_start_index],
                                                                        &reaction_rate_out->reaction_rates[i][stress_start_index]+n_independent_components);
 
-                // Also update the second set of stresses, stress_old, with the newly computed stress,
-                // which in the rest of the timestep will serve as the old stress advected but not rotated
-                // into the current timestep. This function fill_reaction_rates is only called at the
-                // beginning of the timestep, and so this update only happens once.
-                const SymmetricTensor<2, dim> stress_old_update = (stress_t - stress_old) / dtc;
+                if (require_unrotated_viscoelastic_stress())
+                  {
+                    // Also update the second set of stresses, stress_old, with the newly computed stress,
+                    // which in the next timestep will serve as the old stress advected but not rotated
+                    // into the current timestep. For fields, this function fill_reaction_rates is only
+                    // called at the end of the timestep, and so this update only happens once.
+                    // For particles, this function is called each time they have been restored to their
+                    // original position from the beginning of the time step.
+                    const SymmetricTensor<2, dim> stress_old_update = (stress_t - stress_old) / dtc;
 
-                Utilities::Tensors::unroll_symmetric_tensor_into_array(stress_old_update,
-                                                                       &reaction_rate_out->reaction_rates[i][stress_start_index+n_independent_components],
-                                                                       &reaction_rate_out->reaction_rates[i][stress_start_index+n_independent_components]+n_independent_components);
+                    Utilities::Tensors::unroll_symmetric_tensor_into_array(stress_old_update,
+                                                                           &reaction_rate_out->reaction_rates[i][stress_start_index+n_independent_components],
+                                                                           &reaction_rate_out->reaction_rates[i][stress_start_index+n_independent_components]+n_independent_components);
+                  }
               }
           }
+      }
+
+
+
+      template <int dim>
+      bool
+      Elasticity<dim>::require_unrotated_viscoelastic_stress() const
+      {
+        return use_fixed_elastic_time_step || stabilization_time_scale_factor != 1.;
       }
 
 
@@ -867,15 +923,19 @@ namespace aspect
 
         // The elastic viscosity is already scaled with the timestep ratio.
         const double elastic_viscosity = calculate_elastic_viscosity(shear_modulus);
-        // viscosity_pre_yield is also already scaled with the timestep ratio.
-        const double creep_viscosity = viscosity_pre_yield;
 
-        // The ratio between the computational and elastic timestep.
-        const double timestep_ratio = calculate_timestep_ratio();
+        SymmetricTensor<2, dim> edot = strain_rate + 0.5 * stress_0_advected / elastic_viscosity;
 
-        const SymmetricTensor<2, dim>
-        edot = strain_rate + 0.5 * stress_0_advected / elastic_viscosity
-               + 0.5 * (1. - timestep_ratio) * (1.  - creep_viscosity/elastic_viscosity) * stress_old / creep_viscosity;
+        if (require_unrotated_viscoelastic_stress())
+          {
+            // viscosity_pre_yield is also already scaled with the timestep ratio.
+            const double creep_viscosity = viscosity_pre_yield;
+
+            // The ratio between the computational and elastic timestep.
+            const double timestep_ratio = calculate_timestep_ratio();
+
+            edot += 0.5 * (1. - timestep_ratio) * (1.  - creep_viscosity/elastic_viscosity) * stress_old / creep_viscosity;
+          }
 
         return edot;
       }

@@ -65,8 +65,9 @@ namespace aspect
 
         // Get the indices of those compositions that correspond to stress tensor elements.
         stress_field_indices = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::stress);
-        AssertThrow((stress_field_indices.size() == 2*SymmetricTensor<2,dim>::n_independent_components),
-                    ExcMessage("The number of stress tensor element fields in the 'elastic stress' plugin does not equal twice the number of independent components."));
+        AssertThrow((stress_field_indices.size() == 2*SymmetricTensor<2,dim>::n_independent_components ||
+                     stress_field_indices.size() == SymmetricTensor<2,dim>::n_independent_components),
+                    ExcMessage("The number of stress tensor element fields in the 'elastic stress' plugin does not equal the number of expected components."));
 
         // Get the indices of all compositions that do not correspond to stress tensor elements.
         std::vector<unsigned int> all_field_indices(this->n_compositional_fields());
@@ -283,23 +284,26 @@ namespace aspect
             data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("ve_stress_yz")));
           }
 
-        data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("ve_stress_xx_old")));
-
-        data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("ve_stress_yy_old")));
-
-        if (dim == 2)
+        if (stress_field_indices.size() == 2*SymmetricTensor<2,dim>::n_independent_components)
           {
-            data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("ve_stress_xy_old")));
-          }
-        else if (dim == 3)
-          {
-            data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("ve_stress_zz_old")));
+            data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("ve_stress_xx_old")));
 
-            data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("ve_stress_xy_old")));
+            data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("ve_stress_yy_old")));
 
-            data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("ve_stress_xz_old")));
+            if (dim == 2)
+              {
+                data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("ve_stress_xy_old")));
+              }
+            else if (dim == 3)
+              {
+                data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("ve_stress_zz_old")));
 
-            data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("ve_stress_yz_old")));
+                data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("ve_stress_xy_old")));
+
+                data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("ve_stress_xz_old")));
+
+                data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("ve_stress_yz_old")));
+              }
           }
       }
 
@@ -310,6 +314,8 @@ namespace aspect
       ElasticStress<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &inputs,
                                                      typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
+        const unsigned int n_total_stress_components = stress_field_indices.size();
+
         unsigned int p = 0;
         for (auto &particle: particles)
           {
@@ -329,7 +335,7 @@ namespace aspect
             for (const unsigned int &n : non_stress_field_indices)
               material_inputs.composition[0][n] = inputs.solution[p][this->introspection().component_indices.compositional_fields[n]];
             // For the stress composition we use the ve_stress_* stored on the particles.
-            for (unsigned int n = 0; n < 2*SymmetricTensor<2,dim>::n_independent_components; ++n)
+            for (unsigned int n = 0; n < n_total_stress_components; ++n)
               material_inputs.composition[0][stress_field_indices[n]] = particle.get_properties()[this->data_position + n];
 
             Tensor<2,dim> grad_u;
@@ -391,19 +397,22 @@ namespace aspect
             property_information.emplace_back("ve_stress_yz",1);
           }
 
-        property_information.emplace_back("ve_stress_xx_old",1);
-        property_information.emplace_back("ve_stress_yy_old",1);
+        if  (stress_field_indices.size() == 2*SymmetricTensor<2,dim>::n_independent_components)
+          {
+            property_information.emplace_back("ve_stress_xx_old",1);
+            property_information.emplace_back("ve_stress_yy_old",1);
 
-        if (dim == 2)
-          {
-            property_information.emplace_back("ve_stress_xy_old",1);
-          }
-        else if (dim == 3)
-          {
-            property_information.emplace_back("ve_stress_zz_old",1);
-            property_information.emplace_back("ve_stress_xy_old",1);
-            property_information.emplace_back("ve_stress_xz_old",1);
-            property_information.emplace_back("ve_stress_yz_old",1);
+            if (dim == 2)
+              {
+                property_information.emplace_back("ve_stress_xy_old",1);
+              }
+            else if (dim == 3)
+              {
+                property_information.emplace_back("ve_stress_zz_old",1);
+                property_information.emplace_back("ve_stress_xy_old",1);
+                property_information.emplace_back("ve_stress_xz_old",1);
+                property_information.emplace_back("ve_stress_yz_old",1);
+              }
           }
 
         return property_information;
