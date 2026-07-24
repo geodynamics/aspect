@@ -533,7 +533,7 @@ namespace aspect
                              "The maximum allowed value for the specific heat capacity.");
 
           prm.declare_entry("Fraction of maximum specific heat capacity for transition from exact value", "0.1",
-                            Patterns::Double(0.),
+                            Patterns::Double(0., 1.),
                             "The fraction of the maximum specific heat capacity that defines the transition point "
                             "where the effective specific heat capacity starts to deviate from the exact value "
                             "given by the thermodynamic lookup table.");

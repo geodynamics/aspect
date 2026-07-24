@@ -999,7 +999,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 :name: parameters:Material_20model/Entropy_20model/Fraction_20of_20maximum_20specific_20heat_20capacity_20for_20transition_20from_20exact_20value
 **Default value:** 0.1
 
-**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+**Pattern:** [Double 0...1 (inclusive)]
 
 **Documentation:** The fraction of the maximum specific heat capacity that defines the transition point where the effective specific heat capacity starts to deviate from the exact value given by the thermodynamic lookup table.
 ::::

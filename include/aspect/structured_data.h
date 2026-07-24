@@ -26,6 +26,7 @@
 #include <aspect/simulator_access.h>
 
 #include <array>
+#include <set>
 
 namespace aspect
 {
