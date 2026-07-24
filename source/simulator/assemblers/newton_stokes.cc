@@ -620,13 +620,17 @@ namespace aspect
               // dilation term, but also the LHS dilation term should be included in the
               // system residual
               if (enable_prescribed_dilation)
-                data.local_rhs(i) += (
-                                       - pressure_scaling
-                                       * (prescribed_dilation->dilation_rhs_term[q] -
-                                          prescribed_dilation->dilation_lhs_term[q] *
-                                          scratch.material_model_inputs.pressure[q])
-                                       * scratch.phi_p[i]
-                                     ) * JxW;
+                {
+                  const unsigned int index_direction=fe.system_to_component_index(i).first;
+                  if (introspection.is_stokes_component(index_direction+1))
+                    data.local_rhs(i) += (
+                                           - pressure_scaling
+                                           * (prescribed_dilation->dilation_rhs_term[index_direction][q] -
+                                              prescribed_dilation->dilation_lhs_term[q] *
+                                              scratch.material_model_inputs.pressure[q])
+                                           * scratch.phi_p[i]
+                                         ) * JxW;
+                }
             }
 
           // and then the matrix, if necessary
@@ -818,7 +822,10 @@ namespace aspect
       Assert(!this->get_parameters().enable_prescribed_dilation
              ||
              (outputs.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>()->dilation_lhs_term.size() == n_points &&
-              outputs.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>()->dilation_rhs_term.size() == n_points),
+              outputs.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>()->dilation_rhs_term.size() == dim &&
+              outputs.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>()->dilation_rhs_term[0].size() == n_points &&
+              outputs.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>()->dilation_rhs_term[1].size() == n_points &&
+              (dim == 2 || (dim == 3 && outputs.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>()->dilation_rhs_term[2].size() == n_points))),
              ExcInternalError());
 
       if (this->get_newton_handler().parameters.newton_derivative_scaling_factor != 0)
