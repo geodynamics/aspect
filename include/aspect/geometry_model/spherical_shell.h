@@ -410,12 +410,6 @@ namespace aspect
         int n_cells_along_circumference;
 
         /**
-         * Set the manifold ids on all cells (also boundaries) before
-         * refinement to generate well shaped cells.
-         */
-        void set_manifold_ids (parallel::distributed::Triangulation<dim> &triangulation) const;
-
-        /**
          * Flag whether the shell is periodic in phi.
          */
         bool periodic;
@@ -437,6 +431,12 @@ namespace aspect
          * Give a symbolic name to the manifold id to be used by this class.
          */
         static constexpr types::manifold_id my_manifold_id = 99;
+
+        /**
+         * Set the manifold ids on all cells (also boundaries) before
+         * refinement to generate well shaped cells.
+         */
+        void set_manifold_ids (parallel::distributed::Triangulation<dim> &triangulation) const;
     };
   }
 }
