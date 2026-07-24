@@ -137,11 +137,11 @@ subsection Postprocess
   end
 
   subsection Particles
-    set Time between data output      = 0
+    set Time between data output      = 6000
     set Data output format            = ascii
   end
   subsection Particles 2
-    set Time between data output = 0
+    set Time between data output = 6000
     set Data output format = ascii
   end
 end
@@ -159,7 +159,7 @@ end
 subsection Particles
   set Number of particle systems = 2
   set Particle generator name       = reference cell
-  set List of particle properties   = melt particle
+  set List of particle properties   = melt particle, velocity
   set Particle advection velocity = solid 
 
   subsection Generator
@@ -171,7 +171,7 @@ end
 
 subsection Particles 2
   set Particle generator name       = reference cell
-  set List of particle properties   = melt particle
+  set List of particle properties   = melt particle, velocity
   set Particle advection velocity = fluid 
 
   subsection Generator

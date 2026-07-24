@@ -19,6 +19,7 @@
  */
 
 #include <aspect/particle/property/velocity.h>
+#include <aspect/particle/manager.h>
 
 namespace aspect
 {
@@ -40,11 +41,19 @@ namespace aspect
       Velocity<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &inputs,
                                                 typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
+        const bool use_fluid_velocity = this->get_particle_manager(this->get_particle_manager_index()).get_particle_velocity_choice();
         unsigned int p = 0;
         for (auto &particle: particles)
           {
             for (unsigned int i = 0; i < dim; ++i)
-              particle.get_properties()[this->data_position+i] = inputs.solution[p][this->introspection().component_indices.velocities[i]];
+              if (use_fluid_velocity)
+                {
+                  particle.get_properties()[this->data_position+i] = inputs.solution[p][this->introspection().variable("fluid velocity").first_component_index +i];
+                }
+              else
+                {
+                  particle.get_properties()[this->data_position+i] = inputs.solution[p][this->introspection().component_indices.velocities[i]];
+                }
             ++p;
           }
       }
@@ -60,15 +69,24 @@ namespace aspect
       UpdateFlags
       Velocity<dim>::get_update_flags (const unsigned int component) const
       {
-        if (this->introspection().component_masks.velocities[component] == true)
-          return update_values;
+        const bool use_fluid_velocity = this->get_particle_manager(this->get_particle_manager_index()).get_particle_velocity_choice();
+        if (use_fluid_velocity)
+          {
+            if (this->introspection().variable("fluid velocity").component_mask[component] == true)
+              return update_values;
+          }
+        else
+          {
+            if (this->introspection().component_masks.velocities[component] == true)
+              return update_values;
+          }
 
         return update_default;
       }
 
       template <int dim>
       std::vector<std::pair<std::string, unsigned int>>
-      Velocity<dim>::get_property_information() const
+                                                     Velocity<dim>::get_property_information() const
       {
         const std::vector<std::pair<std::string,unsigned int>> property_information (1,std::make_pair("velocity",dim));
         return property_information;
@@ -88,7 +106,9 @@ namespace aspect
                                         "velocity",
                                         "Implementation of a plugin in which the particle "
                                         "property is defined as the recent velocity at "
-                                        "this position.")
+                                        "this position. The velocity depends on whether the particle "
+                                        "world is being advected with a solid or fluid velocity.")
     }
   }
 }
+

@@ -293,6 +293,12 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm, const unsigned int particle_manager);
 
+        /*
+        * This function chooses whether to use solid or fluid velocity based on user-input
+        */
+        bool
+        get_particle_velocity_choice() const;
+
       private:
         struct ParticleLoadBalancing
         {
@@ -558,3 +564,4 @@ namespace aspect
 }
 
 #endif
+

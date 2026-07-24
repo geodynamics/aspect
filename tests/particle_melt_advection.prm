@@ -8,7 +8,7 @@
 
 set Dimension                              = 2
 set Start time                             = 0
-set End time                               = 3000 # 20000
+set End time                               = 3000
 set Use years instead of seconds           = true
 set Adiabatic surface temperature          = 1600
 set Nonlinear solver scheme                = iterated Advection and Stokes
@@ -156,7 +156,7 @@ end
 
 subsection Particles
   set Particle generator name       = reference cell
-  set List of particle properties   = melt particle
+  set List of particle properties   = melt particle, velocity
 
   subsection Generator
     subsection Reference cell
