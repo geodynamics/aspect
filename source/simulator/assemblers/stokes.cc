@@ -1031,36 +1031,6 @@ namespace aspect
                 }
               ++i;
             }
-
-          // for ( unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/ )
-          // {
-          //   if ( introspection.is_stokes_component(fe.system_to_component_index(i).first) )
-          //   {
-          //     ++i_stokes;
-          //   }
-          //   ++i;
-          // }
-
-          // for (unsigned int i=0; i<stokes_dofs_per_cell; /*increment at end of loop*/)
-          //   {
-          //     if ( dim == 2 )
-          //       data.local_rhs(i) += -pressure_scaling * 
-          //                                   (dilvector[0] + dilvector[1])
-          //                                   * scratch.phi_p[i]*JxW;
-          //     else
-          //       data.local_rhs(i) += -pressure_scaling * 
-          //                                   (dilvector[0] + dilvector[1] + dilvector[2])
-          //                                   * scratch.phi_p[i]*JxW;
-              
-          //     // const unsigned int index_horizon=fe.system_to_component_index(i).first;
-          //     // if (introspection.is_stokes_component(index_horizon))
-          //     //   {
-          //         // if (index_horizon<dim)
-          //         //   data.local_rhs(i_stokes) += 2.0*eta * dilvector[index_horizon] * scratch.div_phi_u[i_stokes] * JxW;
-          //         // ++i_stokes;
-          //       // }
-          //     ++i;
-          //   }
         }
     }
   }
