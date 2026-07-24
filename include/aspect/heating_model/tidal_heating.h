@@ -23,6 +23,8 @@
 #define _aspect_heating_model_tidal_heating_h
 
 #include <aspect/heating_model/interface.h>
+#include <aspect/material_model/utilities.h>
+#include <aspect/material_model/rheology/visco_plastic.h>
 #include <aspect/simulator_access.h>
 
 
@@ -74,6 +76,14 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm) override;
 
+        /**
+         * Create the additional material model outputs object that contains the
+         * averaged viscous outputs.
+         */
+        void
+        create_additional_material_model_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
+
+
       private:
         /**
          * Parameters used for tidal heating (H), which is defined using the following
@@ -121,6 +131,7 @@ namespace aspect
          */
         double minimum_tidal_strain_rate;
     };
+
   }
 }
 

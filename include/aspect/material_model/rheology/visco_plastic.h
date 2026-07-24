@@ -147,6 +147,11 @@ namespace aspect
       std::vector<double> composition_viscosities;
 
       /**
+       * The composition viscous viscosity before viscosity reduction by elasticity.
+       */
+      std::vector<double> composition_viscous_viscosities;
+
+      /**
        * The composition yielding.
        */
       std::vector<bool> composition_yielding;

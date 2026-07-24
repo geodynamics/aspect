@@ -25,6 +25,7 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
 #include <aspect/material_model/rheology/visco_plastic.h>
+#include <aspect/heating_model/tidal_heating.h>
 
 #include<deal.II/fe/component_mask.h>
 
@@ -226,6 +227,19 @@ namespace aspect
         bool
         is_yielding (const MaterialModelInputs<dim> &in) const;
 
+
+        /**
+         * A function that fills the additional viscous output in the
+         * MaterialModelOutputs object that is handed over, if it exists.
+         * Does nothing otherwise.
+         */
+        void
+        fill_additional_viscous_outputs(const unsigned int point_index,
+                                        const std::vector<double> &volume_fractions,
+                                        MaterialModel::MaterialModelOutputs<dim> &out,
+                                        const MaterialModel::IsostrainViscosities &isostrain_viscosities,
+                                        const MaterialModel::MaterialUtilities::CompositionalAveragingOperation &average_type) const;
+
       private:
 
         /**
@@ -290,6 +304,28 @@ namespace aspect
          */
         std::unique_ptr<MaterialUtilities::PhaseFunctionDiscrete<dim>> phase_function_discrete;
 
+    };
+  
+    /**
+     * Additional output fields for the viscous viscosity computation
+     * to be added to the MaterialModel::MaterialModelOutputs structure
+     * and filled in the MaterialModel::evaluate() function.
+     *
+     * This structure allows to use viscous viscosity in tidal heating
+     * when elasticity is enabled.
+     */
+    template <int dim>
+    class ViscousAdditionalOutputs : public MaterialModel::NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        ViscousAdditionalOutputs(const unsigned int n_points);
+
+        std::vector<double> get_nth_output(const unsigned int idx) const override;
+
+        /**
+         * The viscosity of viscous rheology, when elasticity is enabled.
+         */
+        std::vector<double> viscous_viscosity;
     };
 
   }

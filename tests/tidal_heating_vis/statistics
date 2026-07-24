@@ -1,0 +1,35 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for composition solver 3
+# 13: Iterations for composition solver 4
+# 14: Iterations for composition solver 5
+# 15: Iterations for composition solver 6
+# 16: Iterations for Stokes solver
+# 17: Velocity iterations in Stokes preconditioner
+# 18: Schur complement iterations in Stokes preconditioner
+# 19: RMS velocity (m/year)
+# 20: Max. velocity (m/year)
+# 21: Minimal temperature (K)
+# 22: Average temperature (K)
+# 23: Maximal temperature (K)
+# 24: Visualization file name
+# 25: Minimal pressure (Pa)
+# 26: Average pressure (Pa)
+# 27: Maximal pressure (Pa)
+# 28: Average density (kg/m^3)
+# 29: Average viscosity (Pa s)
+# 30: Total mass (kg)
+# 31: Average tidal heating rate (W/kg)
+# 32: Total tidal heating rate (W)
+0 0.000000000000e+00 0.000000000000e+00 100 1003 441 5400 1  0 0 0 0 0 0 0 34 35 35 5.69590369e-14 7.05012075e-13 1.09846903e+02 1.90000015e+02 2.70153195e+02 tidal_heating_vis/solution/solution-00000 -5.54879832e-10 5.96050000e+07 1.19210000e+08 9.17000000e+02 1.75066467e+18 9.17000000e+12 5.61861820e-10 5.15227289e+03 
+1 1.000000000000e+03 1.000000000000e+03 100 1003 441 5400 2 14 0 0 0 0 0 0 73 75 75 1.34971872e-13 9.94540985e-13 1.09846904e+02 1.90008490e+02 2.70261786e+02 tidal_heating_vis/solution/solution-00001 -2.03188204e-09 5.96050000e+07 1.19210000e+08 9.17000000e+02 1.51656656e+19 9.17000000e+12 5.63993783e-10 5.17182299e+03 
+2 2.000000000000e+03 1.000000000000e+03 100 1003 441 5400 1  5 0 0 0 0 0 0 37 38 38 2.96245900e-13 2.26253561e-12 1.09846904e+02 1.90016987e+02 2.70370562e+02 tidal_heating_vis/solution/solution-00002 -2.05667269e-09 5.96050000e+07 1.19210000e+08 9.17000000e+02 1.51656634e+19 9.17000000e+12 5.66121304e-10 5.19133235e+03 
