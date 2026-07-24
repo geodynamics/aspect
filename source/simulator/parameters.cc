@@ -1352,7 +1352,7 @@ namespace aspect
                          Patterns::List(Patterns::Anything()),
                          "A user-defined name for each of the compositional fields requested.");
       prm.declare_entry ("Types of fields", "unspecified",
-                         Patterns::List (Patterns::Selection("chemical composition|stress|strain|grain size|porosity|density|entropy|generic|unspecified")),
+                         Patterns::List (Patterns::Selection("chemical composition|stress|strain|grain size|porosity|density|entropy|reaction progress|generic|unspecified")),
                          "A comma separated list denoting a ``type'' for each of the "
                          "compositional fields requested. ASPECT uses these types to "
                          "determine how fields are handled when evaluating the "
@@ -1399,6 +1399,10 @@ namespace aspect
                          "which is coupled to the entropy advection equation "
                          "as described in the paper \\cite{dannberg:etal:2022}."
                          "\n"
+                         "* ``reaction progress'': This type of field represents the progress of a "
+                         "phase transition controlled by reaction kinetics. It will only be "
+                         "considered in material models that include models for time-dependent "
+                         "phase transition kinetics."
                          "* ``generic'': The generic type is intended to be a placeholder type "
                          "that is not used by any component of ASPECT unless in user-"
                          "provided source code."
@@ -2203,6 +2207,8 @@ namespace aspect
               x_compositional_field_types[i] = "porosity";
             else if (names_of_compositional_fields[i] == "density_field")
               x_compositional_field_types[i] = "density";
+            else if (names_of_compositional_fields[i].find("reaction_progress") != std::string::npos)
+              x_compositional_field_types[i] = "reaction progress";
             else
               x_compositional_field_types[i] = "chemical composition";
           }

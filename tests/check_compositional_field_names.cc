@@ -47,6 +47,8 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
         std::cout << c_names[i] << " is of type generic" << std::endl;
       if (descriptions[i].type == aspect::CompositionalFieldDescription::stress)
         std::cout << c_names[i] << " is of type stress" << std::endl;
+      if (descriptions[i].type == aspect::CompositionalFieldDescription::reaction_progress)
+        std::cout << c_names[i] << " is of type reaction progress" << std::endl;
       if (descriptions[i].type == aspect::CompositionalFieldDescription::unspecified)
         std::cout << c_names[i] << " is of type unspecified" << std::endl;
     }

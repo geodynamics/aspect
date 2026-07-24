@@ -1539,6 +1539,15 @@ Units: \si{\pascal\second}
 **Documentation:** A list of depths where phase transitions occur. Values must monotonically increase. Units: \si{\meter}.
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Phase transition kinetics mapping<parameters:Material_20model/Grain_20size_20model/Phase_20transition_20kinetics_20mapping>`
+:name: parameters:Material_20model/Grain_20size_20model/Phase_20transition_20kinetics_20mapping
+**Default value:** -1
+
+**Pattern:** [Anything]
+
+**Documentation:** A list of indices that maps each phase transition to a phase-kinetics compositional field. For example, an entry of 0 indicates that the corresponding phase transition uses the 0th phase-kinetics composition. All following phase transitions will be affected by the metastablity of that transition kinetics. A negative value means the phase transition is assumed to be equilibrium.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Phase transition pressure widths<parameters:Material_20model/Grain_20size_20model/Phase_20transition_20pressure_20widths>`
 :name: parameters:Material_20model/Grain_20size_20model/Phase_20transition_20pressure_20widths
 **Default value:**
@@ -1901,6 +1910,15 @@ Units: \si{\pascal\second}
 **Pattern:** [Anything]
 
 **Documentation:** A list of depths where phase transitions occur. Values must monotonically increase. Units: \si{\meter}.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Phase transition kinetics mapping<parameters:Material_20model/Latent_20heat/Phase_20transition_20kinetics_20mapping>`
+:name: parameters:Material_20model/Latent_20heat/Phase_20transition_20kinetics_20mapping
+**Default value:** -1
+
+**Pattern:** [Anything]
+
+**Documentation:** A list of indices that maps each phase transition to a phase-kinetics compositional field. For example, an entry of 0 indicates that the corresponding phase transition uses the 0th phase-kinetics composition. All following phase transitions will be affected by the metastablity of that transition kinetics. A negative value means the phase transition is assumed to be equilibrium.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition pressure widths<parameters:Material_20model/Latent_20heat/Phase_20transition_20pressure_20widths>`
@@ -3419,6 +3437,15 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Pattern:** [Anything]
 
 **Documentation:** A list of depths where phase transitions occur. Values must monotonically increase. Units: \si{\meter}.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Phase transition kinetics mapping<parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20kinetics_20mapping>`
+:name: parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20kinetics_20mapping
+**Default value:** -1
+
+**Pattern:** [Anything]
+
+**Documentation:** A list of indices that maps each phase transition to a phase-kinetics compositional field. For example, an entry of 0 indicates that the corresponding phase transition uses the 0th phase-kinetics composition. All following phase transitions will be affected by the metastablity of that transition kinetics. A negative value means the phase transition is assumed to be equilibrium.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition pressure widths<parameters:Material_20model/Multicomponent_20compressible/Phase_20transition_20pressure_20widths>`
@@ -5204,6 +5231,15 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 **Pattern:** [Anything]
 
 **Documentation:** A list of phase indicators in a look-up table for each phase transition. This parameter selectively assign different rheologies to specific phases, rather than having a unique rheology for each phase in the table. For example, if the table has phases 0, 1, and 2, and one only want a distinct rheology for phase 2, then only phase 2 is needed in the list of indicator. And phases 0, 1 will just be assigned the rheology of the base phase.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Phase transition kinetics mapping<parameters:Material_20model/Visco_20Plastic/Phase_20transition_20kinetics_20mapping>`
+:name: parameters:Material_20model/Visco_20Plastic/Phase_20transition_20kinetics_20mapping
+**Default value:** -1
+
+**Pattern:** [Anything]
+
+**Documentation:** A list of indices that maps each phase transition to a phase-kinetics compositional field. For example, an entry of 0 indicates that the corresponding phase transition uses the 0th phase-kinetics composition. All following phase transitions will be affected by the metastablity of that transition kinetics. A negative value means the phase transition is assumed to be equilibrium.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition pressure widths<parameters:Material_20model/Visco_20Plastic/Phase_20transition_20pressure_20widths>`

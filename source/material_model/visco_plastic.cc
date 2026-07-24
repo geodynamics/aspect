@@ -130,6 +130,23 @@ namespace aspect
                                            :
                                            eos_outputs_all_phases.densities[0];
 
+          // Collect the values of all phase transition kinetics variables and use
+          // them to modify the equation of state properties of the individual phases
+          // before phase averaging.
+          const std::vector<unsigned int> phase_kinetics_indices =
+            this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::reaction_progress);
+
+          std::vector<double> phase_kinetics_values(phase_kinetics_indices.size(), 0.0);
+          for (unsigned int j=0; j<phase_kinetics_indices.size(); ++j)
+            phase_kinetics_values[j] = in.composition[i][phase_kinetics_indices[j]];
+
+          const std::vector<int> phase_kinetics_mapping = phase_function.get_transition_kinetics_mapping();
+
+          phase_kinetics_modify_equation_of_state_outputs(phase_kinetics_values,
+                                                          phase_kinetics_mapping,
+                                                          n_phase_transitions_for_each_chemical_composition,
+                                                          eos_outputs_all_phases);
+
           // The phase index is set to invalid_unsigned_int, because it is only used internally
           // in phase_average_equation_of_state_outputs to loop over all existing phases
           MaterialUtilities::PhaseFunctionInputs<dim> phase_inputs(in.temperature[i],

@@ -1100,6 +1100,57 @@ namespace aspect
 
 
 
+      void
+      phase_kinetics_modify_values (const std::vector<double> &phase_kinetics_values,
+                                    const std::vector<int> &phase_kinetics_mapping,
+                                    const std::vector<unsigned int> &n_phase_transitions_per_composition,
+                                    std::vector<double> &parameter_values,
+                                    const unsigned int composition_index,
+                                    const PhaseUtilities::PhaseAveragingOperation operation)
+      {
+
+        const std::pair<std::vector<double>, std::vector<unsigned int>> &composition_kinetics =
+          map_transition_kinetics_to_phases (phase_kinetics_values,
+                                             phase_kinetics_mapping,
+                                             n_phase_transitions_per_composition,
+                                             composition_index);
+
+        const std::vector<double> &kinetics_values = composition_kinetics.first;
+        const std::vector<unsigned int> &kinetics_mapping = composition_kinetics.second;
+        unsigned int start_phase_index = 0;
+        for (unsigned int i=0; i<composition_index; ++i)
+          start_phase_index += n_phase_transitions_per_composition[i] + 1;
+
+        if (n_phase_transitions_per_composition[composition_index] > 0)
+          {
+            for (unsigned int i=0; i<n_phase_transitions_per_composition[composition_index]; ++i)
+              {
+                const unsigned int phase_index = start_phase_index + i;
+
+                double current_parameter = parameter_values[phase_index+1];
+                if (operation == PhaseUtilities::logarithmic)
+                  current_parameter = std::log(current_parameter);
+
+                // Modify the parameter according to reaction progress.
+                for (unsigned int j=0; j<kinetics_mapping.size(); ++j)
+                  {
+                    const unsigned int mapping = kinetics_mapping[j];
+                    const double start_parameter = parameter_values[start_phase_index+mapping];
+
+                    if (mapping <= i)
+                      current_parameter = start_parameter + (current_parameter-start_parameter) * kinetics_values[j];
+                  }
+
+                if (operation == PhaseUtilities::logarithmic)
+                  current_parameter = std::exp(current_parameter);
+
+                parameter_values[phase_index+1] = current_parameter;
+              }
+          }
+      }
+
+
+
       double phase_average_value (const std::vector<double> &phase_function_values,
                                   const std::vector<unsigned int> &n_phase_transitions_per_composition,
                                   const std::vector<double> &parameter_values,
@@ -1139,6 +1190,49 @@ namespace aspect
               averaged_parameter = std::exp(averaged_parameter);
           }
         return averaged_parameter;
+      }
+
+
+
+      std::pair<std::vector<double>, std::vector<unsigned int>>
+      map_transition_kinetics_to_phases (const std::vector<double> &phase_kinetics_values,
+                                         const std::vector<int> &phase_kinetics_mapping,
+                                         const std::vector<unsigned int> &n_phase_transitions_per_composition,
+                                         const unsigned int composition_index)
+      {
+        AssertIndexRange(composition_index, n_phase_transitions_per_composition.size());
+
+        unsigned int start_transition_index = 0;
+        for (unsigned int i=0; i<composition_index; ++i)
+          start_transition_index += n_phase_transitions_per_composition[i];
+
+        const unsigned int n_transitions = n_phase_transitions_per_composition[composition_index];
+
+        AssertThrow(start_transition_index + n_transitions <= phase_kinetics_mapping.size(),
+                    ExcMessage("Invalid phase_kinetics_mapping: "
+                               "start_transition_index + n_transitions = "
+                               + std::to_string(start_transition_index + n_transitions)
+                               + ", mapping size = "
+                               + std::to_string(phase_kinetics_mapping.size())));
+
+        std::vector<double> local_phase_kinetics_values;
+        std::vector<unsigned int> local_phase_kinetics_mapping;
+
+        for (unsigned int local_transition_index=0; local_transition_index<n_transitions; ++local_transition_index)
+          {
+            const unsigned int global_transition_index = start_transition_index + local_transition_index;
+            const int kinetics_index = phase_kinetics_mapping[global_transition_index];
+
+            if (kinetics_index >= 0)
+              {
+                AssertIndexRange(static_cast<unsigned int>(kinetics_index), phase_kinetics_values.size());
+
+                local_phase_kinetics_values.push_back(phase_kinetics_values[kinetics_index]);
+                local_phase_kinetics_mapping.push_back(local_transition_index);
+              }
+          }
+
+        return {local_phase_kinetics_values, local_phase_kinetics_mapping};
       }
 
 
@@ -1606,6 +1700,20 @@ namespace aspect
 
 
       template <int dim>
+      const std::vector<int>
+      PhaseFunction<dim>::get_transition_kinetics_mapping () const
+      {
+        std::vector<int> transition_kinetics_mapping_int(transition_kinetics_mapping.size());
+
+        for (unsigned int i=0; i<transition_kinetics_mapping.size(); ++i)
+          transition_kinetics_mapping_int[i] = static_cast<int>(transition_kinetics_mapping[i]);
+
+        return transition_kinetics_mapping_int;
+      }
+
+
+
+      template <int dim>
       double
       PhaseFunction<dim>::
       get_transition_slope (const unsigned int phase_transition_index) const
@@ -1707,6 +1815,16 @@ namespace aspect
                            "For negative slopes the other way round. "
                            "List must have the same number of entries as Phase transition depths. "
                            "Units: \\si{\\pascal\\per\\kelvin}.");
+        prm.declare_entry ("Phase transition kinetics mapping", "-1",
+                           Patterns::Anything(),
+                           "A list of indices that maps each phase transition to a "
+                           "phase-kinetics compositional field. For example, an entry "
+                           "of 0 indicates that the corresponding phase transition uses "
+                           "the 0th phase-kinetics composition. All following phase "
+                           "transitions will be affected by the metastablity of that "
+                           "transition kinetics. A negative value means the phase transition "
+                           "is assumed to be equilibrium."
+                          );
       }
 
 
@@ -1759,6 +1877,9 @@ namespace aspect
 
         options.property_name = "Phase transition Clapeyron slopes";
         transition_slopes = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
+
+        options.property_name = "Phase transition kinetics mapping";
+        transition_kinetics_mapping = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
         n_phase_transitions_per_composition = std::make_unique<std::vector<unsigned int>>(options.n_values_per_key);
 

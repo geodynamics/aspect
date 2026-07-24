@@ -98,6 +98,25 @@ namespace aspect
     };
 
 
+    /**
+     * This function modifies the equation of state output @p eos_outputs_all_phases,
+     * which contains the data for all compositions and all of their phases at the
+     * current conditions, according to the supplied phase transition kinetics.
+     * For each composition, the equation of state properties of individual phases
+     * are adjusted based on the corresponding transition kinetics given by
+     * @p phase_kinetics_values and @p phase_kinetics_mapping.
+     *
+     * The modified values remain stored for all phases of all compositions in
+     * @p eos_outputs_all_phases and can subsequently be used for phase averaging.
+     */
+    template <int dim>
+    void
+    phase_kinetics_modify_equation_of_state_outputs(const std::vector<double> &phase_kinetics_values,
+                                                    const std::vector<int> &phase_kinetics_mapping,
+                                                    const std::vector<unsigned int> &n_phase_transitions_per_composition,
+                                                    EquationOfStateOutputs<dim> &eos_outputs_all_phases);
+
+
 
     /**
      * This function takes the output of an equation of state @p eos_outputs_all_phases,
