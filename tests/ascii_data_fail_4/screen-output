@@ -9,7 +9,7 @@ synchronization (and subsequent output) will be skipped
 to avoid a possible deadlock.
 
 
-Exception 'ExcMessage (std::string("Ascii data file <") + filename + "> not found!")' on rank 0 on processing: 
+Exception 'ExcMessage (std::string("Ascii data file <") + pretty_name + "> not found!")' on rank 0 on processing: 
 
 An error occurred in file <structured_data.cc> in function
 (line in output replaced by default.sh script)
