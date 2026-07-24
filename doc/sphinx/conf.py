@@ -5,6 +5,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
 import re
+from pathlib import Path
 
 # -- Path setup --------------------------------------------------------------
 
@@ -305,6 +306,15 @@ html_context = {
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+# The Read the Docs build generates this directory with ``make -C doc
+# aspect.tag`` before Sphinx runs.  Copying it as extra HTML preserves
+# Doxygen's complete API reference at ``/doxygen/`` in the same versioned
+# documentation site as the manual. Keep ordinary local Sphinx builds usable
+# when Doxygen has not been generated yet.
+html_extra_path = (['doxygen']
+                   if (Path(__file__).parent / 'doxygen').is_dir()
+                   else [])
 html_last_updated_fmt = ""
 
 linkcheck_allowed_redirects = {r'https://doi.org/*': r'https://*',
