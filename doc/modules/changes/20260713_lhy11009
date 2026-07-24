@@ -1,4 +1,4 @@
-Added: A new composition type of "phase kinetics"
+Added: A new composition type of "reaction progress"
 which is used to modify composition properties in
 visco plastic material models base on phase transition
 kinetics.
