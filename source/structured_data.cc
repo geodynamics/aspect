@@ -1041,7 +1041,7 @@ namespace aspect
           const std::string pretty_name = Utilities::replace_in_string(filename, ASPECT_SOURCE_DIR, "$ASPECT_SOURCE_DIR");
 
           this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
-                            << pretty_name << '.' << std::endl << std::endl;
+                            << filename << '.' << std::endl << std::endl;
 
 
           AssertThrow(Utilities::fexists(filename, this->get_mpi_communicator()) || filename_is_url(filename),
@@ -1066,11 +1066,10 @@ namespace aspect
                 current_file_number + 1;
 
               const std::string filename (create_filename (next_file_number, boundary_id));
-              const std::string pretty_name = Utilities::replace_in_string(filename, ASPECT_SOURCE_DIR, "$ASPECT_SOURCE_DIR");
               if (Utilities::fexists(filename, this->get_mpi_communicator()))
                 {
                   this->get_pcout() << std::endl << "   Also loading next Ascii data boundary file "
-                                    << pretty_name << '.' << std::endl << std::endl;
+                                    << filename << '.' << std::endl << std::endl;
                   lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
                   lookups.find(boundary_id)->second->load_file(filename, this->get_mpi_communicator());
                 }
@@ -1229,9 +1228,8 @@ namespace aspect
       if (load_both_files)
         {
           const std::string filename (create_filename (current_file_number,boundary_id));
-          const std::string pretty_name = Utilities::replace_in_string(filename, ASPECT_SOURCE_DIR, "$ASPECT_SOURCE_DIR");
           this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
-                            << pretty_name << '.' << std::endl << std::endl;
+                            << filename << '.' << std::endl << std::endl;
           if (Utilities::fexists(filename, this->get_mpi_communicator()))
             {
               lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
@@ -1251,9 +1249,8 @@ namespace aspect
         current_file_number + 1;
 
       const std::string filename (create_filename (next_file_number,boundary_id));
-      const std::string pretty_name = Utilities::replace_in_string(filename, ASPECT_SOURCE_DIR, "$ASPECT_SOURCE_DIR");
       this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
-                        << pretty_name << '.' << std::endl << std::endl;
+                        << filename << '.' << std::endl << std::endl;
       if (Utilities::fexists(filename, this->get_mpi_communicator()))
         {
           lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
@@ -1735,7 +1732,7 @@ namespace aspect
       const std::string pretty_name = Utilities::replace_in_string(filename, ASPECT_SOURCE_DIR, "$ASPECT_SOURCE_DIR");
 
       this->get_pcout() << std::endl << "   Loading Ascii data initial file "
-                        << pretty_name << '.' << std::endl << std::endl;
+                        << filename << '.' << std::endl << std::endl;
 
 
       AssertThrow(Utilities::fexists(filename, this->get_mpi_communicator()) || filename_is_url(filename),
