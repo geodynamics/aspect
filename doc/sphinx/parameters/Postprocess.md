@@ -9,7 +9,7 @@
 :name: parameters:Postprocess/List_20of_20postprocessors
 **Default value:**
 
-**Pattern:** [MultipleSelection ODE statistics|Stokes residual|basic statistics|boundary densities|boundary pressures|boundary strain rate residual statistics|boundary velocity residual statistics|command|composition statistics|composition velocity statistics|core statistics|crystal preferred orientation|current surface|depth average|domain volume statistics|dynamic topography|entropy statistics|entropy viscosity statistics|fluid velocity statistics|geoid|global statistics|gravity calculation|heat flux densities|heat flux map|heat flux statistics|heating statistics|load balance statistics|mass flux statistics|material statistics|matrix statistics|maximum depth of field|melt statistics|memory statistics|mobility statistics|particle count statistics|particle distribution score|particle distribution statistics|particles|point values|pressure statistics|rotation statistics|sea level|spherical velocity statistics|temperature statistics|timing statistics|topography|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization|volume of fluid statistics ]
+**Pattern:** [MultipleSelection ODE statistics|Stokes residual|basic statistics|boundary densities|boundary pressures|boundary strain rate residual statistics|boundary velocity residual statistics|command|composition statistics|composition velocity statistics|continental fragmentation statistics|core statistics|crystal preferred orientation|current surface|depth average|domain volume statistics|dynamic topography|entropy statistics|entropy viscosity statistics|fluid velocity statistics|geoid|global statistics|gravity calculation|heat flux densities|heat flux map|heat flux statistics|heating statistics|load balance statistics|mass flux statistics|material statistics|matrix statistics|maximum depth of field|melt statistics|memory statistics|mobility statistics|particle count statistics|particle distribution score|particle distribution statistics|particles|point values|pressure statistics|rotation statistics|sea level|spherical velocity statistics|temperature statistics|timing statistics|topography|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization|volume of fluid statistics ]
 
 **Documentation:** A comma separated list of postprocessor objects that should be run at the end of each time step. Some of these postprocessors will declare their own parameters which may, for example, include that they will actually do something only every so many time steps or years. Alternatively, the text &lsquo;all&rsquo; indicates that all available postprocessors should be run after each time step.
 
@@ -34,6 +34,8 @@ The following postprocessors are available:
 &lsquo;composition statistics&rsquo;: A postprocessor that computes some statistics about the compositional fields, if present in this simulation. In particular, it computes maximal and minimal values of each field, as well as the total mass contained in this field as defined by the integral $m_i(t) = \int_\Omega c_i(\mathbf x,t) \; \text{d}x$.
 
 &lsquo;composition velocity statistics&rsquo;: A postprocessor that computes the root mean square velocity over the area spanned by each compositional field (i.e. where the field values are larger or equal to 0.5.
+
+&lsquo;continental fragmentation statistics&rsquo;: Computes continent-specific diagnostics on the top surface from a user-defined set of compositional fields. Outputs continental area, continent perimeter, number of connected continental blocks, largest continental block area, largest-block fragmentation index, continental perimeter-to-area ratio, normalized perimeter fragmentation index, and average continental drift speed. Can also write per-face and per-block debug files.
 
 &lsquo;core statistics&rsquo;: A postprocessor that computes some statistics about the core evolution. (Working only with dynamic core boundary temperature plugin)
 
@@ -273,6 +275,71 @@ It is worth comparing this postprocessor with the visualization postprocessor ca
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A list of names for each of the compositional fields that you want to compute the combined RMS velocity for.
+::::
+
+(parameters:Postprocess/Continental_20fragmentation_20statistics)=
+## **Subsection:** Postprocess / Continental fragmentation statistics
+::::{dropdown} __Parameter:__ {ref}`Continent field names<parameters:Postprocess/Continental_20fragmentation_20statistics/Continent_20field_20names>`
+:name: parameters:Postprocess/Continental_20fragmentation_20statistics/Continent_20field_20names
+**Default value:**
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** Comma-separated list of compositional field names that should be interpreted as continental material.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Continent threshold<parameters:Postprocess/Continental_20fragmentation_20statistics/Continent_20threshold>`
+:name: parameters:Postprocess/Continental_20fragmentation_20statistics/Continent_20threshold
+**Default value:** 0.5
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** A top-surface face is considered continental if the sum of the selected compositional fields exceeds this threshold.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Minimum block area<parameters:Postprocess/Continental_20fragmentation_20statistics/Minimum_20block_20area>`
+:name: parameters:Postprocess/Continental_20fragmentation_20statistics/Minimum_20block_20area
+**Default value:** 0.0
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Ignore connected continental blocks with area smaller than this value [m^2].
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Output file prefix<parameters:Postprocess/Continental_20fragmentation_20statistics/Output_20file_20prefix>`
+:name: parameters:Postprocess/Continental_20fragmentation_20statistics/Output_20file_20prefix
+**Default value:** continental_fragmentation_statistics
+
+**Pattern:** [Anything]
+
+**Documentation:** Prefix used for the diagnostic output file names.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Output verbose screen line<parameters:Postprocess/Continental_20fragmentation_20statistics/Output_20verbose_20screen_20line>`
+:name: parameters:Postprocess/Continental_20fragmentation_20statistics/Output_20verbose_20screen_20line
+**Default value:** true
+
+**Pattern:** [Bool]
+
+**Documentation:** Whether to print a compact summary line to the screen.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Write block summary<parameters:Postprocess/Continental_20fragmentation_20statistics/Write_20block_20summary>`
+:name: parameters:Postprocess/Continental_20fragmentation_20statistics/Write_20block_20summary
+**Default value:** true
+
+**Pattern:** [Bool]
+
+**Documentation:** Write a per-block diagnostic summary file.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Write surface map<parameters:Postprocess/Continental_20fragmentation_20statistics/Write_20surface_20map>`
+:name: parameters:Postprocess/Continental_20fragmentation_20statistics/Write_20surface_20map
+**Default value:** true
+
+**Pattern:** [Bool]
+
+**Documentation:** Write a per-face diagnostic file for the top surface.
 ::::
 
 (parameters:Postprocess/Crystal_20Preferred_20Orientation)=

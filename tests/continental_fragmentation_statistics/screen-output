@@ -1,0 +1,10 @@
+
+Number of active cells: 24 (on 1 levels)
+Number of degrees of freedom: 1,825 (1,053+70+351+351)
+
+*** Timestep 0:  t=0 years, dt=0 years
+
+   Postprocessing:
+     Continental fragmentation statistics A_cont=2 m^2, P_cont=8 m, N_blocks=2, F_block=0.5, P/A=4 1/m, F_perim=0.373343, U_cont=0 m/yr
+
+Termination requested by criterion: end time
