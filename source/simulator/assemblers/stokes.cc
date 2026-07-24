@@ -1085,6 +1085,7 @@ namespace aspect
   template class StokesHydrostaticCompressionTerm<dim>; \
   template class StokesProjectedDensityFieldTerm<dim>; \
   template class StokesPressureRHSCompatibilityModification<dim>; \
+  template class StokesPrescribedDilation<dim>; \
   template class StokesBoundaryTraction<dim>;
 
     ASPECT_INSTANTIATE(INSTANTIATE)
