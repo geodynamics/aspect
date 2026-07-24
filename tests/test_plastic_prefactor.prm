@@ -1,0 +1,161 @@
+# A test case that checks the water fugacity viscous prefactor
+# multiplication scheme in combination with the visco plastic material model.
+# Following the flow law for wet olivine composite (diffusion and dislocation)
+# creep from Hirth & Kohlstaedt 2004 (10.1029/138GM06), the exact
+# viscosity is calculated in python through:
+# import numpy as np
+# R = 8.3144621
+# P = 1e9 Pa
+# T = 1173 K
+# edot_ii = 1e-17
+# n_disl = 3.5
+# E_disl = 520e3 J/mol
+# V_disl = 22e-6 m^3/mol
+# r_disl = 1.2
+# A_disl = 1600 / 1e6 / 1e6**n / 1e6**r 1/Pa^(4.7)/s
+#
+# n_diff = 1
+# E_diff = 375e3 J/mol
+# V_diff = 10e-6 m^3/mol
+# r_diff = 0.7
+# d = 1e-3 m
+# m = 3
+# A_diff = 2.5e7 / 1e6**n_diff / 1e6**m / 1e6**r_diff
+
+# A_H2O = 2.6e-5 1/Pa
+# activation_energy_H2O = 40e3 J/mol/K
+# activation_volume_H2O = 10e-6 m^3/mol
+#
+# M_H2O = 0.01801528 kg/mol
+# M_olivine = 0.1470027 kg/mol
+#
+# weight_fraction_h2o = 0.01
+# weight_fraction_olivine = 1 - weight_fraction_h2o
+# COH = (wt_fraction_h2o/M_H2O) / (weight_fraction_olivine/M_olivine) * 1e6
+#
+# fH2O = COH / A_H2O * np.exp((activation_energy_H2O + P*activation_volume_H2O)/(R * T))
+#
+# viscosity_disl = 0.5 * A_disl**(-1/n_disl) * edot_ii^((1-n_disl)/n_disl) * np.exp((E_disl + P*V_disl) / (n_disl*R*T)) * fH2O**(-r_disl/n_disl)
+# viscosity_diff = 0.5 * A_diff**(-1/n_diff) * d**m * np.exp((E_diff + P*V_diff) / (n_diff*R*T)) * fH2O**(-r_diff/n_diff)
+#
+# viscosity_comp = (viscosity_disl * viscosity_diff) / (viscosity_disl + viscosity_diff) = 2.62814004323392e20 Pa s
+# The viscosity should be equal to 2.6281e20 Pa s, and the material model should return this viscosity.
+
+# Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 10
+set Maximum time step                      = 5
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, iterated Stokes
+set Max nonlinear iterations               = 1
+set Surface pressure                       = 1.e9
+
+subsection Compositional fields
+  set Names of fields  = porosity
+  set Number of fields = 1
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = if(y>=50e3, 0.05, 0)
+  end
+end
+
+# Model geometry (100x100 km, 10 km spacing)
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 10
+    set Y repetitions = 10
+    set X extent      = 100e3
+    set Y extent      = 100e3
+  end
+end
+
+# Mesh refinement specifications
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+# No boundary-driven deformation, but the strain-rate used by the material
+# model is set in the material model section through the parameters
+# "Reference strain rate" and "Minimum strain rate".
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, top, left, right
+end
+
+# Initial temperature conditions
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1173
+  end
+end
+
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    # Composite creep, and choose the Hirth & Kohlstaedt 2004 olivine hydration
+    # viscosity prefactor scheme.
+    set Viscous flow law                               = composite
+    set Reference strain rate                          = 1e-17
+    set Minimum strain rate                            = 1e-17
+
+    # Dislocation creep parameters
+    # The water fugacity exponent is 1.2, but we need to divide by
+    # the stress exponent, so we input r/n=0.34285714285714286.
+    set Prefactors for dislocation creep               = 1.0095317511683098e-25
+    set Stress exponents for dislocation creep         = 3.5
+    set Activation energies for dislocation creep      = 520e3
+    set Activation volumes for dislocation creep       = 22e-6
+    set Water fugacity exponents for dislocation creep = 0.34285714285714286
+
+    # Diffusion creep parameters
+    # The same approach is required as for the dislocation parameters,
+    # but the stress exponent for diffusion creep is 1.
+    set Prefactors for diffusion creep                 = 1.5773933612004842e-21
+    set Stress exponents for diffusion creep           = 1.0
+    set Activation energies for diffusion creep        = 375e3
+    set Activation volumes for diffusion creep         = 10e-6
+    set Grain size                                     = 1e-3
+    set Water fugacity exponents for diffusion creep   = 0.7
+
+    set Cohesions                                      = 100e6 
+    set Angles of internal friction                    = 30
+    set Plasticity prefactor scheme                    = porosity
+    set Maximum porosity for friction angle prefactor  = 0.
+    set Maximum porosity for cohesion prefactor        = 0.1
+
+    set Minimum cohesions                              = 10e6
+    set Minimum friction angles                        = 25
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = material statistics, visualization
+
+  subsection Visualization
+    set Interpolate output       = false
+    set Time between graphical output = 0
+    set List of output variables = material properties, named additional outputs
+    set Output format            = vtu
+  end
+end
