@@ -1,0 +1,44 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for composition solver 3
+# 13: Iterations for composition solver 4
+# 14: Iterations for Stokes solver
+# 15: Velocity iterations in Stokes preconditioner
+# 16: Schur complement iterations in Stokes preconditioner
+# 17: Visualization file name
+# 18: RMS velocity (m/year)
+# 19: Max. velocity (m/year)
+# 20: Minimal temperature (K)
+# 21: Average temperature (K)
+# 22: Maximal temperature (K)
+# 23: Outward mass flux through boundary with indicator 0 ("left") (kg/yr)
+# 24: Outward mass flux through boundary with indicator 1 ("right") (kg/yr)
+# 25: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
+# 26: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
+# 27: Minimal value for composition percent_forsterite_wadsleyite
+# 28: Maximal value for composition percent_forsterite_wadsleyite
+# 29: Global mass for composition percent_forsterite_wadsleyite
+# 30: Minimal value for composition entropy_forsterite
+# 31: Maximal value for composition entropy_forsterite
+# 32: Global mass for composition entropy_forsterite
+# 33: Minimal value for composition entropy_forsterite_wadsleyite
+# 34: Maximal value for composition entropy_forsterite_wadsleyite
+# 35: Global mass for composition entropy_forsterite_wadsleyite
+# 36: Minimal value for composition density_field
+# 37: Maximal value for composition density_field
+# 38: Global mass for composition density_field
+# 39: Minimum topography (m)
+# 40: Maximum topography (m)
+0 0.000000000000e+00 0.000000000000e+00 32 456 195 780 2   9 0  2  2 0 184 186 186 output/solution/solution-00000 1.55425714e-20 8.59851170e-20 1.21960646e+03 1.21960646e+03 1.21960646e+03 0.00000000e+00 0.00000000e+00 0.00000000e+00 -8.32679250e-14 7.00000000e-01 7.00000000e-01 1.18300000e+08 2.07000000e+03 2.07000000e+03 3.49830000e+11 2.07000000e+03 2.07000000e+03 3.49830000e+11 3.59227686e+03 3.59227686e+03 6.07094789e+11 0.00000000e+00 0.00000000e+00 
+1 1.000000000000e+04 1.000000000000e+04 32 456 195 780 6 165 0 29 29 0 380 386 386 output/solution/solution-00001 8.67095690e-04 9.20145255e-04 1.21960646e+03 1.21960666e+03 1.21960741e+03 0.00000000e+00 0.00000000e+00 0.00000000e+00  4.29704088e+04 7.00000000e-01 7.00000000e-01 1.18300000e+08 2.07000008e+03 2.07780170e+03 3.49924559e+11 2.07000008e+03 2.07780170e+03 3.49924559e+11 3.55699805e+03 3.59227649e+03 6.06665085e+11 0.00000000e+00 0.00000000e+00 
+2 2.000000000000e+04 1.000000000000e+04 32 456 195 780 4 108 0 13 13 0 273 277 277 output/solution/solution-00002 8.61974033e-04 9.14290539e-04 1.21960646e+03 1.21960671e+03 1.21960741e+03 0.00000000e+00 0.00000000e+00 0.00000000e+00  4.26969849e+04 7.00000000e-01 7.00000000e-01 1.18383733e+08 2.07000017e+03 2.08536580e+03 3.50267338e+11 2.07000017e+03 2.08536580e+03 3.50267338e+11 3.52345707e+03 3.59227609e+03 6.06666502e+11 9.20145197e+00 9.20145255e+00 
+3 3.000000000000e+04 1.000000000000e+04 32 456 195 780 6 176 0 18 18 0 457 463 463 output/solution/solution-00003 8.60569053e-04 9.13483681e-04 1.21960646e+03 1.21960674e+03 1.21960753e+03 0.00000000e+00 0.00000000e+00 0.00000000e+00  4.26592810e+04 7.00000000e-01 7.00000000e-01 1.18466934e+08 2.07000027e+03 2.09213631e+03 3.50609320e+11 2.07000027e+03 2.09213631e+03 3.50609320e+11 3.49396244e+03 3.59227564e+03 6.06665714e+11 1.83443541e+01 1.83443579e+01 
