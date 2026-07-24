@@ -1,4 +1,4 @@
-# A test based on the SolKz benchmark that performs a cellwise
+# A test based on the SolKz benchmark that performs a cell-wise
 # average using harmonic averaging from particle properties to
 # compositional fields that are flagged as 'particle' advected fields.
 

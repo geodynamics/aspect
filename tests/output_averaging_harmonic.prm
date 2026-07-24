@@ -2,12 +2,12 @@
 # model parameters such as the viscosity are also averaged when output
 # in graphical format. We want to do this because we want to visualize
 # what these parameters really are to the computational model, not
-# what they are in a pointwise sense before the computational model
+# what they are in a point-wise sense before the computational model
 # gets to see them.
 #
 # This test uses the SolKz model, which has a viscosity that grows
 # exponentially in z-direction. The various output_averaging_*prm
-# files then simply apply different cellwise averaging options to
+# files then simply apply different cell-wise averaging options to
 # this viscosity.
 
 

@@ -24,7 +24,7 @@
 # which is also the ordering for which the marine diffusion stays convergent at
 # this basin depth. With basement restored correctly but the silt fraction
 # still taken from the surface elevation, this configuration diverges by tens
-# of metres offshore, so the test guards the silt-fraction save independently
+# of meters offshore, so the test guards the silt-fraction save independently
 # of the basement save.
 #
 # Enable if: ASPECT_WITH_FASTSCAPE

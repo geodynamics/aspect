@@ -109,7 +109,7 @@ subsection Mesh refinement
     # set Variable names    = x,y
     # because that is the default value for Variable names.
     # To illustrate the possibility to rename function variables
-    # in your favourite naming scheme we use the following:
+    # in your favorite naming scheme we use the following:
     set Variable names      = depth,not_used1
     set Function expression = 4 + 2*sin(depth*pi/250000)
   end

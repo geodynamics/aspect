@@ -24,7 +24,7 @@
 # box with a uniform porosity of 0.02 (2%) everywhere. The fluid has a
 # density of 1000 kg/m3, and a viscosity of 10 Pa s, and the solid has a
 # density of 3000 kg/m3 with an x velocity of 0.001 m/yr and a y velocity of
-# 0.75 m/yr. The reference pemeability is 1e-6, and gravity is set to -10.
+# 0.75 m/yr. The reference permeability is 1e-6, and gravity is set to -10.
 # This results in a fluid velocity of ~24.9958 m/yr in the y direction, and
 # 0.001 m/yr in the x direction The mesh is 2.5 km x 2.5 km, and with CFL = 1,
 # this means that the first time step should be 2500 m / 24.9958 m/yr = 100.017 yr.
@@ -89,7 +89,7 @@ end
 
 # porosity and bound_fluid are required compositional fields when
 # using the reactive fluid transport. Set the porosity field method
-# to 'darcy field' so that the fluid is adveted with the Darcy
+# to 'darcy field' so that the fluid is advected with the Darcy
 # velocity.
 subsection Compositional fields
   set Number of fields = 2

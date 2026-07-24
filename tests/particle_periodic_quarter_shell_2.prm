@@ -2,7 +2,7 @@
 # handling at periodic boundaries in the polar direction for a quarter
 # spherical shell geometry.
 # The velocity and the initial particle locations are prescribed so that we know
-# where particles should end up. The time step size is precribed in such a way
+# where particles should end up. The time step size is prescribed in such a way
 # that particles at the outer boundary should move exactly half of a cell in
 # angular direction in each time step, and particles at the inner boundary move
 # exactly a quarter of a cell in angular direction in each time step.
@@ -14,7 +14,7 @@ set Use years instead of seconds           = false
 set Nonlinear solver scheme                = single Advection, no Stokes
 set Maximum time step                      = 0.00818125
 
-# We prescibe rotating flow with an angular velocity increase with radius
+# We prescribe rotating flow with an angular velocity increase with radius
 subsection Prescribed Stokes solution
   set Model name = function
 
