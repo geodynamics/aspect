@@ -194,7 +194,16 @@ namespace aspect
             const double rho_s = scratch.material_model_outputs.densities[q];
             const double rho_f = melt_outputs->fluid_densities[q];
             const Tensor<1,dim> gravity = gravity_model.get()->gravity_vector(scratch.finite_element_values.quadrature_point(q));
-            const Tensor<1,dim> darcy_velocity = velocity - K_D * (rho_s - rho_f) * gravity / porosity;
+            Tensor<1,dim> darcy_velocity;
+            if (this->parameters.use_pressure_gradient_for_darcy_field)
+              {
+                const Tensor<1,dim> pressure_gradient = scratch.material_model_inputs.pressure_gradient[q];
+                darcy_velocity = velocity - K_D * (pressure_gradient - gravity * rho_f) / porosity;
+              }
+            else
+              {
+                darcy_velocity = velocity - K_D * (rho_s - rho_f) * gravity / porosity;
+              }
             velocity_norm = darcy_velocity.norm();
           }
 

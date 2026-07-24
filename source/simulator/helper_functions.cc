@@ -2320,9 +2320,21 @@ namespace aspect
                         const double fluid_viscosity = fluid_out->fluid_viscosities[q];
                         const double fluid_density = fluid_out->fluid_densities[q];
                         const double permeability = fluid_out->permeabilities[q];
-                        const Tensor<1,dim> boundary_darcy_velocity = boundary_velocity -
-                                                                      permeability / fluid_viscosity / porosity * gravity *
-                                                                      (solid_density - fluid_density);
+                        Tensor<1,dim> boundary_darcy_velocity;
+                        if (this->parameters.use_pressure_gradient_for_darcy_field)
+                          {
+                            const Tensor<1,dim> pressure_gradient = in.pressure_gradient[q];
+                            boundary_darcy_velocity = boundary_velocity -
+                                                      permeability / fluid_viscosity / porosity *
+                                                      (pressure_gradient - fluid_density * gravity);
+                          }
+                        else
+                          {
+                            boundary_darcy_velocity = boundary_velocity -
+                                                      permeability / fluid_viscosity / porosity *
+                                                      (solid_density - fluid_density) * gravity;
+                          }
+
                         integrated_flow += (boundary_darcy_velocity * fe_face_values.normal_vector(q)) *
                                            fe_face_values.JxW(q);
                       }

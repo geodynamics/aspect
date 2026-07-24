@@ -1515,6 +1515,10 @@ namespace aspect
                          "at every point and the global maximum is determined. "
                          "Second, the compositional fields to be normalized are "
                          "divided by this maximum.");
+      prm.declare_entry ("Use pressure gradient for darcy field", "false",
+                         Patterns::Bool (),
+                         "Whether to use the pressure gradient for the darcy field. Set to true "
+                         "to use the pressure gradient, false to just use buoyancy forces.");
     }
     prm.leave_subsection ();
 
@@ -2096,6 +2100,8 @@ namespace aspect
                        ExcMessage ("If melt transport is included in the model, "
                                    "there has to be at least one compositional field."));
         }
+
+      use_pressure_gradient_for_darcy_field = prm.get_bool("Use pressure gradient for darcy field");
 
       names_of_compositional_fields = Utilities::split_string_list (prm.get("Names of fields"));
       AssertThrow ((names_of_compositional_fields.size() == 0) ||

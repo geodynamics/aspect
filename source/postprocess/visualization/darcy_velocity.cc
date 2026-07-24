@@ -88,9 +88,22 @@ namespace aspect
             const double fluid_density = fluid_out->fluid_densities[q];
             const double permeability = fluid_out->permeabilities[q];
             const Tensor<1,dim> solid_velocity = in.velocity[q];
-            const Tensor<1,dim> darcy_velocity = (solid_velocity -
-                                                  permeability / fluid_viscosity / porosity * gravity *
-                                                  (solid_density - fluid_density)) * velocity_scaling_factor;
+
+            Tensor<1,dim> darcy_velocity;
+
+            if (this->get_parameters().use_pressure_gradient_for_darcy_field)
+              {
+                const Tensor<1,dim> pressure_gradient = in.pressure_gradient[q];
+                darcy_velocity = (solid_velocity -
+                                  permeability / fluid_viscosity / porosity *
+                                  (pressure_gradient - gravity * fluid_density)) * velocity_scaling_factor;
+              }
+            else
+              {
+                darcy_velocity = (solid_velocity -
+                                  permeability / fluid_viscosity / porosity * gravity *
+                                  (solid_density - fluid_density)) * velocity_scaling_factor;
+              }
 
             for (unsigned int k=0; k<dim; ++k)
               computed_quantities[q](k) = darcy_velocity[k];

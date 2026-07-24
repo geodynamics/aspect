@@ -826,6 +826,7 @@ namespace aspect
     std::vector<aspect::CompositionalFieldDescription>  composition_descriptions;
     unsigned int                   n_chemical_compositions;
     std::vector<unsigned int>      chemical_composition_indices;
+    bool                           use_pressure_gradient_for_darcy_field;
 
     /**
      * A vector that contains the advection field method for every compositional
