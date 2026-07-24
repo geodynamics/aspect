@@ -247,12 +247,17 @@ namespace aspect
 
         /**
          * The minimum time step size specified by the user (in seconds).
+         * This variable is read from the parameter file through a parameter
+         * called 'Minimum time step size'.
          */
         double minimum_time_step_size;
 
         /**
          * Whether to do a final checkpoint before termination. This is
          * specified in the parameters.
+         *
+         * This variable is read from the parameter file through a parameter
+         * called 'Checkpoint on termination'.
          */
         bool do_checkpoint_on_terminate;
 

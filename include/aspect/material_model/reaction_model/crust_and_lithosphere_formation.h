@@ -79,8 +79,13 @@ namespace aspect
            * occurs. Crust is generated above the crustal_thickness, and lithosphere
            * is generated below the crustal_thickness and down to a depth that is the
            * sum of crustal_thickness and lithosphere_thickness.
+           *
+           * This variable is read from the parameter file through a parameter called 'Crustal thickness'.
            */
           double crustal_thickness;
+          /**
+           *  This variable is read from the parameter file through a parameter called 'Lithosphere thickness'.
+           */
           double lithosphere_thickness;
 
           /**

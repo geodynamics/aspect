@@ -234,6 +234,7 @@ namespace aspect
          * Boolean describing whether to use the lateral average temperature
          * for computing the viscosity, rather than the temperature
          * on the reference adiabat.
+         * This variable is read from the parameter file through a parameter called 'Use lateral average temperature for viscosity'.
          */
         bool use_lateral_average_temperature;
 
@@ -248,29 +249,51 @@ namespace aspect
          * Compositional prefactors with which to multiply the reference viscosity.
          * Volume fractions are used to weight the prefactors according to the
          * assigned viscosity averaging scheme.
+         * This variable is read from the parameter file through a parameter called 'Composition viscosity prefactors'.
          */
         std::vector<double> viscosity_prefactors;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Viscosity averaging scheme'.
+         */
         MaterialUtilities::CompositionalAveragingOperation viscosity_averaging_scheme;
 
         /**
          * Information about lateral temperature averages.
          */
         std::vector<double> average_temperature;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Number lateral average bands'.
+         */
         unsigned int n_lateral_slices;
 
         /**
          * Minimum and maximum allowed viscosity, as well as the maximum allowed
          * viscosity variation compared to the average radial viscosity.
+         * This variable is read from the parameter file through a parameter called 'Minimum viscosity'.
          */
         double min_eta;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Maximum viscosity'.
+         */
         double max_eta;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Maximum lateral viscosity variation'.
+         */
         double max_lateral_eta_variation;
 
         /**
          * Information about the location of data files.
+         *
+         * This variable is read from the parameter file through a parameter called 'Data directory'.
          */
         std::string data_directory;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Radial viscosity file name'.
+         */
         std::string radial_viscosity_file_name;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Lateral viscosity file name'.
+         */
         std::string lateral_viscosity_file_name;
 
         /**
@@ -301,6 +324,9 @@ namespace aspect
          * Objects for computing plastic stresses, viscosities, and additional outputs
          */
         Rheology::DruckerPrager<dim> drucker_prager_plasticity;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Use Drucker-Prager rheology'.
+         */
         bool enable_drucker_prager_rheology;
         Rheology::DruckerPragerParameters drucker_prager_parameters;
 

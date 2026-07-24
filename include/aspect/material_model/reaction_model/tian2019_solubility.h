@@ -99,10 +99,20 @@ namespace aspect
            * The maximum water content for each of the 4 rock types in the tian approximation
            * method. These are important for keeping the polynomial bounded within reasonable
            * values.
+           * This variable is read from the parameter file through a parameter called 'Maximum weight percent water in peridotite'.
            */
           double tian_max_peridotite_water;
+          /**
+           *  This variable is read from the parameter file through a parameter called 'Maximum weight percent water in gabbro'.
+           */
           double tian_max_gabbro_water;
+          /**
+           *  This variable is read from the parameter file through a parameter called 'Maximum weight percent water in MORB'.
+           */
           double tian_max_MORB_water;
+          /**
+           *  This variable is read from the parameter file through a parameter called 'Maximum weight percent water in sediment'.
+           */
           double tian_max_sediment_water;
 
           /**
@@ -110,6 +120,8 @@ namespace aspect
            * If false, the full pressure is used instead. When simulating fully coupled
            * fluid transport, setting this to true is recommended since the compaction
            * pressure can lead to numerical instabilities when determining reaction rates.
+           *
+           * This variable is read from the parameter file through a parameter called 'Use adiabatic pressure for reactions'.
            */
           bool use_adiabatic_pressure_for_reactions;
 

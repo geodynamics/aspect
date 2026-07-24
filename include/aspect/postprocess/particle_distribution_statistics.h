@@ -78,6 +78,7 @@ namespace aspect
          * If `KDE_per_particle` is true, the point-density function is defined
          * at the position of every particle in the cell. If it is false, the
          * point-density-function is defined on a regular grid throughout the cell.
+         * This variable is read from the parameter file through a parameter called 'Use KDE per particle'.
          */
         bool KDE_per_particle;
 
@@ -87,6 +88,7 @@ namespace aspect
          * a value of 2 means that the point-density function is defined at
          * $2\times 2=4$ points in 2D. This variable only applies if
          * `KDE_per_particle` is false.
+         * This variable is read from the parameter file through a parameter called 'KDE granularity'.
          */
         unsigned int granularity;
 
@@ -97,6 +99,8 @@ namespace aspect
          * in oversmoothing or undersmoothing of the point-density function.
          * Oversmoothing or undersmoothing results in a function which
          * represents the underlying data less accurately.
+         *
+         * This variable is read from the parameter file through a parameter called 'Kernel bandwidth'.
          */
         double bandwidth;
 

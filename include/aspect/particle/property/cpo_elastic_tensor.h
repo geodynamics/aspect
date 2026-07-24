@@ -164,11 +164,16 @@ namespace aspect
 
           /**
            * The number of grains per particle.
+           * This variable is read from the parameter file through a parameter
+           * called 'Number of grains per particle'.
            */
           unsigned int n_grains;
 
           /**
            * The number of minerals per particle.
+           *
+           * This variable is read from the parameter file through a parameter
+           * called 'Minerals'.
            */
           unsigned int n_minerals;
 

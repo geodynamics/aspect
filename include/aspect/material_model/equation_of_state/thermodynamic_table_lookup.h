@@ -102,19 +102,34 @@ namespace aspect
 
         private:
           unsigned int n_material_lookups;
+          /**
+           *  This variable is read from the parameter file through a parameter called 'Bilinear interpolation'.
+           */
           bool use_bilinear_interpolation;
+          /**
+           *  This variable is read from the parameter file through a parameter called 'Latent heat'.
+           */
           bool latent_heat;
 
           /**
            * Information about the location of data files.
+           * This variable is read from the parameter file through a parameter called 'Data directory'.
            */
           std::string data_directory;
+          /**
+           *  This variable is read from the parameter file through a parameter called 'Material file names'.
+           */
           std::vector<std::string> material_file_names;
+          /**
+           *  This variable is read from the parameter file through a parameter called 'Derivatives file names'.
+           */
           std::vector<std::string> derivatives_file_names;
 
           /**
            * The maximum number of substeps over the temperature pressure range
            * to calculate the averaged enthalpy gradient over a cell
+           *
+           * This variable is read from the parameter file through a parameter called 'Maximum latent heat substeps'.
            */
           unsigned int max_latent_heat_substeps;
 
@@ -126,7 +141,11 @@ namespace aspect
           {
             perplex,
             hefesto
-          } material_file_format;
+          };
+          /**
+           *  This variable is read from the parameter file through a parameter called 'Material file format'.
+           */
+          formats material_file_format;
 
           /**
            * List of pointers to objects that read and process data we get from

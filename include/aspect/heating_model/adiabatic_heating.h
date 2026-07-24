@@ -100,6 +100,9 @@ namespace aspect
          */
 
       private:
+        /**
+         * This variable is read from the parameter file through a parameter called 'Use simplified adiabatic heating'.
+         */
         bool simplified_adiabatic_heating;
     };
   }

@@ -371,6 +371,7 @@ namespace aspect
         /**
          * Specify the radial subdivision of the spherical shell
          * mesh.
+         * This variable is read from the parameter file through a parameter called 'Custom mesh subdivision'.
          */
         enum CustomMeshRadialSubdivision
         {
@@ -381,31 +382,42 @@ namespace aspect
 
         /**
          * Initial surface refinement for the custom mesh cases.
+         * This variable is read from the parameter file through a parameter called 'Initial lateral refinement'.
          */
         unsigned int initial_lateral_refinement;
 
         /**
          * Initial surface refinement for the custom mesh cases.
+         * This variable is read from the parameter file through a parameter called 'Number of slices'.
          */
         unsigned int n_slices;
 
         /**
          * List of radial values for the list custom mesh.
+         * This variable is read from the parameter file through a parameter called 'List of radial values'.
          */
         std::vector<double> R_values_list;
 
         /**
-         * Inner and outer radii of the spherical shell.
+         * Inner radius of the spherical shell.
+         * This variable is read from the parameter file through a parameter called 'Inner radius'.
          */
-        double R0, R1;
+        double R0;
+        /**
+         * Outer radius of the spherical shell.
+         * This variable is read from the parameter file through a parameter called 'Outer radius'.
+         */
+        double R1;
 
         /**
          * Opening angle of the section of the shell that we simulate.
+         * This variable is read from the parameter file through a parameter called 'Opening angle'.
          */
         double phi;
 
         /**
          * Number of tangential mesh cells in the initial, coarse mesh.
+         * This variable is read from the parameter file through a parameter called 'Cells along circumference'.
          */
         int n_cells_along_circumference;
 
@@ -417,6 +429,8 @@ namespace aspect
 
         /**
          * Flag whether the shell is periodic in phi.
+         *
+         * This variable is read from the parameter file through a parameter called 'Phi periodic'.
          */
         bool periodic;
 

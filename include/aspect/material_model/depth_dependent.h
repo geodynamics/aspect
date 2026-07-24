@@ -99,11 +99,13 @@ namespace aspect
         /**
          * The viscosity that will be used as a reference for computing the depth-dependent
          * prefactor.
+         * This variable is read from the parameter file through a parameter called 'Reference viscosity'.
          */
         double reference_viscosity;
 
         /**
          * Currently chosen source for the viscosity.
+         * This variable is read from the parameter file through a parameter called 'Depth dependence method'.
          */
         ViscositySource viscosity_source;
 
@@ -122,8 +124,13 @@ namespace aspect
 
         /**
          * Values of depth specified by the user if using the depth dependence method 'list'
+         *
+         * This variable is read from the parameter file through a parameter called 'Depth list'.
          */
         std::vector<double> depth_values;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Viscosity list'.
+         */
         std::vector<double> viscosity_values;
 
         /**

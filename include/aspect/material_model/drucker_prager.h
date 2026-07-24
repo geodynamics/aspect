@@ -130,7 +130,13 @@ namespace aspect
 
       private:
 
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Reference temperature'.
+         */
         double reference_T;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Thermal conductivity'.
+         */
         double thermal_conductivities;
 
         EquationOfState::LinearizedIncompressible<dim> equation_of_state;
@@ -142,22 +148,30 @@ namespace aspect
 
         /**
          * The angle of internal friction
+         * This variable is read from the parameter file through a parameter called 'Angle of internal friction'.
          */
         double angle_of_internal_friction;
 
         /**
          * The cohesion
+         * This variable is read from the parameter file through a parameter called 'Cohesion'.
          */
         double cohesion;
 
         /**
          * The applied viscosity bounds
+         * This variable is read from the parameter file through a parameter called 'Minimum viscosity'.
          */
         double minimum_viscosity;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Maximum viscosity'.
+         */
         double maximum_viscosity;
 
         /**
          * The reference strain rate used as a first estimate
+         *
+         * This variable is read from the parameter file through a parameter called 'Reference strain rate'.
          */
         double reference_strain_rate;
     };

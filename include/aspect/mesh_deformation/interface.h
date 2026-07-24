@@ -626,6 +626,8 @@ namespace aspect
          * Stabilization parameter for the free surface. Should be between
          * zero and one. A value of zero means no stabilization.  See Kaus
          * et. al. 2010 for more details.
+         *
+         * This variable is read from the parameter file through a parameter called 'Free surface stabilization theta'.
          */
         double surface_theta;
 

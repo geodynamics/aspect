@@ -82,6 +82,8 @@ namespace aspect
 
         /**
          * This parameter gives the viscosity set within the lithosphere.
+         *
+         * This variable is read from the parameter file through a parameter called 'Lithosphere viscosity'.
          */
         double lithosphere_viscosity;
 

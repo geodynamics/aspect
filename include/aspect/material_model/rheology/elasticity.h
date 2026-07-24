@@ -48,6 +48,7 @@ namespace aspect
          * Elastic shear moduli at the evaluation points passed to
          * the instance of MaterialModel::Interface::evaluate() that fills
          * the current object.
+         * This variable is read from the parameter file through a parameter called 'Elastic shear moduli'.
          */
         std::vector<double> elastic_shear_moduli;
 
@@ -262,6 +263,7 @@ namespace aspect
           /**
            * Viscosity of a damper used to stabilize elasticity.
            * A value of 0 Pas is equivalent to not using a damper.
+           * This variable is read from the parameter file through a parameter called 'Elastic damper viscosity'.
            */
           double elastic_damper_viscosity;
 
@@ -275,11 +277,13 @@ namespace aspect
            * viscoelastic rheology for all time steps (if true) or to use the
            * actual (variable) advection time step of the model (if false). Read
            * from parameter file.
+           * This variable is read from the parameter file through a parameter called 'Use fixed elastic time step'.
            */
           bool use_fixed_elastic_time_step;
 
           /**
            * Double for fixed elastic time step value, read from parameter file.
+           * This variable is read from the parameter file through a parameter called 'Fixed elastic time step'.
            */
           double fixed_elastic_time_step;
 
@@ -289,6 +293,8 @@ namespace aspect
            * stabilization, and infinity is equivalent to not applying elastic
            * stresses at all. The factor is multiplied with the computational
            * time step to create a time scale.
+           *
+           * This variable is read from the parameter file through a parameter called 'Stabilization time scale factor'.
            */
           double stabilization_time_scale_factor;
 

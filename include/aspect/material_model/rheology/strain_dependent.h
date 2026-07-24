@@ -143,6 +143,7 @@ namespace aspect
 
           /**
            * Whether to use the temperature-activated viscous strain weakening.
+           * This variable is read from the parameter file through a parameter called 'Use temperature activated strain softening'.
            */
           bool use_temperature_activated_strain_softening;
 
@@ -184,25 +185,34 @@ namespace aspect
 
         private:
 
+          /**
+           *  This variable is read from the parameter file through a parameter called 'Strain weakening mechanism'.
+           */
           WeakeningMechanism weakening_mechanism;
 
+          /**
+           *  This variable is read from the parameter file through a parameter called 'Strain healing mechanism'.
+           */
           HealingMechanism healing_mechanism;
 
           /**
            * The start of the strain interval (plastic or total strain)
            * within which cohesion and angle of friction should be weakened.
+           * This variable is read from the parameter file through a parameter called 'Start plasticity strain weakening intervals'.
            */
           std::vector<double> start_plastic_strain_weakening_intervals;
 
           /**
            * The end of the strain interval (plastic or total strain)
            * within which cohesion and angle of friction should be weakened.
+           * This variable is read from the parameter file through a parameter called 'End plasticity strain weakening intervals'.
            */
           std::vector<double> end_plastic_strain_weakening_intervals;
 
           /**
            * The factor specifying the amount of weakening of the
            * cohesion over the prescribed strain interval (plastic or total strain).
+           * This variable is read from the parameter file through a parameter called 'Cohesion strain weakening factors'.
            */
           std::vector<double> cohesion_strain_weakening_factors;
 
@@ -210,24 +220,28 @@ namespace aspect
            * The factor specifying the amount of weakening of the
            * internal friction angles over the prescribed strain interval
            * (plastic or total strain).
+           * This variable is read from the parameter file through a parameter called 'Friction strain weakening factors'.
            */
           std::vector<double> friction_strain_weakening_factors;
 
           /**
            * The start of the strain interval (viscous or total strain)
            * within which cohesion and angle of friction should be weakened.
+           * This variable is read from the parameter file through a parameter called 'Start prefactor strain weakening intervals'.
            */
           std::vector<double> start_viscous_strain_weakening_intervals;
 
           /**
            * The end of the strain interval (viscous or total strain)
            * within which cohesion and angle of friction should be weakened.
+           * This variable is read from the parameter file through a parameter called 'End prefactor strain weakening intervals'.
            */
           std::vector<double> end_viscous_strain_weakening_intervals;
 
           /**
            * The factor specifying the amount of weakening over
            * the prescribed strain interval (viscous or total strain).
+           * This variable is read from the parameter file through a parameter called 'Prefactor strain weakening factors'.
            */
           std::vector<double> viscous_strain_weakening_factors;
 
@@ -241,19 +255,32 @@ namespace aspect
            *
            * ----------------------------> T
            *     T0  T1   T2  T3
+           * This variable is read from the parameter file through a parameter called 'Lower temperature for onset of strain weakening'.
            */
           std::vector<double> viscous_strain_weakening_T0;
+          /**
+           *  This variable is read from the parameter file through a parameter called 'Lower temperature for maximum strain weakening'.
+           */
           std::vector<double> viscous_strain_weakening_T1;
+          /**
+           *  This variable is read from the parameter file through a parameter called 'Upper temperature for maximum strain weakening'.
+           */
           std::vector<double> viscous_strain_weakening_T2;
+          /**
+           *  This variable is read from the parameter file through a parameter called 'Upper temperature for onset of strain weakening'.
+           */
           std::vector<double> viscous_strain_weakening_T3;
 
           /**
            * The healing rate used in the temperature dependent strain healing model.
+           * This variable is read from the parameter file through a parameter called 'Strain healing temperature dependent recovery rate'.
            */
           double strain_healing_temperature_dependent_recovery_rate;
 
           /**
            * A prefactor of viscosity used in the strain healing calculation.
+           *
+           * This variable is read from the parameter file through a parameter called 'Strain healing temperature dependent prefactor'.
            */
           double strain_healing_temperature_dependent_prefactor;
 

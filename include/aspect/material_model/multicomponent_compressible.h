@@ -118,16 +118,20 @@ namespace aspect
       private:
         /**
          * Enumeration for selecting which viscosity averaging scheme to use.
+         * This variable is read from the parameter file through a parameter called 'Viscosity averaging scheme'.
          */
         MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
 
         /**
          * Vector for field viscosities, read from parameter file.
+         * This variable is read from the parameter file through a parameter called 'Viscosities'.
          */
         std::vector<double> viscosities;
 
         /**
          * Vector for field thermal conductivities, read from parameter file.
+         *
+         * This variable is read from the parameter file through a parameter called 'Thermal conductivities'.
          */
         std::vector<double> thermal_conductivities;
 

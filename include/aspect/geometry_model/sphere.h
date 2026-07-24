@@ -151,7 +151,9 @@ namespace aspect
 
       private:
         /**
-         * Radius of the sphere
+         * Radius of the sphere.
+         *
+         * This variable is read from the parameter file through a parameter called 'Radius'.
          */
         double R;
     };

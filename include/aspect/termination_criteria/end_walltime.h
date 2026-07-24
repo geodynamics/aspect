@@ -67,6 +67,9 @@ namespace aspect
         /**
          * The maximum walltime duration in seconds. The program will be terminated
          * once this value is reached.
+         *
+         * This variable is read from the parameter file through a parameter
+         * called 'Wall time'.
          */
         unsigned int walltime_duration;
 

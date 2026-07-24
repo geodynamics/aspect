@@ -78,6 +78,9 @@ namespace aspect
         /**
          * Parameter to determine how much smaller the time step should be
          * repeated as.
+         *
+         * This variable is read from the parameter file through a parameter
+         * called 'Cut back factor'.
          */
         double cut_back_factor;
 

@@ -89,9 +89,17 @@ namespace aspect
          * If 'latitudinal variation', 'Maximum tidal strain rate' and 'Minimum tidal strain rate' are used.
          * Then, the equation follows as (maximum_tidal_strain_rate - minimum_tidal_strain_rate)*cos(theta/2)+(maximum_tidal_strain_rate+minimum_tidal_strain_rate)/2.
          * This is shown in Fig.3 of Nimmo et al. (2007) (https://doi.org/10.1016/j.icarus.2007.04.021).
+         * This variable is read from the parameter file through the 'Tidal
+         * frequency' parameter.
          */
         double tidal_frequency;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Elastic shear modulus'.
+         */
         double elastic_shear_modulus;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Constant tidal strain rate'.
+         */
         double constant_tidal_strain_rate;
 
         /**
@@ -103,7 +111,13 @@ namespace aspect
           latitudinal_variation
         } strain_rate_distribution;
 
+        /**
+         * This variable is read from the parameter file through a parameter called 'Maximum tidal strain rate'.
+         */
         double maximum_tidal_strain_rate;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Minimum tidal strain rate'.
+         */
         double minimum_tidal_strain_rate;
     };
   }

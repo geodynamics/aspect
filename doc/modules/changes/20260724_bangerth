@@ -1,0 +1,3 @@
+New: In nearly a thousand places, the declaration of member variables of plugin classes are now annotated with the run-time parameter from the input file they are initialized with.
+<br>
+(Wolfgang Bangerth, 2026/07/24)

@@ -108,12 +108,27 @@ namespace aspect
          */
         Rheology::DiffusionDislocation<dim> diffusion_dislocation;
 
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Reference temperature'.
+         */
         double reference_T;
 
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Thermal diffusivity'.
+         */
         double thermal_diffusivity;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Heat capacity'.
+         */
         double heat_capacity;
 
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Densities'.
+         */
         std::vector<double> densities;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Thermal expansivities'.
+         */
         std::vector<double> thermal_expansivities;
 
         MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;

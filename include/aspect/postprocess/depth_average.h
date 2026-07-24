@@ -89,6 +89,7 @@ namespace aspect
          * Interval between the generation of output in seconds. This parameter is read
          * from the input file and consequently is not part of the state that
          * needs to be saved and restored.
+         * This variable is read from the parameter file through a parameter called 'Time between graphical output'.
          */
         double output_interval;
 
@@ -100,12 +101,14 @@ namespace aspect
         /**
          * The formats in which to produce graphical output. This also
          * determines the extension of the file names to which to write.
+         * This variable is read from the parameter file through a parameter called 'Output format'.
          */
         std::vector<std::string> output_formats;
 
         /**
          * Number of zones in depth direction over which we are supposed to
          * average.
+         * This variable is read from the parameter file through a parameter called 'Number of zones'.
          */
         unsigned int n_depth_zones;
 
@@ -114,6 +117,8 @@ namespace aspect
          * This vector contains exactly n_depth_zones + 1 entries,
          * and entries i and i+1 represent the lower and upper depth bound
          * of zone i.
+         *
+         * This variable is read from the parameter file through a parameter called 'Depth boundaries of zones'.
          */
         std::vector<double> depth_bounds;
 

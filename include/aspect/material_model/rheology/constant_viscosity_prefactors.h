@@ -74,6 +74,8 @@ namespace aspect
            * for a given compositional field is multiplied with a
            * base_viscosity value provided by the material model, which
            * is then returned to the material model.
+           *
+           * This variable is read from the parameter file through a parameter called 'Constant viscosity prefactors'.
            */
           std::vector<double> constant_viscosity_prefactors;
       };

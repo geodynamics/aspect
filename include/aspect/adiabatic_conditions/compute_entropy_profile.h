@@ -109,11 +109,14 @@ namespace aspect
 
         /**
          * Number of points at which we compute the adiabatic values.
+         * This variable is read from the parameter file through a parameter called 'Number of points'.
          */
         unsigned int n_points;
 
         /**
          * Starting entropy for the profile.
+         *
+         * This variable is read from the parameter file through a parameter called 'Surface entropy'.
          */
         double surface_entropy;
 

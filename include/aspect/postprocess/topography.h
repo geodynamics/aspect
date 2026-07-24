@@ -85,6 +85,7 @@ namespace aspect
       private:
         /**
          * Whether or not to produce text files with topography values
+         * This variable is read from the parameter file through a parameter called 'Output to file'.
          */
         bool write_to_file;
 
@@ -92,6 +93,8 @@ namespace aspect
          * Interval between the generation of text output. This parameter
          * is read from the input file and consequently is not part of the
          * state that needs to be saved and restored.
+         *
+         * This variable is read from the parameter file through a parameter called 'Time between text output'.
          */
         double output_interval;
 
