@@ -96,21 +96,6 @@ namespace aspect
       // the entropy material model, and will therefore not be affected by this temperature.
       in.temperature[0] = this->get_adiabatic_surface_temperature();
 
-      // Set all chemical composition to the initial composition, except the entropies, which
-      // are set to the surface entropy (since entropy is constant along an adiabat).
-      // Note, that if there a multiple entropy components they could have different entropies.
-      // However, since we are only interested in setting the
-      // equilibrated entropy, we do not need to compute the individual entropies for all components,
-      // and instead set all components to the equilibrated value.
-      // TODO : provide more ways to specify compositional fields like in compute_profile.cc
-      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-        {
-          if (this->introspection().get_composition_descriptions()[c].type == CompositionalFieldDescription::entropy)
-            in.composition[0][c] = surface_entropy;
-          else
-            in.composition[0][c] = initial_composition_manager->initial_composition(this->get_geometry_model().representative_point(0), c);
-        }
-
       // Check whether gravity is pointing up / out or down / in. In the normal case it should
       // point down / in and therefore gravity should be positive, leading to increasing
       // adiabatic pressures and temperatures with depth. In some cases it will point up / out
@@ -151,6 +136,41 @@ namespace aspect
 
           in.position[0] = representative_point;
           in.pressure[0] = pressures[i];
+
+          AssertThrow(reference_composition == reference_function || entropy_indices.size() == 1,
+                      ExcMessage("If you have more than one chemical composition, please specify the composition at each depth"
+                                 "using functions for the adiabat profile calculation"));
+
+          for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+            {
+              // If there is only one chemical composition, we use one entropy value for the
+              // adiabat calculation, since entropy is constant along an adiabat. This value is
+              // specified by Surface entropy.
+              if (reference_composition == surface_constant)
+                if (this->introspection().get_composition_descriptions()[c].type == CompositionalFieldDescription::entropy)
+                  in.composition[0][c] = surface_entropy;
+                else
+                  in.composition[0][c] = initial_composition_manager->initial_composition(this->get_geometry_model().representative_point(0), c);
+
+              // If there are multiple entropy compositions, which could have different entropies,
+              // the chemical compositions and compositions' entropies should be specified by a function.
+              // At every point of the depth, we calculate the adiabatic temperature using the
+              // multi-composition entropy equilibration.
+              else if (reference_composition == reference_function)
+                {
+                  // The function is written in terms of y coordinate.
+                  // This is consistent with the initial composition function.
+                  double depth = this->get_geometry_model().depth(representative_point);
+                  const double y = this->get_geometry_model().maximal_depth() - depth;
+                  const Point<1> p(y);
+
+                  for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                    in.composition[0][c] = composition_function->value(p, c);
+                }
+              else
+                AssertThrow(false,ExcNotImplemented());
+            }
+
           this->get_material_model().evaluate(in, out);
 
           densities[i] = out.densities[0];
@@ -300,6 +320,14 @@ namespace aspect
           prm.declare_entry ("Surface entropy", "0",
                              Patterns::Double(),
                              "The surface entropy for the profile.");
+
+          Functions::ParsedFunction<1>::declare_parameters (prm, 1);
+          prm.declare_entry ("Composition profile", "surface constant",
+                             Patterns::Selection("surface constant|function"),
+                             " Select between two ways for calculating the adiabatic profile. "
+                             " The default 'surface constant' specifies the entropy value of the adiabat."
+                             " If you have more than one chemical composition, please use 'function' to "
+                             " specify a depth-dependent composition variation for the adiabat profile ");
         }
         prm.leave_subsection();
       }
@@ -317,6 +345,35 @@ namespace aspect
         {
           n_points = prm.get_integer ("Number of points");
           surface_entropy = prm.get_double ("Surface entropy");
+
+          const std::string composition_profile = prm.get("Composition profile");
+
+          if (composition_profile == "surface constant")
+            reference_composition = surface_constant;
+          else if (composition_profile == "function")
+            reference_composition = reference_function;
+          else
+            AssertThrow(false, ExcNotImplemented());
+
+          if ((this->n_compositional_fields() > 0) && (reference_composition == reference_function))
+            {
+              composition_function
+                = std::make_unique<Functions::ParsedFunction<1>>(this->n_compositional_fields());
+              try
+                {
+                  composition_function->parse_parameters (prm);
+                }
+              catch (...)
+                {
+                  std::cerr << "ERROR: FunctionParser failed to parse\n"
+                            << "\t'Adiabatic conditions model.compute entropy profile'\n"
+                            << "with expression\n"
+                            << "\t'" << prm.get("Function expression") << "'"
+                            << "More information about the cause of the parse error \n"
+                            << "is shown below.\n";
+                  throw;
+                }
+            }
         }
         prm.leave_subsection();
       }
