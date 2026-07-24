@@ -45,7 +45,7 @@ end
 #   slab core controlled by the colder temperature in the slab.
 subsection Mesh refinement
   set Initial global refinement = 3
-  set Initial adaptive refinement = 3
+  set Initial adaptive refinement = 5
   set Minimum refinement level = 3
   set Strategy = isosurfaces, minimum refinement function, viscosity
   set Time steps between mesh refinement = 10
