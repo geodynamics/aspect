@@ -52,6 +52,17 @@ namespace aspect
 
         basalt_index = this->introspection().compositional_index_for_name("basalt");
         harzburgite_index = this->introspection().compositional_index_for_name("harzburgite");
+
+        // Make sure that the compositional fields are mapped to the particle properties with the same names
+        const auto basalt_it = this->get_parameters().mapped_particle_properties.find(basalt_index);
+        AssertThrow(basalt_it != this->get_parameters().mapped_particle_properties.end() && basalt_it->second.first == "basalt",
+                    ExcMessage("Particle property plugin <crust and lithosphere formation> requires the compositional field 'basalt' "
+                               "to be mapped to the particle property with the same name."));
+
+        const auto harzburgite_it = this->get_parameters().mapped_particle_properties.find(harzburgite_index);
+        AssertThrow(harzburgite_it != this->get_parameters().mapped_particle_properties.end() && harzburgite_it->second.first == "harzburgite",
+                    ExcMessage("Particle property plugin <crust and lithosphere formation> requires the compositional field 'harzburgite' "
+                               "to be mapped to the particle property with the same name."));
       }
 
 

@@ -51,6 +51,12 @@ namespace aspect
                                "there is a compositional field named 'grain_size'."));
 
         grain_size_index = this->introspection().compositional_index_for_name("grain_size");
+
+        // Make sure that the compositional field is mapped to the particle property with the same name
+        const auto it = this->get_parameters().mapped_particle_properties.find(grain_size_index);
+        AssertThrow(it != this->get_parameters().mapped_particle_properties.end() && it->second.first == "grain_size",
+                    ExcMessage("Particle property plugin <grain size> requires the compositional field 'grain_size' "
+                               "to be mapped to the particle property with the same name."));
       }
 
 
