@@ -302,10 +302,31 @@ if(ASPECT_WITH_FASTSCAPE)
     foreach(_line ${_fastscape_info})
       string(STRIP ${_line} _line)
       if("${_line}" MATCHES "^version")
+        if("${_line}" MATCHES "ASPECT")
+          set(FASTSCAPE_ASPECT_COMPATIBLE TRUE)
+          message(STATUS "FastScape version compatible with ASPECT.")
+        else()
+          message(Status "The linked FastScape version is not optimized for use with ASPECT. Consider obtaining a new version from https://github.com/anne-glerum/fastscapelib-fortran.")
+        endif()
         string(REGEX REPLACE "[^0-9.]" "" FASTSCAPE_VERSION ${_line})
       endif()
     endforeach()
     message(STATUS "FastScape version number is ${FASTSCAPE_VERSION}")
+
+    # Get the subversion numbers
+    string(REPLACE "." ";" _fastscape_version_parts "${FASTSCAPE_VERSION}")
+    list(GET _fastscape_version_parts 0 FASTSCAPE_VERSION_MAJOR)
+    list(GET _fastscape_version_parts 1 FASTSCAPE_VERSION_MINOR)
+    list(GET _fastscape_version_parts 2 FASTSCAPE_VERSION_SUBMINOR)
+    
+    # Optional if we want to break compatibility with older versions
+    # that do not include VERSION, version.cmake, include/config.h.in
+    #list(APPEND ASPECT_INCLUDE_DIRS "${FASTSCAPE_SOURCE_DIR}/include/")
+    #include("${FASTSCAPE_SOURCE_DIR}/cmake/version.cmake")
+    #message(STATUS "FastScape version number is ${FASTSCAPE_VERSION_MINOR}")
+    #
+    #configure_file("${FASTSCAPE_SOURCE_DIR}/include/config.h.in"
+    #                "${CMAKE_BINARY_DIR}/include/fastscape/config.h" @ONLY)
 
     # Throw an error if the version is too old.
     if(${FASTSCAPE_VERSION} VERSION_LESS 2.8)
