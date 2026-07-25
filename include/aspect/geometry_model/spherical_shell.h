@@ -371,6 +371,7 @@ namespace aspect
         /**
          * Specify the radial subdivision of the spherical shell
          * mesh.
+         *
          * This variable is read from the parameter file through a parameter called 'Custom mesh subdivision'.
          */
         enum CustomMeshRadialSubdivision

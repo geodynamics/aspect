@@ -69,6 +69,7 @@ namespace aspect
          * number variables are in fact twice the wave number in a
          * mathematical sense. This allows the user to prescribe a single
          * up-/downswing or half periods.
+         *
          * This variable is read from the parameter file through a parameter called 'Vertical wave number'.
          */
         int vertical_wave_number;

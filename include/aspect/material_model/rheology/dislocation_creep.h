@@ -128,6 +128,7 @@ namespace aspect
 
           /**
            * List of dislocation creep prefactors A.
+           *
            * This variable is read from the parameter file through a parameter called 'Prefactors for dislocation creep'.
            */
           std::vector<double> prefactors;

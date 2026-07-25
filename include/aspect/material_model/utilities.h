@@ -665,6 +665,7 @@ namespace aspect
         private:
           /**
            * Directory path where data files are stored.
+           *
            * This variable is read from the parameter file through a parameter called 'Data directory'.
            */
           std::string data_directory;

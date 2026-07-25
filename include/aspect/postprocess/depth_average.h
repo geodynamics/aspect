@@ -89,6 +89,7 @@ namespace aspect
          * Interval between the generation of output in seconds. This parameter is read
          * from the input file and consequently is not part of the state that
          * needs to be saved and restored.
+         *
          * This variable is read from the parameter file through a parameter called 'Time between graphical output'.
          */
         double output_interval;

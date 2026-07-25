@@ -68,6 +68,7 @@ namespace aspect
         /**
          * This parameter gives the maximum depth of the Vs ascii grid. The
          * model will read in Vs from S40RTS below this depth.
+         *
          * This variable is read from the parameter file through a parameter called 'Maximum grid depth'.
          */
         double max_grid_depth;

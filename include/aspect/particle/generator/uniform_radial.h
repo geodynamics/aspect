@@ -78,6 +78,7 @@ namespace aspect
            * The minimum spherical coordinates of the particle region, i.e.
            * the first radius, colatitude and longitude from the given
            * center position P_center where particles are generated.
+           *
            * This variable is read from the parameter file through parameters
            * called 'Minimum radius', 'Minimum longitude', and 'Minimum latitude'.
            */

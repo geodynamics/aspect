@@ -185,6 +185,7 @@ namespace aspect
 
         /**
          * The constant compressibility.
+         *
          * This variable is read from the parameter file through a parameter called 'Reference compressibility'.
          */
         double reference_compressibility;

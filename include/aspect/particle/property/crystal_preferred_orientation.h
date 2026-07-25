@@ -564,6 +564,7 @@ namespace aspect
 
           /**
            * Store the volume fraction for each mineral.
+           *
            * This variable is read from the parameter file through a parameter
            * called 'Volume fractions minerals'.
            */

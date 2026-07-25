@@ -129,6 +129,7 @@ namespace aspect
 
           /**
            * List of grain boundary sliding prefactors A.
+           *
            * This variable is read from the parameter file through a parameter called 'Prefactors for grain boundary sliding'.
            */
           std::vector<double> prefactors;

@@ -247,6 +247,7 @@ namespace aspect
 
         /**
          * How to merge the results of multiple mesh refinement criteria.
+         *
          * This variable is read from the parameter file through a parameter called 'Refinement criteria merge operation'.
          */
         MergeOperation merge_operation;

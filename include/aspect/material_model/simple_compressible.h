@@ -100,6 +100,7 @@ namespace aspect
       private:
         /**
          * The reference density
+         *
          * This variable is read from the parameter file through a parameter called 'Reference density'.
          */
         double reference_rho;

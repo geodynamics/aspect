@@ -74,6 +74,7 @@ namespace aspect
       private:
         /**
          * Surface temperature
+         *
          * This variable is read from the parameter file through a parameter called 'Surface temperature'.
          */
         double T0;

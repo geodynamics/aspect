@@ -110,6 +110,7 @@ namespace aspect
         /**
          * Reference temperature for thermal expansion.  All components use
          * the same reference_T.
+         *
          * This variable is read from the parameter file through a parameter called 'Reference temperature'.
          */
         double reference_T;

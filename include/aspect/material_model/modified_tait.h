@@ -100,6 +100,7 @@ namespace aspect
 
         /**
          * The reference pressure
+         *
          * This variable is read from the parameter file through a parameter called 'Reference pressure'.
          */
         double reference_pressure;

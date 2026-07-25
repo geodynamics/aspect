@@ -248,6 +248,7 @@ namespace aspect
 
         /**
          * Whether to use user-defined thermal conductivities instead of thermal diffusivities.
+         *
          * This variable is read from the parameter file through a parameter called 'Define thermal conductivities'.
          */
         bool define_conductivities;

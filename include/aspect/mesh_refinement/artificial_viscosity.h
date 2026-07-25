@@ -64,6 +64,7 @@ namespace aspect
 
         /**
          * Scaling factor for the temperature indicator.
+         *
          * This variable is read from the parameter file through a parameter called 'Temperature scaling factor'.
          */
         double temperature_scaling_factor;

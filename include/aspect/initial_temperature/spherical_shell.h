@@ -64,6 +64,7 @@ namespace aspect
          * spherical shell. Historically, this was permanently set to 6 (hence
          * the class name SphericalHexagonalPerturbation) The default is 6 in
          * order to provide backwards compatibility.
+         *
          * This variable is read from the parameter file through a parameter called 'Angular mode'.
          */
         unsigned int angular_mode;

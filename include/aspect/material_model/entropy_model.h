@@ -137,6 +137,7 @@ namespace aspect
          * reach the tolerance value, which is the maximum temperature difference between the different components
          * when they are considered in equilibrium.
          * If the maximum iteration is reached but the temperature has not been equilibrated, the model will abort.
+         *
          * This variable is read from the parameter file through a parameter called 'Maximum iteration for multicomponent equilibration'.
          */
         double multicomponent_max_iteration;

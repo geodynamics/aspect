@@ -67,6 +67,7 @@ namespace aspect
         /**
          * The thresholds that should be used for the nonadiabatic
          * temperature.
+         *
          * This variable is read from the parameter file through a parameter called 'Threshold'.
          */
         double threshold;

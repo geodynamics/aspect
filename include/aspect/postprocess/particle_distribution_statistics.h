@@ -78,6 +78,7 @@ namespace aspect
          * If `KDE_per_particle` is true, the point-density function is defined
          * at the position of every particle in the cell. If it is false, the
          * point-density-function is defined on a regular grid throughout the cell.
+         *
          * This variable is read from the parameter file through a parameter called 'Use KDE per particle'.
          */
         bool KDE_per_particle;

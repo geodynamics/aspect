@@ -94,6 +94,7 @@ namespace aspect
           /**
            * Parameters for the temperature and pressure dependence of the
            * thermal conductivity.
+           *
            * This variable is read from the parameter file through a parameter called 'Thermal conductivity transition depths'.
            */
           std::vector<double> conductivity_transition_depths;

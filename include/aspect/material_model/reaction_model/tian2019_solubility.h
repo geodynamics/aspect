@@ -99,6 +99,7 @@ namespace aspect
            * The maximum water content for each of the 4 rock types in the tian approximation
            * method. These are important for keeping the polynomial bounded within reasonable
            * values.
+           *
            * This variable is read from the parameter file through a parameter called 'Maximum weight percent water in peridotite'.
            */
           double tian_max_peridotite_water;

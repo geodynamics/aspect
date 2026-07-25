@@ -136,6 +136,7 @@ namespace aspect
 
         /**
          * Random number generator seed used to initialize the random number generator.
+         *
          * This variable is read from the parameter file through a parameter called 'Random number seed'.
          */
         unsigned int random_number_seed;

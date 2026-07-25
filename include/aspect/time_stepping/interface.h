@@ -247,6 +247,7 @@ namespace aspect
 
         /**
          * The minimum time step size specified by the user (in seconds).
+         *
          * This variable is read from the parameter file through a parameter
          * called 'Minimum time step size'.
          */

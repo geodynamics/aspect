@@ -126,6 +126,7 @@ namespace aspect
         private:
           /**
            * Parameters controlling the grain size evolution.
+           *
            * This variable is read from the parameter file through a parameter called 'Grain growth activation energy'.
            */
           std::vector<double> grain_growth_activation_energy;

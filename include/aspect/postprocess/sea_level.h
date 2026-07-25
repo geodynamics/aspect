@@ -126,6 +126,7 @@ namespace aspect
 
         /**
          * Information about the location of topography data files.
+         *
          * This variable is read from the parameter file through a parameter called 'Data directory topography'.
          */
         std::string data_directory_topography;

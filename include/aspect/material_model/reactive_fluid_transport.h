@@ -150,6 +150,7 @@ namespace aspect
          * Variables that describe the properties of the fluid, i.e. its density,
          * viscosity, and compressibility.
          * Properties of the solid are defined in the base model.
+         *
          * This variable is read from the parameter file through a parameter called 'Reference fluid density'.
          */
         double reference_rho_f;

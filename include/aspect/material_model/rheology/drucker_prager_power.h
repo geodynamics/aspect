@@ -128,6 +128,7 @@ namespace aspect
           /**
            * The angles of internal friction (phi) are input
            * by the user in degrees, but stored as radians.
+           *
            * This variable is read from the parameter file through a parameter called 'Angles of internal friction'.
            */
           std::vector<double> angles_internal_friction;

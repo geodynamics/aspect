@@ -81,6 +81,7 @@ namespace aspect
          * Determines if the input ascii data file has velocity components in
          * spherical, i.e., (r, phi, theta) or in cartesian, i.e., (x, y, z)
          * coordinate system.
+         *
          * This variable is read from the parameter file through a parameter called 'Use spherical unit vectors'.
          */
         bool use_spherical_unit_vectors;

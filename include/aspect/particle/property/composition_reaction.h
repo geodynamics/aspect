@@ -128,6 +128,7 @@ namespace aspect
           /**
            * The coordinate representation to evaluate the reaction_area
            * function. Possible choices are depth, cartesian and spherical.
+           *
            * This variable is read from the parameter file through a parameter
            * called 'Coordinate system'.
            */

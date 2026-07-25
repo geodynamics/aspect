@@ -70,6 +70,7 @@ namespace aspect
 
         /**
          * The maximum value the topography can take.
+         *
          * This variable is read from the parameter file through a parameter called 'Maximum topography value'.
          */
         double max_topo;

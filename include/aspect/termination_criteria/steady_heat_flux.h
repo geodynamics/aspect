@@ -66,6 +66,7 @@ namespace aspect
         /**
          * The minimum length of simulation time that the system
          * should be in steady state before termination.
+         *
          * This variable is read from the parameter file through a parameter
          * called 'Time in steady state'.
          */

@@ -83,6 +83,7 @@ namespace aspect
 
         /**
          * Directory in which the input data files are present.
+         *
          * This variable is read from the parameter file through a parameter called 'Data directory'.
          */
         std::string data_directory;

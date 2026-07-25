@@ -60,6 +60,7 @@ namespace aspect
       private:
         /**
          * Magnitude of the gravity vector at the surface, m/s^2
+         *
          * This variable is read from the parameter file through a parameter called 'Magnitude at surface'.
          */
         double magnitude_at_surface;
