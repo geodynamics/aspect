@@ -1661,12 +1661,10 @@ namespace aspect
   edit_finite_element_variables(const Parameters<dim> &parameters,
                                 std::vector<VariableDeclaration<dim>> &variables)
   {
-
-    if (!parameters.include_melt_transport)
-      return;
+    // We should only get here if melt transport is included:
+    Assert (parameters.include_melt_transport, ExcInternalError());
 
     // We modify the existing FE variables: u p T c1 c2 to read: u p_f p_c u_f p T c1 c2
-
     variables.insert(variables.begin()+1,
                      VariableDeclaration<dim>(
                        "fluid pressure",
@@ -1692,7 +1690,6 @@ namespace aspect
                                               std::make_shared<FE_Q<dim>>(parameters.stokes_velocity_degree),
                                               dim,
                                               1));
-
   }
 
 
