@@ -23,14 +23,9 @@
 #include <aspect/simulator_signals.h>
 #include <aspect/geometry_model/interface.h>
 
+#include <deal.II/dofs/dof_tools.h>
 #include <deal.II/numerics/vector_tools_evaluate.h>
 
-
-/*
-TODO:
-- initial topography from external tool: for now compute_initial_deformation_on_boundary(), later refactor
-  to provide FE vector
-*/
 
 namespace aspect
 {
@@ -44,16 +39,20 @@ namespace aspect
                                              AffineConstraints<double> &mesh_velocity_constraints,
                                              const std::set<types::boundary_id> &boundary_ids) const
     {
-      // First compute a (global) vector that has the correct velocities
-      // set at all boundary nodes:
-      const std::vector<std::vector<double>> aspect_surface_velocities = evaluate_aspect_variables_at_points();
+      // First compute a (global) vector that has the correct ASPECT solution at all boundary nodes.
+      const std::vector<std::vector<double>> aspect_surface_solution = evaluate_aspect_solution_at_points();
 
+      // Extract the velocity from the external tool. This is implemented in the derived class.
       const std::vector<Tensor<1,dim>> external_surface_velocities
-        = compute_updated_velocities_at_points(aspect_surface_velocities);
+        = compute_updated_velocities_at_points(aspect_surface_solution);
 
+      // Take the velocities computed above and constrain the DoF's on the surface of ASPECT's mesh.
       const LinearAlgebra::Vector v_interpolated
         = interpolate_external_velocities_to_surface_support_points(external_surface_velocities);
 
+      // Create a ghosted vector that contains the interpolated velocities. This is necessary
+      // because the constraints are set on all locally relevant DoFs (shared DoFs), not just
+      // the locally owned ones.
       const DoFHandler<dim> &mesh_dof_handler = this->get_mesh_deformation_handler().get_mesh_deformation_dof_handler();
       const IndexSet mesh_locally_relevant = DoFTools::extract_locally_relevant_dofs (mesh_dof_handler);
       LinearAlgebra::Vector v_interpolated_ghosted(mesh_dof_handler.locally_owned_dofs(),
@@ -61,12 +60,11 @@ namespace aspect
                                                    this->get_mpi_communicator());
       v_interpolated_ghosted = v_interpolated;
 
-      // Turn v_interpolated into constraints. For this, loop over all
-      // boundary DoFs and if a boundary DoF is locally owned, create a
-      // constraint. We later make that consistent across processors to
-      // ensure we also know about the locally relevant DoFs
-      // constraints:
-      // now insert the relevant part of the solution into the mesh constraints
+      // Set the constraints. For this, loop over all boundary DoFs
+      // and if a boundary DoF is locally owned, create a constraint.
+      // We later make that consistent across processors to ensure we
+      // also know about the locally relevant DoFs constraints.
+      // Now insert the relevant part of the solution into the mesh constraints
       const IndexSet constrained_dofs =
         DoFTools::extract_boundary_dofs(mesh_deformation_dof_handler,
                                         ComponentMask(dim, true),
@@ -87,8 +85,6 @@ namespace aspect
 #endif
               }
         }
-
-      // TODO: make consistent?
     }
 
 
@@ -111,8 +107,10 @@ namespace aspect
       remote_point_evaluator = std::make_unique<Utilities::MPI::RemotePointEvaluation<dim, dim>>();
       remote_point_evaluator->reinit(this->evaluation_points, this->get_triangulation(), mapping);
 
+#ifdef DEBUG
       if (!remote_point_evaluator->all_points_found())
         {
+
           this->get_pcout() << "WARNING: not all evaluation points were found inside the domain!" << std::endl;
           this->get_pcout() << "Evaluation points not found:" << std::endl;
           for (unsigned int p=0; p<evaluation_points.size(); ++p)
@@ -123,13 +121,13 @@ namespace aspect
                 }
             }
         }
+#endif
 
       // Create a mapping from evaluation points to support points. Note that one evaluation point can map to
       // multiple support points.
       {
         // Deciding which evaluation point is closest to a support point requires somewhat complex MPI communication.
         // For now, we just gather all data on rank 0, do the computation, and then scatter the results back.
-
         const unsigned int n_mpi_processes = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
         const unsigned int my_rank = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
 
@@ -142,8 +140,11 @@ namespace aspect
         };
         std::vector<DofToEvalPointData> closest_evaluation_point_and_component(mesh_dof_handler.locally_owned_dofs().size(), invalid);
 
-        // TODO: do we need to support the case of more than one different mesh deformation plugin to be active?
+        // TODO: To support multiple boundaries with mesh deformation, we would need to know which boundary corresponds to a mesh
+        // deformation model. For now, we just assume that there is only one boundary with mesh deformation.
         const auto boundary_ids = this->get_mesh_deformation_boundary_indicators();
+        Assert(boundary_ids.size() == 1,
+               ExcMessage("Currently, we only support a single mesh deformation boundary."));
 
         const IndexSet boundary_dofs = DoFTools::extract_boundary_dofs(mesh_dof_handler, ComponentMask(dim, true), boundary_ids);
 
@@ -227,13 +228,16 @@ namespace aspect
         });
         closest_evaluation_point_and_component.erase(new_end_it, closest_evaluation_point_and_component.end());
 
-        // send to rank 0 and find the closest evaluation point across all ranks:
+        // send to rank 0 and find the closest evaluation point across all ranks, then scatter the results back to all ranks:
         std::vector<std::vector<DofToEvalPointData>> all_closest_evaluation_point_and_component
           = Utilities::MPI::gather(this->get_mpi_communicator(), closest_evaluation_point_and_component, /* root = */ 0);
 
         if (my_rank == 0)
           {
-            // Combine data coming from all ranks and determine closest evaluation point for each DoF:
+            // Combine data coming from all ranks and determine closest evaluation point for each DoF.
+            // TODO: This might not be optimally scalable, for now we send everything to rank 0 and let
+            // rank 0 find the closest evaluation point for each DoF, which is then scattered back to all
+            // ranks.
             std::map<types::global_dof_index, DofToEvalPointData> map_from_dof;
             for (const auto &data : all_closest_evaluation_point_and_component)
               for (const auto &p : data)
@@ -273,7 +277,7 @@ namespace aspect
     template <int dim>
     std::vector<std::vector<double>>
     ParallelUnstructuredInterface<dim>::
-    evaluate_aspect_variables_at_points () const
+    evaluate_aspect_solution_at_points () const
     {
       Assert (remote_point_evaluator != nullptr,
               ExcMessage("You can only call this function if you have previously "
@@ -283,12 +287,15 @@ namespace aspect
 
       // All components are evaluated (velocity, pressure, temperature, and N compositional fields).
       const unsigned int n_components = this->introspection().n_components;
-      std::vector<std::vector<double>> solution_at_points (evaluation_points.size(), std::vector<double>(n_components, 0.0));
+
+      // Initialize the solution to be quiet_NaN() so that we know which points were not found
+      // within the ASPECT domain.
+      std::vector<std::vector<double>> solution_at_points (evaluation_points.size(), std::vector<double>(n_components, std::numeric_limits<double>::quiet_NaN()));
 
       // VectorTools::point_values can evaluate N components at a time, but this is a template argument and not a
-      // runtime argument. For now, we just evaluate them one component at the time. Of course it would be more
+      // runtime argument. For now, we just evaluate them one component at a time. Of course it would be more
       // efficient to branch and evaluate up to K at a time (for a reasonable number of K, say 10). Maybe something
-      // to put directly into deal.II...
+      // to implement directly into deal.II.
       for (unsigned int c=0; c<n_components; ++c)
         {
           const std::vector<double> values = VectorTools::point_values<1>(*this->remote_point_evaluator,
@@ -323,9 +330,13 @@ namespace aspect
       LinearAlgebra::Vector vector_with_surface_velocities(mesh_dof_handler.locally_owned_dofs(),
                                                            this->get_mpi_communicator());
 
+      // For each entry in the mapping, we take the velocity from the evaluation point and insert it into the corresponding
+      // DoF in the output vector.
       for (const auto &entry : map_dof_to_eval_point)
         vector_with_surface_velocities[entry.dof_index] = velocities[entry.evaluation_point_index][entry.component];
 
+      // Because locally relevant DoFs are not necessarily locally owned, .compress() is needed to ensure that the correct
+      // processor is assigning the value to the correct DoF.
       vector_with_surface_velocities.compress(VectorOperation::insert);
 
       return vector_with_surface_velocities;

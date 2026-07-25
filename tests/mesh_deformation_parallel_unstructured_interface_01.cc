@@ -28,7 +28,7 @@ using namespace aspect;
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/simulator_access.h>
-#include <aspect/mesh_deformation/external_tool_interface.h>
+#include <aspect/mesh_deformation/parallel_unstructured_interface.h>
 
 
 namespace aspect
@@ -36,7 +36,7 @@ namespace aspect
   namespace MeshDeformation
   {
     template <int dim>
-    class TestExternalDeformation : public ExternalToolInterface<dim>
+    class TestExternalDeformation : public ParallelUnstructuredInterface<dim>
     {
       public:
         TestExternalDeformation() = default;

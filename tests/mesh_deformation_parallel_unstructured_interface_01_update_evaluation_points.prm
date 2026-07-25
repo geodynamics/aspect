@@ -6,9 +6,9 @@
 
 set Dimension                              = 2
 set Use years instead of seconds           = false
-set End time                               = 0.004
-set Maximum time step                      = 0.0005
-set Nonlinear solver scheme                = no Advection, no Stokes
+set End time                               = 0.0044
+set Maximum time step                      = 0.0004
+set Nonlinear solver scheme                = single Advection, single Stokes
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 
@@ -18,6 +18,24 @@ subsection Geometry model
   subsection Box
     set X extent = 1
     set Y extent = 1
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 0
+  set Initial adaptive refinement              = 2
+  set Time steps between mesh refinement       = 5
+  set Additional refinement times              = 0.002, 0.004
+  set Strategy                                 = boundary
+  set Coarsening fraction                      = 0.0
+  set Refinement fraction                      = 1.0
+
+  subsection Boundary
+    set Boundary refinement indicators = top
+  end
+  subsection Minimum refinement function
+    set Variable names = x,y,t
+    set Function expression = if (t >= 0.05, 1, if(t >= 0.1, 2, 0))
   end
 end
 
@@ -63,7 +81,7 @@ subsection Material model
     set Reference specific heat       = 1
     set Reference temperature         = 0
     set Thermal conductivity          = 1
-    set Thermal expansion coefficient = 1
+    set Thermal expansion coefficient = 0
     set Viscosity                     = 1
   end
 end

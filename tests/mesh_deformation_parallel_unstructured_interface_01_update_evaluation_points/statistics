@@ -1,0 +1,25 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Visualization file name
+# 12: Minimum topography (m)
+# 13: Maximum topography (m)
+ 0 0.000000000000e+00 0.000000000000e+00  64  659 289 0 19 20 20 output-mesh_deformation_parallel_unstructured_interface_01_update_evaluation_points/solution/solution-00000  0.00000000e+00 1.00000000e-01 
+ 1 4.000000000000e-04 4.000000000000e-04  64  659 289 4 19 20 20 output-mesh_deformation_parallel_unstructured_interface_01_update_evaluation_points/solution/solution-00001 -2.00000000e-03 1.00000000e-01 
+ 2 8.000000000000e-04 4.000000000000e-04  64  659 289 5 20 21 21 output-mesh_deformation_parallel_unstructured_interface_01_update_evaluation_points/solution/solution-00002 -4.00000000e-03 1.00000000e-01 
+ 3 1.200000000000e-03 4.000000000000e-04  64  659 289 4 20 21 21 output-mesh_deformation_parallel_unstructured_interface_01_update_evaluation_points/solution/solution-00003 -6.00000000e-03 1.00000000e-01 
+ 4 1.600000000000e-03 4.000000000000e-04  64  659 289 4 20 21 21 output-mesh_deformation_parallel_unstructured_interface_01_update_evaluation_points/solution/solution-00004 -8.00000000e-03 1.00000000e-01 
+ 5 2.000000000000e-03 4.000000000000e-04  64  659 289 4 20 21 21 output-mesh_deformation_parallel_unstructured_interface_01_update_evaluation_points/solution/solution-00005 -1.00000000e-02 1.00000000e-01 
+ 6 2.400000000000e-03 4.000000000000e-04  88  936 411 4 25 26 26 output-mesh_deformation_parallel_unstructured_interface_01_update_evaluation_points/solution/solution-00006 -1.20000000e-02 1.00000000e-01 
+ 7 2.800000000000e-03 4.000000000000e-04  88  936 411 4 24 25 25 output-mesh_deformation_parallel_unstructured_interface_01_update_evaluation_points/solution/solution-00007 -1.40000000e-02 1.00000000e-01 
+ 8 3.200000000000e-03 4.000000000000e-04  88  936 411 4 23 24 24 output-mesh_deformation_parallel_unstructured_interface_01_update_evaluation_points/solution/solution-00008 -1.60000000e-02 1.00000000e-01 
+ 9 3.600000000000e-03 4.000000000000e-04  88  936 411 4 23 24 24 output-mesh_deformation_parallel_unstructured_interface_01_update_evaluation_points/solution/solution-00009 -1.80000000e-02 1.08000000e-01 
+10 4.000000000000e-03 4.000000000000e-04 136 1485 653 7 26 27 27 output-mesh_deformation_parallel_unstructured_interface_01_update_evaluation_points/solution/solution-00010 -2.12500000e-02 1.20000000e-01 
+11 4.400000000000e-03 4.000000000000e-04 136 1485 653 7 27 28 28 output-mesh_deformation_parallel_unstructured_interface_01_update_evaluation_points/solution/solution-00011 -2.32500000e-02 1.32000000e-01 

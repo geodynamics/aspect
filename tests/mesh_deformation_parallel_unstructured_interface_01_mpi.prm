@@ -4,4 +4,4 @@
 #
 # MPI: 2
 
-include $ASPECT_SOURCE_DIR/tests/mesh_deformation_external_01.prm
+include $ASPECT_SOURCE_DIR/tests/mesh_deformation_parallel_unstructured_interface_01.prm

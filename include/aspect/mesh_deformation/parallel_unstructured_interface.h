@@ -30,7 +30,7 @@ namespace aspect
   namespace MeshDeformation
   {
     /**
-     * This class provides some support for writing classes derived
+     * This class provides support for writing classes derived
      * from MeshDeformation::Interface when implementing surface
      * deformation models that are based on external tools such as
      * Fastscape, Landlab, OpenLEM, etc. The primary complication of
@@ -47,41 +47,41 @@ namespace aspect
      * external tool's mesh, run some surface evolution steps, and
      * then interpolate back to the surface nodes of ASPECT's
      * mesh. These interpolation operations are difficult to implement
-     * in their own right, but are made particularly cumbersome in
-     * parallel. This is because the points at which the external tool
-     * wants to know the solution on any given MPI process will, in
-     * general, not be located on the part of ASPECT's mesh that is
-     * owned by that MPI process. As a consequence, implementing the
-     * interpolation requires finding the MPI process that owns the
-     * cell on which that point is located, and then communication
-     * back and forth.
+     * and are especially cumbersome in parallel. This is because the
+     * points at which the external tool wants to know the solution
+     * on any given MPI process will, in general, not be located on
+     * the part of ASPECT's mesh that is owned by that MPI process.
+     * As a consequence, implementing the interpolation requires finding
+     * the MPI process that owns the cell on which that point is
+     * is located, and then communicating back and forth.
      *
-     * @sect3{Helper functions}
      *
      * This class implements the interpolation functionality for
      * derived classes to use. It works through a two-stage approach:
-     * First, derived classes declare at which points they require
-     * ASPECT's solution to be evaluated, via the
-     * set_evaluation_points() function. This function then finds
-     * which process owns the cell around this point, and sets up
-     * communication structures that will make later evaluation
-     * efficient. Second, this class provides the
-     * evaluate_aspect_variables_at_points() function that uses these
-     * communication structures to evaluate ASPECT's current solution
-     * at the points previously set. The class also provides the
-     * interpolate_vertical_velocities_to_surface_points() function
-     * that takes a set of (vertical) velocity values at these points
-     * and uses them to interpolate the information back onto ASPECT's
-     * mesh.
+     *
+     * - First, derived classes declare at which points they require
+     *   ASPECT's solution to be evaluated, via the
+     *   set_evaluation_points() function. This function then finds
+     *   which process owns the cell around this point, and sets up
+     *   communication structures that will make later evaluation
+     *   efficient.
+     *
+     * - Second, this class provides the
+     *   evaluate_aspect_solution_at_points() function that uses these
+     *   communication structures to evaluate ASPECT's current solution
+     *   at the evaluation points previously set by set_evaluation_points().
+     *   The class also provides the
+     *   interpolate_vertical_velocities_to_surface_points() function
+     *   that takes a set of (vertical) velocity values at these points
+     *   and uses them to interpolate the information back onto ASPECT's
+     *   mesh.
      *
      * All three of these functions are `protected` member functions
      * of this class, ready to be called by derived classes.
      *
      *
-     * @sect3{A high-level function}
-     *
-     * All classes derived from Interface need to implement the
-     * Interface::compute_velocity_constraints_on_boundary()
+     * All classes derived from MeshDeformation::Interface need to implement the
+     * MeshDeformation::Interface::compute_velocity_constraints_on_boundary()
      * function. Because the basic outline of this function looks
      * essentially the same for all external tools, this class also
      * provides a high-level implementation of this function as part
@@ -102,7 +102,6 @@ namespace aspect
 
         /**
          * Given all solution variables at each surface point, compute velocities at these points.
-         *
          * This needs to be implemented by the derived class and implement the "surface evolution".
          */
         virtual
@@ -123,13 +122,13 @@ namespace aspect
          * The points provided here are given in the undeformed
          * configuration that corresponds to the initial mesh. For
          * example, if the mesh describes a box geometry, then the
-         * points should like in the $x$-$y$-plane that forms the top
-         * surface, rather than on the currently deformed top surface
-         * that describes the current elevation map.
+         * points should lie in the $x$-$y$-plane that forms the top
+         * reference surface of the model, and not on the currently
+         * deformed top surface that describes the current elevation map.
          *
          * @note This function sets up communication structures that
          *   encode, among other things, which process owns which
-         *   points.  This information becomes outdated when the
+         *   points. This information becomes outdated when the
          *   ASPECT mesh changes for mesh refinement. As a
          *   consequence, the current function sets up a process that
          *   invalidates the communication structures upon mesh
@@ -151,7 +150,7 @@ namespace aspect
          * many components as there are ASPECT solution components.
          */
         std::vector<std::vector<double>>
-        evaluate_aspect_variables_at_points () const;
+        evaluate_aspect_solution_at_points () const;
 
         /**
          * Interpolate from velocities given in the evaluation points
@@ -160,7 +159,7 @@ namespace aspect
          *
          * The @p velocities, which are typically vertical, were previously
          * computed by the external tool and belong to the current process.
-         * The Output is a (global) finite element field vector that in
+         * The output is a (global) finite element field vector that in
          * the velocity components of surface nodes corresponds to an
          * interpolation of the velocities provided.
          *
