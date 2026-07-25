@@ -94,16 +94,32 @@ namespace aspect
         std::vector<std::string> names;
 
         for (const auto property : active_properties)
-          switch (property)
-            {
-              case ViscosityAdditionalOutputs<dim>::Property::diffusion_viscosity:
-                names.emplace_back("diffusion_viscosity");
-                break;
+          {
+            switch (property)
+              {
+                case ViscosityAdditionalOutputs<dim>::Property::diffusion_viscosity:
+                  names.emplace_back("diffusion_viscosity");
+                  break;
 
-              case ViscosityAdditionalOutputs<dim>::Property::dislocation_viscosity:
-                names.emplace_back("dislocation_viscosity");
-                break;
-            }
+                case ViscosityAdditionalOutputs<dim>::Property::dislocation_viscosity:
+                  names.emplace_back("dislocation_viscosity");
+                  break;
+
+                case ViscosityAdditionalOutputs<dim>::Property::frank_kamenetskii_viscosity:
+                  names.emplace_back("frank_kamenetskii_viscosity");
+                  break;
+
+                case ViscosityAdditionalOutputs<dim>::Property::peierls_viscosity:
+                  names.emplace_back("peierls_viscosity");
+                  break;
+
+                case ViscosityAdditionalOutputs<dim>::Property::grain_boundary_sliding_viscosity:
+                  names.emplace_back("grain_boundary_sliding_viscosity");
+                  break;
+
+                  DEAL_II_ASSERT_UNREACHABLE();
+              }
+          }
 
         return names;
       }
@@ -112,13 +128,48 @@ namespace aspect
 
 
     template <int dim>
-    ViscosityAdditionalOutputs<dim>::ViscosityAdditionalOutputs(const unsigned int n_points,
-                                                                const std::vector<Property> &active_properties)
-      :NamedAdditionalMaterialOutputs<dim>(make_viscosity_additional_outputs_names<dim>(active_properties)),
-       active_properties(active_properties),
-       diffusion_viscosities(n_points, std::numeric_limits<double>::max()),
-       dislocation_viscosities(n_points, std::numeric_limits<double>::max())
-    {}
+    ViscosityAdditionalOutputs<dim>::
+    ViscosityAdditionalOutputs(const unsigned int n_points,
+                               const std::vector<Property> &active_properties)
+      : NamedAdditionalMaterialOutputs<dim>(
+        make_viscosity_additional_outputs_names<dim>(active_properties)),
+      active_properties(active_properties),
+      diffusion_viscosities(),
+      dislocation_viscosities(),
+      frank_kamenetskii_viscosities(),
+      peierls_viscosities(),
+      grain_boundary_sliding_viscosities()
+    {
+      const double invalid = std::numeric_limits<double>::max();
+
+      for (const Property property : active_properties)
+        {
+          switch (property)
+            {
+              case ViscosityAdditionalOutputs<dim>::Property::diffusion_viscosity:
+                diffusion_viscosities.assign(n_points, invalid);
+                break;
+
+              case ViscosityAdditionalOutputs<dim>::Property::dislocation_viscosity:
+                dislocation_viscosities.assign(n_points, invalid);
+                break;
+
+              case ViscosityAdditionalOutputs<dim>::Property::frank_kamenetskii_viscosity:
+                frank_kamenetskii_viscosities.assign(n_points, invalid);
+                break;
+
+              case ViscosityAdditionalOutputs<dim>::Property::peierls_viscosity:
+                peierls_viscosities.assign(n_points, invalid);
+                break;
+
+              case ViscosityAdditionalOutputs<dim>::Property::grain_boundary_sliding_viscosity:
+                grain_boundary_sliding_viscosities.assign(n_points, invalid);
+                break;
+
+                DEAL_II_ASSERT_UNREACHABLE();
+            }
+        }
+    }
 
 
 
@@ -135,6 +186,15 @@ namespace aspect
 
           case Property::dislocation_viscosity:
             return dislocation_viscosities;
+
+          case Property::frank_kamenetskii_viscosity:
+            return frank_kamenetskii_viscosities;
+
+          case Property::peierls_viscosity:
+            return peierls_viscosities;
+
+          case Property::grain_boundary_sliding_viscosity:
+            return grain_boundary_sliding_viscosities;
         }
 
       DEAL_II_ASSERT_UNREACHABLE();
@@ -164,14 +224,33 @@ namespace aspect
       {
         IsostrainViscosities output_parameters;
 
+        const bool compute_dislocation_viscosity = (viscous_flow_law != diffusion &&
+                                                    viscous_flow_law != frank_kamenetskii);
+
+        const bool compute_diffusion_viscosity = (viscous_flow_law != dislocation &&
+                                                  viscous_flow_law != frank_kamenetskii);
+
         // Initialize or fill variables used to calculate viscosities
         output_parameters.composition_yielding.resize(volume_fractions.size(), false);
         output_parameters.composition_viscosities.resize(volume_fractions.size(), numbers::signaling_nan<double>());
         output_parameters.drucker_prager_parameters.resize(volume_fractions.size());
         output_parameters.dilation_lhs_terms.resize(volume_fractions.size(), numbers::signaling_nan<double>());
         output_parameters.dilation_rhs_terms.resize(volume_fractions.size(), numbers::signaling_nan<double>());
-        output_parameters.diffusion_viscosities.resize(volume_fractions.size(), std::numeric_limits<double>::max());
-        output_parameters.dislocation_viscosities.resize(volume_fractions.size(), std::numeric_limits<double>::max());
+        output_parameters.diffusion_viscosities = compute_diffusion_viscosity ?
+                                                  std::vector<double>(volume_fractions.size(), std::numeric_limits<double>::max()) :
+                                                  std::vector<double> {};
+        output_parameters.dislocation_viscosities = compute_dislocation_viscosity ?
+                                                    std::vector<double>(volume_fractions.size(), std::numeric_limits<double>::max()) :
+                                                    std::vector<double> {};
+        output_parameters.frank_kamenetskii_viscosities = (viscous_flow_law == frank_kamenetskii) ?
+                                                          std::vector<double>(volume_fractions.size(), std::numeric_limits<double>::max()) :
+                                                          std::vector<double> {};
+        output_parameters.peierls_viscosities = use_peierls_creep ?
+                                                std::vector<double>(volume_fractions.size(), std::numeric_limits<double>::max()) :
+                                                std::vector<double> {};
+        output_parameters.grain_boundary_sliding_viscosities = use_grain_boundary_sliding ?
+                                                               std::vector<double>(volume_fractions.size(), std::numeric_limits<double>::max()) :
+                                                               std::vector<double> {};
 
         // Assemble current and old stress tensor if elastic behavior is enabled
         SymmetricTensor<2, dim> stress_0_advected = numbers::signaling_nan<SymmetricTensor<2, dim>>();
@@ -298,6 +377,7 @@ namespace aspect
                                                                                            pressure_for_creep,
                                                                                            this->get_adiabatic_conditions().density(this->get_geometry_model().representative_point(0)),
                                                                                            this->get_gravity_model().gravity_vector(in.position[0]).norm());
+                    output_parameters.frank_kamenetskii_viscosities[j] = non_yielding_viscosity;
                     break;
                   }
                   case composite:
@@ -338,6 +418,7 @@ namespace aspect
                   const double viscosity_peierls = peierls_creep->compute_viscosity(edot_ii, pressure_for_creep, temperature_for_viscosity, j,
                                                                                     phase_function_values,
                                                                                     n_phase_transitions_per_composition);
+                  output_parameters.peierls_viscosities[j] = viscosity_peierls;
                   non_yielding_viscosity = (non_yielding_viscosity * viscosity_peierls) / (non_yielding_viscosity + viscosity_peierls);
                 }
 
@@ -351,6 +432,7 @@ namespace aspect
                                                                     j,
                                                                     phase_function_values,
                                                                     n_phase_transitions_per_composition);
+                  output_parameters.grain_boundary_sliding_viscosities[j] = viscosity_grain_boundary_sliding;
                   non_yielding_viscosity = (non_yielding_viscosity * viscosity_grain_boundary_sliding) / (non_yielding_viscosity + viscosity_grain_boundary_sliding);
                 }
             }
@@ -1080,6 +1162,18 @@ namespace aspect
               active_properties.emplace_back(
                 ViscosityAdditionalOutputs<dim>::Property::dislocation_viscosity);
 
+            if (viscous_flow_law == frank_kamenetskii)
+              active_properties.emplace_back(
+                ViscosityAdditionalOutputs<dim>::Property::frank_kamenetskii_viscosity);
+
+            if (use_peierls_creep)
+              active_properties.emplace_back(
+                ViscosityAdditionalOutputs<dim>::Property::peierls_viscosity);
+
+            if (use_grain_boundary_sliding)
+              active_properties.emplace_back(
+                ViscosityAdditionalOutputs<dim>::Property::grain_boundary_sliding_viscosity);
+
             out.additional_outputs.push_back(
               std::make_unique<ViscosityAdditionalOutputs<dim>>(
                 n_points,
@@ -1100,17 +1194,40 @@ namespace aspect
         if (const std::shared_ptr<ViscosityAdditionalOutputs<dim>> viscosity_out =
               out.template get_additional_output_object<ViscosityAdditionalOutputs<dim>>())
           {
-            viscosity_out->dislocation_viscosities[i] =
-              MaterialUtilities::average_value(
-                volume_fractions,
-                isostrain_viscosities.dislocation_viscosities,
-                viscosity_averaging);
-
-            viscosity_out->diffusion_viscosities[i]
-              = MaterialUtilities::average_value(
+            if (!viscosity_out->dislocation_viscosities.empty())
+              viscosity_out->dislocation_viscosities[i] =
+                MaterialUtilities::average_value(
                   volume_fractions,
-                  isostrain_viscosities.diffusion_viscosities,
+                  isostrain_viscosities.dislocation_viscosities,
                   viscosity_averaging);
+
+            if (!viscosity_out->diffusion_viscosities.empty())
+              viscosity_out->diffusion_viscosities[i]
+                = MaterialUtilities::average_value(
+                    volume_fractions,
+                    isostrain_viscosities.diffusion_viscosities,
+                    viscosity_averaging);
+
+            if (!viscosity_out->frank_kamenetskii_viscosities.empty())
+              viscosity_out->frank_kamenetskii_viscosities[i]
+                = MaterialUtilities::average_value(
+                    volume_fractions,
+                    isostrain_viscosities.frank_kamenetskii_viscosities,
+                    viscosity_averaging);
+
+            if (!viscosity_out->peierls_viscosities.empty())
+              viscosity_out->peierls_viscosities[i]
+                = MaterialUtilities::average_value(
+                    volume_fractions,
+                    isostrain_viscosities.peierls_viscosities,
+                    viscosity_averaging);
+
+            if (!viscosity_out->grain_boundary_sliding_viscosities.empty())
+              viscosity_out->grain_boundary_sliding_viscosities[i]
+                = MaterialUtilities::average_value(
+                    volume_fractions,
+                    isostrain_viscosities.grain_boundary_sliding_viscosities,
+                    viscosity_averaging);
           }
       }
     }
