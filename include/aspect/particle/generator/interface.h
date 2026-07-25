@@ -71,6 +71,12 @@ namespace aspect
           void
           initialize () override;
 
+          void
+          save (std::map<std::string, std::string> &status_strings) const override;
+
+          void
+          load (const std::map<std::string, std::string> &status_strings) override;
+
           /**
            * Generate particles. Every derived class
            * has to decide on the method and number of particles to generate,
