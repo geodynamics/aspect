@@ -44,7 +44,7 @@ namespace aspect
       StrainDependent<dim>::declare_parameters (ParameterHandler &prm)
       {
         prm.declare_entry ("Strain weakening mechanism", "default",
-                           Patterns::Selection("none|finite strain tensor|total strain|plastic weakening with plastic strain only|plastic weakening with total strain only|plastic weakening with plastic strain and viscous weakening with viscous strain|viscous weakening with viscous strain only|default"),
+                           Patterns::Selection("none|finite strain tensor|total strain|plastic weakening with plastic strain only|plastic weakening with total strain only|plastic weakening with plastic strain and viscous weakening with viscous strain|viscous weakening with viscous strain only|plastic weakening with damage strain|default"),
                            "Whether to apply strain weakening to viscosity, cohesion and internal angle"
                            "of friction based on accumulated finite strain, and if yes, which method to "
                            "use. The following methods are available:"
@@ -89,6 +89,14 @@ namespace aspect
                            "used to weaken the pre-yield viscosity. The cohesion and friction angle are "
                            "not weakened."
                            "\n\n"
+                           "\\item ``plastic weakening with damage strain'': Track damage strain in a "
+                           "compositional field named ``damage_strain''. Damage strain increases with the "
+                           "strain rate only while the material is plastically yielding, and heals at a rate "
+                           "proportional to its current value following "
+                           "\\cite{fuchs:becker:2019,fuchs:becker:2021}: "
+                           "$d\\gamma/dt=\\dot{\\varepsilon}_{II}-H(T)\\gamma$. It linearly reduces the "
+                           "complete plastic yield stress up to a prescribed maximum damage."
+                           "\n\n"
                            "\\item ``default'': The default option has the same behavior as ``none'', "
                            "but is there to make sure that the original parameters for specifying the "
                            "strain weakening mechanism (``Use plastic/viscous strain weakening'') are still allowed, "
@@ -99,6 +107,20 @@ namespace aspect
                            "included in the parameter file, this field will automatically be excluded from "
                            "from volume fraction calculation and track the cumulative plastic strain with "
                            "the initial plastic strain values removed.");
+
+        prm.declare_entry ("Damage strain critical value", "1.",
+                           Patterns::Double (0., std::numeric_limits<double>::max()),
+                           "Value of the damage strain at which the material reaches its maximum "
+                           "weakening. The transported damage strain is capped "
+                           "at this value. Units: None.");
+
+        prm.declare_entry ("Damage strain maximum damage", "0.9",
+                           Patterns::Anything(),
+                           "Maximum fractional reduction of the complete plastic yield stress for "
+                           "the background material and chemical compositions. Values can be given "
+                           "as a list or as a map using composition names. A value of 0.9 reduces "
+                           "the yield stress to 10 percent of its undamaged value. Each value must "
+                           "be between zero and one. Units: None.");
 
         prm.declare_entry ("Start plasticity strain weakening intervals", "0.",
                            Patterns::List(Patterns::Double (0.)),
@@ -208,12 +230,14 @@ namespace aspect
                            "strain healing applied to plastic yielding and viscosity terms, similar "
                            "to the temperature-dependent Frank Kamenetskii formulation, computes "
                            "strain healing as removing strain as a function of temperature, time, "
-                           "and a user-defined healing rate and prefactor "
+                           "and a user-defined healing rate and prefactor. The same healing rate "
+                           "is used for exponential relaxation when damage strain weakening is active, "
                            "as done in Fuchs and Becker, 2019, for mantle convection");
 
         prm.declare_entry ("Strain healing temperature dependent recovery rate", "1.e-15", Patterns::Double(0),
-                           "Recovery rate prefactor for temperature dependent "
-                           "strain healing. Units: \\si{\\per\\second}");
+                           "Recovery rate for temperature dependent strain healing. For damage strain, "
+                           "this is the exponential relaxation rate at the reference temperature. "
+                           "Units: \\si{\\per\\second}");
 
         prm.declare_entry ("Strain healing temperature dependent prefactor", "15.", Patterns::Double(0),
                            "Prefactor for temperature dependent "
@@ -242,6 +266,8 @@ namespace aspect
           weakening_mechanism = plastic_weakening_with_plastic_strain_and_viscous_weakening_with_viscous_strain;
         else if (prm.get ("Strain weakening mechanism") == "viscous weakening with viscous strain only")
           weakening_mechanism = viscous_weakening_with_viscous_strain_only;
+        else if (prm.get ("Strain weakening mechanism") == "plastic weakening with damage strain")
+          weakening_mechanism = plastic_weakening_with_damage_strain;
         else if (prm.get ("Strain weakening mechanism") == "default")
           weakening_mechanism = none;
         else
@@ -300,6 +326,11 @@ namespace aspect
           AssertThrow(this->introspection().compositional_name_exists("total_strain"),
                       ExcMessage("Material model visco_plastic with total strain weakening only works if there is a "
                                  "compositional field called total_strain."));
+
+        if (weakening_mechanism == plastic_weakening_with_damage_strain)
+          AssertThrow(this->introspection().compositional_name_exists("damage_strain"),
+                      ExcMessage("Plastic weakening with damage strain requires a compositional "
+                                 "field called damage_strain."));
 
         // Currently, it only makes sense to use this material model with strain weakening when the
         // nonlinear solver scheme does a single advection iteration. More than one nonlinear advection
@@ -402,6 +433,17 @@ namespace aspect
         options.property_name = "Friction strain weakening factors";
         friction_strain_weakening_factors = Utilities::MapParsing::parse_map_to_double_array(prm.get("Friction strain weakening factors"),
                                             options);
+
+        damage_strain_critical_value = prm.get_double("Damage strain critical value");
+        AssertThrow(damage_strain_critical_value > 0.0,
+                    ExcMessage("Damage strain critical value must be greater than zero."));
+
+        options.property_name = "Damage strain maximum damage";
+        damage_strain_maximum_damage = Utilities::MapParsing::parse_map_to_double_array(prm.get("Damage strain maximum damage"),
+                                        options);
+        for (const double maximum_damage : damage_strain_maximum_damage)
+          AssertThrow(maximum_damage >= 0.0 && maximum_damage <= 1.0,
+                      ExcMessage("Each value in Damage strain maximum damage must be between zero and one."));
 
         if (prm.get ("Strain healing mechanism") == "no healing")
           healing_mechanism = no_healing;
@@ -512,6 +554,11 @@ namespace aspect
               viscous_weakening = calculate_viscous_weakening(composition[viscous_strain_index], j);
               break;
             }
+            case plastic_weakening_with_damage_strain:
+            {
+              // Damage strain reduces the complete yield stress separately.
+              break;
+            }
             default:
             {
               AssertThrow(false, ExcNotImplemented());
@@ -534,6 +581,27 @@ namespace aspect
                                        const std::vector<double> &composition) const
       {
         return compute_strain_weakening_factors(composition,j);
+      }
+
+      template <int dim>
+      double
+      StrainDependent<dim>::
+      compute_damage_strain_yield_stress_prefactor(const std::vector<double> &composition,
+                                                   const unsigned int j) const
+      {
+        if (weakening_mechanism != plastic_weakening_with_damage_strain)
+          return 1.0;
+
+        const unsigned int damage_strain_index =
+          this->introspection().compositional_index_for_name("damage_strain");
+        const double apparent_strain =
+          std::min(std::max(composition[damage_strain_index], 0.0),
+                   damage_strain_critical_value);
+        const double damage = damage_strain_maximum_damage[j]
+                              * apparent_strain
+                              / damage_strain_critical_value;
+
+        return 1.0 - damage;
       }
 
 
@@ -573,8 +641,19 @@ namespace aspect
       calculate_strain_healing(const MaterialModel::MaterialModelInputs<dim> &in,
                                const unsigned int j) const
       {
+        return calculate_strain_healing_rate(in, j) * this->get_timestep();
+      }
+
+
+
+      template <int dim>
+      double
+      StrainDependent<dim>::
+      calculate_strain_healing_rate(const MaterialModel::MaterialModelInputs<dim> &in,
+                                    const unsigned int j) const
+      {
         const double reference_temperature = this->get_adiabatic_surface_temperature();
-        double healed_strain = 0.0;
+        double healing_rate = 0.0;
 
         switch (healing_mechanism)
           {
@@ -584,13 +663,13 @@ namespace aspect
             }
             case temperature_dependent:
             {
-              healed_strain = strain_healing_temperature_dependent_recovery_rate *
-                              std::exp(-strain_healing_temperature_dependent_prefactor * 0.5 * (1.0 - in.temperature[j]/reference_temperature))
-                              * this->get_timestep();
+              healing_rate = strain_healing_temperature_dependent_recovery_rate *
+                             std::exp(-strain_healing_temperature_dependent_prefactor * 0.5
+                                      * (1.0 - in.temperature[j]/reference_temperature));
               break;
             }
           }
-        return healed_strain;
+        return healing_rate;
       }
 
       template <int dim>
@@ -650,8 +729,11 @@ namespace aspect
                    ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
                               "not filled by the caller."));
 
-            const double edot_ii = std::max(std::sqrt(std::max(-Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(Utilities::Tensors::consistent_deviator(in.strain_rate[i])), 0.)),
-                                            min_strain_rate);
+            const double unregularized_edot_ii =
+              std::sqrt(std::max(-Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(
+                                   Utilities::Tensors::consistent_deviator(in.strain_rate[i])),
+                                 0.));
+            const double edot_ii = std::max(unregularized_edot_ii, min_strain_rate);
             double delta_e_ii = edot_ii*this->get_timestep();
 
             // Assign accumulated strain value according to active deformation mechanism
@@ -698,6 +780,52 @@ namespace aspect
                    ExcMessage("The number of composition evaluators should be equal to the number of compositional fields."));
 
             const auto &component_indices = this->introspection().component_indices.compositional_fields;
+
+            if (weakening_mechanism == plastic_weakening_with_damage_strain)
+              {
+                const unsigned int damage_strain_index =
+                  this->introspection().compositional_index_for_name("damage_strain");
+
+                if (!composition_evaluators[damage_strain_index])
+                  composition_evaluators[damage_strain_index]
+                    = std::make_unique<FEPointEvaluation<1, dim>>(this->get_mapping(),
+                                                                 this->get_fe(),
+                                                                 update_values,
+                                                                 component_indices[damage_strain_index]);
+
+                composition_evaluators[damage_strain_index]->reinit(in.current_cell,
+                                                                    quadrature_positions);
+                composition_evaluators[damage_strain_index]->evaluate(
+                  {old_solution_values.data(),old_solution_values.size()},
+                  EvaluationFlags::values);
+
+                const double damage_strain_previous_step =
+                  composition_evaluators[damage_strain_index]->get_value(0);
+                const double bounded_damage_strain_previous_step =
+                  std::min(std::max(damage_strain_previous_step, 0.0),
+                           damage_strain_critical_value);
+
+                const double healing_rate = calculate_strain_healing_rate(in, i);
+                const double damage_production_rate =
+                  plastic_yielding ? unregularized_edot_ii : 0.0;
+                const double decay_factor = healing_rate > 0.0
+                                            ? std::exp(-healing_rate * this->get_timestep())
+                                            : 1.0;
+                const double accumulated_strain = healing_rate > 0.0
+                                                  ? damage_production_rate
+                                                    * (-std::expm1(-healing_rate * this->get_timestep()))
+                                                    / healing_rate
+                                                  : damage_production_rate * this->get_timestep();
+
+                const double updated_damage_strain =
+                  std::min(std::max(bounded_damage_strain_previous_step * decay_factor
+                                    + accumulated_strain,
+                                    0.0),
+                           damage_strain_critical_value);
+
+                out.reaction_terms[i][damage_strain_index] =
+                  updated_damage_strain - damage_strain_previous_step;
+              }
 
             // Assign incremental strain values to reaction terms
             if (weakening_mechanism == plastic_weakening_with_plastic_strain_only)
@@ -883,6 +1011,9 @@ namespace aspect
 
             if (weakening_mechanism == total_strain || weakening_mechanism == plastic_weakening_with_total_strain_only)
               strain_mask.set(this->introspection().compositional_index_for_name("total_strain"),false);
+
+            if (weakening_mechanism == plastic_weakening_with_damage_strain)
+              strain_mask.set(this->introspection().compositional_index_for_name("damage_strain"),false);
 
             if (weakening_mechanism == finite_strain_tensor)
               {
