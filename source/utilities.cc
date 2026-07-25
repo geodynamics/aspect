@@ -2504,7 +2504,8 @@ namespace aspect
           }
           case Utilities::Operator::replace_if_valid:
           {
-            if (std::isnan(y))
+            if (y == std::numeric_limits<double>::lowest() ||
+                y == std::numeric_limits<double>::max())
               return x;
             else
               return y;
@@ -2917,15 +2918,13 @@ namespace aspect
       std::array<double,3> euler_angles;
       for (size_t i = 0; i < 3; ++i)
         for (size_t j = 0; j < 3; ++j)
-          Assert(std::abs(rotation_matrix[i][j]) <= 1.0,
-                 ExcMessage("rotation_matrix[" + std::to_string(i) + "][" + std::to_string(j) +
-                            "] is larger than one: " + std::to_string(rotation_matrix[i][j]) + " (" + std::to_string(rotation_matrix[i][j]-1.0) + "). rotation_matrix = \n"
-                            + std::to_string(rotation_matrix[0][0]) + " " + std::to_string(rotation_matrix[0][1]) + " " + std::to_string(rotation_matrix[0][2]) + "\n"
-                            + std::to_string(rotation_matrix[1][0]) + " " + std::to_string(rotation_matrix[1][1]) + " " + std::to_string(rotation_matrix[1][2]) + "\n"
-                            + std::to_string(rotation_matrix[2][0]) + " " + std::to_string(rotation_matrix[2][1]) + " " + std::to_string(rotation_matrix[2][2])));
+          AssertThrow(std::abs(rotation_matrix[i][j]) <= 1.0,
+                      ExcMessage("rotation_matrix[" + std::to_string(i) + "][" + std::to_string(j) +
+                                 "] is larger than one: " + std::to_string(rotation_matrix[i][j]) + " (" + std::to_string(rotation_matrix[i][j]-1.0) + "). rotation_matrix = \n"
+                                 + std::to_string(rotation_matrix[0][0]) + " " + std::to_string(rotation_matrix[0][1]) + " " + std::to_string(rotation_matrix[0][2]) + "\n"
+                                 + std::to_string(rotation_matrix[1][0]) + " " + std::to_string(rotation_matrix[1][1]) + " " + std::to_string(rotation_matrix[1][2]) + "\n"
+                                 + std::to_string(rotation_matrix[2][0]) + " " + std::to_string(rotation_matrix[2][1]) + " " + std::to_string(rotation_matrix[2][2])));
 
-
-      AssertThrow(rotation_matrix[2][2] <= 1.0, ExcMessage("rot_matrix[2][2] > 1.0"));
 
       const double theta = std::acos(rotation_matrix[2][2]);
       double phi1 = 0.0;
@@ -2951,20 +2950,9 @@ namespace aspect
           phi2 = phi1 + std::atan2(rotation_matrix[0][1],rotation_matrix[0][0]);
         }
 
-
-      AssertThrow(!std::isnan(phi1), ExcMessage("phi1 is not a number. theta = " + std::to_string(theta) + ", rotation_matrix[2][2]= " + std::to_string(rotation_matrix[2][2])
-                                                + ", acos(rotation_matrix[2][2]) = " + std::to_string(std::acos(rotation_matrix[2][2])) + ", acos(1.0) = " + std::to_string(std::acos(1.0))));
-      AssertThrow(!std::isnan(theta), ExcMessage("theta is not a number."));
-      AssertThrow(!std::isnan(phi2), ExcMessage("phi2 is not a number."));
-
       euler_angles[0] = wrap_angle(phi1 * constants::radians_to_degree);
       euler_angles[1] = wrap_angle(theta * constants::radians_to_degree);
       euler_angles[2] = wrap_angle(phi2 * constants::radians_to_degree);
-
-
-      AssertThrow(!std::isnan(euler_angles[0]), ExcMessage(" euler_angles[0] is not a number."));
-      AssertThrow(!std::isnan(euler_angles[1]), ExcMessage(" euler_angles[1] is not a number."));
-      AssertThrow(!std::isnan(euler_angles[2]), ExcMessage(" euler_angles[2] is not a number."));
 
       return euler_angles;
     }
