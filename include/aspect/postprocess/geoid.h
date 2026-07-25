@@ -196,10 +196,18 @@ namespace aspect
 
         /**
          * A vector to store the cosine terms of the geoid anomaly spherical harmonic coefficients.
+        *
+         * These coefficients are computed afresh by execute() and are subsequently
+         * accessed through evaluate(), for example by the sea level postprocessor.
+         * Consequently, they do not need to be serialized for checkpoint/restart:
+         * execute() recomputes them before dependent postprocessors use them.
          */
         std::vector<double> geoid_coecos;
+
         /**
          * A vector to store the sine terms of the geoid anomaly spherical harmonic coefficients.
+         *
+         * See geoid_coecos for why these runtime values are not serialized.
          */
         std::vector<double> geoid_coesin;
     };
