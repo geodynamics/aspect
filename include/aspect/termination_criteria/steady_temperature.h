@@ -61,6 +61,12 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm) override;
 
+        void
+        save (std::map<std::string, std::string> &status_strings) const override;
+
+        void
+        load (const std::map<std::string, std::string> &status_strings) override;
+
       private:
         /**
          * This variable is read from the parameter file through a parameter

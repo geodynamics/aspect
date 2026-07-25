@@ -267,6 +267,12 @@ namespace aspect
           void
           parse_parameters (ParameterHandler &prm) override;
 
+          void
+          save (std::map<std::string, std::string> &status_strings) const override;
+
+          void
+          load (const std::map<std::string, std::string> &status_strings) override;
+
           /**
            * Return the number of grains per particle
            */

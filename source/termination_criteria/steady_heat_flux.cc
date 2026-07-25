@@ -21,6 +21,11 @@
 #include <aspect/termination_criteria/steady_heat_flux.h>
 #include <aspect/postprocess/heat_flux_map.h>
 
+#include <boost/serialization/list.hpp>
+#include <boost/serialization/map.hpp>
+#include <boost/serialization/utility.hpp>
+
+
 namespace aspect
 {
   namespace TerminationCriteria
@@ -208,6 +213,35 @@ namespace aspect
                    ExcMessage("Relative deviation must be greater than or equal to 0."));
       AssertThrow (necessary_time_in_steady_state > 0,
                    ExcMessage("Steady state minimum time period must be greater than 0."));
+    }
+
+
+
+    template <int dim>
+    void
+    SteadyHeatFlux<dim>::save (std::map<std::string, std::string> &status_strings) const
+    {
+      std::ostringstream os;
+      {
+        aspect::oarchive oa (os);
+        oa << time_heat_flux;
+      }
+      status_strings["SteadyHeatFlux"] = os.str();
+    }
+
+
+
+    template <int dim>
+    void
+    SteadyHeatFlux<dim>::load (const std::map<std::string, std::string> &status_strings)
+    {
+      const auto saved_state = status_strings.find("SteadyHeatFlux");
+      if (saved_state != status_strings.end())
+        {
+          std::istringstream is (saved_state->second);
+          aspect::iarchive ia (is);
+          ia >> time_heat_flux;
+        }
     }
   }
 }
