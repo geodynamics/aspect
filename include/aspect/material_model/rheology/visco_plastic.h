@@ -98,7 +98,10 @@ namespace aspect
         enum class Property
         {
           diffusion_viscosity,
-          dislocation_viscosity
+          dislocation_viscosity,
+          frank_kamenetskii_viscosity,
+          peierls_viscosity,
+          grain_boundary_sliding_viscosity
         };
 
         /**
@@ -134,6 +137,29 @@ namespace aspect
          */
         std::vector<double> dislocation_viscosities;
 
+        /**
+         * Frank Kamenetskii viscosities. These are the Frank Kamenetskii viscosities that are computed
+         * in Rheology::FrankKamenetskii::compute_viscosity() function before yielding.
+         * The values are only relevant when Frank Kamenetskii rheology is present,
+         * i.e., viscous flow law is frank kamenetskii
+         */
+        std::vector<double> frank_kamenetskii_viscosities;
+
+        /**
+         * Peierls viscosities. These are the peierls viscosities that are computed
+         * in Rheology::PeierlsCreep::compute_viscosity() function before yielding.
+         * The values are only relevant when peierls creep is present,
+         * i.e., the option of using peierls creep is selected.
+         */
+        std::vector<double> peierls_viscosities;
+
+        /**
+         * Grain boundary sliding viscosities. These are the grain boundary sliding viscosities that are computed
+         * in Rheology::GrainBoundarySliding::compute_viscosity() function before yielding.
+         * The values are only relevant when Grain boundary sliding creep is present,
+         * i.e., the option of using grain boundary sliding is selected.
+         */
+        std::vector<double> grain_boundary_sliding_viscosities;
     };
 
     /**
@@ -179,6 +205,41 @@ namespace aspect
        * Dislocation viscosities for each composition.
        */
       std::vector<double> dislocation_viscosities;
+
+      /**
+       * Frank Kamenetskii viscosities for each composition.
+       */
+      std::vector<double> frank_kamenetskii_viscosities;
+
+      /**
+       * Peierls viscosities for each composition.
+       */
+      std::vector<double> peierls_viscosities;
+
+      /**
+       * Grain boundary sliding viscosities for each composition.
+       */
+      std::vector<double> grain_boundary_sliding_viscosities;
+
+      /**
+        * Clear all the quantities in the objects and return to an uninitialized state.
+        */
+      void
+      clear()
+      {
+        composition_viscosities.clear();
+        composition_yielding.clear();
+        drucker_prager_parameters.clear();
+
+        dilation_lhs_terms.clear();
+        dilation_rhs_terms.clear();
+
+        diffusion_viscosities.clear();
+        dislocation_viscosities.clear();
+        frank_kamenetskii_viscosities.clear();
+        peierls_viscosities.clear();
+        grain_boundary_sliding_viscosities.clear();
+      }
     };
 
     namespace Rheology
