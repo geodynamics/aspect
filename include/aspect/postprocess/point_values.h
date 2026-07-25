@@ -98,6 +98,7 @@ namespace aspect
 
         /**
          * Interval between the generation of output in seconds.
+         * This variable is read from the parameter file through a parameter called 'Time between point values output'.
          */
         double output_interval;
 
@@ -120,6 +121,8 @@ namespace aspect
         /**
          * Whether or not to interpret the evaluation points in the input file
          * as natural coordinates or not.
+         *
+         * This variable is read from the parameter file through a parameter called 'Use natural coordinates'.
          */
         bool use_natural_coordinates;
     };

@@ -253,6 +253,7 @@ namespace aspect
          * is a safer option, since it forces the boundary conditions
          * to be always applied to the same depth, but one unified grid allows
          * for a more flexible usage of the adaptive refinement.
+         * This variable is read from the parameter file through a parameter called 'Use merged grids'.
          */
         bool use_merged_grids;
 
@@ -260,6 +261,8 @@ namespace aspect
          * Minimum longitude-depth (2D) or
          * longitude-latitude-depth (3D) point
          * of the entire merged chunk.
+         * This variable is read from the parameter file through parameters called
+         * 'Chunk inner radius', 'Chunk minimum longitude', and 'Chunk minimum latitude'.
          */
         Point<dim> point1;
 
@@ -267,6 +270,8 @@ namespace aspect
          * Maximum longitude-depth (2D) or
          * longitude-latitude-depth (3D) point
          * of the entire merged chunk.
+         * This variable is read from the parameter file through parameters called
+         * 'Chunk outer radius', 'Chunk maximum longitude', and 'Chunk maximum latitude'.
          */
         Point<dim> point2;
 
@@ -274,6 +279,7 @@ namespace aspect
          * Minimum longitude-depth (2D) or
          * longitude-latitude-depth (3D) point
          * for the upper chunk.
+         * This variable is read from the parameter file through a parameter called 'Chunk middle boundary radius'.
          */
         Point<dim> point3;
 
@@ -286,9 +292,21 @@ namespace aspect
 
         /**
          * The number of cells in each coordinate direction
-         * for the lower and upper chunk.
+         * for the lower chunk.
+         * This variable is read from the parameter file through parameters called
+         * 'Inner chunk radius repetitions', 'Longitude repetitions', and
+         * 'Latitude repetitions'.
          */
         std::array<unsigned int, dim> lower_repetitions;
+
+        /**
+         * The number of cells in each coordinate direction
+         * for the upper chunk.
+         *
+         * This variable is read from the parameter file through parameters called
+         * 'Outer chunk radius repetitions', 'Longitude repetitions', and
+         * 'Latitude repetitions'.
+         */
         std::array<unsigned int, dim> upper_repetitions;
 
         /**

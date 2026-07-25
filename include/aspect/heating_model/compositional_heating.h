@@ -72,6 +72,8 @@ namespace aspect
       private:
         /**
          * Magnitude of heat production for each compositional field
+         *
+         * This variable is read from the parameter file through a parameter called 'Compositional heating values'.
          */
         std::vector<double> heating_values;
 

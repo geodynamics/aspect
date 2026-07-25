@@ -86,6 +86,11 @@ namespace aspect
         /**
          * The values of the various temperature variables on each of the
          * 2*dim+2*(dim-1) boundaries of the box.
+         *
+         * This variable is read from the parameter file through parameters called 'Left composition',
+         * 'Right composition', 'Bottom composition', 'Top composition',
+         * 'Front composition', and 'Back composition', as well as 'Left composition lithosphere',
+         * 'Right composition lithosphere', 'Front composition lithosphere', and 'Back composition lithosphere'.
          */
         double temperature_values[2*dim+2*(dim-1)];
     };

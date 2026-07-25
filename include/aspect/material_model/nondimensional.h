@@ -88,6 +88,7 @@ namespace aspect
       private:
         /**
          * Use truncated anelastic approximation?
+         * This variable is read from the parameter file through a parameter called 'Use TALA'.
          */
         bool tala;
 
@@ -98,27 +99,34 @@ namespace aspect
 
         /**
          * Parameter describing the temperature prefactor of viscosity.
+         * This variable is read from the parameter file through a parameter called 'Viscosity temperature prefactor'.
          */
         double exponential_viscosity_temperature_prefactor;
 
         /**
          * Parameter describing the depth prefactor of viscosity.
+         * This variable is read from the parameter file through a parameter called 'Viscosity depth prefactor'.
          */
         double exponential_viscosity_depth_prefactor;
 
         /**
          * The surface density.
+         * This variable is read from the parameter file through a parameter called 'Reference density'.
          */
         double reference_rho;
 
         /**
          * The nondimensional numbers (Dissipation number,
          * Rayleigh number, Grueneisen parameter).
+         * This variable is read from the parameter file through parameters called
+         * 'Di', 'Ra', and 'gamma'.
          */
         double Di, Ra, gamma;
 
         /**
          * The constant specific heat
+         *
+         * This variable is read from the parameter file through a parameter called 'Reference specific heat'.
          */
         double reference_specific_heat;
 

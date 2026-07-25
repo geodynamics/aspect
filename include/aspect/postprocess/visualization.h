@@ -394,6 +394,7 @@ namespace aspect
          * Interval between the generation of graphical output. This parameter
          * is read from the input file and consequently is not part of the
          * state that needs to be saved and restored.
+         * This variable is read from the parameter file through a parameter called 'Time between graphical output'.
          */
         double output_interval;
 
@@ -408,6 +409,7 @@ namespace aspect
          * This parameter
          * is read from the input file and consequently is not part of the
          * state that needs to be saved and restored.
+         * This variable is read from the parameter file through a parameter called 'Time steps between graphical output'.
          */
         unsigned int maximum_timesteps_between_outputs;
 
@@ -425,6 +427,7 @@ namespace aspect
 
         /**
          * Graphical output format.
+         * This variable is read from the parameter file through a parameter called 'Output format'.
          */
         std::string output_format;
 
@@ -433,6 +436,7 @@ namespace aspect
          * file using MPI I/O when writing on a parallel filesystem. 0 means
          * no grouping (and no parallel I/O). 1 will generate one big file
          * containing the whole solution.
+         * This variable is read from the parameter file through a parameter called 'Number of grouped files'.
          */
         unsigned int group_files;
 
@@ -442,6 +446,7 @@ namespace aspect
          * move this file to a network file system. If this variable is
          * set to a non-empty string it will be interpreted as a temporary
          * storage location.
+         * This variable is read from the parameter file through a parameter called 'Temporary output location'.
          */
         std::string temporary_output_location;
 
@@ -454,6 +459,7 @@ namespace aspect
          * field. Activating this option increases the spatial resolution in
          * each dimension by a factor equal to the polynomial degree used for
          * the velocity finite element (usually 2).
+         * This variable is read from the parameter file through a parameter called 'Interpolate output'.
          */
         bool interpolate_output;
 
@@ -463,6 +469,7 @@ namespace aspect
          * therefore saves disk space, but misrepresents discontinuous
          * output properties. Activating this function reduces the disk space
          * by about a factor of $2^{dim}$ for hdf5 output.
+         * This variable is read from the parameter file through a parameter called 'Filter output'.
          */
         bool filter_output;
 
@@ -470,6 +477,7 @@ namespace aspect
          * If true, return quantities related to stresses and strain with
          * point-wise values. Otherwise the values will be averaged on each
          * cell.
+         * This variable is read from the parameter file through a parameter called 'Point-wise stress and strain'.
          */
         bool pointwise_stress_and_strain;
 
@@ -483,6 +491,7 @@ namespace aspect
          * set to true, and (iii) you use a sufficiently new version of Paraview
          * or VisIt to read the files (Paraview version 5.5 or newer, and VisIt version
          * to be determined).
+         * This variable is read from the parameter file through a parameter called 'Write higher order output'.
          */
         bool write_higher_order_output;
 
@@ -491,6 +500,7 @@ namespace aspect
          * Arbitrary-Lagrangian-Eulerian formulation to handle deforming the
          * domain, so the mesh has its own velocity field. This may be
          * written as an output field by setting output_mesh_velocity to true.
+         * This variable is read from the parameter file through a parameter called 'Output mesh velocity'.
          */
         bool output_mesh_velocity;
 
@@ -500,6 +510,7 @@ namespace aspect
          * has a field that determines the displacement from the reference
          * configuration. This may be written as an output field by setting
          * this flag to true.
+         * This variable is read from the parameter file through a parameter called 'Output mesh displacement'.
          */
         bool output_mesh_displacement;
 
@@ -508,6 +519,7 @@ namespace aspect
          * Arbitrary-Lagrangian-Eulerian formulation to handle deforming the domain, and we output the
          * mesh in its deformed state by default. If this flag is set to true,
          * the mesh is written undeformed.
+         * This variable is read from the parameter file through a parameter called 'Output undeformed mesh'.
          */
         bool output_undeformed_mesh;
 
@@ -516,6 +528,7 @@ namespace aspect
          * velocity, (fluid pressure and velocity), pressure, temperature
          * and the compositional fields on the surface of the mesh.
          * The mesh surface includes all boundaries of the domain.
+         * This variable is read from the parameter file through a parameter called 'Output base variables on mesh surface'.
          */
         bool output_base_variables_on_mesh_surface;
 
@@ -524,6 +537,8 @@ namespace aspect
          * progress of the rest of the model run. Setting this variable to
          * 'true' moves this process into a background thread, while the
          * rest of the model continues.
+         *
+         * This variable is read from the parameter file through a parameter called 'Write in background thread'.
          */
         bool write_in_background_thread;
 

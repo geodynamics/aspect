@@ -97,24 +97,29 @@ namespace aspect
           /**
            * Vector of reference densities $\rho_0$ with one entry per composition and phase plus one
            * for the background field.
+           * This variable is read from the parameter file through a parameter called 'Densities'.
            */
           std::vector<double> densities;
 
           /**
            * The reference temperature $T_0$ used in the computation of the density.
            * All components use the same reference temperature.
+           * This variable is read from the parameter file through a parameter called 'Reference temperature'.
            */
           double reference_T;
 
           /**
            * Vector of thermal expansivities with one entry per composition and phase plus one
            * for the background field.
+           * This variable is read from the parameter file through a parameter called 'Thermal expansivities'.
            */
           std::vector<double> thermal_expansivities;
 
           /**
            * Vector of specific heat capacities with one entry per composition and phase plus one
            * for the background field.
+           *
+           * This variable is read from the parameter file through a parameter called 'Heat capacities'.
            */
           std::vector<double> specific_heats;
       };

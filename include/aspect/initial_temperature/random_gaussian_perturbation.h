@@ -71,16 +71,20 @@ namespace aspect
 
         /**
          * The number of the random Gaussian perturbations.
+         * This variable is read from the parameter file through a parameter called 'Number of perturbations'.
          */
         unsigned int n_perturbations;
 
         /**
          * The maximal magnitude of the random Gaussian perturbations.
+         * This variable is read from the parameter file through a parameter called 'Maximum magnitude'.
          */
         double max_magnitude;
 
         /**
          * The width of the random Gaussian perturbations.
+         *
+         * This variable is read from the parameter file through a parameter called 'Width'.
          */
         double width;
 

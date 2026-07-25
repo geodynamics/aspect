@@ -233,11 +233,14 @@ namespace aspect
          * is a safer option, since it forces the boundary conditions
          * to be always applied to the same depth, but one unified grid allows
          * for a more flexible usage of the adaptive refinement.
+         * This variable is read from the parameter file through a parameter called 'Use merged grids'.
          */
         bool use_merged_grids;
 
         /**
          * Extent of the whole model domain in x-, y-, and z-direction (in 3d).
+         * This variable is read from the parameter file through parameters called
+         * 'X extent', 'Y extent', and 'Z extent'.
          */
         Point<dim> extents;
 
@@ -248,6 +251,8 @@ namespace aspect
 
         /**
          * Origin of the lower box in x, y, and z (in 3d) coordinates.
+         * This variable is read from the parameter file through parameters called
+         * 'Box origin X coordinate', 'Box origin Y coordinate', and 'Box origin Z coordinate'.
          */
         Point<dim> lower_box_origin;
 
@@ -264,16 +269,24 @@ namespace aspect
         /**
          * Flag whether the whole domain is periodic in the x-, y-, and z-directions,
          * the x- and y- (in 3d) direction in the lithosphere.
+         * This variable is read from the parameter file through parameters called
+         * 'X periodic', 'X periodic lithosphere', 'Y periodic',
+         * 'Y periodic lithosphere', and 'Z periodic'.
          */
         bool periodic[dim+dim-1];
 
         /**
          * The number of cells in each coordinate direction for the lower box.
+         * This variable is read from the parameter file through parameters called
+         * 'X repetitions', 'Y repetitions', and 'Z repetitions'.
          */
         std::array<unsigned int, dim> lower_repetitions;
 
         /**
          * The number of cells in each coordinate direction for the upper box.
+         *
+         * This variable is read from the parameter file through parameters called
+         * 'Y repetitions lithosphere' and 'Z repetitions lithosphere'.
          */
         std::array<unsigned int, dim> upper_repetitions;
 

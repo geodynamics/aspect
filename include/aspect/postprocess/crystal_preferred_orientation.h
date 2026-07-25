@@ -136,12 +136,14 @@ namespace aspect
 
         /**
          * Random number generator seed used to initialize the random number generator.
+         * This variable is read from the parameter file through a parameter called 'Random number seed'.
          */
         unsigned int random_number_seed;
 
         /**
          * Interval between output (in years if appropriate simulation
          * parameter is set, otherwise seconds)
+         * This variable is read from the parameter file through a parameter called 'Time between data output'.
          */
         double output_interval;
 
@@ -217,6 +219,7 @@ namespace aspect
          * move this file to a network file system. If this variable is
          * set to a non-empty string it will be interpreted as a temporary
          * storage location.
+         * This variable is read from the parameter file through a parameter called 'Temporary output location'.
          */
         std::string temporary_output_location;
 
@@ -225,6 +228,7 @@ namespace aspect
          * progress of the rest of the model run. Setting this variable to
          * 'true' moves this process into a background thread, while the
          * rest of the model continues.
+         * This variable is read from the parameter file through a parameter called 'Write in background thread'.
          */
         bool write_in_background_thread;
 
@@ -270,6 +274,8 @@ namespace aspect
 
         /**
          * Whether to compress the raw and weighed cpo data output files with zlib.
+         *
+         * This variable is read from the parameter file through a parameter called 'Compress cpo data files'.
          */
         bool compress_cpo_data_files;
 

@@ -100,26 +100,32 @@ namespace aspect
       private:
         /**
          * The reference density
+         * This variable is read from the parameter file through a parameter called 'Reference density'.
          */
         double reference_rho;
 
         /**
          * The constant thermal expansivity
+         * This variable is read from the parameter file through a parameter called 'Thermal expansion coefficient'.
          */
         double thermal_alpha;
 
         /**
          * The constant specific heat
+         * This variable is read from the parameter file through a parameter called 'Reference specific heat'.
          */
         double reference_specific_heat;
 
         /**
          * The constant compressibility.
+         * This variable is read from the parameter file through a parameter called 'Reference compressibility'.
          */
         double reference_compressibility;
 
         /**
          * The constant thermal conductivity.
+         *
+         * This variable is read from the parameter file through a parameter called 'Thermal conductivity'.
          */
         double k_value;
 

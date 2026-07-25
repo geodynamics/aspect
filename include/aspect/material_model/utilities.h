@@ -664,13 +664,16 @@ namespace aspect
 
         private:
           /**
-          * Directory path where data files are stored.
-          */
+           * Directory path where data files are stored.
+           * This variable is read from the parameter file through a parameter called 'Data directory'.
+           */
           std::string data_directory;
 
           /**
            * List of file names containing material data for each composition.
-          */
+           *
+           * This variable is read from the parameter file through a parameter called 'Material file names'.
+           */
           std::vector<std::string> material_file_names;
 
           /**

@@ -172,26 +172,31 @@ namespace aspect
 
           /**
            * List of diffusion creep prefactors A.
+           * This variable is read from the parameter file through a parameter called 'Prefactors for diffusion creep'.
            */
           std::vector<double> prefactors;
 
           /**
            * List of diffusion creep stress exponents n (usually = 1).
+           * This variable is read from the parameter file through a parameter called 'Stress exponents for diffusion creep'.
            */
           std::vector<double> stress_exponents;
 
           /**
            * List of diffusion creep grain size exponents m.
+           * This variable is read from the parameter file through a parameter called 'Grain size exponents for diffusion creep'.
            */
           std::vector<double> grain_size_exponents;
 
           /**
            * List of diffusion creep activation energies E.
+           * This variable is read from the parameter file through a parameter called 'Activation energies for diffusion creep'.
            */
           std::vector<double> activation_energies;
 
           /**
            * List of diffusion creep activation volumes V.
+           * This variable is read from the parameter file through a parameter called 'Activation volumes for diffusion creep'.
            */
           std::vector<double> activation_volumes;
 
@@ -199,6 +204,8 @@ namespace aspect
            * Diffusion creep grain size d.  This is read from the
            * input file, and is only used by the functions that do
            * not take the grain size as additional argument.
+           *
+           * This variable is read from the parameter file through a parameter called 'Grain size'.
            */
           double fixed_grain_size;
       };

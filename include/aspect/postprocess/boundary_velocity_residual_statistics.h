@@ -81,12 +81,14 @@ namespace aspect
          * Determines if the input ascii data file has velocity components in
          * spherical, i.e., (r, phi, theta) or in cartesian, i.e., (x, y, z)
          * coordinate system.
+         * This variable is read from the parameter file through a parameter called 'Use spherical unit vectors'.
          */
         bool use_spherical_unit_vectors;
 
         /**
          * Determines if the model velocities are compared against ascii data
          * files, or a gplates model.
+         * This variable is read from the parameter file through a parameter called 'Use ascii data'.
          */
         bool use_ascii_data;
 
@@ -103,6 +105,7 @@ namespace aspect
         /**
          * Directory in which the input data files, i.e., GPlates model or ascii data
          * are present.
+         * This variable is read from the parameter file through a parameter called 'Data directory'.
          */
         std::string data_directory;
 
@@ -110,6 +113,7 @@ namespace aspect
          * Filename of the input Gplates model or ascii data file. For GPlates, the file names
          * can contain the specifiers %s and/or %c (in this order), meaning the name of the
          * boundary and the number of the data file time step.
+         * This variable is read from the parameter file through a parameter called 'Data file name'.
          */
         std::string data_file_name;
 
@@ -118,6 +122,8 @@ namespace aspect
          * the unit of the data (if they are not specified in SI units (m/s or
          * m/yr depending on the "Use years instead of seconds"
          * parameter).
+         *
+         * This variable is read from the parameter file through a parameter called 'Scale factor'.
          */
         double scale_factor;
     };

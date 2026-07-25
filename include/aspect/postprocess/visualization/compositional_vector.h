@@ -70,6 +70,8 @@ namespace aspect
         private:
           /**
            * Names of vector fields.
+           *
+           * This variable is read from the parameter file through a parameter called 'Names of vectors'.
            */
           std::vector<std::string> vector_names;
 

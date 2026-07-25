@@ -129,26 +129,31 @@ namespace aspect
 
           /**
            * List of grain boundary sliding prefactors A.
+           * This variable is read from the parameter file through a parameter called 'Prefactors for grain boundary sliding'.
            */
           std::vector<double> prefactors;
 
           /**
            * List of grain boundary sliding stress exponents n (for ice = 1.8).
+           * This variable is read from the parameter file through a parameter called 'Stress exponents for grain boundary sliding'.
            */
           std::vector<double> stress_exponents;
 
           /**
            * List of grain boundary sliding grain size exponents m.
+           * This variable is read from the parameter file through a parameter called 'Grain size exponents for grain boundary sliding'.
            */
           std::vector<double> grain_size_exponents;
 
           /**
            * List of grain boundary sliding activation energies E.
+           * This variable is read from the parameter file through a parameter called 'Activation energies for grain boundary sliding'.
            */
           std::vector<double> activation_energies;
 
           /**
            * List of grain boundary sliding activation volumes V.
+           * This variable is read from the parameter file through a parameter called 'Activation volumes for grain boundary sliding'.
            */
           std::vector<double> activation_volumes;
 
@@ -156,6 +161,8 @@ namespace aspect
            * Grain boundary sliding grain size d.  This is read from the
            * input file, and is only used by the functions that do
            * not take the grain size as additional argument.
+           *
+           * This variable is read from the parameter file through a parameter called 'Grain size'.
            */
           double fixed_grain_size;
       };

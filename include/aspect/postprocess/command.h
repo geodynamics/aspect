@@ -61,8 +61,17 @@ namespace aspect
         execute (TableHandler &statistics) override;
 
       private:
+        /**
+         * This variable is read from the parameter file through a parameter called 'Command'.
+         */
         std::string command;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Terminate on failure'.
+         */
         bool terminate_on_failure;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Run on all processes'.
+         */
         bool on_all_processes;
     };
   }

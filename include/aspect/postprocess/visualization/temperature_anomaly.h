@@ -70,6 +70,7 @@ namespace aspect
         private:
           /**
            * Number of slices to use when computing depth average of temperature.
+           * This variable is read from the parameter file through a parameter called 'Number of depth slices'.
            */
           unsigned int n_slices;
 
@@ -77,8 +78,13 @@ namespace aspect
            * Whether to extrapolate temperatures above/below the first/last depth-average slice
            * or, alternatively, interpolate above the center of the first slice using the surface
            * temperature or below the last slice using the bottom temperature.
+           * This variable is read from the parameter file through a parameter called 'Use minimal temperature for surface'.
            */
           bool extrapolate_surface;
+
+          /**
+           * This variable is read from the parameter file through a parameter called 'Use maximal temperature for bottom'.
+           */
           bool extrapolate_bottom;
 
           /**

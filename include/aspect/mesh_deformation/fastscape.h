@@ -198,12 +198,14 @@ namespace aspect
          * Suggestion for the number of FastScape steps to run for every ASPECT timestep,
          * where the FastScape timestep is determined by ASPECT_timestep_length divided by
          * this parameter.
+         * This variable is read from the parameter file through a parameter called 'Number of fastscape timesteps per aspect timestep'.
          */
         unsigned int fastscape_steps_per_aspect_step;
 
         /**
          * Maximum timestep allowed for FastScape, if the suggested timestep exceeds this
          * limit it is repeatedly divided by 2 until the final timestep is smaller than this parameter.
+         * This variable is read from the parameter file through a parameter called 'Maximum timestep length'.
          */
         double maximum_fastscape_timestep;
 
@@ -229,6 +231,7 @@ namespace aspect
 
         /**
          * User set FastScape Y extent for a 2D ASPECT model.
+         * This variable is read from the parameter file through a parameter called 'Y extent in 2d'.
          */
         double fastscape_y_extent_2d;
 
@@ -244,11 +247,13 @@ namespace aspect
 
         /**
          * Vertical exaggeration in FastScape visualization.
+         * This variable is read from the parameter file through a parameter called 'Vertical exaggeration'.
          */
         double vexp;
 
         /**
          * How many levels FastScape should be refined above the maximum ASPECT surface resolution.
+         * This variable is read from the parameter file through a parameter called 'Additional fastscape refinement'.
          */
         unsigned int additional_refinement_levels;
 
@@ -256,6 +261,7 @@ namespace aspect
          * Maximum expected refinement level at ASPECT's surface.
          * This and resolution_difference are required to properly transfer node data from
          * ASPECT to FastScape.
+         * This variable is read from the parameter file through a parameter called 'Maximum surface refinement level'.
          */
         unsigned int maximum_surface_refinement_level;
 
@@ -269,6 +275,7 @@ namespace aspect
          * of refinement at the surface, and we can subtract one within the code? Also,
          * it would be good to find a way to check these are correct, because they are a
          * common source of errors.
+         * This variable is read from the parameter file through a parameter called 'Surface refinement difference'.
          */
         unsigned int surface_refinement_difference;
 
@@ -276,11 +283,13 @@ namespace aspect
          * If set to true, the FastScape surface is averaged along Y and returned
          * to ASPECT. If set to false, the center slice of the FastScape model is
          * returned to ASPECT.
+         * This variable is read from the parameter file through a parameter called 'Average out of plane surface topography in 2d'.
          */
         bool average_out_of_plane_surface_topography;
 
         /**
          * Seed number for initial topography noise in FastScape.
+         * This variable is read from the parameter file through a parameter called 'Fastscape seed'.
          */
         int fastscape_seed;
 
@@ -296,6 +305,7 @@ namespace aspect
 
         /**
          * Whether or not to use the ghost nodes.
+         * This variable is read from the parameter file through a parameter called 'Use ghost nodes'.
          */
         bool use_ghost_nodes;
 
@@ -303,12 +313,14 @@ namespace aspect
          * Magnitude (m) of the initial noise applied to FastScape.
          * Applied as either a + or - value to the topography
          * such that the total difference can be up to 2*noise_elevation.
+         * This variable is read from the parameter file through a parameter called 'Initial noise magnitude'.
          */
         double noise_elevation;
 
         /**
          * Sediment rain in m/yr, added as a flat increase to the FastScape surface
          * in the marine domain every ASPECT timestep before running FastScape.
+         * This variable is read from the parameter file through a parameter called 'Sediment rain rates'.
          */
         std::vector<double> sediment_rain_rates;
 
@@ -316,6 +328,7 @@ namespace aspect
          * Time at which each interval of sediment_rain_rates is active. Should contain
          * one less value than sediment_rain_rates, assuming that sediment_rain_rates[0]
          * is applied from model time 0 until sediment_rain_times[0].
+         * This variable is read from the parameter file through a parameter called 'Sediment rain time intervals'.
          */
         std::vector<double> sediment_rain_times;
 
@@ -323,6 +336,7 @@ namespace aspect
          * Flag for having FastScape advect/uplift the surface. If the free surface is used
          * in conjunction with FastScape, this can be set to false, then FastScape will only
          * apply erosion/deposition to the surface and not advect or uplift it.
+         * This variable is read from the parameter file through a parameter called 'Uplift and advect with fastscape'.
          */
         bool fastscape_advection_uplift;
 
@@ -332,6 +346,7 @@ namespace aspect
          * and the free surface is used to advect the surface with a normal projection, or
          * if there is a surface refinement level difference leading to excess interpolation
          * points in areas of high ASPECT resolution.
+         * This variable is read from the parameter file through a parameter called 'Node tolerance'.
          */
         double node_tolerance;
 
@@ -339,6 +354,7 @@ namespace aspect
          * Interval between the generation of graphical output. This parameter
          * is read from the input file and consequently is not part of the
          * state that needs to be saved and restored.
+         * This variable is read from the parameter file through a parameter called 'Time between graphical output'.
          */
         double output_interval;
 
@@ -358,6 +374,7 @@ namespace aspect
          * Where 1 represents a fixed height boundary (though this can still be uplifted through uplift velocities), and 0 a
          * reflective boundary. When two opposing boundaries are reflective (e.g., top and bottom are both zero), then the boundaries
          * become cyclic.
+         * This variable is read from the parameter file through a parameter called 'Front'.
          */
         unsigned int bottom;
 
@@ -366,6 +383,7 @@ namespace aspect
          * Where 1 represents a fixed height boundary (though this can still be uplifted through uplift velocities), and 0 a
          * reflective boundary. When two opposing boundaries are reflective (e.g., top and bottom are both zero), then the boundaries
          * become cyclic.
+         * This variable is read from the parameter file through a parameter called 'Back'.
          */
         unsigned int top;
 
@@ -374,6 +392,7 @@ namespace aspect
          * Where 1 represents a fixed height boundary (though this can still be uplifted through uplift velocities), and 0 a
          * reflective boundary. When two opposing boundaries are reflective (e.g., left and right are both zero), then the boundaries
          * become cyclic.
+         * This variable is read from the parameter file through a parameter called 'Right'.
          */
         unsigned int right;
 
@@ -382,13 +401,24 @@ namespace aspect
          * Where 1 represents a fixed height boundary (though this can still be uplifted through uplift velocities), and 0 a
          * reflective boundary. When two opposing boundaries are reflective (e.g., left and right are both zero), then the boundaries
          * become cyclic.
+         * This variable is read from the parameter file through a parameter called 'Left'.
          */
         unsigned int left;
 
         /**
-         * Parameters that set the FastScape boundaries periodic even though the ghost nodes are set 'fixed'
+         * Whether the FastScape front and back boundaries are periodic even
+         * though the ghost nodes are set to 'fixed'.
+         * This variable is read from the parameter file through a parameter called
+         * 'Back front ghost nodes periodic'.
          */
         bool topbottom_ghost_nodes_periodic;
+
+        /**
+         * Whether the FastScape left and right boundaries are periodic even
+         * though the ghost nodes are set to 'fixed'.
+         * This variable is read from the parameter file through a parameter called
+         * 'Left right ghost nodes periodic'.
+         */
         bool leftright_ghost_nodes_periodic;
 
         /**
@@ -398,21 +428,25 @@ namespace aspect
 
         /**
          * Prescribed flux per unit length into the model through the bottom boundary (m^2/yr).
+         * This variable is read from the parameter file through a parameter called 'Front mass flux'.
          */
         double bottom_flux;
 
         /**
          * Prescribed flux per unit length into the model through the top boundary (m^2/yr).
+         * This variable is read from the parameter file through a parameter called 'Back mass flux'.
          */
         double top_flux;
 
         /**
          * Prescribed flux per unit length into the model through the right boundary (m^2/yr).
+         * This variable is read from the parameter file through a parameter called 'Right mass flux'.
          */
         double right_flux;
 
         /**
          * Prescribed flux per unit length into the model through the left boundary (m^2/yr).
+         * This variable is read from the parameter file through a parameter called 'Left mass flux'.
          */
         double left_flux;
         /**
@@ -426,23 +460,27 @@ namespace aspect
 
         /**
          * Drainage area exponent for the stream power law. ($m$ variable in FastScape surface equation.)
+         * This variable is read from the parameter file through a parameter called 'Drainage area exponent'.
          */
         double drainage_area_exponent_m;
 
         /**
          * Slope exponent for the stream power law. ($n$ variable in FastScape surface equation.)
+         * This variable is read from the parameter file through a parameter called 'Slope exponent'.
          */
         double slope_exponent_n;
 
         /**
          * Slope exponent for multi-direction flow, where 0 is uniform, and 10 is steepest descent. (-1 varies with slope.)
          * ($p$ variable in FastScape surface equation.)
+         * This variable is read from the parameter file through a parameter called 'Multi-direction slope exponent'.
          */
         double slope_exponent_p;
 
         /**
          * Bedrock deposition coefficient. Higher values deposit more sediment
          * inside the domain. ($G$ variable in FastScape surface equation.)
+         * This variable is read from the parameter file through a parameter called 'Bedrock deposition coefficient'.
          */
         double bedrock_deposition_g;
 
@@ -450,6 +488,7 @@ namespace aspect
          * Sediment deposition coefficient. Higher values deposit more sediment inside the domain.
          * When set to -1 this is identical to the bedrock value.
          * ($G$ variable in FastScape surface equation applied to sediment.)
+         * This variable is read from the parameter file through a parameter called 'Sediment deposition coefficient'.
          */
         double sediment_deposition_g;
 
@@ -465,6 +504,7 @@ namespace aspect
 
         /**
          * Flag to choose if a function of river incision rate for the stream power law will be applied.
+         * This variable is read from the parameter file through a parameter called 'Use kf distribution function'.
          */
         bool use_kf_distribution_function;
 
@@ -474,6 +514,7 @@ namespace aspect
          * Units: ${m^(1-2drainage_area_exponent)/yr}$ if "Use years instead of seconds in output" is true;
          * otherwise, the units are ${m^(1-2drainage_area_exponent)/s}$. Then a time scale factor will be applied to
          * convert it into  ${m^(1-2drainage_area_exponent)/yr}$ for Fastscape.
+         * This variable is read from the parameter file through a parameter called 'Bedrock river incision rate'.
          */
         double constant_bedrock_river_incision_rate;
 
@@ -484,6 +525,7 @@ namespace aspect
          * convert it into  ${m^(1-2drainage_area_exponent)/yr}$ for Fastscape.
          * When set to -1 this is identical to the bedrock value.
          * ($kf$ variable in FastScape surface equation applied to sediment.)
+         * This variable is read from the parameter file through a parameter called 'Sediment river incision rate'.
          */
         double sediment_river_incision_rate;
 
@@ -499,6 +541,7 @@ namespace aspect
 
         /**
          * Flag for using parsed function vs constant
+         * This variable is read from the parameter file through a parameter called 'Use kd distribution function'.
          */
         bool use_kd_distribution_function;
 
@@ -508,6 +551,7 @@ namespace aspect
          * otherwise, the units are ${m^2/s}$. Then a time scale factor will be applied to
          * convert it into  ${m^2/yr}$ for Fastscape.
          * This function is only used only if use_kf_distribution_function is false.
+         * This variable is read from the parameter file through a parameter called 'Bedrock diffusivity'.
          */
         double constant_bedrock_transport_coefficient;
 
@@ -518,6 +562,7 @@ namespace aspect
          * convert it into  ${m^2/yr}$ for Fastscape.
          * When set to -1 this is identical to the bedrock value.
          * (kd in FastScape surface equation applied to sediment).
+         * This variable is read from the parameter file through a parameter called 'Sediment diffusivity'.
          */
         double sediment_transport_coefficient;
         /**
@@ -540,6 +585,7 @@ namespace aspect
 
         /**
          * User defined constant sea level value (m).
+         * This variable is read from the parameter file through a parameter called 'Sea level'.
          */
         double sea_level_constant_value;
 
@@ -550,62 +596,74 @@ namespace aspect
 
         /**
          * Whether to use a function to define sea level.
+         * This variable is read from the parameter file through a parameter called 'Use sea level function'.
          */
         bool use_sea_level_function;
 
         /**
          * Parameters to set an extra erosional base level
          * on the ghost nodes that differs from sea level.
+         * This variable is read from the parameter file through a parameter called 'Use a fixed erosional base level'.
          */
         bool use_fixed_erosional_base;
 
         /**
          * Height of the extra erosional base level.
+         * This variable is read from the parameter file through a parameter called 'Erosional base level'.
          */
         double h_erosional_base;
 
         /**
          * Surface porosity for sand.
+         * This variable is read from the parameter file through a parameter called 'Sand porosity'.
          */
         double sand_surface_porosity;
 
         /**
          * Surface porosity for silt.
+         * This variable is read from the parameter file through a parameter called 'Silt porosity'.
          */
         double silt_surface_porosity;
 
         /**
          * Sands e-folding depth for exponential porosity law (m).
+         * This variable is read from the parameter file through a parameter called 'Sand e-folding depth'.
          */
         double sand_efold_depth;
 
         /**
          * Silts e-folding depth for exponential porosity law (m).
+         * This variable is read from the parameter file through a parameter called 'Silt e-folding depth'.
          */
         double silt_efold_depth;
 
         /**
          * Silt fraction of material entering the marine domain.
+         * This variable is read from the parameter file through a parameter called 'Silt fraction'.
          */
         double incoming_silt_fraction;
 
         /**
          * Averaging depth/thickness for sand-silt equation (m).
+         * This variable is read from the parameter file through a parameter called 'Depth averaging thickness'.
          */
         double sand_silt_averaging_depth;
 
         /**
          * Sand marine transport coefficient. (marine diffusion, m^2/yr.)
+         * This variable is read from the parameter file through a parameter called 'Sand transport coefficient'.
          */
         double sand_transport_coefficient;
 
         /**
          * Silt marine transport coefficient. (marine diffusion, m^2/yr.)
+         * This variable is read from the parameter file through a parameter called 'Silt transport coefficient'.
          */
         double silt_transport_coefficient;
 
         /**
          * Flag to use the marine component of FastScape.
+         * This variable is read from the parameter file through a parameter called 'Use marine component'.
          */
         bool use_marine_component;
         /**
@@ -620,6 +678,7 @@ namespace aspect
         /**
          * Set a flat height (m) after which the flat_erosional_factor
          * is applied to the bedrock river incision rate and transport coefficient.
+         * This variable is read from the parameter file through a parameter called 'Orographic elevation control'.
          */
         int flat_elevation;
 
@@ -627,33 +686,40 @@ namespace aspect
          * Set the height (m) after which the model will track the ridge line
          * and based on the wind direction will apply the wind_barrier_erosional_factor
          * to the bedrock river incision rate and transport coefficient.
+         * This variable is read from the parameter file through a parameter called 'Orographic wind barrier height'.
          */
         int wind_barrier_elevation;
 
         /**
          * Wind direction for wind_barrier_erosional_factor.
+         * This variable is read from the parameter file through a parameter called 'Wind direction'.
          */
         unsigned int wind_direction;
 
         /**
          * Factor to multiply the bedrock river incision rate and transport coefficient by depending on them
          * flat_elevation.
+         * This variable is read from the parameter file through a parameter called 'Elevation factor'.
          */
         double flat_erosional_factor;
 
         /**
          * Factor to multiply the bedrock river incision rate and transport coefficient by depending on them
          * wind_barrier_elevation and wind direction.
+         * This variable is read from the parameter file through a parameter called 'Wind barrier factor'.
          */
         double wind_barrier_erosional_factor;
 
         /**
          * Flag to stack both orographic controls.
+         * This variable is read from the parameter file through a parameter called 'Stack orographic controls'.
          */
         bool stack_controls;
 
         /**
          * Flag to use orographic controls.
+         *
+         * This variable is read from the parameter file through a parameter called 'Flag to use orographic controls'.
          */
         bool use_orographic_controls;
         /**

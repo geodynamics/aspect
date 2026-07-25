@@ -101,11 +101,14 @@ namespace aspect
           /**
            * If true, the data output will include a field that has the
            * reconstructed fluid interface as the zero contour
+           * This variable is read from the parameter file through a parameter called 'Output interface reconstruction contour'.
            */
           bool include_contour;
 
           /**
            * If true, the data output will include the normal vector for the reconstructed interface
+           *
+           * This variable is read from the parameter file through a parameter called 'Output interface normals'.
            */
           bool include_normal;
       };

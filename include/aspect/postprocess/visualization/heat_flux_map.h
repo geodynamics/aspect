@@ -89,6 +89,8 @@ namespace aspect
           /**
            * A flag that determines whether to use the point-wise
            * heat flux calculation or the cell-wise averaged calculation.
+           *
+           * This variable is read from the parameter file through a parameter called 'Output point wise heat flux'.
            */
           bool output_point_wise_heat_flux;
 

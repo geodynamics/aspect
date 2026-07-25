@@ -74,6 +74,10 @@ namespace aspect
         /**
          * The values of the various composition variables on each of the
          * 2*dim boundaries of the box.
+         *
+         * This variable is read from the parameter file through parameters called 'Left composition',
+         * 'Right composition', 'Bottom composition', 'Top composition',
+         * 'Front composition', and 'Back composition'.
          */
         std::vector<double> composition_values[2*dim];
     };

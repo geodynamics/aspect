@@ -204,6 +204,7 @@ namespace aspect
            * cohesion * cos_phi + pressure * sin_phi in 2D.
            * Phi is an angle of internal friction, that is
            * input by the user in degrees, but stored as radians.
+           * This variable is read from the parameter file through a parameter called 'Angles of internal friction'.
            */
           std::vector<double> angles_internal_friction;
 
@@ -215,32 +216,39 @@ namespace aspect
            * Psi is an angle of dilation, that is input by the user in degrees,
            * but stored as radians. Note that the dilation angle must not be larger
            * than the internal friction angle.
+           * This variable is read from the parameter file through a parameter called 'Angles of dilation'.
            */
           std::vector<double> angles_dilation;
 
           /**
            * The cohesion is provided and stored in Pa.
+           * This variable is read from the parameter file through a parameter called 'Cohesions'.
            */
           std::vector<double> cohesions;
 
           /**
            *The prefactors for the yield stress.
+           * This variable is read from the parameter file through a parameter called 'Prefactors for yield stress'.
            */
           std::vector<double> yield_stress_prefactors;
 
           /**
            * The yield stress is limited to a constant value, stored in Pa.
+           * This variable is read from the parameter file through a parameter called 'Maximum yield stress'.
            */
           std::vector<double> max_yield_stresses;
 
           /**
            * Whether to add a plastic damper in the computation
            * of the drucker prager plastic viscosity.
+           * This variable is read from the parameter file through a parameter called 'Use plastic damper'.
            */
           bool use_plastic_damper;
 
           /**
            * Viscosity of a damper used to stabilize plasticity
+           *
+           * This variable is read from the parameter file through a parameter called 'Plastic damper viscosity'.
            */
           double damper_viscosity;
       };

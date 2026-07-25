@@ -97,12 +97,15 @@ namespace aspect
         /**
          * The coordinate representation to evaluate the function. Possible
          * choices are depth, cartesian and spherical.
+         * This variable is read from the parameter file through a parameter called 'Coordinate system'.
          */
         Utilities::Coordinates::CoordinateSystem coordinate_system;
 
         /**
          * Whether to specify velocity in x, y, z components, or
          * r, phi, theta components.
+         *
+         * This variable is read from the parameter file through a parameter called 'Use spherical unit vectors'.
          */
         bool use_spherical_unit_vectors;
     };

@@ -74,18 +74,22 @@ namespace aspect
       private:
         /**
          * Surface temperature
+         * This variable is read from the parameter file through a parameter called 'Surface temperature'.
          */
         double T0;
 
         /**
          * Value of the isotherm defining the
          * Lithosphere-Asthenosphere boundary.
+         * This variable is read from the parameter file through a parameter called 'Lithosphere-Asthenosphere boundary isotherm'.
          */
         double LAB_isotherm;
 
         /**
          * Vector for the thicknesses of the compositional fields
          * representing the layers 'upper_crust', 'lower_crust' and 'lithospheric_mantle'.
+         *
+         * This variable is read from the parameter file through a parameter called 'Layer thicknesses'.
          */
         std::vector<double> thicknesses;
 

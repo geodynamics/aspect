@@ -247,18 +247,22 @@ namespace aspect
 
         /**
          * How to merge the results of multiple mesh refinement criteria.
+         * This variable is read from the parameter file through a parameter called 'Refinement criteria merge operation'.
          */
         MergeOperation merge_operation;
 
         /**
          * Whether to normalize the individual refinement indicators to the
          * range $[0,1]$ before merging.
+         * This variable is read from the parameter file through a parameter called 'Normalize individual refinement criteria'.
          */
         bool normalize_criteria;
 
         /**
          * The scaling factors that should be applied to the individual
          * refinement indicators before merging.
+         *
+         * This variable is read from the parameter file through a parameter called 'Refinement criteria scaling factors'.
          */
         std::vector<double> scaling_factors;
     };

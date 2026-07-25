@@ -69,6 +69,8 @@ namespace aspect
         /**
          * The scaling factors that should be applied to the individual
          * refinement indicators before merging.
+         *
+         * This variable is read from the parameter file through a parameter called 'Compositional field scaling factors'.
          */
         std::vector<double> composition_scaling_factors;
     };

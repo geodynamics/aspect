@@ -100,27 +100,32 @@ namespace aspect
 
         /**
          * The reference pressure
+         * This variable is read from the parameter file through a parameter called 'Reference pressure'.
          */
         double reference_pressure;
 
         /**
          * The reference temperature
+         * This variable is read from the parameter file through a parameter called 'Reference temperature'.
          */
         double reference_temperature;
 
         /**
          * The reference density
+         * This variable is read from the parameter file through a parameter called 'Reference density'.
          */
         double reference_rho;
 
         /**
          * The reference isothermal bulk modulus
+         * This variable is read from the parameter file through a parameter called 'Reference isothermal bulk modulus'.
          */
         double reference_isothermal_bulk_modulus;
 
         /**
          * The reference K'
          * (first pressure derivative of the isothermal bulk modulus)
+         * This variable is read from the parameter file through a parameter called 'Reference bulk modulus derivative'.
          */
         double reference_Kprime;
 
@@ -132,11 +137,13 @@ namespace aspect
 
         /**
          * The reference thermal expansivity
+         * This variable is read from the parameter file through a parameter called 'Reference thermal expansivity'.
          */
         double reference_thermal_expansivity;
 
         /**
          * The Einstein temperature
+         * This variable is read from the parameter file through a parameter called 'Einstein temperature'.
          */
         double einstein_temperature;
 
@@ -148,11 +155,14 @@ namespace aspect
 
         /**
          * The constant viscosity
+         * This variable is read from the parameter file through a parameter called 'Viscosity'.
          */
         double eta;
 
         /**
          * The constant thermal conductivity.
+         *
+         * This variable is read from the parameter file through a parameter called 'Thermal conductivity'.
          */
         double k_value;
 

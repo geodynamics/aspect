@@ -104,17 +104,20 @@ namespace aspect
       private:
         /**
          * Use truncated anelastic approximation?
+         * This variable is read from the parameter file through a parameter called 'Use TALA'.
          */
         bool tala;
 
         /**
          * The reference viscosity
+         * This variable is read from the parameter file through a parameter called 'Viscosity'.
          */
         double viscosity;
 
         /**
          * The constant $A$ in the temperature dependence of viscosity
          * $\exp\left(-A \frac{T - T_\text{adi}}{T_\text{adi}}\right).$
+         * This variable is read from the parameter file through a parameter called 'Thermal viscosity exponent'.
          */
         double thermal_viscosity_exponent;
 
@@ -123,6 +126,7 @@ namespace aspect
          * $\eta_r(z)$, which determines the depth dependence of viscosity,
          * and is multiplied with the reference viscosity and the
          * temperature dependence to compute the viscosity $\eta(z,T)$.
+         * This variable is read from the parameter file through a parameter called 'Viscosity prefactors'.
          */
         std::vector<double> viscosity_prefactors;
 
@@ -130,6 +134,8 @@ namespace aspect
          * A list of depths that determine the locations of the jumps in
          * the piece-wise constant function $\eta_r(z)$, which describes the
          * depth dependence of viscosity.
+         *
+         * This variable is read from the parameter file through a parameter called 'Transition depths'.
          */
         std::vector<double> transition_depths;
 

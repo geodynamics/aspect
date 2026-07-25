@@ -128,21 +128,26 @@ namespace aspect
 
           /**
            * List of dislocation creep prefactors A.
+           * This variable is read from the parameter file through a parameter called 'Prefactors for dislocation creep'.
            */
           std::vector<double> prefactors;
 
           /**
            * List of dislocation creep stress exponents n.
+           * This variable is read from the parameter file through a parameter called 'Stress exponents for dislocation creep'.
            */
           std::vector<double> stress_exponents;
 
           /**
            * List of dislocation creep activation energies E.
+           * This variable is read from the parameter file through a parameter called 'Activation energies for dislocation creep'.
            */
           std::vector<double> activation_energies;
 
           /**
            * List of dislocation creep activation volumes V.
+           *
+           * This variable is read from the parameter file through a parameter called 'Activation volumes for dislocation creep'.
            */
           std::vector<double> activation_volumes;
 

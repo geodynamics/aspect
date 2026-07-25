@@ -140,9 +140,13 @@ namespace aspect
         VsToDensityMethod vs_to_density_method;
 
         /**
-         * File directory and names
+         * Directory and names of files. This variable is read from the
+         * parameter file through the 'Data directory' parameter.
          */
         std::string data_directory;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Spline knots depth file name'.
+         */
         std::string spline_depth_file_name;
 
         /**
@@ -151,6 +155,7 @@ namespace aspect
          * S40RTS there are different versions available that differ by the
          * degree of damping in the seismic inversion. These models could be
          * downloaded and used as well.
+         * This variable is read from the parameter file through a parameter called 'Initial condition file name'.
          */
         std::string harmonics_coeffs_file_name;
 
@@ -164,27 +169,37 @@ namespace aspect
          * 17,981-17,994.
          * The last parameter is a depth down to which heterogeneities are
          * zeroed out.
+         * This variable is read from the parameter file through a parameter called 'Vs to density scaling'.
          */
         double vs_to_density_constant;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Thermal expansion coefficient in initial temperature scaling'.
+         */
         double thermal_alpha;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Remove temperature heterogeneity down to specified depth'.
+         */
         double no_perturbation_depth;
 
         /**
          * This parameter allows to remove the degree 0 component of the shear
          * wave velocity perturbation, which guarantees that average
          * temperature at a certain depth is the background temperature.
+         * This variable is read from the parameter file through a parameter called 'Remove degree 0 from perturbation'.
          */
         bool zero_out_degree_0;
 
         /**
          * This parameter allows to use a lower maximum degree when reading
          * the spherical harmonic data file.
+         * This variable is read from the parameter file through a parameter called 'Specify a lower maximum degree'.
          */
         bool lower_max_degree;
 
         /**
          * The maximum degree the users specify, which is only valid when
          * "lower_max_degree" is set to true.
+         * This variable is read from the parameter file through a parameter called 'Maximum degree'.
          */
         unsigned int specified_max_degree;
 
@@ -192,6 +207,7 @@ namespace aspect
          * This parameter gives the reference temperature, which will be
          * perturbed. In the compressional case the background temperature
          * will be the adiabat.
+         * This variable is read from the parameter file through a parameter called 'Reference temperature'.
          */
         double reference_temperature;
 
@@ -219,6 +235,8 @@ namespace aspect
 
         /**
          * Whether to use the thermal expansion coefficient from the material model
+         *
+         * This variable is read from the parameter file through a parameter called 'Use thermal expansion coefficient from material model'.
          */
         bool use_material_model_thermal_alpha;
 

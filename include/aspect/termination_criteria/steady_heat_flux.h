@@ -66,18 +66,25 @@ namespace aspect
         /**
          * The minimum length of simulation time that the system
          * should be in steady state before termination.
+         * This variable is read from the parameter file through a parameter
+         * called 'Time in steady state'.
          */
         double necessary_time_in_steady_state;
 
         /**
          * The maximum relative deviation of the heat flux in recent
          * simulation time for the system to be considered in steady state.
+         * This variable is read from the parameter file through a parameter
+         * called 'Maximum relative deviation'.
          */
         double allowed_relative_deviation;
 
         /**
          * A set of boundary ids on which the average heat flux will be
          * computed.
+         *
+         * This variable is read from the parameter file through a parameter
+         * called 'Boundary indicators'.
          */
         std::set<types::boundary_id> boundary_indicators;
 

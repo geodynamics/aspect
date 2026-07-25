@@ -96,8 +96,15 @@ namespace aspect
       private:
         /**
          * Temperatures at the inner and outer boundaries.
+         * This variable is read from the parameter file through a parameter called 'Minimal temperature'.
          */
         double min_temperature;
+
+        /**
+         * Temperatures at the inner and outer boundaries.
+         *
+         * This variable is read from the parameter file through a parameter called 'Maximal temperature'.
+         */
         double max_temperature;
 
         /**

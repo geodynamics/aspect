@@ -78,8 +78,15 @@ namespace aspect
       private:
         /**
          * Compositions at the inner and outer boundaries.
+         * This variable is read from the parameter file through a parameter called 'Inner composition'.
          */
         std::vector<double> inner_composition;
+
+        /**
+         * Compositions at the inner and outer boundaries.
+         *
+         * This variable is read from the parameter file through a parameter called 'Outer composition'.
+         */
         std::vector<double> outer_composition;
 
         /**

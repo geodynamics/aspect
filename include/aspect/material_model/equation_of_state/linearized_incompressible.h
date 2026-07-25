@@ -100,21 +100,25 @@ namespace aspect
         private:
           /**
            * The reference density $\rho_0$ used in the computation of the density.
+           * This variable is read from the parameter file through a parameter called 'Reference density'.
            */
           double reference_rho;
 
           /**
            * The reference temperature $T_0$ used in the computation of the density.
+           * This variable is read from the parameter file through a parameter called 'Reference temperature'.
            */
           double reference_T;
 
           /**
            * The constant thermal expansivity $\alpha$ used in the computation of the density.
+           * This variable is read from the parameter file through a parameter called 'Thermal expansion coefficient'.
            */
           double thermal_alpha;
 
           /**
            * The constant specific heat.
+           * This variable is read from the parameter file through a parameter called 'Reference specific heat'.
            */
           double reference_specific_heat;
 
@@ -128,6 +132,9 @@ namespace aspect
           /**
            * The density difference $\Delta\rho_i$ between each composition $\mathfrak c_i$
            * and the background.
+           *
+           * This variable is read from the parameter file through parameters called
+           * 'Density differential for compositional field 1' and 'Density differential for compositional field 2'.
            */
           std::vector<double> compositional_delta_rhos;
       };

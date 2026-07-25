@@ -66,6 +66,7 @@ namespace aspect
          * that assumes that the 'volumetric' rotation is equal to the 'mass'
          * rotation. If this parameter is true this postprocessor computes
          * 'net rotation' instead of 'angular momentum'.
+         * This variable is read from the parameter file through a parameter called 'Use constant density of one'.
          */
         bool use_constant_density;
 
@@ -75,6 +76,8 @@ namespace aspect
          * axis. This is a second-order symmetric tensor with
          * 6 components in 3D. In 2D this option has no effect, because
          * the rotation axis is fixed and thus it is always a scalar.
+         *
+         * This variable is read from the parameter file through a parameter called 'Output full moment of inertia tensor'.
          */
         bool output_full_tensor;
     };

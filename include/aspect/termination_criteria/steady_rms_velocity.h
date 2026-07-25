@@ -63,7 +63,16 @@ namespace aspect
         parse_parameters (ParameterHandler &prm) override;
 
       private:
+        /**
+         * This variable is read from the parameter file through a parameter
+         * called 'Time in steady state'.
+         */
         double                                  time_length;
+
+        /**
+         * This variable is read from the parameter file through a parameter
+         * called 'Maximum relative deviation'.
+         */
         double                                  relative_deviation;
 
         /**

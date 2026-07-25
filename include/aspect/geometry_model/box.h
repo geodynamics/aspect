@@ -223,21 +223,30 @@ namespace aspect
 
         /**
          * Extent of the box in x-, y-, and z-direction (in 3d).
+         * This variable is read from the parameter file through parameters called
+         * 'X extent', 'Y extent', and 'Z extent'.
          */
         Point<dim> extents;
 
         /**
          * Origin of the box in x, y, and z (in 3d) coordinates.
+         * This variable is read from the parameter file through parameters called
+         * 'Box origin X coordinate', 'Box origin Y coordinate', and 'Box origin Z coordinate'.
          */
         Point<dim> box_origin;
 
         /**
          * Flag whether the box is periodic in the x-, y-, and z-direction.
+         * This variable is read from the parameter file through parameters called
+         * 'X periodic', 'Y periodic', 'Z periodic'.
          */
         std::array<bool, dim> periodic;
 
         /**
          * The number of cells in each coordinate direction.
+         *
+         * This variable is read from the parameter file through parameters called
+         * 'X repetitions', 'Y repetitions', and 'Z repetitions'.
          */
         std::array<unsigned int, dim> repetitions;
     };

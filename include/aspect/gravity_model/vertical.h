@@ -60,6 +60,8 @@ namespace aspect
       private:
         /**
          * Magnitude of the gravity vector.
+         *
+         * This variable is read from the parameter file through a parameter called 'Magnitude'.
          */
         double gravity_magnitude;
 

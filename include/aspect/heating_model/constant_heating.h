@@ -75,6 +75,9 @@ namespace aspect
          */
 
       private:
+        /**
+         * This variable is read from the parameter file through a parameter called 'Radiogenic heating rate'.
+         */
         double radiogenic_heating_rate;
     };
   }

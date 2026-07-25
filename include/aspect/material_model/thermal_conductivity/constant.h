@@ -62,6 +62,8 @@ namespace aspect
         private:
           /**
            * The thermal conductivity.
+           *
+           * This variable is read from the parameter file through a parameter called 'Thermal conductivity'.
            */
           double k;
       };

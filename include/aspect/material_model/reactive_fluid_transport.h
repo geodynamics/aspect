@@ -150,9 +150,16 @@ namespace aspect
          * Variables that describe the properties of the fluid, i.e. its density,
          * viscosity, and compressibility.
          * Properties of the solid are defined in the base model.
+         * This variable is read from the parameter file through a parameter called 'Reference fluid density'.
          */
         double reference_rho_f;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Reference fluid viscosity'.
+         */
         double eta_f;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Fluid compressibility'.
+         */
         double fluid_compressibility;
 
         /**
@@ -160,16 +167,34 @@ namespace aspect
          * to the solid, i.e., the bulk viscosity (relative to the shear viscosity),
          * the permeability, and how much the solid viscosity changes in the presence
          * of fluids.
+         * This variable is read from the parameter file through a parameter called 'Shear to bulk viscosity ratio'.
          */
         double shear_to_bulk_viscosity_ratio;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Minimum compaction viscosity'.
+         */
         double min_compaction_viscosity;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Maximum compaction viscosity'.
+         */
         double max_compaction_viscosity;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Reference permeability'.
+         */
         double reference_permeability;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Exponential fluid weakening factor'.
+         */
         double alpha_phi;
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Reference temperature'.
+         */
         double reference_T;
 
         /**
          * Time scale for fluid release and absorption.
+         *
+         * This variable is read from the parameter file through a parameter called 'Fluid reaction time scale for operator splitting'.
          */
         double fluid_reaction_time_scale;
 
@@ -231,8 +256,11 @@ namespace aspect
           zero_solubility,
           tian_approximation,
           katz2003
-        }
-        fluid_solid_reaction_scheme;
+        };
+        /**
+         *  This variable is read from the parameter file through a parameter called 'Fluid-solid reaction scheme'.
+         */
+        ReactionScheme fluid_solid_reaction_scheme;
     };
   }
 }

@@ -128,6 +128,8 @@ namespace aspect
           /**
            * The coordinate representation to evaluate the reaction_area
            * function. Possible choices are depth, cartesian and spherical.
+           * This variable is read from the parameter file through a parameter
+           * called 'Coordinate system'.
            */
           Utilities::Coordinates::CoordinateSystem coordinate_system;
 
@@ -149,6 +151,9 @@ namespace aspect
 
           /**
            * Vector of the times when each reaction should occur.
+           *
+           * This variable is read from the parameter file through a parameter
+           * called 'List of reaction times'.
            */
           std::vector<double> reaction_times;
 

@@ -102,6 +102,10 @@ namespace aspect
           parse_parameters (ParameterHandler &prm) override;
 
         private:
+          /**
+           * This variable is read from the parameter file through a parameter
+           * called 'Threshold for melt presence'.
+           */
           double threshold_for_melt_presence;
       };
     }

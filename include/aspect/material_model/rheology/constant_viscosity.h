@@ -63,6 +63,8 @@ namespace aspect
            * The constant viscosity that defines this rheology. It
            * is read from the input file by the parse_parameters()
            * function.
+           *
+           * This variable is read from the parameter file through a parameter called 'Viscosity'.
            */
           double viscosity;
       };
