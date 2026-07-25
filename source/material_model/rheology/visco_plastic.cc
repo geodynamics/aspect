@@ -84,6 +84,66 @@ namespace aspect
 
 
 
+    namespace
+    {
+      template <int dim>
+      std::vector<std::string>
+      make_viscosity_additional_outputs_names(
+        const std::vector<typename ViscosityAdditionalOutputs<dim>::Property> &active_properties)
+      {
+        std::vector<std::string> names;
+
+        for (const auto property : active_properties)
+          switch (property)
+            {
+              case ViscosityAdditionalOutputs<dim>::Property::diffusion_viscosity:
+                names.emplace_back("diffusion_viscosity");
+                break;
+
+              case ViscosityAdditionalOutputs<dim>::Property::dislocation_viscosity:
+                names.emplace_back("dislocation_viscosity");
+                break;
+            }
+
+        return names;
+      }
+    }
+
+
+
+    template <int dim>
+    ViscosityAdditionalOutputs<dim>::ViscosityAdditionalOutputs(const unsigned int n_points,
+                                                                const std::vector<Property> &active_properties)
+      :NamedAdditionalMaterialOutputs<dim>(make_viscosity_additional_outputs_names<dim>(active_properties)),
+       active_properties(active_properties),
+       diffusion_viscosities(n_points, std::numeric_limits<double>::max()),
+       dislocation_viscosities(n_points, std::numeric_limits<double>::max())
+    {}
+
+
+
+    template <int dim>
+    std::vector<double>
+    ViscosityAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
+    {
+      AssertIndexRange(idx, active_properties.size());
+
+      switch (active_properties[idx])
+        {
+          case Property::diffusion_viscosity:
+            return diffusion_viscosities;
+
+          case Property::dislocation_viscosity:
+            return dislocation_viscosities;
+        }
+
+      DEAL_II_ASSERT_UNREACHABLE();
+
+      return {};
+    }
+
+
+
     namespace Rheology
     {
 
@@ -110,6 +170,8 @@ namespace aspect
         output_parameters.drucker_prager_parameters.resize(volume_fractions.size());
         output_parameters.dilation_lhs_terms.resize(volume_fractions.size(), numbers::signaling_nan<double>());
         output_parameters.dilation_rhs_terms.resize(volume_fractions.size(), numbers::signaling_nan<double>());
+        output_parameters.diffusion_viscosities.resize(volume_fractions.size(), std::numeric_limits<double>::max());
+        output_parameters.dislocation_viscosities.resize(volume_fractions.size(), std::numeric_limits<double>::max());
 
         // Assemble current and old stress tensor if elastic behavior is enabled
         SymmetricTensor<2, dim> stress_0_advected = numbers::signaling_nan<SymmetricTensor<2, dim>>();
@@ -220,12 +282,14 @@ namespace aspect
                   {
                     non_yielding_viscosity = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_diffusion, j, i,
                                                                                                   CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::diffusion);
+                    output_parameters.diffusion_viscosities[j] = non_yielding_viscosity;
                     break;
                   }
                   case dislocation:
                   {
                     non_yielding_viscosity = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_dislocation, j, i,
                                                                                                   CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::dislocation);
+                    output_parameters.dislocation_viscosities[j] = non_yielding_viscosity;
                     break;
                   }
                   case frank_kamenetskii:
@@ -244,6 +308,9 @@ namespace aspect
                                                                 CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::dislocation);
                     non_yielding_viscosity = (scaled_viscosity_diffusion * scaled_viscosity_dislocation)/
                                              (scaled_viscosity_diffusion + scaled_viscosity_dislocation);
+
+                    output_parameters.diffusion_viscosities[j] = scaled_viscosity_diffusion;
+                    output_parameters.dislocation_viscosities[j] = scaled_viscosity_dislocation;
                     break;
                   }
                   case minimum_diffusion_dislocation:
@@ -253,6 +320,9 @@ namespace aspect
                     const double scaled_viscosity_dislocation = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_dislocation, j, i,
                                                                 CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::dislocation);
                     non_yielding_viscosity = std::min(scaled_viscosity_diffusion, scaled_viscosity_dislocation);
+
+                    output_parameters.diffusion_viscosities[j] = scaled_viscosity_diffusion;
+                    output_parameters.dislocation_viscosities[j] = scaled_viscosity_dislocation;
                     break;
                   }
                   default:
@@ -984,6 +1054,65 @@ namespace aspect
           }
       }
 
+      template <int dim>
+      void
+      Rheology::ViscoPlastic<dim>::create_viscosity_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+      {
+        if (out.template has_additional_output_object<ViscosityAdditionalOutputs<dim>>() == false)
+          {
+            const unsigned int n_points = out.n_evaluation_points();
+
+            std::vector<typename ViscosityAdditionalOutputs<dim>::Property> active_properties;
+
+            const bool compute_dislocation_viscosity =
+              (viscous_flow_law != diffusion &&
+               viscous_flow_law != frank_kamenetskii);
+
+            const bool compute_diffusion_viscosity =
+              (viscous_flow_law != dislocation &&
+               viscous_flow_law != frank_kamenetskii);
+
+            if (compute_diffusion_viscosity)
+              active_properties.emplace_back(
+                ViscosityAdditionalOutputs<dim>::Property::diffusion_viscosity);
+
+            if (compute_dislocation_viscosity)
+              active_properties.emplace_back(
+                ViscosityAdditionalOutputs<dim>::Property::dislocation_viscosity);
+
+            out.additional_outputs.push_back(
+              std::make_unique<ViscosityAdditionalOutputs<dim>>(
+                n_points,
+                active_properties));
+          }
+      }
+
+
+
+      template <int dim>
+      void
+      Rheology::ViscoPlastic<dim>::fill_viscosity_outputs(
+        const unsigned int i,
+        const std::vector<double> &volume_fractions,
+        MaterialModel::MaterialModelOutputs<dim> &out,
+        const IsostrainViscosities &isostrain_viscosities) const
+      {
+        if (const std::shared_ptr<ViscosityAdditionalOutputs<dim>> viscosity_out =
+              out.template get_additional_output_object<ViscosityAdditionalOutputs<dim>>())
+          {
+            viscosity_out->dislocation_viscosities[i] =
+              MaterialUtilities::average_value(
+                volume_fractions,
+                isostrain_viscosities.dislocation_viscosities,
+                viscosity_averaging);
+
+            viscosity_out->diffusion_viscosities[i]
+              = MaterialUtilities::average_value(
+                  volume_fractions,
+                  isostrain_viscosities.diffusion_viscosities,
+                  viscosity_averaging);
+          }
+      }
     }
   }
 }
@@ -995,6 +1124,7 @@ namespace aspect
   {
 #define INSTANTIATE(dim) \
   template class PlasticAdditionalOutputs<dim>; \
+  template class ViscosityAdditionalOutputs<dim>; \
   \
   namespace Rheology \
   { \

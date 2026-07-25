@@ -85,6 +85,58 @@ namespace aspect
     };
 
     /**
+    * Additional output fields for diffusion and dislocation viscosities.
+    */
+    template <int dim>
+    class ViscosityAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        /**
+        * Enumeration of viscosity properties that can be exposed through
+        * additional material model outputs.
+        */
+        enum class Property
+        {
+          diffusion_viscosity,
+          dislocation_viscosity
+        };
+
+        /**
+         * Constructor.
+         */
+        ViscosityAdditionalOutputs(const unsigned int n_points,
+                                   const std::vector<Property> &active_properties);
+
+        std::vector<double>
+        get_nth_output(const unsigned int idx) const override;
+
+      private:
+        /**
+         * The viscosity properties that are active for the selected rheology
+         * and should be exposed to postprocessors.
+         */
+        std::vector<Property> active_properties;
+
+      public:
+        /**
+         * Diffusion viscosities. These are the diffusion viscosities that are computed
+         * in Rheology::DiffusionCreep::compute_viscosity() function before yielding.
+         * The values are only relevant when diffusion creep is present,
+         * i.e., viscous flow law is either diffusion or composite.
+         */
+        std::vector<double> diffusion_viscosities;
+
+        /**
+         * Dislocation viscosities. These are the dislocation viscosities that are computed
+         * in Rheology::DiffusionCreep::compute_viscosity() function before yielding.
+         * The values are only relevant when dislocation creep is present,
+         * i.e., viscous flow law is either dislocation or composite.
+         */
+        std::vector<double> dislocation_viscosities;
+
+    };
+
+    /**
      * A data structure with the output of calculate_isostrain_viscosities.
      */
     struct IsostrainViscosities
@@ -117,6 +169,16 @@ namespace aspect
        * MaterialModel::PrescribedDilation::dilation_rhs_term.
        */
       std::vector<double> dilation_rhs_terms;
+
+      /**
+      * Diffusion viscosities for each composition.
+      */
+      std::vector<double> diffusion_viscosities;
+
+      /**
+       * Dislocation viscosities for each composition.
+       */
+      std::vector<double> dislocation_viscosities;
     };
 
     namespace Rheology
@@ -209,6 +271,20 @@ namespace aspect
                                     const MaterialModel::MaterialModelInputs<dim> &in,
                                     MaterialModel::MaterialModelOutputs<dim> &out,
                                     const IsostrainViscosities &isostrain_viscosities) const;
+          /**
+          * Create additional outputs for diffusion and dislocation viscosities.
+          */
+          void
+          create_viscosity_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+          /**
+           * Fill additional outputs for diffusion and dislocation viscosities,
+           * if viscosity additional output object is created.
+           */
+          void fill_viscosity_outputs(const unsigned int point_index,
+                                      const std::vector<double> &volume_fractions,
+                                      MaterialModel::MaterialModelOutputs<dim> &out,
+                                      const IsostrainViscosities &isostrain_viscosities) const;
 
           /**
            * Minimum strain rate used to stabilize the strain rate dependent rheology.
