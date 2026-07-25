@@ -52,11 +52,11 @@
  * than 100.
  */
 #define FASTSCAPE_VERSION_GTE(major,minor,subminor) \
- ((FASTSCAPE_VERSION_MAJOR * 10000 + \
+  ((FASTSCAPE_VERSION_MAJOR * 10000 + \
     FASTSCAPE_VERSION_MINOR * 100 + \
-     FASTSCAPE_VERSION_SUBMINOR) \
-    >=  \
-    (major)*10000 + (minor)*100 + (subminor))
+    FASTSCAPE_VERSION_SUBMINOR) \
+   >=  \
+   (major)*10000 + (minor)*100 + (subminor))
 
 
 /**
