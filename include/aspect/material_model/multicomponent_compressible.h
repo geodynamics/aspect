@@ -118,6 +118,7 @@ namespace aspect
       private:
         /**
          * Enumeration for selecting which viscosity averaging scheme to use.
+         *
          * This variable is read from the parameter file through a parameter called 'Viscosity averaging scheme'.
          */
         MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;

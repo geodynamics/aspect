@@ -226,6 +226,7 @@ namespace aspect
 
           /**
            * List of Peierls creep prefactors (A).
+           *
            * This variable is read from the parameter file through a parameter called 'Prefactors for Peierls creep'.
            */
           std::vector<double> prefactors;

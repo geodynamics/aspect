@@ -99,6 +99,7 @@ namespace aspect
         /**
          * The viscosity that will be used as a reference for computing the depth-dependent
          * prefactor.
+         *
          * This variable is read from the parameter file through a parameter called 'Reference viscosity'.
          */
         double reference_viscosity;

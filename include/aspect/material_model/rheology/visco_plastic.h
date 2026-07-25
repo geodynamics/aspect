@@ -288,6 +288,7 @@ namespace aspect
 
           /**
            * Minimum strain rate used to stabilize the strain rate dependent rheology.
+           *
            * This variable is read from the parameter file through a parameter called 'Minimum strain rate'.
            */
           double min_strain_rate;

@@ -234,6 +234,7 @@ namespace aspect
          * Boolean describing whether to use the lateral average temperature
          * for computing the viscosity, rather than the temperature
          * on the reference adiabat.
+         *
          * This variable is read from the parameter file through a parameter called 'Use lateral average temperature for viscosity'.
          */
         bool use_lateral_average_temperature;

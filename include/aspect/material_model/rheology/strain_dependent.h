@@ -143,6 +143,7 @@ namespace aspect
 
           /**
            * Whether to use the temperature-activated viscous strain weakening.
+           *
            * This variable is read from the parameter file through a parameter called 'Use temperature activated strain softening'.
            */
           bool use_temperature_activated_strain_softening;

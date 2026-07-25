@@ -164,6 +164,7 @@ namespace aspect
 
           /**
            * The number of grains per particle.
+           *
            * This variable is read from the parameter file through a parameter
            * called 'Number of grains per particle'.
            */

@@ -69,6 +69,7 @@ namespace aspect
         private:
           /**
            * Number of initial particles to create.
+           *
            * This variable is read from the parameter file through a parameter
            * called 'Number of particles'.
            */

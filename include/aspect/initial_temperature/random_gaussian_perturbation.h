@@ -71,6 +71,7 @@ namespace aspect
 
         /**
          * The number of the random Gaussian perturbations.
+         *
          * This variable is read from the parameter file through a parameter called 'Number of perturbations'.
          */
         unsigned int n_perturbations;

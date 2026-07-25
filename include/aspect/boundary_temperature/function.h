@@ -104,6 +104,7 @@ namespace aspect
 
         /**
          * Temperatures at the inner and outer boundaries.
+         *
          * This variable is read from the parameter file through a parameter called 'Minimal temperature'.
          */
         double min_temperature;

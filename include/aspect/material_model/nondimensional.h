@@ -88,6 +88,7 @@ namespace aspect
       private:
         /**
          * Use truncated anelastic approximation?
+         *
          * This variable is read from the parameter file through a parameter called 'Use TALA'.
          */
         bool tala;

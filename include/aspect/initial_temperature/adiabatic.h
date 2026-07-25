@@ -110,6 +110,7 @@ namespace aspect
          * Age of the upper thermal boundary layer at the surface of the
          * model. If set to zero, no boundary layer will be present in the
          * model.
+         *
          * This variable is read from the parameter file through the 'Age top
          * boundary layer' parameter.
          */

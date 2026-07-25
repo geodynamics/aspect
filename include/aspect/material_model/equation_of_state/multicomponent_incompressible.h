@@ -97,6 +97,7 @@ namespace aspect
           /**
            * Vector of reference densities $\rho_0$ with one entry per composition and phase plus one
            * for the background field.
+           *
            * This variable is read from the parameter file through a parameter called 'Densities'.
            */
           std::vector<double> densities;

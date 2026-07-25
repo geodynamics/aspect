@@ -77,6 +77,7 @@ namespace aspect
         private:
           /**
            * List of Frank-Kamenetskii viscosity ratios (E).
+           *
            * This variable is read from the parameter file through a parameter called 'Viscosity ratios for Frank Kamenetskii'.
            */
           std::vector<double> viscosity_ratios_frank_kamenetskii;

@@ -183,6 +183,7 @@ namespace aspect
         /**
          * List of interval between output (in years if appropriate simulation
          * parameter is set, otherwise seconds) for each particle manager.
+         *
          * This variable is read from the parameter file through a parameter called 'Time between data output'.
          */
         std::vector<double> output_interval;

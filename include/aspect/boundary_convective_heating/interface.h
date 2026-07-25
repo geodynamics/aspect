@@ -221,6 +221,7 @@ namespace aspect
 
         /**
         * Names of temperature plugins.
+        *
         * This variable is read from the parameter file through a parameter called 'List of boundary temperature model names'.
         */
         std::vector<std::string> temperature_plugin_names;

@@ -233,6 +233,7 @@ namespace aspect
          * is a safer option, since it forces the boundary conditions
          * to be always applied to the same depth, but one unified grid allows
          * for a more flexible usage of the adaptive refinement.
+         *
          * This variable is read from the parameter file through a parameter called 'Use merged grids'.
          */
         bool use_merged_grids;

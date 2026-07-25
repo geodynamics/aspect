@@ -81,6 +81,7 @@ namespace aspect
       private:
         /**
          * Maximum degree when computing geoid from spherical harmonics.
+         *
          * This variable is read from the parameter file through a parameter called 'Maximum degree'.
          */
         unsigned int max_degree;

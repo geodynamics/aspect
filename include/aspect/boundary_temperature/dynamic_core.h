@@ -218,6 +218,7 @@ namespace aspect
 
         /**
          * Temperature at the inner boundary.
+         *
          * This variable is read from the parameter file through a parameter called 'Inner temperature'.
          */
         double inner_temperature;

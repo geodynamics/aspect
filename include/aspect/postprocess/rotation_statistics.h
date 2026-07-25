@@ -66,6 +66,7 @@ namespace aspect
          * that assumes that the 'volumetric' rotation is equal to the 'mass'
          * rotation. If this parameter is true this postprocessor computes
          * 'net rotation' instead of 'angular momentum'.
+         *
          * This variable is read from the parameter file through a parameter called 'Use constant density of one'.
          */
         bool use_constant_density;

@@ -89,6 +89,7 @@ namespace aspect
           /**
            * Select the mechanism to be used for the friction dependence.
            * Possible options: static friction | dynamic friction | function
+           *
            * This variable is read from the parameter file through a parameter called 'Friction mechanism'.
            */
           FrictionMechanism friction_mechanism;

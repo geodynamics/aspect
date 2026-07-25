@@ -198,6 +198,7 @@ namespace aspect
          * Suggestion for the number of FastScape steps to run for every ASPECT timestep,
          * where the FastScape timestep is determined by ASPECT_timestep_length divided by
          * this parameter.
+         *
          * This variable is read from the parameter file through a parameter called 'Number of fastscape timesteps per aspect timestep'.
          */
         unsigned int fastscape_steps_per_aspect_step;

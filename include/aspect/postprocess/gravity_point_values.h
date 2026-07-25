@@ -105,6 +105,7 @@ namespace aspect
       private:
         /**
          * Interval between the generation of gravity output.
+         *
          * This variable is read from the parameter file through a parameter called 'Time between gravity output'.
          */
         double output_interval;

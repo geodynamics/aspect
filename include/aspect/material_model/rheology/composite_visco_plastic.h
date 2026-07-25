@@ -185,6 +185,7 @@ namespace aspect
 
           /**
            * Enumeration for selecting which type of viscosity averaging to use.
+           *
            * This variable is read from the parameter file through a parameter called 'Viscosity averaging scheme'.
            */
           ViscosityAveraging::Kind viscosity_averaging_scheme;

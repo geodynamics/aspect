@@ -88,6 +88,7 @@ namespace aspect
          * in the DruckerPrager rheology model can be used to define a
          * maximum stress computed from the given cohesion and friction
          * angle.
+         *
          * This variable is read from the parameter file through the 'Limit
          * stress contribution to shear heating' parameter.
          */

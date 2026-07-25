@@ -119,6 +119,7 @@ namespace aspect
         /**
          * This parameter allows setting the input file for the SAVANI global
          * shear-wave perturbation.
+         *
          * This variable is read from the parameter file through a parameter called 'Initial condition file name'.
          */
         std::string harmonics_coeffs_file_name;

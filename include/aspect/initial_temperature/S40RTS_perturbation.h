@@ -155,6 +155,7 @@ namespace aspect
          * S40RTS there are different versions available that differ by the
          * degree of damping in the seismic inversion. These models could be
          * downloaded and used as well.
+         *
          * This variable is read from the parameter file through a parameter called 'Initial condition file name'.
          */
         std::string harmonics_coeffs_file_name;

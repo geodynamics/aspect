@@ -110,6 +110,7 @@ namespace aspect
         /**
          * A parameter that allows users to set the density value
          * above the top surface.
+         *
          * This variable is read from the parameter file through a parameter called 'Density above'.
          */
         double density_above;

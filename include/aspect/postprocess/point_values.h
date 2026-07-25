@@ -98,6 +98,7 @@ namespace aspect
 
         /**
          * Interval between the generation of output in seconds.
+         *
          * This variable is read from the parameter file through a parameter called 'Time between point values output'.
          */
         double output_interval;

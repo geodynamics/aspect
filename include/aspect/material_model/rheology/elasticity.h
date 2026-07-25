@@ -48,6 +48,7 @@ namespace aspect
          * Elastic shear moduli at the evaluation points passed to
          * the instance of MaterialModel::Interface::evaluate() that fills
          * the current object.
+         *
          * This variable is read from the parameter file through a parameter called 'Elastic shear moduli'.
          */
         std::vector<double> elastic_shear_moduli;

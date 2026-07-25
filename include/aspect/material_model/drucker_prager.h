@@ -148,6 +148,7 @@ namespace aspect
 
         /**
          * The angle of internal friction
+         *
          * This variable is read from the parameter file through a parameter called 'Angle of internal friction'.
          */
         double angle_of_internal_friction;

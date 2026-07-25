@@ -110,6 +110,7 @@ namespace aspect
          * The hillslope transport coefficient or diffusivity [m2/s]
          * used in the hillslope diffusion of the deformed
          * surface.
+         *
          * This variable is read from the parameter file through a parameter called 'Hillslope transport coefficient'.
          */
         double diffusivity;

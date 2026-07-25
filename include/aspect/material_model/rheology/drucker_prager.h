@@ -204,6 +204,7 @@ namespace aspect
            * cohesion * cos_phi + pressure * sin_phi in 2D.
            * Phi is an angle of internal friction, that is
            * input by the user in degrees, but stored as radians.
+           *
            * This variable is read from the parameter file through a parameter called 'Angles of internal friction'.
            */
           std::vector<double> angles_internal_friction;

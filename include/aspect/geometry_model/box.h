@@ -223,6 +223,7 @@ namespace aspect
 
         /**
          * Extent of the box in x-, y-, and z-direction (in 3d).
+         *
          * This variable is read from the parameter file through parameters called
          * 'X extent', 'Y extent', and 'Z extent'.
          */

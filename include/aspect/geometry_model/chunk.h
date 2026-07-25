@@ -381,6 +381,7 @@ namespace aspect
       private:
         /**
          * Minimum longitude-depth or longitude-latitude-depth point.
+         *
          * This variable is read from the parameter file through parameters called
          * 'Chunk inner radius', 'Chunk minimum longitude', and 'Chunk minimum latitude'.
          */
