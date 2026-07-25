@@ -41,7 +41,7 @@ namespace aspect
   }
 
   template <int dim>
-  void parse_parameters(const Parameters<dim>,
+  void parse_parameters(const Parameters<dim> &,
                         ParameterHandler &prm)
   {
     switch_step = prm.get_integer("Switch step");
