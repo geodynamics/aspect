@@ -33,6 +33,7 @@
 #include <deal.II/dofs/dof_handler.h>
 #include <deal.II/fe/component_mask.h>
 #include <deal.II/lac/solver_control.h>
+#include <deal.II/physics/notation.h>
 
 #include <aspect/coordinate_systems.h>
 #include <aspect/structured_data.h>
@@ -1333,6 +1334,12 @@ namespace aspect
        */
       SymmetricTensor<2,6>
       rotate_voigt_stiffness_matrix(const Tensor<2,3> &rotation_tensor, const SymmetricTensor<2,6> &input_tensor);
+
+      /**
+       * Rotate a symmetric 6x6 tensor in kelvin notation
+       */
+      SymmetricTensor<2,6>
+      rotate_kelvin_tensor(const Tensor<2,3> &rotation_tensor, const SymmetricTensor<2,6> &input_tensor);
 
       /**
        * Transform a 4th order full stiffness tensor into a 6x6 Voigt stiffness matrix.
