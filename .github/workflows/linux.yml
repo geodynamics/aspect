@@ -118,29 +118,34 @@ jobs:
       matrix:
         include:
           - image: "geodynamics/aspect-tester:jammy-dealii-9.6-v3"
-            build-with-fastscape: "OFF"
             run-tests: "ON"
             compare-tests: "ON"
+            build-with-python: "ON"
+            build-with-fastscape: "OFF"
             result-file: "changes-test-results-9.6.diff"
             container-options: '--user 0 --name container'
             use-tpetra: "OFF"
           - image: "geodynamics/aspect-tester:jammy-dealii-9.7-v4"
-            build-with-fastscape: "OFF"
             run-tests: "ON"
             compare-tests: "OFF"
+            build-with-python: "OFF"
+            build-with-fastscape: "OFF"
             result-file: "changes-test-results-9.7.diff"
             container-options: '--user 0 --name container'
             use-tpetra: "OFF"
           - image: "geodynamics/aspect-tester:jammy-dealii-master"
-            build-with-fastscape: "ON"
             run-tests: "ON"
             compare-tests: "OFF"
+            build-with-python: "OFF"
+            build-with-fastscape: "ON"
             result-file: "changes-test-results-master.diff"
             container-options: '--user 0 --name container'
             use-tpetra: "OFF"
           - image: "geodynamics/aspect-tester:jammy-dealii-master"
             run-tests: "ON"
             compare-tests: "OFF"
+            build-with-python: "OFF"
+            build-with-fastscape: "OFF"
             result-file: "changes-test-results-master-tpetra.diff"
             container-options: '--user 0 --name container'
             use-tpetra: "ON"
@@ -150,6 +155,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v7
+    - name: setup Landlab and Python
+      if: matrix.build-with-python == 'ON'
+      run: |
+        uv venv --python 3.12
+        echo "VIRTUAL_ENV=$PWD/.venv" >> $GITHUB_ENV
+        echo "$PWD/.venv/bin" >> $GITHUB_PATH
+        . ./.venv/bin/activate
+        uv sync --frozen --no-editable --verbose --active --project ./contrib/landlab/
     - name: compile
       run: |
         mkdir build
@@ -162,6 +175,8 @@ jobs:
         -D ASPECT_TEST_GENERATOR='Ninja' \
         -D ASPECT_PRECOMPILE_HEADERS=ON \
         -D ASPECT_UNITY_BUILD=ON \
+        -D ASPECT_WITH_PYTHON='${{ matrix.build-with-python }}' \
+        -D ASPECT_WITH_LANDLAB='${{ matrix.build-with-python }}' \
         -D ASPECT_WITH_FASTSCAPE='${{ matrix.build-with-fastscape }}' \
         -D FASTSCAPE_DIR="$FASTSCAPE_DIR" \
         -D ASPECT_RUN_ALL_TESTS='${{ matrix.run-tests }}' \
