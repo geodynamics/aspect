@@ -192,14 +192,16 @@ namespace aspect
         std::vector<double> last_output_time;
 
         /**
-         * Set the time output was supposed to be written. In the simplest
-         * case, this is the previous last output time plus the interval, but
-         * in general we'd like to ensure that it is the largest supposed
-         * output time, which is smaller than the current time, to avoid
-         * falling behind with last_output_time and having to catch up once
-         * the time step becomes larger. This is done after every output.
+         * Set the time output was supposed to be written for the given
+         * particle manager. In the simplest case, this is the previous last
+         * output time plus the interval, but in general we'd like to ensure
+         * that it is the largest supposed output time, which is smaller than
+         * the current time, to avoid falling behind with last_output_time and
+         * having to catch up once the time step becomes larger. This is done
+         * after every output.
          */
-        void set_last_output_time (const double current_time);
+        void set_last_output_time (const unsigned int particle_manager,
+                                   const double current_time);
 
         /**
          * Consecutively counted number indicating the how-manyth time we will

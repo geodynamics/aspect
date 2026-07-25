@@ -351,7 +351,7 @@ namespace aspect
             {
               // Up the next time we need output. This is relevant to correctly
               // write output after a restart if the format is changed.
-              set_last_output_time (this->get_time());
+              set_last_output_time (particle_manager, this->get_time());
 
               write_output[particle_manager] = false;
             }
@@ -550,7 +550,7 @@ namespace aspect
 
 
           // up the next time we need output
-          set_last_output_time (this->get_time());
+          set_last_output_time (particle_manager, this->get_time());
 
           const std::string particle_output = this->get_output_directory() + particles_output_base_name + "/" + particle_file_prefix;
 
@@ -573,23 +573,21 @@ namespace aspect
 
     template <int dim>
     void
-    Particles<dim>::set_last_output_time (const double current_time)
+    Particles<dim>::set_last_output_time (const unsigned int particle_manager,
+                                          const double current_time)
     {
       // if output_interval is positive, then update the last supposed output
-      // time for each particle manager
-      for (unsigned int particle_manager = 0; particle_manager < this->n_particle_managers(); ++particle_manager)
+      // time for this particle manager
+      if (output_interval[particle_manager] > 0)
         {
-          if (output_interval[particle_manager] > 0)
-            {
-              // We need to find the last time output was supposed to be written.
-              // this is the last_output_time plus the largest positive multiple
-              // of output_intervals that passed since then. We need to handle the
-              // edge case where last_output_time+output_interval==current_time,
-              // we did an output and std::floor sadly rounds to zero. This is done
-              // by forcing std::floor to round 1.0-eps to 1.0.
-              const double magic = 1.0+2.0*std::numeric_limits<double>::epsilon();
-              last_output_time[particle_manager] = last_output_time[particle_manager] + std::floor((current_time-last_output_time[particle_manager])/output_interval[particle_manager]*magic) * output_interval[particle_manager]/magic;
-            }
+          // We need to find the last time output was supposed to be written.
+          // this is the last_output_time plus the largest positive multiple
+          // of output_intervals that passed since then. We need to handle the
+          // edge case where last_output_time+output_interval==current_time,
+          // we did an output and std::floor sadly rounds to zero. This is done
+          // by forcing std::floor to round 1.0-eps to 1.0.
+          const double magic = 1.0+2.0*std::numeric_limits<double>::epsilon();
+          last_output_time[particle_manager] = last_output_time[particle_manager] + std::floor((current_time-last_output_time[particle_manager])/output_interval[particle_manager]*magic) * output_interval[particle_manager]/magic;
         }
     }
 
