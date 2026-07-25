@@ -41,6 +41,11 @@ namespace aspect
     {
       public:
         /**
+         * Constructor.
+         */
+        Topography();
+
+        /**
          * Output topography [m] to file
          */
         std::pair<std::string,std::string> execute (TableHandler &statistics) override;

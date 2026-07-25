@@ -46,6 +46,11 @@ namespace aspect
     {
       public:
         /**
+         * Constructor.
+         */
+        SeaLevel();
+
+        /**
          * Sets up structured data lookup for topography and ice height input data.
          */
         void initialize() override;
