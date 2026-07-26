@@ -400,6 +400,26 @@ namespace aspect
       std::vector<types::global_dof_index> system_dofs_per_block;
 
       /**
+       * Information about one local DoF in the Stokes system.
+       */
+      struct StokesDoFInfo
+      {
+        unsigned int local_dof_index;
+        unsigned int component_index;
+      };
+
+      /**
+       * The local DoF and component indices in the system finite element that
+       * belong to the Stokes system being assembled. This vector is
+       * initialized by initialize_stokes_dof_info() from
+       * Simulator::setup_introspection(), after the system finite element has
+       * been constructed. Without melt transport that is velocity and solid
+       * pressure; with melt transport, MeltHandler replaces the contents with
+       * velocity, fluid pressure, and compaction pressure.
+       */
+      std::vector<StokesDoFInfo> stokes_dof_info;
+
+      /**
        * A structure that contains index sets describing which of the globally
        * enumerated degrees of freedom are owned by or are relevant to the
        * current processor in a parallel computation.
@@ -637,6 +657,18 @@ namespace aspect
        */
       bool
       is_stokes_component (const unsigned int component_index) const;
+
+      /**
+       * Initialize the local finite-element DoF indices and component indices
+       * for the Stokes system (velocity and solid pressure). This function
+       * must be called after the simulator finite element has been
+       * constructed, and before stokes_dof_info is used. The Simulator calls
+       * it from Simulator::setup_introspection(). When melt transport is
+       * enabled, MeltHandler::initialize_stokes_dof_info() then replaces the
+       * contents for the melt Stokes system.
+       */
+      void
+      initialize_stokes_dof_info (const FiniteElement<dim> &finite_element);
 
       /**
        * A function that gets a component index as an input
