@@ -24,6 +24,7 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/postprocess/melt_statistics.h>
+#include <aspect/material_model/reaction_model/fluid_extractor.h>
 #include <aspect/melt.h>
 
 namespace aspect
@@ -232,6 +233,11 @@ namespace aspect
            *  This variable is read from the parameter file through a parameter called 'Peridotite melting entropy change'.
            */
           double peridotite_melting_entropy_change;
+
+          /*
+          * Object for computing the fluid extraction parameters
+          */
+          ReactionModel::FluidExtractor<dim> fluid_extractor;
       };
     }
 

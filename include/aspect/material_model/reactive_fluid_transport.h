@@ -30,6 +30,7 @@
 #include <aspect/melt.h>
 #include <aspect/material_model/reaction_model/katz2003_mantle_melting.h>
 #include <aspect/material_model/reaction_model/tian2019_solubility.h>
+#include <aspect/material_model/reaction_model/fluid_extractor.h>
 
 namespace aspect
 {
@@ -216,6 +217,11 @@ namespace aspect
         */
         ReactionModel::Tian2019Solubility<dim> tian2019_model;
 
+        /*
+        * Object for computing fluid extraction parameters
+        */
+        ReactionModel::FluidExtractor<dim> fluid_extractor_model;
+
         /**
          * Enumeration for selecting which type of scheme to use for
          * reactions between fluids and solids. The available
@@ -269,6 +275,11 @@ namespace aspect
          *  This variable is read from the parameter file through a parameter called 'Fluid-solid reaction scheme'.
          */
         ReactionScheme fluid_solid_reaction_scheme;
+
+        /**
+         *  Whether to extract fluids from the model.
+         */
+        bool extract_fluids;
     };
   }
 }
