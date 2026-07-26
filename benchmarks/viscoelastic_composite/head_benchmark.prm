@@ -1,0 +1,178 @@
+# Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 1e4
+set Use years instead of seconds           = true
+# set Resume computation                     = auto
+set CFL number                             = 0.1
+set Maximum time step                      = 1e2
+set Use operator splitting                 = true
+set Output directory                       = test_composite_visco_elastic
+set Pressure normalization                 = no
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Additional shared libraries            = ./libviscoelastic_composite.so
+
+
+subsection Solver parameters
+  subsection Operator splitting parameters
+    set Reaction time step                     = 1e2
+    set Reaction solver type                   = fixed step
+  end
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent      = 100e3
+    set Y extent      = 50e3
+    set X repetitions = 2
+    set Y repetitions = 1
+    set Box origin X coordinate = -50e3
+    set Box origin Y coordinate = -45e3
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 4
+  set Initial global refinement          = 5
+  set Time steps between mesh refinement = 0
+  set Strategy                           = composition threshold
+  set Coarsening fraction                = 0
+  set Run postprocessors on initial refinement = false
+  set Skip solvers on initial refinement = false
+
+  subsection Composition threshold
+    set Compositional field thresholds = 1e6, 1e6, 1e6, 1e6, 1e6, 1e6, 1e6, 1e6, 1e6, 1e6, 1e6, 1e6, 0.2
+  end
+end
+
+
+subsection Discretization
+  set Composition polynomial degree           = 2
+  set Temperature polynomial degree           = 1
+  set Use discontinuous temperature discretization = false
+  set Use discontinuous composition discretization = true
+  subsection Stabilization parameters
+      set Use limiter for discontinuous composition solution = true
+      set Global composition maximum =  1.e11,  1.e11,  1.e11, 1.e11,  1.e11,  1.e11, 1.e11,  1.e11,  1.e11, 1.e11,  1.e11,  1.e11, 1.0
+      set Global composition minimum = -1.e11, -1.e11, -1.e11,-1.e11, -1.e11, -1.e11,-1.e11, -1.e11, -1.e11,-1.e11, -1.e11, -1.e11, 0.0
+  end
+end
+
+subsection Formulation
+  set Enable elasticity = true
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right
+  set Zero velocity boundary indicators = bottom
+end
+
+subsection Prescribed solution
+    set List of model names = velocity function
+    subsection Velocity function
+        subsection Indicator function
+            set Variable names = x, y
+            set Function expression =  if(sqrt(x^2+y^2) > 9e2 && sqrt(x^2+y^2) < 1e3, 1, 0); if(sqrt(x^2+y^2) > 9e2 && sqrt(x^2+y^2) < 1e3, 1, 0)
+        end
+        subsection Function
+            set Variable names = x,y,t
+            set Function expression =  -x/sqrt(x^2 + y ^2); -y/sqrt(x^2 + y ^2)
+        end
+    end
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = 3: free surface
+
+  subsection Free surface
+    set Free surface stabilization theta = 0.5
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 13
+  set Names of fields  = ve_stress_xx_0, ve_stress_yy_0, ve_stress_xy_0, ve_stress_xx_old_0, ve_stress_yy_old_0, ve_stress_xy_old_0, ve_stress_xx_1, ve_stress_yy_1, ve_stress_xy_1, ve_stress_xx_old_1, ve_stress_yy_old_1, ve_stress_xy_old_1, cavity
+  set Types of fields  = stress, stress, stress, stress, stress, stress, stress, stress, stress, stress, stress, stress, chemical composition
+end
+
+# include a 1km radius cavity
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; if (x^2 + y^2 <= 1e3*1e3, 1, 0)
+  end
+end
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators  = bottom, top, left, right
+  set List of model names                   = initial composition
+end
+
+# Temperature boundary conditions
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top, left, right
+  set List of model names = box
+  subsection Box
+    set Bottom temperature = 293
+    set Left temperature   = 293
+    set Right temperature  = 293
+    set Top temperature    = 293
+  end
+end
+
+# Temperature initial conditions
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 293
+  end
+end
+
+subsection Material model
+  set Model name = viscoelastic composite
+
+  subsection Viscoelastic composite
+    set Number of maxwell arms = 2
+    set Viscosities            = 1.e18, 1.e20
+    set Elastic shear moduli   = 8e9, 8e9
+
+    subsection Elastic parameters
+      set Fixed elastic time step     = 1e2
+      set Use fixed elastic time step = true
+    end
+  end
+end
+
+subsection Gravity model
+  set Model name = function
+  subsection Function
+    set Variable names = x,y,t
+    set Coordinate system = depth
+    set Function expression = 0; 0
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, basic statistics, temperature statistics, visualization, topography
+  subsection Visualization
+    set List of output variables = material properties, strain rate, nonadiabatic pressure, surface elevation
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
+
+    set Time between graphical output = 100
+    set Interpolate output = true
+  end
+
+end
+
+subsection Termination criteria
+  set Termination criteria = end step
+  set End step = 500
+  set Checkpoint on termination = true
+end
