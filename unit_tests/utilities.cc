@@ -18,8 +18,39 @@
   <http://www.gnu.org/licenses/>.
 */
 
+#include "catch.hpp"
 #include "common.h"
 #include <aspect/utilities.h>
+
+TEST_CASE("Utilities::ScratchSpace")
+{
+  aspect::Utilities::ScratchSpace<std::vector<double>> space1;
+  typename aspect::Utilities::ScratchSpace<std::vector<double>>::ScopedScratchObject scoped_object1(space1);
+  std::vector<double> &object1 = scoped_object1;
+  object1.resize(3);
+  object1[0] = 10;
+  object1[1] = 20;
+  object1[2] = 30;
+  {
+    typename aspect::Utilities::ScratchSpace<std::vector<double>>::ScopedScratchObject scoped_object2(space1);
+    std::vector<double> &object2 = scoped_object2;
+    object2.resize(4);
+    object2[0] = 11;
+    object2[1] = 21;
+    object2[2] = 31;
+    object2[3] = 41;
+  }
+  {
+    typename aspect::Utilities::ScratchSpace<std::vector<double>>::ScopedScratchObject scoped_object2(space1);
+    std::vector<double> &object2 = scoped_object2;
+    REQUIRE(object2.size() == 4);
+    CHECK(object2[0] == 11);
+    CHECK(object2[1] == 21);
+    CHECK(object2[2] == 31);
+    CHECK(object2[3] == 41);
+  }
+
+}
 
 TEST_CASE("Utilities::weighted_p_norm_average")
 {
