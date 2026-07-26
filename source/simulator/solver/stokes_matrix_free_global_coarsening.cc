@@ -372,7 +372,7 @@ namespace aspect
         temp_ops[l].initialize(mf);
       }
 
-    MGTransferGlobalCoarsening<dim, dealii::LinearAlgebra::distributed::Vector<GMGNumberType>> transfer(transfers, [&](const auto l, auto &vec)
+    transfer_t transfer(transfers, [&](const auto l, auto &vec)
     {
       (void) l;
       (void) vec;
