@@ -7,7 +7,7 @@
 
 # MPI: 4
 
-include $ASPECT_SOURCE_DIR/tests/particle_load_balancing_none.prm
+include $ASPECT_SOURCE_DIR/tests/particles/particle_load_balancing_none.prm
 
 set Dimension                              = 2
 

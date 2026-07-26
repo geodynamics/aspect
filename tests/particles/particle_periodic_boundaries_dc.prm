@@ -2,7 +2,7 @@
 
 # MPI: 2
 
-include $ASPECT_SOURCE_DIR/tests/particle_periodic_boundaries.prm
+include $ASPECT_SOURCE_DIR/tests/particles/particle_periodic_boundaries.prm
 
 
 subsection Discretization

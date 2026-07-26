@@ -17,4 +17,4 @@
   along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
-#include "../cookbooks/finite_strain/finite_strain.cc"
+#include "../../cookbooks/finite_strain/finite_strain.cc"

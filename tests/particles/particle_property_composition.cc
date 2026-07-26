@@ -18,4 +18,4 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include "../benchmarks/solitary_wave/solitary_wave.cc"
+#include "../../benchmarks/solitary_wave/solitary_wave.cc"

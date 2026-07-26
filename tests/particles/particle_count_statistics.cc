@@ -18,4 +18,4 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include "../benchmarks/solcx/solcx.cc"
+#include "../../benchmarks/solcx/solcx.cc"

@@ -5,7 +5,7 @@
 # Squares limiter is properly limiting, without disproportionately
 # affecting the accuracy of the interpolation algorithm.
 
-include $ASPECT_SOURCE_DIR/tests/particle_interpolator_quadratic_least_squares_2d_add_particles.prm
+include $ASPECT_SOURCE_DIR/tests/particles/particle_interpolator_quadratic_least_squares_2d_add_particles.prm
 
 set Additional shared libraries            = ./libparticle_interpolator_quadratic_least_squares_2d_limiter.so
 

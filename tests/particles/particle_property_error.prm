@@ -4,7 +4,7 @@
 #
 # EXPECT FAILURE
 
-include $ASPECT_SOURCE_DIR/tests/particle_property_multiple_functions_with_interpolation.prm
+include $ASPECT_SOURCE_DIR/tests/particles/particle_property_multiple_functions_with_interpolation.prm
 
 subsection Compositional fields
   set Compositional field methods = field, particles, particles
