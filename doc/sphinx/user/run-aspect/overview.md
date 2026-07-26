@@ -28,7 +28,9 @@ different, of course):
 
 ```
 -----------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--                             This is ASPECT                              --
+-- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
+-----------------------------------------------------------------------------
 --     . version 2.0.0-pre (include_dealii_version, c20eba0)
 --     . using deal.II 9.0.0-pre (master, 952baa0)
 --     . using Trilinos 12.10.1
