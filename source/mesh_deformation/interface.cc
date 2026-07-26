@@ -1723,8 +1723,8 @@ namespace aspect
             this->get_geometry_model().cartesian_to_natural_coordinates(point);
           const Utilities::Coordinates::CoordinateSystem coordinate_system =
             this->get_geometry_model().natural_coordinate_system();
-          const double reference_depth =
-            this->get_geometry_model().depth(point);
+          const double height_above_reference_mesh_surface =
+            this->get_geometry_model().height_above_reference_mesh_surface(point);
 
           unsigned int vertical_coordinate;
           if (coordinate_system == Utilities::Coordinates::cartesian)
@@ -1741,7 +1741,8 @@ namespace aspect
               vertical_coordinate = numbers::invalid_unsigned_int;
             }
 
-          natural_coordinates[vertical_coordinate] += reference_depth;
+          natural_coordinates[vertical_coordinate] -=
+            height_above_reference_mesh_surface;
           const Point<dim> surface_point =
             this->get_geometry_model().natural_to_cartesian_coordinates(natural_coordinates);
 
