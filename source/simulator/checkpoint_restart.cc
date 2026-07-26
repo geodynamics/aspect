@@ -711,6 +711,7 @@ namespace aspect
         mesh_deformation_trans.deserialize (fs_system);
         mesh_deformation->mesh_displacements = distributed_mesh_displacements;
         mesh_deformation->initial_topography = distributed_initial_topography;
+        mesh_deformation->update_current_surface_heights();
       }
 
     signals.post_resume_load_user_data(triangulation);

@@ -1916,6 +1916,7 @@ namespace aspect
 
           mesh_deformation->mesh_vertex_constraints.distribute (distributed_initial_topography);
           mesh_deformation->initial_topography = distributed_initial_topography;
+          mesh_deformation->update_current_surface_heights();
         }
 
       // Possibly load data of plugins associated with cells
@@ -2285,7 +2286,10 @@ namespace aspect
             pcout << "Repeating the current time step based on the time stepping manager ...\n" << std::endl;
 
             if (mesh_deformation)
-              mesh_deformation->mesh_displacements = mesh_deformation->old_mesh_displacements;
+              {
+                mesh_deformation->mesh_displacements = mesh_deformation->old_mesh_displacements;
+                mesh_deformation->update_current_surface_heights();
+              }
 
             // adjust time and time_step size:
             time = time - time_step + new_time_step_size;

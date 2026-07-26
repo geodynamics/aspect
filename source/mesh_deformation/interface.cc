@@ -36,11 +36,13 @@
 #include <deal.II/fe/fe_q.h>
 #include <deal.II/fe/mapping_q1_eulerian.h>
 #include <deal.II/fe/mapping_q_eulerian.h>
+#include <deal.II/fe/mapping_q_generic.h>
 
 #include <deal.II/lac/sparsity_tools.h>
 #include <deal.II/lac/precondition.h>
 
 #include <deal.II/numerics/vector_tools.h>
+#include <deal.II/numerics/vector_tools_evaluate.h>
 
 #include <aspect/melt.h>
 
@@ -625,6 +627,8 @@ namespace aspect
         compute_mesh_displacements_gmg();
       else
         compute_mesh_displacements();
+
+      update_current_surface_heights();
 
       // Interpolate the mesh velocity into the same
       // finite element space as used in the Stokes solve, which
@@ -1636,6 +1640,7 @@ namespace aspect
       old_mesh_displacements.reinit(mesh_locally_owned, mesh_locally_relevant, sim.mpi_communicator);
       initial_topography.reinit(mesh_locally_owned, mesh_locally_relevant, sim.mpi_communicator);
       fs_mesh_velocity.reinit(mesh_locally_owned, mesh_locally_relevant, sim.mpi_communicator);
+      current_surface_heights.reinit(mesh_locally_owned, mesh_locally_relevant, sim.mpi_communicator);
 
       // if we are just starting, we need to set the initial topography.
       if (this->simulator_is_past_initialization() == false ||
@@ -1676,8 +1681,182 @@ namespace aspect
           this->get_computing_timer().leave_subsection("Mesh deformation initialize");
         }
 
+      update_current_surface_heights();
+
       if (this->is_stokes_matrix_free())
         update_multilevel_deformation();
+    }
+
+
+
+    template <int dim>
+    void
+    MeshDeformationHandler<dim>::update_current_surface_heights()
+    {
+      AssertThrow(sim.parameters.mesh_deformation_enabled, ExcInternalError());
+
+      const MappingQGeneric<dim> reference_mapping(get_mapping_degree());
+      const ComponentMask first_component =
+        mesh_deformation_fe.component_mask(FEValuesExtractors::Scalar(0));
+      const IndexSet owned_scalar_dofs =
+        DoFTools::extract_dofs(mesh_deformation_dof_handler, first_component);
+      const std::map<types::global_dof_index, Point<dim>> support_points =
+        DoFTools::map_dofs_to_support_points(reference_mapping,
+                                             mesh_deformation_dof_handler,
+                                             first_component);
+
+      std::vector<types::global_dof_index> dof_indices;
+      std::vector<unsigned int> surface_query_indices;
+      std::vector<Point<dim>> surface_query_points;
+      std::vector<Point<dim>> reference_surface_points;
+      std::map<std::array<double,dim>, unsigned int> surface_point_indices;
+      dof_indices.reserve(owned_scalar_dofs.n_elements());
+      surface_query_indices.reserve(owned_scalar_dofs.n_elements());
+
+      const double inward_shift =
+        std::max(1.0, this->get_geometry_model().maximal_depth()) * 1.e-10;
+
+      for (const types::global_dof_index dof_index : owned_scalar_dofs)
+        {
+          const Point<dim> &point = support_points.at(dof_index);
+          std::array<double,dim> natural_coordinates =
+            this->get_geometry_model().cartesian_to_natural_coordinates(point);
+          const Utilities::Coordinates::CoordinateSystem coordinate_system =
+            this->get_geometry_model().natural_coordinate_system();
+          const double reference_depth =
+            this->get_geometry_model().depth(point);
+
+          unsigned int vertical_coordinate;
+          if (coordinate_system == Utilities::Coordinates::cartesian)
+            vertical_coordinate = dim-1;
+          else if (coordinate_system == Utilities::Coordinates::spherical ||
+                   coordinate_system == Utilities::Coordinates::ellipsoidal)
+            vertical_coordinate = 0;
+          else
+            {
+              AssertThrow(false,
+                          ExcMessage("The current-surface depth calculation "
+                                     "does not support this geometry model's "
+                                     "natural coordinate system."));
+              vertical_coordinate = numbers::invalid_unsigned_int;
+            }
+
+          natural_coordinates[vertical_coordinate] += reference_depth;
+          const Point<dim> surface_point =
+            this->get_geometry_model().natural_to_cartesian_coordinates(natural_coordinates);
+
+          const auto insertion =
+            surface_point_indices.emplace(natural_coordinates,
+                                          surface_point_indices.size());
+          if (insertion.second)
+            {
+              // Use a nearby point at positive reference depth to determine
+              // the geometry model's inward direction. Query just inside the
+              // domain to avoid ambiguity and roundoff at distributed
+              // boundary faces.
+              natural_coordinates[vertical_coordinate] -= inward_shift;
+              const Point<dim> interior_point =
+                this->get_geometry_model().natural_to_cartesian_coordinates(natural_coordinates);
+              const Tensor<1,dim> inward_direction =
+                (interior_point - surface_point)
+                / (interior_point - surface_point).norm();
+
+              reference_surface_points.push_back(surface_point);
+              surface_query_points.push_back(surface_point +
+                                             inward_shift * inward_direction);
+            }
+
+          dof_indices.push_back(dof_index);
+          surface_query_indices.push_back(insertion.first->second);
+        }
+
+      Utilities::MPI::RemotePointEvaluation<dim> point_cache;
+      const std::vector<Tensor<1,dim>> surface_displacements =
+        VectorTools::point_values<dim>(reference_mapping,
+                                       mesh_deformation_dof_handler,
+                                       mesh_displacements,
+                                       surface_query_points,
+                                       point_cache);
+
+      AssertThrow(point_cache.all_points_found(),
+                  ExcMessage("Could not evaluate the mesh displacement at all "
+                             "reference-surface points while constructing the "
+                             "current-surface depth field."));
+
+      LinearAlgebra::Vector distributed_heights(mesh_locally_owned,
+                                                sim.mpi_communicator);
+      std::vector<double> surface_heights(surface_query_points.size());
+      for (unsigned int i = 0; i < surface_query_points.size(); ++i)
+        {
+          const Point<dim> current_surface_point =
+            reference_surface_points[i] + surface_displacements[i];
+          surface_heights[i] =
+            this->get_geometry_model().height_above_reference_surface(current_surface_point);
+        }
+
+      for (unsigned int i = 0; i < dof_indices.size(); ++i)
+        distributed_heights[dof_indices[i]] =
+          surface_heights[surface_query_indices[i]];
+
+      distributed_heights.compress(VectorOperation::insert);
+      mesh_vertex_constraints.distribute(distributed_heights);
+      current_surface_heights = distributed_heights;
+    }
+
+
+
+    template <int dim>
+    std::vector<double>
+    MeshDeformationHandler<dim>::depth_below_current_surface(
+      const typename DoFHandler<dim>::active_cell_iterator &cell,
+      const std::vector<Point<dim>>                        &positions) const
+    {
+      std::vector<double> depths(positions.size());
+
+      if (cell.state() != IteratorState::valid ||
+          current_surface_heights.size() == 0)
+        {
+          for (unsigned int q = 0; q < positions.size(); ++q)
+            depths[q] = this->get_geometry_model().depth(positions[q]);
+          return depths;
+        }
+
+      std::vector<Point<dim>> unit_points(positions.size());
+      for (unsigned int q = 0; q < positions.size(); ++q)
+        unit_points[q] = this->get_mapping().transform_real_to_unit_cell(cell,
+                                                                         positions[q]);
+
+      const typename DoFHandler<dim>::active_cell_iterator mesh_cell(
+        &this->get_triangulation(),
+        cell->level(),
+        cell->index(),
+        &mesh_deformation_dof_handler);
+
+      const MappingQGeneric<dim> reference_mapping(get_mapping_degree());
+      FEValues<dim> fe_values(reference_mapping,
+                              mesh_deformation_fe,
+                              Quadrature<dim>(unit_points),
+                              update_values);
+      fe_values.reinit(mesh_cell);
+
+      std::vector<double> surface_heights(positions.size());
+      fe_values[FEValuesExtractors::Scalar(0)]
+      .get_function_values(current_surface_heights, surface_heights);
+
+      for (unsigned int q = 0; q < positions.size(); ++q)
+        {
+          const double maximal_depth =
+            this->get_geometry_model().maximal_depth();
+          const double corrected_depth =
+            std::max(0.0,
+                     surface_heights[q]
+                     - this->get_geometry_model().height_above_reference_surface(positions[q]));
+          depths[q] = corrected_depth < std::max(1.0, maximal_depth) * 1.e-10
+                      ? 0.0
+                      : corrected_depth;
+        }
+
+      return depths;
     }
 
 
