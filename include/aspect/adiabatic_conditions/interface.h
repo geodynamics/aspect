@@ -77,6 +77,14 @@ namespace aspect
         double pressure (const Point<dim> &p) const = 0;
 
         /**
+         * Return the adiabatic pressure at the representative point
+         * corresponding to @p depth. The depth must lie between zero and the
+         * maximal depth of the geometry model.
+         */
+        double
+        pressure_at_depth (const double depth) const;
+
+        /**
          * Return the reference_density at a given point of the domain.
          */
         virtual

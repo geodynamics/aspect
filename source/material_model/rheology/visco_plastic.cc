@@ -19,6 +19,7 @@
 */
 
 #include <aspect/material_model/rheology/visco_plastic.h>
+#include <aspect/mesh_deformation/interface.h>
 #include <aspect/material_model/utilities.h>
 #include <aspect/utilities.h>
 #include <aspect/newton.h>
@@ -158,6 +159,7 @@ namespace aspect
       ViscoPlastic<dim>::
       calculate_isostrain_viscosities (const MaterialModel::MaterialModelInputs<dim> &in,
                                        const unsigned int i,
+                                       const double current_surface_adiabatic_pressure,
                                        const std::vector<double> &volume_fractions,
                                        const std::vector<double> &phase_function_values,
                                        const std::vector<unsigned int> &n_phase_transitions_per_composition) const
@@ -250,7 +252,12 @@ namespace aspect
               double pressure_for_creep = in.pressure[i];
 
               if (use_adiabatic_pressure_in_creep)
-                pressure_for_creep = this->get_adiabatic_conditions().pressure(in.position[i]);
+                pressure_for_creep =
+                  (std::isnan(current_surface_adiabatic_pressure)
+                   ?
+                   this->get_adiabatic_conditions().pressure(in.position[i])
+                   :
+                   current_surface_adiabatic_pressure);
 
               const double viscosity_diffusion
                 = (viscous_flow_law != dislocation
@@ -429,9 +436,13 @@ namespace aspect
             // than the lithostatic pressure.
 
             double pressure_for_plasticity = in.pressure[i];
-
             if (use_adiabatic_pressure_in_plasticity)
-              pressure_for_plasticity = this->get_adiabatic_conditions().pressure(in.position[i]);
+              pressure_for_plasticity =
+                (std::isnan(current_surface_adiabatic_pressure)
+                 ?
+                 this->get_adiabatic_conditions().pressure(in.position[i])
+                 :
+                 current_surface_adiabatic_pressure);
 
             if (allow_negative_pressures_in_plasticity == false)
               pressure_for_plasticity = std::max(pressure_for_plasticity,0.0);
@@ -515,11 +526,47 @@ namespace aspect
 
 
       template <int dim>
+      std::vector<double>
+      ViscoPlastic<dim>::compute_current_surface_adiabatic_pressures(
+        const MaterialModel::MaterialModelInputs<dim> &in) const
+      {
+        std::vector<double> pressures(
+          in.n_evaluation_points(),
+          std::numeric_limits<double>::quiet_NaN());
+
+        if ((use_adiabatic_pressure_in_plasticity == false
+             && use_adiabatic_pressure_in_creep == false)
+            || this->get_parameters().mesh_deformation_enabled == false
+            || in.current_cell.state() != IteratorState::valid)
+          return pressures;
+
+        const std::vector<double> depths =
+          this->get_mesh_deformation_handler().depth_below_current_surface(
+            in.current_cell, in.position);
+        const double maximal_depth = this->get_geometry_model().maximal_depth();
+
+        for (unsigned int q = 0; q < in.n_evaluation_points(); ++q)
+          {
+            // A deformed domain can extend beyond the reference geometry.
+            // representative_point() is only defined inside its depth range.
+            const double bounded_depth =
+              std::min(std::max(depths[q], 0.0), maximal_depth);
+            pressures[q] =
+              this->get_adiabatic_conditions().pressure_at_depth(bounded_depth);
+          }
+
+        return pressures;
+      }
+
+
+
+      template <int dim>
       void
       ViscoPlastic<dim>::
       compute_viscosity_derivatives(const unsigned int i,
                                     const std::vector<double> &volume_fractions,
                                     const IsostrainViscosities &current_isostrain_values,
+                                    const double current_surface_adiabatic_pressure,
                                     const MaterialModel::MaterialModelInputs<dim> &in,
                                     MaterialModel::MaterialModelOutputs<dim> &out,
                                     const std::vector<double> &phase_function_values,
@@ -565,7 +612,9 @@ namespace aspect
                 in_derivatives.strain_rate[i] = forward_strain_rate;
 
                 const IsostrainViscosities forward_isostrain_values =
-                  calculate_isostrain_viscosities(in_derivatives, i, volume_fractions,
+                  calculate_isostrain_viscosities(in_derivatives, i,
+                                                  current_surface_adiabatic_pressure,
+                                                  volume_fractions,
                                                   phase_function_values, n_phase_transitions_per_composition);
 
                 // For each composition of the independent component, compute the derivative.
@@ -603,7 +652,9 @@ namespace aspect
             in_derivatives.strain_rate[i] = current_strain_rate;
 
             const IsostrainViscosities forward_isostrain_values =
-              calculate_isostrain_viscosities(in_derivatives, i, volume_fractions,
+              calculate_isostrain_viscosities(in_derivatives, i,
+                                              current_surface_adiabatic_pressure,
+                                              volume_fractions,
                                               phase_function_values, n_phase_transitions_per_composition);
 
             for (unsigned int composition_index = 0; composition_index < n_compositions; ++composition_index)
@@ -769,15 +820,21 @@ namespace aspect
                            "This may be helpful in models where the "
                            "full pressure has an unusually large negative value arising from "
                            "large negative dynamic pressure, resulting in solver convergence "
-                           "issue and in some cases a viscosity of zero.");
+                           "issue and in some cases a viscosity of zero. With mesh deformation, "
+                           "the adiabatic profile is evaluated using depth below the current "
+                           "deformed surface.");
         prm.declare_entry ("Use adiabatic pressure in plasticity", "false",
                            Patterns::Bool (),
                            "Whether to use the adiabatic pressure instead of the full "
                            "pressure when calculating plastic yield stress. "
                            "This may be helpful in models where the "
                            "full pressure has unusually large variations, resulting "
-                           "in solver convergence issues. Be aware that this setting "
-                           "will change the plastic shear band angle.");
+                           "in solver convergence issues. With mesh deformation, the "
+                           "adiabatic profile is evaluated using depth below the current "
+                           "deformed surface, so surface depressions such as oceanic "
+                           "trenches remain at the adiabatic surface pressure. Be aware "
+                           "that this setting will also change the "
+                           "plastic shear band angle.");
 
         // Diffusion creep parameters
         Rheology::DiffusionCreep<dim>::declare_parameters(prm);
@@ -1014,6 +1071,7 @@ namespace aspect
       fill_plastic_outputs(const unsigned int i,
                            const std::vector<double> &volume_fractions,
                            const bool plastic_yielding,
+                           const double current_surface_adiabatic_pressure,
                            const MaterialModel::MaterialModelInputs<dim> &in,
                            MaterialModel::MaterialModelOutputs<dim> &out,
                            const IsostrainViscosities &isostrain_viscosities) const
@@ -1032,9 +1090,13 @@ namespace aspect
             plastic_out->yielding[i] = plastic_yielding ? 1 : 0;
 
             double pressure_for_plasticity = in.pressure[i];
-
             if (use_adiabatic_pressure_in_plasticity)
-              pressure_for_plasticity = this->get_adiabatic_conditions().pressure(in.position[i]);
+              pressure_for_plasticity =
+                (std::isnan(current_surface_adiabatic_pressure)
+                 ?
+                 this->get_adiabatic_conditions().pressure(in.position[i])
+                 :
+                 current_surface_adiabatic_pressure);
 
             if (allow_negative_pressures_in_plasticity == false)
               pressure_for_plasticity = std::max(pressure_for_plasticity, 0.0);

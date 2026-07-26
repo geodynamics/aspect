@@ -5547,7 +5547,7 @@ If a compositional field named &rsquo;noninitial\_plastic\_strain&rsquo; is incl
 
 **Pattern:** [Bool]
 
-**Documentation:** Whether to use the adiabatic pressure instead of the full pressure (default) when calculating viscous creep. This may be helpful in models where the full pressure has an unusually large negative value arising from large negative dynamic pressure, resulting in solver convergence issue and in some cases a viscosity of zero.
+**Documentation:** Whether to use the adiabatic pressure instead of the full pressure (default) when calculating viscous creep. This may be helpful in models where the full pressure has an unusually large negative value arising from large negative dynamic pressure, resulting in solver convergence issue and in some cases a viscosity of zero. With mesh deformation, the adiabatic profile is evaluated using depth below the current deformed surface.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Use adiabatic pressure in plasticity<parameters:Material_20model/Visco_20Plastic/Use_20adiabatic_20pressure_20in_20plasticity>`
@@ -5556,7 +5556,7 @@ If a compositional field named &rsquo;noninitial\_plastic\_strain&rsquo; is incl
 
 **Pattern:** [Bool]
 
-**Documentation:** Whether to use the adiabatic pressure instead of the full pressure when calculating plastic yield stress. This may be helpful in models where the full pressure has unusually large variations, resulting in solver convergence issues. Be aware that this setting will change the plastic shear band angle.
+**Documentation:** Whether to use the adiabatic pressure instead of the full pressure when calculating plastic yield stress. This may be helpful in models where the full pressure has unusually large variations, resulting in solver convergence issues. With mesh deformation, the adiabatic profile is evaluated using depth below the current deformed surface, so surface depressions such as oceanic trenches remain at the adiabatic surface pressure. Be aware that this setting will also change the plastic shear band angle.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Use dominant phase for viscosity<parameters:Material_20model/Visco_20Plastic/Use_20dominant_20phase_20for_20viscosity>`

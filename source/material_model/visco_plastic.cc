@@ -88,7 +88,14 @@ namespace aspect
       /* The following returns whether or not the material is plastically yielding
        * as documented in evaluate.
        */
-      const IsostrainViscosities isostrain_viscosities = rheology->calculate_isostrain_viscosities(in, 0, volume_fractions, phase_function_values, phase_function.n_phase_transitions_for_each_composition());
+      const std::vector<double> current_surface_adiabatic_pressures =
+        rheology->compute_current_surface_adiabatic_pressures(in);
+      const IsostrainViscosities isostrain_viscosities =
+        rheology->calculate_isostrain_viscosities(in, 0,
+                                                  current_surface_adiabatic_pressures[0],
+                                                  volume_fractions,
+                                                  phase_function_values,
+                                                  phase_function.n_phase_transitions_for_each_composition());
 
       std::vector<double>::const_iterator max_composition = std::max_element(volume_fractions.begin(), volume_fractions.end());
       const bool plastic_yielding = isostrain_viscosities.composition_yielding[std::distance(volume_fractions.begin(), max_composition)];
@@ -116,6 +123,8 @@ namespace aspect
       std::vector<double> phase_function_discrete_values = (use_dominant_phase_for_viscosity?
                                                             std::vector<double>(phase_function_discrete->n_phase_transitions(), 0.0): std::vector<double>());
 
+      const std::vector<double> current_surface_adiabatic_pressures =
+        rheology->compute_current_surface_adiabatic_pressures(in);
 
       // Loop through all requested points
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
@@ -214,12 +223,20 @@ namespace aspect
                       phase_function_discrete_values[j] = phase_function_discrete->compute_value(phase_inputs);
                     }
                   isostrain_viscosities =
-                    rheology->calculate_isostrain_viscosities(in, i, volume_fractions, phase_function_discrete_values,  phase_function_discrete->n_phase_transitions_for_each_chemical_composition());
+                    rheology->calculate_isostrain_viscosities(in, i,
+                                                              current_surface_adiabatic_pressures[i],
+                                                              volume_fractions,
+                                                              phase_function_discrete_values,
+                                                              phase_function_discrete->n_phase_transitions_for_each_chemical_composition());
                 }
               else
                 {
                   isostrain_viscosities =
-                    rheology->calculate_isostrain_viscosities(in, i, volume_fractions, phase_function_values, n_phase_transitions_for_each_chemical_composition);
+                    rheology->calculate_isostrain_viscosities(in, i,
+                                                              current_surface_adiabatic_pressures[i],
+                                                              volume_fractions,
+                                                              phase_function_values,
+                                                              n_phase_transitions_for_each_chemical_composition);
                 }
 
               // The isostrain condition implies that the viscosity averaging should be arithmetic (see above).
@@ -241,6 +258,7 @@ namespace aspect
 
                 rheology->compute_viscosity_derivatives(i, volume_fractions,
                                                         isostrain_viscosities,
+                                                        current_surface_adiabatic_pressures[i],
                                                         in, out, phase_function_values,
                                                         n_phase_transitions_for_each_chemical_composition);
             }
@@ -277,7 +295,9 @@ namespace aspect
           // has been called.
           if (in.requests_property(MaterialProperties::additional_outputs))
             {
-              rheology->fill_plastic_outputs(i, volume_fractions, plastic_yielding, in, out, isostrain_viscosities);
+              rheology->fill_plastic_outputs(i, volume_fractions, plastic_yielding,
+                                             current_surface_adiabatic_pressures[i],
+                                             in, out, isostrain_viscosities);
               rheology->fill_viscosity_outputs(i, volume_fractions, out, isostrain_viscosities);
             }
 
