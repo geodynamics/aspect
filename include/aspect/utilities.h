@@ -1066,7 +1066,7 @@ namespace aspect
                      const Quadrature<dim>                                     &quadrature,
                      const std::function<void(
                        const typename DoFHandler<dim>::active_cell_iterator &,
-                       const std::vector<Point<dim>> &,
+                       const typename std_cxx20::type_identity<std::vector<Point<dim>>>::type &,
                        std::vector<double> &)>                                 &function,
                      VectorType                                                &vec_result);
 
