@@ -60,7 +60,7 @@ end
 # It has conductive boundary layers at the top and bottom, and sinusoidal
 # temperature perturbations.
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function constants = delta=0.1, A=10, h=1350000

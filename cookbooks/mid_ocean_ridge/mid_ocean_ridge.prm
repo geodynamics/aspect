@@ -124,7 +124,7 @@ end
 # top and the bottom. We make the top boundary layer very old (100 Ma) so that in the
 # beginning, the material is still solid and the porosity is zero.
 subsection Initial temperature model
-  set Model name = adiabatic
+  set List of model names = adiabatic
 
   subsection Adiabatic
     set Age top boundary layer      = 1e8
@@ -179,7 +179,7 @@ end
 # We set both fields to zero at the start of the model: The material is solid
 # (zero porosity) and has the average mantle composition (zero depletion).
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 0; 0

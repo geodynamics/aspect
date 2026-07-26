@@ -1,5 +1,5 @@
 subsection Initial temperature model
-  set Model name = ascii data
+  set List of model names = ascii data
 
   subsection Ascii data model
     set Data directory       = $ASPECT_SOURCE_DIR/cookbooks/prescribed_velocity_ascii_data/

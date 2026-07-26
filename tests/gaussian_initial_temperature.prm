@@ -68,7 +68,7 @@ subsection Boundary velocity model
 end
 
 subsection Initial temperature model
-  set Model name = spherical gaussian perturbation
+  set List of model names = spherical gaussian perturbation
 end
 
 subsection Postprocess

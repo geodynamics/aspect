@@ -81,7 +81,7 @@ end
 
 # Make the initial grain size constant everywhere.
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 5e-3

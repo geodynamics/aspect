@@ -44,7 +44,7 @@ end
 ############### Parameters describing the temperature field
 
 subsection Initial temperature model
-  set Model name = perturbed box
+  set List of model names = perturbed box
 end
 
 ############### Parameters describing the discretization
@@ -74,7 +74,7 @@ end
 # The initial condition is adapted from the original solkz benchmark by adding a constant
 # value of 1 to keep all properties positive (which is necessary for harmonic averaging)
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,z

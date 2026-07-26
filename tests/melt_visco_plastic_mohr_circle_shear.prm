@@ -82,7 +82,7 @@ end
 ##################### Temperature ########################
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression       = 293
@@ -111,7 +111,7 @@ subsection Compositional fields
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 0.01; 0.01

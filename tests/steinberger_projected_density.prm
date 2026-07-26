@@ -27,7 +27,7 @@ subsection Compositional fields
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = (sqrt(x*x+y*y)-3481000)/(6371000-3481000); 3300; x/6371000
@@ -53,7 +53,7 @@ subsection Gravity model
 end
 
 subsection Initial temperature model
-  set Model name = harmonic perturbation
+  set List of model names = harmonic perturbation
 
   subsection Harmonic perturbation
     set Magnitude = 200.0

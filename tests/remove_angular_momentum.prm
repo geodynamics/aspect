@@ -44,7 +44,7 @@ subsection Nullspace removal
 end
 
 subsection Initial temperature model
-  set Model name = spherical hexagonal perturbation
+  set List of model names = spherical hexagonal perturbation
 end
 
 subsection Gravity model

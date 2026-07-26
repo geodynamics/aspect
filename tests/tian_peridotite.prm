@@ -33,7 +33,7 @@ end
 # of 11% everywhere, the bound_water will evolve to the parameterized phase diagram
 # for peridotite.
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function constants  = initial_porosity=0.0, initial_bound_water=0.11
@@ -76,7 +76,7 @@ end
 # Lateral temperature gradient from 300 - 1000 C, as in
 # phase diagrams from Tian et al., 2019
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Coordinate system   = cartesian

@@ -60,7 +60,7 @@ end
 # Both initial temperature and composition are set to 1,
 # and will decay starting from this value.
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,z
@@ -69,7 +69,7 @@ subsection Initial temperature model
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,z

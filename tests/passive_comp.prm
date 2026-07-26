@@ -120,7 +120,7 @@ subsection Gravity model
 end
 
 subsection Initial temperature model
-  set Model name = spherical hexagonal perturbation
+  set List of model names = spherical hexagonal perturbation
 
   subsection Spherical gaussian perturbation
     # The amplitude of the perturbation.
@@ -142,7 +142,7 @@ subsection Initial temperature model
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names = x,y

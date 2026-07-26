@@ -8,7 +8,7 @@ subsection Volume of Fluid
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
   set Volume of fluid initialization type = C_1:level set
 
   subsection Function

@@ -5,7 +5,7 @@ include $ASPECT_SOURCE_DIR/tests/visco_plastic_yield_viscous_strain_weakening.pr
 set Output directory = visco_plastic_yield_temperature_activated_viscous_strain_weakening
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,y
@@ -26,7 +26,7 @@ subsection Material model
 end
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names = x,y

@@ -93,7 +93,7 @@ subsection Gravity model
 end
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 0
@@ -101,7 +101,7 @@ subsection Initial temperature model
 end
 
 subsection Initial composition model
-  set Model name = Solitary wave initial condition
+  set List of model names = Solitary wave initial condition
 
   subsection Solitary wave initial condition
     set Offset = 200

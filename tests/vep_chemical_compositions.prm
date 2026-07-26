@@ -33,7 +33,7 @@ end
 # We prescribe some initial strain at the center of the domain
 # plastic_strain, viscous_strain
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,y

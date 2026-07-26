@@ -36,7 +36,7 @@ subsection Initial temperature model
   # initial entropy.
   # The value below corresponds to the entropy of 2534 J/kg/K
   # used as the top boundary condition and the initial condition.
-  set Model name = prescribed temperature
+  set List of model names = prescribed temperature
 end
 
 subsection Adiabatic conditions model

@@ -83,7 +83,7 @@ subsection Compositional fields
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
   subsection Function
     set Coordinate system   = depth
     set Variable names      = depth, phi

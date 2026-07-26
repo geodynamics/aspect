@@ -57,7 +57,7 @@ end
 #   p, k - values related to the small temperature perturbation
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,y

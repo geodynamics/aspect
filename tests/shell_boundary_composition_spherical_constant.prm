@@ -42,7 +42,7 @@ subsection Boundary temperature model
 end
 
 subsection Initial temperature model
-  set Model name = spherical hexagonal perturbation
+  set List of model names = spherical hexagonal perturbation
 end
 
 subsection Compositional fields
@@ -60,7 +60,7 @@ subsection Boundary composition model
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 2; 2

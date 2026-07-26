@@ -6,7 +6,7 @@ set End time                               = 0.02
 set CFL number = 5.0
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function constants  = z1=0.102367, z2=0.897633

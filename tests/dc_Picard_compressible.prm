@@ -84,11 +84,9 @@ end
 
 #### Temperature model
 subsection Initial temperature model
-  #set Model name = adiabatic
   set List of model names =  adiabatic, function
   set List of model operators = add
 
-  #  set Model name = adiabatic
   subsection Adiabatic
     set Age bottom boundary layer = 100.e6
     set Age top boundary layer = 100.e6

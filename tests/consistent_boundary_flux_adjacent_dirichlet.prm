@@ -31,7 +31,7 @@ subsection Gravity model
 end
 
 subsection Initial temperature model
-  set Model name = adiabatic
+  set List of model names = adiabatic
 end
 
 subsection Boundary velocity model

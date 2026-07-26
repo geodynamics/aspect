@@ -41,7 +41,7 @@ end
 
 # Initial temperature field
 subsection Initial temperature model
-  set Model name = continental geotherm
+  set List of model names = continental geotherm
 
   subsection Continental geotherm
     set Lithosphere-Asthenosphere boundary isotherm = 1613.

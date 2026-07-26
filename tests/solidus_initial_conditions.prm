@@ -41,7 +41,7 @@ subsection Boundary temperature model
 end
 
 subsection Initial temperature model
-  set Model name              = solidus
+  set List of model names              = solidus
 
   subsection Solidus
     set Supersolidus          = -50

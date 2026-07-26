@@ -70,7 +70,7 @@ subsection Gravity model
 end
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function constants  = l=64000
@@ -80,7 +80,7 @@ subsection Initial temperature model
 end
 
 subsection Initial composition model
-  set Model name = plane wave melt bands initial condition
+  set List of model names = plane wave melt bands initial condition
 
   subsection Plane wave melt bands initial condition
     set Wave amplitude = 1e-4

@@ -62,7 +62,7 @@ subsection Gravity model
 end
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function constants  = reference_t=293, crustal_t = 420, lith_t = 1350, mantle_t = 1470, total_depth=512e3, crustal_depth=30e3, lithospheric_depth=120e3

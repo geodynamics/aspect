@@ -28,7 +28,7 @@ subsection Mesh refinement
 end
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 273
@@ -52,7 +52,7 @@ end
 
 # The compositional field is only present in the lower half of the model
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,y

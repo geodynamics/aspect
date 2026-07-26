@@ -30,7 +30,7 @@ subsection Gravity model
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,z
@@ -75,7 +75,7 @@ subsection Boundary velocity model
 end
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 1000.0 + (y-1000000)/1000000

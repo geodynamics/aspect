@@ -64,7 +64,7 @@ subsection Adiabatic conditions model
 end
 
 subsection Initial temperature model
-  set Model name = prescribed temperature
+  set List of model names = prescribed temperature
 end
 
 subsection Boundary temperature model

@@ -58,7 +58,7 @@ end
 
 # Uniform temperature of 293 K
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 293
@@ -102,7 +102,7 @@ end
 # to 5% at the right boundary. We define a solid composition that has a 
 # value of 1 in the top 500 m of the box, and a value of 0 in the rest of the box.
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,y,t

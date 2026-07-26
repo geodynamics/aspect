@@ -88,7 +88,7 @@ end
 # The composition (4 lithologies, porosity, bound_fluid)
 # evolves through the composition boundary conditions specified below.
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 0; 0; 1; 0; 0; 0
@@ -174,7 +174,7 @@ end
 # The temperature field evolves through the imposed boundary conditions
 # outlined below.
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Coordinate system   = cartesian

@@ -30,7 +30,7 @@ end
 
 # Model initial temperature
 subsection Initial temperature model
-  set Model name = S40RTS perturbation
+  set List of model names = S40RTS perturbation
 
   subsection S40RTS perturbation
     set Initial condition file name       = S40RTS.sph
