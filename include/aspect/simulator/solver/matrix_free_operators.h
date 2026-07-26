@@ -208,6 +208,31 @@ namespace aspect
     };
 
     /**
+     * Evaluate the material model on the active mesh, project viscosities onto
+     * @p dof_handler_projection, fill @p active_viscosity_vector and
+     * @p active_cell_data.viscosity, and update @p minimum_viscosity /
+     * @p maximum_viscosity. @p matrix_free_schur and @p matrix_free_A are used
+     * only for DEBUG consistency checks of MatrixFree cell iteration order.
+     */
+    template <int dim, typename number>
+    void fill_active_cell_data(const DoFHandler<dim> &dof_handler,
+                               const DoFHandler<dim> &dof_handler_projection,
+                               const Introspection<dim> &introspection,
+                               const Quadrature<dim> &quadrature_formula,
+                               const MaterialModel::Interface<dim> &material_model,
+                               const MaterialModel::MaterialAveraging::AveragingOperation &material_averaging,
+                               const Mapping<dim> &mapping,
+                               const MatrixFree<dim, double> &matrix_free,
+                               const MatrixFree<dim, double> &matrix_free_schur,
+                               const MatrixFree<dim, double> &matrix_free_A,
+                               const LinearAlgebra::BlockVector &current_linearization_point,
+                               const MPI_Comm &mpi_comm,
+                               dealii::LinearAlgebra::distributed::Vector<double> &active_viscosity_vector,
+                               OperatorCellData<dim, number> &active_cell_data,
+                               double &minimum_viscosity,
+                               double &maximum_viscosity);
+
+    /**
      * Operator for the entire Stokes block.
      */
     template <int dim, int degree_v, typename number>

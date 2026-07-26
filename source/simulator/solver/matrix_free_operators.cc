@@ -25,6 +25,7 @@
 #include <aspect/mesh_deformation/free_surface.h>
 #include <aspect/melt.h>
 #include <aspect/newton.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/signaling_nan.h>
 
@@ -129,6 +130,203 @@ namespace aspect
       newton_factor_wrt_strain_rate_table.clear();
       dilation_derivative_wrt_pressure_table.clear();
       dilation_derivative_wrt_strain_rate_table.clear();
+    }
+
+
+
+    template <int dim, typename number>
+    void
+    fill_active_cell_data(const DoFHandler<dim> &dof_handler,
+                          const DoFHandler<dim> &dof_handler_projection,
+                          const Introspection<dim> &introspection,
+                          const Quadrature<dim> &quadrature_formula,
+                          const MaterialModel::Interface<dim> &material_model,
+                          const MaterialModel::MaterialAveraging::AveragingOperation &material_averaging,
+                          const Mapping<dim> &mapping,
+                          const MatrixFree<dim, double> &matrix_free,
+                          const MatrixFree<dim, double> &matrix_free_schur,
+                          const MatrixFree<dim, double> &matrix_free_A,
+                          const LinearAlgebra::BlockVector &current_linearization_point,
+                          const MPI_Comm &mpi_comm,
+                          dealii::LinearAlgebra::distributed::Vector<double> &active_viscosity_vector,
+                          OperatorCellData<dim, number> &active_cell_data,
+                          double &minimum_viscosity,
+                          double &maximum_viscosity)
+    {
+#ifndef DEBUG
+      (void)matrix_free_schur;
+      (void)matrix_free_A;
+#endif
+
+      double minimum_viscosity_local = std::numeric_limits<double>::max();
+      double maximum_viscosity_local = std::numeric_limits<double>::lowest();
+
+      const bool active_no_averaging = (material_averaging
+                                        ==
+                                        MaterialModel::MaterialAveraging::AveragingOperation::none);
+
+      {
+        // allocate space for viscosities
+
+        const unsigned int n_cells = matrix_free.n_cell_batches();
+        const unsigned int n_q_points = quadrature_formula.size();
+
+        // One value per cell is required for DGQ0 projection and n_q_points
+        // values per cell for DGQ1.
+        if (active_no_averaging || dof_handler_projection.get_fe().degree == 1)
+          {
+            active_cell_data.viscosity.reinit(TableIndices<2>(n_cells, n_q_points));
+          }
+        else if (dof_handler_projection.get_fe().degree == 0)
+          active_cell_data.viscosity.reinit(TableIndices<2>(n_cells, 1));
+        else
+          Assert(false, ExcInternalError());
+      }
+
+      // Fill the DGQ0 or DGQ1 vector of viscosity values on the active mesh
+      {
+        FEValues<dim> fe_values (mapping,
+                                 dof_handler.get_fe(),
+                                 quadrature_formula,
+                                 update_values   |
+                                 update_gradients |
+                                 update_quadrature_points |
+                                 update_JxW_values);
+
+        MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, introspection.n_compositional_fields);
+        in.requested_properties = MaterialModel::MaterialProperties::viscosity;
+        MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, introspection.n_compositional_fields);
+
+        // This function call computes a cellwise projection of data defined at quadrature points to
+        // a vector defined by the projection DoFHandler. As an input, we must define a lambda which returns
+        // a viscosity value for each quadrature point of the given cell. The projection is then stored in
+        // the active level viscosity vector provided.
+        Utilities::project_cellwise<dim, dealii::LinearAlgebra::distributed::Vector<double>>(mapping,
+            dof_handler_projection,
+            0,
+            quadrature_formula,
+            [&](const typename DoFHandler<dim>::active_cell_iterator & cell,
+                const std::vector<Point<dim>> & /*q_points*/,
+                std::vector<double> &values) -> void
+        {
+          const typename DoFHandler<dim>::active_cell_iterator FEQ_cell(&dof_handler.get_triangulation(),
+          cell->level(),
+          cell->index(),
+          &dof_handler);
+
+          fe_values.reinit (FEQ_cell);
+          in.reinit(fe_values, FEQ_cell, introspection, current_linearization_point);
+
+          // Query the material model for the active level viscosities
+          material_model.fill_additional_material_model_inputs(in, current_linearization_point, fe_values, introspection);
+          material_model.evaluate(in, out);
+
+          // If using a cellwise average for viscosity, average the values here.
+          // When the projection is computed, this will set the viscosity exactly
+          // to this averaged value.
+          if (dof_handler_projection.get_fe().degree == 0)
+            MaterialModel::MaterialAveraging::average (material_averaging,
+            FEQ_cell,
+            quadrature_formula,
+            mapping,
+            in.requested_properties,
+            out);
+
+          if (active_no_averaging)
+            {
+              // also copy the viscosity to the CellData
+
+              const unsigned int index = matrix_free.get_matrix_free_cell_index(cell);
+              const unsigned int lane_size = VectorizedArray<number>::size();
+              const unsigned int cell_index = index / lane_size;
+              const unsigned int lane = index % lane_size;
+
+              for (unsigned int q=0; q<values.size(); ++q)
+                active_cell_data.viscosity(cell_index, q)[lane] = out.viscosities[q];
+            }
+
+          for (unsigned int i=0; i<values.size(); ++i)
+            {
+              // Find the local max/min of the evaluated viscosities.
+              minimum_viscosity_local = std::min(minimum_viscosity_local, out.viscosities[i]);
+              maximum_viscosity_local = std::max(maximum_viscosity_local, out.viscosities[i]);
+
+              values[i] = out.viscosities[i];
+            }
+        },
+        active_viscosity_vector);
+        active_viscosity_vector.compress(VectorOperation::insert);
+      }
+
+      minimum_viscosity = dealii::Utilities::MPI::min(minimum_viscosity_local, mpi_comm);
+      maximum_viscosity = dealii::Utilities::MPI::max(maximum_viscosity_local, mpi_comm);
+
+      FEValues<dim> fe_values_projection (mapping,
+                                          dof_handler_projection.get_fe(),
+                                          quadrature_formula,
+                                          update_values);
+
+      // Create active mesh viscosity table.
+      {
+        const unsigned int n_cells = matrix_free.n_cell_batches();
+        const unsigned int n_q_points = quadrature_formula.size();
+        std::vector<double> values_on_quad (n_q_points);
+
+        std::vector<types::global_dof_index> local_dof_indices(dof_handler_projection.get_fe().dofs_per_cell);
+        for (unsigned int cell=0; cell<n_cells; ++cell)
+          {
+            const unsigned int n_components_filled = matrix_free.n_active_entries_per_cell_batch(cell);
+
+            for (unsigned int i=0; i<n_components_filled; ++i)
+              {
+                typename DoFHandler<dim>::active_cell_iterator FEQ_cell =
+                  matrix_free.get_cell_iterator(cell,i);
+                typename DoFHandler<dim>::active_cell_iterator DG_cell(&dof_handler_projection.get_triangulation(),
+                                                                       FEQ_cell->level(),
+                                                                       FEQ_cell->index(),
+                                                                       &dof_handler_projection);
+                DG_cell->get_active_or_mg_dof_indices(local_dof_indices);
+
+#ifdef DEBUG
+                {
+                  // Verify that all MatrixFree objects iterate over cells in the same way:
+                  typename DoFHandler<dim>::active_cell_iterator s_cell =
+                    matrix_free_schur.get_cell_iterator(cell,i,1);
+                  double distance_s = s_cell->center().distance(FEQ_cell->center());
+                  Assert(distance_s < 1e-10, ExcInternalError());
+
+                  typename DoFHandler<dim>::active_cell_iterator A_cell =
+                    matrix_free_A.get_cell_iterator(cell,i);
+                  double distance_A = A_cell->center().distance(FEQ_cell->center());
+                  Assert(distance_A < 1e-10, ExcInternalError());
+                }
+#endif
+
+                // For DGQ0, we simply use the viscosity at the single
+                // support point of the element. For DGQ1, we must project
+                // back to quadrature point values.
+                if (active_no_averaging)
+                  {
+                    // do nothing, filled above already!
+                  }
+                else if (dof_handler_projection.get_fe().degree == 0)
+                  active_cell_data.viscosity(cell, 0)[i] = active_viscosity_vector(local_dof_indices[0]);
+                else
+                  {
+                    fe_values_projection.reinit(DG_cell);
+                    fe_values_projection.get_function_values(active_viscosity_vector,
+                                                             local_dof_indices,
+                                                             values_on_quad);
+
+                    // Do not allow viscosity to be greater than or less than the limits
+                    // of the evaluated viscosity on the active level.
+                    for (unsigned int q=0; q<n_q_points; ++q)
+                      active_cell_data.viscosity(cell, q)[i]
+                        = std::min(std::max(values_on_quad[q], minimum_viscosity), maximum_viscosity);
+                  }
+              }
+          }
+      }
     }
   }
 
@@ -943,7 +1141,24 @@ namespace aspect
   template class MatrixFreeStokesOperators::BTBlockOperator<dim,3,GMGNumberType>; \
   template class MatrixFreeStokesOperators::MassMatrixOperator<dim,1,GMGNumberType>; \
   template class MatrixFreeStokesOperators::MassMatrixOperator<dim,2,GMGNumberType>; \
-  template struct MatrixFreeStokesOperators::OperatorCellData<dim, GMGNumberType>;
+  template struct MatrixFreeStokesOperators::OperatorCellData<dim, GMGNumberType>; \
+  template void MatrixFreeStokesOperators::fill_active_cell_data<dim, GMGNumberType>( \
+      const DoFHandler<dim> &, \
+      const DoFHandler<dim> &, \
+      const Introspection<dim> &, \
+      const Quadrature<dim> &, \
+      const MaterialModel::Interface<dim> &, \
+      const MaterialModel::MaterialAveraging::AveragingOperation &, \
+      const Mapping<dim> &, \
+      const MatrixFree<dim, double> &, \
+      const MatrixFree<dim, double> &, \
+      const MatrixFree<dim, double> &, \
+      const LinearAlgebra::BlockVector &, \
+      const MPI_Comm &, \
+      dealii::LinearAlgebra::distributed::Vector<double> &, \
+      MatrixFreeStokesOperators::OperatorCellData<dim, GMGNumberType> &, \
+      double &, \
+      double &);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 
