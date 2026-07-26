@@ -7,7 +7,7 @@
  * Planetary Evolution, Convection, and Tectonics. The primary entry
  * point to the documentation are
  *
- * - the <a href="https://aspect-documentation.readthedocs.io/en/latest/">manual</a>
+ * - the <a href="../index.html">manual</a>
  * for a broad overview;
  *
  * - the <a href="modules.html">modules page</a> of this documentation for an
