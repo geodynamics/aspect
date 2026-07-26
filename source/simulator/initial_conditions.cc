@@ -546,13 +546,13 @@ namespace aspect
         system_tmp.reinit (system_rhs);
 
         const Quadrature<dim> &quadrature = introspection.quadratures.velocities;
-        Utilities::project_cellwise<dim,LinearAlgebra::BlockVector>(*mapping,
-                                                                    dof_handler,
-                                                                    introspection.component_indices.pressure,
-                                                                    quadrature,
-                                                                    [&](const typename DoFHandler<dim>::active_cell_iterator & /*cell*/,
-                                                                        const std::vector<Point<dim>> &q_points,
-                                                                        std::vector<double> &values) -> void
+        Utilities::project_cellwise(*mapping,
+                                    dof_handler,
+                                    introspection.component_indices.pressure,
+                                    quadrature,
+                                    [&](const typename DoFHandler<dim>::active_cell_iterator & /*cell*/,
+                                        const std::vector<Point<dim>> &q_points,
+                                        std::vector<double> &values) -> void
         {
           for (unsigned int i=0; i<values.size(); ++i)
             values[i] = adiabatic_conditions->pressure(q_points[i]);
