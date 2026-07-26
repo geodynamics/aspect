@@ -1,0 +1,103 @@
+# This test is used to check if the adiabatic pofile 
+# of models using material models that use lookup tables 
+# is calculated correctly.
+# The model output the density from the lookup table and
+# the adiabatic contions computed using the thermal properties
+# from the pyrolite lookup table and the nonadiabatic 
+# temperature obtained by subtracting the model temperature 
+# solution by the adiabatic temperature return by the 
+# get_adiabatic_conditions().temperature() function.
+
+set Dimension                              = 2
+set Output directory                       = output-adiabatic_profile_with_lookup
+
+set Use years instead of seconds           = true
+set End time                               = 0
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Adiabatic surface temperature          = 1723.15   # 1450°C adiabat
+
+# Set model domain.
+# The y extentt is set to 700km so major phase transitions
+# at 410 and 660 km depth are included.
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 10000
+    set Y extent = 700000      
+    set Y repetitions = 70
+    set X repetitions = 1
+  end
+end
+
+# We assume no initial temperature perturbation, so that 
+# the initial temperature is equal to the adiabatic temperature profile.
+subsection Initial temperature model
+  set Model name = adiabatic
+end
+
+subsection Boundary temperature model
+  set List of model names = initial temperature
+  set Fixed temperature boundary indicators = 0,1,2,3
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0,1,2,3
+end
+
+subsection Heating model
+  set List of model names = adiabatic heating
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+# Use the Steinberger material model with the pyrolite lookup table 
+# so the model know to use the thermal properties from the lookup
+# table to compute the adiabatic profile.
+subsection Material model
+  set Model name = Steinberger
+
+  subsection Steinberger model
+    set Data directory = $ASPECT_SOURCE_DIR/data/material-model/steinberger/
+    set Material file names              = pyr-ringwood88.txt
+    set Lateral viscosity file name      = temp-viscosity-prefactor.txt
+    set Radial viscosity file name       = radial-visc-simple.txt
+    set Bilinear interpolation           = true
+    set Latent heat                      = false
+    
+    # You must set this to false to avoid step-wise viscosity inherited 
+    # from the reference profile "radial-visc-simple.txt".
+    set Use lateral average temperature for viscosity = false
+  end
+end
+
+# We here use a globally refined mesh without
+# adaptive mesh refinement. Each cell is a square 
+#with an edge length of 5 km.
+subsection Mesh refinement
+  set Initial global refinement                = 1
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+# Output relevant properties in postprocessing.
+subsection Postprocess
+  set List of postprocessors =  visualization, temperature statistics, heating statistics
+
+  subsection Visualization
+    set Output format =  gnuplot
+    set Interpolate output = false
+    set List of output variables = material properties, nonadiabatic temperature, adiabat
+
+    subsection Material properties
+      set List of material properties = viscosity, density
+    end
+  end
+end

@@ -267,7 +267,8 @@ namespace aspect
       // If p is close to an existing value use that one. This prevents
       // asking for values at i+1 while initializing i+1 (when p is at the
       // depth of index i).
-      if (std::abs(floating_index-std::floor(floating_index+0.5)) < 1e-6)
+      const double distance_to_closest_profile_point = floating_index-std::floor(floating_index+0.5);
+      if (distance_to_closest_profile_point >=0.0 && distance_to_closest_profile_point < 1e-6)
         return property[i];
 
       Assert (i+1 < property.size(), ExcInternalError());

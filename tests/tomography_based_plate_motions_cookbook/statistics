@@ -29,4 +29,4 @@
 # 29: Surface visualization file name
 # 30: Outward heat flux through boundary with indicator 0 ("bottom") (W)
 # 31: Outward heat flux through boundary with indicator 1 ("top") (W)
-0 0.000000000000e+00 0.000000000000e+00 192 1968 864 5184 1 0 0 0 0 0 0 0 60 61 61 1.12268018e+00 4.04769022e-04 4.24761181e-01 8.43772627e-01 7.61629763e-04 3.24611946e-01 1.12268018e+00 4.04770119e-04 4.24761181e-01 output-tomography_based_plate_motions_cookbook/solution/solution-00000 output-tomography_based_plate_motions_cookbook/solution_surface/solution_surface-00000 -1.24223205e+07 5.98017605e+07 
+0 0.000000000000e+00 0.000000000000e+00 192 1968 864 5184 1 0 0 0 0 0 0 0 56 57 57 1.12263577e+00 3.21697415e-04 4.24748191e-01 8.43734875e-01 8.81657892e-04 3.24597069e-01 1.12263577e+00 3.21698512e-04 4.24748190e-01 output-tomography_based_plate_motions_cookbook/solution/solution-00000 output-tomography_based_plate_motions_cookbook/solution_surface/solution_surface-00000 -1.24229860e+07 5.98020164e+07 

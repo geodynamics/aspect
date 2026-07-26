@@ -15,7 +15,7 @@ Number of mesh deformation degrees of freedom: 6,528
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
      RMS, max velocity:        0.0156 m/year, 0.0457 m/year
 
-*** Timestep 1:  t=4.00722e+06 years, dt=4.00722e+06 years
+*** Timestep 1:  t=4.00719e+06 years, dt=4.00719e+06 years
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 7 iterations.
    Rebuilding Stokes preconditioner...
@@ -26,7 +26,7 @@ Number of mesh deformation degrees of freedom: 6,528
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
      RMS, max velocity:        0.0156 m/year, 0.0456 m/year
 
-*** Timestep 2:  t=8.02686e+06 years, dt=4.01964e+06 years
+*** Timestep 2:  t=8.02683e+06 years, dt=4.01964e+06 years
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
@@ -72,7 +72,7 @@ Number of mesh deformation degrees of freedom: 6,528
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
      RMS, max velocity:        0.0154 m/year, 0.0452 m/year
 
-*** Timestep 6:  t=2.42024e+07 years, dt=4.05905e+06 years
+*** Timestep 6:  t=2.42023e+07 years, dt=4.05905e+06 years
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
@@ -96,7 +96,7 @@ Number of mesh deformation degrees of freedom: 6,528
 
 *** Snapshot output-checkpoint_07_enable_free_surface_create/restart/02/ created!
 
-*** Timestep 8:  t=3e+07 years, dt=1.73041e+06 years
+*** Timestep 8:  t=3e+07 years, dt=1.73044e+06 years
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 6 iterations.
    Rebuilding Stokes preconditioner...

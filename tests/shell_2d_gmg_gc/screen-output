@@ -4,7 +4,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG-GC)... 15+0 iterations.
+   Solving Stokes system (GMG-GC)... 12+0 iterations.
 
 Number of active cells: 300 (on 4 levels)
 Number of degrees of freedom: 4,782 (2,928+390+1,464)
@@ -18,7 +18,7 @@ Number of degrees of freedom: 6,888 (4,224+552+2,112)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG-GC)... 15+0 iterations.
+   Solving Stokes system (GMG-GC)... 12+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-shell_2d_gmg_gc/solution/solution-00000

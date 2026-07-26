@@ -16,9 +16,9 @@ Additional information:
     StokesMatrixFreeHandlerLocalSmoothingImplementation::solve did not
     converge.
     
-    The initial residual was: 1.169088e+14
-    The final residual is: 1.141373e+10
-    The required residual for convergence is: 1.169088e-21
+    The initial residual was: 1.184089e+14
+    The final residual is: 4.941346e+08
+    The required residual for convergence is: 1.184089e-21
     See output-stokes_solver_fail_cheap/solver_history.txt for the full
     convergence history.
     
@@ -51,7 +51,7 @@ Additional information:
     iteration_state == SolverControl::success
     Additional information:
     Iterative method reported convergence failure in step 10. The residual
-    in the last step was 1.14137e+10.
+    in the last step was 4.94135e+08.
     
     This error message can indicate that you have simply not allowed a
     sufficiently large number of iterations for your iterative solver to
