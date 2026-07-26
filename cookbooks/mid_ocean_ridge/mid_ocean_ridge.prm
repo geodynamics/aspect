@@ -167,6 +167,14 @@ subsection Melt settings
   set Compaction viscosity regularization factor = 1e-28
 end
 
+subsection Discretization
+  subsection Stabilization parameters
+    set Use artificial viscosity smoothing = true
+    set beta = 0.052, 0.1, 0.052
+    set cR = 0.11, 0.2, 0.11
+  end
+end
+
 ##################### Composition ########################
 
 # We need two compositional fields: The porosity field to track the motion of

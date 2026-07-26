@@ -54,6 +54,7 @@ end
 
 subsection Melt settings
   set Include melt transport = true
+  set Compaction viscosity regularization factor = 1e-28
 end
 
 ############### Compositional fields
