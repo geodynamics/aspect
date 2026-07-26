@@ -372,7 +372,7 @@ namespace aspect
         temp_ops[l].initialize(mf);
       }
 
-    transfer_t transfer(transfers, [&](const auto l, auto &vec)
+    GCMGTransferType<dim,GMGNumberType> transfer(transfers, [&](const auto l, auto &vec)
     {
       (void) l;
       (void) vec;
@@ -1038,7 +1038,7 @@ namespace aspect
                                    mg_smoother_Schur);
 
     // GMG Preconditioner for ABlock and Schur complement
-    using GMGPreconditioner = PreconditionMG<dim, VectorType, transfer_t>;
+    using GMGPreconditioner = PreconditionMG<dim, VectorType, GCMGTransferType<dim,double>>;
     GMGPreconditioner prec_A(dofhandlers_v.back(), mg_A, *mg_transfer_A_block);
     GMGPreconditioner prec_Schur(dofhandlers_p.back(), mg_Schur, *mg_transfer_Schur_complement);
 
@@ -1191,7 +1191,7 @@ namespace aspect
     solver_control_expensive.enable_history_data();
 
     // create a cheap preconditioner that consists of only a single V-cycle
-    using GMGPreconditioner = PreconditionMG<dim, VectorType, MGTransferMF<dim,GMGNumberType>>;
+    using GMGPreconditioner = PreconditionMG<dim, VectorType, GCMGTransferType<dim,double>>;
     internal::InverseVelocityBlock<GMGPreconditioner, VectorType, ABlockMatrixType>
     inverse_velocity_block_cheap(A_block_matrix,
                                  prec_A,
@@ -1822,7 +1822,7 @@ namespace aspect
                                     constraints_v[l + 1],
                                     constraints_v[l]);
 
-        mg_transfer_A_block = std::make_unique<transfer_t>(transfers_v, [&](const auto l, auto &vec)
+        mg_transfer_A_block = std::make_unique<GCMGTransferType<dim,GMGNumberType>>(transfers_v, [&](const auto l, auto &vec)
         {
           mg_matrices_A_block[l].initialize_dof_vector(vec);
         });
@@ -1835,7 +1835,7 @@ namespace aspect
                                     constraints_p[l + 1],
                                     constraints_p[l]);
 
-        mg_transfer_Schur_complement  = std::make_unique<transfer_t>(transfers_p, [&](const auto l, auto &vec)
+        mg_transfer_Schur_complement  = std::make_unique<GCMGTransferType<dim,GMGNumberType>>(transfers_p, [&](const auto l, auto &vec)
         {
           mg_matrices_Schur_complement[l].initialize_dof_vector(vec);
         });
