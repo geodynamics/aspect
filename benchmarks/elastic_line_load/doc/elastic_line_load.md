@@ -14,8 +14,21 @@ feature:visco-elastic-plastic
 
 This example uses ASPECT to reproduce the modeling setup of {cite:t}`dase96`, which prescribes
 a line "load" on the top of an elastic half-space. The analytic solution for $\sigma_{xx}$, $\sigma_{xy}$
-and $\sigma_{yy}$ comes from Albert Flamant. The model setup, and the determination of the analytic
-solution is outlined below.
+and $\sigma_{yy}$ comes from Albert Flamant and assumes a homogeneous, isotropic elastic half-space. To
+approximate this in ASPECT, we use the `Viscoelastic` material model with a high viscosity, a uniform shear
+modulus, and a small time step. This approximates a homogeneous, isotropic elastic half-space because the
+`Viscoelastic` material model defines deformation with a Maxwell rheology that combines the viscous part and
+the elastic part of the deformation in serial such that:
+
+```{math}
+\frac{1}{E} \frac{d \sigma}{dt} + \frac{\sigma}{\eta} = \frac{d \epsilon}{dt}
+```
+
+where $E$ is Young's modulus, $\eta$ is the viscosity, $\sigma$ is the stress, and $\epsilon$ is the strain.
+When $E$ is very large, the first term goes to 0 and $\sigma$ is related to the time derivative of the strain.
+If $\eta$ is very large, then the second term goes to 0, the time derivatives cancel out, and $\sigma$ is
+related to $\epsilon$. By making the viscosity large, we approximate a purely elastic response. The model setup,
+and the determination of the analytic solution is outlined below.
 
 The analytic solution which describes the stresses within the domain are outlined by Davis and Selvadurai
 1996 in Section 4.6, but the expressions for each of the 3 unique components is:

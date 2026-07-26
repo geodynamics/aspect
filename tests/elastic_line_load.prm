@@ -1,0 +1,17 @@
+include $ASPECT_SOURCE_DIR/benchmarks/elastic_line_load/elastic_line_load.prm
+
+# We want to keep the mesh static
+subsection Mesh refinement
+  set Initial global refinement          = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = material statistics, composition statistics, visualization
+
+  subsection Visualization
+    set Output format                 = gnuplot
+    set Point-wise stress and strain  = false
+    set Time between graphical output = 0
+    set List of output variables      = stress, shear stress, flamant analytic stress
+  end
+end

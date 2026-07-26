@@ -192,15 +192,10 @@ namespace aspect
     {
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(FlamantSolution,
                                                   "flamant analytic stress",
-                                                  "A simple material model that is like the "
-                                                  "'Simple' model, but tracks the finite strain as compositional "
-                                                  "fields. More precisely, the model assumes that the first 4 (in 2D) "
-                                                  "or 9 (in 3D) compositional fields contain the components "
-                                                  "of the deformation gradient tensor, $\\mathbf F$, which can "
-                                                  "be polar-decomposed into the left stretching tensor "
-                                                  "$\\mathbf L$ (the finite strain we are interested in), and the "
-                                                  "rotation tensor $\\mathbf Q$. See the corresponding cookbook in "
-                                                  "the manual for more detailed information.")
+                                                  "A postprocessor that determines the analytical solution "
+                                                  "for the stress field of a line load on a semi-infinite "
+                                                  "elastic half-space. The postprocessor is only valid for "
+                                                  "2D problems with a box geometry model.")
     }
   }
 }
