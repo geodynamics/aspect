@@ -302,11 +302,22 @@ if(ASPECT_WITH_FASTSCAPE)
     foreach(_line ${_fastscape_info})
       string(STRIP ${_line} _line)
       if("${_line}" MATCHES "^version")
+        if("${_line}" MATCHES "ASPECT")
+          message(STATUS "FastScape version compatible with ASPECT.")
+        else()
+          message(Status "The linked FastScape version is not adapted for use with ASPECT. Consider obtaining a new version from https://github.com/anne-glerum/fastscapelib-fortran.")
+        endif()
         string(REGEX REPLACE "[^0-9.]" "" FASTSCAPE_VERSION ${_line})
       endif()
     endforeach()
     message(STATUS "FastScape version number is ${FASTSCAPE_VERSION}")
 
+    # Get the subversion numbers
+    string(REPLACE "." ";" _fastscape_version_parts "${FASTSCAPE_VERSION}")
+    list(GET _fastscape_version_parts 0 FASTSCAPE_VERSION_MAJOR)
+    list(GET _fastscape_version_parts 1 FASTSCAPE_VERSION_MINOR)
+    list(GET _fastscape_version_parts 2 FASTSCAPE_VERSION_SUBMINOR)
+    
     # Throw an error if the version is too old.
     if(${FASTSCAPE_VERSION} VERSION_LESS 2.8)
       message(FATAL_ERROR "The linked FastScape version is ${FASTSCAPE_VERSION}, however at least 2.8.0 is required.")

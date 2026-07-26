@@ -95,6 +95,13 @@ namespace aspect
     stream << '\n';
 #endif
 
+#ifdef ASPECT_WITH_FASTSCAPE
+    stream << "--     . using FastScape "
+           << FASTSCAPE_VERSION_MAJOR << '.'
+           << FASTSCAPE_VERSION_MINOR << '.'
+           << FASTSCAPE_VERSION_SUBMINOR << '\n';
+#endif
+
 #ifdef DEBUG
     stream << "--     . running in DEBUG mode\n"
 #else
