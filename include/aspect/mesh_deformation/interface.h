@@ -654,7 +654,7 @@ namespace aspect
         /**
          * Multigrid transfer operator for the displacements
          */
-        MGTransferMF<dim, double> mg_transfer;
+        MGTransferType<dim, double> mg_transfer;
 
         /**
          * Multigrid level constraints for the displacements

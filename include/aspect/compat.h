@@ -29,7 +29,6 @@
 #include <memory>
 
 #if !DEAL_II_VERSION_GTE(9,6,0)
-#  include <deal.II/multigrid/mg_transfer_matrix_free.h>
 #  include <deal.II/grid/manifold.h>
 #  include <deal.II/grid/manifold_lib.h>
 #else
@@ -44,6 +43,8 @@
 #  include <deal.II/grid/grid_generator.h>
 #endif
 
+#include <deal.II/multigrid/mg_transfer_matrix_free.h>
+#include <deal.II/multigrid/mg_transfer_global_coarsening.h>
 
 namespace aspect
 {
@@ -54,13 +55,24 @@ namespace aspect
 
   }
 
+  // deal.II 9.6 introduced MGTransferMF as a replacement for
+  // MGTransferMatrixFree; deal.II 9.9 renamed it back.
+#if DEAL_II_VERSION_GTE(9,9,0)
+  template <int dim, typename NumberType>
+  using MGTransferType = dealii::MGTransferMatrixFree<dim, NumberType>;
+#else
+  template <int dim, typename NumberType>
+  using MGTransferType = dealii::MGTransferMF<dim, NumberType>;
+#endif
 
-// deal.II 9.6 introduces the new MGTransferMF class as a replacement
-// for MGTransferMatrixFree. Instead of putting an ifdef in every place,
-// do this in one central location:
-#if !DEAL_II_VERSION_GTE(9,6,0)
-  template <int dim, class NumberType>
-  using MGTransferMF = dealii::MGTransferMatrixFree<dim,NumberType>;
+  // Global-coarsening transfers share the same class as local smoothing
+  // from deal.II 9.7 onward; 9.6 still needs MGTransferGlobalCoarsening.
+#if DEAL_II_VERSION_GTE(9,7,0)
+  template <int dim, typename NumberType>
+  using GCMGTransferType = MGTransferType<dim, NumberType>;
+#else
+  template <int dim, typename NumberType>
+  using GCMGTransferType = dealii::MGTransferGlobalCoarsening<dim, dealii::LinearAlgebra::distributed::Vector<NumberType>>;
 #endif
 
 

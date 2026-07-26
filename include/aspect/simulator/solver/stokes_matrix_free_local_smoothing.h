@@ -230,8 +230,8 @@ namespace aspect
       MGConstrainedDoFs mg_constrained_dofs_Schur_complement;
       MGConstrainedDoFs mg_constrained_dofs_projection;
 
-      MGTransferMF<dim,GMGNumberType> mg_transfer_A_block;
-      MGTransferMF<dim,GMGNumberType> mg_transfer_Schur_complement;
+      MGTransferType<dim,GMGNumberType> mg_transfer_A_block;
+      MGTransferType<dim,GMGNumberType> mg_transfer_Schur_complement;
 
       std::vector<std::shared_ptr<MatrixFree<dim,double>>> matrix_free_objects;
   };
