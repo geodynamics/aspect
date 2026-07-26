@@ -45,14 +45,14 @@ namespace aspect
       unsigned int field_id = compositional_field;
       if (this->get_boundary_composition_manager().boundaries_with_fixed_subset_of_fields_exist())
         {
-          const std::set<unsigned int> fixed_fields = this->get_boundary_composition_manager().get_fixed_compositional_fields_for_plugin_on_boundary("box with lithosphere boundary indicators", boundary_indicator);
-          Assert (fixed_fields.find(compositional_field) != fixed_fields.end(),
+          const std::set<unsigned int> my_fixed_fields = this->get_boundary_composition_manager().get_fixed_compositional_fields_for_plugin_on_boundary("box with lithosphere boundary indicators", boundary_indicator);
+          Assert (my_fixed_fields.find(compositional_field) != my_fixed_fields.end(),
                   ExcMessage ("Boundary composition was requested for field " +
                               Utilities::int_to_string(compositional_field) +
                               " on boundary " +
                               Utilities::int_to_string(boundary_indicator) +
                               " but this field is not prescribed by the `box with lithosphere boundary indicators' plugin. "));
-          field_id = std::distance(fixed_fields.begin(), fixed_fields.find(compositional_field));
+          field_id = std::distance(my_fixed_fields.begin(), my_fixed_fields.find(compositional_field));
         }
 
       return composition_values[boundary_indicator][field_id];
@@ -191,9 +191,9 @@ namespace aspect
       // Not all fields need to be fixed on a given boundary.
       for (unsigned int f=0; f<2*dim+2*(dim-1); ++f)
         {
-          const std::set<types::boundary_id> fixed_boundary_indicators = this->get_boundary_composition_manager().get_fixed_compositional_fields_for_plugin_on_boundary("box with lithosphere boundary indicators",f);
-          if (fixed_boundary_indicators.count(f) != 0)
-            AssertThrow (composition_values[f].size() == fixed_boundary_indicators.size(),
+          const std::set<types::boundary_id> my_fixed_boundary_indicators = this->get_boundary_composition_manager().get_fixed_compositional_fields_for_plugin_on_boundary("box with lithosphere boundary indicators",f);
+          if (my_fixed_boundary_indicators.count(f) != 0)
+            AssertThrow (composition_values[f].size() == my_fixed_boundary_indicators.size(),
                          ExcMessage (std::string("The specification of boundary composition values for the `box with "
                                                  "lithosphere boundary indicators' model "
                                                  "requires as many values for each boundary indicator of the box as there "
@@ -211,7 +211,7 @@ namespace aspect
                                                  +
                                                  " compositional field(s) and "
                                                  +
-                                                 Utilities::int_to_string(fixed_boundary_indicators.size())
+                                                 Utilities::int_to_string(my_fixed_boundary_indicators.size())
                                                  +
                                                  " compositional field(s) fixed by the plugin on this face.")));
         }

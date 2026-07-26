@@ -37,10 +37,10 @@ namespace aspect
     void
     AsciiData<dim>::initialize ()
     {
-      const unsigned int n_fixed_fields = this->get_boundary_composition_manager().get_fixed_compositional_fields_for_plugin("ascii data").size();
-      const std::set<types::boundary_id> fixed_boundary_indicators = this->get_boundary_composition_manager().get_fixed_composition_boundaries_for_plugin("ascii data");
-      Utilities::AsciiDataBoundary<dim>::initialize(fixed_boundary_indicators,
-                                                    n_fixed_fields);
+      const unsigned int n_my_fixed_fields = this->get_boundary_composition_manager().get_fixed_compositional_fields_for_plugin("ascii data").size();
+      const std::set<types::boundary_id> my_fixed_boundary_indicators = this->get_boundary_composition_manager().get_fixed_composition_boundaries_for_plugin("ascii data");
+      Utilities::AsciiDataBoundary<dim>::initialize(my_fixed_boundary_indicators,
+                                                    n_my_fixed_fields);
     }
 
 
@@ -61,19 +61,19 @@ namespace aspect
                           const Point<dim> &position,
                           const unsigned int compositional_field) const
     {
-      // In case not all fields are fixed on the boundary,
+      // In case not all fields are fixed by the plugin,
       // figure out the right index of the given field.
       unsigned int field_id = compositional_field;
       if (this->get_boundary_composition_manager().boundaries_with_fixed_subset_of_fields_exist())
         {
-          const std::set<unsigned int> fixed_fields = this->get_boundary_composition_manager().get_fixed_compositional_fields_for_plugin("ascii data");
-          Assert (fixed_fields.find(compositional_field) != fixed_fields.end(),
+          const std::set<unsigned int> my_fixed_fields = this->get_boundary_composition_manager().get_fixed_compositional_fields_for_plugin("ascii data");
+          Assert (my_fixed_fields.find(compositional_field) != my_fixed_fields.end(),
                   ExcMessage ("Boundary composition was requested for field " +
                               Utilities::int_to_string(compositional_field) +
                               " on boundary " +
                               Utilities::int_to_string(boundary_indicator) +
                               " but this field is not prescribed by the `ascii data` plugin. "));
-          field_id = std::distance(fixed_fields.begin(), fixed_fields.find(compositional_field));
+          field_id = std::distance(my_fixed_fields.begin(), my_fixed_fields.find(compositional_field));
         }
 
       return Utilities::AsciiDataBoundary<dim>::get_data_component(boundary_indicator,

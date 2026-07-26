@@ -213,8 +213,8 @@ namespace aspect
         allows_fixed_composition_on_outflow_boundaries() const;
 
         /*
-         * Return whether on the given boundary the given field
-         * is fixed.
+         * Return whether on the boundary with the given boundary id,
+         * the given field is fixed.
          */
         bool
         field_is_fixed_on_boundary(const types::boundary_id boundary_id,
@@ -230,38 +230,41 @@ namespace aspect
         boundaries_with_fixed_subset_of_fields_exist() const;
 
         /*
-         * Return a list of fields that are fixed on the given boundary.
+         * Return a list of the fields that are fixed on the boundary
+         * identified by the function argument.
          */
         std::vector<unsigned int>
         get_fixed_fields_on_boundary (const types::boundary_id boundary_id) const;
 
         /*
-         * Return a set of boundary indicators on which the given field
+         * Return the set of indicators of the boundaries on which the given field
          * is fixed.
          */
         std::set<types::boundary_id>
         get_fixed_boundaries_for_field (const unsigned int compositional_field) const;
 
         /*
-         * Return the set of compositional fields that are fixed
-         * for the given plugin name.
+         * Return the set of compositional fields whose values are prescribed
+         * by the boundary composition plugin identified by the function argument
+         * (the name of the plugin).
          */
         std::set<unsigned int>
-        get_fixed_compositional_fields_for_plugin (const std::string plugin_name) const;
+        get_fixed_compositional_fields_for_plugin (const std::string &plugin_name) const;
 
         /*
-         * Return the set of compositional fields that are fixed
-         * for the given plugin name.
+         * Return the set of compositional fields whose values are prescribed on the
+         * boundary identified by the input boundary id (second function argument) by
+         * the boundary composition plugin identified by the first function argument.
          */
         std::set<unsigned int>
-        get_fixed_compositional_fields_for_plugin_on_boundary (const std::string plugin_name, const types::boundary_id boundary_id) const;
+        get_fixed_compositional_fields_for_plugin_on_boundary (const std::string &plugin_name, const types::boundary_id boundary_id) const;
 
         /*
-         * Return the set of boundary indicators for which fields are fixed
-         * for the given plugin name.
+         * Return the set of boundary indicators identifying boundaries on which fields are
+         * prescribed by the plugin identified by the function argument (the name of the plugin).
          */
         std::set<types::boundary_id>
-        get_fixed_composition_boundaries_for_plugin (const std::string plugin_name) const;
+        get_fixed_composition_boundaries_for_plugin (const std::string &plugin_name) const;
 
         /**
          * For the current plugin subsystem, write a connection graph of all of the
@@ -301,7 +304,7 @@ namespace aspect
         /**
          * A list of masks that specify for each plugin object
          * for each boundary it applies to which compositional fields
-         *  are prescribed (true) and which are not (false).
+         * are prescribed (true) and which are not (false).
          */
         std::vector <std::vector<ComponentMask>> masks_fields;
 
@@ -324,8 +327,8 @@ namespace aspect
         std::set<types::boundary_id> fixed_composition_boundary_indicators;
 
         /**
-         * A set of compositional field numbers that are fixed on any of the
-         * boundaries, i.e. potentially a subset of n_compositional_fields.
+         * A set of compositional field numbers of fields that are fixed on at least one
+         * of the boundaries, i.e. potentially a subset of n_compositional_fields.
          */
         std::set<unsigned int> fixed_compositional_fields;
 

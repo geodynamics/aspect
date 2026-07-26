@@ -43,14 +43,14 @@ namespace aspect
       unsigned int field_id = compositional_field;
       if (this->get_boundary_composition_manager().boundaries_with_fixed_subset_of_fields_exist())
         {
-          const std::set<unsigned int> fixed_fields = this->get_boundary_composition_manager().get_fixed_compositional_fields_for_plugin("function");
-          AssertThrow (fixed_fields.find(compositional_field) != fixed_fields.end(),
+          const std::set<unsigned int> my_fixed_fields = this->get_boundary_composition_manager().get_fixed_compositional_fields_for_plugin("function");
+          AssertThrow (my_fixed_fields.find(compositional_field) != my_fixed_fields.end(),
                        ExcMessage ("Boundary composition was requested for field " +
                                    Utilities::int_to_string(compositional_field) +
                                    " on boundary " +
                                    Utilities::int_to_string(boundary_indicator) +
                                    " but this field is not prescribed by the `function` plugin. "));
-          field_id = std::distance(fixed_fields.begin(), fixed_fields.find(compositional_field));
+          field_id = std::distance(my_fixed_fields.begin(), my_fixed_fields.find(compositional_field));
         }
 
       return function->value(Utilities::convert_array_to_point<dim>(point.get_coordinates()), field_id);
@@ -111,14 +111,14 @@ namespace aspect
         {
           coordinate_system = ::aspect::Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
 
-          const unsigned int n_fixed_compositional_fields = this->get_boundary_composition_manager().boundaries_with_fixed_subset_of_fields_exist() ?
-                                                            this->get_boundary_composition_manager().get_fixed_compositional_fields_for_plugin("function").size() :
-                                                            this->n_compositional_fields();
+          const unsigned int n_my_fixed_compositional_fields = this->get_boundary_composition_manager().boundaries_with_fixed_subset_of_fields_exist() ?
+                                                               this->get_boundary_composition_manager().get_fixed_compositional_fields_for_plugin("function").size() :
+                                                               this->n_compositional_fields();
 
           try
             {
               function
-                = std::make_unique<Functions::ParsedFunction<dim>>(n_fixed_compositional_fields);
+                = std::make_unique<Functions::ParsedFunction<dim>>(n_my_fixed_compositional_fields);
               function->parse_parameters (prm);
             }
           catch (...)

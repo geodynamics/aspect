@@ -643,7 +643,7 @@ namespace aspect
 
     template <int dim>
     std::set<unsigned int>
-    Manager<dim>::get_fixed_compositional_fields_for_plugin (const std::string plugin_name) const
+    Manager<dim>::get_fixed_compositional_fields_for_plugin (const std::string &plugin_name) const
     {
       const auto plugin_name_it = std::find(this->plugin_names.begin(), this->plugin_names.end(), plugin_name);
       AssertThrow (plugin_name_it != this->plugin_names.end(),
@@ -689,7 +689,7 @@ namespace aspect
 
     template <int dim>
     std::set<unsigned int>
-    Manager<dim>::get_fixed_compositional_fields_for_plugin_on_boundary (const std::string plugin_name, const types::boundary_id boundary_id) const
+    Manager<dim>::get_fixed_compositional_fields_for_plugin_on_boundary (const std::string &plugin_name, const types::boundary_id boundary_id) const
     {
       const auto plugin_name_it = std::find(this->plugin_names.begin(), this->plugin_names.end(), plugin_name);
       AssertThrow (plugin_name_it != this->plugin_names.end(),
@@ -730,7 +730,7 @@ namespace aspect
 
     template <int dim>
     std::set<types::boundary_id>
-    Manager<dim>::get_fixed_composition_boundaries_for_plugin (const std::string plugin_name) const
+    Manager<dim>::get_fixed_composition_boundaries_for_plugin (const std::string &plugin_name) const
     {
       const auto plugin_name_it = std::find(this->plugin_names.begin(), this->plugin_names.end(), plugin_name);
       AssertThrow (plugin_name_it != this->plugin_names.end(),
