@@ -626,3 +626,58 @@ TEST_CASE("Utilities::string_to_unsigned_int")
   CHECK(aspect::Utilities::string_to_unsigned_int(std::vector<std::string>({}))
         == std::vector<unsigned int>());
 }
+
+TEST_CASE("Rotate Kelvin Tensor")
+{
+  // define a random rotation
+  std::vector<double> EA = {13, 21, 34};
+  dealii::Tensor<2,3> rotation = aspect::Utilities::zxz_euler_angles_to_rotation_matrix(EA[0], EA[1], EA[1]);
+
+  // generate an symmetric tensor in kelvin notation
+  // full matrix necessary for dealii::Physics::Notation::Kelvin::to_tensor
+  dealii::FullMatrix<double> kelvin_tensor_fm(6,6);
+  dealii::SymmetricTensor<2,6> kelvin_tensor;
+  for (unsigned short int i1 = 0; i1 < 6; ++i1)
+    {
+      for (unsigned short int i2 = i1; i2 < 6; ++i2)
+        {
+          kelvin_tensor_fm[i1][i2] = kelvin_tensor_fm[i2][i1] = 2.5*i1 + 3.4*i2 + 3.0;
+          kelvin_tensor[i1][i2]    = kelvin_tensor_fm[i1][i2];
+        }
+    }
+
+  dealii::SymmetricTensor<4,3> full_tensor;
+  dealii::Physics::Notation::Kelvin::to_tensor(kelvin_tensor_fm, full_tensor);
+
+  // rotating using rotate full stiffness tensor (checked and tested)
+  dealii::SymmetricTensor<4,3> rotated_full_tensor = aspect::Utilities::Tensors::rotate_full_stiffness_tensor(rotation, full_tensor);
+
+  // rotation using rotate kelvin tensor
+  dealii::SymmetricTensor<2,6> rotated_kelvin_tensor = aspect::Utilities::Tensors::rotate_kelvin_tensor(rotation, kelvin_tensor);
+
+  // painstakingly use dealii::Physics::Notation::Kelvin::to_tensor
+  dealii::FullMatrix<double> rotated_kelvin_tensor_fm(6,6);
+  for (unsigned int ai=0; ai<6; ++ai)
+    for (unsigned int aj=0; aj<6; ++aj)
+      rotated_kelvin_tensor_fm[ai][aj] = rotated_kelvin_tensor[ai][aj];
+
+  dealii::SymmetricTensor<4,3> rotated_full_tensor_new;
+  dealii::Physics::Notation::Kelvin::to_tensor(rotated_kelvin_tensor_fm, rotated_full_tensor_new);
+
+  // check that every component is the same
+  for (unsigned int i1=0; i1<3; ++i1)
+    {
+      for (unsigned int i2=0; i2<3; ++i2)
+        {
+          for (unsigned int i3=0; i3<3; ++i3)
+            {
+              for (unsigned int i4=0; i4<3; ++i4)
+                {
+                  INFO("array index i,j,k,l=" << i1 << ',' << i2 << ',' << i3 << ',' << i4 << ',' << ": ");
+                  CHECK(rotated_full_tensor_new[i1][i2][i3][i4] == Approx(rotated_full_tensor[i1][i2][i3][i4]));
+                }
+            }
+        }
+    }
+
+}
