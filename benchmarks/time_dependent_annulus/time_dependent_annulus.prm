@@ -34,7 +34,6 @@ subsection Boundary velocity model
   set Prescribed velocity boundary indicators = 0: function, 1: function
 
   subsection Function
-    set Function constants  = pi=3.1415926
     set Variable names      = x,y
     set Function expression = y*sqrt(x^2 + y^2)^6;-x*sqrt(x^2 + y^2)^6
   end
@@ -108,7 +107,6 @@ subsection Adiabatic conditions model
   set Model name = function
 
   subsection Function
-    set Function constants  =
     set Function expression = 0; 0; 0
     set Variable names      = depth
   end

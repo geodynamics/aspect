@@ -41,7 +41,7 @@ subsection Initial temperature model
 
   subsection Function
     set Variable names      = x,z
-    set Function constants  = p=0.01, L=100000, pi=3.1415926536, k=1
+    set Function constants  = p=0.01, L=100000, k=1
     set Function expression = 1600
   end
 end
@@ -60,7 +60,7 @@ subsection Initial composition model
 
   subsection Function
     set Variable names      = x,y
-    set Function constants  = pi=3.1415926,x0=50000,y0=50000,c=10000
+    set Function constants  = x0=50000,y0=50000,c=10000
     set Function expression = 0.2 * exp(-((x-x0)*(x-x0)+(y-y0)*(y-y0))/(2*c*c)); 0.2 * exp(-((x-x0)*(x-x0)+(y-y0)*(y-y0))/(2*c*c))
   end
 end

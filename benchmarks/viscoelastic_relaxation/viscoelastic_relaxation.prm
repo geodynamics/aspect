@@ -76,7 +76,6 @@ subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names      = x,y
-    set Function constants  =
     set Function expression = 20e6; -20e6; 0; 20e6; -20e6; 0
   end
 end

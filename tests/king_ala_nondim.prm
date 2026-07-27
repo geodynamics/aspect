@@ -57,7 +57,7 @@ subsection Initial temperature model
 
   subsection Function
     set Variable names      = x,z
-    set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1
+    set Function constants  = p=0.01, L=1, k=1
     set Function expression =  1* ((1.0-z/L) + p*cos(k*pi*x/L/1.0)*sin(pi*z/L)) +0.091
   end
 end

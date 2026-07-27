@@ -37,7 +37,6 @@ subsection Initial temperature model
 
   subsection Function
     set Variable names      = x,z
-    set Function constants  = pi=3.1415926
     set Function expression = 1600 + 100*sin(x*pi/200000.0)
   end
 end

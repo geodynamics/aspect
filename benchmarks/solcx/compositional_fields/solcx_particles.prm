@@ -84,7 +84,7 @@ subsection Initial composition model
 
   subsection Function
     set Variable names      = x,y
-    set Function constants  = pi=3.1415926, eta_b=1e6, background_density=0.0
+    set Function constants  =  eta_b=1e6, background_density=0.0
     set Function expression = background_density - sin(pi*y) * cos(pi*x); if(x<0.5, 1, eta_b)
   end
 end
@@ -121,7 +121,7 @@ subsection Particles
   subsection Function
     set Number of components = 2
     set Variable names      = x, y
-    set Function constants  = pi=3.1415926, eta_b=1e6, background_density=0.0
+    set Function constants  =  eta_b=1e6, background_density=0.0
     set Function expression =  background_density - sin(pi*y) * cos(pi*x); if(x<0.5, 1, eta_b)
   end
 

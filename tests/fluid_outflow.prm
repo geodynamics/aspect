@@ -26,7 +26,7 @@ subsection Initial composition model
 
   subsection Function
     set Variable names      = x,y,t
-    set Function constants  = pi=3.1415926, x0=2500, y0=2500, c=1000
+    set Function constants  =  x0=2500, y0=2500, c=1000
     set Function expression = 0.01 * exp(-((x-x0)*(x-x0)+(y-y0)*(y-y0))/(2*c*c)); 0.0; if(y>=7000, 1, 0)
   end
 end

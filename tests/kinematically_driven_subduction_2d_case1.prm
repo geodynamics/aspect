@@ -121,7 +121,6 @@ subsection Initial temperature model
   set List of model names = function
 
   subsection Function
-    set Function constants  =
     set Function expression = 0
     set Variable names      = x,y,t
   end

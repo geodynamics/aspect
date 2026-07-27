@@ -18,7 +18,6 @@ subsection Adiabatic conditions model
   set Model name = function
 
   subsection Function
-    set Function constants  =
     set Function expression = sin(depth); depth; 5.0+depth*depth
     set Variable names      = depth
   end

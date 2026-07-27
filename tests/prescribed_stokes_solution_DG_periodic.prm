@@ -31,7 +31,6 @@ subsection Initial temperature model
 
   subsection Function
     set Variable names      = x,y
-    set Function constants  = pi=3.1415926536
     set Function expression = cos(2*pi*x)*sin(2*pi*y)
   end
 end

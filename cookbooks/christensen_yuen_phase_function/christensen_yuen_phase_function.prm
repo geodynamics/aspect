@@ -63,7 +63,7 @@ subsection Initial temperature model
   set Model name = function
 
   subsection Function
-    set Function constants = delta=0.1, A=10, h=1350000, pi=3.1416
+    set Function constants = delta=0.1, A=10, h=1350000
     set Variable names = x,z
     set Function expression = 500 + 500*(erfc(z/(h*delta)) - erfc((1-z/h)/delta)) + A*cos(pi*x/h)*sin(pi*z/h) + A*cos(2*pi*x/h)*sin(pi*z/h) + A*cos(pi*x/h)*sin(2*pi*z/h) + A*cos(2*pi*x/h)*sin(2*pi*z/h)
   end

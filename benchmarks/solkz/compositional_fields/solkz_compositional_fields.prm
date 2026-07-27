@@ -74,7 +74,6 @@ subsection Initial composition model
 
   subsection Function
     set Variable names      = x,z
-    set Function constants  = pi = 3.1415926536
     set Function expression = -1 * sin(2*z) * cos(3*pi*x); exp(log(1e6)*z)
   end
 end
