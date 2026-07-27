@@ -121,6 +121,8 @@ end
 
 subsection Melt settings
   set Include melt transport                  = true
+  set Average melt velocity                   = false
+  set Use discontinuous compaction pressure   = false
 end
 
 subsection Postprocess

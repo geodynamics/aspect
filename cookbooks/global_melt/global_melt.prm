@@ -61,6 +61,7 @@ subsection Melt settings
   # In addition, we now also specify in the model settings that we want to
   # run a model with melt transport.
   set Include melt transport                  = true
+  set Compaction viscosity regularization factor = 1e-30
 end
 
 ##################### Settings for melt transport ########################

@@ -245,7 +245,7 @@ namespace aspect
         // Store the melt component indices to avoid repeated string lookups later on
         melt_component_indices[0] = simulator_access.introspection().variable("fluid velocity").first_component_index;
         melt_component_indices[1] = simulator_access.introspection().variable("fluid pressure").first_component_index;
-        melt_component_indices[2] = simulator_access.introspection().variable("compaction pressure").first_component_index;
+        melt_component_indices[2] = simulator_access.introspection().variable("total pressure").first_component_index;
 
         fluid_velocity = std::make_unique<FEPointEvaluation<dim, dim>>(mapping_info,
                                                                         simulator_access.get_fe(),
