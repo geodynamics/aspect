@@ -5,9 +5,11 @@ To write a test for a new feature, copy one of the existing parameter files in
 the `tests/` folder in the ASPECT source
 directory, or simply any other parameter file, modify it to use the new
 feature, check that the new feature does what it is supposed to do, and then
-just add the parameter file to the tests directory. You will then need to add
-another folder to that directory that is named exactly like the parameter
-file, and add the model output files that prove that the feature is working
+just add the parameter file to the tests directory. Tests may also be placed
+in one of the explicitly configured category directories, such as
+`tests/particles/`. You will then need to add another folder next to the
+parameter file that is named exactly like the parameter file, and add the
+model output files that prove that the feature is working
 (usually, these are the log file and the statistics file, and you will have to
 rename `log.txt` to `screen-output` for historical reasons). The test and
 output files should be as small and quick to run as possible. If you need to
