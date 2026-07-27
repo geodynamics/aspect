@@ -196,6 +196,14 @@ endif()
 # generated files into their matching binary directory.
 set(ASPECT_TEST_SUITE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
+# ASPECT_SETUP_PLUGIN() enables dynamic lookup on macOS by setting
+# CMAKE_SHARED_LINKER_FLAGS in its caller's scope. Test discovery is a
+# function, so set the flag in this directory scope before creating plugins.
+if(APPLE)
+  set(CMAKE_SHARED_LINKER_FLAGS
+      "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup")
+endif()
+
 function(discover_tests)
   file(GLOB _tests CONFIGURE_DEPENDS
        RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
