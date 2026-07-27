@@ -18,4 +18,4 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include "rising_melt_blob.cc"
+#include "../rising_melt_blob.cc"

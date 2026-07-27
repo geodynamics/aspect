@@ -18,4 +18,4 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include "../benchmarks/solkz/compositional_fields/solkz_compositional_fields.cc"
+#include "../../benchmarks/solcx/solcx.cc"

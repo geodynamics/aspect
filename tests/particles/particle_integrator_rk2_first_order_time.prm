@@ -6,7 +6,7 @@ set Dimension                              = 2
 set End time                               = 70
 set Use years instead of seconds           = false
 
-include $ASPECT_SOURCE_DIR/tests/particle_integrator_euler.prm
+include $ASPECT_SOURCE_DIR/tests/particles/particle_integrator_euler.prm
 
 
 subsection Postprocess
