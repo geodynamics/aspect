@@ -55,7 +55,6 @@ subsection Boundary velocity model
   set Tangential velocity boundary indicators = left
 
   subsection Function
-    set Function constants  =
     set Function expression = 0; 0
   end
 end

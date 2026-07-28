@@ -98,7 +98,6 @@ subsection Mesh refinement
   set Time steps between mesh refinement       = 1
 
   subsection Minimum refinement function
-    set Function constants  =
 
     # This is in fact the default value
     set Coordinate system   = depth

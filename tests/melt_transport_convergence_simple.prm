@@ -69,7 +69,7 @@ subsection Gravity model
   set Model name = function
 
   subsection Function
-    set Function constants = c=1,pi=3.14159265359
+    set Function constants = c=1
     set Function expression = 0.0;\
                               0.1 * exp(z/10.0);
     set Variable names      = x,z
@@ -99,7 +99,6 @@ subsection Initial composition model
   set Model name = function
 
   subsection Function
-    set Function constants = pi=3.14159265359
     set Function expression = 0.15+1.0/20.0*(pi/2+atan(x+2*z))
     set Variable names      = x,z
   end

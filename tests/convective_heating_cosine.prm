@@ -77,7 +77,7 @@ subsection Initial temperature model
 
   subsection Function
     set Variable names      = x,z
-    set Function constants  = DeltaT=80, L=0.1, lambda=2.028757838, pi=3.1415926536
+    set Function constants  = DeltaT=80, L=0.1, lambda=2.028757838
     set Function expression = 293 + DeltaT * sin(lambda*z/L)
   end
 end
@@ -101,7 +101,7 @@ subsection Boundary convective heating model
   
   subsection Function
     set Variable names      = x,z
-    set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1
+    set Function constants  = p=0.01, L=1, k=1
     set Function expression = 100
   end
 end
@@ -111,7 +111,6 @@ subsection Boundary heat flux model
   
   subsection Function
     set Variable names      = x,z
-    set Function constants  = 
     set Function expression = 0
   end
 end

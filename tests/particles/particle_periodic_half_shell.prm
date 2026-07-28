@@ -70,7 +70,6 @@ subsection Initial composition model
 
   subsection Function
     set Variable names = r, phi
-    set Function constants  = pi=3.1415926
     set Coordinate system = spherical
     set Function expression = if( r < 4.195 + (0.3*sin(3*phi)) + (0.3*cos(3*phi)), 1, 0)
   end

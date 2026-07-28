@@ -94,7 +94,6 @@ subsection Initial composition model
 
   subsection Function
     set Variable names      = x,z
-    set Function constants  =
     set Function expression = if(z<50000,8e-5,8.00001e-5)
   end
 end

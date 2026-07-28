@@ -65,7 +65,7 @@ subsection Initial temperature model
   subsection Function
     set Coordinate system = spherical
     set Variable names      = r,phi
-    set Function constants  = A=100, B=75, C=50, D=25, pi=3.1415926536, Ri=3480e3, Ro=6370e3, Ti=3450, To=1060
+    set Function constants  = A=100, B=75, C=50, D=25, Ri=3480e3, Ro=6370e3, Ti=3450, To=1060
     set Function expression = (r-Ri)/(Ro-Ri)*(To-Ti)+Ti + A*sin(7*phi) + B*sin(13*phi) + C*cos(0.123*phi+pi/3) + D*cos(0.456*phi+pi/6)
   end
 end

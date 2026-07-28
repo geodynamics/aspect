@@ -91,7 +91,6 @@ subsection Mesh refinement
 
   subsection Minimum refinement function
     set Coordinate system      = spherical
-    set Function constants     =
     set Function expression    = 2 + 3*sin((r+250000)*pi/250000)*sin(6*phi)
     set Variable names         = r,phi
   end
