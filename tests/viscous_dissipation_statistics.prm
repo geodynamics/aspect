@@ -114,7 +114,7 @@ end
 # velocity field.
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics
+  set List of postprocessors = visualization, velocity statistics, viscous dissipation statistics
 
   subsection Visualization
     set Interpolate output = false
