@@ -143,7 +143,9 @@ subsection Particles
     subsection Crust and lithosphere formation
       set Crust thickness                             = 70000
       set Lithosphere thickness                         = 700000
-      set Harzburgite profile in lithosphere = linear
+      set Harzburgite profile in lithosphere = constant
+      set Minimum upwelling angle for crust formation = 0
+      set Minimum upwelling angle for lithosphere formation = 0
     end
 
     subsection Generator
