@@ -828,6 +828,7 @@ namespace aspect
     std::vector<aspect::CompositionalFieldDescription>  composition_descriptions;
     unsigned int                   n_chemical_compositions;
     std::vector<unsigned int>      chemical_composition_indices;
+    double                         minimum_composition_fraction;
 
     /**
      * A vector that contains the advection field method for every compositional

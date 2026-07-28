@@ -1366,6 +1366,11 @@ namespace aspect
       prm.declare_entry ("Names of fields", "",
                          Patterns::List(Patterns::Anything()),
                          "A user-defined name for each of the compositional fields requested.");
+      prm.declare_entry ("Minimum volume fraction", "0.0",
+                         Patterns::Double(0.0, 1.0),
+                         "Chemical compositional field values strictly smaller than this value "
+                         "can be treated as absent when material models compute composition fractions. "
+                         "The default value includes every nonnegative compositional field value.");
       prm.declare_entry ("Types of fields", "unspecified",
                          Patterns::List (Patterns::Selection("chemical composition|stress|strain|grain size|porosity|density|entropy|generic|unspecified")),
                          "A comma separated list denoting a ``type'' for each of the "
@@ -1988,6 +1993,7 @@ namespace aspect
     prm.enter_subsection ("Compositional fields");
     {
       n_compositional_fields = prm.get_integer ("Number of fields");
+      minimum_composition_fraction = prm.get_double ("Minimum volume fraction");
     }
     prm.leave_subsection();
 

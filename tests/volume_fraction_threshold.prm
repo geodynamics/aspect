@@ -51,8 +51,9 @@ subsection Initial temperature model
 end
 
 subsection Compositional fields
-  set Number of fields = 1
-  set Names of fields  = continent
+  set Number of fields         = 1
+  set Names of fields          = continent
+  set Minimum volume fraction  = 0.5
 end
 
 subsection Initial composition model
@@ -68,11 +69,6 @@ subsection Material model
   set Model name = visco plastic
 
   subsection Visco Plastic
-    subsection Composition fractions
-      set Volume fraction calculation scheme = thresholded
-      set Minimum volume fraction             = 0.5
-    end
-
     set Cohesions                                = 1e6, 9e6
     set Angles of internal friction              = 0, 0
     set Viscous flow law                         = dislocation

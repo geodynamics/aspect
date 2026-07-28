@@ -877,24 +877,11 @@ namespace aspect
 
       std::vector<double>
       compute_only_composition_fractions(const std::vector<double> &compositional_fields,
-                                         const std::vector<unsigned int> &indices_to_use)
-      {
-        return compute_only_composition_fractions(compositional_fields,
-                                                  indices_to_use,
-                                                  CompositionFractionScheme::standard,
-                                                  0.0);
-      }
-
-
-
-      std::vector<double>
-      compute_only_composition_fractions(const std::vector<double> &compositional_fields,
                                          const std::vector<unsigned int> &indices_to_use,
-                                         const CompositionFractionScheme scheme,
                                          const double minimum_fraction)
       {
-        AssertThrow(minimum_fraction >= 0.0 && minimum_fraction <= 1.0,
-                    ExcMessage("The minimum composition fraction must be between zero and one."));
+        AssertThrow(minimum_fraction <= 1.0,
+                    ExcMessage("The minimum composition fraction must not be greater than one."));
 
         std::vector<double> composition_fractions(indices_to_use.size()+1);
 
@@ -907,8 +894,7 @@ namespace aspect
           {
             x_comp[i] = std::min(std::max(compositional_fields[indices_to_use[i]], 0.0), 1.0);
 
-            if (scheme == CompositionFractionScheme::thresholded
-                && x_comp[i] < minimum_fraction)
+            if (x_comp[i] < minimum_fraction)
               x_comp[i] = 0.0;
 
             sum_composition += x_comp[i];
@@ -936,24 +922,11 @@ namespace aspect
 
       std::vector<double>
       compute_composition_fractions(const std::vector<double> &compositional_fields,
-                                    const ComponentMask &field_mask)
-      {
-        return compute_composition_fractions(compositional_fields,
-                                             field_mask,
-                                             CompositionFractionScheme::standard,
-                                             0.0);
-      }
-
-
-
-      std::vector<double>
-      compute_composition_fractions(const std::vector<double> &compositional_fields,
                                     const ComponentMask &field_mask,
-                                    const CompositionFractionScheme scheme,
                                     const double minimum_fraction)
       {
-        AssertThrow(minimum_fraction >= 0.0 && minimum_fraction <= 1.0,
-                    ExcMessage("The minimum composition fraction must be between zero and one."));
+        AssertThrow(minimum_fraction <= 1.0,
+                    ExcMessage("The minimum composition fraction must not be greater than one."));
 
         std::vector<double> composition_fractions(compositional_fields.size()+1);
 
@@ -966,8 +939,7 @@ namespace aspect
             {
               x_comp[i] = std::min(std::max(x_comp[i], 0.0), 1.0);
 
-              if (scheme == CompositionFractionScheme::thresholded
-                  && x_comp[i] < minimum_fraction)
+              if (x_comp[i] < minimum_fraction)
                 x_comp[i] = 0.0;
 
               sum_composition += x_comp[i];
