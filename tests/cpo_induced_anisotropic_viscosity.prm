@@ -1,7 +1,7 @@
 include $ASPECT_SOURCE_DIR/cookbooks/CPO_induced_anisotropic_viscosity/shearbox_cpo_av.prm
 set Additional shared libraries = ./libCPO_induced_anisotropic_viscosity.debug.so
 
-set End time = 0
+set End time = 0.5
 
 subsection Particles
     subsection Generator
