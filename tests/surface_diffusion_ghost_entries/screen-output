@@ -1,9 +1,4 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 200 (on 2 levels)
 Number of degrees of freedom: 7,119 (1,722+231+861+861+861+861+861+861)
 
@@ -21,9 +16,9 @@ Number of mesh deformation degrees of freedom: 1,722
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 22+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.88397e-16, 0, 0, 0, 0, 0, 0.0731626
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0731626
+   Solving Stokes system (AMG)... 21+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.88397e-16, 0, 0, 0, 0, 0, 0.0571842
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0571842
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -32,15 +27,15 @@ Number of mesh deformation degrees of freedom: 1,722
 
    Postprocessing:
      Compositions min/max/mass:                         0/0/0 // 0/1.22/5.138e+09 // 0/1/4.333e+09 // 0/1/4e+09 // 0/1/1.167e+10
-     Heat flux densities for boundaries:                0.19 W/m, 0.19 W/m, -0.3441 W/m, 0.05501 W/m
+     Heat flux densities for boundaries:                0.19 W/m, 0.19 W/m, -0.344 W/m, 0.05501 W/m
      Heat fluxes through boundary parts:                1.9e+04 W, 1.9e+04 W, -6.881e+04 W, 1.1e+04 W
-     Average density / Average viscosity / Total mass:  3042 kg/m^3, 7.557e+22 Pa s, 6.084e+13 kg
-     Mass fluxes through boundary parts:                7.605e+05 kg/yr, 7.605e+05 kg/yr, -1.606e+06 kg/yr, 0.01054 kg/yr
+     Average density / Average viscosity / Total mass:  3042 kg/m^3, 6.025e+22 Pa s, 6.084e+13 kg
+     Mass fluxes through boundary parts:                7.605e+05 kg/yr, 7.605e+05 kg/yr, -1.606e+06 kg/yr, 0.01144 kg/yr
      Writing particle output:                           output-surface_diffusion_ghost_entries/particles/particles-00000
-     Pressure min/avg/max:                              -1.807e+07 Pa, 1.421e+09 Pa, 2.985e+09 Pa
+     Pressure min/avg/max:                              -2.064e+07 Pa, 1.407e+09 Pa, 2.985e+09 Pa
      Temperature min/avg/max:                           273 K, 998.3 K, 1613 K
      Topography min/max:                                0 m, 0 m
-     RMS, max velocity:                                 0.00207 m/year, 0.00354 m/year
+     RMS, max velocity:                                 0.00206 m/year, 0.00354 m/year
      Writing graphical output:                          output-surface_diffusion_ghost_entries/solution/solution-00000
 
 *** Timestep 1:  t=10000 years, dt=10000 years
@@ -50,15 +45,15 @@ Number of mesh deformation degrees of freedom: 1,722
    Advecting particles...  done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 22+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000169243, 0, 0, 0, 0, 0, 0.0729002
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0729002
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000168813, 0, 0, 0, 0, 0, 0.0776389
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0776389
 
    Solving temperature system... 9 iterations.
    Advecting particles...  done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 20+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.15283e-05, 0, 0, 0, 0, 0, 0.0229147
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0229147
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.12322e-05, 0, 0, 0, 0, 0, 0.0146979
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0146979
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -66,16 +61,16 @@ Number of mesh deformation degrees of freedom: 1,722
    Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
-     Compositions min/max/mass:                         0/0.0005023/1.764e+06 // 0/1.22/5.139e+09 // 0/1/4.333e+09 // 0/1/4e+09 // 0/1/1.167e+10
+     Compositions min/max/mass:                         0/0.0005086/1.306e+06 // 0/1.22/5.139e+09 // 0/1/4.333e+09 // 0/1/4e+09 // 0/1/1.167e+10
      Heat flux densities for boundaries:                0.19 W/m, 0.19 W/m, -0.345 W/m, 0.05502 W/m
      Heat fluxes through boundary parts:                1.9e+04 W, 1.9e+04 W, -6.9e+04 W, 1.1e+04 W
-     Average density / Average viscosity / Total mass:  3042 kg/m^3, 7.972e+22 Pa s, 6.084e+13 kg
-     Mass fluxes through boundary parts:                7.605e+05 kg/yr, 7.605e+05 kg/yr, -1.606e+06 kg/yr, -8.583 kg/yr
+     Average density / Average viscosity / Total mass:  3042 kg/m^3, 6.506e+22 Pa s, 6.084e+13 kg
+     Mass fluxes through boundary parts:                7.605e+05 kg/yr, 7.605e+05 kg/yr, -1.606e+06 kg/yr, 1.766 kg/yr
      Number of advected particles:                      9800
-     Pressure min/avg/max:                              -1.598e+07 Pa, 1.365e+09 Pa, 2.985e+09 Pa
+     Pressure min/avg/max:                              -1.389e+07 Pa, 1.378e+09 Pa, 2.985e+09 Pa
      Temperature min/avg/max:                           273 K, 998.5 K, 1613 K
-     Topography min/max:                                -1.62 m, 1.137 m
-     RMS, max velocity:                                 0.00213 m/year, 0.00354 m/year
+     Topography min/max:                                -1.015 m, 1.106 m
+     RMS, max velocity:                                 0.00209 m/year, 0.00354 m/year
 
 *** Timestep 2:  t=20000 years, dt=10000 years
    Solving mesh surface diffusion
@@ -83,16 +78,16 @@ Number of mesh deformation degrees of freedom: 1,722
    Solving temperature system... 10 iterations.
    Advecting particles...  done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 24+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.7514e-05, 0, 0, 0, 0, 0, 0.0288623
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0288623
+   Solving Stokes system (AMG)... 23+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.68855e-05, 0, 0, 0, 0, 0, 0.0648156
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0648156
 
    Solving temperature system... 8 iterations.
    Advecting particles...  done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 21+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.17887e-06, 0, 0, 0, 0, 0, 0.0107044
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0107044
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.19301e-06, 0, 0, 0, 0, 0, 0.0106072
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0106072
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -100,16 +95,16 @@ Number of mesh deformation degrees of freedom: 1,722
    Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
-     Compositions min/max/mass:                         0/0.001439/3.639e+06 // 0/1.22/5.141e+09 // 0/1/4.333e+09 // 0/1/4e+09 // 0/1/1.167e+10
-     Heat flux densities for boundaries:                0.19 W/m, 0.19 W/m, -0.3448 W/m, 0.05504 W/m
+     Compositions min/max/mass:                         0/0.001323/2.655e+06 // 0/1.22/5.14e+09 // 0/1/4.333e+09 // 0/1/4e+09 // 0/1/1.167e+10
+     Heat flux densities for boundaries:                0.19 W/m, 0.19 W/m, -0.3448 W/m, 0.05503 W/m
      Heat fluxes through boundary parts:                1.9e+04 W, 1.9e+04 W, -6.895e+04 W, 1.101e+04 W
-     Average density / Average viscosity / Total mass:  3042 kg/m^3, 3.357e+23 Pa s, 6.084e+13 kg
-     Mass fluxes through boundary parts:                7.605e+05 kg/yr, 7.605e+05 kg/yr, -1.606e+06 kg/yr, -29.4 kg/yr
+     Average density / Average viscosity / Total mass:  3042 kg/m^3, 1.158e+23 Pa s, 6.084e+13 kg
+     Mass fluxes through boundary parts:                7.605e+05 kg/yr, 7.605e+05 kg/yr, -1.606e+06 kg/yr, 9.196 kg/yr
      Number of advected particles:                      9800
-     Pressure min/avg/max:                              -2.298e+07 Pa, 1.357e+09 Pa, 2.986e+09 Pa
+     Pressure min/avg/max:                              -1.933e+07 Pa, 1.378e+09 Pa, 2.986e+09 Pa
      Temperature min/avg/max:                           273 K, 998.6 K, 1613 K
-     Topography min/max:                                -4.959 m, 3.471 m
-     RMS, max velocity:                                 0.00225 m/year, 0.00354 m/year
+     Topography min/max:                                -2.375 m, 2.465 m
+     RMS, max velocity:                                 0.00216 m/year, 0.00354 m/year
 
 *** Timestep 3:  t=30000 years, dt=10000 years
    Solving mesh surface diffusion
@@ -117,16 +112,16 @@ Number of mesh deformation degrees of freedom: 1,722
    Solving temperature system... 10 iterations.
    Advecting particles...  done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 25+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.21593e-05, 0, 0, 0, 0, 0, 0.021241
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.021241
+   Solving Stokes system (AMG)... 22+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.14003e-05, 0, 0, 0, 0, 0, 0.011068
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.011068
 
-   Solving temperature system... 10 iterations.
+   Solving temperature system... 9 iterations.
    Advecting particles...  done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 22+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.73506e-05, 0, 0, 0, 0, 0, 0.00759714
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00759714
+   Solving Stokes system (AMG)... 21+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.00502e-05, 0, 0, 0, 0, 0, 0.00437405
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00437405
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -134,25 +129,20 @@ Number of mesh deformation degrees of freedom: 1,722
    Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
-     Compositions min/max/mass:                         0/0.00245/5.518e+06 // 0/1.221/5.142e+09 // 0/1/4.333e+09 // 0/1/4e+09 // 0/1/1.167e+10
+     Compositions min/max/mass:                         0/0.002261/4.084e+06 // 0/1.22/5.141e+09 // 0/1/4.333e+09 // 0/1/4e+09 // 0/1/1.167e+10
      Heat flux densities for boundaries:                0.19 W/m, 0.19 W/m, -0.3445 W/m, 0.05504 W/m
      Heat fluxes through boundary parts:                1.9e+04 W, 1.9e+04 W, -6.891e+04 W, 1.101e+04 W
-     Average density / Average viscosity / Total mass:  3042 kg/m^3, 3.367e+23 Pa s, 6.084e+13 kg
-     Mass fluxes through boundary parts:                7.606e+05 kg/yr, 7.605e+05 kg/yr, -1.606e+06 kg/yr, -73.74 kg/yr
+     Average density / Average viscosity / Total mass:  3042 kg/m^3, 2.44e+23 Pa s, 6.084e+13 kg
+     Mass fluxes through boundary parts:                7.605e+05 kg/yr, 7.605e+05 kg/yr, -1.606e+06 kg/yr, 15.84 kg/yr
      Number of advected particles:                      9800
-     Pressure min/avg/max:                              -2.299e+07 Pa, 1.358e+09 Pa, 2.986e+09 Pa
+     Pressure min/avg/max:                              -4.466e+07 Pa, 1.382e+09 Pa, 2.987e+09 Pa
      Temperature min/avg/max:                           273 K, 998.8 K, 1613 K
-     Topography min/max:                                -11.17 m, 7.615 m
-     RMS, max velocity:                                 0.0023 m/year, 0.00354 m/year
+     Topography min/max:                                -5.091 m, 4.55 m
+     RMS, max velocity:                                 0.00222 m/year, 0.00354 m/year
 
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
 
 WARNING: During this computation 4 nonlinear solver failures occurred!
------------------------------------------------------------------------------
------------------------------------------------------------------------------
