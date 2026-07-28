@@ -5662,9 +5662,9 @@ If a compositional field named &rsquo;noninitial\_plastic\_strain&rsquo; is incl
 :name: parameters:Material_20model/Visco_20Plastic/Viscosity_20prefactor_20scheme
 **Default value:** none
 
-**Pattern:** [Selection none|HK04 olivine hydration|interface weakening ]
+**Pattern:** [Selection none|HK04 olivine hydration ]
 
-**Documentation:** Select what type of viscosity multiplicative prefactor scheme to apply. Allowed entries are &rsquo;none&rsquo;, &rsquo;HK04 olivine hydration&rsquo;, and &rsquo;interface weakening&rsquo;. HK04 olivine hydration calculates the viscosity change due to hydrogen incorporation into olivine following Hirth & Kohlstedt 2004 (10.1029/138GM06). none does not modify the viscosity. Interface weakening reduces the viscous contribution by a constant amount to mimic the effect of a very thin, weak layer between two compositional fields. Units: none.
+**Documentation:** Select what type of viscosity multiplicative prefactor scheme to apply. Allowed entries are &rsquo;none&rsquo;, and &rsquo;HK04 olivine hydration&rsquo;. HK04 olivine hydration calculates the viscosity change due to hydrogen incorporation into olivine following Hirth & Kohlstedt 2004 (10.1029/138GM06). none does not modify the viscosity. Units: none.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Viscosity ratios for Frank Kamenetskii<parameters:Material_20model/Visco_20Plastic/Viscosity_20ratios_20for_20Frank_20Kamenetskii>`
@@ -5691,7 +5691,7 @@ If a compositional field named &rsquo;noninitial\_plastic\_strain&rsquo; is incl
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of water fugacity exponents for diffusion creep for background material and compositional fields, for a total of N+1 where N is the number of all compositional fields or only those corresponding to chemical compositions. This is only applied when using the Viscosity prefactor scheme &rsquo;HK04 olivine hydration&rsquo;. Note, the water fugacity exponent required by ASPECT for diffusion creep is r/n, where n is the stress exponent for diffusion creep, which typically is 1. Units: none.
+**Documentation:** List of water fugacity exponents for diffusion creep for background material and compositional fields, for a total of N+1 where N is the number of all compositional fields or only those corresponding to chemical compositions. This is only applied when using the Viscosity prefactor scheme &rsquo;HK04 olivine hydration&rsquo; or &rsquo;peng_robinson76_fugacity&rsquo;. Note, the water fugacity exponent required by ASPECT for diffusion creep is r/n, where n is the stress exponent for diffusion creep, which typically is 1. Units: none.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Water fugacity exponents for dislocation creep<parameters:Material_20model/Visco_20Plastic/Water_20fugacity_20exponents_20for_20dislocation_20creep>`
@@ -5700,7 +5700,7 @@ If a compositional field named &rsquo;noninitial\_plastic\_strain&rsquo; is incl
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of water fugacity exponents for dislocation creep for background material and compositional fields, for a total of N+1 where N is the number of all compositional fields or only those corresponding to chemical compositions. This is only applied when using the Viscosity prefactor scheme &rsquo;HK04 olivine hydration&rsquo;. Note, the water fugacity exponent required by ASPECT for dislocation creep is r/n, where n is the stress exponent for dislocation creep, which typically is 3.5. Units: none.
+**Documentation:** List of water fugacity exponents for dislocation creep for background material and compositional fields, for a total of N+1 where N is the number of all compositional fields or only those corresponding to chemical compositions. This is only applied when using the Viscosity prefactor scheme &rsquo;HK04 olivine hydration&rsquo; or &rsquo;peng_robinson76_fugacity&rsquo;. Note, the water fugacity exponent required by ASPECT for dislocation creep is r/n, where n is the stress exponent for dislocation creep, which typically is 3.5. Units: none.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Yield mechanism<parameters:Material_20model/Visco_20Plastic/Yield_20mechanism>`

@@ -85,8 +85,8 @@ namespace aspect
     };
 
     /**
-    * Additional output fields for diffusion and dislocation viscosities.
-    */
+     * Additional output fields for diffusion and dislocation viscosities.
+     */
     template <int dim>
     class ViscosityAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
     {
@@ -133,7 +133,6 @@ namespace aspect
          * i.e., viscous flow law is either dislocation or composite.
          */
         std::vector<double> dislocation_viscosities;
-
     };
 
     /**
