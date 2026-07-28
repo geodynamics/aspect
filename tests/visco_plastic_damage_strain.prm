@@ -80,8 +80,8 @@ subsection Material model
     set Cohesions                    = 1e6
     set Maximum yield stress         = 1e12
     set Strain weakening mechanism              = plastic weakening with damage strain
-    set Damage strain critical value            = 1
-    set Damage strain maximum damage            = 0.9
+    set Damage strain saturation value          = 1
+    set Fully damaged yield stress factors      = 0.1
     set Strain healing mechanism                              = temperature dependent
     set Strain healing temperature dependent recovery rate    = 3.168873850681143e-8
     set Strain healing temperature dependent prefactor        = 0

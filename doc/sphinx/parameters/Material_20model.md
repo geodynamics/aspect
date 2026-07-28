@@ -4867,22 +4867,13 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 **Documentation:** List of the Stress thresholds below which the strain rate is solved for as a quadratic function of stress to aid with convergence when stress exponent n=0. Units: \si{\pascal}
 ::::
 
-::::{dropdown} __Parameter:__ {ref}`Damage strain critical value<parameters:Material_20model/Visco_20Plastic/Damage_20strain_20critical_20value>`
-:name: parameters:Material_20model/Visco_20Plastic/Damage_20strain_20critical_20value
+::::{dropdown} __Parameter:__ {ref}`Damage strain saturation value<parameters:Material_20model/Visco_20Plastic/Damage_20strain_20saturation_20value>`
+:name: parameters:Material_20model/Visco_20Plastic/Damage_20strain_20saturation_20value
 **Default value:** 1.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Value of the damage strain at which the material reaches its maximum weakening. The transported damage strain is capped at this value. Units: None.
-::::
-
-::::{dropdown} __Parameter:__ {ref}`Damage strain maximum damage<parameters:Material_20model/Visco_20Plastic/Damage_20strain_20maximum_20damage>`
-:name: parameters:Material_20model/Visco_20Plastic/Damage_20strain_20maximum_20damage
-**Default value:** 0.9
-
-**Pattern:** [Anything]
-
-**Documentation:** Maximum fractional reduction of the complete plastic yield stress for the background material and chemical compositions. Values can be given as a list or as a map using composition names. A value of 0.9 reduces the yield stress to 10 percent of its undamaged value. Each value must be between zero and one. Units: None.
+**Documentation:** Value at which the transported damage strain saturates and the material reaches its maximum weakening. The transported damage strain is capped at this value. Units: None.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Material_20model/Visco_20Plastic/Data_20directory>`
@@ -5015,6 +5006,15 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of friction strain weakening factors for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value.  Units: None.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Fully damaged yield stress factors<parameters:Material_20model/Visco_20Plastic/Fully_20damaged_20yield_20stress_20factors>`
+:name: parameters:Material_20model/Visco_20Plastic/Fully_20damaged_20yield_20stress_20factors
+**Default value:** 0.1
+
+**Pattern:** [Anything]
+
+**Documentation:** Factors applied to the complete plastic yield stress at saturated damage for the background material and chemical compositions. Values can be given as a list or as a map using composition names. A value of 0.1 retains 10 percent of the undamaged yield stress. Each value must be between zero and one. Units: None.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Grain size<parameters:Material_20model/Visco_20Plastic/Grain_20size>`

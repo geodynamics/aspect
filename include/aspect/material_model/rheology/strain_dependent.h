@@ -275,15 +275,16 @@ namespace aspect
           double strain_healing_temperature_dependent_prefactor;
 
           /**
-           * Damage strain at which the maximum weakening is reached.
+           * Value at which the transported damage strain saturates and the
+           * maximum weakening is reached.
            */
-          double damage_strain_critical_value;
+          double damage_strain_saturation_value;
 
           /**
-           * Maximum fractional reduction of the yield stress for each
-           * composition.
+           * Factor applied to the complete plastic yield stress at saturated
+           * damage for each composition.
            */
-          std::vector<double> damage_strain_maximum_damage;
+          std::vector<double> fully_damaged_yield_stress_factors;
 
           /**
            * We cache the evaluators that are necessary to evaluate the velocity

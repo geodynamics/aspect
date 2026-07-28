@@ -108,18 +108,18 @@ namespace aspect
                            "from volume fraction calculation and track the cumulative plastic strain with "
                            "the initial plastic strain values removed.");
 
-        prm.declare_entry ("Damage strain critical value", "1.",
+        prm.declare_entry ("Damage strain saturation value", "1.",
                            Patterns::Double (0., std::numeric_limits<double>::max()),
-                           "Value of the damage strain at which the material reaches its maximum "
-                           "weakening. The transported damage strain is capped "
+                           "Value at which the transported damage strain saturates and the material "
+                           "reaches its maximum weakening. The transported damage strain is capped "
                            "at this value. Units: None.");
 
-        prm.declare_entry ("Damage strain maximum damage", "0.9",
+        prm.declare_entry ("Fully damaged yield stress factors", "0.1",
                            Patterns::Anything(),
-                           "Maximum fractional reduction of the complete plastic yield stress for "
-                           "the background material and chemical compositions. Values can be given "
-                           "as a list or as a map using composition names. A value of 0.9 reduces "
-                           "the yield stress to 10 percent of its undamaged value. Each value must "
+                           "Factors applied to the complete plastic yield stress at saturated damage "
+                           "for the background material and chemical compositions. Values can be given "
+                           "as a list or as a map using composition names. A value of 0.1 retains "
+                           "10 percent of the undamaged yield stress. Each value must "
                            "be between zero and one. Units: None.");
 
         prm.declare_entry ("Start plasticity strain weakening intervals", "0.",
@@ -434,16 +434,18 @@ namespace aspect
         friction_strain_weakening_factors = Utilities::MapParsing::parse_map_to_double_array(prm.get("Friction strain weakening factors"),
                                             options);
 
-        damage_strain_critical_value = prm.get_double("Damage strain critical value");
-        AssertThrow(damage_strain_critical_value > 0.0,
-                    ExcMessage("Damage strain critical value must be greater than zero."));
+        damage_strain_saturation_value = prm.get_double("Damage strain saturation value");
+        AssertThrow(damage_strain_saturation_value > 0.0,
+                    ExcMessage("Damage strain saturation value must be greater than zero."));
 
-        options.property_name = "Damage strain maximum damage";
-        damage_strain_maximum_damage = Utilities::MapParsing::parse_map_to_double_array(prm.get("Damage strain maximum damage"),
-                                        options);
-        for (const double maximum_damage : damage_strain_maximum_damage)
-          AssertThrow(maximum_damage >= 0.0 && maximum_damage <= 1.0,
-                      ExcMessage("Each value in Damage strain maximum damage must be between zero and one."));
+        options.property_name = "Fully damaged yield stress factors";
+        fully_damaged_yield_stress_factors =
+          Utilities::MapParsing::parse_map_to_double_array(prm.get("Fully damaged yield stress factors"),
+                                                           options);
+        for (const double fully_damaged_yield_stress_factor : fully_damaged_yield_stress_factors)
+          AssertThrow(fully_damaged_yield_stress_factor >= 0.0
+                      && fully_damaged_yield_stress_factor <= 1.0,
+                      ExcMessage("Each value in Fully damaged yield stress factors must be between zero and one."));
 
         if (prm.get ("Strain healing mechanism") == "no healing")
           healing_mechanism = no_healing;
@@ -583,6 +585,8 @@ namespace aspect
         return compute_strain_weakening_factors(composition,j);
       }
 
+
+
       template <int dim>
       double
       StrainDependent<dim>::
@@ -596,12 +600,13 @@ namespace aspect
           this->introspection().compositional_index_for_name("damage_strain");
         const double apparent_strain =
           std::min(std::max(composition[damage_strain_index], 0.0),
-                   damage_strain_critical_value);
-        const double damage = damage_strain_maximum_damage[j]
-                              * apparent_strain
-                              / damage_strain_critical_value;
+                   damage_strain_saturation_value);
+        const double damage_strain_fraction =
+          apparent_strain / damage_strain_saturation_value;
 
-        return 1.0 - damage;
+        return 1.0
+               - (1.0 - fully_damaged_yield_stress_factors[j])
+                 * damage_strain_fraction;
       }
 
 
@@ -803,7 +808,7 @@ namespace aspect
                   composition_evaluators[damage_strain_index]->get_value(0);
                 const double bounded_damage_strain_previous_step =
                   std::min(std::max(damage_strain_previous_step, 0.0),
-                           damage_strain_critical_value);
+                           damage_strain_saturation_value);
 
                 const double healing_rate = calculate_strain_healing_rate(in, i);
                 const double damage_production_rate =
@@ -821,7 +826,7 @@ namespace aspect
                   std::min(std::max(bounded_damage_strain_previous_step * decay_factor
                                     + accumulated_strain,
                                     0.0),
-                           damage_strain_critical_value);
+                           damage_strain_saturation_value);
 
                 out.reaction_terms[i][damage_strain_index] =
                   updated_damage_strain - damage_strain_previous_step;
