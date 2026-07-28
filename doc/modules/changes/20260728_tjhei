@@ -1,0 +1,3 @@
+New: The matrix-free Stokes solver with global coarsening geometric multigrid (GMG-GC) now supports computations without material averaging.
+<br>
+(Timo Heister, 2026/07/28)
