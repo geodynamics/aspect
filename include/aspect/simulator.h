@@ -49,6 +49,7 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 #include <aspect/simulator_signals.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/heating_model/interface.h>
+#include <aspect/prescribed_dilation/interface.h>
 #include <aspect/geometry_model/initial_topography_model/interface.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/gravity_model/interface.h>
@@ -1949,6 +1950,7 @@ namespace aspect
 
       MeshRefinement::Manager<dim>                              mesh_refinement_manager;
       HeatingModel::Manager<dim>                                heating_model_manager;
+      PrescribedDilation::Manager<dim>                          prescribed_dilation_manager;
 
       /**
        * Pointer to the Mapping object used by the finite elements when

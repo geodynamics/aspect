@@ -709,6 +709,13 @@ namespace aspect
   }
 
   template <int dim>
+  const PrescribedDilation::Manager<dim> &
+  SimulatorAccess<dim>::get_prescribed_dilation_manager () const
+  {
+    return simulator->prescribed_dilation_manager;
+  }
+
+  template <int dim>
   const MeshRefinement::Manager<dim> &
   SimulatorAccess<dim>::get_mesh_refinement_manager () const
   {

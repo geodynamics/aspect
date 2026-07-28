@@ -999,6 +999,42 @@ namespace aspect
             }
         }
     }
+
+    template <int dim>
+    void
+    StokesPrescribedDilation<dim>::
+    execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+             internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
+    {
+      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>&> (scratch_base);
+      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>&> (data_base);
+
+      const Introspection<dim> &introspection = this->introspection();
+      const FiniteElement<dim> &fe = this->get_fe();
+      const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
+      const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+      const double pressure_scaling = this->get_pressure_scaling();
+
+      const PrescribedDilation::Manager<dim> &prescribed_dilation = this->get_prescribed_dilation_manager();
+
+      PrescribedDilation::PrescribedDilationOutputs<dim> out (n_q_points);
+      prescribed_dilation.evaluate (scratch.material_model_inputs, out);
+
+      for (unsigned int q=0; q<n_q_points; ++q)
+        {
+          const double JxW = scratch.finite_element_values.JxW(q);
+          for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
+            {
+              if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
+                {
+                  scratch.phi_p[i_stokes] = scratch.finite_element_values[introspection.extractors.pressure].value (i, q);
+                  data.local_rhs(i_stokes) += -pressure_scaling * out.dilation[q] * scratch.phi_p[i_stokes]*JxW;
+                  ++i_stokes;
+                }
+              ++i;
+            }
+        }
+    }
   }
 } // namespace aspect
 
@@ -1018,6 +1054,7 @@ namespace aspect
   template class StokesHydrostaticCompressionTerm<dim>; \
   template class StokesProjectedDensityFieldTerm<dim>; \
   template class StokesPressureRHSCompatibilityModification<dim>; \
+  template class StokesPrescribedDilation<dim>; \
   template class StokesBoundaryTraction<dim>;
 
     ASPECT_INSTANTIATE(INSTANTIATE)
