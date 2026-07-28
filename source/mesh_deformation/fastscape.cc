@@ -947,7 +947,7 @@ namespace aspect
               fastscape_mesh_filled = false;
             }
         }
-      
+
       // If this is a boundary node that is a ghost node then ignore that it
       // has not filled yet as the ghost nodes haven't been set.
       fastscape_mesh_filled = Utilities::MPI::broadcast(this->get_mpi_communicator(), fastscape_mesh_filled, 0);
