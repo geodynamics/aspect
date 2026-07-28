@@ -468,4 +468,5 @@ function(discover_tests)
 endfunction()
 
 discover_tests()
+add_subdirectory(entropy)
 add_subdirectory(particles)
