@@ -303,7 +303,7 @@ It is worth comparing this postprocessor with the visualization postprocessor ca
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Ignore connected continental blocks with area smaller than this value [m^2].
+**Documentation:** Ignore connected continental blocks with area smaller than the user defined minimum block area [m^2].
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Output file prefix<parameters:Postprocess/Continental_20fragmentation_20statistics/Output_20file_20prefix>`
