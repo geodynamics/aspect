@@ -698,7 +698,7 @@ namespace aspect
             // Set a mask (false) for the 2*n_independent_components fields representing the viscoelastic
             // stress tensor components so that they are excluded from the volume fraction computation.
             const std::vector<unsigned int> &stress_field_indices = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::stress);
-            for (unsigned int field_index: stress_field_indices)
+            for (const unsigned int field_index : stress_field_indices)
               composition_mask.set(field_index, false);
           }
 

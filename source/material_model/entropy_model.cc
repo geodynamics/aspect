@@ -329,7 +329,7 @@ namespace aspect
                       unsigned int c_is_nth_entropy_field = 0;
 
                       unsigned int nth_entropy_index = 0;
-                      for (unsigned int entropy_index : entropy_indices)
+                      for (const unsigned int entropy_index : entropy_indices)
                         {
                           if (c == entropy_index)
                             {
