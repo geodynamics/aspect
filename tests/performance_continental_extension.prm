@@ -70,7 +70,7 @@ end
 subsection Solver parameters
   subsection Stokes solver parameters
     set Stokes solver type = block AMG
-    set Number of cheap Stokes solver steps = 4000
+    set Number of cheap Stokes solver steps = 150
     set Linear solver tolerance             = 1e-8
     set GMRES solver restart length         = 100
     set Use full A block as preconditioner  = true
