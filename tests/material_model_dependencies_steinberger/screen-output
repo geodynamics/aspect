@@ -6,19 +6,19 @@ Number of degrees of freedom: 740 (450+65+225)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving Stokes system (GMG)... 11+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00567963
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00630906
 
    Solving Stokes system (GMG)... 8+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0101023
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0101025
 
    Solving Stokes system (GMG)... 6+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.000167534
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.000167544
 
    Solving Stokes system (GMG)... 4+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 1.02406e-05
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 1.02415e-05
 
    Solving Stokes system (GMG)... 3+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 2.63846e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 2.6388e-07
 
 
    Postprocessing:

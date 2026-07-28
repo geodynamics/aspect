@@ -1,0 +1,9 @@
+Fixed: A bug in adiabatic/compute_profile.cc, adiabatic/compute_entropy_profile.cc,
+and cookbooks/tomography_based_plate_motions/plugins/reference_profile.cc when using
+the get_property() function. When asking for a value at a depth very close to a
+calculated profile point, the code previously always returned the value from a point
+at shallower depth. This is now fixed and returns the value at the correct point.
+
+Added: A new test that computes an adiabatic profile using a pressure-temperature lookup table.
+<br>
+(Qianyi Lu and Ranpeng Li, 2026/07/26)
