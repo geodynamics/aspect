@@ -99,7 +99,6 @@ subsection Mesh refinement
 
   subsection Minimum refinement function
     set Coordinate system      = cartesian
-    set Function constants     =
     set Function expression    = 4 + 2*sin(x*pi/250000)*sin(y*pi/250000)
     set Variable names         = x,y
   end

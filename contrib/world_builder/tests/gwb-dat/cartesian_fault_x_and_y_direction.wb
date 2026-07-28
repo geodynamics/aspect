@@ -1,5 +1,5 @@
 {
-  "version": "1.0",
+  "version":"1.1",
   "interpolation":"continuous monotone spline",
   "features":
   [
@@ -7,11 +7,19 @@
      "coordinates":[[0, 0], [500e3,0],[1000e3,0]], "dip point":[10, 10],
      "segments":[{"length":100e3, "thickness":[100e3], "angle":[80]}],
      "temperature models":[{"model":"uniform", "temperature":10}], 
-     "composition models":[{"model":"uniform", "compositions":[0]}]},
+     "composition models":[{"model":"uniform", "compositions":[0]}],
+     "velocity models":[{"model":"uniform raw","velocity":[1,2,3]}]
+    },
     {"model":"fault", "name":"y-fault", "min depth":0, "max depth":1000e3, 
      "coordinates":[[0, 0], [0, 500e3], [0, 1000e3]], "dip point":[10, 10],
-     "segments":[{"length":100e3, "thickness":[100e3], "angle":[80]}],
+     "segments":[{"length":100e3, "thickness":[100e3], "angle":[80],
+     "velocity models":[{"model":"uniform raw","velocity":[4,5,6]}]}],
+     "sections": [{"coordinate": 0, 
+       "segments":[{"length":100e3, "thickness":[100e3], "angle":[80],
+       "velocity models":[{"model":"uniform raw","velocity":[7,8,9]}]}]}],
      "temperature models":[{"model":"uniform", "temperature":20}], 
-     "composition models":[{"model":"uniform", "compositions":[1]}]}
+     "composition models":[{"model":"uniform", "compositions":[1]}],
+     "velocity models":[{"model":"uniform raw","velocity":[7,8,9]}]
+    }
   ]
 }

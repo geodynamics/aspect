@@ -40,6 +40,23 @@
 
 #define ASPECT_MAX_NUM_PARTICLE_SYSTEMS @ASPECT_MAX_NUM_PARTICLE_SYSTEMS@
 
+#define FASTSCAPE_VERSION_MAJOR @FASTSCAPE_VERSION_MAJOR@
+#define FASTSCAPE_VERSION_MINOR @FASTSCAPE_VERSION_MINOR@
+#define FASTSCAPE_VERSION_SUBMINOR @FASTSCAPE_VERSION_SUBMINOR@
+
+/**
+ * Returns true if the used FastScape version is greater or equal than the
+ * version specified by the three arguments. The internal implementation
+ * assumes that the number of minor and subminor versions is not larger
+ * than 100.
+ */
+#define FASTSCAPE_VERSION_GTE(major,minor,subminor) \
+  ((FASTSCAPE_VERSION_MAJOR * 10000 + \
+    FASTSCAPE_VERSION_MINOR * 100 + \
+    FASTSCAPE_VERSION_SUBMINOR) \
+   >=  \
+   (major)*10000 + (minor)*100 + (subminor))
+
 
 /**
  * A macro that is used in instantiating the ASPECT classes and functions for

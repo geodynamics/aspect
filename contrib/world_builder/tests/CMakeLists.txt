@@ -25,6 +25,9 @@ SET(WB_RUN_TESTS_WITH_GDB OFF
 SET(WB_RUN_TESTS_WITH_VALGRIND OFF
     CACHE BOOL "Whether to also run the test with Valgrind")
 
+SET(REPLACE_FAILING_TEST_RESULTS OFF
+    CACHE BOOL "Whether or not to update the results from failing output.")
+
 if(WB_INCLUDE_UNIT_TEST)
   file(GLOB_RECURSE UNIT_TEST_SOURCES_CXX "unit_tests/*.cc")
 
@@ -102,6 +105,7 @@ IF(WB_ENABLE_APPS AND WB_RUN_APP_TESTS)
            -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/gwb-dat/testing_help/screen-output.log
            -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/gwb-dat/testing_help/screen-output.log
            -D TEST_DIFF=${TEST_DIFF}
+           -D REPLACE_FAILING_TEST_RESULTS=${REPLACE_FAILING_TEST_RESULTS}
            -P ${CMAKE_SOURCE_DIR}/tests/gwb-dat/run_gwb-dat_tests.cmake
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gwb-dat/)
   
@@ -114,6 +118,7 @@ IF(WB_ENABLE_APPS AND WB_RUN_APP_TESTS)
           -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/gwb-dat/testing_no_file/screen-output.log
           -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/gwb-dat/testing_no_file/screen-output.log
           -D TEST_DIFF=${TEST_DIFF}
+          -D REPLACE_FAILING_TEST_RESULTS=${REPLACE_FAILING_TEST_RESULTS}
           -P ${CMAKE_SOURCE_DIR}/tests/gwb-dat/run_gwb-dat_tests.cmake
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gwb-dat/)
   
@@ -127,6 +132,7 @@ IF(WB_ENABLE_APPS AND WB_RUN_APP_TESTS)
            -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/gwb-dat/testing_one_file/screen-output.log
            -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/gwb-dat/testing_one_file/screen-output.log
            -D TEST_DIFF=${TEST_DIFF}
+           -D REPLACE_FAILING_TEST_RESULTS=${REPLACE_FAILING_TEST_RESULTS}
            -P ${CMAKE_SOURCE_DIR}/tests/gwb-dat/run_gwb-dat_tests.cmake
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gwb-dat/)
 
@@ -141,6 +147,7 @@ IF(WB_ENABLE_APPS AND WB_RUN_APP_TESTS)
            -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/gwb-dat/testing_too_many_arguments/screen-output.log
            -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/gwb-dat/testing_too_many_arguments/screen-output.log
            -D TEST_DIFF=${TEST_DIFF}
+           -D REPLACE_FAILING_TEST_RESULTS=${REPLACE_FAILING_TEST_RESULTS}
            -P ${CMAKE_SOURCE_DIR}/tests/gwb-dat/run_gwb-dat_tests.cmake
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gwb-dat/)
 
@@ -154,6 +161,7 @@ IF(WB_ENABLE_APPS AND WB_RUN_APP_TESTS)
            -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/gwb-dat/generate_declarations_and_schema/screen-output.log
            -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/gwb-dat/generate_declarations_and_schema/screen-output.log
            -D TEST_DIFF=${TEST_DIFF}
+           -D REPLACE_FAILING_TEST_RESULTS=${REPLACE_FAILING_TEST_RESULTS}
            -P ${CMAKE_SOURCE_DIR}/tests/gwb-dat/run_gwb-dat_tests.cmake
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gwb-dat/)
 
@@ -168,6 +176,7 @@ IF(WB_ENABLE_APPS AND WB_RUN_APP_TESTS)
 	         -D TEST_DIFF=${TEST_DIFF}
 	         -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/gwb-grid/grid_help.log
 	         -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/gwb-grid/grid_help.log
+           -D REPLACE_FAILING_TEST_RESULTS=${REPLACE_FAILING_TEST_RESULTS}
 	         -P ${CMAKE_SOURCE_DIR}/tests/gwb-dat/run_gwb-dat_tests.cmake
 	         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gwb-grid/)
 
@@ -182,6 +191,7 @@ IF(WB_ENABLE_APPS AND WB_RUN_APP_TESTS)
            -D TEST_DIFF=${TEST_DIFF}
            -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/gwb-grid/grid_too_many_arguments.log
            -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/gwb-grid/grid_too_many_arguments.log
+           -D REPLACE_FAILING_TEST_RESULTS=${REPLACE_FAILING_TEST_RESULTS}
            -P ${CMAKE_SOURCE_DIR}/tests/gwb-dat/run_gwb-dat_tests.cmake
            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gwb-grid/)
 
@@ -196,6 +206,7 @@ IF(WB_ENABLE_APPS AND WB_RUN_APP_TESTS)
            -D TEST_DIFF=${TEST_DIFF}
            -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/gwb-grid/grid_version.log
            -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/gwb-grid/grid_version.log
+           -D REPLACE_FAILING_TEST_RESULTS=${REPLACE_FAILING_TEST_RESULTS}
            -P ${CMAKE_SOURCE_DIR}/tests/gwb-dat/run_gwb-dat_tests.cmake
            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gwb-grid/)
 
@@ -211,6 +222,7 @@ IF(WB_ENABLE_APPS AND WB_RUN_APP_TESTS)
            -D TEST_DIFF=${TEST_DIFF}
            -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/gwb-grid/grid_non_existing_wb.log
            -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/gwb-grid/grid_non_existing_wb.log
+           -D REPLACE_FAILING_TEST_RESULTS=${REPLACE_FAILING_TEST_RESULTS}
            -P ${CMAKE_SOURCE_DIR}/tests/gwb-dat/run_gwb-dat_tests.cmake
            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gwb-grid/)
 
@@ -223,6 +235,7 @@ IF(WB_ENABLE_APPS AND WB_RUN_APP_TESTS)
 	         -D TEST_ARGS=${TEST_ARGUMENTS}
 	         -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/gwb-grid/subducting_plate_composition_smooth_filtered.filtered.vtu
 	         -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/gwb-grid/subducting_plate_composition_smooth_filtered.filtered.vtu
+           -D REPLACE_FAILING_TEST_RESULTS=${REPLACE_FAILING_TEST_RESULTS}
 	         -P ${CMAKE_SOURCE_DIR}/tests/gwb-grid/run_gwb-grid_tests.cmake
            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gwb-grid/)
 
@@ -236,6 +249,7 @@ IF(WB_ENABLE_APPS AND WB_RUN_APP_TESTS)
            -D TEST_ARGS=${TEST_ARGUMENTS}
            -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/gwb-grid/subducting_plate_composition_smooth_by_tag.1.vtu
            -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/gwb-grid/subducting_plate_composition_smooth_by_tag.1.vtu
+           -D REPLACE_FAILING_TEST_RESULTS=${REPLACE_FAILING_TEST_RESULTS}
            -P ${CMAKE_SOURCE_DIR}/tests/gwb-grid/run_gwb-grid_tests.cmake
            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gwb-grid/)
   
@@ -256,6 +270,7 @@ IF(WB_ENABLE_APPS AND WB_RUN_APP_TESTS)
              -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/gwb-dat/${test_name}/screen-output.log
              -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/gwb-dat/${test_name}/screen-output.log
              -D TEST_DIFF=${TEST_DIFF}
+             -D REPLACE_FAILING_TEST_RESULTS=${REPLACE_FAILING_TEST_RESULTS}
              -P ${CMAKE_SOURCE_DIR}/tests/gwb-dat/run_gwb-dat_tests.cmake
              WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gwb-dat/)
 
@@ -290,6 +305,7 @@ if (WB_ENABLE_APPS)
             -D TEST_ARGS=${TEST_ARGUMENTS}
             -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/gwb-grid/${test_name}.vtu
             -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/gwb-grid/${test_name}.vtu
+            -D REPLACE_FAILING_TEST_RESULTS=${REPLACE_FAILING_TEST_RESULTS}
             -P ${CMAKE_SOURCE_DIR}/tests/gwb-grid/run_gwb-grid_tests.cmake
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gwb-grid/)
 
@@ -321,7 +337,7 @@ if (WB_ENABLE_APPS)
   # Run through each source and create a test for each one
   foreach(test_source ${DOCU_TEST_SOURCES})
     get_filename_component(test_name ${test_source} NAME_WE)
-    set(TEST_ARGUMENTS "${CMAKE_SOURCE_DIR}/doc/sphinx/_static/gwb_input_files/${test_name}.wb\;${CMAKE_SOURCE_DIR}/doc/sphinx/_static/gwb_input_files/${test_name}.grid")
+    set(TEST_ARGUMENTS "${CMAKE_SOURCE_DIR}/doc/sphinx/_static/gwb_input_files/${test_name}.wb\;${CMAKE_SOURCE_DIR}/doc/sphinx/_static/gwb_input_files/${test_name}.grid\;--resolution-limit\;50")
     add_test(doc_${test_name}
             ${CMAKE_COMMAND}
             -D TEST_NAME=${test_name}

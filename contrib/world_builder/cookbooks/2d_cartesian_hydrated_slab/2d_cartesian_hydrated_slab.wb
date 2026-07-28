@@ -1,0 +1,66 @@
+{
+  "version":"1.1",
+  "coordinate system":{"model":"cartesian"},
+  "cross section":[[0,0],[8000e3,0]],
+  "surface temperature":273,
+  "thermal expansion coefficient":3.1e-5, "specific heat":1000, "thermal diffusivity":1.0e-6,
+  "features":
+  [
+    {"model":"mantle layer", "name":"Mantle", "max depth":1600e3,
+       "coordinates":[[0,-100e3],[0,100e3],[3000e3,100e3],[3000e3,-100e3]]},
+
+    {"model":"oceanic plate", "name":"Overriding Plate",
+      "min depth":0, "max depth":200e3,
+      "coordinates":[[0,-100e3],[0,100e3],[2000e3,100e3],[2000e3,-100e3]],
+      "temperature models":[ {"model":"plate model", 
+        "min depth":-10e3, "max depth":300e3,       
+        "top temperature":273, "bottom temperature":-1,
+        "spreading velocity":0.05,
+        "ridge coordinates": [[[-1000e3,-100e3],[-1000e3,100e3]]]}]
+    },
+
+    {"model":"oceanic plate", "name":"Subducting Plate", 
+      "min depth":0, "max depth":300e3,
+      "coordinates" :[[2000e3,100e3],[2000e3,-100e3],[3000e3,-100e3],[3000e3,100e3]],
+      "temperature models":[{"model":"plate model", 
+        "min depth":0,  "max depth":300e3, 
+        "top temperature":273, "bottom temperature":-1,
+        "spreading velocity":0.1,
+        "ridge coordinates": [[[8000e3,-100e3],[8000e3,100e3]]]}],
+
+        "composition models": [
+        {"model":"tian water content", "compositions":[0], "min depth": 0, "max depth": 3e3, "lithology":"sediment", "initial water content":3, "cutoff pressure":1},
+        {"model":"tian water content", "compositions":[0], "min depth": 3e3, "max depth": 7e3, "lithology":"MORB", "initial water content":1, "cutoff pressure":16},
+        {"model":"tian water content", "compositions":[0], "min depth": 7e3, "max depth": 11e3, "lithology":"gabbro", "initial water content":0.5, "cutoff pressure":26},
+        {"model":"tian water content", "compositions":[0], "min depth": 11e3, "max depth": 20e3, "lithology":"peridotite", "initial water content":2, "cutoff pressure":10}]
+    }, 
+
+    {"model":"subducting plate", "name":"Slab",   
+      "coordinates":[[2000e3,-100e3],[2000e3,100e3]], 
+      "dip point":[0,0],"max depth":10000e3,
+      "segments":[{"length":250e3,"thickness":[300e3],"top truncation":[-50e3],"angle":[0,60]},
+        {"length":300e3, "thickness":[300e3],"top truncation":[-50e3], "angle":[60,80]},
+        {"length":500e3, "thickness":[300e3],"top truncation":[-50e3], "angle":[80,60]},
+        {"length":300e3, "thickness":[300e3],"top truncation":[-50e3], "angle":[60,40]},
+        {"length":300e3, "thickness":[300e3],"top truncation":[-50e3], "angle":[40,20]}],
+
+        "composition models":[
+          {"model":"tian water content", "compositions":[0], "density":3300, "min distance slab top":0, "max distance slab top":3e3, "lithology":"sediment", "initial water content":3, "cutoff pressure":1},
+          {"model":"tian water content", "compositions":[0], "density":3300, "min distance slab top":3e3, "max distance slab top":7e3, "lithology":"MORB", "initial water content":1, "cutoff pressure":16},
+          {"model":"tian water content", "compositions":[0], "density":3300, "min distance slab top":7e3, "max distance slab top":11e3, "lithology":"gabbro", "initial water content":0.5, "cutoff pressure":26},
+          {"model":"tian water content", "compositions":[0], "density":3300, "min distance slab top":11e3, "max distance slab top":20e3, "lithology":"peridotite", "initial water content":2, "cutoff pressure":10}],
+
+      "temperature models":[{"model":"mass conserving", 
+        "reference model name": "plate model",
+        "density":3300, 
+        "adiabatic heating":true,
+        "spreading velocity":0.1,
+        "subducting velocity":0.1,
+        "ridge coordinates":[[[8000e3,-100e3],[8000e3,100e3]]],
+        "coupling depth":80e3, 
+        "forearc cooling factor":1.0,
+        "taper distance":100e3, 
+        "min distance slab top":-200e3, "max distance slab top":300e3}]   
+   }      
+  ]
+}

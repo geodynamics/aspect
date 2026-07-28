@@ -92,6 +92,8 @@ namespace aspect
         /**
          * The coordinate representation used to evaluate the indicator
          * function. Possible choices are cartesian, spherical, and depth.
+         *
+         * This variable is read from the parameter file through a parameter called 'Coordinate system'.
          */
         Utilities::Coordinates::CoordinateSystem coordinate_system;
 

@@ -16,7 +16,7 @@ subsection Geometry model
   # Initial topography model using a function defined in spherical coordinates.
   # Coordinates are (r, phi), where phi is longitude.
   # The topography represents a 5 km high mountain belt with sinusoidal variation
-  # in the longitudnal (phi) direction.
+  # in the longitudinal (phi) direction.
   subsection Initial topography model
     set Model name = function
 

@@ -99,7 +99,6 @@ subsection Mesh refinement
 
   subsection Maximum refinement function
     set Coordinate system      = cartesian
-    set Function constants     =
     set Function expression    = 6 + 2*sin(x*2*pi/250000)*sin(y*2*pi/250000)
     set Variable names         = x,y
   end

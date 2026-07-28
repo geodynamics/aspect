@@ -717,7 +717,6 @@ namespace aspect
     // overall vector, so that they form a contiguous range starting
     // at zero. The assertion checks this, but this could easily be
     // generalized if the Stokes block were not starting at zero.
-#if DEAL_II_VERSION_GTE(9,6,0)
     Assert (introspection.block_indices.velocities == 0,
             ExcNotImplemented());
     if (parameters.use_direct_stokes_solver == false)
@@ -728,9 +727,6 @@ namespace aspect
     stokes_dofs.add_range (0, vec.size());
     const AffineConstraints<double> stokes_hanging_node_constraints
       = hanging_node_constraints.get_view (stokes_dofs);
-#else
-    const AffineConstraints<double> &stokes_hanging_node_constraints = hanging_node_constraints;
-#endif
 
     stokes_hanging_node_constraints.distribute(vec);
   }

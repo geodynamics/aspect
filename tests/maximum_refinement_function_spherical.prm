@@ -91,7 +91,6 @@ subsection Mesh refinement
 
   subsection Maximum refinement function
     set Coordinate system      = spherical
-    set Function constants     =
     set Function expression    = 5 + 2*sin((r+250000)*2*pi/250000)*sin(12*phi)
     set Variable names         = r,phi
   end

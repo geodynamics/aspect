@@ -62,6 +62,10 @@ namespace aspect
         parse_parameters (ParameterHandler &prm) override;
 
       private:
+        /**
+         * This variable is read from the parameter file through a parameter
+         * called 'End step'.
+         */
         unsigned int end_step;
     };
   }

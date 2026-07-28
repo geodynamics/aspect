@@ -5,7 +5,7 @@ feature:spherical
 feature:analytical-solution
 ```
 
-=(sec:benchmarks:hollow_sphere)=
+(sec:benchmarks:hollow_sphere)=
 # The hollow sphere benchmark
 
 This benchmark is based on {cite:t}`thieulot:2017` in which an analytical

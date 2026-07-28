@@ -4,6 +4,9 @@
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
+import re
+from pathlib import Path
+
 # -- Path setup --------------------------------------------------------------
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -46,6 +49,176 @@ myst_enable_extensions = [
     "dollarmath",
     "amsmath",
 ]
+
+
+# Map units used by the LaTeX 'siunitx' package to text that
+# can directly be used in LaTeX formulas:
+_siunitx_symbols = {
+    "degree": r"^\circ",
+    "J": "J",
+    "joule": "J",
+    "K": "K",
+    "kelvin": "K",
+    "kg": "kg",
+    "kilogram": "kg",
+    "m": "m",
+    "meter": "m",
+    "metre": "m",
+    "mol": "mol",
+    "mole": "mol",
+    "Pa": "Pa",
+    "pascal": "Pa",
+    "s": "s",
+    "second": "s",
+    "W": "W",
+    "watt": "W",
+    "hour": "h",
+    "hours": "h",
+    "year": "yr",
+    "years": "yr",
+    "yr": "yr",
+}
+
+_siunitx_prefixes = {
+    "kilo": "k",
+    "mega": "M",
+    "giga": "G",
+    "milli": "m",
+    "micro": r"\mu",
+    "nano": "n",
+}
+
+
+# Read the text of a brace-enclosed LaTeX macro, allowing for nested
+# braces:
+def _read_braced_argument(text, position):
+    """Return the braced argument at position and the following position."""
+    if position == len(text) or text[position] != "{":
+        return None, position
+
+    depth = 1
+    end = position + 1
+    while end < len(text) and depth:
+        if text[end] == "{":
+            depth += 1
+        elif text[end] == "}":
+            depth -= 1
+        end += 1
+
+    if depth:
+        return None, position
+
+    return text[position + 1:end - 1], end
+
+
+def _format_siunitx_unit(unit):
+    """Convert the subset of siunitx unit syntax used in this manual to LaTeX."""
+    components = []
+    denominator = False
+    prefix = ""
+    next_power = 1
+    tokens = re.findall(r"\\[A-Za-z]+|[A-Za-z]+|[0-9]+|[*/^]", unit)
+    position = 0
+
+    def set_last_power(power):
+        if components:
+            components[-1][1] = -power if components[-1][1] < 0 else power
+
+    while position < len(tokens):
+        token = tokens[position]
+        name = token[1:] if token.startswith("\\") else token
+
+        if name == "per" or token == "/":
+            denominator = True
+        elif name == "squared":
+            set_last_power(2)
+        elif name == "cubed":
+            set_last_power(3)
+        elif name == "cubic":
+            next_power = 3
+        elif name in _siunitx_prefixes:
+            prefix += _siunitx_prefixes[name]
+        elif token == "^" and position + 1 < len(tokens):
+            position += 1
+            if tokens[position].isdigit():
+                set_last_power(int(tokens[position]))
+        elif token != "*":
+            symbol = _siunitx_symbols.get(name, name)
+            components.append([prefix + symbol,
+                               -next_power if denominator else next_power])
+            prefix = ""
+            next_power = 1
+
+        position += 1
+
+    formatted = []
+    for symbol, power in components:
+        if symbol == r"^\circ" :
+            factor = symbol
+        else :
+            factor = r"\mathrm{" + symbol + "}"
+        if power != 1:
+            factor += "^{" + str(power) + "}"
+        formatted.append(factor)
+
+    return r"\,".join(formatted)
+
+
+def _is_inside_math(text, position):
+    """Determine whether position occurs between matching dollar delimiters."""
+    delimiter = None
+    for match in re.finditer(r"(?<!\\)\${1,2}", text[:position]):
+        value = match.group()
+        if delimiter == value:
+            delimiter = None
+        elif delimiter is None:
+            delimiter = value
+    return delimiter is not None
+
+
+def _convert_siunitx_commands(app, docname, source):
+    """Replace legacy siunitx commands with inline LaTeX math."""
+    text = source[0]
+    result = []
+    position = 0
+
+    while position < len(text):
+        match = re.search(r"\\(si|SI)\s*", text[position:])
+        if match is None:
+            result.append(text[position:])
+            break
+
+        start = position + match.start()
+        command_end = position + match.end()
+        first_argument, argument_end = _read_braced_argument(text, command_end)
+        if first_argument is None:
+            result.append(text[position:command_end])
+            position = command_end
+            continue
+
+        if match.group(1) == "SI":
+            while argument_end < len(text) and text[argument_end].isspace():
+                argument_end += 1
+            second_argument, end = _read_braced_argument(text, argument_end)
+            if second_argument is None:
+                result.append(text[position:argument_end])
+                position = argument_end
+                continue
+            formula = first_argument + r"\," + _format_siunitx_unit(second_argument)
+        else:
+            end = argument_end
+            formula = _format_siunitx_unit(first_argument)
+
+        result.append(text[position:start])
+        result.append(formula if _is_inside_math(text, start) else "$" + formula + "$")
+        position = end
+
+    source[0] = "".join(result)
+
+
+def setup(app):
+    app.connect("source-read", _convert_siunitx_commands)
+
 
 tikz_proc_suite = "GhostScript"
 # Add any paths that contain templates here, relative to this directory.
@@ -133,6 +306,15 @@ html_context = {
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+# The Read the Docs build generates this directory with ``make -C doc
+# aspect.tag`` before Sphinx runs.  Copying it as extra HTML preserves
+# Doxygen's complete API reference at ``/doxygen/`` in the same versioned
+# documentation site as the manual. Keep ordinary local Sphinx builds usable
+# when Doxygen has not been generated yet.
+html_extra_path = (['doxygen']
+                   if (Path(__file__).parent / 'doxygen').is_dir()
+                   else [])
 html_last_updated_fmt = ""
 
 linkcheck_allowed_redirects = {r'https://doi.org/*': r'https://*',

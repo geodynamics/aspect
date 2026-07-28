@@ -15,7 +15,7 @@ set Resume computation                     = false
 set Start time                             = 0
 set Use years instead of seconds           = false
 
-# test if the melt material properties visulaization output works
+# test if the melt material properties visualization output works
 # (for both scalar and tensor output variables)
 #
 subsection Discretization

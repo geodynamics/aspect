@@ -94,6 +94,8 @@ namespace aspect
         /**
          * Whether to specify velocity in x, y, z components, or
          * r, phi, theta components.
+         *
+         * This variable is read from the parameter file through a parameter called 'Use spherical unit vectors'.
          */
         bool use_spherical_unit_vectors;
     };

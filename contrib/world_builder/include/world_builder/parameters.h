@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018-2024 by the authors of the World Builder code.
+  Copyright (C) 2018-2026 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -137,8 +137,8 @@ namespace WorldBuilder
        * This version is designed for the plugin system.
        * \param name The name of the entry to retrieved
        */
-      template<class T, class A, class B, class C>
-      std::vector<T> get_vector(const std::string &name, std::vector<std::shared_ptr<A> > &, std::vector<std::shared_ptr<B> > &, std::vector<std::shared_ptr<C> > &);
+      template<class T, class A, class B, class C, class D>
+      std::vector<T> get_vector(const std::string &name, std::vector<std::shared_ptr<A> > &, std::vector<std::shared_ptr<B> > &, std::vector<std::shared_ptr<C> > &, std::vector<std::shared_ptr<D> > &);
 
       /**
        * A specialized version of get which can return unique pointers.

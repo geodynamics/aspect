@@ -33,6 +33,8 @@ subsection Mesh deformation
 
   subsection Boundary function
     set Variable names      = x,y,t
-    set Function expression = 0;  -3.168808781e-16*(x-1e5)
+    # yr_in_seconds = 60*60*24*365.2425
+    set Function constants = yr_in_seconds=31556952
+    set Function expression = 0;  -3.168808781e-16*(x-1e5)*yr_in_seconds
   end
 end

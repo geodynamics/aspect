@@ -25,6 +25,8 @@
 #include <aspect/global.h>
 
 #include <array>
+#include <deal.II/base/exceptions.h>
+#include <deal.II/base/thread_local_storage.h>
 #include <random>
 #include <deal.II/base/point.h>
 #include <deal.II/base/conditional_ostream.h>
@@ -33,6 +35,7 @@
 #include <deal.II/dofs/dof_handler.h>
 #include <deal.II/fe/component_mask.h>
 #include <deal.II/lac/solver_control.h>
+#include <deal.II/physics/notation.h>
 
 #include <aspect/coordinate_systems.h>
 #include <aspect/structured_data.h>
@@ -71,6 +74,68 @@ namespace aspect
     */
     using namespace dealii::Utilities;
 
+
+    /**
+     * A class that allows for creating reusable chunks of memory.
+     * When this class's get_object_from_pool() function is called, it returns a reference to a currently unused object,
+     * or creates a new one if non are available. When done with an object it can be returned to the pool for later use.
+     * This is particularly useful when needing the same size memory in a function which is called in a loop. Since the
+     * objects are not reset, using this scratch space can prevent reallocating memory over and over. This class works
+     * in recursive functions.
+     * The class is recommended to be used with the ScopedScratchObject, which will automatically return the
+     * object to the pool when the ScopedScratchObject goes out of scope.
+     */
+    template <typename T>
+    class ScratchSpace
+    {
+      public:
+        /**
+         * This class takes an object from a ScratchSpace pool and will return it to the pool when the ScopedScratchObject
+         * goes out of scope.
+         */
+        class ScopedScratchObject
+        {
+          public:
+            /**
+             * Constructor
+             */
+            ScopedScratchObject (ScratchSpace<T> &/*space_*/);
+
+            /**
+             * Destructor: return the object to the pool
+             */
+            ~ScopedScratchObject();
+
+            /**
+             * Get a reference to the object.
+             */
+            operator T &();
+
+          private:
+            ScratchSpace &space;
+            T &t;
+        };
+
+        /**
+         * returns an object from the pool. If there are no unused objects, it creates a new object and returns it.
+         */
+        T &get_object_from_pool();
+
+        /**
+         * Destructor
+         */
+        ~ScratchSpace();
+
+        /**
+         * returns an object to the pool to be reused later.
+         */
+        void return_object_to_pool (T &t);
+
+      private:
+        dealii::Threads::ThreadLocalStorage<std::list<std::pair<T,bool>>>  object_list;
+    };
+
+    //template<typename T> thread_local std::list<std::pair<T,bool>> ScratchSpace<T>::object_list = {};
 
     /**
      * Given an array @p values, consider three cases:
@@ -1065,7 +1130,7 @@ namespace aspect
                      const Quadrature<dim>                                     &quadrature,
                      const std::function<void(
                        const typename DoFHandler<dim>::active_cell_iterator &,
-                       const std::vector<Point<dim>> &,
+                       const typename std_cxx20::type_identity<std::vector<Point<dim>>>::type &,
                        std::vector<double> &)>                                 &function,
                      VectorType                                                &vec_result);
 
@@ -1195,6 +1260,57 @@ namespace aspect
 #ifndef DOXYGEN
   namespace Utilities
   {
+    template<typename T>
+    T &ScratchSpace<T>::get_object_from_pool()
+    {
+      for (auto &pair : object_list.get())
+        if (pair.second == false)
+          {
+            pair.second = true;
+            return pair.first;
+          }
+
+      object_list.get().emplace_back (T(), true);
+      return object_list.get().back().first;
+    }
+
+    template<typename T>
+    void ScratchSpace<T>::return_object_to_pool (T &t)
+    {
+      for (auto &pair : object_list.get())
+        if (&pair.first == &t)
+          {
+            pair.second = false;
+            return;
+          }
+      AssertThrow(false, ExcMessage("You are tying to return an object to the pool which has apparently not been allocated by this pool."));
+    }
+
+    template<typename T>
+    ScratchSpace<T>::~ScratchSpace ()
+    {
+
+      for (auto &pair : object_list.get())
+        pair.first.clear();
+    }
+
+    template<typename T>
+    ScratchSpace<T>::ScopedScratchObject::ScopedScratchObject(ScratchSpace<T> &space_)
+      : space (space_),
+        t (space.get_object_from_pool())
+    {}
+
+    template<typename T>
+    ScratchSpace<T>::ScopedScratchObject::~ScopedScratchObject()
+    {
+      space.return_object_to_pool(t);
+    }
+
+    template<typename T>
+    ScratchSpace<T>::ScopedScratchObject::operator T &()
+    {
+      return t;
+    }
 
     template <typename T>
     inline
@@ -1333,6 +1449,12 @@ namespace aspect
        */
       SymmetricTensor<2,6>
       rotate_voigt_stiffness_matrix(const Tensor<2,3> &rotation_tensor, const SymmetricTensor<2,6> &input_tensor);
+
+      /**
+       * Rotate a symmetric 6x6 tensor in kelvin notation
+       */
+      SymmetricTensor<2,6>
+      rotate_kelvin_tensor(const Tensor<2,3> &rotation_tensor, const SymmetricTensor<2,6> &input_tensor);
 
       /**
        * Transform a 4th order full stiffness tensor into a 6x6 Voigt stiffness matrix.

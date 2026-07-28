@@ -95,11 +95,7 @@ namespace aspect
       check_diffusion_time_step(mesh_deformation_dof_handler, boundary_ids);
 
       // Set up constraints
-#if DEAL_II_VERSION_GTE(9,6,0)
       AffineConstraints<double> matrix_constraints(mesh_locally_relevant, mesh_locally_relevant);
-#else
-      AffineConstraints<double> matrix_constraints(mesh_locally_relevant);
-#endif
 
       DoFTools::make_hanging_node_constraints(mesh_deformation_dof_handler, matrix_constraints);
 
@@ -444,10 +440,18 @@ namespace aspect
       // Therefore, we compute v=d_displacement/d_t.
       // d_displacement are the new mesh node locations
       // minus the old locations, which are initial_topography + displacements.
-      LinearAlgebra::Vector velocity(mesh_locally_owned, mesh_locally_relevant, this->get_mpi_communicator());
+      LinearAlgebra::Vector velocity(mesh_locally_owned, this->get_mpi_communicator());
       velocity = solution;
-      velocity -= initial_topography;
-      velocity -= displacements;
+      {
+        LinearAlgebra::Vector initial_topography_distributed(mesh_locally_owned, this->get_mpi_communicator());
+        initial_topography_distributed = initial_topography;
+        velocity -= initial_topography_distributed;
+      }
+      {
+        LinearAlgebra::Vector displacements_distributed(mesh_locally_owned, this->get_mpi_communicator());
+        displacements_distributed = displacements;
+        velocity -= displacements_distributed;
+      }
 
       // The velocity
       if (this->get_timestep() > 0.)

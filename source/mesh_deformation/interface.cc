@@ -79,7 +79,6 @@ namespace aspect
         }
 
       const Introspection<dim> &introspection = this->introspection();
-      const FiniteElement<dim> &fe = this->get_fe();
 
       const typename DoFHandler<dim>::active_cell_iterator cell (&this->get_triangulation(),
                                                                  scratch.finite_element_values.get_cell()->level(),
@@ -116,14 +115,10 @@ namespace aspect
 
               for (unsigned int q = 0; q < n_face_q_points; ++q)
                 {
-                  for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
+                  for (unsigned int i_stokes = 0; i_stokes < stokes_dofs_per_cell; ++i_stokes)
                     {
-                      if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
-                        {
-                          scratch.phi_u[i_stokes] = scratch.face_finite_element_values[introspection.extractors.velocities].value(i, q);
-                          ++i_stokes;
-                        }
-                      ++i;
+                      const unsigned int i = introspection.stokes_dof_info[i_stokes].local_dof_index;
+                      scratch.phi_u[i_stokes] = scratch.face_finite_element_values[introspection.extractors.velocities].value(i, q);
                     }
 
                   const Tensor<1,dim>
@@ -655,12 +650,8 @@ namespace aspect
 
       // Now construct the mesh displacement constraints
       mesh_velocity_constraints.clear();
-#if DEAL_II_VERSION_GTE(9,6,0)
       mesh_velocity_constraints.reinit(mesh_deformation_dof_handler.locally_owned_dofs(),
                                        mesh_locally_relevant);
-#else
-      mesh_velocity_constraints.reinit(mesh_locally_relevant);
-#endif
       // mesh_velocity_constraints can use the same hanging node
       // information that was used for mesh_vertex constraints.
       mesh_velocity_constraints.merge(mesh_vertex_constraints);
@@ -1277,7 +1268,7 @@ namespace aspect
                                         level);
         }
 
-      MGTransferMF<dim, double> mg_transfer(mg_constrained_dofs);
+      MGTransferType<dim, double> mg_transfer(mg_constrained_dofs);
       mg_transfer.build(mesh_deformation_dof_handler);
 
       using SmootherType =
@@ -1333,7 +1324,7 @@ namespace aspect
       mg.set_edge_matrices(mg_interface, mg_interface);
       PreconditionMG<dim,
                      dealii::LinearAlgebra::distributed::Vector<double>,
-                     MGTransferMF<dim, double>>
+                     MGTransferType<dim, double>>
                      preconditioner(mesh_deformation_dof_handler, mg, mg_transfer);
 
 

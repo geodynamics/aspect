@@ -454,6 +454,15 @@ namespace aspect
                                          std::vector<VariableDeclaration<dim>> &variables);
 
       /**
+       * Replace introspection.stokes_dof_info with the local DoFs of the melt
+       * Stokes system (velocity, fluid pressure, and compaction pressure).
+       * Called from Simulator::setup_introspection() after the default
+       * (non-melt) Stokes DoF cache has been built.
+       */
+      void initialize_stokes_dof_info(Introspection<dim> &introspection,
+                                      const FiniteElement<dim> &finite_element) const;
+
+      /**
        * Determine, based on the run-time parameters of the current simulation,
        * which functions need to be called in order to assemble linear systems,
        * matrices, and right hand side vectors.

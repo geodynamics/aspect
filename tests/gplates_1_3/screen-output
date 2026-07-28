@@ -13,7 +13,7 @@
    The ParaView rotation angles are: -0.00 -0.00 -170.97
    The inverse ParaView rotation angles are: -0.00 -0.00 170.97
 
-   Loading GPlates data boundary file ASPECT_DIR/data/boundary-velocity/gplates/current_day.gpml.
+   Loading GPlates data boundary file $ASPECT_SOURCE_DIR/data/boundary-velocity/gplates/current_day.gpml.
 
 
    Loading new gplates velocity file did not succeed.
@@ -24,7 +24,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 32+0 iterations.
+   Solving Stokes system (GMG)... 31+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.0268 m/year, 0.0795 m/year

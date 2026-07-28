@@ -635,20 +635,14 @@ namespace aspect
         // overall vector, so that they form a contiguous range starting
         // at zero. The assertion checks this, but this could easily be
         // generalized if the Stokes block were not starting at zero.
-#if DEAL_II_VERSION_GTE(9,6,0)
-        {
-          Assert (velocity_block_index == 0, ExcNotImplemented());
-          if (parameters.use_direct_stokes_solver == false)
-            Assert (pressure_block_index == 1, ExcNotImplemented());
-        }
+        Assert (velocity_block_index == 0, ExcNotImplemented());
+        if (parameters.use_direct_stokes_solver == false)
+          Assert (pressure_block_index == 1, ExcNotImplemented());
 
         IndexSet stokes_dofs (dof_handler.n_dofs());
         stokes_dofs.add_range (0, distributed_stokes_solution.size());
         const AffineConstraints<double> current_stokes_constraints
           = current_constraints.get_view (stokes_dofs);
-#else
-        const AffineConstraints<double> &current_stokes_constraints = current_constraints;
-#endif
 
         Assert (distributed_stokes_solution.n_blocks() == 2, ExcInternalError());
         Assert(!parameters.include_melt_transport

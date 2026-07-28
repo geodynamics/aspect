@@ -29,7 +29,7 @@
 
 **Pattern:** [Double -1...MAX_DOUBLE (inclusive)]
 
-**Documentation:** If non-negative, resume from the checkpoint whose saved model time is closest to this value. This option is ignored when Resume checkpoint is set. Units: Years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** If non-negative, resume from the checkpoint whose saved model time is closest to this value. This option is ignored when Resume checkpoint is set. Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Steps between checkpoint<parameters:Checkpointing/Steps_20between_20checkpoint>`

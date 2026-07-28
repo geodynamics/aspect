@@ -431,7 +431,7 @@ namespace aspect
                            "Prefactor of the linear pressure term "
                            "in the linear function that approximates "
                            "the clinopyroxene reaction coefficient. "
-                           "Units: $\\frac{1}{\\text{Pa}}$.");
+                           "Units: \\si{\\per\\pascal}.");
         prm.declare_entry ("beta", "1.5",
                            Patterns::Double (),
                            "Exponent of the melting temperature in "
@@ -446,19 +446,19 @@ namespace aspect
                            Patterns::Double (),
                            "The entropy change for the phase transition "
                            "from solid to melt of peridotite. "
-                           "Units: $\\frac{\\text{J}}{\\text{K}\\text{kg}}$.");
+                           "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
         prm.declare_entry ("Reference melt density", "2500.",
                            Patterns::Double (0.),
                            "Reference density of the melt/fluid$\\rho_{f,0}$. "
-                           "Units: $\\frac{\\text{kg}}{\\text{m}^3}$.");
+                           "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
         prm.declare_entry ("Reference bulk viscosity", "1e22",
                            Patterns::Double (0.),
                            "The value of the constant bulk viscosity $\\xi_0$ of the solid matrix. "
                            "This viscosity may be modified by both temperature and porosity "
-                           "dependencies. Units: $\\text{Pa}\\text{s}$.");
+                           "dependencies. Units: \\si{\\pascal\\second}.");
         prm.declare_entry ("Reference melt viscosity", "10.",
                            Patterns::Double (0.),
-                           "The value of the constant melt viscosity $\\eta_f$. Units: $\\text{Pa}\\text{s}$.");
+                           "The value of the constant melt viscosity $\\eta_f$. Units: \\si{\\pascal\\second}.");
         prm.declare_entry ("Exponential melt weakening factor", "27.",
                            Patterns::Double (0.),
                            "The porosity dependence of the viscosity. Units: dimensionless.");
@@ -477,7 +477,7 @@ namespace aspect
         prm.declare_entry ("Melt compressibility", "0.0",
                            Patterns::Double (0.),
                            "The value of the compressibility of the melt. "
-                           "Units: $\\frac{1}{\\text{Pa}}$.");
+                           "Units: \\si{\\per\\pascal}.");
         prm.declare_entry ("Melt bulk modulus derivative", "0.0",
                            Patterns::Double (0.),
                            "The value of the pressure derivative of the melt bulk "
@@ -544,7 +544,7 @@ namespace aspect
                            "(depletion) and lowered for a negative peridotite field (enrichment). "
                            "Scaling with depletion is linear. Only active when fractional melting "
                            "is used. "
-                           "Units: $\\text{K}$.");
+                           "Units: \\si{\\kelvin}.");
         prm.declare_entry ("Reference permeability", "1e-8",
                            Patterns::Double(),
                            "Reference permeability of the solid host rock."

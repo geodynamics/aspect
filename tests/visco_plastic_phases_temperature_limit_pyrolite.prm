@@ -71,7 +71,7 @@ end
 
 # value for material model
 # The phase transitions are separated into subgroups. subgroups are separated by blanks.
-# Moreover, subsgroups are connected but don't intersect each other
+# Moreover, subgroups are connected but don't intersect each other
 subsection Material model
   set Model name = visco plastic
 

@@ -104,7 +104,6 @@ subsection Initial composition model
 
   subsection Function
     set Variable names      = x,y
-    set Function constants  =
     set Function expression = 0; 0; 0; 0; 0; 0;
   end
 end

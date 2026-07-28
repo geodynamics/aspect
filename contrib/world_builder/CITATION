@@ -22,6 +22,16 @@ URL = {https://se.copernicus.org/articles/10/1785/2019/},
 DOI = {10.5194/se-10-1785-2019}
 }
 
+@misc{gwb-doi-v1.1.0,
+  title        = {{The Geodynamic World Builder} v1.0.0 [software]},
+  author       = {Menno Fraters and
+                  others},
+  month        = mar,
+  year         = 2026,
+  DOI          = {10.5281/zenodo.19222670},
+  URL          = {https://doi.org/10.5281/zenodo.19222670},
+}
+
 @misc{gwb-doi-v1.0.0,
   title        = {{The Geodynamic World Builder} v1.0.0 [software]},
   author       = {Menno Fraters and

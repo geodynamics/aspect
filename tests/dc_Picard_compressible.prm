@@ -219,7 +219,7 @@ subsection Material model
 
     #     Diffusion creep
     set Prefactors for diffusion creep            = background: 1.e-9|1.e-9|1.0e-16|1.0e-16, plastic_strain: 1.e-9
-    set Stress exponents for diffusion creep      = 1.0                                                  #### doesnt exist anymore??? ####
+    set Stress exponents for diffusion creep      = 1.0                                                  #### doesn't exist anymore??? ####
     set Activation energies for diffusion creep   = background: 3.35e5|3.35e5|2.e5|2.e5, plastic_strain: 3.35e5
     set Activation volumes for diffusion creep    = background: 4.8e-6|4.8e-6|1.1e-6|1.1e-6, plastic_strain: 4.8e-6
     set Grain size                                = 1 #1e-3

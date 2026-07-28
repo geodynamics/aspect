@@ -143,6 +143,8 @@ namespace aspect
          * Whether to put every nonlinear iteration into a separate
          * line in the statistics file or to only output one line
          * per time step.
+         *
+         * This variable is read from the parameter file through a parameter called 'Write statistics for each nonlinear iteration'.
          */
         bool one_line_per_iteration;
     };

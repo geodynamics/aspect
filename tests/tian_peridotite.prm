@@ -30,7 +30,7 @@ subsection Solver parameters
 end
 
 # Specify that the entire domain is peridotite, with an initial bound water content
-# of 11% everywhere, the bound_water will evolve to the parametrized phase diagram
+# of 11% everywhere, the bound_water will evolve to the parameterized phase diagram
 # for peridotite.
 subsection Initial composition model
   set Model name = function

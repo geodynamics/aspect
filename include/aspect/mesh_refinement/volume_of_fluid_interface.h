@@ -64,6 +64,8 @@ namespace aspect
       private:
         /**
          * If true, flag cells for coarsening if they are not flagged for refinement
+         *
+         * This variable is read from the parameter file through a parameter called 'Strict coarsening'.
          */
         bool strict_coarsening;
     };

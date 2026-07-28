@@ -91,6 +91,9 @@ namespace aspect
           /**
            * A private variable that stores the number of particle property
            * function components.
+           *
+           * This variable is read from the parameter file through a parameter
+           * called 'Number of components'.
            */
           unsigned int n_components;
       };

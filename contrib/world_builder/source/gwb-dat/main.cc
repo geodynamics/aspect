@@ -200,8 +200,11 @@ int main(int argc, char **argv)
       std::vector<std::array<unsigned ,3>> properties;
       properties.push_back({{1,0,0}}); // temperature
 
+      properties.push_back({{5,0,0}}); // velocity x
+
       for (size_t c = 0; c < compositions; ++c)
         properties.push_back({{2,static_cast<unsigned int>(c),0}}); // composition c
+
 
       for (size_t gc = 0; gc < grain_compositions; ++gc)
         properties.push_back({{3,static_cast<unsigned int>(gc),static_cast<unsigned int>(n_grains)}}); // grains gc
@@ -214,7 +217,7 @@ int main(int argc, char **argv)
           case 2:
             WBAssertThrow(!convert_spherical, "Converting to spherical values is only available in 3D.");
             // set the header
-            std::cout << "# x z d T ";
+            std::cout << "# x z d T vx vz ";
 
             for (unsigned int c = 0; c < compositions; ++c)
               std::cout << 'c' << c << ' ';
@@ -245,14 +248,16 @@ int main(int argc, char **argv)
                   std::vector<double> output = world->properties(coords, string_to_double(data[i][2]),properties);
                   std::cout << output[0]  << ' ';
 
+                  std::cout << output[1] << ' ' << output[2] << ' ';
+
                   for (unsigned int c = 0; c < compositions; ++c)
                     {
-                      std::cout << output[1+c]  << ' ';
+                      std::cout << output[3+c]  << ' ';
                     }
 
                   for (unsigned int gc = 0; gc < grain_compositions; ++gc)
                     {
-                      const size_t start = 1+compositions+gc*n_grains*10;
+                      const size_t start = 3+compositions+gc*n_grains*10;
                       for (unsigned int g = 0; g < n_grains; ++g)
                         {
                           std::cout << output[start+g]  << ' '
@@ -268,7 +273,7 @@ int main(int argc, char **argv)
             break;
           case 3:
             // set the header
-            std::cout << "# x y z d g T ";
+            std::cout << "# x y z d g T vx vy vz ";
 
             for (unsigned int c = 0; c < compositions; ++c)
               std::cout << 'c' << c << ' ';
@@ -305,14 +310,16 @@ int main(int argc, char **argv)
                   std::vector<double> output = world->properties(coords, string_to_double(data[i][3]),properties);
                   std::cout << output[0]  << ' ';
 
+                  std::cout << output[1] << ' ' << output[2] << ' ' << output[3] << ' ';
+
                   for (unsigned int c = 0; c < compositions; ++c)
                     {
-                      std::cout << output[1+c]  << ' ';
+                      std::cout << output[4+c]  << ' ';
                     }
 
                   for (unsigned int gc = 0; gc < grain_compositions; ++gc)
                     {
-                      const size_t start = 1+compositions+gc*n_grains*10;
+                      const size_t start = 4+compositions+gc*n_grains*10;
                       for (unsigned int g = 0; g < n_grains; ++g)
                         {
                           std::cout << output[start+g]  << ' '
@@ -322,7 +329,7 @@ int main(int argc, char **argv)
 
                         }
                     }
-                  std::cout << " " << output[output.size()-1] << std::endl;
+                  std::cout << output[output.size()-1] << std::endl;
 
                 }
             break;

@@ -70,7 +70,7 @@ subsection Initial temperature model
 
   subsection Function
     set Variable names      = x,y
-    set Function constants  = p=-0.01, L=4.2e6, D=3e6, pi=3.1415926536, k=1, T_top=273, T_bottom=3600
+    set Function constants  = p=-0.01, L=4.2e6, D=3e6, k=1, T_top=273, T_bottom=3600
     set Function expression = T_top + (T_bottom-T_top)*(1-(y/D) - p*cos(k*pi*x/L)*sin(pi*y/D))
   end
 end

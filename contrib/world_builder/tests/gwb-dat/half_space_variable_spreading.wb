@@ -1,5 +1,5 @@
 {
-  "version": "1.0",
+  "version":"1.1",
   "coordinate system":{"model":"cartesian"},
   "gravity model":{"model":"uniform", "magnitude":10},
   "surface temperature":273, "force surface temperature":true,

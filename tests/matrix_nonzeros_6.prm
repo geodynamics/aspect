@@ -44,7 +44,6 @@ subsection Boundary velocity model
 
   subsection Function
     set Variable names      = x,z,t
-    set Function constants  = pi=3.1415926
     set Function expression = if(x>1+sin(0.5*pi*t), 1, -1); 0
   end
 end
@@ -76,7 +75,6 @@ subsection Initial composition model
 
   subsection Function
     set Variable names      = x,z
-    set Function constants  = pi=3.1415926
     set Function expression = if(z<0.5+0.4*sin((x-0.5)*pi),1,0);0;1
   end
 end

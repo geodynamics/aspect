@@ -94,7 +94,7 @@ endif()
 # Some other ASPECT configuration options:
 set(ASPECT_MAX_NUM_PARTICLE_SYSTEMS 2 CACHE STRING "The maximum number of particle systems supported at runtime.")
 
-set(ASPECT_USE_TPETRA OFF CACHE BOOL "If ON, use Tpetra classes of Trilinos. Requires a suitable Trilinos and deal.II.")
+set(ASPECT_USE_TPETRA OFF CACHE BOOL "If ON, use Tpetra packages in Trilinos. Requires a Trilinos with Tpetra support and deal.II version 9.8.0 or newer.")
 
 
 # ##############################################################################
@@ -124,29 +124,6 @@ endif()
 
 message(STATUS "Found deal.II version ${DEAL_II_PACKAGE_VERSION} at '${deal.II_DIR}'")
 
-if (ASPECT_USE_TPETRA)
-  message(STATUS "Using ASPECT_USE_TPETRA = '${ASPECT_USE_TPETRA}'")
-
-  if (NOT DEAL_II_TRILINOS_WITH_TPETRA OR NOT DEAL_II_TRILINOS_WITH_TPETRA_MUELU)
-      message(SEND_ERROR
-        "\n-- deal.II was built without support for Tpetra!\n"
-        )
-      set(_DEALII_GOOD OFF)
-  endif()
-
-  if (NOT ${DEAL_II_PACKAGE_VERSION} VERSION_GREATER_EQUAL 9.8.0)
-    message(SEND_ERROR
-          "\n-- Tpetra support is only available for deal.II versions greater or equal to 9.8.0!\n"
-          )
-        set(_DEALII_GOOD OFF)
-  endif()
-
-  message(SEND_ERROR
-      "\n-- Tpetra support is not yet complete. Only remove this check if you want to test Tpetra support.\n"
-      )
-    set(_DEALII_GOOD OFF)
-endif()
-
 set(_DEALII_GOOD ON)
 
 if(NOT DEAL_II_WITH_P4EST)
@@ -162,6 +139,58 @@ if(NOT DEAL_II_WITH_TRILINOS)
       )
     set(_DEALII_GOOD OFF)
 endif()
+
+# Determine if Trilinos provides all necessary packages
+if (${DEAL_II_PACKAGE_VERSION} VERSION_GREATER_EQUAL 9.8.0)
+  if (NOT DEAL_II_TRILINOS_WITH_TPETRA AND NOT DEAL_II_TRILINOS_WITH_EPETRA)
+    message(SEND_ERROR
+          "\n-- deal.II reports that Trilinos neither supports the Epetra nor the Tpetra stack. One of the two needs to be available!\n"
+          )
+        set(_DEALII_GOOD OFF)
+  endif()
+
+  # If Epetra is not available, always use Tpetra even if the user did not request it
+  if (NOT ASPECT_USE_TPETRA AND NOT DEAL_II_TRILINOS_WITH_EPETRA)
+    message(STATUS "Forcing ASPECT_USE_TPETRA=ON because Epetra support is unavailable.")
+    set(ASPECT_USE_TPETRA ON CACHE BOOL
+      "If ON, use the Tpetra packages in Trilinos. Requires a Trilinos with Tpetra support and deal.II version 9.8.0 or newer." FORCE)
+  endif()
+
+  # Now check if the selected package is actually available
+  if (ASPECT_USE_TPETRA)
+    if (NOT DEAL_II_TRILINOS_WITH_TPETRA)
+      message(SEND_ERROR
+        "\n-- deal.II was built without support for Trilinos Tpetra although it is required. This is not supported. \n"
+        )
+      set(_DEALII_GOOD OFF)
+    endif()
+    if (NOT DEAL_II_TRILINOS_WITH_TPETRA_MUELU)
+      message(SEND_ERROR
+        "\n-- deal.II was built without support for MueLu in Tpetra although it is required. This is not supported. \n"
+        )
+      set(_DEALII_GOOD OFF)
+    endif()
+  else()
+    if (NOT DEAL_II_TRILINOS_WITH_EPETRA)
+      message(SEND_ERROR
+        "\n-- deal.II was built without support for Trilinos Epetra although it is required. This is not supported. \n"
+        )
+      set(_DEALII_GOOD OFF)
+    endif()
+  endif()
+
+# deal.II older than 9.8.0 means we can only use Epetra, and Epetra is always
+# available if DEAL_II_WITH_TRILINOS is true, which was checked above.
+else()
+  if (ASPECT_USE_TPETRA)
+      message(SEND_ERROR
+            "\n-- Tpetra support is only available for deal.II versions greater or equal to 9.8.0!\n"
+            )
+      set(_DEALII_GOOD OFF)
+  endif()
+endif()
+
+message(STATUS "Using ASPECT_USE_TPETRA = '${ASPECT_USE_TPETRA}'")
 
 if(NOT DEAL_II_WITH_SUNDIALS)
     message(SEND_ERROR
@@ -195,7 +224,7 @@ else()
 endif()
 
 
-# Python
+# Python and Landlab
 set(ASPECT_WITH_PYTHON OFF CACHE BOOL "If enabled, ASPECT is configured with Python support.")
 message(STATUS "Using ASPECT_WITH_PYTHON = '${ASPECT_WITH_PYTHON}'")
 if(ASPECT_WITH_PYTHON)
@@ -209,7 +238,15 @@ if(ASPECT_WITH_PYTHON)
     message(FATAL_ERROR "Python not found. Consider disabling ASPECT_WITH_PYTHON.")
   endif()
 endif()
-
+set(ASPECT_WITH_LANDLAB OFF CACHE BOOL "If enabled, ASPECT is configured with Landlab support.")
+if(ASPECT_WITH_PYTHON)
+  message(STATUS "Using ASPECT_WITH_LANDLAB = '${ASPECT_WITH_LANDLAB}'")
+  # we could check here that we can "import landlab", but that can wait for a later time.
+else()
+  if (ASPECT_WITH_LANDLAB)
+    message(FATAL_ERROR "ASPECT_WITH_LANDLAB is enabled, but ASPECT_WITH_PYTHON=ON is required.")
+  endif()
+endif()
 
 # PerpleX
 find_package(PerpleX QUIET
@@ -265,11 +302,22 @@ if(ASPECT_WITH_FASTSCAPE)
     foreach(_line ${_fastscape_info})
       string(STRIP ${_line} _line)
       if("${_line}" MATCHES "^version")
+        if("${_line}" MATCHES "ASPECT")
+          message(STATUS "FastScape version compatible with ASPECT.")
+        else()
+          message(Status "The linked FastScape version is not adapted for use with ASPECT. Consider obtaining a new version from https://github.com/anne-glerum/fastscapelib-fortran.")
+        endif()
         string(REGEX REPLACE "[^0-9.]" "" FASTSCAPE_VERSION ${_line})
       endif()
     endforeach()
     message(STATUS "FastScape version number is ${FASTSCAPE_VERSION}")
 
+    # Get the subversion numbers
+    string(REPLACE "." ";" _fastscape_version_parts "${FASTSCAPE_VERSION}")
+    list(GET _fastscape_version_parts 0 FASTSCAPE_VERSION_MAJOR)
+    list(GET _fastscape_version_parts 1 FASTSCAPE_VERSION_MINOR)
+    list(GET _fastscape_version_parts 2 FASTSCAPE_VERSION_SUBMINOR)
+    
     # Throw an error if the version is too old.
     if(${FASTSCAPE_VERSION} VERSION_LESS 2.8)
       message(FATAL_ERROR "The linked FastScape version is ${FASTSCAPE_VERSION}, however at least 2.8.0 is required.")

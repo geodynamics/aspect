@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018-2024 by the authors of the World Builder code.
+  Copyright (C) 2018-2026 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -23,6 +23,9 @@
 #include <string>
 #include "world_builder/deprecate.h"
 
+/**
+ * This namespace contains the C++ wrapper of the WorldBuilder library.
+ */
 namespace wrapper_cpp
 {
   /**

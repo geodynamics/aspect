@@ -1,0 +1,3 @@
+Fixed: We forgot to serialize the termination criteria and so they lose state between checkpointing and resuming. This is now fixed.
+<br>
+(Wolfgang Bangerth, 2026/07/23)

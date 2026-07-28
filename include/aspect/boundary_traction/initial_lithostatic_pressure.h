@@ -79,6 +79,8 @@ namespace aspect
 
         /**
          * The number of integration points.
+         *
+         * This variable is read from the parameter file through a parameter called 'Number of integration points'.
          */
         unsigned int n_points;
 

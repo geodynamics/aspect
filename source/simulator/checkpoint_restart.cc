@@ -368,7 +368,7 @@ namespace aspect
       triangulation.save (checkpoint_path + "mesh");
     }
 
-    // save general information This calls the serialization functions on all
+    // Save general information. This calls the serialization functions on all
     // processes (so that they can take additional action, if necessary, see
     // the manual) but only writes to the restart file on process 0
     {
@@ -796,6 +796,8 @@ namespace aspect
 
     if (parameters.mesh_deformation_enabled)
       ar &(*mesh_deformation);
+
+    ar &time_stepping_manager;
 
     // We do not serialize the statistics_last_write_size and
     // statistics_last_hash variables on purpose. This way, upon

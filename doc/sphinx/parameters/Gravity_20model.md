@@ -103,7 +103,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Magnitude of the gravity vector in $m/s^2$. For positive values the direction is radially inward towards the center of the earth.
+**Documentation:** Magnitude of the gravity vector in $\si{\meter\per\second\squared}$. For positive values the direction is radially inward towards the center of the earth.
 ::::
 
 (parameters:Gravity_20model/Radial_20linear)=
@@ -114,7 +114,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Magnitude of the radial gravity vector at the bottom of the domain. &lsquo;Bottom&rsquo; means themaximum depth in the chosen geometry, and for example represents the core-mantle boundary in the case of the &lsquo;spherical shell&rsquo; geometry model, and the center in the case of the &lsquo;sphere&rsquo; geometry model. Units: \si{\meter\per\second\squared}.
+**Documentation:** Magnitude of the radial gravity vector at the bottom of the domain. &lsquo;Bottom&rsquo; means the maximum depth in the chosen geometry, and for example represents the core-mantle boundary in the case of the &lsquo;spherical shell&rsquo; geometry model, and the center in the case of the &lsquo;sphere&rsquo; geometry model. Units: \si{\meter\per\second\squared}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Magnitude at surface<parameters:Gravity_20model/Radial_20linear/Magnitude_20at_20surface>`
@@ -134,5 +134,5 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Value of the gravity vector in $m/s^2$ directed along negative y (2d) or z (3d) axis (if the magnitude is positive.
+**Documentation:** Value of the gravity vector in $\si{\meter\per\second\squared}$ directed along the negative $y$ (in 2d) or $z$ (in 3d) axis (if the magnitude is positive.
 ::::

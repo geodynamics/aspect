@@ -293,7 +293,6 @@ namespace aspect
               // processes with a lower rank.
 
 
-#if DEAL_II_VERSION_GTE(9,6,0)
               const std::pair<types::particle_index,types::particle_index>
               partial_and_total_sum = Utilities::MPI::partial_and_total_sum (particles_to_add_locally, this->get_mpi_communicator());
 
@@ -302,18 +301,7 @@ namespace aspect
 
               const types::particle_index globally_generated_particles =
                 partial_and_total_sum.second;
-#else
-              types::particle_index local_start_index = 0.0;
 
-              const int ierr = MPI_Scan(&particles_to_add_locally, &local_start_index, 1, DEAL_II_PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
-              AssertThrowMPI(ierr);
-
-              local_start_index -= particles_to_add_locally;
-              local_next_particle_index += local_start_index;
-
-              const types::particle_index globally_generated_particles =
-                dealii::Utilities::MPI::sum(particles_to_add_locally,this->get_mpi_communicator());
-#endif
 
               AssertThrow (particle_handler->get_next_free_particle_index()
                            <= std::numeric_limits<types::particle_index>::max() - globally_generated_particles,
@@ -600,11 +588,7 @@ namespace aspect
     template <int dim>
     unsigned int
     Manager<dim>::cell_weight(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-#if DEAL_II_VERSION_GTE(9,6,0)
                               const CellStatus status
-#else
-                              const typename parallel::distributed::Triangulation<dim>::CellStatus status
-#endif
                              )
     {
       if (cell->is_active() && !cell->is_locally_owned())
@@ -613,7 +597,6 @@ namespace aspect
       unsigned int n_particles_in_cell = 0;
       switch (status)
         {
-#if DEAL_II_VERSION_GTE(9,6,0)
           case CellStatus::cell_will_persist:
           case CellStatus::cell_will_be_refined:
             n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
@@ -626,20 +609,7 @@ namespace aspect
             for (const auto &child : cell->child_iterators())
               n_particles_in_cell += particle_handler->n_particles_in_cell(child);
             break;
-#else
-          case parallel::distributed::Triangulation<dim>::CELL_PERSIST:
-          case parallel::distributed::Triangulation<dim>::CELL_REFINE:
-            n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
-            break;
 
-          case parallel::distributed::Triangulation<dim>::CELL_INVALID:
-            break;
-
-          case parallel::distributed::Triangulation<dim>::CELL_COARSEN:
-            for (const auto &child : cell->child_iterators())
-              n_particles_in_cell += particle_handler->n_particles_in_cell(child);
-            break;
-#endif
           default:
             Assert(false, ExcInternalError());
             break;
@@ -1258,15 +1228,9 @@ namespace aspect
 
         if (particle_load_balancing & ParticleLoadBalancing::repartition)
           this->get_triangulation().signals.weight.connect(
-#if DEAL_II_VERSION_GTE(9,6,0)
             [ &, particle_manager] (const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
                                     const CellStatus status)
             -> unsigned int
-#else
-            [ &, particle_manager] (const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-                                    const typename parallel::distributed::Triangulation<dim>::CellStatus status)
-            -> unsigned int
-#endif
           {
             // Only add the base weight of cells in particle manager 0, because all weights will be summed
             // across all particle managers.

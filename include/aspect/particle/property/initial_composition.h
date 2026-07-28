@@ -58,6 +58,13 @@ namespace aspect
                                             std::vector<double> &particle_properties) const override;
 
           /**
+          * @copydoc aspect::Particle::Property::Interface::update_particle_properties()
+          */
+          void
+          update_particle_properties (const ParticleUpdateInputs<dim> &inputs,
+                                      typename ParticleHandler<dim>::particle_iterator_range &particles) const override;
+
+          /**
            * Returns an enum, which determines how this particle property is
            * initialized for particles that are created later than the initial
            * particle generation. For this property the value of

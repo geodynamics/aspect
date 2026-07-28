@@ -140,7 +140,6 @@ subsection Initial composition model
 
   subsection Function
     set Variable names      = x,y
-    set Function constants  =
     set Function expression = 0; 0; 0; 0; 0; 0; 0; \
                               if (y<=0.4e3 && x>=19.6e3 && x<=20.4e3, 1, 0);
   end

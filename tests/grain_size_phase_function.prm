@@ -56,7 +56,6 @@ subsection Initial composition model
 
   subsection Function
     set Variable names      = x,z
-    set Function constants  =
     set Function expression = 1e-3
   end
 end

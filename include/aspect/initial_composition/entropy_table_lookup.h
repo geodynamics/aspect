@@ -71,9 +71,13 @@ namespace aspect
 
       private:
         /**
-         * Information about the location of data files.
+         * Location of data files. This variable is read from the parameter
+         * file through the 'Data directory' parameter.
          */
         std::string data_directory;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Material file name'.
+         */
         std::string material_file_name;
 
         /**

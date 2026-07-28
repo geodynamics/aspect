@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018-2024 by the authors of the World Builder code.
+  Copyright (C) 2018-2026 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -42,6 +42,13 @@ namespace WorldBuilder
          */
         OneOf(const Interface &type_1,
               const Interface &type_2);
+
+        /**
+         * Constructor for the declaration
+         */
+        OneOf(const Interface &type_1,
+              const Interface &type_2,
+              const Interface &type_3);
 
         /**
          * Constructor for cloning an array.

@@ -13,6 +13,7 @@ Number of mesh deformation degrees of freedom: 162
 
    Postprocessing:
      Writing graphical output: output-fastscape_output_test/solution/solution-00000
+     Topography min/max:       0 m, 2500 m
 
 *** Timestep 1:  t=20000 years, dt=20000 years
    Initializing FastScape... 4 levels, cell size: 6250 m.
@@ -23,6 +24,7 @@ Number of mesh deformation degrees of freedom: 162
    Solving Stokes system (AMG)... 5+0 iterations.
 
    Postprocessing:
+     Topography min/max: 10.99 m, 2449 m
 
 *** Timestep 2:  t=40000 years, dt=20000 years
    Executing FastScape... 5 timesteps of 4000 years.
@@ -31,6 +33,7 @@ Number of mesh deformation degrees of freedom: 162
    Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
+     Topography min/max: 21.45 m, 2401 m
 
 *** Timestep 3:  t=60000 years, dt=20000 years
    Executing FastScape... 5 timesteps of 4000 years.
@@ -39,6 +42,7 @@ Number of mesh deformation degrees of freedom: 162
    Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
+     Topography min/max: 30.79 m, 2354 m
 
 *** Timestep 4:  t=80000 years, dt=20000 years
    Executing FastScape... 5 timesteps of 4000 years.
@@ -47,6 +51,7 @@ Number of mesh deformation degrees of freedom: 162
    Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
+     Topography min/max: 39.13 m, 2309 m
 
 *** Timestep 5:  t=100000 years, dt=20000 years
    Executing FastScape... 5 timesteps of 4000 years.
@@ -55,6 +60,7 @@ Number of mesh deformation degrees of freedom: 162
    Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
+     Topography min/max: 46.66 m, 2266 m
 
 *** Timestep 6:  t=120000 years, dt=20000 years
    Executing FastScape... 5 timesteps of 4000 years.
@@ -63,6 +69,7 @@ Number of mesh deformation degrees of freedom: 162
    Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
+     Topography min/max: 53.33 m, 2223 m
 
 *** Timestep 7:  t=140000 years, dt=20000 years
    Executing FastScape... 5 timesteps of 4000 years.
@@ -71,6 +78,7 @@ Number of mesh deformation degrees of freedom: 162
    Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
+     Topography min/max: 59.22 m, 2182 m
 
 *** Timestep 8:  t=160000 years, dt=20000 years
    Executing FastScape... 5 timesteps of 4000 years.
@@ -79,6 +87,7 @@ Number of mesh deformation degrees of freedom: 162
    Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
+     Topography min/max: 64.42 m, 2142 m
 
 *** Timestep 9:  t=180000 years, dt=20000 years
    Executing FastScape... 5 timesteps of 4000 years.
@@ -87,6 +96,7 @@ Number of mesh deformation degrees of freedom: 162
    Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
+     Topography min/max: 68.99 m, 2103 m
 
 *** Timestep 10:  t=200000 years, dt=20000 years
    Executing FastScape... 5 timesteps of 4000 years.
@@ -95,6 +105,7 @@ Number of mesh deformation degrees of freedom: 162
    Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
+     Topography min/max: 73 m, 2065 m
 
 *** Timestep 11:  t=220000 years, dt=20000 years
    Executing FastScape... 5 timesteps of 4000 years.
@@ -103,6 +114,7 @@ Number of mesh deformation degrees of freedom: 162
    Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
+     Topography min/max: 76.52 m, 2027 m
 
 *** Timestep 12:  t=240000 years, dt=20000 years
    Executing FastScape... 5 timesteps of 4000 years.
@@ -111,6 +123,7 @@ Number of mesh deformation degrees of freedom: 162
    Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
+     Topography min/max: 79.58 m, 1991 m
 
 *** Timestep 13:  t=260000 years, dt=20000 years
    Executing FastScape... 5 timesteps of 4000 years.
@@ -119,6 +132,7 @@ Number of mesh deformation degrees of freedom: 162
    Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
+     Topography min/max: 82.24 m, 1955 m
 
 *** Timestep 14:  t=280000 years, dt=20000 years
    Executing FastScape... 5 timesteps of 4000 years.
@@ -127,6 +141,7 @@ Number of mesh deformation degrees of freedom: 162
    Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
+     Topography min/max: 84.54 m, 1919 m
 
 *** Timestep 15:  t=300000 years, dt=20000 years
    Executing FastScape... 5 timesteps of 4000 years.
@@ -135,6 +150,7 @@ Number of mesh deformation degrees of freedom: 162
    Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
+     Topography min/max: 86.52 m, 1884 m
 
 *** Timestep 16:  t=320000 years, dt=20000 years
    Executing FastScape... 5 timesteps of 4000 years.
@@ -143,6 +159,7 @@ Number of mesh deformation degrees of freedom: 162
    Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
+     Topography min/max: 88.21 m, 1850 m
 
 *** Timestep 17:  t=340000 years, dt=20000 years
    Executing FastScape... 5 timesteps of 4000 years.
@@ -151,6 +168,7 @@ Number of mesh deformation degrees of freedom: 162
    Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
+     Topography min/max: 89.5 m, 1817 m
 
 *** Timestep 18:  t=360000 years, dt=20000 years
    Executing FastScape... 5 timesteps of 4000 years.
@@ -159,6 +177,7 @@ Number of mesh deformation degrees of freedom: 162
    Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
+     Topography min/max: 90.57 m, 1784 m
 
 *** Timestep 19:  t=380000 years, dt=20000 years
    Executing FastScape... 5 timesteps of 4000 years.
@@ -167,6 +186,7 @@ Number of mesh deformation degrees of freedom: 162
    Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
+     Topography min/max: 91.43 m, 1751 m
 
 *** Timestep 20:  t=400000 years, dt=20000 years
    Executing FastScape... 5 timesteps of 4000 years.
@@ -175,6 +195,7 @@ Number of mesh deformation degrees of freedom: 162
    Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
+     Topography min/max: 92.1 m, 1719 m
 
 *** Timestep 21:  t=420000 years, dt=20000 years
    Executing FastScape... 5 timesteps of 4000 years.
@@ -183,6 +204,7 @@ Number of mesh deformation degrees of freedom: 162
    Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
+     Topography min/max: 92.61 m, 1688 m
 
 *** Timestep 22:  t=440000 years, dt=20000 years
    Executing FastScape... 5 timesteps of 4000 years.
@@ -191,6 +213,7 @@ Number of mesh deformation degrees of freedom: 162
    Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
+     Topography min/max: 92.97 m, 1657 m
 
 *** Timestep 23:  t=460000 years, dt=20000 years
    Executing FastScape... 5 timesteps of 4000 years.
@@ -199,6 +222,7 @@ Number of mesh deformation degrees of freedom: 162
    Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
+     Topography min/max: 93.19 m, 1626 m
 
 *** Timestep 24:  t=480000 years, dt=20000 years
    Executing FastScape... 5 timesteps of 4000 years.
@@ -207,6 +231,7 @@ Number of mesh deformation degrees of freedom: 162
    Solving Stokes system (AMG)... 4+0 iterations.
 
    Postprocessing:
+     Topography min/max: 93.29 m, 1597 m
 
 *** Timestep 25:  t=500000 years, dt=20000 years
    Executing FastScape... 5 timesteps of 4000 years.
@@ -217,6 +242,7 @@ Number of mesh deformation degrees of freedom: 162
 
    Postprocessing:
      Writing graphical output: output-fastscape_output_test/solution/solution-00001
+     Topography min/max:       93.28 m, 1567 m
 
 Termination requested by criterion: end time
 

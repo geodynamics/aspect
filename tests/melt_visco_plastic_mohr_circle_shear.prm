@@ -150,7 +150,7 @@ subsection Postprocess
       set List of material properties = density, viscosity
     end
 
-    # To see in which cells melt transport is modelled, it can be useful to look
+    # To see in which cells melt transport is modeled, it can be useful to look
     # at the property 'is melt cell', so we include it in the output. In addition,
     # we always visualize the compaction pressure 'p_c' if this postprocessor is
     # used.

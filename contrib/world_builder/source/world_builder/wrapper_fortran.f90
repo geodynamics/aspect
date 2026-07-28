@@ -1,5 +1,5 @@
 !!
-!!  Copyright (C) 2018-2024 by the authors of the World Builder code.
+!!  Copyright (C) 2018-2026 by the authors of the World Builder code.
 !!
 !!  This file is part of the World Builder.
 !!
@@ -17,6 +17,12 @@
 !!  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !!
 
+!> This module contains the Fortran API of the World Builder library.
+!! The Fortran API is used to make the WorldBuilder library available to programs written
+!! in Fortran. The Fortran API is a set of functions that can be called from C code. The
+!! functions in the C API call the corresponding C++ functions in the WorldBuilder
+!! library. Check the content of this module for a list of the available functions and
+!! their documentation.
 MODULE WorldBuilder
 USE, INTRINSIC :: ISO_C_BINDING!, ONLY: C_PTR
   IMPLICIT NONE

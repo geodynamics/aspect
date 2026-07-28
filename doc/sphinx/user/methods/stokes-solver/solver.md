@@ -27,7 +27,7 @@ viscosity. $\varepsilon(u)=\frac{1}{2}(\nabla u+
 In this document, we discuss the case
 of Dirichlet boundary conditions
 $u=g_D$ on $\Gamma_D$ and Neumann
-$n \cdot (pI-2\varepsilon(u))=g_N$ on
+$n \cdot (pI-2\eta(x)\varepsilon(u))=g_N$ on
 $\Gamma_N$.
 
 
@@ -53,7 +53,7 @@ Multiplying the first equation in the strong form by $v \in V_0$ and integrating
 (-\nabla \cdot (2 \eta(x)\varepsilon(u)),v)+(\nabla p,v)&=
 (2\eta(x)\varepsilon(u),\nabla v)-(n \otimes v,2\eta(x)\varepsilon(u))_{d\Omega}\\
 &-(p,\nabla \cdot v)+(n \cdot v,p)_{d\Omega}\\
-&=(2\eta(x)\varepsilon(u),\varepsilon(v))-(p,\nabla \cdot v)+(v,n \cdot (pI-2\varepsilon(u))_{\Gamma_N})\\
+&=(2\eta(x)\varepsilon(u),\varepsilon(v))-(p,\nabla \cdot v)+(v,n \cdot (pI-2\eta(x)\varepsilon(u))_{\Gamma_N})\\
 &=(f,v),
 \end{aligned}
 ```
@@ -73,13 +73,13 @@ we have the weak form
 ```{math}
 :label: eq:stokes-weak-form-2
 \begin{aligned}
-(\varepsilon(v),2\varepsilon(u))-(\nabla \cdot v,p)
+(\varepsilon(v),2\eta(x)\varepsilon(u))-(\nabla \cdot v,p)
 -(q,\nabla \cdot u)&=(v,f)-(v,g_N)_{\Gamma_N}
 \end{aligned}
 ```
 where we apply the Neumann boundary
 condition to get the $(v,g_N)_{\Gamma_N}$ term
-from $(v,n \cdot(pI-2\varepsilon(u)_{\Gamma_N}))$.
+from $(v,n \cdot(pI-2\eta(x)\varepsilon(u)_{\Gamma_N}))$.
 
 We proceed now to the
 discrete weak form. In order

@@ -1,0 +1,3 @@
+Fixed: Some of the particle generator plugins had no means of serializing themselves. As a consequence, they lose state between checkpointing and resuming. This is now fixed.
+<br>
+(Wolfgang Bangerth, 2026/07/23)

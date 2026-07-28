@@ -47,7 +47,6 @@ subsection Initial temperature model
 
   subsection Function
     set Coordinate system = spherical
-    set Function constants = pi=3.1415926536
     set Variable names = r,phi,theta,t
     set Function expression = (5/2)*sqrt(5/pi)*(3*(cos(theta))^2-1)
   end

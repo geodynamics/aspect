@@ -21,7 +21,7 @@ subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left: function, right:function
 
   subsection Function
-    set Function constants  = cm=0.01, year=3.155e7, pi=3.141593, angle=60, total_depth=512e3, crustal_depth=30e3, lithospheric_depth=120e3
+    set Function constants  = cm=0.01, year=3.155e7, angle=60, total_depth=512e3, crustal_depth=30e3, lithospheric_depth=120e3
     set Function expression = if (x<50e3, if (z > total_depth-lithospheric_depth, 1*cm, -(lithospheric_depth/(total_depth-lithospheric_depth))*cm), if (z > total_depth-lithospheric_depth, -1*cm, (lithospheric_depth/(total_depth-lithospheric_depth))*cm)); 0
     set Variable names      = x,z
   end
@@ -65,7 +65,7 @@ subsection Initial temperature model
   set Model name = function
 
   subsection Function
-    set Function constants  = reference_t=293, crustal_t = 420, lith_t = 1350, mantle_t = 1470, total_depth=512e3, crustal_depth=30e3, lithospheric_depth=120e3,
+    set Function constants  = reference_t=293, crustal_t = 420, lith_t = 1350, mantle_t = 1470, total_depth=512e3, crustal_depth=30e3, lithospheric_depth=120e3
     set Function expression = if (z>total_depth-crustal_depth,reference_t+(total_depth-z)*(crustal_t/crustal_depth), if (z>total_depth-lithospheric_depth,reference_t+crustal_t+(total_depth-crustal_depth-z)*(lith_t-crustal_t)/(lithospheric_depth-crustal_depth), reference_t+lith_t+(total_depth-lithospheric_depth-z)*(mantle_t-lith_t)/(total_depth-lithospheric_depth)))
     set Variable names      = x,z
   end

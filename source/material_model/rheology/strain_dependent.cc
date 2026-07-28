@@ -171,7 +171,7 @@ namespace aspect
                            "for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of all compositional fields "
                            "or only those corresponding to chemical compositions. "
-                           "If only one value is given, then all use the same value. Units: $\\text{K}$.");
+                           "If only one value is given, then all use the same value. Units: \\si{\\kelvin}.");
 
         prm.declare_entry ("Lower temperature for maximum strain weakening", "923.",
                            Patterns::List(Patterns::Double (0.)),
@@ -179,7 +179,7 @@ namespace aspect
                            "for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of all compositional fields "
                            "or only those corresponding to chemical compositions. "
-                           "If only one value is given, then all use the same value. Units: $\\text{K}$.");
+                           "If only one value is given, then all use the same value. Units: \\si{\\kelvin}.");
 
         prm.declare_entry ("Upper temperature for maximum strain weakening", "1023.",
                            Patterns::List(Patterns::Double (0.)),
@@ -187,7 +187,7 @@ namespace aspect
                            "for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of all compositional fields "
                            "or only those corresponding to chemical compositions. "
-                           "If only one value is given, then all use the same value. Units: $\\text{K}$.");
+                           "If only one value is given, then all use the same value. Units: \\si{\\kelvin}.");
 
         prm.declare_entry ("Upper temperature for onset of strain weakening", "1123.",
                            Patterns::List(Patterns::Double (0.)),
@@ -195,7 +195,7 @@ namespace aspect
                            "for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of all compositional fields "
                            "or only those corresponding to chemical compositions. "
-                           "If only one value is given, then all use the same value. Units: $\\text{K}$.");
+                           "If only one value is given, then all use the same value. Units: \\si{\\kelvin}.");
 
         prm.declare_entry ("Strain healing mechanism", "no healing",
                            Patterns::Selection("no healing|temperature dependent"),
@@ -213,7 +213,7 @@ namespace aspect
 
         prm.declare_entry ("Strain healing temperature dependent recovery rate", "1.e-15", Patterns::Double(0),
                            "Recovery rate prefactor for temperature dependent "
-                           "strain healing. Units: $1/s$");
+                           "strain healing. Units: \\si{\\per\\second}");
 
         prm.declare_entry ("Strain healing temperature dependent prefactor", "15.", Patterns::Double(0),
                            "Prefactor for temperature dependent "

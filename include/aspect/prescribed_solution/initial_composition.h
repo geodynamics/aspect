@@ -83,7 +83,9 @@ namespace aspect
         Functions::ParsedFunction<dim> indicator_function;
 
         /**
-         * Coordinate system used for evaluating indicator.
+         * Coordinate system used for evaluating the indicator. This variable
+         * is read from the parameter file through the 'Coordinate system'
+         * parameter.
          */
         Utilities::Coordinates::CoordinateSystem coordinate_system;
 

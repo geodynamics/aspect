@@ -21,6 +21,7 @@
 
 #include <aspect/mesh_deformation/fastscape.h>
 #include <aspect/geometry_model/box.h>
+#include <aspect/geometry_model/two_merged_boxes.h>
 #include <deal.II/numerics/vector_tools.h>
 #include <aspect/postprocess/visualization.h>
 #include <ctime>
@@ -196,11 +197,14 @@ namespace aspect
     {
       CitationInfo::add("fastscape");
 
-      AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
-                  ExcMessage("FastScape can only be run with a box geometry model."));
-
-      const GeometryModel::Box<dim> *geometry
+      const GeometryModel::Box<dim> *box_geometry
         = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
+      const GeometryModel::TwoMergedBoxes<dim> *two_merged_boxes_geometry
+        = dynamic_cast<const GeometryModel::TwoMergedBoxes<dim>*> (&this->get_geometry_model());
+
+      AssertThrow(box_geometry != nullptr || two_merged_boxes_geometry != nullptr,
+                  ExcMessage("FastScape can only be run with the 'box' or "
+                             "'box with lithosphere boundary indicators' geometry models."));
 
       // Find the id associated with the top boundary and boundaries that call mesh deformation.
       const types::boundary_id top_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
@@ -248,16 +252,26 @@ namespace aspect
                                   "Please change it to type generic so that it does not affect material properties."));
         }
 
-      // The first entry represents the minimum coordinates of the model domain, the second the model extent.
+      const Point<dim> origin = (box_geometry != nullptr
+                                 ? box_geometry->get_origin()
+                                 : two_merged_boxes_geometry->get_origin());
+      const Point<dim> extents = (box_geometry != nullptr
+                                  ? box_geometry->get_extents()
+                                  : two_merged_boxes_geometry->get_extents());
+
+      // The first entry represents the minimum coordinate of the model domain,
+      // and the second the model extent.
       for (unsigned int d=0; d<dim; ++d)
         {
-          grid_extent[d].first = geometry->get_origin()[d];
-          grid_extent[d].second = geometry->get_extents()[d];
+          grid_extent[d].first = origin[d];
+          grid_extent[d].second = extents[d];
         }
 
       // Get the x and y repetitions used in the parameter file so
       // the FastScape cell size can be properly set.
-      const std::array<unsigned int, dim> repetitions = geometry->get_repetitions();
+      const std::array<unsigned int, dim> repetitions = (box_geometry != nullptr
+                                                         ? box_geometry->get_repetitions()
+                                                         : two_merged_boxes_geometry->get_repetitions());
 
       // Set number of x points, which is generally 1+(FastScape refinement level)^2.
       // The FastScape refinement level is a combination of the maximum ASPECT refinement level
@@ -298,7 +312,7 @@ namespace aspect
       // Create a folder for the FastScape visualization files.
       Utilities::create_directory (this->get_output_directory() + "fastscape/",
                                    this->get_mpi_communicator(),
-                                   false);
+                                   true /*do not print message in log file*/);
 
       last_output_time = 0;
     }
@@ -770,7 +784,7 @@ namespace aspect
                         // In local_aspect_values[1], we store integer indices even though the
                         // type of the left hand side is 'double'. We will have to cast back
                         // when we read from local_aspect_values[1].
-                        local_aspect_values[1].push_back(index-1);
+                        local_aspect_values[1].push_back(static_cast<double>(index-1));
 
                         for (unsigned int d=0; d<dim; ++d)
                           {
@@ -795,7 +809,7 @@ namespace aspect
     {
       for (unsigned int i=0; i<local_aspect_values[1].size(); ++i)
         {
-          // In get_aspect_values(), we store an integer value in local_aspect_values[1][...].
+          // In get_aspect_values(), we store an integer value as a double in local_aspect_values[1][...].
           // Explicitly cast it back.
           const unsigned int index = static_cast<unsigned int>(local_aspect_values[1][i]);
           elevation[index] = local_aspect_values[0][i];
@@ -831,9 +845,9 @@ namespace aspect
           // Now, place the numbers into the correct place based off the index.
           for (unsigned int i=0; i<local_aspect_values[1].size(); ++i)
             {
-              // In get_aspect_values(), we store an integer value in local_aspect_values[1][...].
+              // In get_aspect_values(), we store an integer value as a double in local_aspect_values[1][...].
               // Explicitly cast it back.
-              const unsigned int index = local_aspect_values[1][i];
+              const unsigned int index = static_cast<unsigned int>(local_aspect_values[1][i]);
               elevation[index] = local_aspect_values[0][i];
               velocity_x[index] = local_aspect_values[2][i];
               velocity_z[index] = local_aspect_values[dim+1][i];
@@ -1606,13 +1620,24 @@ namespace aspect
         {
           const unsigned int fastscape_array_size = fastscape_nx*fastscape_ny;
           elevation.resize(fastscape_array_size);
-          fastscape_copy_h_(elevation.data());
-
           basement.resize(fastscape_array_size);
-          fastscape_copy_h_(basement.data());
-
           silt_fraction.resize(fastscape_array_size);
-          fastscape_copy_h_(silt_fraction.data());
+
+          // Only copy data from FastScape if Fastscape has been set up
+          // in the initialize_fastscape function, which happens at the beginning of timestep 1.
+          // We check against timestep 2, because checkpointing is done after advancing the timestep.
+          // Otherwise FastScape will return an error message and ASPECT will terminate.
+          if (this->get_timestep_number() >= 2)
+            {
+              fastscape_copy_h_(elevation.data());
+              fastscape_copy_basement_(basement.data());
+              if (use_marine_component)
+                fastscape_copy_f_(silt_fraction.data());
+            }
+          else
+            {
+              this->get_pcout() << "*** FastScape has not been set up yet, so checkpointed FastScape data is set to zero." << std::endl;
+            }
         }
 
       // Serialize into a stringstream. Put the following into a code

@@ -1,0 +1,31 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
+# 15: Visualization file name
+# 16: RMS velocity (m/year)
+# 17: Max. velocity (m/year)
+# 18: Minimal temperature (K)
+# 19: Average temperature (K)
+# 20: Maximal temperature (K)
+# 21: Average nondimensional temperature (K)
+# 22: Outward mass flux through boundary with indicator 0 ("bottom") (kg/yr)
+# 23: Outward mass flux through boundary with indicator 1 ("top") (kg/yr)
+# 24: Minimal value for composition entropy
+# 25: Maximal value for composition entropy
+# 26: Global mass for composition entropy
+# 27: Minimal value for composition density_field
+# 28: Maximal value for composition density_field
+# 29: Global mass for composition density_field
+0 0.000000000000e+00 0.000000000000e+00 768 7392 3264 6528 4  0  0 0 181 185 185 output-entropy_plasticity/solution/solution-00000 1.17064899e-02 4.83793117e-02 3.21018877e+02 1.97435716e+03 2.58240672e+03 4.38202566e-01 -6.44133857e-07 2.09026944e-07 6.00000000e+02 2.95000000e+03 2.22829153e+17 3.51435926e+03 5.13073842e+03 3.85343059e+17 
+1 4.000000000000e+05 4.000000000000e+05 768 7392 3264 6528 4 32 28 0 164 168 168                                                "" 1.14993400e-02 4.85739097e-02 3.21018877e+02 1.97288123e+03 2.58240672e+03 4.37811385e-01 -6.49569504e-07 1.90042478e-07 6.00000000e+02 2.95000000e+03 2.22724552e+17 3.51560644e+03 5.13073842e+03 3.85361951e+17 

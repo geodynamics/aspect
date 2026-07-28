@@ -1,4 +1,4 @@
-# This test defines an initial blob of porosity implaced in a solid within a 2D cartesian box.
+# This test defines an initial blob of porosity emplaced in a solid within a 2D cartesian box.
 # Because the porosity blob is less dense, the blob will rise to the surface of the model and
 # flow out of the top of the box. Additionally, there is an imposed solid inflow at the top boundary,
 # and so one composition will be outflowing (the porosity) while another is inflowing (the solid).
@@ -26,7 +26,7 @@ subsection Initial composition model
 
   subsection Function
     set Variable names      = x,y,t
-    set Function constants  = pi=3.1415926, x0=2500, y0=2500, c=1000
+    set Function constants  =  x0=2500, y0=2500, c=1000
     set Function expression = 0.01 * exp(-((x-x0)*(x-x0)+(y-y0)*(y-y0))/(2*c*c)); 0.0; if(y>=7000, 1, 0)
   end
 end

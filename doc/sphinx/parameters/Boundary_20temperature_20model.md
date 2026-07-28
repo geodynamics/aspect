@@ -286,7 +286,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Core thermal expansivity. Units: $\frac{1}{\text{K}}$.
+**Documentation:** Core thermal expansivity. Units: \si{\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Beta composition<parameters:Boundary_20temperature_20model/Dynamic_20core/Beta_20composition>`
@@ -313,7 +313,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Core heat conductivity $k_c$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+**Documentation:** Core heat conductivity $k_c$. Units: \si{\watt\per\meter\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Core density<parameters:Boundary_20temperature_20model/Dynamic_20core/Core_20density>`
@@ -322,7 +322,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Density of the core. Units: $\frac{\text{kg}}{\text{m}^3}$.
+**Documentation:** Density of the core. Units: \si{\kilogram\per\meter\cubed}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Core heat capacity<parameters:Boundary_20temperature_20model/Dynamic_20core/Core_20heat_20capacity>`
@@ -331,7 +331,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Heat capacity of the core. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+**Documentation:** Heat capacity of the core. Units: \si{\joule\per\kelvin\per\kilogram}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Delta<parameters:Boundary_20temperature_20model/Dynamic_20core/Delta>`
@@ -358,7 +358,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Temperature at the inner boundary (core mantle boundary) at the beginning. Units: $\text{K}$.
+**Documentation:** Temperature at the inner boundary (core mantle boundary) at the beginning. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`K0<parameters:Boundary_20temperature_20model/Dynamic_20core/K0>`
@@ -394,7 +394,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Temperature at the outer boundary (lithosphere water/air). Units: $\text{K}$.
+**Documentation:** Temperature at the outer boundary (lithosphere water/air). Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Rh<parameters:Boundary_20temperature_20model/Dynamic_20core/Rh>`
@@ -412,7 +412,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Core density at zero pressure. Units: $\frac{\text{kg}}{\text{m}^3}$. See {cite}`NPB+04` for more details.
+**Documentation:** Core density at zero pressure. Units: \si{\kilogram\per\meter\cubed}. See {cite}`NPB+04` for more details.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`dR over dt<parameters:Boundary_20temperature_20model/Dynamic_20core/dR_20over_20dt>`
@@ -421,7 +421,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Initial inner core radius changing rate. Units: \si{\kilo\meter}/year.
+**Documentation:** Initial inner core radius changing rate. Units: \si{\kilo\meter\per\year}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`dT over dt<parameters:Boundary_20temperature_20model/Dynamic_20core/dT_20over_20dt>`
@@ -430,7 +430,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Initial CMB temperature changing rate. Units: $\text{K}$/year.
+**Documentation:** Initial CMB temperature changing rate. Units: \si{\kelvin\per\year}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`dX over dt<parameters:Boundary_20temperature_20model/Dynamic_20core/dX_20over_20dt>`
@@ -439,7 +439,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Initial light composition changing rate. Units: 1/year.
+**Documentation:** Initial light composition changing rate. Units: \si{\per\year}.
 ::::
 
 (parameters:Boundary_20temperature_20model/Dynamic_20core/Geotherm_20parameters)=
@@ -468,7 +468,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Melting curve ({cite}`NPB+04` eq. (40)) parameter Tm0. Units: $\text{K}$.
+**Documentation:** Melting curve ({cite}`NPB+04` eq. (40)) parameter Tm0. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Tm1<parameters:Boundary_20temperature_20model/Dynamic_20core/Geotherm_20parameters/Tm1>`

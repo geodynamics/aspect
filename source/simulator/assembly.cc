@@ -319,7 +319,7 @@ namespace aspect
     // models with melt transport).
 
     cell->get_dof_indices (scratch.local_dof_indices);
-    data.extract_stokes_dof_indices(scratch.local_dof_indices, introspection, finite_element);
+    data.extract_stokes_dof_indices(scratch.local_dof_indices, introspection);
 
     // Prepare the data structures for assembly
     scratch.reinit(cell);
@@ -612,7 +612,7 @@ namespace aspect
     // models with melt transport).
     cell->get_dof_indices (scratch.local_dof_indices);
 
-    data.extract_stokes_dof_indices (scratch.local_dof_indices, introspection, finite_element);
+    data.extract_stokes_dof_indices (scratch.local_dof_indices, introspection);
 
     // Prepare the data structures for assembly
     scratch.reinit(cell);

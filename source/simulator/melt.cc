@@ -216,7 +216,6 @@ namespace aspect
       internal::Assembly::CopyData::StokesPreconditioner<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesPreconditioner<dim>&> (data_base);
 
       const Introspection<dim> &introspection = this->introspection();
-      const FiniteElement<dim> &fe = this->get_fe();
       const unsigned int   stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int   n_q_points      = scratch.finite_element_values.n_quadrature_points;
       const double pressure_scaling = this->get_pressure_scaling();
@@ -236,36 +235,14 @@ namespace aspect
       const FEValuesExtractors::Scalar ex_p_f = introspection.variable("fluid pressure").extractor_scalar();
       const FEValuesExtractors::Scalar ex_p_c = introspection.variable("compaction pressure").extractor_scalar();
 
-      const unsigned int p_f_component_index = introspection.variable("fluid pressure").first_component_index;
-      const unsigned int p_c_component_index = introspection.variable("compaction pressure").first_component_index;
-
-      for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
-        {
-          const unsigned int component_index_i = fe.system_to_component_index(i).first;
-
-          if (is_velocity_or_pressures(introspection,p_c_component_index,p_f_component_index,component_index_i))
-            {
-              data.local_dof_indices[i_stokes] = scratch.local_dof_indices[i];
-              scratch.dof_component_indices[i_stokes] = fe.system_to_component_index(i).first;
-              ++i_stokes;
-            }
-          ++i;
-        }
-
       for (unsigned int q=0; q<n_q_points; ++q)
         {
-          for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
+          for (unsigned int i_stokes=0; i_stokes<stokes_dofs_per_cell; ++i_stokes)
             {
-              const unsigned int component_index_i = fe.system_to_component_index(i).first;
-
-              if (is_velocity_or_pressures(introspection,p_c_component_index,p_f_component_index,component_index_i))
-                {
-                  scratch.phi_p[i_stokes]       = scratch.finite_element_values[ex_p_f].value (i, q);
-                  scratch.phi_p_c[i_stokes]     = scratch.finite_element_values[ex_p_c].value (i, q);
-                  scratch.grad_phi_p[i_stokes]  = scratch.finite_element_values[ex_p_f].gradient (i, q);
-                  ++i_stokes;
-                }
-              ++i;
+              const unsigned int i = introspection.stokes_dof_info[i_stokes].local_dof_index;
+              scratch.phi_p[i_stokes]       = scratch.finite_element_values[ex_p_f].value (i, q);
+              scratch.phi_p_c[i_stokes]     = scratch.finite_element_values[ex_p_c].value (i, q);
+              scratch.grad_phi_p[i_stokes]  = scratch.finite_element_values[ex_p_f].gradient (i, q);
             }
 
           const double eta = scratch.material_model_outputs.viscosities[q];
@@ -283,7 +260,8 @@ namespace aspect
           for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
             for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
               {
-                if (scratch.dof_component_indices[i] == scratch.dof_component_indices[j])
+                if (introspection.stokes_dof_info[i].component_index ==
+                    introspection.stokes_dof_info[j].component_index)
                   data.local_matrix(i,j) += ((one_over_eta *
                                               pressure_scaling *
                                               pressure_scaling)
@@ -1617,12 +1595,8 @@ namespace aspect
     for_constraints.subtract_set(nonzero_pc_dofs);
 
     // and constrain the remaining dofs (that are not in melt cells).
-#if DEAL_II_VERSION_GTE(9,6,0)
     for (const auto index : for_constraints)
       constraints.constrain_dof_to_zero(index);
-#else
-    constraints.add_lines(for_constraints);
-#endif
   }
 
 
@@ -1665,10 +1639,10 @@ namespace aspect
   edit_finite_element_variables(const Parameters<dim> &parameters,
                                 std::vector<VariableDeclaration<dim>> &variables)
   {
+    // We should only get here if melt transport is included:
+    Assert (parameters.include_melt_transport, ExcInternalError());
 
-    if (!parameters.include_melt_transport)
-      return;
-
+    // We modify the existing FE variables: u p T c1 c2 to read: u p_f p_c u_f p T c1 c2
     variables.insert(variables.begin()+1,
                      VariableDeclaration<dim>(
                        "fluid pressure",
@@ -1694,7 +1668,34 @@ namespace aspect
                                               std::make_shared<FE_Q<dim>>(parameters.stokes_velocity_degree),
                                               dim,
                                               1));
+  }
 
+
+
+  template <int dim>
+  void
+  MeltHandler<dim>::
+  initialize_stokes_dof_info(Introspection<dim> &introspection,
+                             const FiniteElement<dim> &finite_element) const
+  {
+    const unsigned int fluid_pressure_component =
+      introspection.variable("fluid pressure").first_component_index;
+    const unsigned int compaction_pressure_component =
+      introspection.variable("compaction pressure").first_component_index;
+
+    introspection.stokes_dof_info.clear();
+    introspection.stokes_dof_info.reserve(finite_element.dofs_per_cell);
+
+    for (unsigned int i = 0; i < finite_element.dofs_per_cell; ++i)
+      {
+        const unsigned int component_index = finite_element.system_to_component_index(i).first;
+
+        if (Assemblers::is_velocity_or_pressures(introspection,
+                                                 compaction_pressure_component,
+                                                 fluid_pressure_component,
+                                                 component_index))
+          introspection.stokes_dof_info.push_back({i, component_index});
+      }
   }
 
 

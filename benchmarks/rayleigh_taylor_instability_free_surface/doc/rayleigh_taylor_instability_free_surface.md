@@ -7,7 +7,7 @@ feature:analytical-solution
 feature:mesh-deformation
 ```
 
-(sec:benchmarks:rayleigh_taylor_instability_free_surface)=`
+(sec:benchmarks:rayleigh_taylor_instability_free_surface)=
 # The Rayleigh-Taylor instability with a free surface
 
 *This section was contributed by Anne Glerum, Ian Rose and Timo Heister.*

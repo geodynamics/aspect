@@ -26,7 +26,6 @@ subsection Initial temperature model
 
   subsection Function
     set Variable names      = x,y
-    set Function constants  =
     set Function expression = 1
   end
 end

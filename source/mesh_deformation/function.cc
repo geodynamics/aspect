@@ -63,11 +63,28 @@ namespace aspect
     {
       // Loop over all boundary indicators to set the velocity constraints
       for (const auto boundary_id : boundary_ids)
-        VectorTools::interpolate_boundary_values (this->get_mapping(),
-                                                  mesh_deformation_dof_handler,
-                                                  boundary_id,
-                                                  function,
-                                                  mesh_velocity_constraints);
+        {
+          Utilities::VectorFunctionFromVelocityFunctionObject<dim> vel
+          (dim,
+           [&] (const dealii::Point<dim> &x) -> Tensor<1,dim>
+          {
+            Tensor<1,dim> velocity;
+
+            for (unsigned int d=0; d<dim; ++d)
+              velocity[d] = function.value(x, d);
+
+            if (this->convert_output_to_years())
+              velocity /= year_in_seconds;
+
+            return velocity;
+          });
+
+          VectorTools::interpolate_boundary_values (this->get_mapping(),
+                                                    mesh_deformation_dof_handler,
+                                                    boundary_id,
+                                                    vel,
+                                                    mesh_velocity_constraints);
+        }
     }
 
 
@@ -139,9 +156,9 @@ namespace aspect
                                            "deformation velocity, i.e. the return value of "
                                            "this plugin is later multiplied by the time step length "
                                            "to compute the displacement increment in this time step. "
-                                           "Although the function's time variable is interpreted as "
+                                           "The function's time variable is interpreted as "
                                            "years when Use years instead of seconds is set to true, "
-                                           "the boundary deformation velocity should still be given "
+                                           "as is the boundary deformation velocity. Otherwise it should be given "
                                            "in m/s. The format of the "
                                            "functions follows the syntax understood by the "
                                            "muparser library, see {ref}\\`sec:run-aspect:parameters-overview:muparser-format\\`.")

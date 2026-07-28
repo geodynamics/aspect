@@ -447,7 +447,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the material model determines how many of them influence the density. The composition-dependence adds a term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: $\frac{\text{kg}}{\text{m}^3}$/unit change in composition.
+**Documentation:** If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the material model determines how many of them influence the density. The composition-dependence adds a term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: \si{\kilogram\per\meter\cubed}/unit change in composition.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Density differential for compositional field 2<parameters:Material_20model/Composition_20reaction_20model/Density_20differential_20for_20compositional_20field_202>`
@@ -456,7 +456,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the material model determines how many of them influence the density. The composition-dependence adds a term of the kind $+\Delta \rho \; c_2(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: $\frac{\text{kg}}{\text{m}^3}$/unit change in composition.
+**Documentation:** If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the material model determines how many of them influence the density. The composition-dependence adds a term of the kind $+\Delta \rho \; c_2(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: \si{\kilogram\per\meter\cubed}/unit change in composition.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reaction depth<parameters:Material_20model/Composition_20reaction_20model/Reaction_20depth>`
@@ -465,7 +465,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Above this depth the compositional fields react: The first field gets converted to the second field. Units: $\text{m}$.
+**Documentation:** Above this depth the compositional fields react: The first field gets converted to the second field. Units: \si{\meter}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference density<parameters:Material_20model/Composition_20reaction_20model/Reference_20density>`
@@ -474,7 +474,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Reference density $\rho_0$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+**Documentation:** Reference density $\rho_0$. Units: \si{\kilogram\per\meter\cubed}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference specific heat<parameters:Material_20model/Composition_20reaction_20model/Reference_20specific_20heat>`
@@ -483,7 +483,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the specific heat $C_p$. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+**Documentation:** The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilogram}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Composition_20reaction_20model/Reference_20temperature>`
@@ -492,7 +492,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The reference temperature $T_0$. Units: $\text{K}$.
+**Documentation:** The reference temperature $T_0$. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal conductivity<parameters:Material_20model/Composition_20reaction_20model/Thermal_20conductivity>`
@@ -501,7 +501,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+**Documentation:** The value of the thermal conductivity $k$. Units: \si{\watt\per\meter\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal expansion coefficient<parameters:Material_20model/Composition_20reaction_20model/Thermal_20expansion_20coefficient>`
@@ -510,7 +510,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal expansion coefficient $\alpha$. Units: $\frac{1}{\text{K}}$.
+**Documentation:** The value of the thermal expansion coefficient $\alpha$. Units: \si{\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal viscosity exponent<parameters:Material_20model/Composition_20reaction_20model/Thermal_20viscosity_20exponent>`
@@ -528,7 +528,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the constant viscosity. Units: $\frac{\text{kg}}{\text{m}\text{s}}$.
+**Documentation:** The value of the constant viscosity. Units: \si{\kilogram\per\meter\per\second}.
 ::::
 
 (parameters:Material_20model/Depth_20dependent_20model)=
@@ -584,7 +584,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the constant reference viscosity $\eta_r$ that is used to scale the non-dimensional depth-dependent viscosity prefactor. Units: $\text{Pa}\text{s}$.
+**Documentation:** The value of the constant reference viscosity $\eta_r$ that is used to scale the non-dimensional depth-dependent viscosity prefactor. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Scale factor<parameters:Material_20model/Depth_20dependent_20model/Scale_20factor>`
@@ -716,7 +716,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of densities, $\rho$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\frac{\text{kg}}{\text{m}^3}$.
+**Documentation:** List of densities, $\rho$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\kg\per\m^3}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Effective viscosity coefficient<parameters:Material_20model/Diffusion_20dislocation/Effective_20viscosity_20coefficient>`
@@ -752,7 +752,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the specific heat $C_p$. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+**Documentation:** The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilogram}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Maximum strain rate ratio iterations<parameters:Material_20model/Diffusion_20dislocation/Maximum_20strain_20rate_20ratio_20iterations>`
@@ -770,7 +770,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Upper cutoff for effective viscosity. Units: $\text{Pa}\text{s}$.
+**Documentation:** Upper cutoff for effective viscosity. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Minimum strain rate<parameters:Material_20model/Diffusion_20dislocation/Minimum_20strain_20rate>`
@@ -788,7 +788,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Lower cutoff for effective viscosity. Units: $\text{Pa}\text{s}$.
+**Documentation:** Lower cutoff for effective viscosity. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Prefactors for diffusion creep<parameters:Material_20model/Diffusion_20dislocation/Prefactors_20for_20diffusion_20creep>`
@@ -815,7 +815,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** For calculating density by thermal expansivity. Units: $\text{K}$.
+**Documentation:** For calculating density by thermal expansivity. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Strain rate residual tolerance<parameters:Material_20model/Diffusion_20dislocation/Strain_20rate_20residual_20tolerance>`
@@ -860,7 +860,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of thermal expansivities for background mantle and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value.  Units: $\frac{1}{\text{K}}$.
+**Documentation:** List of thermal expansivities for background mantle and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Viscosity averaging scheme<parameters:Material_20model/Diffusion_20dislocation/Viscosity_20averaging_20scheme>`
@@ -880,7 +880,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Reference density $\rho_0$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+**Documentation:** Reference density $\rho_0$. Units: \si{\kilogram\per\meter\cubed}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference specific heat<parameters:Material_20model/Drucker_20Prager/Reference_20specific_20heat>`
@@ -889,7 +889,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the specific heat $C_p$. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+**Documentation:** The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilogram}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Drucker_20Prager/Reference_20temperature>`
@@ -916,7 +916,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal expansion coefficient $\alpha$. Units: $\frac{1}{\text{K}}$.
+**Documentation:** The value of the thermal expansion coefficient $\alpha$. Units: \si{\per\kelvin}.
 ::::
 
 (parameters:Material_20model/Drucker_20Prager/Viscosity)=
@@ -927,7 +927,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the angle of internal friction $\phi$. For a value of zero, in 2d the von Mises criterion is retrieved. Angles higher than 30 degrees are harder to solve numerically. Units: degrees.
+**Documentation:** The value of the angle of internal friction $\phi$. For a value of zero, in 2d the von Mises criterion is retrieved. Angles higher than 30 degrees are harder to solve numerically. Units: \si{\degree}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Cohesion<parameters:Material_20model/Drucker_20Prager/Viscosity/Cohesion>`
@@ -974,7 +974,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the angle of internal friction, $\phi$.For a value of zero, in 2D the von Mises criterion is retrieved. Angles higher than 30 degrees are harder to solve numerically.Units: degrees.
+**Documentation:** The value of the angle of internal friction, $\phi$.For a value of zero, in 2D the von Mises criterion is retrieved. Angles higher than 30 degrees are harder to solve numerically.Units: \si{\degree}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Cohesion<parameters:Material_20model/Entropy_20model/Cohesion>`
@@ -1082,7 +1082,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of values of reference temperatures used to determine the temperature-dependence of the thermal conductivity. Units: $\text{K}$.
+**Documentation:** A list of values of reference temperatures used to determine the temperature-dependence of the thermal conductivity. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference thermal conductivities<parameters:Material_20model/Entropy_20model/Reference_20thermal_20conductivities>`
@@ -1091,7 +1091,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of base values of the thermal conductivity for each of the horizontal layers. Pressure- and temperature-dependence will be applied on top of this base value, according to the parameters &rsquo;Pressure dependencies of thermal conductivity&rsquo; and &rsquo;Reference temperatures for thermal conductivity&rsquo;. Units: $\frac{\text{W}}{\text{m}\text{K}}$
+**Documentation:** A list of base values of the thermal conductivity for each of the horizontal layers. Pressure- and temperature-dependence will be applied on top of this base value, according to the parameters &rsquo;Pressure dependencies of thermal conductivity&rsquo; and &rsquo;Reference temperatures for thermal conductivity&rsquo;. Units: \si{\watt\per\meter\per\kelvin}
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference viscosity<parameters:Material_20model/Entropy_20model/Reference_20viscosity>`
@@ -1120,7 +1120,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+**Documentation:** The value of the thermal conductivity $k$. Units: \si{\watt\per\meter\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal conductivity exponents<parameters:Material_20model/Entropy_20model/Thermal_20conductivity_20exponents>`
@@ -1194,7 +1194,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Anything]
 
-**Documentation:** List of angles of internal friction, $\phi$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. For a value of zero, in 2d the von Mises criterion is retrieved. Angles higher than 30 degrees are harder to solve numerically. Units: degrees.
+**Documentation:** List of angles of internal friction, $\phi$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. For a value of zero, in 2d the von Mises criterion is retrieved. Angles higher than 30 degrees are harder to solve numerically. Units: \si{\degree}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Average specific grain boundary energy<parameters:Material_20model/Grain_20size_20model/Average_20specific_20grain_20boundary_20energy>`
@@ -1266,7 +1266,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The activation volume for diffusion creep $V_{diff}$. List must have one more entry than the Phase transition depths. Units: $\frac{\text{m}^3}{\text{mol}}$.
+**Documentation:** The activation volume for diffusion creep $V_{diff}$. List must have one more entry than the Phase transition depths. Units: \si{\meter\cubed\per\mole}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Diffusion creep exponent<parameters:Material_20model/Grain_20size_20model/Diffusion_20creep_20exponent>`
@@ -1302,7 +1302,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The activation energy for dislocation creep $E_{dis}$. List must have one more entry than the Phase transition depths. Units: $\frac{\text{J}}{\text{mol}}$.
+**Documentation:** The activation energy for dislocation creep $E_{dis}$. List must have one more entry than the Phase transition depths. Units: \si{\joule\per\mole}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Dislocation activation volume<parameters:Material_20model/Grain_20size_20model/Dislocation_20activation_20volume>`
@@ -1311,7 +1311,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The activation volume for dislocation creep $V_{dis}$. List must have one more entry than the Phase transition depths. Units: $\frac{\text{m}^3}{\text{mol}}$.
+**Documentation:** The activation volume for dislocation creep $V_{dis}$. List must have one more entry than the Phase transition depths. Units: \si{\meter\cubed\per\mole}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Dislocation creep exponent<parameters:Material_20model/Grain_20size_20model/Dislocation_20creep_20exponent>`
@@ -1446,7 +1446,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The maximum specific heat that is allowed in the whole model domain. Units: J/kg/K.
+**Documentation:** The maximum specific heat that is allowed in the whole model domain. Units: \si{\joule\per\kelvin\per\kilogram}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Maximum temperature dependence of viscosity<parameters:Material_20model/Grain_20size_20model/Maximum_20temperature_20dependence_20of_20viscosity>`
@@ -1464,7 +1464,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The maximum thermal expansivity that is allowed in the whole model domain. Units: 1/K.
+**Documentation:** The maximum thermal expansivity that is allowed in the whole model domain. Units: \si{\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Maximum viscosity<parameters:Material_20model/Grain_20size_20model/Maximum_20viscosity>`
@@ -1473,7 +1473,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The maximum viscosity that is allowed in the whole model domain. Units: Pa \, s.
+**Documentation:** The maximum viscosity that is allowed in the whole model domain. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Maximum yield stress<parameters:Material_20model/Grain_20size_20model/Maximum_20yield_20stress>`
@@ -1500,7 +1500,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The minimum specific heat that is allowed in the whole model domain. Units: J/kg/K.
+**Documentation:** The minimum specific heat that is allowed in the whole model domain. Units: \si{\joule\per\kelvin\per\kilogram}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Minimum thermal expansivity<parameters:Material_20model/Grain_20size_20model/Minimum_20thermal_20expansivity>`
@@ -1509,7 +1509,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The minimum thermal expansivity that is allowed in the whole model domain. Units: 1/K.
+**Documentation:** The minimum thermal expansivity that is allowed in the whole model domain. Units: \si{\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Minimum viscosity<parameters:Material_20model/Grain_20size_20model/Minimum_20viscosity>`
@@ -1518,7 +1518,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The minimum viscosity that is allowed in the whole model domain. Units: Pa \, s.
+**Documentation:** The minimum viscosity that is allowed in the whole model domain. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition Clapeyron slopes<parameters:Material_20model/Grain_20size_20model/Phase_20transition_20Clapeyron_20slopes>`
@@ -1644,7 +1644,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the reference compressibility. Units: $\frac{1}{\text{Pa}}$.
+**Documentation:** The value of the reference compressibility. Units: \si{\per\pascal}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference density<parameters:Material_20model/Grain_20size_20model/Reference_20density>`
@@ -1653,7 +1653,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The reference density $\rho_0$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+**Documentation:** The reference density $\rho_0$. Units: \si{\kilogram\per\meter\cubed}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference specific heat<parameters:Material_20model/Grain_20size_20model/Reference_20specific_20heat>`
@@ -1662,7 +1662,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the specific heat $cp$. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+**Documentation:** The value of the specific heat $cp$. Units: \si{\joule\per\kelvin\per\kilogram}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Grain_20size_20model/Reference_20temperature>`
@@ -1671,7 +1671,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The reference temperature $T_0$. Units: $\text{K}$.
+**Documentation:** The reference temperature $T_0$. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal conductivity<parameters:Material_20model/Grain_20size_20model/Thermal_20conductivity>`
@@ -1680,7 +1680,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+**Documentation:** The value of the thermal conductivity $k$. Units: \si{\watt\per\meter\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal expansion coefficient<parameters:Material_20model/Grain_20size_20model/Thermal_20expansion_20coefficient>`
@@ -1689,7 +1689,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal expansion coefficient $\alpha$. Units: $\frac{1}{\text{K}}$.
+**Documentation:** The value of the thermal expansion coefficient $\alpha$. Units: \si{\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Use Drucker-Prager rheology<parameters:Material_20model/Grain_20size_20model/Use_20Drucker_2dPrager_20rheology>`
@@ -1752,7 +1752,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the constant viscosity. Units: $\text{Pa}\text{s}$.
+**Documentation:** The value of the constant viscosity. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Work fraction for boundary area change<parameters:Material_20model/Grain_20size_20model/Work_20fraction_20for_20boundary_20area_20change>`
@@ -1828,7 +1828,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the compressibility $\kappa$. Units: $\frac{1}{\text{Pa}}$.
+**Documentation:** The value of the compressibility $\kappa$. Units: \si{\per\pascal}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Corresponding phase for density jump<parameters:Material_20model/Latent_20heat/Corresponding_20phase_20for_20density_20jump>`
@@ -1855,7 +1855,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the density only depends on the first one in such a way that the density has an additional term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: $\frac{\text{kg}}{\text{m}^3}$/unit change in composition.
+**Documentation:** If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the density only depends on the first one in such a way that the density has an additional term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: \si{\kilogram\per\meter\cubed}/unit change in composition.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Maximum viscosity<parameters:Material_20model/Latent_20heat/Maximum_20viscosity>`
@@ -1864,7 +1864,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Limit for the maximum viscosity in the model. Units: Pa \, s.
+**Documentation:** Limit for the maximum viscosity in the model. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Minimum viscosity<parameters:Material_20model/Latent_20heat/Minimum_20viscosity>`
@@ -1873,7 +1873,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Limit for the minimum viscosity in the model. Units: Pa \, s.
+**Documentation:** Limit for the minimum viscosity in the model. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition Clapeyron slopes<parameters:Material_20model/Latent_20heat/Phase_20transition_20Clapeyron_20slopes>`
@@ -1891,7 +1891,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of density jumps at each phase transition. A positive value means that the density increases with depth. The corresponding entry in Corresponding phase for density jump determines if the density jump occurs in peridotite, eclogite or none of them.List must have the same number of entries as Phase transition depths. Units: $\frac{\text{kg}}{\text{m}^3}$.
+**Documentation:** A list of density jumps at each phase transition. A positive value means that the density increases with depth. The corresponding entry in Corresponding phase for density jump determines if the density jump occurs in peridotite, eclogite or none of them.List must have the same number of entries as Phase transition depths. Units: \si{\kilogram\per\meter\cubed}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Phase transition depths<parameters:Material_20model/Latent_20heat/Phase_20transition_20depths>`
@@ -1963,7 +1963,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Reference density $\rho_0$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+**Documentation:** Reference density $\rho_0$. Units: \si{\kilogram\per\meter\cubed}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference specific heat<parameters:Material_20model/Latent_20heat/Reference_20specific_20heat>`
@@ -1972,7 +1972,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the specific heat $C_p$. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+**Documentation:** The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilogram}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Latent_20heat/Reference_20temperature>`
@@ -1981,7 +1981,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The reference temperature $T_0$. Units: $\text{K}$.
+**Documentation:** The reference temperature $T_0$. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal conductivity<parameters:Material_20model/Latent_20heat/Thermal_20conductivity>`
@@ -1990,7 +1990,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+**Documentation:** The value of the thermal conductivity $k$. Units: \si{\watt\per\meter\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal expansion coefficient<parameters:Material_20model/Latent_20heat/Thermal_20expansion_20coefficient>`
@@ -1999,7 +1999,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal expansion coefficient $\beta$. Units: $\frac{1}{\text{K}}$.
+**Documentation:** The value of the thermal expansion coefficient $\beta$. Units: \si{\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal viscosity exponent<parameters:Material_20model/Latent_20heat/Thermal_20viscosity_20exponent>`
@@ -2017,7 +2017,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the constant viscosity. Units: $\text{Pa}\text{s}$.
+**Documentation:** The value of the constant viscosity. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Viscosity prefactors<parameters:Material_20model/Latent_20heat/Viscosity_20prefactors>`
@@ -2127,7 +2127,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the compressibility $\kappa$. Units: $\frac{1}{\text{Pa}}$.
+**Documentation:** The value of the compressibility $\kappa$. Units: \si{\per\pascal}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`D1<parameters:Material_20model/Latent_20heat_20melt/D1>`
@@ -2163,7 +2163,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the density only depends on the first one in such a way that the density has an additional term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: $\frac{\text{kg}}{\text{m}^3}$/unit change in composition.
+**Documentation:** If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the density only depends on the first one in such a way that the density has an additional term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: \si{\kilogram\per\meter\cubed}/unit change in composition.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`E1<parameters:Material_20model/Latent_20heat_20melt/E1>`
@@ -2208,7 +2208,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The entropy change for the phase transition from solid to melt of peridotite. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+**Documentation:** The entropy change for the phase transition from solid to melt of peridotite. Units: \si{\joule\per\kelvin\per\kilogram}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Pyroxenite melting entropy change<parameters:Material_20model/Latent_20heat_20melt/Pyroxenite_20melting_20entropy_20change>`
@@ -2217,7 +2217,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The entropy change for the phase transition from solid to melt of pyroxenite. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+**Documentation:** The entropy change for the phase transition from solid to melt of pyroxenite. Units: \si{\joule\per\kelvin\per\kilogram}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference density<parameters:Material_20model/Latent_20heat_20melt/Reference_20density>`
@@ -2226,7 +2226,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Reference density $\rho_0$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+**Documentation:** Reference density $\rho_0$. Units: \si{\kilogram\per\meter\cubed}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference specific heat<parameters:Material_20model/Latent_20heat_20melt/Reference_20specific_20heat>`
@@ -2235,7 +2235,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the specific heat $C_p$. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+**Documentation:** The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilogram}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Latent_20heat_20melt/Reference_20temperature>`
@@ -2244,7 +2244,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The reference temperature $T_0$. Units: $\text{K}$.
+**Documentation:** The reference temperature $T_0$. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Relative density of melt<parameters:Material_20model/Latent_20heat_20melt/Relative_20density_20of_20melt>`
@@ -2262,7 +2262,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+**Documentation:** The value of the thermal conductivity $k$. Units: \si{\watt\per\meter\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal expansion coefficient<parameters:Material_20model/Latent_20heat_20melt/Thermal_20expansion_20coefficient>`
@@ -2271,7 +2271,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal expansion coefficient $\alpha_s$. Units: $\frac{1}{\text{K}}$.
+**Documentation:** The value of the thermal expansion coefficient $\alpha_s$. Units: \si{\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal expansion coefficient of melt<parameters:Material_20model/Latent_20heat_20melt/Thermal_20expansion_20coefficient_20of_20melt>`
@@ -2280,7 +2280,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal expansion coefficient $\alpha_f$. Units: $\frac{1}{\text{K}}$.
+**Documentation:** The value of the thermal expansion coefficient $\alpha_f$. Units: \si{\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal viscosity exponent<parameters:Material_20model/Latent_20heat_20melt/Thermal_20viscosity_20exponent>`
@@ -2298,7 +2298,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the constant viscosity. Units: $\text{Pa}\text{s}$.
+**Documentation:** The value of the constant viscosity. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`beta<parameters:Material_20model/Latent_20heat_20melt/beta>`
@@ -2325,7 +2325,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Prefactor of the linear pressure term in the linear function that approximates the clinopyroxene reaction coefficient. Units: $\frac{1}{\text{Pa}}$.
+**Documentation:** Prefactor of the linear pressure term in the linear function that approximates the clinopyroxene reaction coefficient. Units: \si{\per\pascal}.
 ::::
 
 (parameters:Material_20model/Melt_20boukare)=
@@ -2336,7 +2336,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of Einstein temperatures for each different endmember.Units: K.
+**Documentation:** List of Einstein temperatures for each different endmember.Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Endmember names<parameters:Material_20model/Melt_20boukare/Endmember_20names>`
@@ -2372,7 +2372,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The melting temperature of one of the components in the melting model, the Fe mantle endmember.Units: K.
+**Documentation:** The melting temperature of one of the components in the melting model, the Fe mantle endmember.Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Fe number of moles<parameters:Material_20model/Melt_20boukare/Fe_20number_20of_20moles>`
@@ -2408,7 +2408,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The first of three coefficients that are used to compute the specific heat capacities for each different endmember at the reference temperature and reference pressure. This coefficient describes the linear part of the temperature dependence. Units: J/kg/K/K.
+**Documentation:** The first of three coefficients that are used to compute the specific heat capacities for each different endmember at the reference temperature and reference pressure. This coefficient describes the linear part of the temperature dependence. Units: \si{\joule\per\kilogram\per\kelvin\squared}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Melting time scale for operator splitting<parameters:Material_20model/Melt_20boukare/Melting_20time_20scale_20for_20operator_20splitting>`
@@ -2428,7 +2428,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The melting temperature of one of the components in the melting model, the Mg mantle endmember.Units: K.
+**Documentation:** The melting temperature of one of the components in the melting model, the Mg mantle endmember.Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Mg number of moles<parameters:Material_20model/Melt_20boukare/Mg_20number_20of_20moles>`
@@ -2446,7 +2446,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** Molar masses of the different endmembersUnits: kg/mol.
+**Documentation:** Molar masses of the different endmembersUnits: \si{\kilogram\per\mole}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Number of atoms<parameters:Material_20model/Melt_20boukare/Number_20of_20atoms>`
@@ -2464,7 +2464,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of bulk moduli for each different endmember at the reference temperature and reference pressure.Units: Pa.
+**Documentation:** List of bulk moduli for each different endmember at the reference temperature and reference pressure.Units: \si{\pascal}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference bulk viscosity<parameters:Material_20model/Melt_20boukare/Reference_20bulk_20viscosity>`
@@ -2473,7 +2473,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the constant bulk viscosity $\xi_0$ of the solid matrix. This viscosity may be modified by both temperature and porosity dependencies. Units: $Pa \, s$.
+**Documentation:** The value of the constant bulk viscosity $\xi_0$ of the solid matrix. This viscosity may be modified by both temperature and porosity dependencies. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference enthalpies<parameters:Material_20model/Melt_20boukare/Reference_20enthalpies>`
@@ -2482,7 +2482,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of enthalpies at the reference temperature and reference pressure for each different endmember component.Units: J/mol.
+**Documentation:** List of enthalpies at the reference temperature and reference pressure for each different endmember component.Units: \si{\joule\per\mole}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference entropies<parameters:Material_20model/Melt_20boukare/Reference_20entropies>`
@@ -2491,7 +2491,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of entropies at the reference temperature and reference pressure for each different endmember component.Units: J/K/mol.
+**Documentation:** List of entropies at the reference temperature and reference pressure for each different endmember component.Units: \si{\joule\per\kelvin\per\mole}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference melt viscosity<parameters:Material_20model/Melt_20boukare/Reference_20melt_20viscosity>`
@@ -2500,7 +2500,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the constant melt viscosity $\eta_f$. Units: $Pa \, s$.
+**Documentation:** The value of the constant melt viscosity $\eta_f$. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference permeability<parameters:Material_20model/Melt_20boukare/Reference_20permeability>`
@@ -2509,7 +2509,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Reference permeability of the solid host rock.Units: $m^2$.
+**Documentation:** Reference permeability of the solid host rock.Units: \si{\meter\squared}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference pressure<parameters:Material_20model/Melt_20boukare/Reference_20pressure>`
@@ -2518,7 +2518,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Reference pressure used to compute the material propertiesof the different endmember components.Units: Pa.
+**Documentation:** Reference pressure used to compute the material propertiesof the different endmember components.Units: \si{\pascal}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference shear viscosity<parameters:Material_20model/Melt_20boukare/Reference_20shear_20viscosity>`
@@ -2527,7 +2527,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the constant viscosity $\eta_0$ of the solid matrix. This viscosity may be modified by both temperature and porosity dependencies. Units: $Pa \, s$.
+**Documentation:** The value of the constant viscosity $\eta_0$ of the solid matrix. This viscosity may be modified by both temperature and porosity dependencies. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference specific heat capacities<parameters:Material_20model/Melt_20boukare/Reference_20specific_20heat_20capacities>`
@@ -2536,7 +2536,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of specific heat capacities for each different endmember at the reference temperature and reference pressure.Units: J/kg/K.
+**Documentation:** List of specific heat capacities for each different endmember at the reference temperature and reference pressure.Units: \si{\joule\per\kelvin\per\kilogram}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Melt_20boukare/Reference_20temperature>`
@@ -2545,7 +2545,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Reference temperature used to compute the material propertiesof the different endmember components.Units: K.
+**Documentation:** Reference temperature used to compute the material propertiesof the different endmember components.Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference thermal expansivities<parameters:Material_20model/Melt_20boukare/Reference_20thermal_20expansivities>`
@@ -2554,7 +2554,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of thermal expansivities for each different endmember at the reference temperature and reference pressure.Units: 1/K.
+**Documentation:** List of thermal expansivities for each different endmember at the reference temperature and reference pressure.Units: \si{\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference volumes<parameters:Material_20model/Melt_20boukare/Reference_20volumes>`
@@ -2563,7 +2563,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** Reference volumes of the different endmembers.Units: $m^3$.
+**Documentation:** Reference volumes of the different endmembers.Units: \si{\meter\cubed}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Second coefficients for specific heat polynomial<parameters:Material_20model/Melt_20boukare/Second_20coefficients_20for_20specific_20heat_20polynomial>`
@@ -2572,7 +2572,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The second of three coefficients that are used to compute the specific heat capacities for each different endmember at the reference temperature and reference pressure. This coefficient describes the part of the temperature dependence that scales as the inverse of the square of the temperature. Units: J K/kg.
+**Documentation:** The second of three coefficients that are used to compute the specific heat capacities for each different endmember at the reference temperature and reference pressure. This coefficient describes the part of the temperature dependence that scales as the inverse of the square of the temperature. Units: \si{\joule\kelvin\per\kilogram}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Second derivatives of the bulk modulus<parameters:Material_20model/Melt_20boukare/Second_20derivatives_20of_20the_20bulk_20modulus>`
@@ -2581,7 +2581,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The second pressure derivative of the bulk modulus at the reference temperature and reference pressure for each different endmember component.Units: 1/Pa.
+**Documentation:** The second pressure derivative of the bulk modulus at the reference temperature and reference pressure for each different endmember component.Units: \si{\per\pascal}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal bulk viscosity exponent<parameters:Material_20model/Melt_20boukare/Thermal_20bulk_20viscosity_20exponent>`
@@ -2599,7 +2599,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Units: $W/m/K$.
+**Documentation:** The value of the thermal conductivity $k$. Units: \si{\watt\per\meter\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal viscosity exponent<parameters:Material_20model/Melt_20boukare/Thermal_20viscosity_20exponent>`
@@ -2628,7 +2628,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The density contrast between material with a depletion of 1 and a depletion of zero. Negative values indicate lower densities of depleted material. Depletion is indicated by the compositional field with the name peridotite. Not used if this field does not exist in the model. Units: $\frac{\text{kg}}{\text{m}^3}$.
+**Documentation:** The density contrast between material with a depletion of 1 and a depletion of zero. Negative values indicate lower densities of depleted material. Depletion is indicated by the compositional field with the name peridotite. Not used if this field does not exist in the model. Units: \si{\kilogram\per\meter\cubed}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Depletion solidus change<parameters:Material_20model/Melt_20global/Depletion_20solidus_20change>`
@@ -2637,7 +2637,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The solidus temperature change for a depletion of 100\%. For positive values, the solidus gets increased for a positive peridotite field (depletion) and lowered for a negative peridotite field (enrichment). Scaling with depletion is linear. Only active when fractional melting is used. Units: $\text{K}$.
+**Documentation:** The solidus temperature change for a depletion of 100\%. For positive values, the solidus gets increased for a positive peridotite field (depletion) and lowered for a negative peridotite field (enrichment). Scaling with depletion is linear. Only active when fractional melting is used. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Exponential depletion strengthening factor<parameters:Material_20model/Melt_20global/Exponential_20depletion_20strengthening_20factor>`
@@ -2691,7 +2691,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the compressibility of the melt. Units: $\frac{1}{\text{Pa}}$.
+**Documentation:** The value of the compressibility of the melt. Units: \si{\per\pascal}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Melting time scale for operator splitting<parameters:Material_20model/Melt_20global/Melting_20time_20scale_20for_20operator_20splitting>`
@@ -2711,7 +2711,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The linear solidus temperature change with pressure. For positive values, the solidus gets increased for positive pressures. Units: $\frac{1}{\text{Pa}}$.
+**Documentation:** The linear solidus temperature change with pressure. For positive values, the solidus gets increased for positive pressures. Units: \si{\per\pascal}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference bulk viscosity<parameters:Material_20model/Melt_20global/Reference_20bulk_20viscosity>`
@@ -2720,7 +2720,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the constant bulk viscosity $\xi_0$ of the solid matrix. This viscosity may be modified by both temperature and porosity dependencies. Units: $\text{Pa}\text{s}$.
+**Documentation:** The value of the constant bulk viscosity $\xi_0$ of the solid matrix. This viscosity may be modified by both temperature and porosity dependencies. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference melt density<parameters:Material_20model/Melt_20global/Reference_20melt_20density>`
@@ -2729,7 +2729,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Reference density of the melt/fluid$\rho_{f,0}$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+**Documentation:** Reference density of the melt/fluid$\rho_{f,0}$. Units: \si{\kilogram\per\meter\cubed}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference melt viscosity<parameters:Material_20model/Melt_20global/Reference_20melt_20viscosity>`
@@ -2738,7 +2738,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the constant melt viscosity $\eta_f$. Units: $\text{Pa}\text{s}$.
+**Documentation:** The value of the constant melt viscosity $\eta_f$. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference permeability<parameters:Material_20model/Melt_20global/Reference_20permeability>`
@@ -2756,7 +2756,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the constant viscosity $\eta_0$ of the solid matrix. This viscosity may be modified by both temperature and porosity dependencies. Units: $\text{Pa}\text{s}$.
+**Documentation:** The value of the constant viscosity $\eta_0$ of the solid matrix. This viscosity may be modified by both temperature and porosity dependencies. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference solid density<parameters:Material_20model/Melt_20global/Reference_20solid_20density>`
@@ -2765,7 +2765,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Reference density of the solid $\rho_{s,0}$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+**Documentation:** Reference density of the solid $\rho_{s,0}$. Units: \si{\kilogram\per\meter\cubed}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference specific heat<parameters:Material_20model/Melt_20global/Reference_20specific_20heat>`
@@ -2774,7 +2774,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the specific heat $C_p$. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+**Documentation:** The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilogram}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Melt_20global/Reference_20temperature>`
@@ -2783,7 +2783,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The reference temperature $T_0$. The reference temperature is used in both the density and viscosity formulas. Units: $\text{K}$.
+**Documentation:** The reference temperature $T_0$. The reference temperature is used in both the density and viscosity formulas. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Solid compressibility<parameters:Material_20model/Melt_20global/Solid_20compressibility>`
@@ -2792,7 +2792,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the compressibility of the solid matrix. Units: $\frac{1}{\text{Pa}}$.
+**Documentation:** The value of the compressibility of the solid matrix. Units: \si{\per\pascal}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Surface solidus<parameters:Material_20model/Melt_20global/Surface_20solidus>`
@@ -2801,7 +2801,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Solidus for a pressure of zero. Units: $\text{K}$.
+**Documentation:** Solidus for a pressure of zero. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal bulk viscosity exponent<parameters:Material_20model/Melt_20global/Thermal_20bulk_20viscosity_20exponent>`
@@ -2819,7 +2819,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+**Documentation:** The value of the thermal conductivity $k$. Units: \si{\watt\per\meter\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal expansion coefficient<parameters:Material_20model/Melt_20global/Thermal_20expansion_20coefficient>`
@@ -2828,7 +2828,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal expansion coefficient $\beta$. Units: $\frac{1}{\text{K}}$.
+**Documentation:** The value of the thermal expansion coefficient $\beta$. Units: \si{\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal viscosity exponent<parameters:Material_20model/Melt_20global/Thermal_20viscosity_20exponent>`
@@ -2929,7 +2929,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The density contrast between material with a depletion of 1 and a depletion of zero. Negative values indicate lower densities of depleted material. Depletion is indicated by the compositional field with the name peridotite. Not used if this field does not exist in the model. Units: $\frac{\text{kg}}{\text{m}^3}$.
+**Documentation:** The density contrast between material with a depletion of 1 and a depletion of zero. Negative values indicate lower densities of depleted material. Depletion is indicated by the compositional field with the name peridotite. Not used if this field does not exist in the model. Units: \si{\kilogram\per\meter\cubed}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Depletion solidus change<parameters:Material_20model/Melt_20simple/Depletion_20solidus_20change>`
@@ -2938,7 +2938,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The solidus temperature change for a depletion of 100\%. For positive values, the solidus gets increased for a positive peridotite field (depletion) and lowered for a negative peridotite field (enrichment). Scaling with depletion is linear. Only active when fractional melting is used. Units: $\text{K}$.
+**Documentation:** The solidus temperature change for a depletion of 100\%. For positive values, the solidus gets increased for a positive peridotite field (depletion) and lowered for a negative peridotite field (enrichment). Scaling with depletion is linear. Only active when fractional melting is used. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Exponential melt weakening factor<parameters:Material_20model/Melt_20simple/Exponential_20melt_20weakening_20factor>`
@@ -2983,7 +2983,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the compressibility of the melt. Units: $\frac{1}{\text{Pa}}$.
+**Documentation:** The value of the compressibility of the melt. Units: \si{\per\pascal}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Melt extraction depth<parameters:Material_20model/Melt_20simple/Melt_20extraction_20depth>`
@@ -3012,7 +3012,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The entropy change for the phase transition from solid to melt of peridotite. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+**Documentation:** The entropy change for the phase transition from solid to melt of peridotite. Units: \si{\joule\per\kelvin\per\kilogram}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference bulk viscosity<parameters:Material_20model/Melt_20simple/Reference_20bulk_20viscosity>`
@@ -3021,7 +3021,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the constant bulk viscosity $\xi_0$ of the solid matrix. This viscosity may be modified by both temperature and porosity dependencies. Units: $\text{Pa}\text{s}$.
+**Documentation:** The value of the constant bulk viscosity $\xi_0$ of the solid matrix. This viscosity may be modified by both temperature and porosity dependencies. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference melt density<parameters:Material_20model/Melt_20simple/Reference_20melt_20density>`
@@ -3030,7 +3030,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Reference density of the melt/fluid$\rho_{f,0}$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+**Documentation:** Reference density of the melt/fluid$\rho_{f,0}$. Units: \si{\kilogram\per\meter\cubed}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference melt viscosity<parameters:Material_20model/Melt_20simple/Reference_20melt_20viscosity>`
@@ -3039,7 +3039,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the constant melt viscosity $\eta_f$. Units: $\text{Pa}\text{s}$.
+**Documentation:** The value of the constant melt viscosity $\eta_f$. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference permeability<parameters:Material_20model/Melt_20simple/Reference_20permeability>`
@@ -3057,7 +3057,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the constant viscosity $\eta_0$ of the solid matrix. This viscosity may be modified by both temperature and porosity dependencies. Units: $\text{Pa}\text{s}$.
+**Documentation:** The value of the constant viscosity $\eta_0$ of the solid matrix. This viscosity may be modified by both temperature and porosity dependencies. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference solid density<parameters:Material_20model/Melt_20simple/Reference_20solid_20density>`
@@ -3066,7 +3066,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Reference density of the solid $\rho_{s,0}$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+**Documentation:** Reference density of the solid $\rho_{s,0}$. Units: \si{\kilogram\per\meter\cubed}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference specific heat<parameters:Material_20model/Melt_20simple/Reference_20specific_20heat>`
@@ -3075,7 +3075,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the specific heat $C_p$. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+**Documentation:** The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilogram}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Melt_20simple/Reference_20temperature>`
@@ -3084,7 +3084,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The reference temperature $T_0$. The reference temperature is used in both the density and viscosity formulas. Units: $\text{K}$.
+**Documentation:** The reference temperature $T_0$. The reference temperature is used in both the density and viscosity formulas. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Solid compressibility<parameters:Material_20model/Melt_20simple/Solid_20compressibility>`
@@ -3093,7 +3093,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the compressibility of the solid matrix. Units: $\frac{1}{\text{Pa}}$.
+**Documentation:** The value of the compressibility of the solid matrix. Units: \si{\per\pascal}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal bulk viscosity exponent<parameters:Material_20model/Melt_20simple/Thermal_20bulk_20viscosity_20exponent>`
@@ -3111,7 +3111,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+**Documentation:** The value of the thermal conductivity $k$. Units: \si{\watt\per\meter\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal expansion coefficient<parameters:Material_20model/Melt_20simple/Thermal_20expansion_20coefficient>`
@@ -3120,7 +3120,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal expansion coefficient $\beta$. Units: $\frac{1}{\text{K}}$.
+**Documentation:** The value of the thermal expansion coefficient $\beta$. Units: \si{\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal viscosity exponent<parameters:Material_20model/Melt_20simple/Thermal_20viscosity_20exponent>`
@@ -3176,7 +3176,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Prefactor of the linear pressure term in the linear function that approximates the clinopyroxene reaction coefficient. Units: $\frac{1}{\text{Pa}}$.
+**Documentation:** Prefactor of the linear pressure term in the linear function that approximates the clinopyroxene reaction coefficient. Units: \si{\per\pascal}.
 ::::
 
 (parameters:Material_20model/Modified_20Tait_20model)=
@@ -3187,7 +3187,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The Einstein temperature at the reference pressure and temperature. Units: $\text{K}$.
+**Documentation:** The Einstein temperature at the reference pressure and temperature. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference bulk modulus derivative<parameters:Material_20model/Modified_20Tait_20model/Reference_20bulk_20modulus_20derivative>`
@@ -3205,7 +3205,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The density at the reference pressure and temperature. Units: $\frac{\text{kg}}{\text{m}^3}$.
+**Documentation:** The density at the reference pressure and temperature. Units: \si{\kilogram\per\meter\cubed}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference isothermal bulk modulus<parameters:Material_20model/Modified_20Tait_20model/Reference_20isothermal_20bulk_20modulus>`
@@ -3232,7 +3232,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Reference temperature $T_0$. Units: $\text{K}$.
+**Documentation:** Reference temperature $T_0$. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference thermal expansivity<parameters:Material_20model/Modified_20Tait_20model/Reference_20thermal_20expansivity>`
@@ -3241,7 +3241,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The thermal expansion coefficient at the reference pressure and temperature. Units: $\frac{1}{\text{K}}$.
+**Documentation:** The thermal expansion coefficient at the reference pressure and temperature. Units: \si{\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal conductivity<parameters:Material_20model/Modified_20Tait_20model/Thermal_20conductivity>`
@@ -3250,7 +3250,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the constant thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+**Documentation:** The value of the constant thermal conductivity $k$. Units: \si{\watt\per\meter\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Viscosity<parameters:Material_20model/Modified_20Tait_20model/Viscosity>`
@@ -3259,7 +3259,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the constant viscosity $\eta_0$. Units: $\text{Pa}\text{s}$.
+**Documentation:** The value of the constant viscosity $\eta_0$. Units: \si{\pascal\second}.
 ::::
 
 (parameters:Material_20model/Modified_20Tait_20model/Reference_20heat_20capacity_20function)=
@@ -3319,7 +3319,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The reference temperature $T_0$. Units: $\text{K}$.
+**Documentation:** The reference temperature $T_0$. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Specific heats<parameters:Material_20model/Multicomponent/Specific_20heats>`
@@ -3335,7 +3335,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** List of thermal conductivities for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+**Documentation:** List of thermal conductivities for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: \si{\watt\per\meter\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal expansivities<parameters:Material_20model/Multicomponent/Thermal_20expansivities>`
@@ -3353,7 +3353,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Anything]
 
-**Documentation:** List of viscosities for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: $\text{Pa}\text{s}$.
+**Documentation:** List of viscosities for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Viscosity averaging scheme<parameters:Material_20model/Multicomponent/Viscosity_20averaging_20scheme>`
@@ -3564,7 +3564,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Reference density $\rho_0$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+**Documentation:** Reference density $\rho_0$. Units: \si{\kilogram\per\meter\cubed}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference specific heat<parameters:Material_20model/Nondimensional_20model/Reference_20specific_20heat>`
@@ -3573,7 +3573,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the specific heat $C_p$. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+**Documentation:** The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilogram}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Use TALA<parameters:Material_20model/Nondimensional_20model/Use_20TALA>`
@@ -3629,7 +3629,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the maximum temperature used to query PerpleX. Units: $\text{K}$.
+**Documentation:** The value of the maximum temperature used to query PerpleX. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Minimum material pressure<parameters:Material_20model/PerpleX_20lookup_20model/Minimum_20material_20pressure>`
@@ -3647,7 +3647,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the minimum temperature used to query PerpleX. Units: $\text{K}$.
+**Documentation:** The value of the minimum temperature used to query PerpleX. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`PerpleX input file name<parameters:Material_20model/PerpleX_20lookup_20model/PerpleX_20input_20file_20name>`
@@ -3665,7 +3665,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+**Documentation:** The value of the thermal conductivity $k$. Units: \si{\watt\per\meter\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Viscosity<parameters:Material_20model/PerpleX_20lookup_20model/Viscosity>`
@@ -3674,7 +3674,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the viscosity $\eta$. Units: $\text{Pa}\text{s}$.
+**Documentation:** The value of the viscosity $\eta$. Units: \si{\pascal\second}.
 ::::
 
 (parameters:Material_20model/Prescribed_20viscosity)=
@@ -3780,7 +3780,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the compressibility of the fluid. Units: $\frac{1}{\text{Pa}}$.
+**Documentation:** The value of the compressibility of the fluid. Units: \si{\per\pascal}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Fluid reaction time scale for operator splitting<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Fluid_20reaction_20time_20scale_20for_20operator_20splitting>`
@@ -3809,7 +3809,7 @@ Also note that the fluid reaction time scale has to be larger than or equal to t
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Upper cutoff for the compaction viscosity. Units: $\text{Pa}\text{s}$.
+**Documentation:** Upper cutoff for the compaction viscosity. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Minimum compaction viscosity<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Minimum_20compaction_20viscosity>`
@@ -3818,7 +3818,7 @@ Also note that the fluid reaction time scale has to be larger than or equal to t
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Lower cutoff for the compaction viscosity. Units: $\text{Pa}\text{s}$.
+**Documentation:** Lower cutoff for the compaction viscosity. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference fluid density<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Reference_20fluid_20density>`
@@ -3836,7 +3836,7 @@ Also note that the fluid reaction time scale has to be larger than or equal to t
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the constant melt/fluid viscosity $\eta_f$. Units: $\text{Pa}\text{s}$.
+**Documentation:** The value of the constant melt/fluid viscosity $\eta_f$. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference permeability<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Reference_20permeability>`
@@ -3955,7 +3955,7 @@ Also note that the fluid reaction time scale has to be larger than or equal to t
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The solidus temperature change for a depletion of 100\%. For positive values, the solidus gets increased for a positive peridotite field (depletion) and lowered for a negative peridotite field (enrichment). Scaling with depletion is linear. Only active when fractional melting is used. Units: $\text{K}$.
+**Documentation:** The solidus temperature change for a depletion of 100\%. For positive values, the solidus gets increased for a positive peridotite field (depletion) and lowered for a negative peridotite field (enrichment). Scaling with depletion is linear. Only active when fractional melting is used. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Exponential melt weakening factor<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Exponential_20melt_20weakening_20factor>`
@@ -4000,7 +4000,7 @@ Also note that the fluid reaction time scale has to be larger than or equal to t
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the compressibility of the melt. Units: $\frac{1}{\text{Pa}}$.
+**Documentation:** The value of the compressibility of the melt. Units: \si{\per\pascal}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Melt extraction depth<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Melt_20extraction_20depth>`
@@ -4029,7 +4029,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The entropy change for the phase transition from solid to melt of peridotite. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+**Documentation:** The entropy change for the phase transition from solid to melt of peridotite. Units: \si{\joule\per\kelvin\per\kilogram}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference bulk viscosity<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Reference_20bulk_20viscosity>`
@@ -4038,7 +4038,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the constant bulk viscosity $\xi_0$ of the solid matrix. This viscosity may be modified by both temperature and porosity dependencies. Units: $\text{Pa}\text{s}$.
+**Documentation:** The value of the constant bulk viscosity $\xi_0$ of the solid matrix. This viscosity may be modified by both temperature and porosity dependencies. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference melt density<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Reference_20melt_20density>`
@@ -4047,7 +4047,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Reference density of the melt/fluid$\rho_{f,0}$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+**Documentation:** Reference density of the melt/fluid$\rho_{f,0}$. Units: \si{\kilogram\per\meter\cubed}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference melt viscosity<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Reference_20melt_20viscosity>`
@@ -4056,7 +4056,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the constant melt viscosity $\eta_f$. Units: $\text{Pa}\text{s}$.
+**Documentation:** The value of the constant melt viscosity $\eta_f$. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference permeability<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Reference_20permeability>`
@@ -4112,7 +4112,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Prefactor of the linear pressure term in the linear function that approximates the clinopyroxene reaction coefficient. Units: $\frac{1}{\text{Pa}}$.
+**Documentation:** Prefactor of the linear pressure term in the linear function that approximates the clinopyroxene reaction coefficient. Units: \si{\per\pascal}.
 ::::
 
 (parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model)=
@@ -4226,7 +4226,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the reference compressibility. Units: $\frac{1}{\text{Pa}}$.
+**Documentation:** The value of the reference compressibility. Units: \si{\per\pascal}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference density<parameters:Material_20model/Simple_20compressible_20model/Reference_20density>`
@@ -4235,7 +4235,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Reference density $\rho_0$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+**Documentation:** Reference density $\rho_0$. Units: \si{\kilogram\per\meter\cubed}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference specific heat<parameters:Material_20model/Simple_20compressible_20model/Reference_20specific_20heat>`
@@ -4244,7 +4244,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the specific heat $C_p$. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+**Documentation:** The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilogram}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal conductivity<parameters:Material_20model/Simple_20compressible_20model/Thermal_20conductivity>`
@@ -4253,7 +4253,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+**Documentation:** The value of the thermal conductivity $k$. Units: \si{\watt\per\meter\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal expansion coefficient<parameters:Material_20model/Simple_20compressible_20model/Thermal_20expansion_20coefficient>`
@@ -4262,7 +4262,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal expansion coefficient $\alpha$. Units: $\frac{1}{\text{K}}$.
+**Documentation:** The value of the thermal expansion coefficient $\alpha$. Units: \si{\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Viscosity<parameters:Material_20model/Simple_20compressible_20model/Viscosity>`
@@ -4271,7 +4271,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the viscosity $\eta$. Units: $\text{Pa}\text{s}$.
+**Documentation:** The value of the viscosity $\eta$. Units: \si{\pascal\second}.
 ::::
 
 (parameters:Material_20model/Simple_20model)=
@@ -4291,7 +4291,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the material model determines how many of them influence the density. The composition-dependence adds a term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: $\frac{\text{kg}}{\text{m}^3}$/unit change in composition.
+**Documentation:** If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the material model determines how many of them influence the density. The composition-dependence adds a term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: \si{\kilogram\per\meter\cubed}/unit change in composition.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Maximum thermal prefactor<parameters:Material_20model/Simple_20model/Maximum_20thermal_20prefactor>`
@@ -4318,7 +4318,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Reference density $\rho_0$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+**Documentation:** Reference density $\rho_0$. Units: \si{\kilogram\per\meter\cubed}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference specific heat<parameters:Material_20model/Simple_20model/Reference_20specific_20heat>`
@@ -4327,7 +4327,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the specific heat $C_p$. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+**Documentation:** The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilogram}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Simple_20model/Reference_20temperature>`
@@ -4336,7 +4336,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The reference temperature $T_0$. The reference temperature is used in both the density and viscosity formulas. Units: $\text{K}$.
+**Documentation:** The reference temperature $T_0$. The reference temperature is used in both the density and viscosity formulas. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal conductivity<parameters:Material_20model/Simple_20model/Thermal_20conductivity>`
@@ -4345,7 +4345,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+**Documentation:** The value of the thermal conductivity $k$. Units: \si{\watt\per\meter\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal expansion coefficient<parameters:Material_20model/Simple_20model/Thermal_20expansion_20coefficient>`
@@ -4354,7 +4354,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal expansion coefficient $\alpha$. Units: $\frac{1}{\text{K}}$.
+**Documentation:** The value of the thermal expansion coefficient $\alpha$. Units: \si{\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal viscosity exponent<parameters:Material_20model/Simple_20model/Thermal_20viscosity_20exponent>`
@@ -4372,7 +4372,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the constant viscosity $\eta_0$. This viscosity may be modified by both temperature and compositional dependencies. Units: $\text{Pa}\text{s}$.
+**Documentation:** The value of the constant viscosity $\eta_0$. This viscosity may be modified by both temperature and compositional dependencies. Units: \si{\pascal\second}.
 ::::
 
 (parameters:Material_20model/Simpler_20model)=
@@ -4383,7 +4383,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Reference density $\rho_0$. Units: $\frac{\text{kg}}{\text{m}^3}$.
+**Documentation:** Reference density $\rho_0$. Units: \si{\kilogram\per\meter\cubed}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference specific heat<parameters:Material_20model/Simpler_20model/Reference_20specific_20heat>`
@@ -4392,7 +4392,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the specific heat $C_p$. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+**Documentation:** The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilogram}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference temperature<parameters:Material_20model/Simpler_20model/Reference_20temperature>`
@@ -4401,7 +4401,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The reference temperature $T_0$. The reference temperature is used in both the density and viscosity formulas. Units: $\text{K}$.
+**Documentation:** The reference temperature $T_0$. The reference temperature is used in both the density and viscosity formulas. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal conductivity<parameters:Material_20model/Simpler_20model/Thermal_20conductivity>`
@@ -4410,7 +4410,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+**Documentation:** The value of the thermal conductivity $k$. Units: \si{\watt\per\meter\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal expansion coefficient<parameters:Material_20model/Simpler_20model/Thermal_20expansion_20coefficient>`
@@ -4419,7 +4419,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal expansion coefficient $\alpha$. Units: $\frac{1}{\text{K}}$.
+**Documentation:** The value of the thermal expansion coefficient $\alpha$. Units: \si{\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Viscosity<parameters:Material_20model/Simpler_20model/Viscosity>`
@@ -4428,7 +4428,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the viscosity $\eta$. Units: $\text{Pa}\text{s}$.
+**Documentation:** The value of the viscosity $\eta$. Units: \si{\pascal\second}.
 ::::
 
 (parameters:Material_20model/Steinberger_20model)=
@@ -4448,7 +4448,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** List of angles of internal friction, $\phi$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. For a value of zero, in 2d the von Mises criterion is retrieved. Angles higher than 30 degrees are harder to solve numerically. Units: degrees.
+**Documentation:** List of angles of internal friction, $\phi$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. For a value of zero, in 2d the von Mises criterion is retrieved. Angles higher than 30 degrees are harder to solve numerically. Units: \si{\degree}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Bilinear interpolation<parameters:Material_20model/Steinberger_20model/Bilinear_20interpolation>`
@@ -4475,7 +4475,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** List of N prefactors that are used to modify the reference viscosity, where N is either equal to one or the number of chemical components in the simulation. If only one value is given, then all components use the same value. Units: $\text{Pa}\text{s}$.
+**Documentation:** List of N prefactors that are used to modify the reference viscosity, where N is either equal to one or the number of chemical components in the simulation. If only one value is given, then all components use the same value. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Material_20model/Steinberger_20model/Data_20directory>`
@@ -4637,7 +4637,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of values of reference temperatures used to determine the temperature-dependence of the thermal conductivity. Units: $\text{K}$.
+**Documentation:** A list of values of reference temperatures used to determine the temperature-dependence of the thermal conductivity. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reference thermal conductivities<parameters:Material_20model/Steinberger_20model/Reference_20thermal_20conductivities>`
@@ -4646,7 +4646,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of base values of the thermal conductivity for each of the horizontal layers. Pressure- and temperature-dependence will be applied on top of this base value, according to the parameters &rsquo;Pressure dependencies of thermal conductivity&rsquo; and &rsquo;Reference temperatures for thermal conductivity&rsquo;. Units: $\frac{\text{W}}{\text{m}\text{K}}$
+**Documentation:** A list of base values of the thermal conductivity for each of the horizontal layers. Pressure- and temperature-dependence will be applied on top of this base value, according to the parameters &rsquo;Pressure dependencies of thermal conductivity&rsquo; and &rsquo;Reference temperatures for thermal conductivity&rsquo;. Units: \si{\watt\per\meter\per\kelvin}
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Saturation prefactors<parameters:Material_20model/Steinberger_20model/Saturation_20prefactors>`
@@ -4664,7 +4664,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+**Documentation:** The value of the thermal conductivity $k$. Units: \si{\watt\per\meter\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal conductivity exponents<parameters:Material_20model/Steinberger_20model/Thermal_20conductivity_20exponents>`
@@ -4819,7 +4819,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** List of angles of internal friction, $\phi$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. For a value of zero, in 2d the von Mises criterion is retrieved. Angles higher than 30 degrees are harder to solve numerically. Units: degrees.
+**Documentation:** List of angles of internal friction, $\phi$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. For a value of zero, in 2d the von Mises criterion is retrieved. Angles higher than 30 degrees are harder to solve numerically. Units: \si{\degree}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Apply strict stress cutoff for Peierls creep<parameters:Material_20model/Visco_20Plastic/Apply_20strict_20stress_20cutoff_20for_20Peierls_20creep>`
@@ -4936,7 +4936,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Viscosity of a viscous damper that acts in parallel with the elastic element to stabilize behavior. Units: $\text{Pa}\text{s}$
+**Documentation:** Viscosity of a viscous damper that acts in parallel with the elastic element to stabilize behavior. Units: \si{\pascal\second}
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Elastic shear moduli<parameters:Material_20model/Visco_20Plastic/Elastic_20shear_20moduli>`
@@ -4945,7 +4945,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of elastic shear moduli, $G$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. The default value of 75 GPa is representative of mantle rocks. Units: Pa.
+**Documentation:** List of elastic shear moduli, $G$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. The default value of 75 GPa is representative of mantle rocks. Units: \si{\pascal}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`End plasticity strain weakening intervals<parameters:Material_20model/Visco_20Plastic/End_20plasticity_20strain_20weakening_20intervals>`
@@ -4972,7 +4972,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The fixed elastic time step $dte$. It is always used during the first timestep; afterwards on if &rsquo;Used fixed elastic time step&rsquo; is true. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The fixed elastic time step $dte$. It is always used during the first timestep; afterwards on if &rsquo;Used fixed elastic time step&rsquo; is true. Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Friction mechanism<parameters:Material_20model/Visco_20Plastic/Friction_20mechanism>`
@@ -5050,7 +5050,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of lower temperature for maximum strain weakening for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\text{K}$.
+**Documentation:** List of lower temperature for maximum strain weakening for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Lower temperature for onset of strain weakening<parameters:Material_20model/Visco_20Plastic/Lower_20temperature_20for_20onset_20of_20strain_20weakening>`
@@ -5059,7 +5059,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of lower temperature for onset of strain weakening for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\text{K}$.
+**Documentation:** List of lower temperature for onset of strain weakening for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Material file names<parameters:Material_20model/Visco_20Plastic/Material_20file_20names>`
@@ -5086,7 +5086,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** Upper cutoff for effective viscosity. Units: $\text{Pa}\text{s}$. List with as many components as active compositional fields (material data is assumed to be in order with the ordering of the fields).
+**Documentation:** Upper cutoff for effective viscosity. Units: \si{\pascal\second}. List with as many components as active compositional fields (material data is assumed to be in order with the ordering of the fields).
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Maximum yield stress<parameters:Material_20model/Visco_20Plastic/Maximum_20yield_20stress>`
@@ -5122,7 +5122,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Anything]
 
-**Documentation:** Lower cutoff for effective viscosity. Units: $\text{Pa}\text{s}$. List with as many components as active compositional fields (material data is assumed to be in order with the ordering of the fields).
+**Documentation:** Lower cutoff for effective viscosity. Units: \si{\pascal\second}. List with as many components as active compositional fields (material data is assumed to be in order with the ordering of the fields).
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Peierls creep flow law<parameters:Material_20model/Visco_20Plastic/Peierls_20creep_20flow_20law>`
@@ -5430,7 +5430,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Recovery rate prefactor for temperature dependent strain healing. Units: $1/s$
+**Documentation:** Recovery rate prefactor for temperature dependent strain healing. Units: \si{\per\second}
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Strain weakening mechanism<parameters:Material_20model/Visco_20Plastic/Strain_20weakening_20mechanism>`
@@ -5502,7 +5502,7 @@ If a compositional field named &rsquo;noninitial\_plastic\_strain&rsquo; is incl
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of thermal conductivities, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+**Documentation:** List of thermal conductivities, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\watt\per\meter\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal diffusivities<parameters:Material_20model/Visco_20Plastic/Thermal_20diffusivities>`
@@ -5529,7 +5529,7 @@ If a compositional field named &rsquo;noninitial\_plastic\_strain&rsquo; is incl
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of upper temperatures for maximum strain weakening for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\text{K}$.
+**Documentation:** List of upper temperatures for maximum strain weakening for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Upper temperature for onset of strain weakening<parameters:Material_20model/Visco_20Plastic/Upper_20temperature_20for_20onset_20of_20strain_20weakening>`
@@ -5538,7 +5538,7 @@ If a compositional field named &rsquo;noninitial\_plastic\_strain&rsquo; is incl
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of upper temperatures for onset of strain weakeningfor background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\text{K}$.
+**Documentation:** List of upper temperatures for onset of strain weakeningfor background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Use adiabatic pressure in creep viscosity<parameters:Material_20model/Visco_20Plastic/Use_20adiabatic_20pressure_20in_20creep_20viscosity>`
@@ -5773,7 +5773,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Viscosity of a viscous damper that acts in parallel with the elastic element to stabilize behavior. Units: $\text{Pa}\text{s}$
+**Documentation:** Viscosity of a viscous damper that acts in parallel with the elastic element to stabilize behavior. Units: \si{\pascal\second}
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Elastic shear moduli<parameters:Material_20model/Viscoelastic/Elastic_20shear_20moduli>`
@@ -5782,7 +5782,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of elastic shear moduli, $G$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. The default value of 75 GPa is representative of mantle rocks. Units: Pa.
+**Documentation:** List of elastic shear moduli, $G$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. The default value of 75 GPa is representative of mantle rocks. Units: \si{\pascal}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Fixed elastic time step<parameters:Material_20model/Viscoelastic/Fixed_20elastic_20time_20step>`
@@ -5791,7 +5791,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The fixed elastic time step $dte$. It is always used during the first timestep; afterwards on if &rsquo;Used fixed elastic time step&rsquo; is true. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The fixed elastic time step $dte$. It is always used during the first timestep; afterwards on if &rsquo;Used fixed elastic time step&rsquo; is true. Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Heat capacities<parameters:Material_20model/Viscoelastic/Heat_20capacities>`
@@ -5834,7 +5834,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of thermal conductivities for background mantle and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+**Documentation:** List of thermal conductivities for background mantle and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\watt\per\meter\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal expansivities<parameters:Material_20model/Viscoelastic/Thermal_20expansivities>`
@@ -5861,7 +5861,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of viscosities for background mantle and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: $\text{Pa}\text{s}$.
+**Documentation:** List of viscosities for background mantle and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\pascal\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Viscosity averaging scheme<parameters:Material_20model/Viscoelastic/Viscosity_20averaging_20scheme>`

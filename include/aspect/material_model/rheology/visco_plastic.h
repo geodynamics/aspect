@@ -85,6 +85,58 @@ namespace aspect
     };
 
     /**
+    * Additional output fields for diffusion and dislocation viscosities.
+    */
+    template <int dim>
+    class ViscosityAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        /**
+        * Enumeration of viscosity properties that can be exposed through
+        * additional material model outputs.
+        */
+        enum class Property
+        {
+          diffusion_viscosity,
+          dislocation_viscosity
+        };
+
+        /**
+         * Constructor.
+         */
+        ViscosityAdditionalOutputs(const unsigned int n_points,
+                                   const std::vector<Property> &active_properties);
+
+        std::vector<double>
+        get_nth_output(const unsigned int idx) const override;
+
+      private:
+        /**
+         * The viscosity properties that are active for the selected rheology
+         * and should be exposed to postprocessors.
+         */
+        std::vector<Property> active_properties;
+
+      public:
+        /**
+         * Diffusion viscosities. These are the diffusion viscosities that are computed
+         * in Rheology::DiffusionCreep::compute_viscosity() function before yielding.
+         * The values are only relevant when diffusion creep is present,
+         * i.e., viscous flow law is either diffusion or composite.
+         */
+        std::vector<double> diffusion_viscosities;
+
+        /**
+         * Dislocation viscosities. These are the dislocation viscosities that are computed
+         * in Rheology::DiffusionCreep::compute_viscosity() function before yielding.
+         * The values are only relevant when dislocation creep is present,
+         * i.e., viscous flow law is either dislocation or composite.
+         */
+        std::vector<double> dislocation_viscosities;
+
+    };
+
+    /**
      * A data structure with the output of calculate_isostrain_viscosities.
      */
     struct IsostrainViscosities
@@ -117,6 +169,16 @@ namespace aspect
        * MaterialModel::PrescribedDilation::dilation_rhs_term.
        */
       std::vector<double> dilation_rhs_terms;
+
+      /**
+      * Diffusion viscosities for each composition.
+      */
+      std::vector<double> diffusion_viscosities;
+
+      /**
+       * Dislocation viscosities for each composition.
+       */
+      std::vector<double> dislocation_viscosities;
     };
 
     namespace Rheology
@@ -209,14 +271,31 @@ namespace aspect
                                     const MaterialModel::MaterialModelInputs<dim> &in,
                                     MaterialModel::MaterialModelOutputs<dim> &out,
                                     const IsostrainViscosities &isostrain_viscosities) const;
+          /**
+          * Create additional outputs for diffusion and dislocation viscosities.
+          */
+          void
+          create_viscosity_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+          /**
+           * Fill additional outputs for diffusion and dislocation viscosities,
+           * if viscosity additional output object is created.
+           */
+          void fill_viscosity_outputs(const unsigned int point_index,
+                                      const std::vector<double> &volume_fractions,
+                                      MaterialModel::MaterialModelOutputs<dim> &out,
+                                      const IsostrainViscosities &isostrain_viscosities) const;
 
           /**
            * Minimum strain rate used to stabilize the strain rate dependent rheology.
+           *
+           * This variable is read from the parameter file through a parameter called 'Minimum strain rate'.
            */
           double min_strain_rate;
 
           /**
            * Enumeration for selecting which viscosity averaging scheme to use.
+           * This variable is read from the parameter file through a parameter called 'Viscosity averaging scheme'.
            */
           MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
 
@@ -241,6 +320,7 @@ namespace aspect
           /**
            * Reference strain rate for the first non-linear iteration
            * in the first time step.
+           * This variable is read from the parameter file through a parameter called 'Reference strain rate'.
            */
           double ref_strain_rate;
 
@@ -254,8 +334,12 @@ namespace aspect
            * Minimum and maximum viscosities used to improve the
            * stability of the rheology model.
            * These parameters contain one value per composition and phase (potentially the same value).
+           * This variable is read from the parameter file through a parameter called 'Minimum viscosity'.
            */
           std::vector<double> minimum_viscosity;
+          /**
+           *  This variable is read from the parameter file through a parameter called 'Maximum viscosity'.
+           */
           std::vector<double> maximum_viscosity;
 
           /**
@@ -270,7 +354,11 @@ namespace aspect
             frank_kamenetskii,
             composite,
             minimum_diffusion_dislocation
-          } viscous_flow_law;
+          };
+          /**
+           *  This variable is read from the parameter file through a parameter called 'Viscous flow law'.
+           */
+          ViscosityScheme viscous_flow_law;
 
           /**
            * Enumeration for selecting which type of yield mechanism to use.
@@ -280,12 +368,17 @@ namespace aspect
           {
             stress_limiter,
             drucker_prager
-          } yield_mechanism;
+          };
+          /**
+           *  This variable is read from the parameter file through a parameter called 'Yield mechanism'.
+           */
+          YieldScheme yield_mechanism;
 
           /**
            * Whether to allow negative pressures to be used in the computation
            * of plastic yield stresses and viscosities. If false, the minimum
            * pressure in the plasticity formulation will be set to zero.
+           * This variable is read from the parameter file through a parameter called 'Allow negative pressures in plasticity'.
            */
           bool allow_negative_pressures_in_plasticity;
 
@@ -296,6 +389,7 @@ namespace aspect
            * large negative value arising from large negative dynamic pressure,
            * resulting in solver convergence issue and in some cases a viscosity
            * of zero.
+           * This variable is read from the parameter file through a parameter called 'Use adiabatic pressure in creep viscosity'.
            */
           bool use_adiabatic_pressure_in_creep;
 
@@ -305,17 +399,20 @@ namespace aspect
            * This may be helpful in models where the full pressure has
            * large variations resulting in solver convergence issues.
            * Be aware that this setting will change the plastic shear band angle.
+           * This variable is read from the parameter file through a parameter called 'Use adiabatic pressure in plasticity'.
            */
           bool use_adiabatic_pressure_in_plasticity;
 
           /**
            * List of exponents controlling the behavior of the stress limiter
            * yielding mechanism.
+           * This variable is read from the parameter file through a parameter called 'Stress limiter exponents'.
            */
           std::vector<double> exponents_stress_limiter;
 
           /**
            * Temperature gradient added to temperature used in the flow law.
+           * This variable is read from the parameter file through a parameter called 'Adiabat temperature gradient for viscosity'.
            */
           double adiabatic_temperature_gradient_for_viscosity;
 
@@ -328,6 +425,7 @@ namespace aspect
 
           /**
            * Whether to include grain boundary sliding in the constitutive formulation.
+           * This variable is read from the parameter file through a parameter called 'Include Grain Boundary Sliding'.
            */
           bool use_grain_boundary_sliding;
 
@@ -338,6 +436,8 @@ namespace aspect
 
           /**
            * Whether to include Peierls creep in the constitutive formulation.
+           *
+           * This variable is read from the parameter file through a parameter called 'Include Peierls creep'.
            */
           bool use_peierls_creep;
 

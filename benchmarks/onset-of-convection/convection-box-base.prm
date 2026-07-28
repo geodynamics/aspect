@@ -37,7 +37,7 @@ subsection Initial temperature model
 
   subsection Function
     set Variable names      = x,z
-    set Function constants  = p=PMAG, L=WIDTH,H=HEIGHT, pi=3.1415926536, k=2
+    set Function constants  = p=PMAG, L=WIDTH,H=HEIGHT, k=2
     set Function expression = DELTA_T*(1.0-z/H) - p*cos(k*pi*x/L)*sin(pi*z/H)
   end
 end

@@ -329,7 +329,7 @@ namespace aspect
                       unsigned int c_is_nth_entropy_field = 0;
 
                       unsigned int nth_entropy_index = 0;
-                      for (unsigned int entropy_index : entropy_indices)
+                      for (const unsigned int entropy_index : entropy_indices)
                         {
                           if (c == entropy_index)
                             {
@@ -504,7 +504,7 @@ namespace aspect
                              "The value of the angle of internal friction, $\\phi$."
                              "For a value of zero, in 2D the von Mises criterion is retrieved. "
                              "Angles higher than 30 degrees are harder to solve numerically."
-                             "Units: degrees.");
+                             "Units: \\si{\\degree}.");
           prm.declare_entry ("Cohesion", "1e20",
                              Patterns::Double (0.),
                              "The value of the cohesion, $C$. The extremely large default"

@@ -2,9 +2,9 @@
 # file. 
 # Now define parameters:
 # dim = 3
-# compositions = 9
-# grain compositions = 2
-# number of grains = 2
+# compositions = 0
+# grain compositions = 0
+# number of grains = 0
 # x y z d T c1 c2 c3 c4 c5
 1 0  2 2
 2 250e3 2 2

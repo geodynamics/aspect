@@ -128,7 +128,7 @@ subsection Initial composition model
   set Model name = function
 
   subsection Function
-    set Function constants  = pi=3.1415926,a = 1e-6, b = 300000, c = 20000, d=0.0
+    set Function constants  = a = 1e-6, b = 300000, c = 20000, d=0.0
     set Function expression = 0;0 #d + a * exp(-((x-b)*(x-b)+y*y)/(2*c*c)); d + a * exp(-((x-b)*(x-b)+y*y)/(2*c*c))
     set Variable names      = x,y
   end

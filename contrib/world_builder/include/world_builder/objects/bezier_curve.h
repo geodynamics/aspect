@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018-2024 by the authors of the World Builder code.
+  Copyright (C) 2018-2026 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -41,7 +41,7 @@ namespace WorldBuilder
          * @brief Construct a new Bezier Curve object
          *
          * @param p
-         * @param angle_constrains
+         * @param angle_constraints
          */
         BezierCurve() = default;
 
@@ -49,9 +49,9 @@ namespace WorldBuilder
          * @brief Construct a new Bezier Curve object
          *
          * @param p
-         * @param angle_constrains
+         * @param angle_constraints
          */
-        BezierCurve(const std::vector<Point<2> > &p, const std::vector<double> &angle_constrains = {});
+        BezierCurve(const std::vector<Point<2> > &p, const std::vector<double> &angle_constraints = {});
 
         /**
          * @brief Finds the closest point on the curve. If the the closest point

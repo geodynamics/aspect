@@ -214,7 +214,6 @@ subsection Boundary velocity model
     set Variable names      = x,y
 
     # Any constant used inside the function which is not a variable name.
-    set Function constants  = pi=3.1415926
 
     # Vector valued expression for the velocity; separate components by ';'
     set Function expression = if(x>0,-1.e-14*sqrt(x*x+y*y)*sin(atan(y/x)),1.e-14*sqrt(x*x+y*y)*sin(atan(y/x))); if(x>0,1.e-14*sqrt(x*x+y*y)*cos(atan(y/x)),-1.e-14*sqrt(x*x+y*y)*cos(atan(y/x)))

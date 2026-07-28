@@ -1,4 +1,4 @@
-set Additional shared libraries = ./libprescribed_temperature_in_field.so
+set Additional shared libraries = ./libprescribed_field_temperature_max_isotherm.so
 
 include $ASPECT_SOURCE_DIR/tests/prescribed_temperature_in_field.prm
 

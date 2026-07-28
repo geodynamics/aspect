@@ -9,9 +9,58 @@
                                               
 // AUTOMATICALLY GENERATED SINGLE HEADER FILE.
                                               
+//---------------------------------------------------------------------------------------
+//
+// ghc::filesystem - A C++17-like filesystem implementation for C++11/C++14/C++17/C++20
+//
+//---------------------------------------------------------------------------------------
+//
+// Copyright (c) 2018, Steffen Schümann <s.schuemann@pobox.com>
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+//
+//---------------------------------------------------------------------------------------
+//
+// To dynamically select std::filesystem where available on most platforms,
+// you could use:
+//
+// #if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || (defined(__cplusplus) && __cplusplus >= 201703L)) && defined(__has_include)
+// #if __has_include(<filesystem>) && (!defined(__MAC_OS_X_VERSION_MIN_REQUIRED) || __MAC_OS_X_VERSION_MIN_REQUIRED >= 101500)
+// #define GHC_USE_STD_FS
+// #include <filesystem>
+// namespace fs = std::filesystem;
+// #endif
+// #endif
+// #ifndef GHC_USE_STD_FS
+// #include <ghc/filesystem.hpp>
+// namespace fs = ghc::filesystem;
+// #endif
+//
+//---------------------------------------------------------------------------------------
 #ifndef GHC_FILESYSTEM_H
 #define GHC_FILESYSTEM_H
 
+// #define BSD manifest constant only in
+// sys/param.h
+#ifndef _WIN32
+#include <sys/param.h>
+#endif
 
 #ifndef GHC_OS_DETECTED
 #if defined(__APPLE__) && defined(__MACH__)
@@ -103,6 +152,7 @@
 
 #ifdef GHC_OS_WINDOWS
 #include <windows.h>
+// additional includes
 #include <shellapi.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -112,6 +162,7 @@
 #include <dirent.h>
 #include <fcntl.h>
 #include <limits.h>
+#include <sys/param.h>
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <sys/types.h>
@@ -178,6 +229,8 @@
 #endif
 #endif  // GHC_EXPAND_IMPL
 
+// After standard library includes.
+// Standard library support for std::string_view.
 #if defined(__cpp_lib_string_view)
 #define GHC_HAS_STD_STRING_VIEW
 #elif defined(_LIBCPP_VERSION) && (_LIBCPP_VERSION >= 4000) && (__cplusplus >= 201402)
@@ -188,6 +241,7 @@
 #define GHC_HAS_STD_STRING_VIEW
 #endif
 
+// Standard library support for std::experimental::string_view.
 #if defined(_LIBCPP_VERSION) && (_LIBCPP_VERSION >= 3700 && _LIBCPP_VERSION < 7000) && (__cplusplus >= 201402)
 #define GHC_HAS_STD_EXPERIMENTAL_STRING_VIEW
 #elif defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 9)) || (__GNUC__ > 4)) && (__cplusplus >= 201402)
@@ -200,13 +254,53 @@
 #include <experimental/string_view>
 #endif
 
+//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Behaviour Switches (see README.md, should match the config in test/filesystem_test.cpp):
+//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Enforce C++17 API where possible when compiling for C++20, handles the following cases:
+// * fs::path::u8string() returns std::string instead of std::u8string
+// #define GHC_FILESYSTEM_ENFORCE_CPP17_API
+//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// LWG #2682 disables the since then invalid use of the copy option create_symlinks on directories
+// configure LWG conformance ()
 #define LWG_2682_BEHAVIOUR
+//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// LWG #2395 makes crate_directory/create_directories not emit an error if there is a regular
+// file with that name, it is superceded by P1164R1, so only activate if really needed
+// #define LWG_2935_BEHAVIOUR
+//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// LWG #2936 enables new element wise (more expensive) path comparison
+// * if this->root_name().native().compare(p.root_name().native()) != 0 return result
+// * if this->has_root_directory() and !p.has_root_directory() return -1
+// * if !this->has_root_directory() and p.has_root_directory() return -1
+// * else result of element wise comparison of path iteration where first comparison is != 0 or 0
+//   if all comparisons are 0 (on Windows this implementation does case insensitive root_name()
+//   comparison)
 #define LWG_2936_BEHAVIOUR
+//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// LWG #2937 enforces that fs::equivalent emits an error, if !fs::exists(p1)||!exists(p2)
 #define LWG_2937_BEHAVIOUR
+//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// UTF8-Everywhere is the original behaviour of ghc::filesystem. But since v1.5 the windows
+// version defaults to std::wstring storage backend. Still all std::string will be interpreted
+// as UTF-8 encoded. With this define you can enfoce the old behavior on Windows, using
+// std::string as backend and for fs::path::native() and char for fs::path::c_str(). This
+// needs more conversions so it is (an was before v1.5) slower, bot might help keeping source
+// homogenous in a multi platform project.
+// #define GHC_WIN_DISABLE_WSTRING_STORAGE_TYPE
+//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Raise errors/exceptions when invalid unicode codepoints or UTF-8 sequences are found,
+// instead of replacing them with the unicode replacement character (U+FFFD).
+// #define GHC_RAISE_UNICODE_ERRORS
+//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Automatic prefix windows path with "\\?\" if they would break the MAX_PATH length.
+// instead of replacing them with the unicode replacement character (U+FFFD).
 #ifndef GHC_WIN_DISABLE_AUTO_PREFIXES
 #define GHC_WIN_AUTO_PREFIX_LONG_PATH
 #endif  // GHC_WIN_DISABLE_AUTO_PREFIXES
+//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+// ghc::filesystem version in decimal (major * 10000 + minor * 100 + patch)
 #define GHC_FILESYSTEM_VERSION 10502L
 
 #if !defined(GHC_WITH_EXCEPTIONS) && (defined(__EXCEPTIONS) || defined(__cpp_exceptions) || defined(_CPPUNWIND))
@@ -229,6 +323,7 @@ using std::basic_string_view;
 using std::experimental::basic_string_view;
 #endif
 
+// temporary existing exception type for yet unimplemented parts
 class GHC_FS_API_CLASS not_implemented_exception : public std::logic_error
 {
 public:
@@ -262,6 +357,7 @@ bool has_executable_extension(const path& p);
 }
 #endif
 
+// 30.10.8 class path
 class GHC_FS_API_CLASS path
 #if defined(GHC_OS_WINDOWS) && !defined(GHC_WIN_DISABLE_WSTRING_STORAGE_TYPE)
 #define GHC_USE_WCHAR_T
@@ -282,9 +378,13 @@ public:
     using string_type = std::basic_string<value_type>;
     using path_helper_base<value_type>::preferred_separator;
 
+    // 30.10.10.1 enumeration format
+    /// The path format in wich the constructor argument is given.
     enum format {
         generic_format,  ///< The generic format, internally used by
+                         ///< ghc::filesystem::path with slashes
         native_format,   ///< The format native to the current platform this code
+                         ///< is build for
         auto_format,     ///< Try to auto-detect the format, fallback to native
     };
 
@@ -319,6 +419,7 @@ public:
                                                      path>::type;
     template <typename T>
     using path_type_EcharT = typename std::enable_if<std::is_same<T, char>::value || std::is_same<T, char16_t>::value || std::is_same<T, char32_t>::value || std::is_same<T, wchar_t>::value, path>::type;
+    // 30.10.8.4.1 constructors and destructor
     path() noexcept;
     path(const path& p);
     path(path&& p) noexcept;
@@ -335,6 +436,7 @@ public:
 #endif
     ~path();
 
+    // 30.10.8.4.2 assignments
     path& operator=(const path& p);
     path& operator=(path&& p) noexcept;
     path& operator=(string_type&& source);
@@ -346,6 +448,7 @@ public:
     template <class InputIterator>
     path& assign(InputIterator first, InputIterator last);
 
+    // 30.10.8.4.3 appends
     path& operator/=(const path& p);
     template <class Source>
     path& operator/=(const Source& source);
@@ -354,6 +457,7 @@ public:
     template <class InputIterator>
     path& append(InputIterator first, InputIterator last);
 
+    // 30.10.8.4.4 concatenation
     path& operator+=(const path& x);
     path& operator+=(const string_type& x);
 #ifdef GHC_WITH_STRING_VIEW
@@ -370,6 +474,7 @@ public:
     template <class InputIterator>
     path& concat(InputIterator first, InputIterator last);
 
+    // 30.10.8.4.5 modifiers
     void clear() noexcept;
     path& make_preferred();
     path& remove_filename();
@@ -377,6 +482,7 @@ public:
     path& replace_extension(const path& replacement = path());
     void swap(path& rhs) noexcept;
 
+    // 30.10.8.4.6 native format observers
     const string_type& native() const noexcept;
     const value_type* c_str() const noexcept;
     operator string_type() const;
@@ -392,6 +498,7 @@ public:
     std::u16string u16string() const;
     std::u32string u32string() const;
 
+    // 30.10.8.4.7 generic format observers
     template <class EcharT, class traits = std::char_traits<EcharT>, class Allocator = std::allocator<EcharT>>
     std::basic_string<EcharT, traits, Allocator> generic_string(const Allocator& a = Allocator()) const;
     std::string generic_string() const;
@@ -404,6 +511,7 @@ public:
     std::u16string generic_u16string() const;
     std::u32string generic_u32string() const;
 
+    // 30.10.8.4.8 compare
     int compare(const path& p) const noexcept;
     int compare(const string_type& s) const;
 #ifdef GHC_WITH_STRING_VIEW
@@ -411,6 +519,7 @@ public:
 #endif
     int compare(const value_type* s) const;
 
+    // 30.10.8.4.9 decomposition
     path root_name() const;
     path root_directory() const;
     path root_path() const;
@@ -420,6 +529,7 @@ public:
     path stem() const;
     path extension() const;
 
+    // 30.10.8.4.10 query
     bool empty() const noexcept;
     bool has_root_name() const;
     bool has_root_directory() const;
@@ -432,10 +542,12 @@ public:
     bool is_absolute() const;
     bool is_relative() const;
 
+    // 30.10.8.4.11 generation
     path lexically_normal() const;
     path lexically_relative(const path& base) const;
     path lexically_proximate(const path& base) const;
 
+    // 30.10.8.5 iterators
     class iterator;
     using const_iterator = iterator;
     iterator begin() const;
@@ -488,6 +600,7 @@ private:
 #endif
 };
 
+// 30.10.8.6 path non-member functions
 GHC_FS_API void swap(path& lhs, path& rhs) noexcept;
 GHC_FS_API size_t hash_value(const path& p) noexcept;
 #ifdef GHC_HAS_THREEWAY_COMP
@@ -501,11 +614,13 @@ GHC_FS_API bool operator>(const path& lhs, const path& rhs) noexcept;
 GHC_FS_API bool operator>=(const path& lhs, const path& rhs) noexcept;
 GHC_FS_API path operator/(const path& lhs, const path& rhs);
 
+// 30.10.8.6.1 path inserter and extractor
 template <class charT, class traits>
 std::basic_ostream<charT, traits>& operator<<(std::basic_ostream<charT, traits>& os, const path& p);
 template <class charT, class traits>
 std::basic_istream<charT, traits>& operator>>(std::basic_istream<charT, traits>& is, path& p);
 
+// 30.10.8.6.2 path factory functions
 template <class Source, typename = path::path_from_string<Source>>
 #if defined(__cpp_lib_char8_t) && !defined(GHC_FILESYSTEM_ENFORCE_CPP17_API)
 [[deprecated("use ghc::filesystem::path::path() with std::u8string instead")]]
@@ -517,6 +632,7 @@ template <class InputIterator>
 #endif
 path u8path(InputIterator first, InputIterator last);
 
+// 30.10.9 class filesystem_error
 class GHC_FS_API_CLASS filesystem_error : public std::system_error
 {
 public:
@@ -573,6 +689,7 @@ struct space_info
     uintmax_t available;
 };
 
+// 30.10.10, enumerations
 enum class file_type {
     none,
     not_found,
@@ -645,18 +762,23 @@ enum class directory_options : uint16_t {
     skip_permission_denied = 2,
 };
 
+// 30.10.11 class file_status
 class GHC_FS_API_CLASS file_status
 {
 public:
+    // 30.10.11.1 constructors and destructor
     file_status() noexcept;
     explicit file_status(file_type ft, perms prms = perms::unknown) noexcept;
     file_status(const file_status&) noexcept;
     file_status(file_status&&) noexcept;
     ~file_status();
+    // assignments:
     file_status& operator=(const file_status&) noexcept;
     file_status& operator=(file_status&&) noexcept;
+    // 30.10.11.3 modifiers
     void type(file_type ft) noexcept;
     void permissions(perms prms) noexcept;
+    // 30.10.11.2 observers
     file_type type() const noexcept;
     perms permissions() const noexcept;
     friend bool operator==(const file_status& lhs, const file_status& rhs) noexcept { return lhs.type() == rhs.type() && lhs.permissions() == rhs.permissions(); }
@@ -667,9 +789,11 @@ private:
 
 using file_time_type = std::chrono::time_point<std::chrono::system_clock>;
 
+// 30.10.12 Class directory_entry
 class GHC_FS_API_CLASS directory_entry
 {
 public:
+    // 30.10.12.1 constructors and destructor
     directory_entry() noexcept = default;
     directory_entry(const directory_entry&) = default;
     directory_entry(directory_entry&&) noexcept = default;
@@ -679,9 +803,11 @@ public:
     directory_entry(const path& p, std::error_code& ec);
     ~directory_entry();
 
+    // assignments:
     directory_entry& operator=(const directory_entry&) = default;
     directory_entry& operator=(directory_entry&&) noexcept = default;
 
+    // 30.10.12.2 modifiers
 #ifdef GHC_WITH_EXCEPTIONS
     void assign(const path& p);
     void replace_filename(const path& p);
@@ -691,6 +817,7 @@ public:
     void replace_filename(const path& p, std::error_code& ec);
     void refresh(std::error_code& ec) noexcept;
 
+    // 30.10.12.3 observers
     const filesystem::path& path() const noexcept;
     operator const filesystem::path&() const noexcept;
 #ifdef GHC_WITH_EXCEPTIONS
@@ -751,6 +878,7 @@ private:
     time_t _last_write_time = 0;
 };
 
+// 30.10.13 Class directory_iterator
 class GHC_FS_API_CLASS directory_iterator
 {
 public:
@@ -775,6 +903,7 @@ public:
     using pointer = const directory_entry*;
     using reference = const directory_entry&;
 
+    // 30.10.13.1 member functions
     directory_iterator() noexcept;
 #ifdef GHC_WITH_EXCEPTIONS
     explicit directory_iterator(const path& p);
@@ -794,6 +923,7 @@ public:
 #endif
     directory_iterator& increment(std::error_code& ec) noexcept;
 
+    // other members as required by 27.2.3, input iterators
 #ifdef GHC_WITH_EXCEPTIONS
     proxy operator++(int)
     {
@@ -811,9 +941,11 @@ private:
     std::shared_ptr<impl> _impl;
 };
 
+// 30.10.13.2 directory_iterator non-member functions
 GHC_FS_API directory_iterator begin(directory_iterator iter) noexcept;
 GHC_FS_API directory_iterator end(const directory_iterator&) noexcept;
 
+// 30.10.14 class recursive_directory_iterator
 class GHC_FS_API_CLASS recursive_directory_iterator
 {
 public:
@@ -823,6 +955,7 @@ public:
     using pointer = const directory_entry*;
     using reference = const directory_entry&;
 
+    // 30.10.14.1 constructors and destructor
     recursive_directory_iterator() noexcept;
 #ifdef GHC_WITH_EXCEPTIONS
     explicit recursive_directory_iterator(const path& p);
@@ -834,6 +967,7 @@ public:
     recursive_directory_iterator(recursive_directory_iterator&& rhs) noexcept;
     ~recursive_directory_iterator();
 
+    // 30.10.14.1 observers
     directory_options options() const;
     int depth() const;
     bool recursion_pending() const;
@@ -841,6 +975,7 @@ public:
     const directory_entry& operator*() const;
     const directory_entry* operator->() const;
 
+    // 30.10.14.1 modifiers recursive_directory_iterator&
     recursive_directory_iterator& operator=(const recursive_directory_iterator& rhs);
     recursive_directory_iterator& operator=(recursive_directory_iterator&& rhs) noexcept;
 #ifdef GHC_WITH_EXCEPTIONS
@@ -854,6 +989,7 @@ public:
     void pop(std::error_code& ec);
     void disable_recursion_pending();
 
+    // other members as required by 27.2.3, input iterators
 #ifdef GHC_WITH_EXCEPTIONS
     directory_iterator::proxy operator++(int)
     {
@@ -880,9 +1016,11 @@ private:
     std::shared_ptr<recursive_directory_iterator_impl> _impl;
 };
 
+// 30.10.14.2 directory_iterator non-member functions
 GHC_FS_API recursive_directory_iterator begin(recursive_directory_iterator iter) noexcept;
 GHC_FS_API recursive_directory_iterator end(const recursive_directory_iterator&) noexcept;
 
+// 30.10.15 filesystem operations
 #ifdef GHC_WITH_EXCEPTIONS
 GHC_FS_API path absolute(const path& p);
 GHC_FS_API path canonical(const path& p);
@@ -990,6 +1128,7 @@ GHC_FS_API void create_hard_link(const path& to, const path& new_hard_link, std:
 GHC_FS_API uintmax_t hard_link_count(const path& p, std::error_code& ec) noexcept;
 #endif
 
+// Non-C++17 add-on std::fstream wrappers with path
 template <class charT, class traits = std::char_traits<charT>>
 class basic_filebuf : public std::basic_filebuf<charT, traits>
 {
@@ -1110,6 +1249,9 @@ private:
 #endif
 };
 
+//-------------------------------------------------------------------------------------------------
+//  Implementation
+//-------------------------------------------------------------------------------------------------
 
 namespace detail {
 enum utf8_states_t { S_STRT = 0, S_RJCT = 8 };
@@ -1164,6 +1306,7 @@ GHC_INLINE std::error_code make_error_code(portable_error err)
     }
 #else
     switch (err) {
+        default:
         case portable_error::none:
             return std::error_code();
         case portable_error::exists:
@@ -1178,8 +1321,6 @@ GHC_INLINE std::error_code make_error_code(portable_error err)
             return std::error_code(EINVAL, std::system_category());
         case portable_error::is_a_directory:
             return std::error_code(EISDIR, std::system_category());
-        default:
-            std::error_code();
     }
 #endif
     return std::error_code();
@@ -1305,9 +1446,13 @@ GHC_INLINE void appendUTF8(std::string& str, uint32_t unicode)
     }
 }
 
+// Thanks to Bjoern Hoehrmann (https://bjoern.hoehrmann.de/utf-8/decoder/dfa/)
+// and Taylor R Campbell for the ideas to this DFA approach of UTF-8 decoding;
+// Generating debugging and shrinking my own DFA from scratch was a day of fun!
 GHC_INLINE unsigned consumeUtf8Fragment(const unsigned state, const uint8_t fragment, uint32_t& codepoint)
 {
     static const uint32_t utf8_state_info[] = {
+        // encoded states
         0x11111111u, 0x11111111u, 0x77777777u, 0x77777777u, 0x88888888u, 0x88888888u, 0x88888888u, 0x88888888u, 0x22222299u, 0x22222222u, 0x22222222u, 0x22222222u, 0x3333333au, 0x33433333u, 0x9995666bu, 0x99999999u,
         0x88888880u, 0x22818108u, 0x88888881u, 0x88888882u, 0x88888884u, 0x88888887u, 0x88888886u, 0x82218108u, 0x82281108u, 0x88888888u, 0x88888883u, 0x88888885u, 0u,          0u,          0u,          0u,
     };
@@ -1591,11 +1736,11 @@ GHC_INLINE void path::postprocess_path_with_format(path::format fmt)
 #else
         case path::auto_format:
         case path::native_format:
+        default:
         case path::generic_format:
+            // nothing to do
             break;
 #endif
-        default:
-            throw std::runtime_error( "Should not be able to reach this.");
     }
     if (_path.length() > _prefixLength + 2 && _path[_prefixLength] == preferred_separator && _path[_prefixLength + 1] == preferred_separator && _path[_prefixLength + 2] != preferred_separator) {
         impl_string_type::iterator new_end = std::unique(_path.begin() + static_cast<string_type::difference_type>(_prefixLength) + 2, _path.end(), [](path::value_type lhs, path::value_type rhs) { return lhs == rhs && lhs == preferred_separator; });
@@ -1635,6 +1780,7 @@ template <class InputIterator>
 inline path::path(InputIterator first, InputIterator last, format fmt)
     : path(std::basic_string<typename std::iterator_traits<InputIterator>::value_type>(first, last), fmt)
 {
+    // delegated
 }
 
 #ifdef GHC_EXPAND_IMPL
@@ -2149,6 +2295,8 @@ GHC_INLINE u8arguments::u8arguments(int& argc, char**& argv)
 #endif
 }
 
+//-----------------------------------------------------------------------------
+// 30.10.8.4.1 constructors and destructor
 
 GHC_INLINE path::path() noexcept {}
 
@@ -2202,6 +2350,8 @@ inline path::path(InputIterator first, InputIterator last, const std::locale& lo
 
 GHC_INLINE path::~path() {}
 
+//-----------------------------------------------------------------------------
+// 30.10.8.4.2 assignments
 
 GHC_INLINE path& path::operator=(const path& p)
 {
@@ -2273,10 +2423,13 @@ inline path& path::assign(InputIterator first, InputIterator last)
 
 #ifdef GHC_EXPAND_IMPL
 
+//-----------------------------------------------------------------------------
+// 30.10.8.4.3 appends
 
 GHC_INLINE path& path::operator/=(const path& p)
 {
     if (p.empty()) {
+        // was: if ((!has_root_directory() && is_absolute()) || has_filename())
         if (!_path.empty() && _path[_path.length() - 1] != preferred_separator && _path[_path.length() - 1] != ':') {
             _path += preferred_separator;
         }
@@ -2351,6 +2504,8 @@ inline path& path::append(InputIterator first, InputIterator last)
 
 #ifdef GHC_EXPAND_IMPL
 
+//-----------------------------------------------------------------------------
+// 30.10.8.4.4 concatenation
 
 GHC_INLINE path& path::operator+=(const path& x)
 {
@@ -2431,6 +2586,8 @@ inline path& path::concat(InputIterator first, InputIterator last)
 
 #ifdef GHC_EXPAND_IMPL
 
+//-----------------------------------------------------------------------------
+// 30.10.8.4.5 modifiers
 GHC_INLINE void path::clear() noexcept
 {
     _path.clear();
@@ -2441,6 +2598,8 @@ GHC_INLINE void path::clear() noexcept
 
 GHC_INLINE path& path::make_preferred()
 {
+    // as this filesystem implementation only uses generic_format
+    // internally, this must be a no-op
     return *this;
 }
 
@@ -2477,6 +2636,8 @@ GHC_INLINE void path::swap(path& rhs) noexcept
 #endif
 }
 
+//-----------------------------------------------------------------------------
+// 30.10.8.4.6, native format observers
 GHC_INLINE const path::string_type& path::native() const noexcept
 {
     return _path;
@@ -2546,16 +2707,20 @@ GHC_INLINE std::string path::u8string() const
 
 GHC_INLINE std::u16string path::u16string() const
 {
+    // TODO: optimize
     return detail::fromUtf8<std::u16string>(string());
 }
 
 GHC_INLINE std::u32string path::u32string() const
 {
+    // TODO: optimize
     return detail::fromUtf8<std::u32string>(string());
 }
 
 #endif  // GHC_EXPAND_IMPL
 
+//-----------------------------------------------------------------------------
+// 30.10.8.4.7, generic format observers
 template <class EcharT, class traits, class Allocator>
 inline std::basic_string<EcharT, traits, Allocator> path::generic_string(const Allocator& a) const
 {
@@ -2634,6 +2799,8 @@ GHC_INLINE std::u32string path::generic_u32string() const
 #endif
 }
 
+//-----------------------------------------------------------------------------
+// 30.10.8.4.8, compare
 GHC_INLINE int path::compare(const path& p) const noexcept
 {
 #ifdef LWG_2936_BEHAVIOUR
@@ -2706,6 +2873,8 @@ GHC_INLINE int path::compare(const value_type* s) const
     return compare(path(s));
 }
 
+//-----------------------------------------------------------------------------
+// 30.10.8.4.9, decomposition
 #ifdef GHC_OS_WINDOWS
 GHC_INLINE void path::handle_prefixes()
 {
@@ -2836,6 +3005,8 @@ GHC_INLINE bool has_executable_extension(const path& p)
 }  // namespace detail
 #endif
 
+//-----------------------------------------------------------------------------
+// 30.10.8.4.10, query
 GHC_INLINE bool path::empty() const noexcept
 {
     return _path.empty();
@@ -2897,6 +3068,8 @@ GHC_INLINE bool path::is_relative() const
     return !is_absolute();
 }
 
+//-----------------------------------------------------------------------------
+// 30.10.8.4.11, generation
 GHC_INLINE path path::lexically_normal() const
 {
     path dest;
@@ -2971,6 +3144,8 @@ GHC_INLINE path path::lexically_proximate(const path& base) const
     return result.empty() ? *this : result;
 }
 
+//-----------------------------------------------------------------------------
+// 30.10.8.5, iterators
 GHC_INLINE path::iterator::iterator() {}
 
 GHC_INLINE path::iterator::iterator(const path& p, const impl_string_type::const_iterator& pos)
@@ -2994,11 +3169,15 @@ GHC_INLINE path::impl_string_type::const_iterator path::iterator::increment(cons
             i = _prefix;
         }
         else if (*i++ == preferred_separator) {
+            // we can only sit on a slash if it is a network name or a root
             if (i != _last && *i == preferred_separator) {
                 if (fromStart && !(i + 1 != _last && *(i + 1) == preferred_separator)) {
+                    // leadind double slashes detected, treat this and the
+                    // following until a slash as one unit
                     i = std::find(++i, _last, preferred_separator);
                 }
                 else {
+                    // skip redundant slashes
                     while (i != _last && *i == preferred_separator) {
                         ++i;
                     }
@@ -3022,6 +3201,8 @@ GHC_INLINE path::impl_string_type::const_iterator path::iterator::decrement(cons
     path::impl_string_type::const_iterator i = pos;
     if (i != _first) {
         --i;
+        // if this is now the root slash or the trailing slash, we are done,
+        // else check for network name
         if (i != _root && (pos != _last || *i != preferred_separator)) {
 #ifdef GHC_OS_WINDOWS
             static const impl_string_type seps = GHC_PLATFORM_LITERAL("\\:");
@@ -3032,6 +3213,7 @@ GHC_INLINE path::impl_string_type::const_iterator path::iterator::decrement(cons
 #else
             i = std::find(std::reverse_iterator<path::impl_string_type::const_iterator>(i), std::reverse_iterator<path::impl_string_type::const_iterator>(_first), preferred_separator).base();
 #endif
+            // Now we have to check if this is a network name
             if (i - _first == 2 && *_first == preferred_separator && *(_first + 1) == preferred_separator) {
                 i -= 2;
             }
@@ -3115,6 +3297,8 @@ GHC_INLINE path::iterator path::end() const
     return iterator(*this, _path.end());
 }
 
+//-----------------------------------------------------------------------------
+// 30.10.8.6, path non-member functions
 GHC_INLINE void swap(path& lhs, path& rhs) noexcept
 {
     swap(lhs._path, rhs._path);
@@ -3171,6 +3355,8 @@ GHC_INLINE path operator/(const path& lhs, const path& rhs)
 
 #endif  // GHC_EXPAND_IMPL
 
+//-----------------------------------------------------------------------------
+// 30.10.8.6.1 path inserter and extractor
 template <class charT, class traits>
 inline std::basic_ostream<charT, traits>& operator<<(std::basic_ostream<charT, traits>& os, const path& p)
 {
@@ -3226,6 +3412,8 @@ inline std::basic_istream<charT, traits>& operator>>(std::basic_istream<charT, t
 
 #ifdef GHC_EXPAND_IMPL
 
+//-----------------------------------------------------------------------------
+// 30.10.9 Class filesystem_error
 GHC_INLINE filesystem_error::filesystem_error(const std::string& what_arg, std::error_code ec)
     : std::system_error(ec, what_arg)
     , _what_arg(what_arg)
@@ -3274,6 +3462,8 @@ GHC_INLINE const char* filesystem_error::what() const noexcept
     return _what_arg.c_str();
 }
 
+//-----------------------------------------------------------------------------
+// 30.10.15, filesystem operations
 #ifdef GHC_WITH_EXCEPTIONS
 GHC_INLINE path absolute(const path& p)
 {
@@ -4747,6 +4937,9 @@ GHC_INLINE path weakly_canonical(const path& p, std::error_code& ec) noexcept
     return ec ? path() : result.lexically_normal();
 }
 
+//-----------------------------------------------------------------------------
+// 30.10.11 class file_status
+// 30.10.11.1 constructors and destructor
 GHC_INLINE file_status::file_status() noexcept
     : file_status(file_type::none)
 {
@@ -4772,6 +4965,7 @@ GHC_INLINE file_status::file_status(file_status&& other) noexcept
 
 GHC_INLINE file_status::~file_status() {}
 
+// assignments:
 GHC_INLINE file_status& file_status::operator=(const file_status& rhs) noexcept
 {
     _type = rhs._type;
@@ -4786,6 +4980,7 @@ GHC_INLINE file_status& file_status::operator=(file_status&& rhs) noexcept
     return *this;
 }
 
+// 30.10.11.3 modifiers
 GHC_INLINE void file_status::type(file_type ft) noexcept
 {
     _type = ft;
@@ -4796,6 +4991,7 @@ GHC_INLINE void file_status::permissions(perms prms) noexcept
     _perms = prms;
 }
 
+// 30.10.11.2 observers
 GHC_INLINE file_type file_status::type() const noexcept
 {
     return _type;
@@ -4806,6 +5002,12 @@ GHC_INLINE perms file_status::permissions() const noexcept
     return _perms;
 }
 
+//-----------------------------------------------------------------------------
+// 30.10.12 class directory_entry
+// 30.10.12.1 constructors and destructor
+// directory_entry::directory_entry() noexcept = default;
+// directory_entry::directory_entry(const directory_entry&) = default;
+// directory_entry::directory_entry(directory_entry&&) noexcept = default;
 #ifdef GHC_WITH_EXCEPTIONS
 GHC_INLINE directory_entry::directory_entry(const filesystem::path& p)
     : _path(p)
@@ -4832,7 +5034,11 @@ GHC_INLINE directory_entry::directory_entry(const filesystem::path& p, std::erro
 
 GHC_INLINE directory_entry::~directory_entry() {}
 
+// assignments:
+// directory_entry& directory_entry::operator=(const directory_entry&) = default;
+// directory_entry& directory_entry::operator=(directory_entry&&) noexcept = default;
 
+// 30.10.12.2 directory_entry modifiers
 #ifdef GHC_WITH_EXCEPTIONS
 GHC_INLINE void directory_entry::assign(const filesystem::path& p)
 {
@@ -4881,6 +5087,7 @@ GHC_INLINE void directory_entry::refresh(std::error_code& ec) noexcept
 #endif
 }
 
+// 30.10.12.3 directory_entry observers
 GHC_INLINE const filesystem::path& directory_entry::path() const noexcept
 {
     return _path;
@@ -5136,6 +5343,8 @@ GHC_INLINE bool directory_entry::operator>=(const directory_entry& rhs) const no
     return _path >= rhs._path;
 }
 
+//-----------------------------------------------------------------------------
+// 30.10.13 class directory_iterator
 
 #ifdef GHC_OS_WINDOWS
 class directory_iterator::impl
@@ -5242,6 +5451,7 @@ public:
     std::error_code _ec;
 };
 #else
+// POSIX implementation
 class directory_iterator::impl
 {
 public:
@@ -5311,6 +5521,7 @@ public:
 };
 #endif
 
+// 30.10.13.1 member functions
 GHC_INLINE directory_iterator::directory_iterator() noexcept
     : _impl(new impl(path(), directory_options::none))
 {
@@ -5413,6 +5624,7 @@ GHC_INLINE bool directory_iterator::operator!=(const directory_iterator& rhs) co
     return _impl->_current != rhs._impl->_current;
 }
 
+// 30.10.13.2 directory_iterator non-member functions
 
 GHC_INLINE directory_iterator begin(directory_iterator iter) noexcept
 {
@@ -5424,6 +5636,8 @@ GHC_INLINE directory_iterator end(const directory_iterator&) noexcept
     return directory_iterator();
 }
 
+//-----------------------------------------------------------------------------
+// 30.10.14 class recursive_directory_iterator
 
 GHC_INLINE recursive_directory_iterator::recursive_directory_iterator() noexcept
     : _impl(new recursive_directory_iterator_impl(directory_options::none, true))
@@ -5469,6 +5683,7 @@ GHC_INLINE recursive_directory_iterator::recursive_directory_iterator(recursive_
 
 GHC_INLINE recursive_directory_iterator::~recursive_directory_iterator() {}
 
+// 30.10.14.1 observers
 GHC_INLINE directory_options recursive_directory_iterator::options() const
 {
     return _impl->_options;
@@ -5494,6 +5709,7 @@ GHC_INLINE const directory_entry* recursive_directory_iterator::operator->() con
     return &(*(_impl->_dir_iter_stack.top()));
 }
 
+// 30.10.14.1 modifiers recursive_directory_iterator&
 GHC_INLINE recursive_directory_iterator& recursive_directory_iterator::operator=(const recursive_directory_iterator& rhs)
 {
     _impl = rhs._impl;
@@ -5572,6 +5788,7 @@ GHC_INLINE void recursive_directory_iterator::disable_recursion_pending()
     _impl->_recursion_pending = false;
 }
 
+// other members as required by 27.2.3, input iterators
 GHC_INLINE bool recursive_directory_iterator::operator==(const recursive_directory_iterator& rhs) const
 {
     return _impl->_dir_iter_stack.top() == rhs._impl->_dir_iter_stack.top();
@@ -5582,6 +5799,7 @@ GHC_INLINE bool recursive_directory_iterator::operator!=(const recursive_directo
     return _impl->_dir_iter_stack.top() != rhs._impl->_dir_iter_stack.top();
 }
 
+// 30.10.14.2 directory_iterator non-member functions
 GHC_INLINE recursive_directory_iterator begin(recursive_directory_iterator iter) noexcept
 {
     return iter;
@@ -5597,10 +5815,19 @@ GHC_INLINE recursive_directory_iterator end(const recursive_directory_iterator&)
 }  // namespace filesystem
 }  // namespace ghc
 
+// cleanup some macros
 #undef GHC_INLINE
 #undef GHC_EXPAND_IMPL
 
 #endif  // GHC_FILESYSTEM_H
+//          __        ____ ____
+// ___  ___/  |_ __ _/_   /_   |
+// \  \/ /\   __\  |  \   ||   |
+//  \   /  |  | |  |  /   ||   |
+//   \_/   |__| |____/|___||___|
+//
+//  License: BSD License ; see LICENSE
+//
 
 #ifndef VTU11_ALIAS_HPP
 #define VTU11_ALIAS_HPP
@@ -5635,6 +5862,7 @@ using Byte = unsigned char;
     #define VTU11_ASCII_FLOATING_POINT_FORMAT "%.6g"
 #endif
 
+// To dynamically select std::filesystem where available, you could use:
 #if defined(__cplusplus) && __cplusplus >= 201703L
     #if __has_include(<filesystem>) // has_include is C++17
         #include <filesystem>
@@ -5651,6 +5879,14 @@ using Byte = unsigned char;
 #endif
 
 #endif // VTU11_ALIAS_HPP
+//          __        ____ ____
+// ___  ___/  |_ __ _/_   /_   |
+// \  \/ /\   __\  |  \   ||   |
+//  \   /  |  | |  |  /   ||   |
+//   \_/   |__| |____/|___||___|
+//
+//  License: BSD License ; see LICENSE
+//
 
 #ifndef VTU11_WRITER_HPP
 #define VTU11_WRITER_HPP
@@ -5727,6 +5963,14 @@ struct RawBinaryAppendedWriter
 
 
 #endif // VTU11_WRITER_HPP
+//          __        ____ ____
+// ___  ___/  |_ __ _/_   /_   |
+// \  \/ /\   __\  |  \   ||   |
+//  \   /  |  | |  |  /   ||   |
+//   \_/   |__| |____/|___||___|
+//
+//  License: BSD License ; see LICENSE
+//
 
 #ifndef VTU11_UTILITIES_HPP
 #define VTU11_UTILITIES_HPP
@@ -5772,6 +6016,7 @@ std::string appendSizeInBits( const char* str )
     return str + std::to_string( sizeof( T ) * 8 );
 }
 
+// SFINAE if signed integer
 template<typename T> inline
 typename std::enable_if<std::numeric_limits<T>::is_integer && 
                         std::numeric_limits<T>::is_signed, std::string>::type 
@@ -5780,6 +6025,7 @@ typename std::enable_if<std::numeric_limits<T>::is_integer &&
     return appendSizeInBits<T>( "Int" );
 }
 
+// SFINAE if unsigned signed integer
 template<typename T> inline
 typename std::enable_if<std::numeric_limits<T>::is_integer &&
                        !std::numeric_limits<T>::is_signed, std::string>::type 
@@ -5788,6 +6034,7 @@ typename std::enable_if<std::numeric_limits<T>::is_integer &&
     return appendSizeInBits<T>( "UInt" );
 }
 
+// SFINAE if double or float
 template<typename T> inline
 typename std::enable_if<std::is_same<T, double>::value || 
                         std::is_same<T, float>::value, std::string>::type 
@@ -5800,6 +6047,14 @@ typename std::enable_if<std::is_same<T, double>::value ||
 
 
 #endif // VTU11_UTILITIES_HPP
+//          __        ____ ____
+// ___  ___/  |_ __ _/_   /_   |
+// \  \/ /\   __\  |  \   ||   |
+//  \   /  |  | |  |  /   ||   |
+//   \_/   |__| |____/|___||___|
+//
+//  License: BSD License ; see LICENSE
+//
 
 #ifndef VTU11_ZLIBWRITER_HPP
 #define VTU11_ZLIBWRITER_HPP
@@ -5835,6 +6090,14 @@ struct CompressedRawBinaryAppendedWriter
 #endif // VTU11_ENABLE_ZLIB
 
 #endif // VTU11_ZLIBWRITER_HPP
+//          __        ____ ____
+// ___  ___/  |_ __ _/_   /_   |
+// \  \/ /\   __\  |  \   ||   |
+//  \   /  |  | |  |  /   ||   |
+//   \_/   |__| |____/|___||___|
+//
+//  License: BSD License ; see LICENSE
+//
 
 #ifndef VTU11_VTU11_HPP
 #define VTU11_VTU11_HPP
@@ -5880,6 +6143,7 @@ struct Vtu11UnstructuredMesh
  *  - Both raw binary modes use appended format 
  */
 
+//! Writes single file
 template<typename MeshGenerator>
 void writeVtu( const std::string& filename,
                MeshGenerator& mesh,
@@ -5887,11 +6151,13 @@ void writeVtu( const std::string& filename,
                const std::vector<DataSetData>& dataSetData,
                const std::string& writeMode = "RawBinaryCompressed" );
 
+//! Creates path/baseName.pvtu and path/baseName directory
 void writePVtu( const std::string& path,
                 const std::string& baseName,
                 const std::vector<DataSetInfo>& dataSetInfo,
                 size_t numberOfFiles );
 	
+//! Forwards path/baseName.vtu to the writeVtu function
 template<typename MeshGenerator>
 void writePartition( const std::string& path,
                      const std::string& baseName,
@@ -5905,6 +6171,14 @@ void writePartition( const std::string& path,
 
 
 #endif // VTU11_VTU11_HPP
+//          __        ____ ____
+// ___  ___/  |_ __ _/_   /_   |
+// \  \/ /\   __\  |  \   ||   |
+//  \   /  |  | |  |  /   ||   |
+//   \_/   |__| |____/|___||___|
+//
+//  License: BSD License ; see LICENSE
+//
 
 #ifndef VTU11_UTILITIES_IMPL_HPP
 #define VTU11_UTILITIES_IMPL_HPP
@@ -6011,11 +6285,13 @@ inline std::string base64Encode( Iterator begin, Iterator end )
         result += tmp;
     };
 
+    // in steps of 3
     for( size_t i = 0; i < rawBytes / 3; ++i )
     {
         encodeTriplet( {{ next( ), next( ), next( ) }}, 0 );
     }
 
+    // cleanup
     if( it != end )
     {
         std::array<char, 3> bytes {{ '\0', '\0', '\0' }};
@@ -6033,6 +6309,7 @@ inline std::string base64Encode( Iterator begin, Iterator end )
     return result;
 }
 
+// http://www.cplusplus.com/forum/beginner/51572/
 inline size_t encodedNumberOfBytes( size_t rawNumberOfBytes )
 {
     if( rawNumberOfBytes != 0 )
@@ -6048,6 +6325,14 @@ inline size_t encodedNumberOfBytes( size_t rawNumberOfBytes )
 } // namespace vtu11
 
 #endif // VTU11_UTILITIES_IMPL_HPP
+//          __        ____ ____
+// ___  ___/  |_ __ _/_   /_   |
+// \  \/ /\   __\  |  \   ||   |
+//  \   /  |  | |  |  /   ||   |
+//   \_/   |__| |____/|___||___|
+//
+//  License: BSD License ; see LICENSE
+//
 
 #ifndef VTU11_WRITER_IMPL_HPP
 #define VTU11_WRITER_IMPL_HPP
@@ -6061,29 +6346,29 @@ namespace detail
 {
 
 template<typename T> inline
-void writeNumber( char (&/*buffer*/)[64], T /*value*/ )
+void writeNumber( char (&)[64], T )
 {
     VTU11_THROW( "Invalid data type." );
 }
 
-#define __VTU11_WRITE_NUMBER_SPECIALIZATION( string, type )    \
+#define VTU11_WRITE_NUMBER_SPECIALIZATION( string, type )     \
 template<> inline                                             \
-void writeNumber<type>( char (&buffer)[64], type value )         \
+void writeNumber<type>( char (&buffer)[64], type value )      \
 {                                                             \
     std::snprintf( buffer, sizeof( buffer ), string, value ); \
 }
 
-__VTU11_WRITE_NUMBER_SPECIALIZATION( VTU11_ASCII_FLOATING_POINT_FORMAT, double )
-__VTU11_WRITE_NUMBER_SPECIALIZATION( "%lld", long long int )
-__VTU11_WRITE_NUMBER_SPECIALIZATION( "%ld" , long int )
-__VTU11_WRITE_NUMBER_SPECIALIZATION( "%d"  , int )
-__VTU11_WRITE_NUMBER_SPECIALIZATION( "%hd" , short )
-__VTU11_WRITE_NUMBER_SPECIALIZATION( "%hhd", char )
-__VTU11_WRITE_NUMBER_SPECIALIZATION( "%llu", unsigned long long int )
-__VTU11_WRITE_NUMBER_SPECIALIZATION( "%ld" , unsigned long int )
-__VTU11_WRITE_NUMBER_SPECIALIZATION( "%d"  , unsigned int )
-__VTU11_WRITE_NUMBER_SPECIALIZATION( "%hd" , unsigned short )
-__VTU11_WRITE_NUMBER_SPECIALIZATION( "%hhd", unsigned char )
+VTU11_WRITE_NUMBER_SPECIALIZATION( VTU11_ASCII_FLOATING_POINT_FORMAT, double )
+VTU11_WRITE_NUMBER_SPECIALIZATION( "%lld", long long int )
+VTU11_WRITE_NUMBER_SPECIALIZATION( "%ld" , long int )
+VTU11_WRITE_NUMBER_SPECIALIZATION( "%d"  , int )
+VTU11_WRITE_NUMBER_SPECIALIZATION( "%hd" , short )
+VTU11_WRITE_NUMBER_SPECIALIZATION( "%hhd", char )
+VTU11_WRITE_NUMBER_SPECIALIZATION( "%llu", unsigned long long int )
+VTU11_WRITE_NUMBER_SPECIALIZATION( "%ld" , unsigned long int )
+VTU11_WRITE_NUMBER_SPECIALIZATION( "%d"  , unsigned int )
+VTU11_WRITE_NUMBER_SPECIALIZATION( "%hd" , unsigned short )
+VTU11_WRITE_NUMBER_SPECIALIZATION( "%hhd", unsigned char )
 
 } // namespace detail
 
@@ -6109,6 +6394,8 @@ inline void AsciiWriter::writeData( std::ostream& output,
 {
   for( auto value : data )
   {
+    // will otherwise interpret uint8 as char and output nonsense instead
+  	// changed the datatype from unsigned to int
       output << static_cast<int>( value ) << " ";
   }
 
@@ -6134,6 +6421,7 @@ inline StringStringMap AsciiWriter::appendedAttributes( )
   return { };
 }
 
+// ----------------------------------------------------------------
 
 template<typename T>
 inline void Base64BinaryWriter::writeData( std::ostream& output,
@@ -6167,6 +6455,7 @@ inline StringStringMap Base64BinaryWriter::appendedAttributes( )
   return { };
 }
 
+// ----------------------------------------------------------------
 
 template<typename T>
 inline void Base64BinaryAppendedWriter::writeData( std::ostream&,
@@ -6183,6 +6472,7 @@ inline void Base64BinaryAppendedWriter::writeAppended( std::ostream& output )
 {
   for( auto dataSet : appendedData )
   {
+    // looks like header and data has to be encoded at once
     std::vector<char> data( dataSet.second + sizeof( HeaderType ) );
 
     *reinterpret_cast<HeaderType*>( &data[0] ) = dataSet.second;
@@ -6211,6 +6501,7 @@ inline StringStringMap Base64BinaryAppendedWriter::appendedAttributes( )
   return { { "encoding", "base64" } };
 }
 
+// ----------------------------------------------------------------
 
 template<typename T>
 inline void RawBinaryAppendedWriter::writeData( std::ostream&,
@@ -6262,10 +6553,20 @@ inline StringStringMap RawBinaryAppendedWriter::appendedAttributes( )
 } // namespace vtu11
 
 #endif // VTU11_WRITER_IMPL_HPP
+//          __        ____ ____
+// ___  ___/  |_ __ _/_   /_   |
+// \  \/ /\   __\  |  \   ||   |
+//  \   /  |  | |  |  /   ||   |
+//   \_/   |__| |____/|___||___|
+//
+//  License: BSD License ; see LICENSE
+//
 
 #ifndef VTU11_ZLIBWRITER_IMPL_HPP
+#define VTU11_ZLIBWRITER_IMPL_HPP
 
 #ifdef VTU11_ENABLE_ZLIB
+
 #include "zlib.h"
 
 namespace vtu11
@@ -6276,8 +6577,20 @@ namespace detail
 template<typename T>
 std::vector<HeaderType> zlibCompressData( const std::vector<T>& data,
                                           std::vector<std::vector<Byte>>& targetBlocks,
-                                          size_t blocksize = 32768 ) // 2^15
+                                          size_t blockSize = 32768 ) // 2^15
 {
+  using IntType = uLong;
+
+  // Somewhere in vtu11/inc/filesystem.hpp, with MSVC, max is defined as macro. This pre-
+  // vents us from using std::numeric_limits<T>::max( ), so we turn off these checks. 
+  #ifndef max
+  if( data.size( ) > std::numeric_limits<IntType>::max( ) ||
+      blockSize > std::numeric_limits<IntType>::max( ) )
+  {
+      throw std::runtime_error( "Size too large for uLong zlib type." );
+  }
+  #endif
+
   std::vector<HeaderType> header( 3, 0 );
 
   if( data.empty( ) )
@@ -6285,19 +6598,19 @@ std::vector<HeaderType> zlibCompressData( const std::vector<T>& data,
     return header;
   }
 
+  auto blocksize = static_cast<IntType>( blockSize );
+
   auto compressedBuffersize = compressBound( blocksize );
 
   Byte* buffer = new Byte[compressedBuffersize];
   Byte* currentByte = const_cast<Byte*>( reinterpret_cast<const Byte*>( &data[0] ) );
+  
+  IntType numberOfBytes = static_cast<IntType>( data.size( ) ) * sizeof( T );
+  IntType numberOfBlocks = ( numberOfBytes - 1 ) / blocksize + 1;
 
-  size_t numberOfBytes = data.size( ) * sizeof( T );
-  size_t numberOfBlocks = ( numberOfBytes - 1 ) / blocksize + 1;
-
-  using ZlibSizeType = decltype( compressedBuffersize );
-
-  auto compressBlock = [&]( ZlibSizeType numberOfBytesInBlock )
+  auto compressBlock = [&]( IntType numberOfBytesInBlock )
   {
-    ZlibSizeType compressedLength = compressedBuffersize;
+      IntType compressedLength = compressedBuffersize;
 
     int errorCode = compress( buffer, &compressedLength, currentByte, numberOfBytesInBlock );
 
@@ -6314,12 +6627,12 @@ std::vector<HeaderType> zlibCompressData( const std::vector<T>& data,
     currentByte += numberOfBytesInBlock;
   };
 
-  for( size_t iBlock = 0; iBlock < numberOfBlocks - 1; ++iBlock )
+  for( IntType iBlock = 0; iBlock < numberOfBlocks - 1; ++iBlock )
   {
-    compressBlock( blocksize );
+    compressBlock( static_cast<IntType>( blocksize ) );
   }
 
-  size_t remainder = numberOfBytes - ( numberOfBlocks - 1 ) * blocksize;
+  IntType remainder = numberOfBytes - ( numberOfBlocks - 1 ) * blocksize;
 
   compressBlock( remainder );
 
@@ -6395,8 +6708,18 @@ inline StringStringMap CompressedRawBinaryAppendedWriter::appendedAttributes( )
 }
 
 } // namespace vtu11
+
 #endif // VTU11_ENABLE_ZLIB
 #endif // VTU11_ZLIBWRITER_IMPL_HPP
+
+//          __        ____ ____
+// ___  ___/  |_ __ _/_   /_   |
+// \  \/ /\   __\  |  \   ||   |
+//  \   /  |  | |  |  /   ||   |
+//   \_/   |__| |____/|___||___|
+//
+//  License: BSD License ; see LICENSE
+//
 
 #ifndef VTU11_VTU11_IMPL_HPP
 #define VTU11_VTU11_IMPL_HPP
@@ -6499,6 +6822,7 @@ void writeVTUFile( const std::string& filename,
 
     VTU11_CHECK( output.is_open( ), "Failed to open file \"" + filename + "\"" );
 
+    // Set buffer size to 32K
     std::vector<char> buffer( 32 * 1024 );
 
     output.rdbuf( )->pubsetbuf( buffer.data( ), static_cast<std::streamsize>( buffer.size( ) ) );
@@ -6655,6 +6979,7 @@ inline void writePVtu( const std::string& path,
     auto directory = vtu11fs::path { path } / baseName;
     auto pvtufile = vtu11fs::path { path } / ( baseName + ".pvtu" );
 
+    // create directory for vtu files if not existing
     if( !vtu11fs::exists( directory ) )
     {
         vtu11fs::create_directories( directory );

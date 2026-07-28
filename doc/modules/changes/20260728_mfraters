@@ -1,0 +1,6 @@
+Added: There is now a new class which allows the creation of
+ScratchSpaces, which are reusuable memory blocks. These can
+be useful in function which are called in a loop and need
+the same size temporary vectors.
+<br>
+(Menno Fraters and Wolfgang Bangerth, 2026/07/28)

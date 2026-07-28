@@ -1,0 +1,43 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for composition solver 3
+# 13: Iterations for composition solver 4
+# 14: Iterations for Stokes solver
+# 15: Velocity iterations in Stokes preconditioner
+# 16: Schur complement iterations in Stokes preconditioner
+# 17: Visualization file name
+# 18: RMS velocity (m/year)
+# 19: Max. velocity (m/year)
+# 20: Minimal temperature (K)
+# 21: Average temperature (K)
+# 22: Maximal temperature (K)
+# 23: Outward mass flux through boundary with indicator 0 ("left") (kg/yr)
+# 24: Outward mass flux through boundary with indicator 1 ("right") (kg/yr)
+# 25: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
+# 26: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
+# 27: Minimal value for composition percent_enstatite
+# 28: Maximal value for composition percent_enstatite
+# 29: Global mass for composition percent_enstatite
+# 30: Minimal value for composition entropy_forsterite
+# 31: Maximal value for composition entropy_forsterite
+# 32: Global mass for composition entropy_forsterite
+# 33: Minimal value for composition entropy_enstatite
+# 34: Maximal value for composition entropy_enstatite
+# 35: Global mass for composition entropy_enstatite
+# 36: Minimal value for composition density_field
+# 37: Maximal value for composition density_field
+# 38: Global mass for composition density_field
+0 0.000000000000e+00 0.000000000000e+00 40 568 243 972  4 9 0  0  0 0 345 350 350 output-entropy_multicomponent_3_adiabat_pipe/solution/solution-00000 9.73335368e-03 1.00000000e-02 1.11743082e+03 1.14599481e+03 1.17193198e+03 0.00000000e+00 0.00000000e+00  3.10469376e+05 -3.10469472e+05 3.00000000e-01 3.00000000e-01 6.00000000e+08 2.70000000e+03 2.70000000e+03 5.40000000e+12 7.00000000e+02 7.00000000e+02 1.40000000e+12 3.10469472e+03 3.27276073e+03 6.38170989e+12 
+1 1.000000000000e+05 1.000000000000e+05 40 568 243 972 14 1 0 87 89 0 337 344 344 output-entropy_multicomponent_3_adiabat_pipe/solution/solution-00001 6.15983582e-03 1.11422111e-02 1.11743082e+03 1.14599481e+03 1.17193198e+03 0.00000000e+00 0.00000000e+00 -3.68353749e+05 -3.10469472e+05 3.00000000e-01 3.00000000e-01 6.00000000e+08 2.10127581e+03 2.70000000e+03 4.20954595e+12 7.00000000e+02 2.09702310e+03 4.17772611e+12 3.10469472e+03 3.30593049e+03 6.44959274e+12 
+2 2.000000000000e+05 1.000000000000e+05 40 568 243 972 10 1 0 82 84 0 357 363 363 output-entropy_multicomponent_3_adiabat_pipe/solution/solution-00002 1.51317944e-02 1.96579582e-02 1.11743082e+03 1.14599481e+03 1.17193198e+03 0.00000000e+00 0.00000000e+00  6.49878423e+05 -3.10469472e+05 3.00000000e-01 3.00000000e-01 6.00000000e+08 2.10127581e+03 2.70000000e+03 4.20954595e+12 7.00000000e+02 2.09702310e+03 4.17772611e+12 3.10469472e+03 3.30593049e+03 6.44959274e+12 
+3 3.000000000000e+05 1.000000000000e+05 40 568 243 972 10 2 0 70 73 0 348 354 354 output-entropy_multicomponent_3_adiabat_pipe/solution/solution-00003 9.63076959e-03 1.00000000e-02 1.11743082e+03 1.14599481e+03 1.17193198e+03 0.00000000e+00 0.00000000e+00  3.10467747e+05 -3.10469472e+05 3.00000000e-01 3.00000000e-01 6.00000000e+08 2.10127581e+03 2.70000000e+03 4.20954595e+12 7.00000000e+02 2.09702310e+03 4.17772611e+12 3.10469472e+03 3.30593049e+03 6.44959274e+12 
+4 4.000000000000e+05 1.000000000000e+05 40 568 243 972 10 2 0 55 61 0 309 314 314 output-entropy_multicomponent_3_adiabat_pipe/solution/solution-00004 9.63076967e-03 1.00000000e-02 1.11743082e+03 1.14599481e+03 1.17193198e+03 0.00000000e+00 0.00000000e+00  3.10467694e+05 -3.10469472e+05 3.00000000e-01 3.00000000e-01 6.00000000e+08 2.10127581e+03 2.70000000e+03 4.20954595e+12 7.00000000e+02 2.09702310e+03 4.17772611e+12 3.10469472e+03 3.30593049e+03 6.44959274e+12 

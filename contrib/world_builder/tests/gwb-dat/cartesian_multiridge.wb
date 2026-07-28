@@ -1,5 +1,5 @@
 {
-"version": "1.0",
+"version":"1.1",
 "cross section": [[0,0],[400e3,500e3]],
 "coordinate system":{"model":"cartesian"},
 "gravity model":{"model":"uniform", "magnitude":10},

@@ -27,6 +27,9 @@
 #include <world_builder/world.h>
 #endif
 
+#include <boost/serialization/map.hpp>
+
+
 namespace aspect
 {
   namespace Particle
@@ -1382,6 +1385,32 @@ namespace aspect
           prm.leave_subsection();
         }
         prm.leave_subsection ();
+      }
+
+
+
+      template <int dim>
+      void
+      CrystalPreferredOrientation<dim>::save (std::map<std::string, std::string> &status_strings) const
+      {
+        std::ostringstream os;
+        os << random_number_generator;
+        status_strings["CrystalPreferredOrientationParticleProperty"] = os.str();
+      }
+
+
+
+      template <int dim>
+      void
+      CrystalPreferredOrientation<dim>::load (const std::map<std::string, std::string> &status_strings)
+      {
+        const auto saved_state = status_strings.find("CrystalPreferredOrientationParticleProperty");
+        if (saved_state != status_strings.end())
+          {
+            std::istringstream is (saved_state->second);
+            is >> random_number_generator;
+            AssertThrow(!is.fail(), ExcMessage("Could not restore the crystal preferred orientation random number generator."));
+          }
       }
     }
   }

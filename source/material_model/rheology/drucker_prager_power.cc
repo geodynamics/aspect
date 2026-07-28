@@ -157,7 +157,7 @@ namespace aspect
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
                            "those corresponding to chemical compositions. "
                            "For a value of zero, in 2d the von Mises criterion is retrieved. "
-                           "Angles higher than 30 degrees are harder to solve numerically. Units: degrees.");
+                           "Angles higher than 30 degrees are harder to solve numerically. Units: \\si{\\degree}.");
         prm.declare_entry ("Cohesions", "1e20",
                            Patterns::Anything(),
                            "List of cohesions, $C$, for background material and compositional fields, "

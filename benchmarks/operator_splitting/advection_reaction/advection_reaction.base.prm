@@ -62,7 +62,6 @@ subsection Boundary velocity model
 
   subsection Function
     set Variable names      = x,z,t
-    set Function constants  =
     set Function expression = 0.01;0.0
   end
 end
@@ -83,7 +82,6 @@ subsection Initial temperature model
 
   subsection Function
     set Variable names      = x,z
-    set Function constants  = pi=3.1415926
     set Function expression = sin(2*pi*x)
   end
 end
@@ -93,7 +91,6 @@ subsection Initial composition model
 
   subsection Function
     set Variable names      = x,z
-    set Function constants  = pi=3.1415926
     set Function expression = sin(2*pi*x)
   end
 end

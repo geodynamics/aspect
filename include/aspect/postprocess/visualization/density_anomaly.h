@@ -81,6 +81,8 @@ namespace aspect
 
           /**
            * Number of slices to use when computing depth average of temperature.
+           *
+           * This variable is read from the parameter file through a parameter called 'Number of depth slices'.
            */
           unsigned int n_slices;
 

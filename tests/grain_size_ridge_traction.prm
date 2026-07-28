@@ -1,4 +1,4 @@
-# This is a test for the grain size evolutionn in a realistic
+# This is a test for the grain size evolution in a realistic
 # model setup, in this case, the grain_size_ridge cookbook.
 # However, we prescribe the traction rather than the velocity
 # at the boundaries. This way, we can make sure our boundary
@@ -41,7 +41,7 @@ subsection Boundary velocity model
   end
 end
 
-# Prescribe traction instead of velocity to avoid sigularity
+# Prescribe traction instead of velocity to avoid singularity
 # in the top left corner.
 subsection Boundary traction model
   set Prescribed traction boundary indicators = right x:initial lithostatic pressure, bottom y:initial lithostatic pressure

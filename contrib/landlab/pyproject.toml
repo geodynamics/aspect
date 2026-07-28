@@ -1,0 +1,9 @@
+[project]
+name = "aspect-with-python"
+version = "0.0.0"
+description = "ASPECT: The Advanced Solver for Planetary Evolution, Convection, and Tectonics"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "landlab",
+]
