@@ -25,32 +25,9 @@ env:
   OMPI_MCA_btl_vader_single_copy_mechanism: none
 
 jobs:
-  linux-nounity:
-    #if: contains(github.event.pull_request.labels.*.name, 'ready to test')
-    #linux build with unity/precompiled headers disabled
-    name: no-unity-build
-    runs-on: [ubuntu-22.04]
-
-    steps:
-    - uses: actions/checkout@v7
-    - name: setup
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y software-properties-common
-        sudo add-apt-repository ppa:ginggs/deal.ii-9.6.0-backports
-        sudo apt-get update
-        sudo apt-get install -yq --no-install-recommends libdeal.ii-dev
-    - name: compile
-      run: |
-        mkdir build-no-unity
-        cd build-no-unity
-        cmake -D CMAKE_BUILD_TYPE=Debug -D ASPECT_PRECOMPILE_HEADERS=OFF -D ASPECT_UNITY_BUILD=OFF -D CMAKE_CXX_FLAGS='-Werror' -D ASPECT_ADDITIONAL_CXX_FLAGS='-Wdeprecated-declarations' ..
-        make -j 4
-        ./aspect --test
-
   linux:
     #linux build including indent, examples and documentation
-    name: indent+documentation
+    name: indent+no-unity-build+documentation
     runs-on: [ubuntu-24.04]
 
     steps:
@@ -94,8 +71,8 @@ jobs:
       run: |
         mkdir build
         cd build
-        /usr/bin/cmake -D CMAKE_BUILD_TYPE=Debug -D ASPECT_PRECOMPILE_HEADERS=ON -D ASPECT_UNITY_BUILD=ON \
-                       -D CMAKE_CXX_FLAGS='-Werror' -D ASPECT_INSTALL_EXAMPLES=ON ..
+        /usr/bin/cmake -D CMAKE_BUILD_TYPE=Debug -D ASPECT_PRECOMPILE_HEADERS=OFF -D ASPECT_UNITY_BUILD=OFF \
+                       -D CMAKE_CXX_FLAGS='-Werror' -D ASPECT_ADDITIONAL_CXX_FLAGS='-Wdeprecated-declarations' -D ASPECT_INSTALL_EXAMPLES=ON ..
         make -j 4
         ./aspect --test
     - name: doc
