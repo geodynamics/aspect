@@ -29,8 +29,8 @@
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/base/quadrature_lib.h>
 
-#include <boost/geometry/algorithms/comparable_distance.hpp>
 #include <boost/geometry/index/predicates.hpp>
+#include <boost/serialization/utility.hpp>
 
 namespace aspect
 {
@@ -46,7 +46,7 @@ namespace aspect
                              const double static_friction_angle,
                              const Point<dim> &position) const
       {
-
+        double target_angle = numbers::signaling_nan<double>();
         switch (friction_mechanism)
           {
             case static_friction:
@@ -55,30 +55,8 @@ namespace aspect
             }
             case dynamic_friction:
             {
-              // Calculate effective steady-state friction coefficient.
-              // This is based on the former material model dynamic friction.
-              // The formula below is equivalent to the equation 13 in \cite{van_dinther_seismic_2013}.
-              // Although here the dynamic friction coefficient is directly specified. In addition,
-              // we also use a reference strain rate in place of a characteristic
-              // velocity divided by local element size. This reference strain rate is called
-              // the dynamic characteristic strain rate and is used to compute what value between
-              // dynamic and static angle of internal friction should be used.
-              // Furthermore a smoothness exponent X is added, which determines whether the
-              // friction vs strain rate curve is rather step-like or more gradual.
-              // mu  = mu_d + (mu_s - mu_d) / ( (1 + strain_rate_dev_inv2/dynamic_characteristic_strain_rate)^X );
-              // Angles of friction are used in radians within ASPECT. The coefficient
-              // of friction (mu) is the tangent of the internal angle of friction, hence convergence is needed.
-              // The incoming variable static_friction_angle holds the static friction angle. It's value is
-              // then updated with the strain rate dependent friction angle which is returned by the function.
-              const double mu = (std::tan(dynamic_angles_of_internal_friction[volume_fraction_index])
-                                 + (std::tan(static_friction_angle) - std::tan(dynamic_angles_of_internal_friction[volume_fraction_index]))
-                                 / (1. + std::pow((current_edot_ii / dynamic_characteristic_strain_rate),
-                                                  dynamic_friction_smoothness_exponent)));
-              const double dynamic_friction_angle = std::atan (mu);
-              Assert((mu < 1) && (0 < dynamic_friction_angle) && (dynamic_friction_angle <= 1.6), ExcMessage(
-                       "The friction coefficient should be larger than zero and smaller than 1. "
-                       "The friction angle should be smaller than 1.6 rad."));
-              return dynamic_friction_angle;
+              target_angle = dynamic_angles_of_internal_friction[volume_fraction_index];
+              break;
             }
             case differential_dynamic_friction:
             {
@@ -87,26 +65,13 @@ namespace aspect
               // velocity divergence can vanish in an incompressible model while
               // this surface indicator is nonzero.
               // The default dynamic angle represents transform/neutral deformation.
-              double target_angle = dynamic_angles_of_internal_friction[volume_fraction_index];
+              target_angle = dynamic_angles_of_internal_friction[volume_fraction_index];
               const TectonicRegime tectonic_regime = compute_tectonic_regime(position);
               if (tectonic_regime == convergent_regime)
                 target_angle = dynamic_angles_of_internal_friction_for_convergence[volume_fraction_index];
               else if (tectonic_regime == divergent_regime)
                 target_angle = dynamic_angles_of_internal_friction_for_divergence[volume_fraction_index];
-
-              // Compute the strain-rate dependent friction coefficient:
-              // μ = μ_d + (μ_s - μ_d) / [1 + (ε̇ / ε̇_c)^x]
-              // where μ_d is derived from target_angle and μ_s from static friction angle.
-              const double mu = std::tan(target_angle)
-                                + (std::tan(static_friction_angle) - std::tan(target_angle))
-                                / (1. + std::pow((current_edot_ii / dynamic_characteristic_strain_rate),
-                                                 dynamic_friction_smoothness_exponent));
-
-              const double dynamic_friction_angle = std::atan(mu);
-              Assert((mu < 1) && (0 < dynamic_friction_angle) && (dynamic_friction_angle <= 1.6),
-                     ExcMessage("The friction coefficient should be larger than zero and smaller than 1. "
-                                "The friction angle should be smaller than 1.6 rad."));
-              return dynamic_friction_angle;
+              break;
             }
             case function:
             {
@@ -132,10 +97,29 @@ namespace aspect
 
               return friction_from_function;
             }
+            default:
+            {
+              AssertThrow(false, ExcMessage("Unknown friction model."));
+            }
           }
-        // we should never get here, return something anyway, so the compiler does not complain...
-        AssertThrow (false, ExcMessage("Unknown friction model."));
-        return static_friction_angle;
+
+        // Apply the same rate-weakening law to both dynamic mechanisms. Only
+        // the high-strain-rate target angle differs between them.
+        const double target_friction = std::tan(target_angle);
+        const double static_friction = std::tan(static_friction_angle);
+        const double rate_factor =
+          1.0 / (1.0 + std::pow(current_edot_ii / dynamic_characteristic_strain_rate,
+                                dynamic_friction_smoothness_exponent));
+        const double friction = target_friction
+                                + (static_friction - target_friction) * rate_factor;
+        const double friction_angle = std::atan(friction);
+
+        Assert((friction < 1.0)
+               && (0.0 < friction_angle)
+               && (friction_angle <= 1.6),
+               ExcMessage("The friction coefficient should be larger than zero and smaller than 1. "
+                          "The friction angle should be smaller than 1.6 rad."));
+        return friction_angle;
       }
 
       template <int dim>
@@ -188,25 +172,19 @@ namespace aspect
       make_surface_index_point(const Point<dim> &position) const
       {
         SurfaceIndexPoint index_point;
-        boost::geometry::set<0>(index_point, 0.0);
-        boost::geometry::set<1>(index_point, 0.0);
-        boost::geometry::set<2>(index_point, 0.0);
 
         if (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical)
           {
             const double radius = position.norm();
             AssertThrow(radius > 0.0, ExcMessage("Cannot project the model origin onto the surface."));
-            boost::geometry::set<0>(index_point, position[0] / radius);
-            boost::geometry::set<1>(index_point, position[1] / radius);
-            if (dim == 3)
-              boost::geometry::set<2>(index_point, position[2] / radius);
+            for (unsigned int d = 0; d < dim; ++d)
+              index_point[d] = position[d] / radius;
           }
         else
           {
             const double length_scale = this->get_geometry_model().length_scale();
-            boost::geometry::set<0>(index_point, position[0] / length_scale);
-            if (dim == 3)
-              boost::geometry::set<1>(index_point, position[1] / length_scale);
+            for (unsigned int d = 0; d < dim-1; ++d)
+              index_point[d] = position[d] / length_scale;
           }
         return index_point;
       }
@@ -218,30 +196,29 @@ namespace aspect
       FrictionModels<dim>::
       interpolate_surface_velocity_divergence(const Point<dim> &position) const
       {
-        // Surface divergence is stored at surface-face quadrature points, but
-        // projected interior material points generally do not coincide with
-        // those samples (especially after refinement or MPI partitioning).
-        // Interpolate the signed divergence before classifying the regime to
-        // avoid discontinuous, mesh-dependent nearest-neighbor patches.
+        // Material points below the surface generally do not coincide with
+        // surface-face quadrature points. Interpolate between the closest
+        // samples before applying the regime thresholds.
         namespace bgi = boost::geometry::index;
         const SurfaceIndexPoint query_point = make_surface_index_point(position);
         std::vector<SurfaceIndexValue> nearest_samples;
-        surface_divergence_index.query(bgi::nearest(query_point, 4),
+        surface_divergence_index.query(bgi::nearest(query_point, 2 * (dim-1)),
                                        std::back_inserter(nearest_samples));
         AssertThrow(!nearest_samples.empty(), ExcInternalError());
 
-        double weighted_value = 0.0;
-        double weight_sum = 0.0;
+        double weighted_divergence = 0.0;
+        double sum_of_weights = 0.0;
         for (const SurfaceIndexValue &sample : nearest_samples)
           {
-            const double distance_squared = boost::geometry::comparable_distance(query_point, sample.first);
+            const double distance_squared = query_point.distance_square(sample.first);
             if (distance_squared < 1e-30)
               return sample.second;
+
             const double weight = 1.0 / distance_squared;
-            weighted_value += weight * sample.second;
-            weight_sum += weight;
+            weighted_divergence += weight * sample.second;
+            sum_of_weights += weight;
           }
-        return weighted_value / weight_sum;
+        return weighted_divergence / sum_of_weights;
       }
 
 
@@ -259,7 +236,7 @@ namespace aspect
                                       update_quadrature_points | update_normal_vectors);
         std::vector<Tensor<1,dim>> velocities(quadrature.size());
         std::vector<Tensor<2,dim>> velocity_gradients(quadrature.size());
-        std::vector<std::vector<double>> local_samples;
+        std::vector<SurfaceIndexValue> local_samples;
         const types::boundary_id surface_boundary
           = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
 
@@ -277,9 +254,8 @@ namespace aspect
                     {
                       const Point<dim> &surface_position = face_values.quadrature_point(q);
                       const Tensor<1,dim> normal = face_values.normal_vector(q);
-                      const SymmetricTensor<2,dim> strain_rate = symmetrize(velocity_gradients[q]);
-                      double surface_divergence = trace(strain_rate)
-                                                  - normal * (strain_rate * normal);
+                      double surface_divergence = trace(velocity_gradients[q])
+                                                  - normal * (velocity_gradients[q] * normal);
 
                       // Remove the apparent surface-area change caused by radial
                       // motion so that the spherical case uses tangential velocity.
@@ -287,45 +263,17 @@ namespace aspect
                         surface_divergence -= velocities[q] * normal * (dim-1) / surface_position.norm();
 
                       const SurfaceIndexPoint index_point = make_surface_index_point(surface_position);
-                      local_samples.push_back({boost::geometry::get<0>(index_point),
-                                               boost::geometry::get<1>(index_point),
-                                               boost::geometry::get<2>(index_point),
-                                               surface_divergence
-                                              });
+                      local_samples.emplace_back(index_point, surface_divergence);
                     }
                 }
 
-        const std::vector<std::vector<std::vector<double>>> gathered_samples
+        const std::vector<std::vector<SurfaceIndexValue>> gathered_samples
           = Utilities::MPI::all_gather(this->get_mpi_communicator(), local_samples);
         std::vector<SurfaceIndexValue> index_values;
-        for (const std::vector<std::vector<double>> &process_samples : gathered_samples)
-          for (const std::vector<double> &sample : process_samples)
-            {
-              SurfaceIndexPoint point;
-              boost::geometry::set<0>(point, sample[0]);
-              boost::geometry::set<1>(point, sample[1]);
-              boost::geometry::set<2>(point, sample[2]);
-              index_values.emplace_back(point, sample[3]);
-            }
-        // Differentiating the discrete surface velocity amplifies cell-scale
-        // oscillations. Average each sample with its nearest surface neighbors
-        // before projection so regimes represent coherent plate-scale motion,
-        // rather than alternating finite-element patches.
-        namespace bgi = boost::geometry::index;
-        const SurfaceIndex raw_index(index_values.begin(), index_values.end());
-        std::vector<SurfaceIndexValue> smoothed_values;
-        smoothed_values.reserve(index_values.size());
-        for (const SurfaceIndexValue &value : index_values)
-          {
-            std::vector<SurfaceIndexValue> neighbors;
-            raw_index.query(bgi::nearest(value.first, std::min<std::size_t>(8, index_values.size())),
-                            std::back_inserter(neighbors));
-            double sum = 0.0;
-            for (const SurfaceIndexValue &neighbor : neighbors)
-              sum += neighbor.second;
-            smoothed_values.emplace_back(value.first, sum / neighbors.size());
-          }
-        surface_divergence_index = SurfaceIndex(smoothed_values.begin(), smoothed_values.end());
+        for (const std::vector<SurfaceIndexValue> &process_samples : gathered_samples)
+          index_values.insert(index_values.end(), process_samples.begin(), process_samples.end());
+
+        surface_divergence_index = pack_rtree(index_values);
       }
 
 
@@ -358,8 +306,8 @@ namespace aspect
                            "\n\n"
                            "\\item ``differential dynamic friction'': As for ``dynamic friction'', but the dynamic "
                            "angle is selected from convergent, divergent, and transform/neutral values using the "
-                           "divergence of tangential velocity on the top boundary. The surface field is smoothed "
-                           "and projected down to the specified depth. This indicator remains meaningful in an "
+                           "divergence of tangential velocity on the top boundary. The surface field is projected "
+                           "down to the specified depth. This indicator remains meaningful in an "
                            "incompressible model because it is not the divergence of the full velocity field."
                            "\n\n"
                            "\\item ``function'': Specify the friction angle as a function of space and time "

@@ -29,9 +29,7 @@
 
 #include <aspect/material_model/rheology/drucker_prager.h>
 #include <deal.II/fe/component_mask.h>
-
-#include <boost/geometry/geometries/point.hpp>
-#include <boost/geometry/index/rtree.hpp>
+#include <deal.II/numerics/rtree.h>
 
 namespace aspect
 {
@@ -120,10 +118,9 @@ namespace aspect
           compute_tectonic_regime(const Point<dim> &position) const;
 
         private:
-          using SurfaceIndexPoint = boost::geometry::model::point<double, 3, boost::geometry::cs::cartesian>;
+          using SurfaceIndexPoint = Point<3>;
           using SurfaceIndexValue = std::pair<SurfaceIndexPoint, double>;
-          using SurfaceIndex = boost::geometry::index::rtree<SurfaceIndexValue,
-                boost::geometry::index::quadratic<16>>;
+          using SurfaceIndex = RTree<SurfaceIndexValue>;
 
           /** Update the cached surface divergence after a nonlinear solve. */
           void
@@ -133,7 +130,11 @@ namespace aspect
           SurfaceIndexPoint
           make_surface_index_point(const Point<dim> &position) const;
 
-          /** Interpolate the cached surface divergence at a lateral position. */
+          /**
+           * Interpolate the cached surface divergence at a lateral position.
+           * This is needed because material evaluation points generally do not
+           * coincide with surface-face quadrature points.
+           */
           double
           interpolate_surface_velocity_divergence(const Point<dim> &position) const;
 
