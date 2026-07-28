@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2026 by the authors of the ASPECT code.
+  Copyright (C) 2026 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -141,8 +141,8 @@ namespace aspect
         const double y_extent = box.get_extents()[1];
         const double xR = x_extent/2+a;
         const double xL = x_extent/2-a;
-        const double theta1 = std::atan((x-xR)/(y_extent-y));
-        const double theta2 = std::atan((x-xL)/(y_extent-y));
+        const double theta1 = std::atan2((x-xR), (y_extent-y));
+        const double theta2 = std::atan2((x-xL), (y_extent-y));
         const double val = p0 / M_PI * (theta2 - theta1 - 0.5 * (std::sin(2 * theta2) -
                                                                  std::sin(2 * theta1)));
         return -val;
@@ -157,8 +157,8 @@ namespace aspect
         const double y_extent = box.get_extents()[1];
         const double xR = x_extent/2+a;
         const double xL = x_extent/2-a;
-        const double theta1 = std::atan((x-xR)/(y_extent-y));
-        const double theta2 = std::atan((x-xL)/(y_extent-y));
+        const double theta1 = std::atan2((x-xR), (y_extent-y));
+        const double theta2 = std::atan2((x-xL), (y_extent-y));
         const double val = p0 / M_PI * (theta2 - theta1 + 0.5 * (std::sin(2 * theta2) -
                                                                  std::sin(2 * theta1)));
         return -val;
@@ -173,8 +173,8 @@ namespace aspect
         const double y_extent = box.get_extents()[1];
         const double xR = x_extent/2+a;
         const double xL = x_extent/2-a;
-        const double theta1 = std::atan((x-xR)/(y_extent-y));
-        const double theta2 = std::atan((x-xL)/(y_extent-y));
+        const double theta1 = std::atan2((x-xR), (y_extent-y));
+        const double theta2 = std::atan2((x-xL), (y_extent-y));
         const double val = p0 / M_PI * ((std::sin(theta2) * std::sin(theta2) -
                                          std::sin(theta1) * std::sin(theta1)));
         return -val;

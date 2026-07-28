@@ -1,4 +1,7 @@
 include $ASPECT_SOURCE_DIR/benchmarks/elastic_line_load/elastic_line_load.prm
+set Additional shared libraries            = ./libelastic_line_load.so
+set End time                               = 0
+
 
 # We want to keep the mesh static
 subsection Mesh refinement

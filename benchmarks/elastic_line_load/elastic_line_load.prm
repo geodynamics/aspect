@@ -154,7 +154,7 @@ subsection Material model
 
   subsection Viscoelastic
     set Densities                   = 2700
-    set Elastic shear moduli        = 1e10
+    set Elastic shear moduli        = 1e12
     set Use fixed elastic time step = true
     set Fixed elastic time step     = 1e3
     set Viscosities                 = 1e50
