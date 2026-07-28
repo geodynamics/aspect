@@ -1,0 +1,51 @@
+
+Number of active cells: 9 (on 1 levels)
+Number of degrees of freedom: 163 (98+16+49)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 1+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.796 m/s, 1.5 m/s
+
+*** Timestep 1:  t=0.111111 seconds, dt=0.111111 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (AMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.796 m/s, 1.5 m/s
+
+*** Timestep 2:  t=0.222222 seconds, dt=0.111111 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (AMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.796 m/s, 1.5 m/s
+
+*** Timestep 3:  t=0.333333 seconds, dt=0.111111 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (AMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.796 m/s, 1.5 m/s
+
+*** Timestep 4:  t=0.444444 seconds, dt=0.111111 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (AMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.796 m/s, 1.5 m/s
+
+*** Timestep 5:  t=0.5 seconds, dt=0.0555556 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (AMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.796 m/s, 1.5 m/s
+
+Termination requested by criterion: end time
+
+
+
