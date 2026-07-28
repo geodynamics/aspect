@@ -584,9 +584,6 @@ namespace aspect
       {
         return compute_strain_weakening_factors(composition,j);
       }
-
-
-
       template <int dim>
       double
       StrainDependent<dim>::
