@@ -201,13 +201,13 @@ namespace aspect
         // a vector defined by the projection DoFHandler. As an input, we must define a lambda which returns
         // a viscosity value for each quadrature point of the given cell. The projection is then stored in
         // the active level viscosity vector provided.
-        Utilities::project_cellwise<dim, dealii::LinearAlgebra::distributed::Vector<double>>(mapping,
-            dof_handler_projection,
-            0,
-            quadrature_formula,
-            [&](const typename DoFHandler<dim>::active_cell_iterator & cell,
-                const std::vector<Point<dim>> & /*q_points*/,
-                std::vector<double> &values) -> void
+        Utilities::project_cellwise(mapping,
+                                    dof_handler_projection,
+                                    0,
+                                    quadrature_formula,
+                                    [&](const typename DoFHandler<dim>::active_cell_iterator & cell,
+                                        const std::vector<Point<dim>> & /*q_points*/,
+                                        std::vector<double> &values) -> void
         {
           const typename DoFHandler<dim>::active_cell_iterator FEQ_cell(&dof_handler.get_triangulation(),
           cell->level(),
