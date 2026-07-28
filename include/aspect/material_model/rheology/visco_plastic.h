@@ -149,7 +149,7 @@ namespace aspect
 
         std::vector<double> get_nth_output(const unsigned int idx) const override;
 
-        std::vector<double> tectonic_divergence_indicator;
+        std::vector<double> surface_velocity_divergence;
         std::vector<double> tectonic_regime;
     };
 

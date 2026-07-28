@@ -103,12 +103,12 @@ namespace aspect
           get_friction_mechanism () const;
 
           /**
-           * Return the signed divergence indicator used to select the tectonic
-           * regime. This is the previous completed Stokes solution's
-           * surface-velocity divergence, projected downward.
+           * Return the previous completed Stokes solution's signed
+           * surface-velocity divergence, projected downward. This value is
+           * used to select the tectonic regime.
            */
           double
-          compute_tectonic_divergence_indicator(const Point<dim> &position) const;
+          compute_surface_velocity_divergence(const Point<dim> &position) const;
 
           /**
            * Classify the projected surface deformation using the convergence

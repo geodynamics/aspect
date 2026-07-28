@@ -1,0 +1,6 @@
+New: The visco-plastic material model now supports differential dynamic
+friction weakening. The high-strain-rate friction angle can depend on
+whether the projected surface-velocity divergence indicates a convergent,
+neutral/transform, or divergent tectonic regime.
+<br>
+(Michaël Pons, 2026/07/28)

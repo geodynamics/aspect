@@ -135,7 +135,7 @@ namespace aspect
       template <int dim>
       double
       FrictionModels<dim>::
-      compute_tectonic_divergence_indicator(const Point<dim> &position) const
+      compute_surface_velocity_divergence(const Point<dim> &position) const
       {
         if (this->get_geometry_model().depth(position) > surface_regime_projection_depth)
           return 0.0;
@@ -156,10 +156,10 @@ namespace aspect
       FrictionModels<dim>::
       compute_tectonic_regime(const Point<dim> &position) const
       {
-        const double divergence_indicator = compute_tectonic_divergence_indicator(position);
-        if (divergence_indicator < -convergence_threshold)
+        const double surface_velocity_divergence = compute_surface_velocity_divergence(position);
+        if (surface_velocity_divergence < -convergence_threshold)
           return convergent_regime;
-        if (divergence_indicator > divergence_threshold)
+        if (surface_velocity_divergence > divergence_threshold)
           return divergent_regime;
         return transform_or_neutral_regime;
       }

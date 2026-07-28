@@ -46,7 +46,7 @@ namespace aspect
 
       std::vector<std::string> make_tectonic_regime_additional_outputs_names()
       {
-        return {"tectonic_divergence_indicator", "tectonic_regime"};
+        return {"surface_velocity_divergence", "tectonic_regime"};
       }
     }
 
@@ -130,7 +130,7 @@ namespace aspect
     template <int dim>
     TectonicRegimeAdditionalOutputs<dim>::TectonicRegimeAdditionalOutputs(const unsigned int n_points)
       : NamedAdditionalMaterialOutputs<dim>(make_tectonic_regime_additional_outputs_names()),
-        tectonic_divergence_indicator(n_points, numbers::signaling_nan<double>()),
+        surface_velocity_divergence(n_points, numbers::signaling_nan<double>()),
         tectonic_regime(n_points, numbers::signaling_nan<double>())
     {}
 
@@ -164,7 +164,7 @@ namespace aspect
     {
       AssertIndexRange (idx, 2);
       if (idx == 0)
-        return tectonic_divergence_indicator;
+        return surface_velocity_divergence;
       return tectonic_regime;
     }
 
@@ -1092,8 +1092,8 @@ namespace aspect
           = out.template get_additional_output_object<TectonicRegimeAdditionalOutputs<dim>>();
         if (tectonic_out != nullptr)
           {
-            tectonic_out->tectonic_divergence_indicator[i]
-              = friction_models.compute_tectonic_divergence_indicator(in.position[i]);
+            tectonic_out->surface_velocity_divergence[i]
+              = friction_models.compute_surface_velocity_divergence(in.position[i]);
             tectonic_out->tectonic_regime[i]
               = static_cast<double>(friction_models.compute_tectonic_regime(in.position[i]));
           }

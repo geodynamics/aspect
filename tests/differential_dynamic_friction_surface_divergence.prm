@@ -1,5 +1,3 @@
-# Enable if: QUICK_TEST
-#
 # Verify tectonic-regime-dependent dynamic friction using a prescribed,
 # divergence-free velocity field. Its tangential surface divergence is
 # negative on the left, zero in the center, and positive on the right.

@@ -4,7 +4,7 @@
 #
 # For a description of the GNUPLOT format see the GNUPLOT manual.
 #
-# <x> <y> <velocity> <velocity> <p> <T> <current_cohesions> <current_friction_angles> <current_yield_stresses> <plastic_yielding> <tectonic_divergence_indicator> <tectonic_regime> <diffusion_viscosity> <dislocation_viscosity> <strain_rate> 
+# <x> <y> <velocity> <velocity> <p> <T> <current_cohesions> <current_friction_angles> <current_yield_stresses> <plastic_yielding> <surface_velocity_divergence> <tectonic_regime> <diffusion_viscosity> <dislocation_viscosity> <strain_rate> 
 0 0 8.89097e-15 0 0 293 1e+06 2.00003 999391 0 -2e-14 -1 500000 inf 1.99986e-14 
 0.125 0 6.3911e-15 0 0 293 1e+06 2.00003 999391 0 -1.99991e-14 -1 500000 inf 1.99986e-14 
 
@@ -451,5 +451,4 @@
 
 0.875 1 6.3911e-15 -1.99966e-14 0 293 1e+06 1.00003 999848 0 1.99991e-14 1 500000 inf 1.99986e-14 
 1 1 8.89097e-15 -1.99999e-14 0 293 1e+06 1.00003 999848 0 2e-14 1 500000 inf 1.99986e-14 
-
 
