@@ -41,7 +41,20 @@ namespace aspect
   {
     template <int dim>
     Manager<dim>::Manager()
-      = default;
+    // Set the manager index to an invalid value, but otherwise do what the other
+    // constructor does. This is necessary to allow for default construction of
+    // the class, which is required to be able to de-serialize objects.
+      : Manager(numbers::invalid_unsigned_int)
+    {}
+
+
+
+    template <int dim>
+    Manager<dim>::Manager(const unsigned int particle_manager_index)
+      : particle_manager_index(particle_manager_index)
+    {}
+
+
 
     template <int dim>
     Manager<dim>::~Manager()
@@ -50,16 +63,17 @@ namespace aspect
     template <int dim>
     Manager<dim>::Manager(Manager &&other) noexcept
   :
-    generator(std::move(other.generator)),
-              integrator(std::move(other.integrator)),
-              interpolator(std::move(other.interpolator)),
-              particle_handler(std::move(other.particle_handler)),
-              particle_handler_backup(), // can not move
-              property_manager(std::move(other.property_manager)),
-              particle_load_balancing(other.particle_load_balancing),
-              min_particles_per_cell(other.min_particles_per_cell),
-              max_particles_per_cell(other.max_particles_per_cell),
-              particle_weight(other.particle_weight)
+    particle_manager_index(other.particle_manager_index),
+                           generator(std::move(other.generator)),
+                           integrator(std::move(other.integrator)),
+                           interpolator(std::move(other.interpolator)),
+                           particle_handler(std::move(other.particle_handler)),
+                           particle_handler_backup(), // can not move
+                           property_manager(std::move(other.property_manager)),
+                           particle_load_balancing(other.particle_load_balancing),
+                           min_particles_per_cell(other.min_particles_per_cell),
+                           max_particles_per_cell(other.max_particles_per_cell),
+                           particle_weight(other.particle_weight)
     {}
 
 
@@ -68,6 +82,13 @@ namespace aspect
     void
     Manager<dim>::initialize()
     {
+      // Verify that the object was either created by the constructor
+      // that creates a valid object right away, or that the particle
+      // manager index was set to a valid value through de-serialization.
+      // If not, we have an invalid object that we shouldn't be using.
+      Assert (particle_manager_index != numbers::invalid_unsigned_int,
+              ExcInternalError());
+
       CitationInfo::add("particles");
 
       // Create a particle handler that stores the future particles.
@@ -90,6 +111,13 @@ namespace aspect
     void
     Manager<dim>::update()
     {
+      // Verify that the object was either created by the constructor
+      // that creates a valid object right away, or that the particle
+      // manager index was set to a valid value through de-serialization.
+      // If not, we have an invalid object that we shouldn't be using.
+      Assert (particle_manager_index != numbers::invalid_unsigned_int,
+              ExcInternalError());
+
       generator->update();
       integrator->update();
       interpolator->update();
@@ -1153,7 +1181,7 @@ namespace aspect
 
     template <int dim>
     void
-    Manager<dim>::parse_parameters (ParameterHandler &prm, const unsigned int particle_manager)
+    Manager<dim>::parse_parameters (ParameterHandler &prm)
     {
       // First do some error checking. The current algorithm does not find
       // the cells around particles, if the particles moved more than one
@@ -1170,13 +1198,13 @@ namespace aspect
                              "diameter in one time step and therefore skip the layer "
                              "of ghost cells around the local subdomain."));
 
-      if (particle_manager == 0)
+      if (particle_manager_index == 0)
         {
           prm.enter_subsection("Particles");
         }
       else
         {
-          prm.enter_subsection("Particles " + std::to_string(particle_manager+1));
+          prm.enter_subsection("Particles " + std::to_string(particle_manager_index+1));
         }
       {
         min_particles_per_cell = prm.get_integer("Minimum particles per cell");
@@ -1228,13 +1256,13 @@ namespace aspect
 
         if (particle_load_balancing & ParticleLoadBalancing::repartition)
           this->get_triangulation().signals.weight.connect(
-            [ &, particle_manager] (const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-                                    const CellStatus status)
+            [&] (const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
+                 const CellStatus status)
             -> unsigned int
           {
             // Only add the base weight of cells in particle manager 0, because all weights will be summed
             // across all particle managers.
-            return (particle_manager == 0) ? 1000 + this->cell_weight(cell, status) : this->cell_weight(cell, status);
+            return (particle_manager_index == 0) ? 1000 + this->cell_weight(cell, status) : this->cell_weight(cell, status);
           });
 
         // The bandwidth to use with the kernel function
@@ -1299,7 +1327,7 @@ namespace aspect
         generator = Generator::create_particle_generator<dim> (prm);
         if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(generator.get()))
           sim->initialize_simulator (this->get_simulator());
-        generator->set_particle_manager_index(particle_manager);
+        generator->set_particle_manager_index(particle_manager_index);
         generator->parse_parameters(prm);
         generator->initialize();
 
@@ -1307,7 +1335,7 @@ namespace aspect
         property_manager = std::make_unique<Property::Manager<dim>> ();
         SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(property_manager.get());
         sim->initialize_simulator (this->get_simulator());
-        property_manager->set_particle_manager_index(particle_manager);
+        property_manager->set_particle_manager_index(particle_manager_index);
         property_manager->parse_parameters(prm);
         property_manager->initialize();
 
@@ -1315,7 +1343,7 @@ namespace aspect
         integrator = Integrator::create_particle_integrator<dim> (prm);
         if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(integrator.get()))
           sim->initialize_simulator (this->get_simulator());
-        integrator->set_particle_manager_index(particle_manager);
+        integrator->set_particle_manager_index(particle_manager_index);
         integrator->parse_parameters(prm);
         integrator->initialize();
 
@@ -1323,7 +1351,7 @@ namespace aspect
         interpolator = Interpolator::create_particle_interpolator<dim> (prm);
         if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(interpolator.get()))
           sim->initialize_simulator (this->get_simulator());
-        interpolator->set_particle_manager_index(particle_manager);
+        interpolator->set_particle_manager_index(particle_manager_index);
         interpolator->parse_parameters(prm);
         interpolator->initialize();
 
