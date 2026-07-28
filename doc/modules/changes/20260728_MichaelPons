@@ -1,0 +1,6 @@
+New: The visco-plastic material model now supports damage-strain weakening.
+Damage strain accumulates during plastic yielding, recovers through
+temperature-dependent healing, and weakens the complete plastic yield stress.
+The current yield-stress prefactor is also available as a visualization output.
+<br>
+(Michael Pons, 2026/07/28)
