@@ -321,6 +321,25 @@ namespace aspect
 
     template <int dim>
     void
+    MaterialModelInputs<dim>::resize(const unsigned int n_points,
+                                     const unsigned int n_comp)
+    {
+      AssertThrow(additional_inputs.size() == 0,
+                  ExcMessage("The resize() function is not implemented if additional material inputs are attached."));
+
+      position.assign(n_points, Point<dim>(numbers::signaling_nan<Tensor<1,dim>>()));
+      temperature.assign(n_points, numbers::signaling_nan<double>());
+      pressure.assign(n_points, numbers::signaling_nan<double>());
+      pressure_gradient.assign(n_points, numbers::signaling_nan<Tensor<1,dim>>());
+      velocity.assign(n_points, numbers::signaling_nan<Tensor<1,dim>>());
+      composition.assign(n_points, std::vector<double>(n_comp, numbers::signaling_nan<double>()));
+      strain_rate.assign(n_points, numbers::signaling_nan<SymmetricTensor<2,dim>>());
+    }
+
+
+
+    template <int dim>
+    void
     MaterialModelInputs<dim>::reinit(const FEValuesBase<dim,dim> &fe_values,
                                      const typename DoFHandler<dim>::active_cell_iterator &cell_x,
                                      const Introspection<dim> &introspection,
@@ -382,17 +401,10 @@ namespace aspect
     template <int dim>
     MaterialModelOutputs<dim>::MaterialModelOutputs(const unsigned int n_points,
                                                     const unsigned int n_comp)
-      :
-      viscosities(n_points, numbers::signaling_nan<double>()),
-      densities(n_points, numbers::signaling_nan<double>()),
-      thermal_expansion_coefficients(n_points, numbers::signaling_nan<double>()),
-      specific_heat(n_points, numbers::signaling_nan<double>()),
-      thermal_conductivities(n_points, numbers::signaling_nan<double>()),
-      compressibilities(n_points, numbers::signaling_nan<double>()),
-      entropy_derivative_pressure(n_points, numbers::signaling_nan<double>()),
-      entropy_derivative_temperature(n_points, numbers::signaling_nan<double>()),
-      reaction_terms(n_points, std::vector<double>(n_comp, numbers::signaling_nan<double>()))
-    {}
+    {
+      resize(n_points,n_comp);
+    }
+
 
 
     template <int dim>
@@ -412,6 +424,26 @@ namespace aspect
       Assert (source.additional_outputs.size() == 0,
               ExcMessage ("You can not copy MaterialModelOutputs objects that have "
                           "additional output objects attached"));
+    }
+
+
+
+    template <int dim>
+    void
+    MaterialModelOutputs<dim>::resize(const unsigned int n_points, const unsigned int n_comp)
+    {
+      AssertThrow(additional_outputs.size() == 0,
+                  ExcMessage("The resize() function is not implemented if additional material outputs are attached."));
+
+      viscosities.assign(n_points, numbers::signaling_nan<double>());
+      densities.assign(n_points, numbers::signaling_nan<double>());
+      thermal_expansion_coefficients.assign(n_points, numbers::signaling_nan<double>());
+      specific_heat.assign(n_points, numbers::signaling_nan<double>());
+      thermal_conductivities.assign(n_points, numbers::signaling_nan<double>());
+      compressibilities.assign(n_points, numbers::signaling_nan<double>());
+      entropy_derivative_pressure.assign(n_points, numbers::signaling_nan<double>());
+      entropy_derivative_temperature.assign(n_points, numbers::signaling_nan<double>());
+      reaction_terms.assign(n_points, std::vector<double>(n_comp, numbers::signaling_nan<double>()));
     }
 
 
