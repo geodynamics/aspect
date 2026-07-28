@@ -12,7 +12,7 @@ set Surface pressure = 25000
 set Adiabatic surface temperature = 1573.0
 set Resume computation = false
 set Nonlinear solver scheme                = iterated Advection and Stokes
-set World builder file = $ASPECT_SOURCE_DIR/tests/entropy_initial_lookup_wb.wb
+set World builder file = $ASPECT_SOURCE_DIR/tests/entropy/entropy_initial_lookup_wb.wb
 
 subsection Discretization
   set Composition polynomial degree = 2
