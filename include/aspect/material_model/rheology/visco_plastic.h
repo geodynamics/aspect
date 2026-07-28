@@ -77,6 +77,12 @@ namespace aspect
         std::vector<double> yield_stresses;
 
         /**
+         * The current factor multiplying the plastic yield stress, including
+         * the configured composition factor and damage-strain weakening.
+         */
+        std::vector<double> yield_stress_prefactors;
+
+        /**
          * The area where the viscous stress exceeds the plastic yield stress,
          * and viscosity is rescaled back to the yield envelope.
          */

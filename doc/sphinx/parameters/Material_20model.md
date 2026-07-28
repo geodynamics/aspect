@@ -4867,6 +4867,24 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 **Documentation:** List of the Stress thresholds below which the strain rate is solved for as a quadratic function of stress to aid with convergence when stress exponent n=0. Units: \si{\pascal}
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Damage strain critical value<parameters:Material_20model/Visco_20Plastic/Damage_20strain_20critical_20value>`
+:name: parameters:Material_20model/Visco_20Plastic/Damage_20strain_20critical_20value
+**Default value:** 1.
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Value of the damage strain at which the material reaches its maximum weakening. The transported damage strain is capped at this value. Units: None.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Damage strain maximum damage<parameters:Material_20model/Visco_20Plastic/Damage_20strain_20maximum_20damage>`
+:name: parameters:Material_20model/Visco_20Plastic/Damage_20strain_20maximum_20damage
+**Default value:** 0.9
+
+**Pattern:** [Anything]
+
+**Documentation:** Maximum fractional reduction of the complete plastic yield stress for the background material and chemical compositions. Values can be given as a list or as a map using composition names. A value of 0.9 reduces the yield stress to 10 percent of its undamaged value. Each value must be between zero and one. Units: None.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Material_20model/Visco_20Plastic/Data_20directory>`
 :name: parameters:Material_20model/Visco_20Plastic/Data_20directory
 **Default value:** $ASPECT_SOURCE_DIR/data/material-model/entropy-table/pyrtable
@@ -5412,7 +5430,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 \item &ldquo;no healing&rdquo;: No strain healing is applied.
 
-\item &ldquo;temperature dependent&rdquo;: Purely temperature dependent strain healing applied to plastic yielding and viscosity terms, similar to the temperature-dependent Frank Kamenetskii formulation, computes strain healing as removing strain as a function of temperature, time, and a user-defined healing rate and prefactor as done in Fuchs and Becker, 2019, for mantle convection
+\item &ldquo;temperature dependent&rdquo;: Purely temperature dependent strain healing applied to plastic yielding and viscosity terms, similar to the temperature-dependent Frank Kamenetskii formulation, computes strain healing as removing strain as a function of temperature, time, and a user-defined healing rate and prefactor. The same healing rate is used for exponential relaxation when damage strain weakening is active, as done in Fuchs and Becker, 2019, for mantle convection
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Strain healing temperature dependent prefactor<parameters:Material_20model/Visco_20Plastic/Strain_20healing_20temperature_20dependent_20prefactor>`
@@ -5430,14 +5448,14 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Recovery rate prefactor for temperature dependent strain healing. Units: \si{\per\second}
+**Documentation:** Recovery rate for temperature dependent strain healing. For damage strain, this is the exponential relaxation rate at the reference temperature. Units: \si{\per\second}
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Strain weakening mechanism<parameters:Material_20model/Visco_20Plastic/Strain_20weakening_20mechanism>`
 :name: parameters:Material_20model/Visco_20Plastic/Strain_20weakening_20mechanism
 **Default value:** default
 
-**Pattern:** [Selection none|finite strain tensor|total strain|plastic weakening with plastic strain only|plastic weakening with total strain only|plastic weakening with plastic strain and viscous weakening with viscous strain|viscous weakening with viscous strain only|default ]
+**Pattern:** [Selection none|finite strain tensor|total strain|plastic weakening with plastic strain only|plastic weakening with total strain only|plastic weakening with plastic strain and viscous weakening with viscous strain|viscous weakening with viscous strain only|plastic weakening with damage strain|default ]
 
 **Documentation:** Whether to apply strain weakening to viscosity, cohesion and internal angleof friction based on accumulated finite strain, and if yes, which method to use. The following methods are available:
 
@@ -5454,6 +5472,8 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 \item &ldquo;plastic weakening with plastic strain and viscous weakening with viscous strain&rdquo;: Both the finite strain accumulated by plastic deformation and by viscous deformation are computed separately (each approximated as the product of the second invariant of the corresponding strain rate in each time step and the time step size). The plastic strain is used to weaken the plastic yield stress (specifically, the cohesion and yield angle), and the viscous strain is used to weaken the pre-yield viscosity.
 
 \item &ldquo;viscous weakening with viscous strain only&rdquo;: The finite strain is approximated as the product of the second invariant of the strain rate in each time step and the time step size in regions where material is not plastically yielding. This quantity is integrated and tracked over time, and used to weaken the pre-yield viscosity. The cohesion and friction angle are not weakened.
+
+\item &ldquo;plastic weakening with damage strain&rdquo;: Track damage strain in a compositional field named &ldquo;damage_strain&rdquo;. Damage strain increases with the strain rate only while the material is plastically yielding, and heals at a rate proportional to its current value following {cite}`fuchs:becker:2019,fuchs:becker:2021`: $d\gamma/dt=\dot{\varepsilon}_{II}-H(T)\gamma$. It linearly reduces the complete plastic yield stress up to a prescribed maximum damage.
 
 \item &ldquo;default&rdquo;: The default option has the same behavior as &ldquo;none&rdquo;, but is there to make sure that the original parameters for specifying the strain weakening mechanism (&ldquo;Use plastic/viscous strain weakening&rdquo;) are still allowed, but to guarantee that one uses either the old parameter names or the new ones, never both.
 

@@ -51,7 +51,8 @@ namespace aspect
         plastic_weakening_with_plastic_strain_only,
         plastic_weakening_with_total_strain_only,
         plastic_weakening_with_plastic_strain_and_viscous_weakening_with_viscous_strain,
-        viscous_weakening_with_viscous_strain_only
+        viscous_weakening_with_viscous_strain_only,
+        plastic_weakening_with_damage_strain
       };
 
       /**
@@ -108,6 +109,15 @@ namespace aspect
                                            const std::vector<double> &composition) const;
 
           /**
+           * Return the factor by which damage strain reduces the complete
+           * plastic yield stress. This factor is one for all other weakening
+           * mechanisms.
+          */
+          double
+          compute_damage_strain_yield_stress_prefactor(const std::vector<double> &composition,
+                                                       const unsigned int j) const;
+
+          /**
            * A function that alters the viscous weakening factor based on the
            * temperature field.
            */
@@ -122,6 +132,13 @@ namespace aspect
           double
           calculate_strain_healing (const MaterialModel::MaterialModelInputs<dim> &in,
                                     const unsigned int j) const;
+
+          /**
+           * Return the temperature-dependent healing rate.
+           */
+          double
+          calculate_strain_healing_rate (const MaterialModel::MaterialModelInputs<dim> &in,
+                                         const unsigned int j) const;
 
           /**
            * A function that computes by how much the cohesion and internal friction
@@ -284,6 +301,17 @@ namespace aspect
            * This variable is read from the parameter file through a parameter called 'Strain healing temperature dependent prefactor'.
            */
           double strain_healing_temperature_dependent_prefactor;
+
+          /**
+           * Damage strain at which the maximum weakening is reached.
+           */
+          double damage_strain_critical_value;
+
+          /**
+           * Maximum fractional reduction of the yield stress for each
+           * composition.
+           */
+          std::vector<double> damage_strain_maximum_damage;
 
           /**
            * We cache the evaluators that are necessary to evaluate the velocity

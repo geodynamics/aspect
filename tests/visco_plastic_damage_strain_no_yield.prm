@@ -1,0 +1,18 @@
+# This test verifies that deformation does not produce damage strain when
+# the material is not plastically yielding. The local damage update has
+# gamma(0)=0.5, a relaxation time of one year, and a target value
+# gamma_target(t)=0.5*exp(-t). As in the yielding test, the reaction term is
+# returned using the standard ASPECT reaction-term convention.
+include $ASPECT_SOURCE_DIR/tests/visco_plastic_damage_strain.prm
+
+set Output directory = visco_plastic_damage_strain_no_yield
+
+subsection Material model
+  subsection Visco Plastic
+    set Cohesions            = 1e20
+    set Maximum yield stress = 1e20
+    set Maximum viscosity    = 1e18
+    set Activation energies for diffusion creep = 0
+    set Activation volumes for diffusion creep  = 0
+  end
+end

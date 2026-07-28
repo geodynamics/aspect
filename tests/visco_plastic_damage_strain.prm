@@ -1,0 +1,115 @@
+# This test verifies damage production, healing, and yield-stress weakening
+# while the material is plastically yielding. The local damage update uses a
+# constant strain rate of 0.1/year, T/T_ref=1, gamma(0)=0.5, and a relaxation
+# time of one year. Its target value follows
+# gamma_target(t)=0.1+0.4*exp(-t).
+# The reaction term is returned as target damage minus the damage from the
+# previous timestep, following the standard ASPECT reaction-term convention.
+# For D_max=0.9 and gamma_cr=1, the yield-stress factor is
+# 1-0.9*gamma(t).
+
+set Dimension                    = 2
+set Use years instead of seconds = true
+set End time                     = 2
+set Maximum time step            = 1
+set Nonlinear solver scheme      = single Advection, single Stokes
+set Max nonlinear iterations     = 1
+set Output directory             = visco_plastic_damage_strain
+set Adiabatic surface temperature = 273
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 0
+  set Initial adaptive refinement        = 0
+  set Time steps between mesh refinement = 0
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left: function, right: function, bottom: function, top: function
+  subsection Function
+    set Variable names = x,y
+    set Function expression = -0.1*(x-0.5); 0.1*(y-0.5)
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = left, right, bottom, top
+  set List of model names = box
+  subsection Box
+    set Left temperature   = 273
+    set Right temperature  = 273
+    set Bottom temperature = 273
+    set Top temperature    = 273
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 273
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields  = damage_strain
+  set Types of fields  = generic
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Function expression = 0.5
+  end
+end
+
+subsection Material model
+  set Model name = visco plastic
+  subsection Visco Plastic
+    set Viscous flow law            = diffusion
+    set Minimum viscosity           = 1e18
+    set Maximum viscosity           = 1e25
+    set Angles of internal friction = 0
+    set Cohesions                    = 1e6
+    set Maximum yield stress         = 1e12
+    set Strain weakening mechanism              = plastic weakening with damage strain
+    set Damage strain critical value            = 1
+    set Damage strain maximum damage            = 0.9
+    set Strain healing mechanism                              = temperature dependent
+    set Strain healing temperature dependent recovery rate    = 3.168873850681143e-8
+    set Strain healing temperature dependent prefactor        = 0
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+  subsection Visualization
+    set Interpolate output       = false
+    set Output format            = gnuplot
+    set Time between graphical output = 1
+    set List of output variables = material properties, named additional outputs
+    subsection Material properties
+      set List of material properties = viscosity
+    end
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
+  end
+end

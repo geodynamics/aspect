@@ -40,6 +40,7 @@ namespace aspect
         names.emplace_back("current_cohesions");
         names.emplace_back("current_friction_angles");
         names.emplace_back("current_yield_stresses");
+        names.emplace_back("current_yield_stress_prefactors");
         names.emplace_back("plastic_yielding");
         return names;
       }
@@ -51,6 +52,7 @@ namespace aspect
         cohesions(n_points, numbers::signaling_nan<double>()),
         friction_angles(n_points, numbers::signaling_nan<double>()),
         yield_stresses(n_points, numbers::signaling_nan<double>()),
+        yield_stress_prefactors(n_points, numbers::signaling_nan<double>()),
         yielding(n_points, numbers::signaling_nan<double>())
     {}
 
@@ -60,7 +62,7 @@ namespace aspect
     std::vector<double>
     PlasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
-      AssertIndexRange (idx, 4);
+      AssertIndexRange (idx, 5);
       switch (idx)
         {
           case 0:
@@ -73,6 +75,9 @@ namespace aspect
             return yield_stresses;
 
           case 3:
+            return yield_stress_prefactors;
+
+          case 4:
             return yielding;
 
           default:
@@ -421,6 +426,16 @@ namespace aspect
                                                                                      j,
                                                                                      output_parameters.drucker_prager_parameters[j].angle_internal_friction,
                                                                                      in.position[i]);
+
+            // Add the damage-strain reduction to the existing yield-stress
+            // prefactor for this composition. Reduce the upper limit by the
+            // same amount.
+            const double damage_strain_yield_stress_prefactor =
+              strain_rheology.compute_damage_strain_yield_stress_prefactor(in.composition[i], j);
+            output_parameters.drucker_prager_parameters[j].yield_stress_prefactor *=
+              damage_strain_yield_stress_prefactor;
+            output_parameters.drucker_prager_parameters[j].max_yield_stress *=
+              damage_strain_yield_stress_prefactor;
 
             // Step 5: plastic yielding
 
@@ -1029,6 +1044,7 @@ namespace aspect
             plastic_out->cohesions[i] = 0;
             plastic_out->friction_angles[i] = 0;
             plastic_out->yield_stresses[i] = 0;
+            plastic_out->yield_stress_prefactors[i] = 0;
             plastic_out->yielding[i] = plastic_yielding ? 1 : 0;
 
             double pressure_for_plasticity = in.pressure[i];
@@ -1050,6 +1066,7 @@ namespace aspect
 
                 plastic_out->yield_stresses[i] += volume_fractions[j] * drucker_prager_plasticity.compute_yield_stress(pressure_for_plasticity,
                                                   drucker_prager_parameters);
+                plastic_out->yield_stress_prefactors[i] += volume_fractions[j] * drucker_prager_parameters.yield_stress_prefactor;
               }
           }
       }
