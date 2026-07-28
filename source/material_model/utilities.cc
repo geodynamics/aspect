@@ -1400,7 +1400,7 @@ namespace aspect
 
         n_phases_total = 0;
         n_phases_per_composition.clear();
-        for (unsigned int n : *n_phase_transitions_per_composition)
+        for (const unsigned int n : *n_phase_transitions_per_composition)
           {
             n_phases_per_composition.push_back(n+1);
             n_phases_total += n+1;
@@ -1764,7 +1764,7 @@ namespace aspect
 
         n_phases_total = 0;
         n_phases_per_composition.clear();
-        for (unsigned int n : *n_phase_transitions_per_composition)
+        for (const unsigned int n : *n_phase_transitions_per_composition)
           {
             n_phases_per_composition.push_back(n+1);
             n_phases_total += n+1;
