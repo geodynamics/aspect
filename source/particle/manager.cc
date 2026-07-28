@@ -60,6 +60,8 @@ namespace aspect
     Manager<dim>::~Manager()
       = default;
 
+
+
     template <int dim>
     Manager<dim>::Manager(Manager &&other) noexcept
   :
@@ -1003,7 +1005,13 @@ namespace aspect
     void
     Manager<dim>::advance_timestep()
     {
-      this->get_pcout() << "   Advecting particles... " << std::flush;
+      this->get_pcout() << "   Advecting particles"
+                        << (this->n_particle_managers() >1 ?
+                            // print the particle world number if there are multiple particle worlds,
+                            // starting at one
+                            " (particle manager " + std::to_string(particle_manager_index+1) + ")" :
+                            "")
+                        << "... " << std::flush;
       do
         {
           advect_particles();
