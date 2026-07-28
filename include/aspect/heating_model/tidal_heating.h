@@ -23,8 +23,6 @@
 #define _aspect_heating_model_tidal_heating_h
 
 #include <aspect/heating_model/interface.h>
-#include <aspect/material_model/utilities.h>
-#include <aspect/material_model/rheology/visco_plastic.h>
 #include <aspect/simulator_access.h>
 
 
@@ -89,7 +87,9 @@ namespace aspect
          * Parameters used for tidal heating (H), which is defined using the following
          * Equation is from Tobie et al. (2003) (https://doi.org/10.1029/2003JE002099)
          * H = 2*(viscosity)*(time-averaged tidal strain rate)^2/(1+((viscosity)*(tidal frequency)/(elastic shear modulus))^2))
-         * viscosity (Pa s) = viscosity calculated by the selected material in ASPECT
+         * viscosity = material_model_outputs.viscosities when elasticity is not enabled. If enabled, material_model_outputs.viscosity_without_elasticity.
+         * Viscosity should only contain the viscous rheology, not elastic contributions to the effective viscosity.
+         * This is because tidal heating is a form of viscoelastic shear dissipation.
          * time-averaged strain rate = constant_tidal_strain_rate
          * tidal frequency = tidal_frequency
          * elastic shear modulus = elastic_shear_modulus
@@ -131,7 +131,6 @@ namespace aspect
          */
         double minimum_tidal_strain_rate;
     };
-
   }
 }
 

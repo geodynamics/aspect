@@ -21,10 +21,7 @@
 
 #include <aspect/heating_model/tidal_heating.h>
 
-#include <aspect/material_model/interface.h>
-#include <aspect/material_model/utilities.h>
-#include <aspect/material_model/visco_plastic.h>
-
+#include <aspect/material_model/additional_outputs/viscosity_without_elasticity.h>
 #include <aspect/simulator.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/geometry_model/chunk.h>
@@ -66,10 +63,10 @@ namespace aspect
     {
       /** *
        * H equation is from Tobie et al. (2003) (https://doi.org/10.1029/2003JE002099)
-       * H= 2*(viscous viscosity)*(time-averaged tidal strain rate)^2/(1+((viscous viscosity)*(tidal frequency)/(elastic shear modulus))^2))
-       * viscous viscosity = material_model_outputs.viscosities when elasticity is not enabled. If enabled, material_model_outputs.viscous_viscosity.
-       * Because tidal heating equation is already a form of viscoelastic shear heating while orbiting,
-       * inserting viscoelastic rheology to the heating equation is incorrect.
+       * H= 2*(viscosity)*(time-averaged tidal strain rate)^2/(1+((viscosity)*(tidal frequency)/(elastic shear modulus))^2))
+       * viscosity = material_model_outputs.viscosities when elasticity is not enabled. If enabled, material_model_outputs.viscosity_without_elasticity.
+       * Viscosity should only contain the viscous rheology, not elastic contributions to the effective viscosity.
+       * This is because tidal heating is a form of viscoelastic shear dissipation.
        * time-averaged strain rate at certain location = local_strain_rate
        * tidal frequency = tidal_frequency
        * elastic shear modulus = elastic_shear_modulus
@@ -92,21 +89,21 @@ namespace aspect
             {
               local_tidal_strain_rate = constant_tidal_strain_rate;
             }
-          double viscous_viscosities = material_model_outputs.viscosities[q];
+          double viscosity = material_model_outputs.viscosities[q];
 
           if (this->get_parameters().enable_elasticity)
             {
-              const std::shared_ptr<const MaterialModel::ViscousAdditionalOutputs<dim>> viscous_out =
-                material_model_outputs.template get_additional_output_object<MaterialModel::ViscousAdditionalOutputs<dim>>();
+              const std::shared_ptr<const MaterialModel::ViscosityWithoutElasticityAdditionalOutputs<dim>> viscous_out =
+                material_model_outputs.template get_additional_output_object<MaterialModel::ViscosityWithoutElasticityAdditionalOutputs<dim>>();
               if (viscous_out != nullptr)
                 {
-                  viscous_viscosities = viscous_out->viscous_viscosity[q];
+                  viscosity = viscous_out->viscosity_without_elasticity[q];
                 }
             }
 
 
-          heating_model_outputs.heating_source_terms[q] = 2. * viscous_viscosities * local_tidal_strain_rate * local_tidal_strain_rate
-                                                          / ( 1. + ( (tidal_frequency * viscous_viscosities) / elastic_shear_modulus ) * ( (tidal_frequency * viscous_viscosities) / elastic_shear_modulus ) );
+          heating_model_outputs.heating_source_terms[q] = 2. * viscosity * local_tidal_strain_rate * local_tidal_strain_rate
+                                                          / ( 1. + ( (tidal_frequency * viscosity) / elastic_shear_modulus ) * ( (tidal_frequency * viscosity) / elastic_shear_modulus ) );
           heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
         }
     }
@@ -202,11 +199,11 @@ namespace aspect
     void
     TidalHeating<dim>::create_additional_material_model_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template has_additional_output_object<MaterialModel::ViscousAdditionalOutputs<dim>>() == false)
+      if (out.template has_additional_output_object<MaterialModel::ViscosityWithoutElasticityAdditionalOutputs<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
-            std::make_unique<MaterialModel::ViscousAdditionalOutputs<dim>> (n_points));
+            std::make_unique<MaterialModel::ViscosityWithoutElasticityAdditionalOutputs<dim>> (n_points));
         }
     }
   }

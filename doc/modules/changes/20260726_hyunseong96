@@ -1,6 +1,3 @@
-Changed: Now tidal heating module only uses viscous viscosity regardless of enabling elasticity in material model Visco Plastic.
-Because the tidal heating rate equation is already a form of viscoelastic shear heating while orbiting,
-inserting viscoelastic viscosity again to the shear heating equation is incorrect.
-
+Changed: Now the tidal heating module only uses the viscosity without elastic contributions from the material model visco plastic.
 <br>
 (Hyunseong Kim, 2026/07/26)

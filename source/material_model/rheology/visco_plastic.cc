@@ -82,7 +82,7 @@ namespace aspect
       return cohesions;
     }
 
-    
+
 
     namespace
     {
@@ -167,7 +167,7 @@ namespace aspect
         // Initialize or fill variables used to calculate viscosities
         output_parameters.composition_yielding.resize(volume_fractions.size(), false);
         output_parameters.composition_viscosities.resize(volume_fractions.size(), numbers::signaling_nan<double>());
-        output_parameters.composition_viscous_viscosities.resize(volume_fractions.size(), numbers::signaling_nan<double>());
+        output_parameters.composition_viscosity_without_elasticity.resize(volume_fractions.size(), numbers::signaling_nan<double>());
         output_parameters.drucker_prager_parameters.resize(volume_fractions.size());
         output_parameters.dilation_lhs_terms.resize(volume_fractions.size(), numbers::signaling_nan<double>());
         output_parameters.dilation_rhs_terms.resize(volume_fractions.size(), numbers::signaling_nan<double>());
@@ -356,6 +356,7 @@ namespace aspect
                 }
             }
 
+
             // Step 1e: multiply the viscosity by a constant (default value is 1)
             non_yielding_viscosity = constant_viscosity_prefactors.compute_viscosity(non_yielding_viscosity, j);
 
@@ -370,7 +371,7 @@ namespace aspect
             non_yielding_viscosity *= weakening_factors[2];
 
             // Step 3-pre: Save viscous viscosity to calculate tidal heating.
-            output_parameters.composition_viscous_viscosities[j] = non_yielding_viscosity;
+            output_parameters.composition_viscosity_without_elasticity[j] = non_yielding_viscosity;
 
             // Step 3: calculate the viscous stress magnitude
             // and strain rate. If requested compute visco-elastic contributions.
@@ -499,7 +500,7 @@ namespace aspect
                                                                MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic
                                                              );
             output_parameters.composition_viscosities[j] = std::min(std::max(effective_viscosity, minimum_viscosity_for_composition), maximum_viscosity_for_composition);
-            output_parameters.composition_viscous_viscosities[j] = std::min(std::max(output_parameters.composition_viscous_viscosities[j], minimum_viscosity_for_composition), maximum_viscosity_for_composition);
+            output_parameters.composition_viscosity_without_elasticity[j] = std::min(std::max(output_parameters.composition_viscosity_without_elasticity[j], minimum_viscosity_for_composition), maximum_viscosity_for_composition);
 
             // Compute the dilation terms if necessary.
             if (this->get_parameters().enable_prescribed_dilation == true)

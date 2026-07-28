@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
+#include <aspect/material_model/additional_outputs/viscosity_without_elasticity.h>
 #include <aspect/material_model/visco_plastic.h>
-#include <aspect/heating_model/tidal_heating.h>
 #include <aspect/utilities.h>
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/base/signaling_nan.h>
@@ -116,6 +116,7 @@ namespace aspect
 
       std::vector<double> phase_function_discrete_values = (use_dominant_phase_for_viscosity?
                                                             std::vector<double>(phase_function_discrete->n_phase_transitions(), 0.0): std::vector<double>());
+
 
       // Loop through all requested points
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
@@ -235,9 +236,9 @@ namespace aspect
               std::vector<double>::const_iterator max_composition = std::max_element(volume_fractions.begin(), volume_fractions.end());
               plastic_yielding = isostrain_viscosities.composition_yielding[std::distance(volume_fractions.begin(), max_composition)];
 
-              // Fill the additional viscous outputs that will be used for tidal heating.
-              if (in.requests_property(MaterialProperties::additional_outputs) && this->get_parameters().enable_elasticity)
-                fill_additional_viscous_outputs(i, volume_fractions, out, isostrain_viscosities, rheology->viscosity_averaging);
+              // Fill the additional viscosity outputs that will be used for tidal heating.
+              if (in.requests_property(MaterialProperties::additional_outputs) && out.template has_additional_output_object<MaterialModel::ViscosityWithoutElasticityAdditionalOutputs<dim>>())
+                fill_viscosity_without_elasticity_outputs(i, volume_fractions, out, isostrain_viscosities, rheology->viscosity_averaging);
 
               // Compute viscosity derivatives if they are requested
               if (const std::shared_ptr<MaterialModel::MaterialModelDerivatives<dim>> derivatives =
@@ -254,7 +255,7 @@ namespace aspect
               // quantities we set above and that would otherwise remain uninitialized
               isostrain_viscosities.composition_yielding.clear();
               isostrain_viscosities.composition_viscosities.clear();
-              isostrain_viscosities.composition_viscous_viscosities.clear();
+              isostrain_viscosities.composition_viscosity_without_elasticity.clear();
               isostrain_viscosities.drucker_prager_parameters.clear();
               isostrain_viscosities.diffusion_viscosities.clear();
               isostrain_viscosities.dislocation_viscosities.clear();
@@ -285,7 +286,6 @@ namespace aspect
               rheology->fill_plastic_outputs(i, volume_fractions, plastic_yielding, in, out, isostrain_viscosities);
               rheology->fill_viscosity_outputs(i, volume_fractions, out, isostrain_viscosities);
             }
-
 
           if (this->get_parameters().enable_elasticity)
             {
@@ -493,37 +493,22 @@ namespace aspect
         rheology->elastic_rheology.create_elastic_additional_outputs(out);
     }
 
-    template <int dim>
-    ViscousAdditionalOutputs<dim>::ViscousAdditionalOutputs(const unsigned int n_points)
-      : MaterialModel::NamedAdditionalMaterialOutputs<dim>({"viscous_viscosity"}),
-    viscous_viscosity(n_points, std::numeric_limits<double>::max())
-    {}
-
-    template <int dim>
-    std::vector<double>
-    ViscousAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
-    {
-      (void) idx;
-      AssertIndexRange (idx, 1);
-
-      return viscous_viscosity;
-    }
 
     template <int dim>
     void
-    ViscoPlastic<dim>::fill_additional_viscous_outputs (const unsigned int i,
-                                                        const std::vector<double> &volume_fractions,
-                                                        MaterialModel::MaterialModelOutputs<dim> &out,
-                                                        const MaterialModel::IsostrainViscosities &isostrain_viscosities,
-                                                        const MaterialModel::MaterialUtilities::CompositionalAveragingOperation &average_type) const
+    ViscoPlastic<dim>::fill_viscosity_without_elasticity_outputs (const unsigned int i,
+                                                                  const std::vector<double> &volume_fractions,
+                                                                  MaterialModel::MaterialModelOutputs<dim> &out,
+                                                                  const MaterialModel::IsostrainViscosities &isostrain_viscosities,
+                                                                  const MaterialModel::MaterialUtilities::CompositionalAveragingOperation &average_type) const
     {
-      const std::shared_ptr<ViscousAdditionalOutputs<dim>> viscous_out =
-        out.template get_additional_output_object<ViscousAdditionalOutputs<dim>>();
+      const std::shared_ptr<ViscosityWithoutElasticityAdditionalOutputs<dim>> viscous_out =
+        out.template get_additional_output_object<ViscosityWithoutElasticityAdditionalOutputs<dim>>();
       if (viscous_out != nullptr)
         {
-          viscous_out->viscous_viscosity[i] =
+          viscous_out->viscosity_without_elasticity[i] =
             MaterialModel::MaterialUtilities::average_value(volume_fractions,
-                                                            isostrain_viscosities.composition_viscous_viscosities,
+                                                            isostrain_viscosities.composition_viscosity_without_elasticity,
                                                             average_type);
         }
     }
@@ -753,11 +738,5 @@ namespace aspect
                                    "The value for the components of this formula and additional "
                                    "parameters are read from the parameter file in subsection "
                                    " 'Material model/Visco Plastic'.")
-#define INSTANTIATE(dim) \
-  template class ViscousAdditionalOutputs<dim>; \
-
-    ASPECT_INSTANTIATE(INSTANTIATE)
-
-#undef INSTANTIATE
   }
 }
