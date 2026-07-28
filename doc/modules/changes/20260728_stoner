@@ -1,0 +1,3 @@
+New: Add a treatment for a thin, sub-grid resolution layer by assuming it weakens an interface between two compositions by a constant factor. Although possible on other compositions, this weakening should primarily be used on fields or DG fields where interfaces are sharp.
+<br>
+(Ryan Stoner, 2026/07/28)

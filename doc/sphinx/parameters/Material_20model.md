@@ -5044,6 +5044,33 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 **Documentation:** Whether to include Peierls creep in the rheological formulation.
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Interface weakening compositions<parameters:Material_20model/Visco_20Plastic/Interface_20weakening_20compositions>`
+:name: parameters:Material_20model/Visco_20Plastic/Interface_20weakening_20compositions
+**Default value:**
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** List of exactly two compositional field names. If both fields exceed the threshold at the same point, the viscosity is scaled. Only used by the &rsquo;interface weakening&rsquo; viscosity prefactor scheme. Units: none.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Interface weakening factors<parameters:Material_20model/Visco_20Plastic/Interface_20weakening_20factors>`
+:name: parameters:Material_20model/Visco_20Plastic/Interface_20weakening_20factors
+**Default value:** 1.0
+
+**Pattern:** [Anything]
+
+**Documentation:** Map from compositional field name to the degree of weakening of the viscous component at the interface between two compositions. This is only applied in the Viscosity prefactor scheme &rsquo;Interface weakening&rsquo;. Units: none.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Interface weakening threshold<parameters:Material_20model/Visco_20Plastic/Interface_20weakening_20threshold>`
+:name: parameters:Material_20model/Visco_20Plastic/Interface_20weakening_20threshold
+**Default value:** 1e-2
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Threshold to trigger weakening of the viscous component at the interface between two compositions. This is only applied in the Viscosity prefactor scheme &rsquo;Interface weakening&rsquo;. Units: none.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Lower temperature for maximum strain weakening<parameters:Material_20model/Visco_20Plastic/Lower_20temperature_20for_20maximum_20strain_20weakening>`
 :name: parameters:Material_20model/Visco_20Plastic/Lower_20temperature_20for_20maximum_20strain_20weakening
 **Default value:** 923.
@@ -5608,9 +5635,9 @@ If a compositional field named &rsquo;noninitial\_plastic\_strain&rsquo; is incl
 :name: parameters:Material_20model/Visco_20Plastic/Viscosity_20prefactor_20scheme
 **Default value:** none
 
-**Pattern:** [Selection none|HK04 olivine hydration ]
+**Pattern:** [Selection none|HK04 olivine hydration|interface weakening ]
 
-**Documentation:** Select what type of viscosity multiplicative prefactor scheme to apply. Allowed entries are &rsquo;none&rsquo;, and &rsquo;HK04 olivine hydration&rsquo;. HK04 olivine hydration calculates the viscosity change due to hydrogen incorporation into olivine following Hirth & Kohlstedt 2004 (10.1029/138GM06). none does not modify the viscosity. Units: none.
+**Documentation:** Select what type of viscosity multiplicative prefactor scheme to apply. Allowed entries are &rsquo;none&rsquo;, &rsquo;HK04 olivine hydration&rsquo;, and &rsquo;interface weakening&rsquo;. HK04 olivine hydration calculates the viscosity change due to hydrogen incorporation into olivine following Hirth & Kohlstedt 2004 (10.1029/138GM06). none does not modify the viscosity. Interface weakening reduces the viscous contribution by a constant amount to mimic the effect of a very thin, weak layer between two compositional fields. Units: none.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Viscosity ratios for Frank Kamenetskii<parameters:Material_20model/Visco_20Plastic/Viscosity_20ratios_20for_20Frank_20Kamenetskii>`

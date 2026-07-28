@@ -91,11 +91,14 @@ namespace aspect
            * The prefactor for a given compositional field is multiplied with a
            * base_viscosity value provided by the material model, which is then returned
            * to the material model.
+           * interface weakening: calculate the viscosity change due to the presence of
+           * a sub-grid scale weak layer present at the interface of two other compositions.
            */
           enum ViscosityPrefactorScheme
           {
             none,
             hk04_olivine_hydration,
+            interface_weakening,
           };
           /**
            *  This variable is read from the parameter file through a parameter called 'Viscosity prefactor scheme'.
@@ -115,6 +118,11 @@ namespace aspect
            *  This variable is read from the parameter file through a parameter called 'Minimum mass fraction bound water content for fugacity'.
            */
           std::vector<double> minimum_mass_fraction_water_for_dry_creep;
+
+          // Variables for the interface weakening scheme
+          std::vector<std::string> weakening_field_names;
+          std::vector<double> interface_weakening_factors;
+          double interface_weakening_threshold;
 
           // From Hirth & Kohlstedt 2004, equation 6
           const double A_H2O = 2.6e-5; // 1/Pa
