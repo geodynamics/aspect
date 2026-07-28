@@ -1597,6 +1597,10 @@ namespace aspect
   void
   Simulator<dim>::setup_introspection ()
   {
+    introspection.initialize_stokes_dof_info(finite_element);
+    if (parameters.include_melt_transport)
+      melt_handler->initialize_stokes_dof_info(introspection, finite_element);
+
     // compute the various partitionings between processors and blocks
     // of vectors and matrices
     introspection.system_dofs_per_block = DoFTools::count_dofs_per_fe_block (dof_handler,

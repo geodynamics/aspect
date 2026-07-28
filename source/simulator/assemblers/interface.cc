@@ -50,7 +50,6 @@ namespace aspect
           finite_element_values (mapping, finite_element, quadrature,
                                  update_flags),
           local_dof_indices (finite_element.dofs_per_cell),
-          dof_component_indices(stokes_dofs_per_cell),
           grads_phi_u (stokes_dofs_per_cell, numbers::signaling_nan<SymmetricTensor<2,dim>>()),
           div_phi_u (stokes_dofs_per_cell, numbers::signaling_nan<double>()),
           phi_p (stokes_dofs_per_cell, numbers::signaling_nan<double>()),
@@ -76,7 +75,6 @@ namespace aspect
                                  scratch.finite_element_values.get_update_flags()),
 
           local_dof_indices (scratch.local_dof_indices),
-          dof_component_indices( scratch.dof_component_indices),
           grads_phi_u (scratch.grads_phi_u),
           div_phi_u (scratch.div_phi_u),
           phi_p (scratch.phi_p),
@@ -403,19 +401,12 @@ namespace aspect
         template <int dim>
         void StokesPreconditioner<dim>::
         extract_stokes_dof_indices(const std::vector<types::global_dof_index> &all_dof_indices,
-                                   const Introspection<dim>                   &introspection,
-                                   const FiniteElement<dim>           &finite_element)
+                                   const Introspection<dim>                   &introspection)
         {
-          const unsigned int dofs_per_cell = finite_element.dofs_per_cell;
-
-          for (unsigned int i=0, i_stokes=0; i<dofs_per_cell; /*increment at end of loop*/)
+          for (unsigned int i_stokes = 0; i_stokes < this->local_dof_indices.size(); ++i_stokes)
             {
-              if (introspection.is_stokes_component(finite_element.system_to_component_index(i).first))
-                {
-                  this->local_dof_indices[i_stokes] = all_dof_indices[i];
-                  ++i_stokes;
-                }
-              ++i;
+              const unsigned int i = introspection.stokes_dof_info[i_stokes].local_dof_index;
+              this->local_dof_indices[i_stokes] = all_dof_indices[i];
             }
         }
 

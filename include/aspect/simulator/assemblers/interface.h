@@ -109,7 +109,6 @@ namespace aspect
           void reinit (const typename DoFHandler<dim>::active_cell_iterator &cell_ref);
 
           std::vector<types::global_dof_index> local_dof_indices;
-          std::vector<unsigned int>            dof_component_indices;
           std::vector<SymmetricTensor<2,dim>> grads_phi_u;
           std::vector<double>                  div_phi_u;
           std::vector<double>                  phi_p;
@@ -379,8 +378,7 @@ namespace aspect
            * local_dof_indices declared above in the same class as this function
            */
           void extract_stokes_dof_indices(const std::vector<types::global_dof_index> &all_dof_indices,
-                                          const Introspection<dim>                   &introspection,
-                                          const FiniteElement<dim>                   &finite_element);
+                                          const Introspection<dim>                   &introspection);
         };
 
         /**

@@ -79,7 +79,6 @@ namespace aspect
         }
 
       const Introspection<dim> &introspection = this->introspection();
-      const FiniteElement<dim> &fe = this->get_fe();
 
       const typename DoFHandler<dim>::active_cell_iterator cell (&this->get_triangulation(),
                                                                  scratch.finite_element_values.get_cell()->level(),
@@ -116,14 +115,10 @@ namespace aspect
 
               for (unsigned int q = 0; q < n_face_q_points; ++q)
                 {
-                  for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
+                  for (unsigned int i_stokes = 0; i_stokes < stokes_dofs_per_cell; ++i_stokes)
                     {
-                      if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
-                        {
-                          scratch.phi_u[i_stokes] = scratch.face_finite_element_values[introspection.extractors.velocities].value(i, q);
-                          ++i_stokes;
-                        }
-                      ++i;
+                      const unsigned int i = introspection.stokes_dof_info[i_stokes].local_dof_index;
+                      scratch.phi_u[i_stokes] = scratch.face_finite_element_values[introspection.extractors.velocities].value(i, q);
                     }
 
                   const Tensor<1,dim>

@@ -46,39 +46,22 @@ namespace aspect
                         "an anisotropic viscosity tensor, but none was provided."));
 
       const Introspection<dim> &introspection = this->introspection();
-      const FiniteElement<dim> &fe = this->get_fe();
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points           = scratch.finite_element_values.n_quadrature_points;
       const double pressure_scaling = this->get_pressure_scaling();
-
-      // First loop over all dofs and find those that are in the Stokes system
-      // save the component (pressure and dim velocities) each belongs to.
-      for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
-        {
-          if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
-            {
-              scratch.dof_component_indices[i_stokes] = fe.system_to_component_index(i).first;
-              ++i_stokes;
-            }
-          ++i;
-        }
 
       // Loop over all quadrature points and assemble their contributions to
       // the preconditioner matrix
       for (unsigned int q = 0; q < n_q_points; ++q)
         {
-          for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
+          for (unsigned int i_stokes = 0; i_stokes < stokes_dofs_per_cell; ++i_stokes)
             {
-              if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
-                {
-                  scratch.grads_phi_u[i_stokes] =
-                    scratch.finite_element_values[introspection.extractors
-                                                  .velocities].symmetric_gradient(i, q);
-                  scratch.phi_p[i_stokes] = scratch.finite_element_values[introspection
-                                                                          .extractors.pressure].value(i, q);
-                  ++i_stokes;
-                }
-              ++i;
+              const unsigned int i = introspection.stokes_dof_info[i_stokes].local_dof_index;
+              scratch.grads_phi_u[i_stokes] =
+                scratch.finite_element_values[introspection.extractors
+                                              .velocities].symmetric_gradient(i, q);
+              scratch.phi_p[i_stokes] = scratch.finite_element_values[introspection
+                                                                      .extractors.pressure].value(i, q);
             }
 
           const double eta = scratch.material_model_outputs.viscosities[q];
@@ -88,8 +71,8 @@ namespace aspect
 
           for (unsigned int i = 0; i < stokes_dofs_per_cell; ++i)
             for (unsigned int j = 0; j < stokes_dofs_per_cell; ++j)
-              if (scratch.dof_component_indices[i] ==
-                  scratch.dof_component_indices[j])
+              if (introspection.stokes_dof_info[i].component_index ==
+                  introspection.stokes_dof_info[j].component_index)
                 data.local_matrix(i, j) += (2.0 * eta * (scratch.grads_phi_u[i]
                                                          * stress_strain_director
                                                          * scratch.grads_phi_u[j])
@@ -136,36 +119,18 @@ namespace aspect
                         "an anisotropic viscosity tensor, but none was provided."));
 
       const Introspection<dim> &introspection = this->introspection();
-      const FiniteElement<dim> &fe = this->get_fe();
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points           = scratch.finite_element_values.n_quadrature_points;
-
-      // First loop over all dofs and find those that are in the Stokes system
-      // save the component (pressure and dim velocities) each belongs to.
-      for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
-        {
-          if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
-            {
-              scratch.dof_component_indices[i_stokes] = fe.system_to_component_index(i).first;
-              ++i_stokes;
-            }
-          ++i;
-        }
 
       // Loop over all quadrature points and assemble their contributions to
       // the preconditioner matrix
       for (unsigned int q = 0; q < n_q_points; ++q)
         {
-          for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
+          for (unsigned int i_stokes = 0; i_stokes < stokes_dofs_per_cell; ++i_stokes)
             {
-              if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
-                {
-                  scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
-                  scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
-
-                  ++i_stokes;
-                }
-              ++i;
+              const unsigned int i = introspection.stokes_dof_info[i_stokes].local_dof_index;
+              scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
+              scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
             }
 
           const double eta_two_thirds = scratch.material_model_outputs.viscosities[q] * 2.0 / 3.0;
@@ -174,8 +139,8 @@ namespace aspect
 
           for (unsigned int i = 0; i < stokes_dofs_per_cell; ++i)
             for (unsigned int j = 0; j < stokes_dofs_per_cell; ++j)
-              if (scratch.dof_component_indices[i] ==
-                  scratch.dof_component_indices[j])
+              if (introspection.stokes_dof_info[i].component_index ==
+                  introspection.stokes_dof_info[j].component_index)
                 data.local_matrix(i, j) += (- eta_two_thirds *
                                             (scratch.div_phi_u[i] * trace(stress_strain_director * scratch.grads_phi_u[j])))
                                            * JxW;
@@ -201,7 +166,6 @@ namespace aspect
                         "an anisotropic viscosity tensor, but none was provided."));
 
       const Introspection<dim> &introspection = this->introspection();
-      const FiniteElement<dim> &fe = this->get_fe();
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
       const double pressure_scaling = this->get_pressure_scaling();
@@ -211,20 +175,16 @@ namespace aspect
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
-          for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
+          for (unsigned int i_stokes = 0; i_stokes < stokes_dofs_per_cell; ++i_stokes)
             {
-              if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
+              const unsigned int i = introspection.stokes_dof_info[i_stokes].local_dof_index;
+              scratch.phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].value (i,q);
+              scratch.phi_p[i_stokes] = scratch.finite_element_values[introspection.extractors.pressure].value (i, q);
+              if (scratch.rebuild_stokes_matrix)
                 {
-                  scratch.phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].value (i,q);
-                  scratch.phi_p[i_stokes] = scratch.finite_element_values[introspection.extractors.pressure].value (i, q);
-                  if (scratch.rebuild_stokes_matrix)
-                    {
-                      scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
-                      scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
-                    }
-                  ++i_stokes;
+                  scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
+                  scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
                 }
-              ++i;
             }
 
 
@@ -320,22 +280,16 @@ namespace aspect
                         "an anisotropic viscosity tensor, but none was provided."));
 
       const Introspection<dim> &introspection = this->introspection();
-      const FiniteElement<dim> &fe = this->get_fe();
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
-          for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
+          for (unsigned int i_stokes = 0; i_stokes < stokes_dofs_per_cell; ++i_stokes)
             {
-              if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
-                {
-                  scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
-                  scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
-
-                  ++i_stokes;
-                }
-              ++i;
+              const unsigned int i = introspection.stokes_dof_info[i_stokes].local_dof_index;
+              scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
+              scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
             }
 
           // Viscosity scalar
