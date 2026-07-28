@@ -327,13 +327,13 @@ namespace aspect
       AssertThrow(additional_inputs.size() == 0,
                   ExcMessage("The resize() function is not implemented if additional material inputs are attached."));
 
-      position.resize(n_points, Point<dim>(numbers::signaling_nan<Tensor<1,dim>>()));
-      temperature.resize(n_points, numbers::signaling_nan<double>());
-      pressure.resize(n_points, numbers::signaling_nan<double>());
-      pressure_gradient.resize(n_points, numbers::signaling_nan<Tensor<1,dim>>());
-      velocity.resize(n_points, numbers::signaling_nan<Tensor<1,dim>>());
-      composition.resize(n_points, std::vector<double>(n_comp, numbers::signaling_nan<double>()));
-      strain_rate.resize(n_points, numbers::signaling_nan<SymmetricTensor<2,dim>>());
+      position.assign(n_points, Point<dim>(numbers::signaling_nan<Tensor<1,dim>>()));
+      temperature.assign(n_points, numbers::signaling_nan<double>());
+      pressure.assign(n_points, numbers::signaling_nan<double>());
+      pressure_gradient.assign(n_points, numbers::signaling_nan<Tensor<1,dim>>());
+      velocity.assign(n_points, numbers::signaling_nan<Tensor<1,dim>>());
+      composition.assign(n_points, std::vector<double>(n_comp, numbers::signaling_nan<double>()));
+      strain_rate.assign(n_points, numbers::signaling_nan<SymmetricTensor<2,dim>>());
     }
 
 
@@ -435,15 +435,15 @@ namespace aspect
       AssertThrow(additional_outputs.size() == 0,
                   ExcMessage("The resize() function is not implemented if additional material outputs are attached."));
 
-      viscosities.resize(n_points, numbers::signaling_nan<double>());
-      densities.resize(n_points, numbers::signaling_nan<double>());
-      thermal_expansion_coefficients.resize(n_points, numbers::signaling_nan<double>());
-      specific_heat.resize(n_points, numbers::signaling_nan<double>());
-      thermal_conductivities.resize(n_points, numbers::signaling_nan<double>());
-      compressibilities.resize(n_points, numbers::signaling_nan<double>());
-      entropy_derivative_pressure.resize(n_points, numbers::signaling_nan<double>());
-      entropy_derivative_temperature.resize(n_points, numbers::signaling_nan<double>());
-      reaction_terms.resize(n_points, std::vector<double>(n_comp, numbers::signaling_nan<double>()));
+      viscosities.assign(n_points, numbers::signaling_nan<double>());
+      densities.assign(n_points, numbers::signaling_nan<double>());
+      thermal_expansion_coefficients.assign(n_points, numbers::signaling_nan<double>());
+      specific_heat.assign(n_points, numbers::signaling_nan<double>());
+      thermal_conductivities.assign(n_points, numbers::signaling_nan<double>());
+      compressibilities.assign(n_points, numbers::signaling_nan<double>());
+      entropy_derivative_pressure.assign(n_points, numbers::signaling_nan<double>());
+      entropy_derivative_temperature.assign(n_points, numbers::signaling_nan<double>());
+      reaction_terms.assign(n_points, std::vector<double>(n_comp, numbers::signaling_nan<double>()));
     }
 
 
