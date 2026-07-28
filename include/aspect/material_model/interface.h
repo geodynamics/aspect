@@ -302,6 +302,26 @@ namespace aspect
                             const bool compute_strain_rate = true);
 
         /**
+         * Resize the internal data structures to provide sufficient memory
+         * to store (at least) @p n_points. If the data structures were
+         * smaller than @p n_points the new items will be filled with invalid
+         * signaling NaNs. If the data structures were larger than @p n_points
+         * they will be shrunk, but the reserved memory will remain available
+         * for later use (after enlargening the structure again).
+         * This function is not supported if AdditionalMaterialInputs are
+         * attached.
+         *
+         * @param n_points The number of quadrature points for which input
+         * quantities will be provided.
+         * @param n_comp The number of vector quantities (in the order in which
+         * the Introspection class reports them) for which input will be
+         * provided.
+         */
+        void
+        resize(const unsigned int n_points,
+               const unsigned int n_comp);
+
+        /**
          * Copy constructor. This constructor copies all data members of the
          * source object except for the additional input data (of type
          * AdditionalMaterialInputs) pointers, stored in the
@@ -519,11 +539,31 @@ namespace aspect
          * @param n_points The number of quadrature points for which input
          * quantities will be provided.
          * @param n_comp The number of vector quantities (in the order in which
-         * the Introspection class reports them) for which input will be
+         * the Introspection class reports them) for which output will be
          * provided.
          */
         MaterialModelOutputs (const unsigned int n_points,
                               const unsigned int n_comp);
+
+        /**
+         * Resize the internal data structures to provide sufficient memory
+         * to store (at least) @p n_points. If the data structures were
+         * smaller than @p n_points the new items will be filled with invalid
+         * signaling NaNs. If the data structures were larger than @p n_points
+         * they will be shrunk, but the reserved memory will remain available
+         * for later use (after enlargening the structure again).
+         * This function is not supported if AdditionalMaterialOutputs are
+         * attached.
+         *
+         * @param n_points The number of quadrature points for which input
+         * quantities will be provided.
+         * @param n_comp The number of vector quantities (in the order in which
+         * the Introspection class reports them) for which output will be
+         * provided.
+         */
+        void
+        resize(const unsigned int n_points,
+               const unsigned int n_comp);
 
         /**
          * Copy constructor. This constructor copies all data members of the
