@@ -77,7 +77,7 @@ namespace aspect
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(PrescribedDilation,
                                                   "prescribed dilation",
                                                   "A visualization output postprocessor that outputs prescribed dilation"
-                                                  "Physical units: $\\text{s}^{-1}$.")
+                                                  "Physical units: $\\si{\\per\\seconds}$.")
     }
   }
 }

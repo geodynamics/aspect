@@ -1,0 +1,4 @@
+New: Prescribed dilation plugin system and a first implementation (function plugin).
+The feature is switched on by selecting any model in subsection Prescribed dilation (set List of model names = ...).
+<br>
+(Alexandr Dizov, 2026/07/28)

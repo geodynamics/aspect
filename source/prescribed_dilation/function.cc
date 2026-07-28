@@ -145,6 +145,6 @@ namespace aspect
                                    "muparser library, see "
                                    "{ref}\\`sec:run-aspect:parameters-overview:muparser-format\\`."
                                    "\n\n"
-                                   "Physical units: $\\text{s}^{-1}$.")
+                                   "Physical units: $\\si{\\per\\second}$.")
   }
 }
