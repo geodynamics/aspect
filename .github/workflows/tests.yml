@@ -10,6 +10,7 @@ on:
       - opened
       - synchronize
       - reopened
+      - labeled
   workflow_dispatch:
 
 concurrency:
@@ -26,7 +27,10 @@ env:
 
 jobs:
   tests:
-    if: contains(github.event.pull_request.labels.*.name, 'ready to test')
+    if: >-
+      contains(github.event.pull_request.labels.*.name, 'ready to test') &&
+      (github.event.action != 'labeled' ||
+       github.event.label.name == 'ready to test')
     #linux build including tests
     name: tests
     runs-on: [ubuntu-22.04]
