@@ -229,7 +229,7 @@ namespace aspect
                                                                        this->get_melt_handler(),
                                                                        true);
 
-      const std::shared_ptr<MaterialModel::MeltOutputs<dim>> melt_outputs
+      const std::shared_ptr<const MaterialModel::MeltOutputs<dim>> melt_outputs
         = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
 
       const FEValuesExtractors::Scalar ex_p_f = introspection.variable("fluid pressure").extractor_scalar();
@@ -399,7 +399,7 @@ namespace aspect
       const unsigned int p_f_component_index = introspection.variable("fluid pressure").first_component_index;
       const unsigned int p_c_component_index = introspection.variable("compaction pressure").first_component_index;
 
-      const std::shared_ptr<MaterialModel::MeltOutputs<dim>> melt_outputs
+      const std::shared_ptr<const MaterialModel::MeltOutputs<dim>> melt_outputs
         = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
       const std::shared_ptr<const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>> force
         = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>();
@@ -575,7 +575,7 @@ namespace aspect
 
       const typename DoFHandler<dim>::face_iterator face = scratch.face_material_model_inputs.current_cell->face(scratch.face_number);
 
-      const std::shared_ptr<MaterialModel::MeltOutputs<dim>> melt_outputs
+      const std::shared_ptr<const MaterialModel::MeltOutputs<dim>> melt_outputs
         = scratch.face_material_model_outputs.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
 
       std::vector<double> grad_p_f(n_face_q_points);
@@ -686,7 +686,7 @@ namespace aspect
 
       const FEValuesExtractors::Scalar solution_field = scratch.advection_field->scalar_extractor(introspection);
 
-      const std::shared_ptr<MaterialModel::MeltOutputs<dim>> melt_outputs
+      const std::shared_ptr<const MaterialModel::MeltOutputs<dim>> melt_outputs
         = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
 
       Assert(melt_outputs->fluid_densities[0] > 0.0,

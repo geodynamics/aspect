@@ -66,7 +66,7 @@ namespace aspect
       MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->n_compositional_fields());
       MeltHandler<dim>::create_material_model_outputs(out);
-      std::shared_ptr<MaterialModel::MeltOutputs<dim>> fluid_out;
+      std::shared_ptr<const MaterialModel::MeltOutputs<dim>> fluid_out;
 
       double max_local_speed_over_meshsize = 0;
 

@@ -2246,7 +2246,7 @@ namespace aspect
     MaterialModel::MaterialModelInputs<dim> in(fe_face_values.n_quadrature_points, introspection.n_compositional_fields);
     MaterialModel::MaterialModelOutputs<dim> out(fe_face_values.n_quadrature_points, introspection.n_compositional_fields);
     MeltHandler<dim>::create_material_model_outputs(out);
-    std::shared_ptr<MaterialModel::MeltOutputs<dim>> fluid_out
+    std::shared_ptr<const MaterialModel::MeltOutputs<dim>> fluid_out
       = out.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
 
     const auto &tangential_velocity_boundaries =
