@@ -49,9 +49,16 @@ namespace aspect
        */
       void fastscape_init_();
 
+#ifdef ASPECT_HAVE_FASTSCAPE_TVD_ADVECTION
       /**
-       * Set the x and y extent of the FastScape model.
+       * Function to select the horizontal advection scheme in FastScape
        */
+      void fastscape_set_advection_scheme_(const int *scheme);
+#endif
+
+      /**
+      * Set the x and y extent of the FastScape model.
+      */
       void fastscape_set_xl_yl_(const double *xxl,
                                 const double *yyl);
 
@@ -909,12 +916,25 @@ namespace aspect
 
       // Initialize FastScape with grid and extent.
       fastscape_init_();
-
-      fastscape_set_nx_ny_(&fastscape_nx,
-                           &fastscape_ny);
       fastscape_setup_();
       fastscape_set_xl_yl_(&fastscape_x_extent,
                            &fastscape_y_extent);
+
+#ifdef ASPECT_HAVE_FASTSCAPE_TVD_ADVECTION
+      // Scheme 1 is the original FastScape advection scheme and scheme 2 is the TVD-FVM scheme
+      int fastscape_advection_scheme = 1;
+
+      if (advection_scheme == "tvd")
+        fastscape_advection_scheme = 2;
+
+      fastscape_set_advection_scheme_(&fastscape_advection_scheme);
+#else
+      Assert(advection_scheme == "original",
+             ExcInternalError());
+#endif
+
+      fastscape_set_nx_ny_(&fastscape_nx,
+                           &fastscape_ny);
 
       // Set boundary conditions
       fastscape_set_bc_(&fastscape_boundary_conditions);
@@ -1779,7 +1799,9 @@ namespace aspect
                             "Select one additional Fastscape variable to output in the Fastcape vtk. "
                             "Output are in units of per year. "
                            );
-
+          prm.declare_entry("Advection scheme", "original",
+                            Patterns::Selection("original|tvd"),
+                            "Select FastScape horizontal advection scheme.");
           prm.enter_subsection ("Boundary conditions");
           {
             prm.declare_entry ("Front", "1",
@@ -1985,6 +2007,16 @@ namespace aspect
         {
           fastscape_steps_per_aspect_step = prm.get_integer("Number of fastscape timesteps per aspect timestep");
           maximum_fastscape_timestep = prm.get_double("Maximum timestep length");
+          advection_scheme = prm.get("Advection scheme");
+#ifndef ASPECT_HAVE_FASTSCAPE_TVD_ADVECTION
+          AssertThrow(
+            advection_scheme == "original",
+            ExcMessage(
+              "The Fastscape advection scheme <tvd> was selected, "
+              "but the linked Fastscape version does not provide "
+              "the selectable horizontal-advection API. The TVD "
+              "scheme requires Fastscape version 2.9.1dev or newer."));
+#endif
           vexp = prm.get_double("Vertical exaggeration");
           additional_refinement_levels = prm.get_integer("Additional fastscape refinement");
           average_out_of_plane_surface_topography = prm.get_bool("Average out of plane surface topography in 2d");

@@ -243,6 +243,11 @@ namespace aspect
         unsigned int fastscape_ny;
 
         /**
+         * Advection scheme in FastScape
+         */
+        std::string advection_scheme;
+
+        /**
          * Vertical exaggeration in FastScape visualization.
          */
         double vexp;
