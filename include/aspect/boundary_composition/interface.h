@@ -84,6 +84,16 @@ namespace aspect
     {
       public:
         /**
+         * Default constructor.
+         */
+        Manager();
+
+        /**
+         * Default destructor.
+         */
+        ~Manager() override;
+
+        /**
          * Declare the parameters of all known boundary composition plugins, as
          * well as the ones this class has itself.
          */
@@ -233,7 +243,7 @@ namespace aspect
          * Return a list of the fields that are fixed on the boundary
          * identified by the function argument.
          */
-        std::vector<unsigned int>
+        std::set<unsigned int>
         get_fixed_fields_on_boundary (const types::boundary_id boundary_id) const;
 
         /*
@@ -342,7 +352,7 @@ namespace aspect
          * Whether one or more boundaries only have fixed boundary conditions
          * for a subset of fields, instead of all fields.
          */
-        bool do_boundaries_with_fixed_subset_of_fields_exist = false;
+        bool do_boundaries_with_fixed_subset_of_fields_exist;
     };
 
 

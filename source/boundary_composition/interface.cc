@@ -49,6 +49,20 @@ namespace aspect
     }
 
 
+
+    template <int dim>
+    Manager<dim>::Manager()
+      :
+      allow_fixed_composition_on_outflow_boundaries(false),
+      do_boundaries_with_fixed_subset_of_fields_exist(false)
+    {}
+
+    template <int dim>
+    Manager<dim>::~Manager()
+      = default;
+
+
+
     template <int dim>
     void
     Manager<dim>::register_boundary_composition (const std::string &name,
@@ -555,7 +569,7 @@ namespace aspect
 
 
     template <int dim>
-    std::vector<unsigned int>
+    std::set<unsigned int>
     Manager<dim>::get_fixed_fields_on_boundary (const types::boundary_id boundary_id) const
     {
       Assert(fixed_composition_boundary_indicators.find(boundary_id) != fixed_composition_boundary_indicators.end(),
@@ -573,7 +587,7 @@ namespace aspect
       // Since the component masks of plugins at the same boundary can vary,
       // loop over all the plugins of this boundary and see if any masks for
       // the given compositional field are true.
-      std::vector<unsigned int> fixed_fields;
+      std::set<unsigned int> fixed_fields;
       auto p = this->plugin_objects.begin();
       for (unsigned int i=0; i<this->plugin_objects.size(); ++p, ++i)
         {
@@ -591,7 +605,7 @@ namespace aspect
                           // so only add the field if it is not listed already.
                           if (std::find(fixed_fields.begin(), fixed_fields.end(), c) == fixed_fields.end())
                             {
-                              fixed_fields.push_back(c);
+                              fixed_fields.insert(c);
                             }
                         }
                     }
