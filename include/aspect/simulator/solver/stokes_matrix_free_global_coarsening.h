@@ -230,6 +230,24 @@ namespace aspect
 
       std::vector<std::shared_ptr<const Triangulation<dim, dim>>> trias;
 
+      /**
+       * Return a mapping that is valid on the (repartitioned copies of the)
+       * level triangulations of the global coarsening hierarchy. The
+       * simulator mapping can be a MappingQCache, which caches geometry
+       * information for the cells of the simulator triangulation only and
+       * must not be evaluated on other triangulations. In that case an
+       * equivalent manifold-based mapping is built (and stored in
+       * #level_triangulation_mapping); otherwise the simulator mapping is
+       * returned.
+       */
+      const Mapping<dim> &get_level_triangulation_mapping();
+
+      /**
+       * Storage for the mapping returned by
+       * get_level_triangulation_mapping().
+       */
+      std::unique_ptr<Mapping<dim>> level_triangulation_mapping;
+
       MGLevelObject<DoFHandler<dim>> dofhandlers_v;
       MGLevelObject<DoFHandler<dim>> dofhandlers_p;
       MGLevelObject<DoFHandler<dim>> dofhandlers_projection;

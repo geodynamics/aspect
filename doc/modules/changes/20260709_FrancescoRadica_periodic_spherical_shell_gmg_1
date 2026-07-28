@@ -1,0 +1,7 @@
+New: The global coarsening GMG Stokes solver now supports periodic boundary
+conditions, including the rotational periodicity of spherical shells and
+hanging nodes on the periodic boundary. This solver must be selected
+explicitly by setting the Stokes solver type to `block GMG` and the Stokes
+GMG type to `global coarsening`.
+<br>
+(Francesco Radica, 2026/07/09)

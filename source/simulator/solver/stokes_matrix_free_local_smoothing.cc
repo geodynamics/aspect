@@ -1622,7 +1622,13 @@ namespace aspect
 
       have_periodic_hanging_nodes = (Utilities::MPI::max(have_periodic_hanging_nodes ? 1 : 0,
                                                          this->get_mpi_communicator())) == 1;
-      AssertThrow(have_periodic_hanging_nodes==false, ExcNotImplemented());
+      AssertThrow(have_periodic_hanging_nodes==false,
+                  ExcMessage("The 'local smoothing' geometric multigrid solver does not "
+                             "support hanging nodes on periodic boundaries, which the "
+                             "adaptive mesh refinement has just created. Please set "
+                             "'Stokes GMG type = global coarsening' in subsection "
+                             "'Solver parameters/Stokes solver parameters' to use a "
+                             "multigrid variant that supports them."));
     }
 
     // This vector will be refilled with the new MatrixFree objects below:

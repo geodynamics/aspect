@@ -1,0 +1,7 @@
+Fixed: The periodicity constraints of phi-periodic spherical shells were
+silently wrong for scalar fields such as the pressure of the matrix-free
+Stokes solvers, because the rotation matrix was misinterpreted as a face
+interpolation matrix. Forcing the GMG solver on periodic spherical shells
+used to produce wrong velocities near the periodic boundary.
+<br>
+(Francesco Radica, 2026/07/09)
