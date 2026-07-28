@@ -85,8 +85,8 @@ namespace aspect
     };
 
     /**
-    * Additional output fields for diffusion and dislocation viscosities.
-    */
+     * Additional output fields for diffusion and dislocation viscosities.
+     */
     template <int dim>
     class ViscosityAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
     {
@@ -133,7 +133,6 @@ namespace aspect
          * i.e., viscous flow law is either dislocation or composite.
          */
         std::vector<double> dislocation_viscosities;
-
     };
 
     /**
@@ -285,6 +284,7 @@ namespace aspect
                                       const std::vector<double> &volume_fractions,
                                       MaterialModel::MaterialModelOutputs<dim> &out,
                                       const IsostrainViscosities &isostrain_viscosities) const;
+
 
           /**
            * Minimum strain rate used to stabilize the strain rate dependent rheology.

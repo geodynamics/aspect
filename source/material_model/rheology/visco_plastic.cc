@@ -103,6 +103,7 @@ namespace aspect
               case ViscosityAdditionalOutputs<dim>::Property::dislocation_viscosity:
                 names.emplace_back("dislocation_viscosity");
                 break;
+
             }
 
         return names;
@@ -172,7 +173,7 @@ namespace aspect
         output_parameters.dilation_rhs_terms.resize(volume_fractions.size(), numbers::signaling_nan<double>());
         output_parameters.diffusion_viscosities.resize(volume_fractions.size(), std::numeric_limits<double>::max());
         output_parameters.dislocation_viscosities.resize(volume_fractions.size(), std::numeric_limits<double>::max());
-
+        
         // Assemble current and old stress tensor if elastic behavior is enabled
         SymmetricTensor<2, dim> stress_0_advected = numbers::signaling_nan<SymmetricTensor<2, dim>>();
         SymmetricTensor<2, dim> stress_old = numbers::signaling_nan<SymmetricTensor<2, dim>>();
@@ -1052,6 +1053,7 @@ namespace aspect
                                                   drucker_prager_parameters);
               }
           }
+        compositional_viscosity_prefactors.fill_fugacity_outputs(in, i, out);
       }
 
       template <int dim>
@@ -1085,6 +1087,7 @@ namespace aspect
                 n_points,
                 active_properties));
           }
+        compositional_viscosity_prefactors.create_fugacity_outputs(out);
       }
 
 
