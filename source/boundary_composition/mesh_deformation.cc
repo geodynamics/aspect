@@ -33,13 +33,9 @@ namespace aspect
     void
     MeshDeformation<dim>::initialize()
     {
-      // Make sure we keep track of the initial composition manager and
-      // that it continues to live beyond the time when the simulator
-      // class releases its pointer to it.
-      // initial_composition = this->get_initial_composition_manager_pointer();
-
-      // Check that mesh deformation is actually active.
-      AssertThrow(this->get_mesh_deformation_boundary_indicators().size() > 0,
+      // Check that mesh deformation is actually active. The mesh deformation plugins
+      // are not initialized yet, so we can only check the input parameters.
+      AssertThrow(this->get_parameters().mesh_deformation_enabled == true,
                   ExcMessage ("The boundary composition plugin ``mesh deformation'' can only be used when a mesh deformation plugin is active."));
     }
 
@@ -57,26 +53,6 @@ namespace aspect
 
 
 
-    // template <int dim>
-    // double
-    // MeshDeformation<dim>::
-    // minimal_composition (const std::set<types::boundary_id> &) const
-    // {
-    //   return min_composition;
-    // }
-
-
-
-    // template <int dim>
-    // double
-    // MeshDeformation<dim>::
-    // maximal_composition (const std::set<types::boundary_id> &) const
-    // {
-    //   return max_composition;
-    // }
-
-
-
     template <int dim>
     void
     MeshDeformation<dim>::declare_parameters (ParameterHandler &prm)
@@ -85,12 +61,6 @@ namespace aspect
       {
         prm.enter_subsection("Mesh deformation");
         {
-          // prm.declare_entry ("Minimal composition", "0.",
-          //                    Patterns::Double (),
-          //                    "Minimal composition. Units: none.");
-          // prm.declare_entry ("Maximal composition", "1.",
-          //                    Patterns::Double (),
-          //                    "Maximal composition. Units: none.");
         }
         prm.leave_subsection ();
       }
@@ -106,8 +76,6 @@ namespace aspect
       {
         prm.enter_subsection("Mesh deformation");
         {
-          // min_composition = prm.get_double ("Minimal composition");
-          // max_composition = prm.get_double ("Maximal composition");
         }
         prm.leave_subsection ();
       }

@@ -1598,7 +1598,10 @@ namespace aspect
                           const Point<dim> &/*position*/,
                           const unsigned int compositional_field) const
     {
-      return 0.0;
+      if (compositional_field == 5)
+        return 1.0;
+      else
+        return 0.0;
     }
 
 
