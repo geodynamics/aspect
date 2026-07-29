@@ -1,0 +1,5 @@
+Added: A parallel unstructured interface class for mesh
+deformation plugins for coupling ASPECT to external tools
+that utilize independent meshes.
+<br>
+(Timo Heister, Wolfgang Bangerth, Daniel Douglas, 2026/07/26)
