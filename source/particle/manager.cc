@@ -1176,7 +1176,7 @@ namespace aspect
             prm.declare_entry ("Particle advection velocity", "automatic",
                                Patterns::Selection ("automatic|fluid|solid"),
                                "This parameter determines which velocity will be used "
-                               "to advect a particular particle world. This can be the solid velocity "
+                               "to advect a particular particle manager. This can be the solid velocity "
                                "(if option 'solid' is chosen), or the fluid velocity obtained by solving "
                                "the coupled Stokes/Darcy equations in simulations with melt transport "
                                "(if 'fluid' is chosen). If 'automatic' is chosen, particles are advected with "

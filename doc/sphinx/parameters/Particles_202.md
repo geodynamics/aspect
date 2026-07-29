@@ -182,7 +182,7 @@ The following properties are available:
 
 **Pattern:** [Selection automatic|fluid|solid ]
 
-**Documentation:** This parameter determines which velocity will be used to advect a particular particle world. This can be the solid velocity (if option &rsquo;solid&rsquo; is chosen), or the fluid velocity obtained by solving the coupled Stokes/Darcy equations in simulations with melt transport (if &rsquo;fluid&rsquo; is chosen). If &rsquo;automatic&rsquo; is chosen, particles are advected with the melt velocity in case both melt transport is turned on and the particle property &rsquo;melt particle&rsquo; is used in the simulation.)
+**Documentation:** This parameter determines which velocity will be used to advect a particular particle manager. This can be the solid velocity (if option &rsquo;solid&rsquo; is chosen), or the fluid velocity obtained by solving the coupled Stokes/Darcy equations in simulations with melt transport (if &rsquo;fluid&rsquo; is chosen). If &rsquo;automatic&rsquo; is chosen, particles are advected with the melt velocity in case both melt transport is turned on and the particle property &rsquo;melt particle&rsquo; is used in the simulation.)
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Particle generator name<parameters:Particles_202/Particle_20generator_20name>`
