@@ -576,6 +576,15 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 (parameters:Particles/Function)=
 ## **Subsection:** Particles / Function
+::::{dropdown} __Parameter:__ {ref}`Coordinate system<parameters:Particles/Function/Coordinate_20system>`
+:name: parameters:Particles/Function/Coordinate_20system
+**Default value:** cartesian
+
+**Pattern:** [Selection cartesian|spherical|depth ]
+
+**Documentation:** A selection that determines the assumed coordinate system for the function variables. Allowed values are &lsquo;cartesian&rsquo;, &lsquo;spherical&rsquo;, and &lsquo;depth&rsquo;. &lsquo;spherical&rsquo; coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. &lsquo;depth&rsquo; will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Function constants<parameters:Particles/Function/Function_20constants>`
 :name: parameters:Particles/Function/Function_20constants
 **Default value:**
