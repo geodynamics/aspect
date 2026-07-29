@@ -33,15 +33,6 @@ namespace aspect
   namespace Postprocess
   {
     template <int dim>
-    CoreStatistics<dim>::CoreStatistics()
-      :
-      // leave the core_data variable in its uninitialized state
-      core_data()
-    {}
-
-
-
-    template <int dim>
     std::pair<std::string,std::string>
     CoreStatistics<dim>::execute (TableHandler &statistics)
     {
@@ -52,7 +43,7 @@ namespace aspect
       const BoundaryTemperature::DynamicCore<dim> &dynamic_core =
         this->get_boundary_temperature_manager().template get_matching_active_plugin<BoundaryTemperature::DynamicCore<dim>>();
 
-      core_data = dynamic_core.get_core_data();
+      const BoundaryTemperature::internal::CoreData &core_data = dynamic_core.get_core_data();
 
       // now add core mantle boundary heat flux to the statistics object
       // and create a single string that can be output to the screen
@@ -184,61 +175,6 @@ namespace aspect
     }
 
 
-
-    template <int dim>
-    const BoundaryTemperature::internal::CoreData &
-    CoreStatistics<dim>::get_core_data() const
-    {
-      return core_data;
-    }
-
-
-
-    template <int dim>
-    template <class Archive>
-    void CoreStatistics<dim>::serialize (Archive &ar, const unsigned int)
-    {
-      ar &(core_data.Ti);
-      ar &(core_data.Ri);
-      ar &(core_data.Xi);
-      ar &(core_data.Q);
-      ar &(core_data.dR_dt);
-      ar &(core_data.dT_dt);
-      ar &(core_data.dX_dt);
-      ar &(core_data.is_initialized);
-    }
-
-
-
-    template <int dim>
-    void CoreStatistics<dim>::save (std::map<std::string, std::string> &status_strings) const
-    {
-      // Serialize into a stringstream. Put the following into a code
-      // block of its own to ensure the destruction of the 'oa'
-      // archive triggers a flush() on the stringstream so we can
-      // query the completed string below.
-      std::ostringstream os;
-      {
-        aspect::oarchive oa (os);
-        oa << (*this);
-      }
-
-      status_strings["CoreStatistics"] = os.str();
-    }
-
-
-
-    template <int dim>
-    void CoreStatistics<dim>::load (const std::map<std::string, std::string> &status_strings)
-    {
-      // see if something was saved
-      if (status_strings.find("CoreStatistics") != status_strings.end())
-        {
-          std::istringstream is (status_strings.find("CoreStatistics")->second);
-          aspect::iarchive ia (is);
-          ia >> (*this);
-        }
-    }
 
   }
 }
