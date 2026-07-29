@@ -1,0 +1,5 @@
+New: Added an option to advect different particle worlds
+with different chosen velocity. The current velocity
+choices are solid and fluid velocity.
+<br>
+(Arijit Chakraborty, 2026/07/28)

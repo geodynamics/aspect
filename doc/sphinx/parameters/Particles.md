@@ -133,7 +133,7 @@ The following properties are available:
 
 &lsquo;strain rate&rsquo;: Implementation of a plugin in which the time evolution of strain rate is saved and stored on the particles.
 
-&lsquo;velocity&rsquo;: Implementation of a plugin in which the particle property is defined as the recent velocity at this position.
+&lsquo;velocity&rsquo;: Implementation of a plugin in which the particle property is defined as the recent velocity at this position. The velocity depends on whether the particle world is being advected with a solid or fluid velocity.
 
 &lsquo;velocity gradient&rsquo;: Implementation of a plugin in which the particle property is defined as the recent velocity gradient at this position.
 
@@ -183,6 +183,15 @@ The following properties are available:
 **Pattern:** [Selection random|histogram|point density function ]
 
 **Documentation:** Algorithm used to add particles to cells.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Particle advection velocity<parameters:Particles/Particle_20advection_20velocity>`
+:name: parameters:Particles/Particle_20advection_20velocity
+**Default value:** automatic
+
+**Pattern:** [Selection automatic|fluid|solid ]
+
+**Documentation:** This parameter determines which velocity will be used to advect a particular particle world. This can be the solid velocity (if option &rsquo;solid&rsquo; is chosen), or the fluid velocity obtained by solving the coupled Stokes/Darcy equations in simulations with melt transport (if &rsquo;fluid&rsquo; is chosen). If &rsquo;automatic&rsquo; is chosen, particles are advected with the melt velocity in case both melt transport is turned on and the particle property &rsquo;melt particle&rsquo; is used in the simulation.)
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Particle generator name<parameters:Particles/Particle_20generator_20name>`
