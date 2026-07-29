@@ -1,0 +1,260 @@
+
+Loading shared library <./libcheckpoint_11_steady_heat_flux.debug.so>
+* running continuous reference:
+* now resuming from the pre-termination checkpoint:
+* restarted run log:
+
+*** Resuming from snapshot output_restart.tmp/restart/01/
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+*** Timestep 100:  t=1.5625 seconds, dt=0.015625 seconds
+   Solving temperature system... 1 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       4.96e-15 m/s, 1.21e-14 m/s
+
+Skipping mesh refinement, because the mesh did not change.
+
+
+
+
+*** Timestep 101:  t=1.57812 seconds, dt=0.015625 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       8.74e-15 m/s, 1.96e-14 m/s
+
+*** Timestep 102:  t=1.59375 seconds, dt=0.015625 seconds
+   Solving temperature system... 1 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       5.54e-15 m/s, 1.65e-14 m/s
+
+*** Timestep 103:  t=1.60938 seconds, dt=0.015625 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       1e-14 m/s, 2.64e-14 m/s
+
+*** Timestep 104:  t=1.625 seconds, dt=0.015625 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       7.56e-15 m/s, 2.77e-14 m/s
+
+*** Timestep 105:  t=1.64062 seconds, dt=0.015625 seconds
+   Solving temperature system... 1 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       3.02e-15 m/s, 1.08e-14 m/s
+
+*** Timestep 106:  t=1.65625 seconds, dt=0.015625 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       1.39e-14 m/s, 2.63e-14 m/s
+
+*** Timestep 107:  t=1.67188 seconds, dt=0.015625 seconds
+   Solving temperature system... 1 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       1.14e-14 m/s, 2.41e-14 m/s
+
+*** Timestep 108:  t=1.6875 seconds, dt=0.015625 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       7.4e-15 m/s, 2.39e-14 m/s
+
+*** Timestep 109:  t=1.70312 seconds, dt=0.015625 seconds
+   Solving temperature system... 1 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       4.34e-15 m/s, 1.12e-14 m/s
+
+*** Timestep 110:  t=1.71875 seconds, dt=0.015625 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       8.81e-15 m/s, 2.02e-14 m/s
+
+Skipping mesh refinement, because the mesh did not change.
+
+*** Timestep 111:  t=1.73438 seconds, dt=0.015625 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       6.68e-15 m/s, 2.34e-14 m/s
+
+*** Timestep 112:  t=1.75 seconds, dt=0.015625 seconds
+   Solving temperature system... 1 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       3.7e-15 m/s, 1.23e-14 m/s
+
+*** Timestep 113:  t=1.76562 seconds, dt=0.015625 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       9.89e-15 m/s, 2.01e-14 m/s
+
+*** Timestep 114:  t=1.78125 seconds, dt=0.015625 seconds
+   Solving temperature system... 1 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       4.01e-15 m/s, 1.28e-14 m/s
+
+*** Timestep 115:  t=1.79688 seconds, dt=0.015625 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       1.07e-14 m/s, 2.34e-14 m/s
+
+*** Timestep 116:  t=1.8125 seconds, dt=0.015625 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       8.4e-15 m/s, 3.17e-14 m/s
+
+*** Timestep 117:  t=1.82812 seconds, dt=0.015625 seconds
+   Solving temperature system... 1 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       7.83e-15 m/s, 1.38e-14 m/s
+
+*** Timestep 118:  t=1.84375 seconds, dt=0.015625 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       6.28e-15 m/s, 2.09e-14 m/s
+
+*** Timestep 119:  t=1.85938 seconds, dt=0.015625 seconds
+   Solving temperature system... 1 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       1.07e-14 m/s, 3.08e-14 m/s
+
+*** Timestep 120:  t=1.875 seconds, dt=0.015625 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       5.79e-15 m/s, 1.59e-14 m/s
+
+Skipping mesh refinement, because the mesh did not change.
+
+*** Timestep 121:  t=1.89062 seconds, dt=0.015625 seconds
+   Solving temperature system... 1 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       1.03e-14 m/s, 2.95e-14 m/s
+
+*** Timestep 122:  t=1.90625 seconds, dt=0.015625 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       7.64e-15 m/s, 1.97e-14 m/s
+
+*** Timestep 123:  t=1.92188 seconds, dt=0.015625 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       6.73e-15 m/s, 2.31e-14 m/s
+
+*** Timestep 124:  t=1.9375 seconds, dt=0.015625 seconds
+   Solving temperature system... 1 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       5.02e-15 m/s, 1.99e-14 m/s
+
+*** Timestep 125:  t=1.95312 seconds, dt=0.015625 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       7.23e-15 m/s, 1.94e-14 m/s
+
+*** Timestep 126:  t=1.96875 seconds, dt=0.015625 seconds
+   Solving temperature system... 1 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       4.28e-15 m/s, 1.15e-14 m/s
+
+*** Timestep 127:  t=1.98438 seconds, dt=0.015625 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       4.37e-15 m/s, 1.36e-14 m/s
+
+*** Timestep 128:  t=2 seconds, dt=0.015625 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 0.5 K, 1 K
+     RMS, max velocity:       9.29e-15 m/s, 2.77e-14 m/s
+
+Termination requested by criterion: steady state heat flux
+
+
+
+* final continuous and restart statistics:
+128 2.000000000000e+00 1.562500000000e-02 64 659 289 0 9 10 10 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01 9.28759846e-15 2.77242882e-14 
+128 2.000000000000e+00 1.562500000000e-02 64 659 289 0 9 10 10 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01 9.28759846e-15 2.77242882e-14 
+* checkpoint resume preserved steady-heat-flux termination history if the last two lines are equal.
