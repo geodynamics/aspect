@@ -177,7 +177,7 @@ namespace aspect
           if (this->get_particle_manager(i).get_property_manager().template has_matching_active_plugin<Particle::Property::CrystalPreferredOrientation<dim>>())
             {
               Assert(particle_manager_index == numbers::invalid_unsigned_int,
-                     ExcMessage("Multiple particle worlds with CPO data found. This is not supported."));
+                     ExcMessage("Multiple particle managers with CPO data found. This is not supported."));
 
               particle_manager_index = i;
             }
