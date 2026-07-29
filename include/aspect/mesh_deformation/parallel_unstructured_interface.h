@@ -169,7 +169,7 @@ namespace aspect
          * base class.
          */
         LinearAlgebra::Vector
-        interpolate_external_velocities_to_surface_support_points (const std::vector<Tensor<1,dim>> &velocities) const;
+        interpolate_external_vector_field_to_surface_support_points (const std::vector<Tensor<1,dim>> &velocities) const;
 
         /**
          * The list of evaluation points owned by the current process. These are the points where the
@@ -215,7 +215,7 @@ namespace aspect
          * In a parallel computation, this map only contains entries for evaluation points owned by the
          * current process. Note that the DoF indices are not necessarily locally owned.
          *
-         * This map is used in interpolate_external_velocities_to_surface_support_points() to copy
+         * This map is used in interpolate_external_vector_field_to_surface_support_points() to copy
          * external velocities to each surface DoF from the closest evaluation point.
          */
         std::vector<DofToEvalPointData> map_dof_to_eval_point;

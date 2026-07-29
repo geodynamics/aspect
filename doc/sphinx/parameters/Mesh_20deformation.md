@@ -158,3 +158,32 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** After each time step the free surface must be advected in the direction of the velocity field. Mass conservation requires that the mesh velocity is in the normal direction of the surface. However, for steep topography or large curvature, advection in the normal direction can become ill-conditioned, and instabilities in the mesh can form. Projection of the mesh velocity onto the local vertical direction can preserve the mesh quality better, but at the cost of slightly poorer mass conservation of the domain.
 ::::
+
+(parameters:Mesh_20deformation/Landlab)=
+## **Subsection:** Mesh deformation / Landlab
+::::{dropdown} __Parameter:__ {ref}`MPI ranks for Landlab<parameters:Mesh_20deformation/Landlab/MPI_20ranks_20for_20Landlab>`
+:name: parameters:Mesh_20deformation/Landlab/MPI_20ranks_20for_20Landlab
+**Default value:** 1
+
+**Pattern:** [Integer range 1...2147483647 (inclusive)]
+
+**Documentation:** Number of ranks to use for the Landlab simulation. Currently, only 1 is supported.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Script name<parameters:Mesh_20deformation/Landlab/Script_20name>`
+:name: parameters:Mesh_20deformation/Landlab/Script_20name
+**Default value:**
+
+**Pattern:** [Anything]
+
+**Documentation:** Name of the Python module to load (without .py extension).
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Script path<parameters:Mesh_20deformation/Landlab/Script_20path>`
+:name: parameters:Mesh_20deformation/Landlab/Script_20path
+**Default value:**
+
+**Pattern:** [Anything]
+
+**Documentation:** Path to the Python script to execute. Relative paths and the placeholders ASPECT_SOURCE_DIR and ASPECT_BINARY_DIR are allowed.
+::::
