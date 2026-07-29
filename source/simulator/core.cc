@@ -484,20 +484,25 @@ namespace aspect
 
     if (particles_are_needed)
       {
-        particle_managers.resize(parameters.n_particle_managers);
-
-        AssertThrow(particle_managers.size() <= ASPECT_MAX_NUM_PARTICLE_SYSTEMS,
-                    ExcMessage("You have selected " + std::to_string(particle_managers.size()) + " particle managers, but ASPECT "
+        AssertThrow(parameters.n_particle_managers <= ASPECT_MAX_NUM_PARTICLE_SYSTEMS,
+                    ExcMessage("You have selected " + std::to_string(parameters.n_particle_managers) + " particle managers, but ASPECT "
                                "has been compiled with a maximum of " + std::to_string(ASPECT_MAX_NUM_PARTICLE_SYSTEMS) + ". "
                                "Please recompile ASPECT with a higher value for ASPECT_MAX_NUM_PARTICLE_SYSTEMS. You can set a higher number "
                                "specifying the CMake variable -DASPECT_MAX_NUM_PARTICLE_SYSTEMS=<number>"));
 
-        for (unsigned int particle_manager_index = 0 ; particle_manager_index < particle_managers.size(); ++particle_manager_index)
+        // Create the particle managers:
+        for (unsigned int particle_manager_index = 0; particle_manager_index < parameters.n_particle_managers; ++particle_manager_index)
+          {
+            particle_managers.emplace_back(Particle::Manager<dim>(particle_manager_index));
+          }
+
+        // And then initialize them:
+        for (unsigned int particle_manager_index = 0; particle_manager_index < particle_managers.size(); ++particle_manager_index)
           {
             if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&particle_managers[particle_manager_index]))
               sim->initialize_simulator (*this);
 
-            particle_managers[particle_manager_index].parse_parameters(prm,particle_manager_index);
+            particle_managers[particle_manager_index].parse_parameters(prm);
             particle_managers[particle_manager_index].initialize();
           }
       }

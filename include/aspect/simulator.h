@@ -1967,7 +1967,7 @@ namespace aspect
       Postprocess::Manager<dim>                                 postprocess_manager;
 
       /**
-       * The managers holding different sets of particles
+       * The managers holding different sets of particles.
        */
       std::vector<Particle::Manager<dim>>                       particle_managers;
 

@@ -87,9 +87,20 @@ namespace aspect
     {
       public:
         /**
-         * Default constructor.
+         * Default constructor. This constructor creates an invalid object, which
+         * is only useful for deserialization if you next want to fill the object
+         * with content read back from a previously generated checkpoint.
+         *
+         * The other constructor should be used in all other cases.
          */
         Manager();
+
+        /**
+         * Constructor. The argument denotes the how many-th particle manager this
+         * is in the simulation. This is used to distinguish between multiple particle
+         * managers in the same simulation.
+         */
+        Manager(const unsigned int particle_manager_index);
 
         /**
          * Default destructor.
@@ -293,14 +304,15 @@ namespace aspect
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter file.
+         * Read the parameters this class declares from the parameter file, using the
+         * particle manager index to distinguish between multiple particle managers
+         * in the same simulation.
          *
          * @param prm The ParameterHandler.
-         * @param particle_manager Parse the parameters for the Particle manager with this index.
          */
         virtual
         void
-        parse_parameters (ParameterHandler &prm, const unsigned int particle_manager);
+        parse_parameters (ParameterHandler &prm);
 
         /**
          * Return whether particles managed by this particle manager are advected
@@ -310,6 +322,13 @@ namespace aspect
         get_particle_velocity_choice() const;
 
       private:
+
+        /**
+         * The index of this particle manager. This is used to distinguish between multiple
+         * particle managers in the same simulation.
+         */
+        unsigned int particle_manager_index;
+
         struct ParticleLoadBalancing
         {
           enum Kind
@@ -555,6 +574,8 @@ namespace aspect
     template <class Archive>
     void Manager<dim>::serialize (Archive &ar, const unsigned int)
     {
+      ar &particle_manager_index;
+
       // Note that although Boost claims to handle serialization of pointers
       // correctly, at least for the case of unique_ptr it seems to not work.
       // It works correctly when archiving the content of the pointer instead.
