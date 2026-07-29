@@ -644,6 +644,30 @@ namespace aspect
 
 
     template <int dim>
+    double
+    MeshDeformationHandler<dim>::boundary_composition (const types::boundary_id boundary_indicator,
+                                                       const Point<dim> &position,
+                                                       const unsigned int compositional_field) const
+    {
+      double composition = 0.0;
+
+      // Loop over all mesh deformation objects that are assigned to this
+      // boundary indicator and sum their contributions
+      // TODO use boundary indicator instead of looping over whole map
+      // for (const auto &boundary_id_and_deformation_objects: mesh_deformation_objects)
+      // {
+      // for (const auto &deformation_object : boundary_id_and_deformation_objects.second)
+      // {
+      // composition += deformation_object->boundary_composition(boundary_indicator,
+      // position,
+      // compositional_field);
+      // }
+      // }
+
+      return composition;
+    }
+
+    template <int dim>
     void MeshDeformationHandler<dim>::make_constraints()
     {
       AssertThrow(sim.parameters.mesh_deformation_enabled, ExcInternalError());

@@ -1592,6 +1592,18 @@ namespace aspect
 
 
     template <int dim>
+    double
+    FastScape<dim>::
+    boundary_composition (const types::boundary_id boundary_indicator,
+                          const Point<dim> &/*position*/,
+                          const unsigned int compositional_field) const
+    {
+      return 0.0;
+    }
+
+
+
+    template <int dim>
     template <class Archive>
     void FastScape<dim>::serialize (Archive &ar, const unsigned int)
     {
