@@ -99,9 +99,44 @@ namespace aspect
       else if (input == "unspecified")
         return CompositionalFieldDescription::unspecified;
       else
-        AssertThrow(false, ExcNotImplemented());
+        AssertThrow(false, ExcMessage("Unknown compositional field type."));
 
       return CompositionalFieldDescription::Type();
+    }
+
+    /**
+     * This function translates a compositional field type into the string
+     * used in the input file and diagnostic output.
+     */
+    static
+    std::string
+    type_to_string(const Type type)
+    {
+      switch (type)
+        {
+          case chemical_composition:
+            return "chemical composition";
+          case stress:
+            return "stress";
+          case strain:
+            return "strain";
+          case grain_size:
+            return "grain size";
+          case porosity:
+            return "porosity";
+          case density:
+            return "density";
+          case entropy:
+            return "entropy";
+          case generic:
+            return "generic";
+          case unspecified:
+            return "unspecified";
+          default:
+            AssertThrow(false, ExcInternalError());
+        }
+
+      return "";
     }
   };
 

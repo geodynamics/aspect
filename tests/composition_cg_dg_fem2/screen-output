@@ -24,6 +24,15 @@ Number of degrees of freedom: 1,275 (386+55+193+40+193+193+55+160)
    Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:
+     Finite element spaces:
+       velocity: FE_Q<2>(2)
+       pressure: FE_Q<2>(1)
+       temperature: FE_Q<2>(2)
+       composition 0: C_1 (chemical composition): FE_DGQ<2>(0)
+       composition 1: C_2 (chemical composition): FE_Q<2>(2)
+       composition 2: C_3 (chemical composition): FE_Q<2>(2)
+       composition 3: C_4 (chemical composition): FE_Q<2>(1)
+       composition 4: C_5 (chemical composition): FE_DGQ<2>(1)
      Temperature min/avg/max:   0 K, 0.5 K, 1 K
      Compositions min/max/mass: 0/1/0.5 // 0/1/0.4583 // 0/1/0.4583 // 0/1/0.375 // 0/1/0.375
                                 
