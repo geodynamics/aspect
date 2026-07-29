@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2025 - 2025 by the authors of the ASPECT code.
+  Copyright (C) 2025 - 2026 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -36,31 +36,23 @@
 
 #include <aspect/python_helper.h>
 
-#ifdef ASPECT_WITH_PYTHON
-
 using namespace dealii;
 namespace aspect
 {
-
   namespace MeshDeformation
   {
-    template <int dim>
-    Landlab<dim>::Landlab()
-    {}
-
-
-
     template <int dim>
     void
     Landlab<dim>::initialize ()
     {
+#ifdef ASPECT_WITH_LANDLAB
       // Determine whether we are in a spherical geometry or not, which affects how we interpret the coordinates of the evaluation points.
-      if (Plugins::plugin_type_matches<GeometryModel::Chunk<dim>>(this->get_geometry_model()) ||
-          Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim>>(this->get_geometry_model()) ||
-          Plugins::plugin_type_matches<GeometryModel::Sphere<dim>>(this->get_geometry_model()))
+      if (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::CoordinateSystem::spherical)
         is_spherical = true;
-      else
+      else if (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::CoordinateSystem::cartesian)
         is_spherical = false;
+      else
+        AssertThrow(false, ExcMessage("The Landlab mesh deformation plugin only supports Cartesian and spherical geometries."));
 
       const unsigned int rank = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
 
@@ -71,7 +63,6 @@ namespace aspect
 
       if (this_rank_runs_landlab)
         {
-#ifdef ASPECT_WITH_PYTHON
           // Append script dirs so env packages (venv site-packages, PYTHONPATH) are found first
           // for "import landlab":
           PyRun_SimpleString("import sys");
@@ -116,13 +107,10 @@ namespace aspect
 
           Py_DECREF(pArgs);
           Py_DECREF(pValue);
-
-#else
-          AssertThrow(false, ExcMessage("ASPECT needs to be configure with Python support "
-                                        "(ASPECT_WITH_PYTHON=ON in CMake) to be able to "
-                                        "use the Landlab mesh deformation model."));
-#endif
         }
+#else
+      AssertThrow(false, ExcMessage("To use the 'Landlab' mesh deformation plugin, ASPECT needs to be configured using ASPECT_WITH_LANDLAB=ON."));
+#endif
     }
 
 
@@ -131,8 +119,7 @@ namespace aspect
     void
     Landlab<dim>::update ()
     {
-
-#ifdef ASPECT_WITH_PYTHON
+#ifdef ASPECT_WITH_LANDLAB
       if (!this->remote_point_evaluator)
         {
           if (!this_rank_runs_landlab)
@@ -226,7 +213,7 @@ namespace aspect
     std::vector<Tensor<1,dim>>
     Landlab<dim>::compute_updated_velocities_at_points (const std::vector<std::vector<double>> &current_solution_at_points) const
     {
-#ifdef ASPECT_WITH_PYTHON
+#ifdef ASPECT_WITH_LANDLAB
       Assert(current_solution_at_points.size() == this->evaluation_points.size(), ExcInternalError());
 
       // Initialize the vector that will compute the velocities in ASPECT from the information
@@ -240,7 +227,8 @@ namespace aspect
           // pressure, temperature, and compositional fields.
 
           // Create dictionary to hold variable names and their corresponding data
-          PyObject *pDict = PyDict_New();
+          PyObject *pDict_solution  = PyDict_New();
+          PyObject *pDict_auxiliary = PyDict_New();
 
           // Add velocities
           std::vector<std::string> variable_names = {"x velocity", "y velocity"};
@@ -269,8 +257,17 @@ namespace aspect
           for (unsigned int i=0; i<variable_names.size(); ++i)
             {
               auto pValue = PythonHelper::vector_to_numpy_object(variable_data[i]);
-              PyDict_SetItemString(pDict, variable_names[i].c_str(), pValue.get());
+              PyDict_SetItemString(pDict_solution, variable_names[i].c_str(), pValue.get());
             }
+
+          // Create a second dictionary which holds other information that is useful for Landlab to know about the ASPECT model.
+          // This is used for keeping landlab and ASPECT in sync while running, and also for checkpointing/restarting and
+          // postprocessing.
+          PyDict_SetItemString(pDict_auxiliary, "ASPECT dimension", PyLong_FromLong(dim));
+          PyDict_SetItemString(pDict_auxiliary, "ASPECT model time", PyFloat_FromDouble(this->get_time()));
+          PyDict_SetItemString(pDict_auxiliary, "ASPECT timestep size", PyFloat_FromDouble(this->get_timestep()));
+          PyDict_SetItemString(pDict_auxiliary, "ASPECT timestep number", PyFloat_FromDouble(this->get_timestep_number()));
+          PyDict_SetItemString(pDict_auxiliary, "ASPECT output directory", PyUnicode_FromString(this->get_output_directory().c_str()));
 
           // Call update_until(), which is the main loop in Landlab that evolves the topography.
           // update_until() returns the change in the topography, which we convert to a mesh
@@ -279,7 +276,8 @@ namespace aspect
           PyObject *pValue = PythonHelper::call_python_function(pModule, "update_until", pArgs);
 
           // Remove these python objects from memory.
-          Py_DECREF(pDict);
+          Py_DECREF(pDict_solution);
+          Py_DECREF(pDict_auxiliary);
           Py_DECREF(pArgs);
 
           // Convert the returned numpy array to a C++ view and compute the mesh velocities in ASPECT.
@@ -337,8 +335,8 @@ namespace aspect
 
       return velocities;
 #else
-      (void)current_solution_at_points;
-      return std::vector<Tensor<1,dim>>();
+      (void) current_solution_at_points;
+      return {};
 #endif
     }
 
@@ -351,7 +349,7 @@ namespace aspect
                                                const types::boundary_id boundary_indicator,
                                                AffineConstraints<double> &constraints) const
     {
-#ifdef ASPECT_WITH_PYTHON
+#ifdef ASPECT_WITH_LANDLAB
       // We need to initialize the evaluation points in order to extract the initial topography
       // from Landlab and apply it as constraints on the initial mesh in ASPECT. This means that
       // we need to call update(), which determines the evaluation points, which requires that
@@ -405,14 +403,9 @@ namespace aspect
           if (constraints.can_store_line(index))
             if (constraints.is_constrained(index)==false)
               {
-#if DEAL_II_VERSION_GTE(9,6,0)
                 constraints.add_constraint(index,
                                            {},
                                            initial_deformation_ghosted(index));
-#else
-                constraints.add_line(index);
-                constraints.set_inhomogeneity(index, initial_deformation_ghosted(index));
-#endif
               }
         }
 #else
@@ -441,10 +434,6 @@ namespace aspect
           prm.declare_entry("Script name", "",
                             Patterns::Anything(),
                             "Name of the Python module to load (without .py extension).");
-          prm.declare_entry("Script argument", "",
-                            Patterns::Anything(),
-                            "An arbitrary string to be passed to the initialize() function in the "
-                            "Python script. Can be used to specify a configuration file or other option.");
         }
         prm.leave_subsection();
       }
@@ -456,12 +445,13 @@ namespace aspect
     template <int dim>
     void Landlab<dim>::parse_parameters(ParameterHandler &prm)
     {
+#ifdef ASPECT_WITH_LANDLAB
       prm.enter_subsection ("Mesh deformation");
       {
         prm.enter_subsection ("Landlab");
         {
-          const int ranks = prm.get_integer("MPI ranks for Landlab");
-          AssertThrow(ranks == 1,
+          n_landlab_ranks = prm.get_integer("MPI ranks for Landlab");
+          AssertThrow(n_landlab_ranks == 1,
                       ExcMessage("The Landlab mesh deformation model currently only supports running on a single rank. "
                                  "Please set 'MPI ranks for Landlab' to 1 in the parameter file."));
 
@@ -488,11 +478,12 @@ namespace aspect
   namespace MeshDeformation
   {
     ASPECT_REGISTER_MESH_DEFORMATION_MODEL(Landlab,
-                                           "Landlab",
+                                           "landlab",
                                            "A mesh deformation plugin that lets a Python script control the "
                                            "deformation of the surface. It is meant for coupling with the landscape evolution "
                                            "code Landlab, but any other script that provides the necessary functions can be used. "
                                            "It is necessary to have Python and numpy with their C APIs installed and that "
-                                           "ASPECT_WITH_PYTHON is enabled when ASPECT is configured with CMake.")
+                                           "ASPECT_WITH_PYTHON and ASPECT_WITH_LANDLAB are enabled when ASPECT is configured with "
+                                           "CMake. ")
   }
 }
