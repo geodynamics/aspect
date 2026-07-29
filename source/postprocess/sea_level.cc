@@ -600,10 +600,10 @@ namespace aspect
   {
     ASPECT_REGISTER_POSTPROCESSOR(SeaLevel,
                                   "sea level",
-                                  "A postprocessor that computes the sea level for glacial isostatic adjustment"
-                                  "modeling. When ice melts and enters the ocean, the ocean water needs to be"
-                                  "redistributed in a gravitationally consistent way. With the updated surface"
-                                  "loading (ocean and ice) the free surface deformation needs to be computed"
+                                  "A postprocessor that computes the sea level for glacial isostatic adjustment "
+                                  "modeling. When ice melts and enters the ocean, the ocean water needs to be "
+                                  "redistributed in a gravitationally consistent way. With the updated surface "
+                                  "loading (ocean and ice) the free surface deformation needs to be computed "
                                   "iteratively before moving to the next time step. "
                                   "A postprocessor intended for use with a deforming top surface. After every step "
                                   "it computes the sea level based on the topography, ocean basin, ice melt, "

@@ -507,7 +507,7 @@ namespace aspect
                              "Units: \\si{\\degree}.");
           prm.declare_entry ("Cohesion", "1e20",
                              Patterns::Double (0.),
-                             "The value of the cohesion, $C$. The extremely large default"
+                             "The value of the cohesion, $C$. The extremely large default "
                              "cohesion value (1e20 Pa) prevents the viscous stress from "
                              "exceeding the yield stress. Units: \\si{\\pascal}.");
 

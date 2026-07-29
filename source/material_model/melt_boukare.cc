@@ -1002,12 +1002,12 @@ namespace aspect
                              "Units: none.");
           prm.declare_entry ("Reference temperature", "298.15",
                              Patterns::Double(),
-                             "Reference temperature used to compute the material properties"
+                             "Reference temperature used to compute the material properties "
                              "of the different endmember components."
                              "Units: \\si{\\kelvin}.");
           prm.declare_entry ("Reference pressure", "1e11",
                              Patterns::Double(),
-                             "Reference pressure used to compute the material properties"
+                             "Reference pressure used to compute the material properties "
                              "of the different endmember components."
                              "Units: \\si{\\pascal}.");
 

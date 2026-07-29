@@ -1100,7 +1100,7 @@ namespace aspect
                          "and $Q_{k-1}$ for the pressure. This is because using the "
                          "\\textit{same} polynomial degree for both the velocity and the "
                          "pressure turns out to violate some mathematical properties "
-                         "necessary to make the problem solvable. (In particular, the"
+                         "necessary to make the problem solvable. (In particular, the "
                          "condition in question goes by the name ``inf-sup'' or "
                          "Babu{\\v s}ka-Brezzi or LBB condition.) A consequence of "
                          "violating this condition is that the pressure may show "

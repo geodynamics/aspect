@@ -611,7 +611,7 @@ namespace aspect
                              "Background porosity of the solitary wave. Units: none.");
           prm.declare_entry ("Offset", "150",
                              Patterns::Double (0),
-                             "Offset of the center of the solitary wave from the boundary"
+                             "Offset of the center of the solitary wave from the boundary "
                              "of the domain. "
                              "Units: \\si{\\meter}.");
           prm.declare_entry ("Read solution from file", "false",

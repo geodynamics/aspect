@@ -372,7 +372,7 @@ namespace aspect
                                               "anelastic Vs to temperature",
                                               "Implementation of a model in which the initial temperature is calculated "
                                               "from files containing absolute shear wave velocity (Vs) data in ascii format. "
-                                              "This plug-in allows you to select from a number of different models that"
+                                              "This plug-in allows you to select from a number of different models that "
                                               "convert Vs into temperature, accounting for the anelastic behavior of mantle material."
                                               "Note the required format of the "
                                               "input data: The first lines may contain any number of comments "

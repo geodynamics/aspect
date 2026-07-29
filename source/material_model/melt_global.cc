@@ -430,7 +430,7 @@ namespace aspect
                              "$\\alpha_F$: exponential dependency of viscosity on the depletion "
                              "field $F$ (called peridotite). "
                              "Dimensionless factor. With a value of 0.0 (the default) the "
-                             "viscosity does not depend on the depletion. The effective viscosity increase"
+                             "viscosity does not depend on the depletion. The effective viscosity increase "
                              "due to depletion is defined as $std::exp( \\alpha_F * F)$. "
                              "Rationale: melting dehydrates the source rock by removing most of the volatiles,"
                              "and makes it stronger. Hirth and Kohlstedt (1996) report typical values around a "
