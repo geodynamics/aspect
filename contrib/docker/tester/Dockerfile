@@ -11,7 +11,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt update && apt upgrade -yq && \
   texlive-plain-generic texlive-base texlive-latex-recommended \
   texlive-latex-base texlive-fonts-recommended \
   texlive-bibtex-extra lmodern texlive-latex-extra \
-  texlive-science graphviz python3-pip python-setuptools libpython3-dev
+  texlive-science graphviz python3-pip python-setuptools libpython3-dev \
+  lcov
 
 RUN pip3 install cpp-coveralls
 
