@@ -557,15 +557,18 @@ namespace aspect
     if ((parameters.additional_checkpoint_times.size() > 0)
         &&
         (parameters.additional_checkpoint_times.front () < time))
-      create_snapshot(/*is_additional_checkpoint = */ true);
+      {
+        create_snapshot(/*is_additional_checkpoint = */ true);
 
-    // Whether or not we created a checkpoint, remove any additional checkpoint times
-    // that are in the past:
-    while ((parameters.additional_checkpoint_times.size() > 0)
-           &&
-           (parameters.additional_checkpoint_times.front () < time))
-      parameters.additional_checkpoint_times
-      .erase (parameters.additional_checkpoint_times.begin());
+        // Remove all additional checkpoint times that are in the past
+        // (including, but not necessarily limited to the one that
+        // made us do a checkpoint):
+        while ((parameters.additional_checkpoint_times.size() > 0)
+               &&
+               (parameters.additional_checkpoint_times.front () < time))
+          parameters.additional_checkpoint_times
+          .erase (parameters.additional_checkpoint_times.begin());
+      }
 
     // Do a checkpoint if indicated by checkpoint parameters
     if (write_regular_checkpoint)
