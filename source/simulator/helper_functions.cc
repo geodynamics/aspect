@@ -527,54 +527,50 @@ namespace aspect
   {
     // Do a checkpoint if this is the end of simulation,
     // and the termination criteria say to checkpoint at the end.
-    bool write_checkpoint = force_writing_checkpoint;
+    bool write_regular_checkpoint = force_writing_checkpoint;
 
     // If we base checkpoint frequency on timing, measure the time at process 0
     // This prevents race conditions where some processes will checkpoint and others won't
-    if (!write_checkpoint && parameters.checkpoint_time_secs > 0)
+    if (!write_regular_checkpoint && parameters.checkpoint_time_secs > 0)
       {
         const bool global_do_checkpoint = Utilities::MPI::broadcast(mpi_communicator,
                                                                     (std::time(nullptr)-last_checkpoint_time) >=
                                                                     parameters.checkpoint_time_secs,
                                                                     /* root= */0);
         if (global_do_checkpoint)
-          write_checkpoint = true;
+          write_regular_checkpoint = true;
       }
 
     // If we base checkpoint frequency on steps, see if it's time for another checkpoint
-    if (!write_checkpoint &&
+    if (!write_regular_checkpoint &&
         (parameters.checkpoint_time_secs == 0) &&
         (parameters.checkpoint_steps > 0) &&
         (timestep_number % parameters.checkpoint_steps == 0))
-      write_checkpoint = true;
+      write_regular_checkpoint = true;
 
-    /*
-     * See if an additional checkpoint needs to be created. Time has already been advanced
-     * to the next timestep.
-     * TODO if through the other criteria we already determined that a checkpoint needs to be created,
-     * we could copy the checkpoint.
-     */
-    bool created_additional_checkpoint = false;
-    // Loop over as many times as this is necessary
+    // See if an additional checkpoint needs to be created. Time has already been advanced
+    // to the next timestep, so we need a checkpoint if the next additional checkpoint time
+    // is less than the current time.
+
+    // TODO if through the other criteria we already determined that a checkpoint needs to be created,
+    // we could copy the checkpoint.
+    if ((parameters.additional_checkpoint_times.size() > 0)
+        &&
+        (parameters.additional_checkpoint_times.front () < time))
+      create_snapshot(/*is_additional_checkpoint = */ true);
+
+    // Whether or not we created a checkpoint, remove any additional checkpoint times
+    // that are in the past:
     while ((parameters.additional_checkpoint_times.size() > 0)
            &&
            (parameters.additional_checkpoint_times.front () < time))
-      {
-        // Avoid checkpointing the same time step multiple times
-        // if the time step size encompasses multiple additional checkpoint times.
-        if (created_additional_checkpoint == false)
-          {
-            create_snapshot(true);
-            created_additional_checkpoint = true;
-          }
-        parameters.additional_checkpoint_times
-        .erase (parameters.additional_checkpoint_times.begin());
-      }
+      parameters.additional_checkpoint_times
+      .erase (parameters.additional_checkpoint_times.begin());
 
     // Do a checkpoint if indicated by checkpoint parameters
-    if (write_checkpoint)
+    if (write_regular_checkpoint)
       {
-        create_snapshot();
+        create_snapshot(/*is_additional_checkpoint = */ false);
         // matrices will be regenerated after a resume, so do that here too
         // to be consistent. otherwise we would get different results
         // for a restarted computation than for one that ran straight
@@ -582,7 +578,7 @@ namespace aspect
         rebuild_stokes_matrix =
           rebuild_stokes_preconditioner = true;
       }
-    return write_checkpoint;
+    return write_regular_checkpoint;
   }
 
 
