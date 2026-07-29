@@ -903,11 +903,35 @@ namespace aspect
                                             /*direction*/ 1, matched_pairs,
                                             Tensor<1, dim>(), rotation_matrix);
 
-          DoFTools::make_periodicity_constraints<dim,dim,double>(matched_pairs,
-                                                                 constraints,
-                                                                 ComponentMask(),
-          {0},
-          1.);
+          if (dof_handler.get_fe().n_components() == 1)
+            {
+              // Scalar fields (for example the pressure DoFHandler of the
+              // matrix-free Stokes solvers) are invariant under the rotation
+              // that maps one periodic face onto the other. The rotation
+              // matrix is only needed to geometrically match the faces above.
+              // It must not be handed to make_periodicity_constraints():
+              // for scalar elements whose number of DoFs per face equals dim
+              // (e.g. Q1 in 2d) the dim x dim rotation matrix would be
+              // misinterpreted as a face interpolation matrix, silently
+              // producing wrong constraints that couple different DoFs of
+              // the same face.
+              for (auto &pair : matched_pairs)
+                pair.matrix = FullMatrix<double>();
+
+              DoFTools::make_periodicity_constraints<dim,dim,double>(matched_pairs,
+                                                                     constraints);
+            }
+          else
+            {
+              // Vector-valued case (velocity DoFHandler or the full coupled
+              // finite element system): rotate the vector components starting
+              // at component 0.
+              DoFTools::make_periodicity_constraints<dim,dim,double>(matched_pairs,
+                                                                     constraints,
+                                                                     ComponentMask(),
+              {0},
+              1.);
+            }
         }
     }
 
