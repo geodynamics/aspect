@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
+#include <algorithm>
 #include <aspect/material_model/simple.h>
 #include <aspect/material_model/equation_of_state/interface.h>
 
@@ -44,10 +44,10 @@ namespace aspect
           const double temperature_dependence
             = (reference_T > 0
                ?
-               std::max(std::min(std::exp(-thermal_viscosity_exponent *
-                                          delta_temp/reference_T),
-                                 maximum_thermal_prefactor),
-                        minimum_thermal_prefactor)
+               std::clamp(std::exp(-thermal_viscosity_exponent *
+                                   delta_temp/reference_T),
+                          minimum_thermal_prefactor,
+                          maximum_thermal_prefactor)
                :
                1.0);
 

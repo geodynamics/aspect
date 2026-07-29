@@ -21,6 +21,7 @@
 #ifndef _aspect_material_model_melt_visco_plastic_h
 #define _aspect_material_model_melt_visco_plastic_h
 
+#include <algorithm>
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator.h>
 #include <aspect/simulator_access.h>
@@ -605,7 +606,7 @@ namespace aspect
               const double compaction_pressure = (1.0 - porosity) * (in.pressure[i] - fluid_pressures[i]);
 
               const double phi_0 = 0.05;
-              porosity = std::max(std::min(porosity,0.995),1.e-8);
+              porosity = std::clamp(porosity, 1.e-8, 0.995);
               // compaction viscosities (Keller et al. eq (51)
               melt_out->compaction_viscosities[i] = intrinsic_viscosities[i] * phi_0 / porosity;
 

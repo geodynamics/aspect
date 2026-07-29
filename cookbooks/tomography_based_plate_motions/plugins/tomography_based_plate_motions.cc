@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
+#include <algorithm>
 #include "tomography_based_plate_motions.h"
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/gravity_model/interface.h>
@@ -942,7 +942,7 @@ namespace aspect
             alpha += compositional_fields[i] * material_lookup[i]->thermal_expansivity(temperature,pressure);
         }
 
-      alpha = std::max(std::min(alpha,max_thermal_expansivity),min_thermal_expansivity);
+      alpha = std::clamp(alpha, min_thermal_expansivity, max_thermal_expansivity);
       return alpha;
     }
 
@@ -966,7 +966,7 @@ namespace aspect
             cp += compositional_fields[i] * material_lookup[i]->specific_heat(temperature,pressure);
         }
 
-      cp = std::max(std::min(cp,max_specific_heat),min_specific_heat);
+      cp = std::clamp(cp, min_specific_heat, max_specific_heat);
       return cp;
     }
 

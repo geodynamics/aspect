@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
+#include <algorithm>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/material_model/melt_simple.h>
 #include <aspect/material_model/reaction_model/katz2003_mantle_melting.h>
@@ -117,7 +117,7 @@ namespace aspect
           if (this->include_adiabatic_heating ())
             {
               const double delta_temp = in.temperature[i]-this->get_adiabatic_conditions().temperature(in.position[i]);
-              visc_temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[i])),1e4),1e-4);
+              visc_temperature_dependence = std::clamp(std::exp(-thermal_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[i])), 1e-4, 1e4);
             }
           else
             {
@@ -127,7 +127,7 @@ namespace aspect
                                            0.0
                                            :
                                            thermal_viscosity_exponent*delta_temp/reference_T);
-              visc_temperature_dependence = std::max(std::min(std::exp(-T_dependence),1e4),1e-4);
+              visc_temperature_dependence = std::clamp(std::exp(-T_dependence), 1e-4, 1e4);
             }
           out.viscosities[i] *= visc_temperature_dependence;
 

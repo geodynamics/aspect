@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
+#include <algorithm>
 #include <aspect/material_model/reaction_model/grain_size_evolution.h>
 #include <aspect/utilities.h>
 #include <aspect/gravity_model/interface.h>
@@ -108,7 +108,7 @@ namespace aspect
 
         // We have to ensure the power term exponent is between 0 and 1, otherwise the partitioning fraction
         // will be outside the set bounds for the work fraction.
-        const double power_term_exponent = std::max(std::min(power_term_numerator / power_term_denominator, 1.0), 0.0);
+        const double power_term_exponent = std::clamp(power_term_numerator / power_term_denominator, 0.0, 1.0);
 
         const double power_term = std::pow(power_term_base,
                                            power_term_exponent);

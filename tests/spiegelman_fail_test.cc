@@ -18,6 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
+#include <algorithm>
 #include <aspect/simulator.h>
 #include <deal.II/grid/tria.h>
 #include <aspect/simulator_access.h>
@@ -248,7 +249,7 @@ namespace aspect
         }
 
       if (compute_full_viscosity == true)
-        return std::max(std::min(viscosity, max_visc), min_visc);
+        return std::clamp(viscosity, min_visc, max_visc);
       else
         return viscosity;
     }

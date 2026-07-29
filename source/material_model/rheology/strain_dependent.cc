@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
+#include <algorithm>
 #include <aspect/material_model/rheology/strain_dependent.h>
 
 #include <deal.II/base/signaling_nan.h>
@@ -600,7 +600,7 @@ namespace aspect
                                   const unsigned int j) const
       {
         // Constrain the second strain invariant of the previous timestep by the strain interval
-        const double cut_off_strain_ii = std::max(std::min(strain_ii,end_plastic_strain_weakening_intervals[j]),start_plastic_strain_weakening_intervals[j]);
+        const double cut_off_strain_ii = std::clamp(strain_ii, start_plastic_strain_weakening_intervals[j], end_plastic_strain_weakening_intervals[j]);
 
         // Linear strain weakening of cohesion and internal friction angle between specified strain values
         const double strain_fraction = (cut_off_strain_ii - start_plastic_strain_weakening_intervals[j]) /
@@ -620,7 +620,7 @@ namespace aspect
                                   const unsigned int j) const
       {
         // Constrain the second strain invariant of the previous timestep by the strain interval
-        const double cut_off_strain_ii = std::max(std::min(strain_ii,end_viscous_strain_weakening_intervals[j]),start_viscous_strain_weakening_intervals[j]);
+        const double cut_off_strain_ii = std::clamp(strain_ii, start_viscous_strain_weakening_intervals[j], end_viscous_strain_weakening_intervals[j]);
 
         // Linear strain weakening of the viscous flow law prefactors between specified strain values
         const double strain_fraction = (cut_off_strain_ii - start_viscous_strain_weakening_intervals[j]) /

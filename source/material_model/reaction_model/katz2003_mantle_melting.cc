@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
+#include <algorithm>
 #include <aspect/material_model/reaction_model/katz2003_mantle_melting.h>
 #include <aspect/utilities.h>
 #include <aspect/gravity_model/interface.h>
@@ -322,14 +322,14 @@ namespace aspect
                                                        * this->get_gravity_model().gravity_vector(in.position[i]);
 
                 const double phi_0 = 0.05;
-                porosity = std::max(std::min(porosity,0.995),1e-4);
+                porosity = std::clamp(porosity, 1e-4, 0.995);
                 melt_out->compaction_viscosities[i] = xi_0 * phi_0 / porosity;
 
                 double visc_temperature_dependence = 1.0;
                 if (this->include_adiabatic_heating ())
                   {
                     const double delta_temp = in.temperature[i]-this->get_adiabatic_conditions().temperature(in.position[i]);
-                    visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[i])),1e4),1e-4);
+                    visc_temperature_dependence = std::clamp(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[i])), 1e-4, 1e4);
                   }
                 else
                   {
@@ -339,7 +339,7 @@ namespace aspect
                                                  0.0
                                                  :
                                                  thermal_bulk_viscosity_exponent*delta_temp/reference_T);
-                    visc_temperature_dependence = std::max(std::min(std::exp(-T_dependence),1e4),1e-4);
+                    visc_temperature_dependence = std::clamp(std::exp(-T_dependence), 1e-4, 1e4);
                   }
                 melt_out->compaction_viscosities[i] *= visc_temperature_dependence;
               }

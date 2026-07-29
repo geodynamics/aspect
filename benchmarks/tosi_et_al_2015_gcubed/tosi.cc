@@ -18,6 +18,7 @@
   <http://www.gnu.org/licenses/>.
  */
 
+#include <algorithm>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/global.h>
 #include <aspect/geometry_model/box.h>
@@ -352,7 +353,7 @@ namespace aspect
         }
 
       // Cut-off the viscosity by user-defined values to avoid possible very large viscosity ratios
-      viscosity = std::max(std::min(viscosity,eta_maximum),eta_minimum);
+      viscosity = std::clamp(viscosity, eta_minimum, eta_maximum);
 
       return viscosity;
     }

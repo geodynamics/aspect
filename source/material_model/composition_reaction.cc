@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
+#include <algorithm>
 #include <aspect/material_model/composition_reaction.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/material_model/equation_of_state/interface.h>
@@ -48,7 +48,7 @@ namespace aspect
           const double temperature = in.temperature[i];
           const std::vector<double> &composition = in.composition[i];
           const double delta_temp = temperature-reference_T;
-          double temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),1e2),1e-2);
+          double temperature_dependence = std::clamp(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T), 1e-2, 1e2);
 
           if (std::isnan(temperature_dependence))
             temperature_dependence = 1.0;

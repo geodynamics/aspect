@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
+#include <algorithm>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/material_model/melt_boukare.h>
 #include <aspect/gravity_model/interface.h>
@@ -471,7 +471,7 @@ namespace aspect
             // Equations (B.9) in Appendix B of Dannberg et al., 2021.
             const double molar_composition_of_solid = molar_composition_of_melt * c_Fe_endmember;
 
-            new_molar_composition_of_solid = std::max(std::min(molar_composition_of_solid, molar_composition_of_bulk), 0.0);
+            new_molar_composition_of_solid = std::clamp(molar_composition_of_solid, 0.0, molar_composition_of_bulk);
             new_molar_composition_of_melt = std::min(std::max(molar_composition_of_melt, molar_composition_of_bulk), 1.0);
 
             if (std::abs(molar_composition_of_melt - molar_composition_of_solid) > std::numeric_limits<double>::min())
@@ -878,7 +878,7 @@ namespace aspect
 
           const double delta_temp = in.temperature[q]-this->get_adiabatic_conditions().temperature(in.position[q]);
           const double viscosity_bound = 1.e8;
-          const double visc_temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[q])),viscosity_bound),1./viscosity_bound);
+          const double visc_temperature_dependence = std::clamp(std::exp(-thermal_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[q])), 1./viscosity_bound, viscosity_bound);
           out.viscosities[q] *= visc_temperature_dependence;
         }
 
@@ -901,7 +901,7 @@ namespace aspect
 
               const double delta_temp = in.temperature[q]-this->get_adiabatic_conditions().temperature(in.position[q]);
               const double compaction_viscosity_bound = 1.e4;
-              const double visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[q])),compaction_viscosity_bound),1./compaction_viscosity_bound);
+              const double visc_temperature_dependence = std::clamp(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[q])), 1./compaction_viscosity_bound, compaction_viscosity_bound);
 
               melt_out->compaction_viscosities[q] *= visc_temperature_dependence;
             }

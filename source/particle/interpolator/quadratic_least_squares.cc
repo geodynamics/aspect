@@ -18,6 +18,7 @@
  <http://www.gnu.org/licenses/>.
  */
 
+#include <algorithm>
 #include <aspect/particle/interpolator/quadratic_least_squares.h>
 #include <aspect/particle/manager.h>
 #include <aspect/utilities.h>
@@ -466,8 +467,8 @@ namespace aspect
                     if ((interpolation_max - cell_average_values[property_index]) > std::numeric_limits<double>::epsilon() &&
                         (cell_average_values[property_index] - interpolation_min) > std::numeric_limits<double>::epsilon())
                       {
-                        const double alpha = std::max(std::min((cell_average_values[property_index] - property_minimums[property_index])/(cell_average_values[property_index] - interpolation_min),
-                                                               (property_maximums[property_index]-cell_average_values[property_index])/(interpolation_max - cell_average_values[property_index])), 0.0);
+                        const double alpha = std::clamp((cell_average_values[property_index] - property_minimums[property_index])/(cell_average_values[property_index] - interpolation_min),
+                                                        0.0, (property_maximums[property_index]-cell_average_values[property_index])/(interpolation_max - cell_average_values[property_index]));
                         // If alpha > 1, then using it would make the function grow to meet the bounds.
                         if (alpha < 1.0)
                           {
