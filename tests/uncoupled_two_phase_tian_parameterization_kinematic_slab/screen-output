@@ -12,7 +12,7 @@ Number of degrees of freedom: 754 (162+25+81+81+81+81+81+81+81)
    Skipping sediment composition solve because RHS is zero.
    Solving Stokes system (GMG)... 25+0 iterations.
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.

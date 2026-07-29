@@ -14,7 +14,7 @@ Number of degrees of freedom: 989 (162+73+162+25+81+81+81+81+81+81+81)
    Solving Stokes system (AMG)... 20+0 iterations.
    Solving fluid velocity system... 1 iterations.
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.

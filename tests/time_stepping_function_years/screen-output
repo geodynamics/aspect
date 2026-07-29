@@ -68,7 +68,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 11:  t=2202.27 years, dt=113.055 years
    Solving temperature system... 22 iterations.
@@ -130,7 +130,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 21:  t=3293.51 years, dt=132.505 years
    Solving temperature system... 2 iterations.
@@ -192,7 +192,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 31:  t=5654.66 years, dt=305.349 years
    Solving temperature system... 12 iterations.
@@ -254,7 +254,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 41:  t=8724.99 years, dt=308.417 years
    Solving temperature system... 1 iterations.
@@ -316,7 +316,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 51:  t=11826.2 years, dt=311.515 years
    Solving temperature system... 2 iterations.
@@ -378,7 +378,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 61:  t=14958.5 years, dt=314.644 years
    Solving temperature system... 6 iterations.

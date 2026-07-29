@@ -23,7 +23,7 @@ Number of degrees of freedom: 678 (316+46+158+158)
    Postprocessing:
      Writing particle output: output-particle_load_balancing_refinement_02/particles/particles-00001
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 2:  t=183.96 seconds, dt=83.0635 seconds
    Skipping temperature solve because RHS is zero.
@@ -46,7 +46,7 @@ Number of degrees of freedom: 246 (114+18+57+57)
    Postprocessing:
      Writing particle output: output-particle_load_balancing_refinement_02/particles/particles-00002
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 4:  t=329.535 seconds, dt=82.6156 seconds
    Skipping temperature solve because RHS is zero.
@@ -57,7 +57,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Writing particle output: output-particle_load_balancing_refinement_02/particles/particles-00003
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 5:  t=381.672 seconds, dt=52.1373 seconds
    Skipping temperature solve because RHS is zero.
@@ -68,7 +68,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Number of advected particles: 10
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 6:  t=437.294 seconds, dt=55.6217 seconds
    Skipping temperature solve because RHS is zero.
@@ -79,7 +79,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Writing particle output: output-particle_load_balancing_refinement_02/particles/particles-00004
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 7:  t=482.628 seconds, dt=45.3338 seconds
    Skipping temperature solve because RHS is zero.
@@ -90,7 +90,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Number of advected particles: 10
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 8:  t=500 seconds, dt=17.3721 seconds
    Skipping temperature solve because RHS is zero.
@@ -101,7 +101,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Writing particle output: output-particle_load_balancing_refinement_02/particles/particles-00005
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 Termination requested by criterion: end time
 

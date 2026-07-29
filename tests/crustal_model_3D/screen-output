@@ -97,7 +97,7 @@ Number of mesh deformation degrees of freedom: 1,071
      Topography min/max:   0 m, 0 m
      Pressure min/avg/max: -1.005e+08 Pa, 1.869e+08 Pa, 5.418e+08 Pa
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 
 

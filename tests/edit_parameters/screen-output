@@ -14,7 +14,7 @@ Signal start_timestep triggered!
      Temperature min/avg/max: 0 K, 1.159 K, 10 K
      RMS, max velocity:       1.97e-08 m/s, 8.32e-08 m/s
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 1:  t=751090 seconds, dt=751090 seconds
 Signal start_timestep triggered!
@@ -64,7 +64,7 @@ Signal start_timestep triggered!
      Temperature min/avg/max: 0 K, 1.357 K, 10 K
      RMS, max velocity:       3.67e-08 m/s, 1.37e-07 m/s
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 5:  t=2.86541e+06 seconds, dt=456300 seconds
 Signal start_timestep triggered!
@@ -76,7 +76,7 @@ Reducing CFL number!
      Temperature min/avg/max: 0 K, 1.382 K, 10 K
      RMS, max velocity:       3.85e-08 m/s, 1.41e-07 m/s
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 6:  t=3.08768e+06 seconds, dt=222269 seconds
 Signal start_timestep triggered!
@@ -87,7 +87,7 @@ Signal start_timestep triggered!
      Temperature min/avg/max: 0 K, 1.393 K, 10 K
      RMS, max velocity:       3.94e-08 m/s, 1.42e-07 m/s
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 7:  t=3.30732e+06 seconds, dt=219641 seconds
 Signal start_timestep triggered!
@@ -98,7 +98,7 @@ Signal start_timestep triggered!
      Temperature min/avg/max: 0 K, 1.404 K, 10 K
      RMS, max velocity:       4.03e-08 m/s, 1.43e-07 m/s
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 8:  t=3.52459e+06 seconds, dt=217263 seconds
 Signal start_timestep triggered!
@@ -109,7 +109,7 @@ Signal start_timestep triggered!
      Temperature min/avg/max: 0 K, 1.415 K, 10 K
      RMS, max velocity:       4.12e-08 m/s, 1.45e-07 m/s
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 9:  t=3.73957e+06 seconds, dt=214980 seconds
 Signal start_timestep triggered!
@@ -120,7 +120,7 @@ Signal start_timestep triggered!
      Temperature min/avg/max: 0 K, 1.425 K, 10 K
      RMS, max velocity:       4.23e-08 m/s, 1.47e-07 m/s
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 10:  t=3.95222e+06 seconds, dt=212658 seconds
 Signal start_timestep triggered!
@@ -131,7 +131,7 @@ Signal start_timestep triggered!
      Temperature min/avg/max: 0 K, 1.435 K, 10 K
      RMS, max velocity:       4.36e-08 m/s, 1.49e-07 m/s
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 Termination requested by criterion: end step
 

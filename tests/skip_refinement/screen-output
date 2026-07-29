@@ -113,7 +113,7 @@ Number of mesh deformation degrees of freedom: 1,158
       Relative nonlinear residual (total system) after nonlinear iteration 2: 7.50815e-10
 
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 0 iterations.
@@ -155,7 +155,7 @@ Skipping mesh refinement, because the mesh did not change.
      Topography min/max:        0 m, 0 m
      RMS, max velocity:         0.388 m/year, 1.57 m/year
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 1:  t=50 years, dt=50 years
    Solving mesh displacement system... 5 iterations.
@@ -212,7 +212,7 @@ Skipping mesh refinement, because the mesh did not change.
      Topography min/max:        -3.064e-06 m, 1.045e-06 m
      RMS, max velocity:         0.161 m/year, 0.663 m/year
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 2:  t=100 years, dt=50 years
    Solving mesh displacement system... 4 iterations.
@@ -269,7 +269,7 @@ Skipping mesh refinement, because the mesh did not change.
      Topography min/max:        -5.838e-06 m, -1.655e-06 m
      RMS, max velocity:         0.0995 m/year, 0.45 m/year
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 Termination requested by criterion: end time
 

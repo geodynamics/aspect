@@ -195,7 +195,7 @@ Number of degrees of freedom: 6,370 (3,906+511+1,953)
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -1.2 W, 1.2 W
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 15:  t=0.0183368 seconds, dt=0.000322007 seconds
    Solving temperature system... 13 iterations.
