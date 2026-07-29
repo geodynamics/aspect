@@ -32,6 +32,7 @@
 #cmakedefine ASPECT_WITH_NETCDF
 #cmakedefine ASPECT_WITH_PERPLEX
 #cmakedefine ASPECT_WITH_PYTHON
+#cmakedefine ASPECT_WITH_LANDLAB
 #cmakedefine ASPECT_WITH_WORLD_BUILDER
 #cmakedefine ASPECT_WITH_LANDLAB
 

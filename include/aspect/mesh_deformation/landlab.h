@@ -22,6 +22,7 @@
 #ifndef _aspect_mesh_deformation_landlab_h
 #define _aspect_mesh_deformation_landlab_h
 
+#if defined(ASPECT_WITH_PYTHON) && defined(ASPECT_WITH_LANDLAB)
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/mesh_deformation/parallel_unstructured_interface.h>
 #include <aspect/simulator_access.h>
@@ -124,14 +125,14 @@ namespace aspect
          * Whether the ASPECT geometry is spherical.
          */
         bool is_spherical;
-#ifdef ASPECT_WITH_PYTHON
+
         /**
          * The Python module object.
          */
         PyObject *pModule;
-#endif
     };
   }
 }
 
+#endif
 #endif

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2025 - 2025 by the authors of the ASPECT code.
+  Copyright (C) 2025 - 2026 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -38,7 +38,7 @@
 
 #include <aspect/python_helper.h>
 
-#ifdef ASPECT_WITH_PYTHON
+#if defined(ASPECT_WITH_PYTHON) && defined(ASPECT_WITH_LANDLAB)
 
 using namespace dealii;
 
@@ -70,7 +70,7 @@ PyObject *call_python_function(PyObject *pModule, const char *func_name, PyObjec
 
 namespace aspect
 {
-
+#if defined(ASPECT_WITH_PYTHON) && defined(ASPECT_WITH_LANDLAB)
   namespace MeshDeformation
   {
     template <int dim>
@@ -100,7 +100,7 @@ namespace aspect
 
       if (this_rank_runs_landlab)
         {
-#ifdef ASPECT_WITH_PYTHON
+#if defined(ASPECT_WITH_PYTHON) && defined(ASPECT_WITH_LANDLAB)          
           // Append script dirs so env packages (venv site-packages, PYTHONPATH) are found first
           // for "import landlab":
           PyRun_SimpleString("import sys");
@@ -155,8 +155,6 @@ namespace aspect
     void
     Landlab<dim>::update ()
     {
-
-#ifdef ASPECT_WITH_PYTHON
       if (!this->remote_point_evaluator)
         {
           if (!this_rank_runs_landlab)
@@ -227,10 +225,11 @@ namespace aspect
             if (pgrid_z)
               Py_DECREF(pgrid_z);
 
+            std::cout << "FINISHING UPDATE()" << std::endl;
+
             this->set_evaluation_points(surface_points);
           }
         }
-#endif
     }
 
 
@@ -239,7 +238,6 @@ namespace aspect
     std::vector<Tensor<1,dim>>
     Landlab<dim>::compute_updated_velocities_at_points (const std::vector<std::vector<double>> &current_solution_at_points) const
     {
-#ifdef ASPECT_WITH_PYTHON
       Assert(current_solution_at_points.size() == this->evaluation_points.size(), ExcInternalError());
 
       // Initialize the vector that will compute the velocities in ASPECT from the information
@@ -253,7 +251,8 @@ namespace aspect
           // pressure, temperature, and compositional fields.
 
           // Create dictionary to hold variable names and their corresponding data
-          PyObject *pDict = PyDict_New();
+          PyObject *pDict_solution  = PyDict_New();
+          PyObject *pDict_auxillary = PyDict_New();
 
           // Add velocities
           std::vector<std::string> variable_names = {"x velocity", "y velocity"};
@@ -282,17 +281,26 @@ namespace aspect
           for (unsigned int i=0; i<variable_names.size(); ++i)
             {
               auto pValue = PythonHelper::vector_to_numpy_object(variable_data[i]);
-              PyDict_SetItemString(pDict, variable_names[i].c_str(), pValue.get());
+              PyDict_SetItemString(pDict_solution, variable_names[i].c_str(), pValue.get());
             }
+
+          // Create a second dictionary which holds other information that is useful for Landlab to know about the ASPECT model.
+          // This is used for keeping landlab and ASPECT in sync while running, and also for checkpointing/restarting and 
+          // postprocessing.
+          PyDict_SetItemString(pDict_auxillary, "ASPECT dimension", PyLong_FromLong(dim));
+          PyDict_SetItemString(pDict_auxillary, "ASPECT model time", PyFloat_FromDouble(this->get_time()));
+          PyDict_SetItemString(pDict_auxillary, "ASPECT timestep", PyFloat_FromDouble(this->get_timestep_number()));
+          PyDict_SetItemString(pDict_auxillary, "ASPECT output directory", PyUnicode_FromString(this->get_output_directory().c_str()));
 
           // Call update_until(), which is the main loop in Landlab that evolves the topography.
           // update_until() returns the change in the topography, which we convert to a mesh
           // velocity in ASPECT.
-          PyObject *pArgs  = PyTuple_Pack(3, PyFloat_FromDouble(this->get_time()), PyLong_FromLong(dim), pDict);
+          PyObject *pArgs  = PyTuple_Pack(2, pDict_solution, pDict_auxillary);
           PyObject *pValue = call_python_function(pModule, "update_until", pArgs);
 
           // Remove these python objects from memory.
-          Py_DECREF(pDict);
+          Py_DECREF(pDict_solution);
+          Py_DECREF(pDict_auxillary);
           Py_DECREF(pArgs);
 
           // Convert the returned numpy array to a C++ view and compute the mesh velocities in ASPECT.
@@ -343,10 +351,6 @@ namespace aspect
 #endif
 
       return velocities;
-#else
-      (void)current_solution_at_points;
-      return std::vector<Tensor<1,dim>>();
-#endif
     }
 
 
@@ -358,7 +362,7 @@ namespace aspect
                                                const types::boundary_id boundary_indicator,
                                                AffineConstraints<double> &constraints) const
     {
-#ifdef ASPECT_WITH_PYTHON
+// #if defined(ASPECT_WITH_PYTHON) && defined(ASPECT_WITH_LANDLAB)
       // We need to initialize the evaluation points in order to extract the initial topography
       // from Landlab and apply it as constraints on the initial mesh in ASPECT. This means that
       // we need to call update(), which determines the evaluation points, which requires that
@@ -419,11 +423,6 @@ namespace aspect
 #endif
               }
         }
-#else
-      (void)mesh_deformation_dof_handler;
-      (void)boundary_indicator;
-      (void)constraints;
-#endif
     }
 
 
@@ -465,8 +464,8 @@ namespace aspect
       {
         prm.enter_subsection ("Landlab");
         {
-          const int ranks = prm.get_integer("MPI ranks for Landlab");
-          AssertThrow(ranks == 1,
+          n_landlab_ranks = prm.get_integer("MPI ranks for Landlab");
+          AssertThrow(n_landlab_ranks == 1,
                       ExcMessage("The Landlab mesh deformation model currently only supports running on a single rank. "
                                  "Please set 'MPI ranks for Landlab' to 1 in the parameter file."));
 
@@ -493,6 +492,8 @@ namespace aspect
                                            "deformation of the surface. It is meant for coupling with the landscape evolution "
                                            "code Landlab, but any other script that provides the necessary functions can be used. "
                                            "It is necessary to have Python and numpy with their C APIs installed and that "
-                                           "ASPECT_WITH_PYTHON is enabled when ASPECT is configured with CMake.")
+                                           "ASPECT_WITH_PYTHON and ASPECT_WITH_LANDLAB are enabled when ASPECT is configured with "
+                                           "CMake. ")
   }
+#endif
 }
