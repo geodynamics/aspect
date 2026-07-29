@@ -454,6 +454,11 @@ namespace aspect
         double sediment_deposition_g;
 
         /**
+         * Flag for allowing chemical compositions to have different erosional parameters for bedrock
+         */
+        bool use_compositional_erosion_bedrock;
+
+        /**
          * Function of bedrock river incision rate (kf) for the stream power law.
          * Represents the parameter `kf` in the FastScape landscape evolution equation.
          * Units: ${m^(1-2drainage_area_exponent)/yr}$ if "Use years instead of seconds in output" is true;
