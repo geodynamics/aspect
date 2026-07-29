@@ -78,8 +78,7 @@ namespace aspect
                       out.reaction_terms[i][c] = 0.0;
                     else if (c == harzburgite_index)
                       {
-                        // Lithosphere composition changes linearly with depth, but only background mantle
-                        // is converted (whereas basalt is not).
+                        // Only background mantle is converted, whereas basalt is not.
 
                         double harzburgite_change = std::numeric_limits<double>::signaling_NaN();
                         if (harzburgite_profile == linear)
@@ -112,7 +111,7 @@ namespace aspect
         // TODO: In the future, we could make these depths depend on the solidus
         // and the temperature. However, note that technically this would affect
         // the composition of the generated melt and residual as well.
-        prm.declare_entry ("Crust thickness", "7000",
+        prm.declare_entry ("Crustal thickness", "7000",
                            Patterns::Double (),
                            "Thickness of the crustal layer generated "
                            "at the surface. "
@@ -123,20 +122,20 @@ namespace aspect
                            "below the crust. "
                            "Units: \\si{\\meter}.");
         prm.declare_entry ("Minimum upwelling angle for crust formation", "30",
-                           Patterns::Double (),
+                           Patterns::Double (0,90),
                            "The minimum upwelling angle required for a particle to be converted into crustal material. "
                            "This angle is measured between the horizontal direction and the particle velocity vector and ranges from 0 to 90 degrees. "
                            "A value of 0 means that all particles are converted into crust (basalt) as soon as they reach the required depth. "
                            "A value of 90 means that only particles moving vertically upward are converted into crust (basalt). "
                            "Units: \\si{\\degree}.");
         prm.declare_entry ("Minimum upwelling angle for lithosphere formation", "30",
-                           Patterns::Double (),
+                           Patterns::Double (0,90),
                            "The minimum upwelling angle required for a particle to be converted into lithospheric material. "
                            "This angle is measured between the horizontal direction and the particle velocity vector and ranges from 0 to 90 degrees. "
-                           "A value of 0 means that all particles are converted into lithosphere (harzburgite) as soon as they reach the required depth. "
-                           "A value of 90 means that only particles moving vertically upward are converted into lithosphere (harzburgite). "
+                           "A value of 0 means that all particles (except for particles with a basaltic composition) are converted into lithosphere (harzburgite) as soon as they reach the required depth. "
+                           "A value of 90 means that only particles (except for particles with a basaltic composition) moving vertically upward are converted into lithosphere (harzburgite). "
                            "Units: \\si{\\degree}.");
-        prm.declare_entry ("Harzburgite profile in lithosphere", "constant",
+        prm.declare_entry ("Harzburgite profile in lithosphere", "linear",
                            Patterns::Selection ("constant|linear"),
                            "Choose the profile used for the harzburgite fraction within the lithosphere. "
                            "If set to constant, the harzburgite fraction is 100\\% everywhere except where basalt is present. "
@@ -150,16 +149,10 @@ namespace aspect
       void
       CrustLithosphereFormation<dim>::parse_parameters (ParameterHandler &prm)
       {
-        crust_thickness     = prm.get_double ("Crust thickness");
+        crust_thickness     = prm.get_double ("Crustal thickness");
         lithosphere_thickness = prm.get_double ("Lithosphere thickness");
         minimum_upwelling_angle_for_crust = prm.get_double ("Minimum upwelling angle for crust formation")* constants::degree_to_radians;
         minimum_upwelling_angle_for_lithosphere = prm.get_double ("Minimum upwelling angle for lithosphere formation")* constants::degree_to_radians;
-
-        AssertThrow(minimum_upwelling_angle_for_crust >= 0.0 && minimum_upwelling_angle_for_crust <= 90.0,
-                    ExcMessage("The minimum upwelling angle for crust formation must be between 0 and 90 degrees."));
-
-        AssertThrow(minimum_upwelling_angle_for_lithosphere >= 0.0 && minimum_upwelling_angle_for_lithosphere <= 90.0,
-                    ExcMessage("The minimum upwelling angle for lithosphere formation must be between 0 and 90 degrees."));
 
         const std::string harzburgite_profile_selection = prm.get ("Harzburgite profile in lithosphere");
         if (harzburgite_profile_selection == "constant")

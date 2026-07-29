@@ -141,7 +141,7 @@ subsection Particles
     set Update ghost particles = true
 
     subsection Crust and lithosphere formation
-      set Crust thickness                             = 70000
+      set Crustal thickness                             = 70000
       set Lithosphere thickness                         = 700000
       set Harzburgite profile in lithosphere = constant
       set Minimum upwelling angle for crust formation = 0
