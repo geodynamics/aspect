@@ -57,9 +57,9 @@ namespace aspect
         AssertThrow(!manager.plugin_name_exists("composition"),
                     ExcMessage("The 'elastic stress' plugin cannot be used in combination with the 'composition' plugin."));
 
-        material_inputs = MaterialModel::MaterialModelInputs<dim>(1, this->n_compositional_fields());
+        material_inputs.resize (1, this->n_compositional_fields());
 
-        material_outputs = MaterialModel::MaterialModelOutputs<dim>(1, this->n_compositional_fields());
+        material_outputs.resize (1, this->n_compositional_fields(), true);
 
         material_inputs.requested_properties = MaterialModel::MaterialProperties::reaction_terms;
 
@@ -157,10 +157,10 @@ namespace aspect
                     }
 
                   // Resize the material model inputs to the number of particles in the current cell
-                  material_inputs_cell  = MaterialModel::MaterialModelInputs<dim>(n_particles_in_cell, this->n_compositional_fields());
+                  material_inputs_cell.resize (n_particles_in_cell, this->n_compositional_fields());
                   material_inputs_cell.current_cell = cell;
                   material_inputs_cell.requested_properties = MaterialModel::MaterialProperties::reaction_rates;
-                  material_outputs_cell = MaterialModel::MaterialModelOutputs<dim>(n_particles_in_cell, this->n_compositional_fields());
+                  material_outputs_cell.resize (n_particles_in_cell, this->n_compositional_fields(), true);
                   // The reaction rates are stored in additional outputs
                   this->get_material_model().create_additional_named_outputs(material_outputs_cell);
 
