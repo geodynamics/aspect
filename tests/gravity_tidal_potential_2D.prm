@@ -1,0 +1,93 @@
+# This parameter file tests the gravity model plugin 'radial with tidal potential' in 2D.
+#
+# Model shows the Europa's icy shell without conduction in simpler model in 2D at the equator.
+# Visualization 'gravity' shows gravity distribution.
+
+set Dimension                              = 2
+set Use years instead of seconds           = true
+set End time                               = 1e4
+
+set Output directory                       = gravity_tidal_potential_2D
+
+set Maximum first time step                    = 1e3
+set CFL number                                 = 0.8
+set Maximum time step                          = 1e3
+
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+
+subsection Geometry model
+  set Model name = spherical shell
+  subsection Spherical shell
+    set Outer radius = 1560800
+    set Inner radius = 1460800
+    set Opening angle = 360
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Coordinate system = spherical
+    set Variable names = r, phi,theta
+    set Function expression = 100
+  end
+end
+
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators = 0,1
+end
+
+
+subsection Gravity model
+  set Model name = radial with tidal potential
+  subsection Radial constant
+    set Magnitude = 1.3
+  end
+  subsection Radial with tidal potential
+    set Mass of perturbing body = 1.898e27
+    set Semimajor axis of orbit = 670900000
+    set Period of nonsynchronous rotation = 10000
+  end
+end
+
+
+subsection Material model
+  set Model name = simpler
+  subsection Simpler model
+    set Reference density = 917
+    set Reference specific heat = 2110
+    set Reference temperature = 100
+    set Thermal conductivity = 0 #1.93
+    set Thermal expansion coefficient = 0 #1.6e-4
+    set Viscosity = 1e20
+  end
+end
+
+
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 0
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, visualization, basic statistics, \
+			       pressure statistics, material statistics
+
+  subsection Visualization
+    set Time between graphical output = 1e3
+    set Output format                 = vtu
+    set List of output variables      = material properties, strain rate, shear stress, stress, nonadiabatic pressure, gravity
+  end
+end

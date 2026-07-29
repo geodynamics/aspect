@@ -33,24 +33,18 @@ namespace aspect
   {
     template <int dim>
     Tensor<1,dim>
-    RadialWithTidalPotential<dim>::gravity_vector (const Point<dim> &/*p*/) const
+    RadialWithTidalPotential<dim>::gravity_vector (const Point<dim> &p) const
     {
-      // This plugin is not implemented for 2D models
-      AssertThrow(false, ExcNotImplemented());
-      return Tensor<1,dim>();
-    }
-
-    template <>
-    Tensor<1,3>
-    RadialWithTidalPotential<3>::gravity_vector (const Point<3> &p) const
-    {
-      const unsigned int dim = 3;
       /**
        * Notation of this potential equation is converted from spherical coordinates to cartesian coordinates.
        * Therefore, the potential is (3 G M_p) / (2 a_s^3) * ( Tstar + T0 )
-       * Tstar = 1 / 6 * ( x^2 + y^2 - 2 * z^2)
-       * T0 = 1 / 2 * (C1*(x^2 + y^2) - 2 * C2 * x * y)
-       * where C1 = cos(2*b*t) and C2 = sin(2*b*t)
+       * for 2D:
+       * Tstar = 1 / 6 * ( x^2 + y^2 )
+       * T0 = 1 / 2 * ( C1 * ( x^2 + y^2 ) - 2 * C2 * x * y )
+       * for 3D:
+       * Tstar = 1 / 6 * ( x^2 + y^2 - 2 * z^2 )
+       * T0 = 1 / 2 * ( C1 * ( x^2 + y^2 ) - 2 * C2 * x * y )
+       * where C1 = cos( 2 * b * t ) and C2 = sin( 2 * b * t )
        * b = 2 * pi / P
        */
       const double t = (this->simulator_is_past_initialization()) ? this->get_time() : 0.0;
@@ -59,9 +53,20 @@ namespace aspect
       const double C1 = std::cos( 2. * NSR_angular_frequency * t);
       const double C2 = std::sin( 2. * NSR_angular_frequency * t);
 
-      const Tensor<1,dim> gradient_Tstar ({1./3. * p[0], 1./3. * p[1], -2./3. * p[2]});
+      Tensor<1,dim> gradient_Tstar;
+      Tensor<1,dim> gradient_T0;
 
-      const Tensor<1,dim> gradient_T0 ({C1 *p[0] - C2 *p[1], -C1 *p[1] - C2 *p[0], 0});
+      gradient_Tstar[0] = 1./3. * p[0];
+      gradient_Tstar[1] = 1./3. * p[1];
+
+      gradient_T0[0] = C1*p[0] - C2*p[1];
+      gradient_T0[1] = -C1*p[1] - C2*p[0];
+
+      if constexpr (dim == 3)
+        {
+          gradient_Tstar[2] = -2./3. * p[2];
+          gradient_T0[2] = 0;
+        }
 
       const double G = aspect::constants::big_g;
       const double T_factor = 3. * G * M_p / ( 2. * a_s * a_s * a_s );
@@ -110,9 +115,6 @@ namespace aspect
     void
     RadialWithTidalPotential<dim>::parse_parameters (ParameterHandler &prm)
     {
-      AssertThrow (dim==3, ExcMessage ("The 'radial with tidal potential' gravity model "
-                                       "can only be used in 3D."));
-
       radialconstant.initialize_simulator(this->get_simulator());
       radialconstant.parse_parameters(prm);
 
@@ -159,6 +161,8 @@ namespace aspect
                                   "input file in a section `Gravity model/Radial constant'; the "
                                   "parameters that describe the tidal potential contribution are read "
                                   "from a section `Gravity model/Radial with tidal potential'. "
-                                  "This module only works in 3D spherical geometry.")
+                                  "This module only works in spherical geometries. "
+                                  "\n"
+                                  "For 2d models, the geometry is interpreted to lie in the equatorial plane.")
   }
 }
