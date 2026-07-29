@@ -133,7 +133,7 @@ The following properties are available:
 
 &lsquo;strain rate&rsquo;: Implementation of a plugin in which the time evolution of strain rate is saved and stored on the particles.
 
-&lsquo;velocity&rsquo;: Implementation of a plugin in which the particle property is defined as the recent velocity at this position. The velocity depends on whether the particle world is being advected with a solid or fluid velocity.
+&lsquo;velocity&rsquo;: Implementation of a plugin in which the particle property is defined as the recent velocity at this position. The velocity depends on whether the particle manager is being advected with a solid or fluid velocity.
 
 &lsquo;velocity gradient&rsquo;: Implementation of a plugin in which the particle property is defined as the recent velocity gradient at this position.
 
