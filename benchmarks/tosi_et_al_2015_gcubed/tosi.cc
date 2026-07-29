@@ -704,7 +704,7 @@ namespace aspect
                                    "$\\rho(T)=\\rho_0(1-\\alpha(T-T_0))$. ")
     ASPECT_REGISTER_POSTPROCESSOR(TosiPostprocessor,
                                   "TosiPostprocessor",
-                                  "A postprocessor that computes the viscous dissipation"
+                                  "A postprocessor that computes the viscous dissipation "
                                   "for the whole domain as: "
                                   "$\\left<\\Phi\\right>=\\int_{V} \\tau : \\dot{\\epsilon}dV$ "
                                   "= $\\int_{V} 2\\mu\\dot{\\epsilon}:\\dot{\\epsilon} dV$. "

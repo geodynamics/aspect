@@ -95,7 +95,7 @@ Select one of the following models:
 
 The following properties are available:
 
-&lsquo;composition&rsquo;: Implementation of a plugin in which the particle property is defined by the compositional fields in the model. This can be used to track solid compositionevolution over time.
+&lsquo;composition&rsquo;: Implementation of a plugin in which the particle property is defined by the compositional fields in the model. This can be used to track solid composition evolution over time.
 
 &lsquo;composition reaction&rsquo;: Implementation of a plugin in which the particle property is given as the initial composition at the particle&rsquo;s initial position, and is updated during the simulation time according to reactions that are specified as functions in the input file. Each reaction has exactly one reactant and one product. Each particle gets as many properties as there are compositional fields. The reactions are described by two functions, and the change in each composition at the time a reaction occurs is computed as the product of the two functions. The &rsquo;Reaction area function&rsquo; describes the area where the reaction takes place. It can be spatially variable, but does not depend on time. The &rsquo;Reaction rate function&rsquo; describes how the change in composition depends on these compositions themselves and on time. To use this particle property for a given compositional field, set the &rsquo;Mapped particle properties&rsquo; to &rsquo;name_of_field:name_of_field reaction&rsquo;, i.e., the name of the particle property for each field is the name of the compositional field with the word &rsquo;reaction&rsquo; added at the end.
 

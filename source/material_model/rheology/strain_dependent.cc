@@ -45,7 +45,7 @@ namespace aspect
       {
         prm.declare_entry ("Strain weakening mechanism", "default",
                            Patterns::Selection("none|finite strain tensor|total strain|plastic weakening with plastic strain only|plastic weakening with total strain only|plastic weakening with plastic strain and viscous weakening with viscous strain|viscous weakening with viscous strain only|default"),
-                           "Whether to apply strain weakening to viscosity, cohesion and internal angle"
+                           "Whether to apply strain weakening to viscosity, cohesion and internal angle "
                            "of friction based on accumulated finite strain, and if yes, which method to "
                            "use. The following methods are available:"
                            "\n\n"
@@ -63,7 +63,7 @@ namespace aspect
                            "angle) and the pre-yield viscosity."
                            "\n\n"
                            "\\item ``plastic weakening with plastic strain only'': The finite strain is "
-                           "approximated as the product of the second invariant of the strain rate"
+                           "approximated as the product of the second invariant of the strain rate "
                            "in each time step and the time step size in regions where material is "
                            "plastically yielding. This quantity is integrated and tracked over time, and "
                            "used to weaken the cohesion and friction angle. The pre-yield viscosity is "
@@ -191,7 +191,7 @@ namespace aspect
 
         prm.declare_entry ("Upper temperature for onset of strain weakening", "1123.",
                            Patterns::List(Patterns::Double (0.)),
-                           "List of upper temperatures for onset of strain weakening"
+                           "List of upper temperatures for onset of strain weakening "
                            "for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of all compositional fields "
                            "or only those corresponding to chemical compositions. "

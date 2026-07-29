@@ -279,7 +279,7 @@ namespace aspect
                                    "W^{t}\\tau^{t} + \\tau^{t}W^{t}$. "
                                    "In this material model, the size of the time step above ($\\Delta t^{e}$) "
                                    "can be specified as the numerical time step size or an independent fixed time "
-                                   "step. If the latter case is selected, a linear interpolation will be applied"
+                                   "step. If the latter case is selected, a linear interpolation will be applied "
                                    "to account for the differences between the numerical "
                                    "and fixed elastic time step (eqn. 32). If one selects to use a fixed elastic time "
                                    "step throughout the model run, this can still be achieved by using CFL and "

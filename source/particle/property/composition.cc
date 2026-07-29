@@ -116,7 +116,7 @@ namespace aspect
                                         "composition",
                                         "Implementation of a plugin in which the particle "
                                         "property is defined by the compositional fields in "
-                                        "the model. This can be used to track solid composition"
+                                        "the model. This can be used to track solid composition "
                                         "evolution over time.")
     }
   }

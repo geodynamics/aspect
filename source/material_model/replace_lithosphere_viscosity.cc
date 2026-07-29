@@ -72,7 +72,7 @@ namespace aspect
         {
           prm.declare_entry("Base model","simple",
                             Patterns::Selection(MaterialModel::get_valid_model_names_pattern<dim>()),
-                            "The name of a material model that will be modified by a replacing"
+                            "The name of a material model that will be modified by a replacing "
                             "the viscosity in the lithosphere by a constant value. Valid values for this parameter "
                             "are the names of models that are also valid for the "
                             "``Material models/Model name'' parameter. See the documentation for "
@@ -152,7 +152,7 @@ namespace aspect
                                    "replace lithosphere viscosity",
                                    "The ``replace lithosphere viscosity'' Material model sets viscosity to a "
                                    "prescribed constant above the lithosphere-asthenosphere boundary (specified by "
-                                   "an ascii file or maximum lithosphere depth). Below the lithosphere-asthenosphere"
+                                   "an ascii file or maximum lithosphere depth). Below the lithosphere-asthenosphere "
                                    "boundary the viscosity is taken from any of the other available material model. "
                                    "In other words, it is a ``compositing material model''."
                                    "\n"

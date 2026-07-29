@@ -815,7 +815,7 @@ namespace aspect
   {
     ASPECT_REGISTER_MATERIAL_MODEL(ShearBandsMaterial,
                                    "shear bands material",
-                                   "A material model that corresponds to the setup to"
+                                   "A material model that corresponds to the setup to "
                                    "generate magmatic shear bands described in Katz et al., "
                                    "Nature, 2006.")
 
