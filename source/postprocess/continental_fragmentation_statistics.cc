@@ -88,6 +88,7 @@ namespace aspect
 
         const double longitude =
           std::atan2(point[1], point[0]) * 180.0 / numbers::PI;
+
         const double latitude =
           std::asin(point[2] / radius) * 180.0 / numbers::PI;
         return std::make_pair(longitude, latitude);
