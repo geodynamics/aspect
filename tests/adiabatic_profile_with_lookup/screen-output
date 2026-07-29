@@ -1,22 +1,4 @@
------------------------------------------------------------------------------
---                             This is ASPECT                              --
--- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
------------------------------------------------------------------------------
---     . version 3.1.0-pre (get_property_bug_fix, d87a1fe69)
---     . using deal.II 9.6.0
---     .       with 32 bit indices
---     .       with vectorization level 1 (SSE2, 2 doubles, 128 bits)
---     . using Trilinos 13.2.0
---     . using p4est 2.3.2
---     . using Geodynamic World Builder 1.1.0
---     . running in DEBUG mode
---     . running with 1 MPI process
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&mf=1&sha=d87a1fe69&src=code
------------------------------------------------------------------------------
 Number of active cells: 280 (on 2 levels)
 Number of degrees of freedom: 4,638 (2,810+423+1,405)
 
@@ -32,26 +14,4 @@ Number of degrees of freedom: 4,638 (2,810+423+1,405)
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start     |     0.755s |            |
-|                                              |            |            |
-| Section                          | no. calls |  wall time | % of total |
-+----------------------------------+-----------+------------+------------+
-| Assemble Stokes system rhs       |         1 |    0.0315s |       4.2% |
-| Assemble temperature system      |         1 |    0.0177s |       2.3% |
-| Build Stokes preconditioner      |         1 |   0.00265s |      0.35% |
-| Build temperature preconditioner |         1 |   0.00192s |      0.25% |
-| Initialization                   |         1 |     0.371s |        49% |
-| Postprocessing                   |         1 |    0.0226s |         3% |
-| Setup dof systems                |         1 |    0.0366s |       4.9% |
-| Setup initial conditions         |         1 |    0.0304s |         4% |
-| Setup matrices                   |         1 |   0.00577s |      0.76% |
-| Solve Stokes system              |         1 |     0.195s |        26% |
-| Solve temperature system         |         1 |   0.00155s |      0.21% |
-+----------------------------------+-----------+------------+------------+
 
--- Total wallclock time elapsed including restarts: 1s
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&mf=1&sha=d87a1fe69&src=code
------------------------------------------------------------------------------
