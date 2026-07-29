@@ -17,7 +17,7 @@ Number of degrees of freedom: 948 (578+81+289)
      Temperature min/avg/max: 0 K, 0.5 K, 1 K
      RMS, max velocity:       4.96e-15 m/s, 1.21e-14 m/s
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 
 
@@ -102,7 +102,7 @@ Skipping mesh refinement, because the mesh did not change.
      Temperature min/avg/max: 0 K, 0.5 K, 1 K
      RMS, max velocity:       8.81e-15 m/s, 2.02e-14 m/s
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 111:  t=1.73438 seconds, dt=0.015625 seconds
    Solving temperature system... 0 iterations.
@@ -184,7 +184,7 @@ Skipping mesh refinement, because the mesh did not change.
      Temperature min/avg/max: 0 K, 0.5 K, 1 K
      RMS, max velocity:       5.79e-15 m/s, 1.59e-14 m/s
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 121:  t=1.89062 seconds, dt=0.015625 seconds
    Solving temperature system... 1 iterations.
