@@ -24,8 +24,9 @@ Number of degrees of freedom: 9,679 (5,631+294+1,877+1,877)
    Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
-     Writing graphical output: output-viscous_dissipation_statistics/solution/solution-00000
-     RMS, max velocity:        3.01e-10 m/s, 1.14e-09 m/s
+     Writing graphical output:                               output-viscous_dissipation_statistics/solution/solution-00000
+     RMS, max velocity:                                      3.01e-10 m/s, 1.14e-09 m/s
+     Viscous dissipation per field and for whole domain (W): 2.342e+09 // 4.05e+11
 
 Termination requested by criterion: end time
 

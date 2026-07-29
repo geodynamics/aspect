@@ -79,16 +79,15 @@ namespace aspect
 
             for (unsigned int q = 0; q < n_q_points; ++q)
               {
-                // Viscous dissipation D in 3d:
-                // D = 1/2 * volume_integral(deviatoric_stress*deviatoric_strain_rate)
-                //   = 1/2 * volume_integral(2*eta*deviatoric_strain_rate*deviatoric_strain_rate)
-                //   = volume_integral(eta*deviatoric_strain_rate*deviatoric_strain_rate)
+                // Viscous dissipation D:
+                // D = volume_integral(deviatoric_stress*grad_velocity)
+                //   = volume_integral(2*eta*deviatoric_strain_rate*deviatoric_strain_rate)
                 const SymmetricTensor<2, dim> deviatoric_strain_rate =
                   (this->get_material_model().is_compressible()
                    ? in.strain_rate[q] - 1. / 3. * trace(in.strain_rate[q]) * unit_symmetric_tensor<dim>()
                    : in.strain_rate[q]);
-                const double local_dissipation = out.viscosities[q] * (deviatoric_strain_rate *
-                                                                       deviatoric_strain_rate) * fe_values.JxW(q);
+                const double local_dissipation = 2. * out.viscosities[q] * (deviatoric_strain_rate *
+                                                                            deviatoric_strain_rate) * fe_values.JxW(q);
 
                 // Dissipation over the whole domain
                 local_dissipation_integral[n_compositional_fields] += local_dissipation;

@@ -1,0 +1,3 @@
+Fixed: There was a factor 2 missing in the implementation of the viscous dissipation post processor.
+<br>
+(Cedric Thieulot, 2026/07/28)
