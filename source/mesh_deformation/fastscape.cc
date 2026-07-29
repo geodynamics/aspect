@@ -1592,6 +1592,56 @@ namespace aspect
 
 
     template <int dim>
+    double
+    FastScape<dim>::
+    boundary_composition (const types::boundary_id boundary_indicator,
+                          const Point<dim> &position,
+                          const unsigned int compositional_field) const
+    {
+      // FastScape is only applied to the top boundary of the model domain.
+      // If a composition value is requested for any other boundary,
+      // return zero.
+      if (boundary_indicator != this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top"))
+        return 0.0;
+
+      // Two fields often used in conjunction with the FastScape plugin
+      // are sediment_age and deposition_depth. If the fields exist, and
+      // their boundary values are requested, set them here.
+      if ( this->introspection().compositional_name_exists("sediment_age") &&
+           compositional_field == this->introspection().compositional_index_for_name("sediment_age"))
+        {
+          return this->get_parameters().convert_to_years ? this->get_time()/year_in_seconds : this->get_time();
+        }
+      else if ( this->introspection().compositional_name_exists("deposition_depth") &&
+                compositional_field == this->introspection().compositional_index_for_name("deposition_depth"))
+        {
+          // Get the time-dependent sea level if necessary.
+          const double current_sea_level = use_sea_level_function
+                                           ? sea_level_function.value(Point<1>())
+                                           : sea_level_constant_value;
+
+          // FastScape only works on box geometries, so the last component of the position is the height.
+          // The sea level is defined with respect to the original, unperturbed height of the box.
+          // Sediments deposited below sea level will have a positive deposition depth.
+          const GeometryModel::Box<dim> *box_geometry
+            = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
+          const GeometryModel::TwoMergedBoxes<dim> *two_merged_boxes_geometry
+            = dynamic_cast<const GeometryModel::TwoMergedBoxes<dim>*> (&this->get_geometry_model());
+          const Point<dim> origin = (box_geometry != nullptr
+                                     ? box_geometry->get_origin()
+                                     : two_merged_boxes_geometry->get_origin());
+          const Point<dim> extents = (box_geometry != nullptr
+                                      ? box_geometry->get_extents()
+                                      : two_merged_boxes_geometry->get_extents());
+          return origin[dim-1] + extents[dim-1] + current_sea_level - position[dim-1];
+        }
+      else
+        return 0.0;
+    }
+
+
+
+    template <int dim>
     template <class Archive>
     void FastScape<dim>::serialize (Archive &ar, const unsigned int)
     {

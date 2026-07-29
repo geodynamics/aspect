@@ -1,0 +1,6 @@
+ New: There is now a Boundary Composition plugin ``mesh deformation''
+ that queries the active mesh deformation plugins for
+ compositional field values to be prescribed on the boundaries.
+ By default, the mesh deformation plugins return 0.
+ <br>
+ (Anne Glerum 2026/08/24)
