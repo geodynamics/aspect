@@ -653,16 +653,12 @@ namespace aspect
 
       // Loop over all mesh deformation objects that are assigned to this
       // boundary indicator and sum their contributions
-      // TODO use boundary indicator instead of looping over whole map
-      // for (const auto &boundary_id_and_deformation_objects: mesh_deformation_objects)
-      // {
-      // for (const auto &deformation_object : boundary_id_and_deformation_objects.second)
-      // {
-      // composition += deformation_object->boundary_composition(boundary_indicator,
-      // position,
-      // compositional_field);
-      // }
-      // }
+          for (const auto &deformation_object : mesh_deformation_objects.at(boundary_indicator))
+            {
+              composition += deformation_object->boundary_composition(boundary_indicator,
+                                                                      position,
+                                                                      compositional_field);
+            }
 
       return composition;
     }
