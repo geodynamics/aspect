@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
+#include <algorithm>
 #include <aspect/material_model/reaction_model/tian2019_solubility.h>
 #include <deal.II/base/parameter_handler.h>
 
@@ -99,7 +99,7 @@ namespace aspect
             // cap the pressure just before this break down. Additionally, the inverse pressure is used for
             // parameterized enthalpy change, so introduce a minimum pressure to avoid a division by 0.
             const double minimum_pressure = 1e-12;
-            pressure_for_reaction_in_GPa = std::min(std::max(minimum_pressure, pressure_for_reaction_in_GPa), pressure_cutoffs[i]);
+            pressure_for_reaction_in_GPa = std::clamp(pressure_for_reaction_in_GPa, minimum_pressure, pressure_cutoffs[i]);
             const double inverse_pressure_for_reaction = 1.0/pressure_for_reaction_in_GPa;
 
             for (unsigned int j = 0; j<devolatilization_enthalpy_changes[i].size(); ++j)

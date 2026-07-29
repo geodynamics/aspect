@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
+#include <algorithm>
 #include <aspect/material_model/rheology/diffusion_dislocation.h>
 #include <aspect/material_model/utilities.h>
 #include <aspect/utilities.h>
@@ -141,18 +141,18 @@ namespace aspect
                         const double diffusion_T_and_P_dependence = std::exp(std::max(diffusion_creep_parameters.activation_energy + pressure*diffusion_creep_parameters.activation_volume,0.0)/
                                                                              (constants::gas_constant*temperature));
 
-                        const double diffusion_viscosity = std::min(std::max(diffusion_prefactor * diffusion_grain_size_dependence
-                                                                             * diffusion_strain_rate_dependence * diffusion_T_and_P_dependence,
-                                                                             minimum_viscosity), maximum_viscosity);
+                        const double diffusion_viscosity = std::clamp(diffusion_prefactor * diffusion_grain_size_dependence
+                                                                      * diffusion_strain_rate_dependence * diffusion_T_and_P_dependence,
+                                                                      minimum_viscosity, maximum_viscosity);
 
                         const double dislocation_prefactor = 0.5 * std::pow(dislocation_creep_parameters.prefactor,-1.0/dislocation_creep_parameters.stress_exponent);
                         const double dislocation_strain_rate_dependence = std::pow(dislocation_strain_rate, (1.-dislocation_creep_parameters.stress_exponent)/dislocation_creep_parameters.stress_exponent);
                         const double dislocation_T_and_P_dependence = std::exp(std::max(dislocation_creep_parameters.activation_energy + pressure*dislocation_creep_parameters.activation_volume,0.0)/
                                                                                (dislocation_creep_parameters.stress_exponent*constants::gas_constant*temperature));
 
-                        const double dislocation_viscosity = std::min(std::max(dislocation_prefactor * dislocation_strain_rate_dependence
-                                                                               * dislocation_T_and_P_dependence,
-                                                                               minimum_viscosity), maximum_viscosity);
+                        const double dislocation_viscosity = std::clamp(dislocation_prefactor * dislocation_strain_rate_dependence
+                                                                        * dislocation_T_and_P_dependence,
+                                                                        minimum_viscosity, maximum_viscosity);
 
                         diffusion_strain_rate = dislocation_viscosity / (diffusion_viscosity + dislocation_viscosity) * edot_ii;
                         dislocation_strain_rate = diffusion_viscosity / (diffusion_viscosity + dislocation_viscosity) * edot_ii;
@@ -176,7 +176,7 @@ namespace aspect
               }
 
             // The effective viscosity, with minimum and maximum bounds
-            composition_viscosities[j] = std::min(std::max(stress_ii/edot_ii/2, minimum_viscosity), maximum_viscosity);
+            composition_viscosities[j] = std::clamp(stress_ii / edot_ii / 2, minimum_viscosity, maximum_viscosity);
           }
         return composition_viscosities;
       }

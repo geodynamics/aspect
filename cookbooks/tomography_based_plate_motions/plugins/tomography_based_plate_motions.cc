@@ -431,7 +431,7 @@ namespace aspect
                   if (disl_viscosities_out != nullptr)
                     {
                       disl_viscosities_out->diffusion_viscosities[i] = diff_viscosity;
-                      disl_viscosities_out->dislocation_viscosities[i] = std::min(std::max(min_eta,disl_viscosity),1e30);
+                      disl_viscosities_out->dislocation_viscosities[i] = std::clamp(disl_viscosity, min_eta, 1e30);
                     }
 
                   out.viscosities[i] = diff_viscosity * disl_viscosity / (disl_viscosity + diff_viscosity);
@@ -494,7 +494,7 @@ namespace aspect
             }
 
           // Ensure we respect viscosity bounds
-          out.viscosities[i] = std::min(std::max(min_eta, out.viscosities[i]),max_eta);
+          out.viscosities[i] = std::clamp(out.viscosities[i], min_eta, max_eta);
 
           // This represents the viscosity with respect to which we want to define cratons/faults.
           const double background_viscosity_log = std::log10(out.viscosities[i]);

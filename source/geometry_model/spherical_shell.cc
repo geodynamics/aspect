@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
+#include <algorithm>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 
@@ -742,9 +742,9 @@ namespace aspect
     {
       if (this->simulator_is_past_initialization() &&
           !Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()))
-        return std::min(std::max (R1 + manifold->topography_for_point(position) - position.norm(), 0.), maximal_depth());
+        return std::clamp(R1 + manifold->topography_for_point(position) - position.norm(), 0., maximal_depth());
       else
-        return std::min (std::max (R1-position.norm(), 0.), maximal_depth());
+        return std::clamp(R1 - position.norm(), 0., maximal_depth());
     }
 
 
@@ -771,7 +771,7 @@ namespace aspect
       // requested depth.
       Point<dim> p;
 
-      p[dim-1] = std::min (std::max(R1 + manifold->topography_for_point(p) - depth, R0), R1);
+      p[dim-1] = std::clamp(R1 + manifold->topography_for_point(p) - depth, R0, R1);
 
       return p;
     }

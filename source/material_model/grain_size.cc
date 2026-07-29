@@ -618,14 +618,14 @@ namespace aspect
                     }
                 }
 
-              out.viscosities[i] = std::min(std::max(min_eta,effective_viscosity),max_eta);
+              out.viscosities[i] = std::clamp(effective_viscosity, min_eta, max_eta);
 
               if (const std::shared_ptr<DislocationViscosityOutputs<dim>> disl_viscosities_out
                   = out.template get_additional_output_object<DislocationViscosityOutputs<dim>>())
                 if (in.requests_property(MaterialProperties::additional_outputs))
                   {
-                    disl_viscosities_out->dislocation_viscosities[i] = std::min(std::max(min_eta,disl_viscosity),1e300);
-                    disl_viscosities_out->diffusion_viscosities[i] = std::min(std::max(min_eta,diff_viscosity),1e300);
+                    disl_viscosities_out->dislocation_viscosities[i] = std::clamp(disl_viscosity, min_eta, 1e300);
+                    disl_viscosities_out->diffusion_viscosities[i] = std::clamp(diff_viscosity, min_eta, 1e300);
                   }
 
             }

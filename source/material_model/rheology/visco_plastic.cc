@@ -18,6 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
+#include <algorithm>
 #include <aspect/material_model/rheology/visco_plastic.h>
 #include <aspect/material_model/utilities.h>
 #include <aspect/utilities.h>
@@ -495,7 +496,7 @@ namespace aspect
                                                                j,
                                                                MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic
                                                              );
-            output_parameters.composition_viscosities[j] = std::min(std::max(effective_viscosity, minimum_viscosity_for_composition), maximum_viscosity_for_composition);
+            output_parameters.composition_viscosities[j] = std::clamp(effective_viscosity, minimum_viscosity_for_composition, maximum_viscosity_for_composition);
 
             // Compute the dilation terms if necessary.
             if (this->get_parameters().enable_prescribed_dilation == true)

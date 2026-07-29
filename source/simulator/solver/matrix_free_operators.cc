@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
  */
 
-
+#include <algorithm>
 #include <aspect/simulator/solver/stokes_matrix_free.h>
 #include <aspect/simulator/solver/matrix_free_operators.h>
 #include <aspect/mesh_deformation/interface.h>
@@ -322,7 +322,7 @@ namespace aspect
                     // of the evaluated viscosity on the active level.
                     for (unsigned int q=0; q<n_q_points; ++q)
                       active_cell_data.viscosity(cell, q)[i]
-                        = std::min(std::max(values_on_quad[q], minimum_viscosity), maximum_viscosity);
+                        = std::clamp(values_on_quad[q], minimum_viscosity, maximum_viscosity);
                   }
               }
           }
