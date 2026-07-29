@@ -115,7 +115,7 @@ The following properties are available:
 
 &lsquo;grain size&rsquo;: A plugin in which the particle property is defined as the evolving grain size of a particle. See the grain_size material model documentation for more detailed information.
 
-&lsquo;initial composition&rsquo;: Implementation of a plugin in which the particle property is given as the initial composition at the particle&rsquo;s initial position. The particle gets as many properties as there are compositional fields.
+&lsquo;initial composition&rsquo;: Implementation of a plugin in which the particle property is given as the initial composition at the particle&rsquo;s initial position. The &rsquo;Selected compositional fields&rsquo; chooses which compositional fields to track on this particle manager. If no &rsquo;Selected compositional fields&rsquo; are chosen, the particle manager gets as many properties as there are compositional fields.
 
 &lsquo;initial position&rsquo;: Implementation of a plugin in which the particle property is given as the initial position of the particle. This property is vector-valued with as many components as there are space dimensions. In practice, it is often most useful to only visualize one of the components of this vector, or the magnitude of the vector. For example, in a spherical mantle simulation, the magnitude of this property equals the starting radius of a particle, and is thereby indicative of which part of the mantle a particle comes from.
 
@@ -900,6 +900,17 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** The number of radial shells of particles that will be generated around the central point.
+::::
+
+(parameters:Particles_202/Initial_20composition)=
+## **Subsection:** Particles 2 / Initial composition
+::::{dropdown} __Parameter:__ {ref}`Selected compositional fields<parameters:Particles_202/Initial_20composition/Selected_20compositional_20fields>`
+:name: parameters:Particles_202/Initial_20composition/Selected_20compositional_20fields
+**Default value:** all
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** A list that determines which compositional fields to track on this particle manager. The default value &rsquo;all&rsquo; means every composition field is tracked on every particle manager.
 ::::
 
 (parameters:Particles_202/Integrator)=
