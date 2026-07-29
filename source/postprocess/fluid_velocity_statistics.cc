@@ -105,7 +105,7 @@ namespace aspect
 
                 this->get_material_model().evaluate(in, out);
 
-                const std::shared_ptr<MaterialModel::MeltOutputs<dim>> fluid_out
+                const std::shared_ptr<const MaterialModel::MeltOutputs<dim>> fluid_out
                   = out.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
 
                 for (unsigned int q = 0; q < n_q_points; ++q)
