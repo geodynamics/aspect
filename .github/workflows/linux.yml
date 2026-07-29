@@ -48,6 +48,13 @@ jobs:
         cd
         rm -rf astyle*
         astyle --version
+
+        git clone --single-branch --branch aspect_tester https://github.com/anne-glerum/fastscapelib-fortran.git
+        cd fastscapelib-fortran
+        mkdir build
+        cd build
+        /usr/bin/cmake -DBUILD_FASTSCAPELIB_SHARED=ON ..
+        make
     - name: make indent
       run: |
         ./contrib/utilities/indent
@@ -72,6 +79,7 @@ jobs:
         mkdir build
         cd build
         /usr/bin/cmake -D CMAKE_BUILD_TYPE=Debug -D ASPECT_PRECOMPILE_HEADERS=OFF -D ASPECT_UNITY_BUILD=OFF \
+                       -D ASPECT_WITH_FASTSCAPE=ON -D FASTSCAPE_DIR=/home/runner/fastscapelib-fortran/build \
                        -D CMAKE_CXX_FLAGS='-Werror' -D ASPECT_ADDITIONAL_CXX_FLAGS='-Wdeprecated-declarations' -D ASPECT_INSTALL_EXAMPLES=ON ..
         make -j 4
         ./aspect --test
