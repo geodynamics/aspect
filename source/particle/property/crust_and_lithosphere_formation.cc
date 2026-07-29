@@ -31,8 +31,8 @@ namespace aspect
       template <int dim>
       CrustLithosphereFormation<dim>::CrustLithosphereFormation ()
         :
-        material_inputs(1,0),
-        material_outputs(1,0)
+        material_inputs(0,0),
+        material_outputs(0,0)
       {}
 
 
