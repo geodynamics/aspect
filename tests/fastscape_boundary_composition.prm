@@ -1,0 +1,91 @@
+#### This tests fastscape's differentiation between
+# finegrained (silt) and coarsegrained sand in the
+# marine domain. These sediments derive from continental
+# erosion and enter the marine domain with, by default,
+# an equal proportion (silt fraction is 0.5).
+# Through their different transport coefficients,
+# this fraction will vary through space and time.
+# Enable if: ASPECT_WITH_FASTSCAPE
+
+include $ASPECT_SOURCE_DIR/tests/fastscape_test_open_ghost_nodes.prm
+
+####  Global parameters
+set Dimension                              = 2
+set End time                               = 1.4e5
+set Output directory                       = fastscape_boundary_composition
+
+####  Fastscape parameters
+subsection Mesh deformation
+  set Mesh deformation boundary indicators        = top: fastscape
+
+  subsection Fastscape
+    set Use marine component = true
+    subsection Marine parameters
+      set Sea level = -200
+      # The coarser grained sand is expected
+      # to be transported less far than the
+      # finer grained silt, so the transport
+      # coefficient is lower.
+      set Silt transport coefficient = 5e2
+      set Sand transport coefficient = 1e2
+    end
+  end
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left x: function, right x:function
+  set Tangential velocity boundary indicators = bottom
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = v=0.01, w=200.e3, d=100.e3
+#    set Function expression = if (x < w/2 , -v, v) ; v*2*d/w
+    set Function expression = 0;0
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 6
+  set Names of fields = noninitial_plastic_strain, plastic_strain, crust_upper, crust_lower, mantle_lithosphere, sediment
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 0; \
+                              if(x>50.e3 && x<150.e3 && y>50.e3, 0.5 + rand_seed(1), 0); \
+                              if(y>=80.e3, 1, 0); \
+                              if(y<80.e3 && y>=60.e3, 1, 0); \
+                              if(y<60.e3, 1, 0); \
+                              0
+  end
+end
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators = top
+  set List of model names = mesh deformation
+end
+
+subsection Heating model
+  set List of model names = compositional heating
+
+  subsection Compositional heating
+    set Use compositional field for heat production averaging = 0, 0, 0, 1, 1, 1, 1
+    set Compositional heating values = 0.0, 0.0, 0.0, 1.0e-6, 0.25e-6, 0., 0.25e-6
+  end
+end
+
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    set Densities                     = 3300, 1.0, 1.0, 2700,  2900, 3300, 2500
+
+    set Prefactors for dislocation creep          = 6.52e-16, 1.00e-50, 1.00e-50, 8.57e-28, 7.13e-18, 6.52e-16, 8.57e-28
+    set Stress exponents for dislocation creep    =      3.5,      1.0,      1.0,      4.0,      3.0,      3.5,      4.0
+    set Activation energies for dislocation creep =   530.e3,      0.0,      0.0,   223.e3,   345.e3,   530.e3,   223.e3
+    set Activation volumes for dislocation creep  =   18.e-6,      0.0,      0.0,      0.0,      0.0,   18.e-6,      0.0
+  end
+end
