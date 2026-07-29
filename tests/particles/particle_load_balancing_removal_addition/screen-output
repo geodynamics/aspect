@@ -23,7 +23,7 @@ Number of degrees of freedom: 246 (114+18+57+57)
    Postprocessing:
      Writing particle output: output-particle_load_balancing_removal_addition/particles/particles-00001
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 Termination requested by criterion: end time
 

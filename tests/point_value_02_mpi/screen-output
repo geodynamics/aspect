@@ -380,7 +380,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00040
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 41:  t=0.000218985 years, dt=1.08647e-05 years
    Skipping temperature solve because RHS is zero.
@@ -472,7 +472,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00050
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 51:  t=0.000432163 years, dt=1.94605e-05 years
    Skipping temperature solve because RHS is zero.
@@ -564,7 +564,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00060
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 61:  t=0.000688323 years, dt=1.47148e-05 years
    Skipping temperature solve because RHS is zero.
@@ -656,7 +656,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00070
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 71:  t=0.000990939 years, dt=2.68441e-05 years
    Skipping temperature solve because RHS is zero.

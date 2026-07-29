@@ -68,7 +68,7 @@ Number of degrees of freedom: 6,623 (2,194+283+1,097+1,097+244+732+976)
    Postprocessing:
      Global volume of fluid volumes (m^3): 0.785
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 4:  t=0.0883883 seconds, dt=0.0220971 seconds
    Skipping temperature solve because RHS is zero.
@@ -100,7 +100,7 @@ Number of degrees of freedom: 6,773 (2,242+289+1,121+1,121+250+750+1,000)
    Postprocessing:
      Global volume of fluid volumes (m^3): 0.785
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 7:  t=0.15468 seconds, dt=0.0220971 seconds
    Skipping temperature solve because RHS is zero.
@@ -110,7 +110,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Global volume of fluid volumes (m^3): 0.785
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 8:  t=0.176777 seconds, dt=0.0220971 seconds
    Skipping temperature solve because RHS is zero.
@@ -131,7 +131,7 @@ Number of degrees of freedom: 6,623 (2,194+283+1,097+1,097+244+732+976)
    Postprocessing:
      Global volume of fluid volumes (m^3): 0.785
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 10:  t=0.220971 seconds, dt=0.0220971 seconds
    Skipping temperature solve because RHS is zero.

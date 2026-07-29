@@ -27,7 +27,7 @@ Number of degrees of freedom: 1,020 (386+55+193+193+193)
      Temperature min/avg/max:   0 K, 0.5011 K, 1 K
      Compositions min/max/mass: -0.006514/1.046/0.4591 // -0.01399/1.066/0.4168
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 2:  t=0.181875 seconds, dt=0.119375 seconds
    Solving temperature system... 9 iterations.
@@ -40,7 +40,7 @@ Skipping mesh refinement, because the mesh did not change.
      Temperature min/avg/max:   0 K, 0.5035 K, 1 K
      Compositions min/max/mass: -0.007355/1.061/0.46 // -0.0199/1.072/0.4161
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 3:  t=0.306875 seconds, dt=0.125 seconds
    Solving temperature system... 11 iterations.
@@ -53,7 +53,7 @@ Skipping mesh refinement, because the mesh did not change.
      Temperature min/avg/max:   0 K, 0.5059 K, 1 K
      Compositions min/max/mass: -0.003499/1.052/0.4603 // -0.01649/1.051/0.4154
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 4:  t=0.431875 seconds, dt=0.125 seconds
    Solving temperature system... 9 iterations.
@@ -66,7 +66,7 @@ Skipping mesh refinement, because the mesh did not change.
      Temperature min/avg/max:   0 K, 0.5078 K, 1 K
      Compositions min/max/mass: -0.003148/1.041/0.4605 // -0.01899/1.023/0.4148
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 5:  t=0.5 seconds, dt=0.068125 seconds
    Solving temperature system... 9 iterations.
@@ -79,7 +79,7 @@ Skipping mesh refinement, because the mesh did not change.
      Temperature min/avg/max:   0 K, 0.5083 K, 1 K
      Compositions min/max/mass: -0.003033/1.035/0.4605 // -0.01536/0.9925/0.4153
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 Termination requested by criterion: end time
 

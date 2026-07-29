@@ -64,7 +64,7 @@ Number of degrees of freedom: 2,100 (578+81+289+576+576)
      Temperature min/avg/max:   -0.004362 K, 0.5 K, 1 K
      Compositions min/max/mass: -0.1982/1.126/0.4167 // -0.2808/1.208/0.4582
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 5:  t=0.3125 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
@@ -86,7 +86,7 @@ Skipping mesh refinement, because the mesh did not change.
      Temperature min/avg/max:   -0.01149 K, 0.5 K, 1 K
      Compositions min/max/mass: -0.1629/1.125/0.4167 // -0.1426/1.273/0.4581
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 7:  t=0.4375 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
@@ -108,7 +108,7 @@ Skipping mesh refinement, because the mesh did not change.
      Temperature min/avg/max:   -0.0157 K, 0.4999 K, 1 K
      Compositions min/max/mass: -0.119/1.125/0.4167 // -0.1188/1.327/0.4584
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 9:  t=0.5625 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
@@ -130,7 +130,7 @@ Skipping mesh refinement, because the mesh did not change.
      Temperature min/avg/max:   -0.01272 K, 0.4997 K, 1 K
      Compositions min/max/mass: -0.1223/1.125/0.4167 // -0.1024/1.368/0.4584
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 11:  t=0.6875 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
@@ -152,7 +152,7 @@ Skipping mesh refinement, because the mesh did not change.
      Temperature min/avg/max:   -0.0123 K, 0.4996 K, 1 K
      Compositions min/max/mass: -0.1197/1.124/0.4167 // -0.1212/1.235/0.4584
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 13:  t=0.8125 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
@@ -174,7 +174,7 @@ Skipping mesh refinement, because the mesh did not change.
      Temperature min/avg/max:   -0.007248 K, 0.4996 K, 1 K
      Compositions min/max/mass: -0.09368/1.125/0.4167 // -0.2084/1.374/0.4584
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 15:  t=0.9375 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
@@ -196,7 +196,7 @@ Skipping mesh refinement, because the mesh did not change.
      Temperature min/avg/max:   -0.006603 K, 0.4996 K, 1 K
      Compositions min/max/mass: -0.2114/1.149/0.4167 // -0.1736/1.403/0.4583
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 Termination requested by criterion: end time
 

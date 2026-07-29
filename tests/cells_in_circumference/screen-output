@@ -9,9 +9,9 @@ Number of degrees of freedom: 400 (240+40+120)
    Postprocessing:
      Writing graphical output: output-cells_in_circumference/solution/solution-00000
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 Termination requested by criterion: end time
 *** Snapshot output-cells_in_circumference/restart/01/ created!

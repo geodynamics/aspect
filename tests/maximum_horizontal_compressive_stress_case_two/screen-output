@@ -16,7 +16,7 @@ Number of degrees of freedom: 3,041 (2,187+125+729)
      Topography min/max:       0 m, 0 m
      Pressure min/avg/max:     -3.635e-07 Pa, -6.338e-08 Pa, 2.367e-07 Pa
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 
 

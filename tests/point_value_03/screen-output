@@ -10,9 +10,9 @@ Number of degrees of freedom: 220 (132+22+66)
      Writing graphical output: output-point_value_03/solution/solution-00000
      Writing point values:     output-point_value_03/point_values.txt
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 Termination requested by criterion: end time
 *** Snapshot output-point_value_03/restart/01/ created!

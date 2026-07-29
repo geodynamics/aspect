@@ -25,7 +25,7 @@ Number of degrees of freedom: 13,574 (8,322+1,091+4,161)
      RMS, max velocity:        0.00265 m/year, 0.0142 m/year
      Temperature min/avg/max:  273 K, 1621 K, 1683 K
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 Termination requested by criterion: end time
 

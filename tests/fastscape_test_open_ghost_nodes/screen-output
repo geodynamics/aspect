@@ -47,7 +47,7 @@ Number of mesh deformation degrees of freedom: 1,722
    Acting according to the parameter 'Nonlinear solver failure strategy':
    Continuing to the next timestep even though solution is not fully converged.
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 0 iterations.

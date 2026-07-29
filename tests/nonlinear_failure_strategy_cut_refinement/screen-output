@@ -181,7 +181,7 @@ Repeating the current time step based on the time stepping manager ...
 
    Postprocessing:
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 3:  t=11990.4 years, dt=3521.33 years
    Solving temperature system... 10 iterations.
@@ -243,7 +243,7 @@ Repeating the current time step based on the time stepping manager ...
 
    Postprocessing:
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 4:  t=13592.7 years, dt=3362.87 years
    Solving temperature system... 9 iterations.
@@ -267,7 +267,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 5:  t=14000 years, dt=407.349 years
    Solving temperature system... 8 iterations.
@@ -285,7 +285,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 Termination requested by criterion: end time
 

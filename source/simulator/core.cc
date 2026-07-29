@@ -1827,7 +1827,7 @@ namespace aspect
       const bool mesh_changed = Utilities::MPI::max(any_flags_set?1:0,mpi_communicator) == 1 ? true : false;
       if (!mesh_changed)
         {
-          pcout << "Skipping mesh refinement, because the mesh did not change.\n" << std::endl;
+          pcout << "Skipping mesh refinement, because no cells were flagged for refinement/coarsening.\n" << std::endl;
           computing_timer.leave_subsection("Refine mesh structure, part 1");
           return;
         }
