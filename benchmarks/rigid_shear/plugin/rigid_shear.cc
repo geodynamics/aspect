@@ -126,7 +126,7 @@ namespace aspect
         void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                       MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
-          const double t = (this->simulator_is_past_initialization()) ? this->get_time() : 0.0;
+          const double t = (this->simulator_is_past_initialization()) ? this->get_time() : this->get_parameters().start_time;
 
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
@@ -220,7 +220,7 @@ namespace aspect
         Tensor<1,dim> gravity_vector (const Point<dim> &pos) const override
         {
           const double pi = numbers::PI;
-          const double t = (this->simulator_is_past_initialization()) ? this->get_time() : 0.0;
+          const double t = (this->simulator_is_past_initialization()) ? this->get_time() : this->get_parameters().start_time;
 
           const RigidShearMaterial<dim> &
           material_model
