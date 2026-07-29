@@ -44,6 +44,8 @@
 #include <deal.II/dofs/dof_handler.h>
 #include <deal.II/dofs/dof_renumbering.h>
 
+#include <type_traits>
+
 namespace aspect
 {
 
@@ -218,32 +220,38 @@ namespace aspect
     for (unsigned int l = min_level; l < max_level; ++l)
       transfers[l + 1].reinit(dofhandlers_projection[l + 1], dofhandlers_projection[l]);
 
-    Assert(dof_handler_projection.get_fe().degree == 0,
-           ExcNotImplemented());
-    const int degree = 0;
-
-    MGLevelObject<MatrixFreeOperators::MassOperator<dim, degree>> temp_ops;
-    temp_ops.resize(min_level, max_level);
-
-    for (auto l = min_level; l <= max_level; ++l)
-      {
-        AffineConstraints<double> cs;
-        std::shared_ptr<MatrixFree<dim,double>>
-        mf(new MatrixFree<dim,double>());
-        mf->reinit(get_level_triangulation_mapping(), dofhandlers_projection[l], cs, QGauss<1>(degree+1));
-        temp_ops[l].initialize(mf);
-      }
-
-    GCMGTransferType<dim,GMGNumberType> transfer(transfers, [&](const auto l, auto &vec)
+    const auto interpolate_viscosity = [&](const auto degree_tag)
     {
-      (void) l;
-      (void) vec;
-      temp_ops[l].initialize_dof_vector(vec);
-    });
+      constexpr int degree = decltype(degree_tag)::value;
 
-    transfer.interpolate_to_mg(dof_handler_projection,
-                               level_viscosity_vector,
-                               active_viscosity_vector);
+      MGLevelObject<MatrixFreeOperators::MassOperator<dim, degree>> temp_ops;
+      temp_ops.resize(min_level, max_level);
+
+      for (auto l = min_level; l <= max_level; ++l)
+        {
+          AffineConstraints<double> cs;
+          std::shared_ptr<MatrixFree<dim,double>>
+          mf(new MatrixFree<dim,double>());
+          mf->reinit(get_level_triangulation_mapping(), dofhandlers_projection[l], cs, QGauss<1>(degree+1));
+          temp_ops[l].initialize(mf);
+        }
+
+      GCMGTransferType<dim,GMGNumberType> transfer(transfers, [&](const auto l, auto &vec)
+      {
+        temp_ops[l].initialize_dof_vector(vec);
+      });
+
+      transfer.interpolate_to_mg(dof_handler_projection,
+                                 level_viscosity_vector,
+                                 active_viscosity_vector);
+    };
+
+    if (dof_handler_projection.get_fe().degree == 0)
+      interpolate_viscosity(std::integral_constant<int, 0>());
+    else if (dof_handler_projection.get_fe().degree == 1)
+      interpolate_viscosity(std::integral_constant<int, 1>());
+    else
+      Assert(false, ExcNotImplemented());
 
     FEValues<dim> fe_values_projection (this->get_mapping(),
                                         fe_projection,
