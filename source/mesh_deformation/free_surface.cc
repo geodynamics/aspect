@@ -103,11 +103,11 @@ namespace aspect
         mesh_locally_relevant);
       DoFTools::make_hanging_node_constraints(mesh_deformation_dof_handler, mass_matrix_constraints);
 
-      using periodic_boundary_pairs = std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>;
-      periodic_boundary_pairs pbp = this->get_geometry_model().get_periodic_boundary_pairs();
-      for (const auto &p : pbp)
-        DoFTools::make_periodicity_constraints(mesh_deformation_dof_handler,
-                                               p.first.first, p.first.second, p.second, mass_matrix_constraints);
+      // Let the geometry model join periodic boundaries. Curved geometries
+      // such as a quarter annulus also rotate vector components when values
+      // pass from one side to the other.
+      this->get_geometry_model().make_periodicity_constraints(mesh_deformation_dof_handler,
+                                                              mass_matrix_constraints);
 
       mass_matrix_constraints.close();
 
