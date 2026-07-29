@@ -321,7 +321,8 @@ It is worth comparing this postprocessor with the visualization postprocessor ca
 
 **Pattern:** [Bool]
 
-**Documentation:** Whether to print a compact summary line to the screen.
+**Documentation:** Whether to print the full (verbose) summary of the continental statistics postprocessor output to the log.txt file. The default option (true) will provide the full summary,
+while selecting false will produce a compact summary.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Write block summary<parameters:Postprocess/Continental_20fragmentation_20statistics/Write_20block_20summary>`
