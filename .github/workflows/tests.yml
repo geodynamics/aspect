@@ -1,0 +1,140 @@
+name: tests
+
+on:
+  push:
+    branches:
+      - 'main'
+      - 'aspect-*'
+  pull_request:
+      types:
+      - opened
+      - synchronize
+      - reopened
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.actor }}-${{ github.ref }}-tests
+  cancel-in-progress: true
+
+env:
+  OMPI_MCA_btl_base_warn_component_unused: 0
+  OMPI_MCA_mpi_yield_when_idle: 1
+  OMPI_MCA_rmaps_base_oversubscribe: 1
+  OMPI_ALLOW_RUN_AS_ROOT: 1
+  OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
+  OMPI_MCA_btl_vader_single_copy_mechanism: none
+
+jobs:
+  tests:
+    #if: contains(github.event.pull_request.labels.*.name, 'ready to test')
+    #linux build including tests
+    name: tests
+    runs-on: [ubuntu-22.04]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: "geodynamics/aspect-tester:jammy-dealii-9.6-v3"
+            run-tests: "ON"
+            compare-tests: "ON"
+            build-with-python: "ON"
+            build-with-fastscape: "OFF"
+            result-file: "changes-test-results-9.6.diff"
+            container-options: '--user 0 --name container'
+            use-tpetra: "OFF"
+          - image: "geodynamics/aspect-tester:jammy-dealii-9.7-v4"
+            run-tests: "ON"
+            compare-tests: "OFF"
+            build-with-python: "OFF"
+            build-with-fastscape: "OFF"
+            result-file: "changes-test-results-9.7.diff"
+            container-options: '--user 0 --name container'
+            use-tpetra: "OFF"
+          - image: "geodynamics/aspect-tester:jammy-dealii-master"
+            run-tests: "ON"
+            compare-tests: "OFF"
+            build-with-python: "OFF"
+            build-with-fastscape: "ON"
+            result-file: "changes-test-results-master.diff"
+            container-options: '--user 0 --name container'
+            use-tpetra: "OFF"
+          - image: "geodynamics/aspect-tester:jammy-dealii-master"
+            run-tests: "ON"
+            compare-tests: "OFF"
+            build-with-python: "OFF"
+            build-with-fastscape: "OFF"
+            result-file: "changes-test-results-master-tpetra.diff"
+            container-options: '--user 0 --name container'
+            use-tpetra: "ON"
+    container:
+      image: ${{ matrix.image }}
+      options: ${{ matrix.container-options }}
+
+    steps:
+    - uses: actions/checkout@v7
+    - name: setup Landlab and Python
+      if: matrix.build-with-python == 'ON'
+      run: |
+        uv venv --python 3.12
+        echo "VIRTUAL_ENV=$PWD/.venv" >> $GITHUB_ENV
+        echo "$PWD/.venv/bin" >> $GITHUB_PATH
+        . ./.venv/bin/activate
+        uv sync --frozen --no-editable --verbose --active --project ./contrib/landlab/
+    - name: compile
+      run: |
+        mkdir build
+        cd build
+        cmake \
+        -D CMAKE_BUILD_TYPE=Debug \
+        -G 'Ninja' \
+        -D CMAKE_CXX_FLAGS='-Werror' \
+        -D ASPECT_ADDITIONAL_CXX_FLAGS='-O3 -Wdeprecated-declarations' \
+        -D ASPECT_TEST_GENERATOR='Ninja' \
+        -D ASPECT_PRECOMPILE_HEADERS=ON \
+        -D ASPECT_UNITY_BUILD=ON \
+        -D ASPECT_WITH_PYTHON='${{ matrix.build-with-python }}' \
+        -D ASPECT_WITH_LANDLAB='${{ matrix.build-with-python }}' \
+        -D ASPECT_WITH_FASTSCAPE='${{ matrix.build-with-fastscape }}' \
+        -D FASTSCAPE_DIR="$FASTSCAPE_DIR" \
+        -D ASPECT_RUN_ALL_TESTS='${{ matrix.run-tests }}' \
+        -D ASPECT_COMPARE_TEST_RESULTS='${{ matrix.compare-tests }}' \
+        -D ASPECT_USE_TPETRA='${{ matrix.use-tpetra }}' \
+        -D CMAKE_UNITY_BUILD_BATCH_SIZE=8 \
+        ..
+        ninja -j 4
+        ./aspect --test
+    - name: prebuild tests
+      run: |
+        # prebuilding tests...
+        cd build/tests
+        ninja -k 0 tests || true
+    - name: report test results
+      continue-on-error: true
+      run: |
+        cd build
+        ctest \
+        --no-compress-output \
+        --test-action Test \
+        --output-on-failure || touch test_run_failed
+    - name: write test results
+      continue-on-error: true
+      run: |
+        cd build
+        # TODO: temporary fix for a git incompability.
+        # Can likely be removed when the tester image runs on Ubuntu 22.04
+        /usr/bin/git config --system --add safe.directory /__w/aspect/aspect
+        ninja generate_reference_output
+        git diff ../tests > ${{ matrix.result-file }}
+    - name: archive test results
+      uses: actions/upload-artifact@v7
+      with:
+        name: ${{ matrix.result-file }}
+        path: build/${{ matrix.result-file }}
+        archive: false
+    - name: check test results
+      run: |
+        if [ -f build/test_run_failed ] || [ -s build/${{ matrix.result-file}} ]; then
+          exit 1
+        else
+          exit 0
+        fi
