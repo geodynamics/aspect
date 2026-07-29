@@ -35,7 +35,7 @@ namespace aspect
       ViscoPlasticStrainInvariant<dim>::ViscoPlasticStrainInvariant ()
         :
         n_components(0),
-        material_inputs(1,0)
+        material_inputs(0,0)
       {}
 
 

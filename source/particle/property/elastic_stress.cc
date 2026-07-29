@@ -33,10 +33,10 @@ namespace aspect
       template <int dim>
       ElasticStress<dim>::ElasticStress ()
         :
-        material_inputs(1,0),
-        material_outputs(1,0),
-        material_inputs_cell(1,0),
-        material_outputs_cell(1,0)
+        material_inputs(0,0),
+        material_outputs(0,0),
+        material_inputs_cell(0,0),
+        material_outputs_cell(0,0)
       {}
 
 
