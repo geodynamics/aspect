@@ -392,7 +392,16 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Thickness of the crustal layer generated at the surface.Units: \si{\meter}.
+**Documentation:** Thickness of the crustal layer generated at the surface. Units: \si{\meter}.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Harzburgite profile in lithosphere<parameters:Particles/Crust_20and_20lithosphere_20formation/Harzburgite_20profile_20in_20lithosphere>`
+:name: parameters:Particles/Crust_20and_20lithosphere_20formation/Harzburgite_20profile_20in_20lithosphere
+**Default value:** linear
+
+**Pattern:** [Selection constant|linear ]
+
+**Documentation:** Choose the profile used for the harzburgite fraction within the lithosphere. If set to constant, the harzburgite fraction is 100\% everywhere except where basalt is present. If set to linear, the harzburgite fraction is 100\% at the top of the lithosphere and decreases linearly to 0\% at the bottom of the lithosphere.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Lithosphere thickness<parameters:Particles/Crust_20and_20lithosphere_20formation/Lithosphere_20thickness>`
@@ -401,7 +410,25 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Thickness of the lithosphere layer generated below the crust.Units: \si{\meter}.
+**Documentation:** Thickness of the lithosphere layer generated below the crust. Units: \si{\meter}.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Minimum upwelling angle for crust formation<parameters:Particles/Crust_20and_20lithosphere_20formation/Minimum_20upwelling_20angle_20for_20crust_20formation>`
+:name: parameters:Particles/Crust_20and_20lithosphere_20formation/Minimum_20upwelling_20angle_20for_20crust_20formation
+**Default value:** 30
+
+**Pattern:** [Double 0...90 (inclusive)]
+
+**Documentation:** The minimum upwelling angle required for a particle to be converted into crustal material. This angle is measured between the horizontal direction and the particle velocity vector and ranges from 0 to 90 degrees. A value of 0 means that all particles are converted into crust (basalt) as soon as they reach the required depth. A value of 90 means that only particles moving vertically upward are converted into crust (basalt). Units: \si{\degree}.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Minimum upwelling angle for lithosphere formation<parameters:Particles/Crust_20and_20lithosphere_20formation/Minimum_20upwelling_20angle_20for_20lithosphere_20formation>`
+:name: parameters:Particles/Crust_20and_20lithosphere_20formation/Minimum_20upwelling_20angle_20for_20lithosphere_20formation
+**Default value:** 30
+
+**Pattern:** [Double 0...90 (inclusive)]
+
+**Documentation:** The minimum upwelling angle required for a particle to be converted into lithospheric material. This angle is measured between the horizontal direction and the particle velocity vector and ranges from 0 to 90 degrees. A value of 0 means that all particles (except for particles with a basaltic composition) are converted into lithosphere (harzburgite) as soon as they reach the required depth. A value of 90 means that only particles (except for particles with a basaltic composition) moving vertically upward are converted into lithosphere (harzburgite). Units: \si{\degree}.
 ::::
 
 (parameters:Particles/Crystal_20Preferred_20Orientation)=

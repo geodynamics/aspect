@@ -1,0 +1,4 @@
+Changed: In the crust and lithosphere formation reaction model, the upwelling angle has been changed from a hardcoded value (30 degrees from the horizontal direction) to a user-defined input parameter.
+Added: An option to select whether the harzburgite profile in the lithosphere is constant or decreases linearly with depth.
+<br>
+(Ranpeng Li 2026/07/27)

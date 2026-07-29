@@ -82,11 +82,44 @@ namespace aspect
            *
            * This variable is read from the parameter file through a parameter called 'Crustal thickness'.
            */
-          double crustal_thickness;
+          double crust_thickness;
+
           /**
            *  This variable is read from the parameter file through a parameter called 'Lithosphere thickness'.
            */
           double lithosphere_thickness;
+
+          /**
+           * The minimum upwelling angle required for a particle to be converted into crust.
+           *
+           * This variable is read from the parameter file through parameters called 'Minimum upwelling angle for crust formation'
+           */
+          double minimum_upwelling_angle_for_crust;
+
+          /**
+           * The minimum upwelling angle required for a particle to be converted into lithosphere.
+           *
+           * This variable is read from the parameter file through parameters called 'Minimum upwelling angle for lithosphere formation'.
+           */
+
+          double minimum_upwelling_angle_for_lithosphere;
+
+          /**
+           * An enum describing the different options to compute the harzburgite profile
+           * within the lithosphere.
+           *
+           * The selection is made from the parameter file through a parameter called 'Harzburgite profile in lithosphere'.
+           */
+          enum HarzburgiteProfile
+          {
+            linear,
+            constant
+          };
+
+          /**
+          * Selected option to compute the reference profile for composition.
+          */
+          HarzburgiteProfile harzburgite_profile;
 
           /**
            * The indices of the compositional fields that store the basalt and
