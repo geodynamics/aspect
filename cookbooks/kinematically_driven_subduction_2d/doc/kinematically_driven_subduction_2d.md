@@ -29,9 +29,10 @@ the solver tolerance.
 
 :::{note}
 The viscous dissipation postprocessor has been amended since this cookbook was written
-and now correctly returns values twice as large as before. The user must now 
-to divide the recovered viscous disspation values by a factor two in order to match the values 
-shown below and those of other codes. 
+and now correctly returns values twice as large as before 
+(a missing factor was the source of the bug). 
+The user must now divide the recovered viscous dissipation values by a factor two in order 
+to match the values shown below and those of other codes. 
 :::
 
 
