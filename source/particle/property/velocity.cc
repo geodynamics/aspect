@@ -110,7 +110,7 @@ namespace aspect
                                         "Implementation of a plugin in which the particle "
                                         "property is defined as the recent velocity at "
                                         "this position. The velocity depends on whether the particle "
-                                        "world is being advected with a solid or fluid velocity.")
+                                        "manager is being advected with a solid or fluid velocity.")
     }
   }
 }
