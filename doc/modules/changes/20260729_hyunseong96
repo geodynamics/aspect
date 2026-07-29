@@ -1,0 +1,4 @@
+The gravity model 'Radial with tidal potential' now works for 2-dimensional spherical geometries.
+The model assumes that the 2D geometry represents the equatorial plane.
+<br>
+(Hyunseong Kim 2026/07/29)
