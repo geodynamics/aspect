@@ -179,6 +179,13 @@ namespace aspect
                                const unsigned int &fastscape_iterations) const;
 
         /**
+         * Pass the selected horizontal-advection scheme to Fastscape.
+         * The TVD scheme requires Fastscape version 2.9.1dev or newer. Older versions continue using the original scheme.
+         */
+        void
+        set_fastscape_advection_scheme() const;
+
+        /**
          * Function to apply orographic (mountain related, e.g., wind or elevation)
          * controls to the FastScape model.
          */
@@ -245,7 +252,12 @@ namespace aspect
         /**
          * Advection scheme in FastScape
          */
-        std::string advection_scheme;
+        enum class FastscapeAdvectionScheme : int
+        {
+          original = 1,
+          tvd = 2
+        };
+        FastscapeAdvectionScheme advection_scheme;
 
         /**
          * Vertical exaggeration in FastScape visualization.
