@@ -86,6 +86,7 @@ jobs:
         ninja -j 4 -d explain
         mpirun -np 4 ./aspect-release --version
         ctest -VV -R performance
+        ./aspect-release  $GITHUB_WORKSPACE/feature/source/build/tests/performance_nsinker_gmg_idr.x.prm
 
     - name: Configure main
       run: |
