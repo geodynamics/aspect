@@ -38,18 +38,18 @@ namespace aspect
   class MeltingRate:
     public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
   {
-      virtual bool is_compressible () const
+      virtual bool is_compressible () const override
       {
         return false;
       }
 
-      virtual double reference_darcy_coefficient () const
+      virtual double reference_darcy_coefficient () const override
       {
         return 1e-8 * Utilities::fixed_power<3>(0.01) / 10.0;
       }
 
       virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                            typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
+                            typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const override
       {
         for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
           {
@@ -74,7 +74,7 @@ namespace aspect
               {
                 const double porosity = in.composition[i][porosity_idx];
 
-                melt_out->inverse_compaction_viscosities[i] = std::max(porosity,0.00025) / (5.e20 * 0.05);
+                melt_out->inverse_compaction_viscosities[i] = std::max(porosity,0.0) / (5.e20 * 0.05);
                 melt_out->fluid_viscosities[i]= 10.0;
                 melt_out->permeabilities[i]= 1e-8 * Utilities::fixed_power<3>(porosity) * Utilities::fixed_power<2>(1.0-porosity);
                 melt_out->fluid_densities[i]= 2500.0;

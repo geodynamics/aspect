@@ -1,0 +1,188 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Loading shared library <./librising_melt_blob_boundary.debug.so>
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 512 (on 5 levels)
+Number of degrees of freedom: 16,698 (4,290+1,122+4,290+561+2,145+2,145+2,145)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+p_f RHS correction: 9906.89
+p_t RHS correction: 9907.17
+Final correction: 19814.1
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 199+0 iterations.
+   Solving fluid velocity system... 11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.79293e-16, 1.37056e-16, 1.37056e-16, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Postprocessing:
+     Compositions min/max/mass: 2.778e-12/0.2/2.513e+08 // 2.778e-12/0.2/2.513e+08
+     Writing graphical output:  output-rising_melt_blob_boundary/solution/solution-00000.0000
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+p_f RHS correction: 9906.89
+p_t RHS correction: 9907.17
+Final correction: 19814.1
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 98+0 iterations.
+   Solving fluid velocity system... 11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.79293e-16, 1.37056e-16, 1.37056e-16, 0.000760008
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000760008
+
+   Postprocessing:
+     Compositions min/max/mass: 2.778e-12/0.2/2.513e+08 // 2.778e-12/0.2/2.513e+08
+     Writing graphical output:  output-rising_melt_blob_boundary/solution/solution-00000.0001
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+p_f RHS correction: 9906.89
+p_t RHS correction: 9907.17
+Final correction: 19814.1
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 198+0 iterations.
+   Solving fluid velocity system... 11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.79293e-16, 1.37056e-16, 1.37056e-16, 0.00576568
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00576568
+
+   Postprocessing:
+     Compositions min/max/mass: 2.778e-12/0.2/2.513e+08 // 2.778e-12/0.2/2.513e+08
+     Writing graphical output:  output-rising_melt_blob_boundary/solution/solution-00000.0002
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+p_f RHS correction: 9906.89
+p_t RHS correction: 9907.17
+Final correction: 19814.1
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 95+0 iterations.
+   Solving fluid velocity system... 11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.79293e-16, 1.37056e-16, 1.37056e-16, 0.00012003
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.00012003
+
+   Postprocessing:
+     Compositions min/max/mass: 2.778e-12/0.2/2.513e+08 // 2.778e-12/0.2/2.513e+08
+     Writing graphical output:  output-rising_melt_blob_boundary/solution/solution-00000.0003
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+p_f RHS correction: 9906.89
+p_t RHS correction: 9907.17
+Final correction: 19814.1
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 95+0 iterations.
+   Solving fluid velocity system... 11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.79293e-16, 1.37056e-16, 1.37056e-16, 0.000143714
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.000143714
+
+   Postprocessing:
+     Compositions min/max/mass: 2.778e-12/0.2/2.513e+08 // 2.778e-12/0.2/2.513e+08
+     Writing graphical output:  output-rising_melt_blob_boundary/solution/solution-00000.0004
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+p_f RHS correction: 9906.89
+p_t RHS correction: 9907.17
+Final correction: 19814.1
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 100+0 iterations.
+   Solving fluid velocity system... 11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.79293e-16, 1.37056e-16, 1.37056e-16, 0.000206508
+      Relative nonlinear residual (total system) after nonlinear iteration 6: 0.000206508
+
+   Postprocessing:
+     Compositions min/max/mass: 2.778e-12/0.2/2.513e+08 // 2.778e-12/0.2/2.513e+08
+     Writing graphical output:  output-rising_melt_blob_boundary/solution/solution-00000.0005
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+p_f RHS correction: 9906.89
+p_t RHS correction: 9907.17
+Final correction: 19814.1
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 95+0 iterations.
+   Solving fluid velocity system... 11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.79293e-16, 1.37056e-16, 1.37056e-16, 0.000100351
+      Relative nonlinear residual (total system) after nonlinear iteration 7: 0.000100351
+
+   Postprocessing:
+     Compositions min/max/mass: 2.778e-12/0.2/2.513e+08 // 2.778e-12/0.2/2.513e+08
+     Writing graphical output:  output-rising_melt_blob_boundary/solution/solution-00000.0006
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+p_f RHS correction: 9906.89
+p_t RHS correction: 9907.17
+Final correction: 19814.1
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 98+0 iterations.
+   Solving fluid velocity system... 11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.79293e-16, 1.37056e-16, 1.37056e-16, 0.000208418
+      Relative nonlinear residual (total system) after nonlinear iteration 8: 0.000208418
+
+   Postprocessing:
+     Compositions min/max/mass: 2.778e-12/0.2/2.513e+08 // 2.778e-12/0.2/2.513e+08
+     Writing graphical output:  output-rising_melt_blob_boundary/solution/solution-00000.0007
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+p_f RHS correction: 9906.89
+p_t RHS correction: 9907.17
+Final correction: 19814.1
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 98+0 iterations.
+   Solving fluid velocity system... 11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.79293e-16, 1.37056e-16, 1.37056e-16, 0.000158458
+      Relative nonlinear residual (total system) after nonlinear iteration 9: 0.000158458
+
+   Postprocessing:
+     Compositions min/max/mass: 2.778e-12/0.2/2.513e+08 // 2.778e-12/0.2/2.513e+08
+     Writing graphical output:  output-rising_melt_blob_boundary/solution/solution-00000.0008
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+p_f RHS correction: 9906.89
+p_t RHS correction: 9907.17
+Final correction: 19814.1
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 198+0 iterations.
+   Solving fluid velocity system... 11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.79293e-16, 1.37056e-16, 1.37056e-16, 0.000388246
+      Relative nonlinear residual (total system) after nonlinear iteration 10: 0.000388246
+
+   Postprocessing:
+     Compositions min/max/mass: 2.778e-12/0.2/2.513e+08 // 2.778e-12/0.2/2.513e+08
+     Writing graphical output:  output-rising_melt_blob_boundary/solution/solution-00000.0009
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+
+WARNING: During this computation 1 nonlinear solver failures occurred!
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------

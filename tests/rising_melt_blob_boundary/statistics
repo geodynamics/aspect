@@ -1,0 +1,31 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
+# 15: Minimal value for composition porosity
+# 16: Maximal value for composition porosity
+# 17: Global mass for composition porosity
+# 18: Minimal value for composition peridotite
+# 19: Maximal value for composition peridotite
+# 20: Global mass for composition peridotite
+# 21: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 512 4851 2145 4290 1 0 0 0 199 199 2209 2.77758877e-12 2.00000000e-01 2.51327124e+08 2.77758877e-12 2.00000000e-01 2.51327124e+08 output-rising_melt_blob_boundary/solution/solution-00000.0000 
+0 0.000000000000e+00 0.000000000000e+00 512 4851 2145 4290 1 0 0 0  98  98 1088 2.77758877e-12 2.00000000e-01 2.51327124e+08 2.77758877e-12 2.00000000e-01 2.51327124e+08 output-rising_melt_blob_boundary/solution/solution-00000.0001 
+0 0.000000000000e+00 0.000000000000e+00 512 4851 2145 4290 1 0 0 0 198 198 2203 2.77758877e-12 2.00000000e-01 2.51327124e+08 2.77758877e-12 2.00000000e-01 2.51327124e+08 output-rising_melt_blob_boundary/solution/solution-00000.0002 
+0 0.000000000000e+00 0.000000000000e+00 512 4851 2145 4290 1 0 0 0  95  95 1051 2.77758877e-12 2.00000000e-01 2.51327124e+08 2.77758877e-12 2.00000000e-01 2.51327124e+08 output-rising_melt_blob_boundary/solution/solution-00000.0003 
+0 0.000000000000e+00 0.000000000000e+00 512 4851 2145 4290 1 0 0 0  95  95 1054 2.77758877e-12 2.00000000e-01 2.51327124e+08 2.77758877e-12 2.00000000e-01 2.51327124e+08 output-rising_melt_blob_boundary/solution/solution-00000.0004 
+0 0.000000000000e+00 0.000000000000e+00 512 4851 2145 4290 1 0 0 0 100 100 1106 2.77758877e-12 2.00000000e-01 2.51327124e+08 2.77758877e-12 2.00000000e-01 2.51327124e+08 output-rising_melt_blob_boundary/solution/solution-00000.0005 
+0 0.000000000000e+00 0.000000000000e+00 512 4851 2145 4290 1 0 0 0  95  95 1059 2.77758877e-12 2.00000000e-01 2.51327124e+08 2.77758877e-12 2.00000000e-01 2.51327124e+08 output-rising_melt_blob_boundary/solution/solution-00000.0006 
+0 0.000000000000e+00 0.000000000000e+00 512 4851 2145 4290 1 0 0 0  98  98 1090 2.77758877e-12 2.00000000e-01 2.51327124e+08 2.77758877e-12 2.00000000e-01 2.51327124e+08 output-rising_melt_blob_boundary/solution/solution-00000.0007 
+0 0.000000000000e+00 0.000000000000e+00 512 4851 2145 4290 1 0 0 0  98  98 1085 2.77758877e-12 2.00000000e-01 2.51327124e+08 2.77758877e-12 2.00000000e-01 2.51327124e+08 output-rising_melt_blob_boundary/solution/solution-00000.0008 
+0 0.000000000000e+00 0.000000000000e+00 512 4851 2145 4290 1 0 0 0 198 198 2206 2.77758877e-12 2.00000000e-01 2.51327124e+08 2.77758877e-12 2.00000000e-01 2.51327124e+08 output-rising_melt_blob_boundary/solution/solution-00000.0009 
