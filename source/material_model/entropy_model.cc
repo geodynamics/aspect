@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
+#include <algorithm>
 #include <aspect/material_model/entropy_model.h>
 #include <aspect/material_model/thermal_conductivity/constant.h>
 #include <aspect/material_model/thermal_conductivity/tosi_stackhouse.h>
@@ -390,7 +390,7 @@ namespace aspect
                 {
                   double vis_lateral = std::exp(-lateral_viscosity_prefactor_lookup->lateral_viscosity(depth)*delta_temperature/(adjusted_inputs.temperature[i]*reference_temperature));
                   // lateral vis variation
-                  vis_lateral = std::max(std::min((vis_lateral),max_lateral_eta_variation),1/max_lateral_eta_variation);
+                  vis_lateral = std::clamp(vis_lateral, 1/max_lateral_eta_variation, max_lateral_eta_variation);
 
                   if (std::isnan(vis_lateral))
                     vis_lateral = 1.0;
@@ -430,7 +430,7 @@ namespace aspect
                         plastic_out->yielding[i] = eta_plastic < (vis_lateral * viscosity_profile) ? 1 : 0;
                     }
 
-                  out.viscosities[i] = std::max(std::min(effective_viscosity,max_eta),min_eta);
+                  out.viscosities[i] = std::clamp(effective_viscosity, min_eta, max_eta);
                 }
             }
 

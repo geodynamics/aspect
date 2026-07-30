@@ -18,6 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
+#include <algorithm>
 #include <aspect/material_model/reactive_fluid_transport.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <deal.II/base/parameter_handler.h>
@@ -219,7 +220,7 @@ namespace aspect
                       // Limit the porosity to be no smaller than 1e-8 when
                       // calculating fluid effects on viscosities.
                       porosity = std::max(porosity,1e-8);
-                      fluid_out->compaction_viscosities[q] = std::max(std::min(out.viscosities[q] * shear_to_bulk_viscosity_ratio * phi_0/porosity, max_compaction_viscosity), min_compaction_viscosity);
+                      fluid_out->compaction_viscosities[q] = std::clamp(out.viscosities[q] * shear_to_bulk_viscosity_ratio * phi_0/porosity, min_compaction_viscosity, max_compaction_viscosity);
                     }
                 }
             }

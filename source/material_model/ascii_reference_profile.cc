@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
+#include <algorithm>
 #include <aspect/material_model/ascii_reference_profile.h>
 #include <aspect/adiabatic_conditions/interface.h>
 
@@ -75,7 +75,7 @@ namespace aspect
           const double depth = this->get_geometry_model().depth(position);
           const Point<1> profile_position(depth);
 
-          double visc_temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*temperature_deviation/this->get_adiabatic_conditions().temperature(position)),1e3),1e-3);
+          double visc_temperature_dependence = std::clamp(std::exp(-thermal_viscosity_exponent*temperature_deviation/this->get_adiabatic_conditions().temperature(position)), 1e-3, 1e3);
           if (std::isnan(visc_temperature_dependence))
             visc_temperature_dependence = 1.0;
 

@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
+#include <algorithm>
 #include <aspect/material_model/latent_heat.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/gravity_model/interface.h>
@@ -64,7 +64,7 @@ namespace aspect
                                           :
                                           thermal_viscosity_exponent * delta_temp / reference_temperature );
 
-            double visc_temperature_dependence = std::max(std::min(std::exp(-T_dependence),1e2),1e-2);
+            double visc_temperature_dependence = std::clamp(std::exp(-T_dependence), 1e-2, 1e2);
 
             if (std::isnan(visc_temperature_dependence))
               visc_temperature_dependence = 1.0;

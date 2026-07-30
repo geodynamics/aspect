@@ -29,6 +29,7 @@
 #ifndef _aspect_model_drucker_prager_compositions_h
 #define _aspect_model_drucker_prager_compositions_h
 
+#include <algorithm>
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/newton.h>
@@ -231,7 +232,7 @@ namespace aspect
           viscosity = prefactor;
         }
 
-      return std::max(std::min(viscosity,max_visc),min_visc);
+      return std::clamp(viscosity, min_visc, max_visc);
     }
 
     template <int dim>
