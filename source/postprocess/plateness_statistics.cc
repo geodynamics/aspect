@@ -332,7 +332,7 @@ namespace aspect
                                   "on the top boundary using the second invariant of the deviatoric "
                                   "strain-rate tensor. F80 and F90 are the smallest fractions of the "
                                   "top-boundary area that contain 80% and 90% of the integrated strain-rate "
-                                  "invariant, respectively. Smaller values indicate more strongly localized "
+                                  "invariant, respectively. Smaller valuesof F80 and F90 indicate more strongly localized "
                                   "surface deformation. The corresponding plateness values are computed as "
                                   "p = 1 - F/reference_fraction. A value of one represents the limiting case "
                                   "of deformation localized into an infinitesimally small area, zero corresponds "
