@@ -154,8 +154,8 @@ namespace aspect
          * The default implementation of this function does nothing, but
          * plugins that derive from this class (via the <code>Interface</code>
          * classes of their respective plugin systems) may overload it
-         * if they want something to happen upon startup of the
-         * Simulator object to which the plugin contributes.
+         * if they want something to happen at the start of each time
+         * step.
          */
         virtual
         void
