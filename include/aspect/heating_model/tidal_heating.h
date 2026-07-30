@@ -74,12 +74,22 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm) override;
 
+        /**
+         * Create the additional material model outputs object that contains the
+         * averaged viscous outputs.
+         */
+        void
+        create_additional_material_model_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
+
+
       private:
         /**
          * Parameters used for tidal heating (H), which is defined using the following
          * Equation is from Tobie et al. (2003) (https://doi.org/10.1029/2003JE002099)
          * H = 2*(viscosity)*(time-averaged tidal strain rate)^2/(1+((viscosity)*(tidal frequency)/(elastic shear modulus))^2))
-         * viscosity (Pa s) = viscosity calculated by the selected material in ASPECT
+         * viscosity = material_model_outputs.viscosities when elasticity is not enabled. If enabled, material_model_outputs.viscosity_without_elasticity.
+         * Viscosity should only contain the viscous rheology, not elastic contributions to the effective viscosity.
+         * This is because tidal heating is a form of viscoelastic shear dissipation.
          * time-averaged strain rate = constant_tidal_strain_rate
          * tidal frequency = tidal_frequency
          * elastic shear modulus = elastic_shear_modulus

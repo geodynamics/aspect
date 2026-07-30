@@ -226,6 +226,18 @@ namespace aspect
         bool
         is_yielding (const MaterialModelInputs<dim> &in) const;
 
+        /**
+         * A function that fills the additional viscosity output in the
+         * MaterialModelOutputs object that is handed over, if it exists.
+         * Does nothing otherwise.
+         */
+        void
+        fill_viscosity_without_elasticity_outputs(const unsigned int point_index,
+                                                  const std::vector<double> &volume_fractions,
+                                                  MaterialModel::MaterialModelOutputs<dim> &out,
+                                                  const MaterialModel::IsostrainViscosities &isostrain_viscosities,
+                                                  const MaterialModel::MaterialUtilities::CompositionalAveragingOperation &average_type) const;
+
       private:
 
         /**
@@ -291,7 +303,6 @@ namespace aspect
         std::unique_ptr<MaterialUtilities::PhaseFunctionDiscrete<dim>> phase_function_discrete;
 
     };
-
   }
 }
 

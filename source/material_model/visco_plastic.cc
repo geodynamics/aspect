@@ -18,6 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
+#include <aspect/material_model/additional_outputs/viscosity_without_elasticity.h>
 #include <aspect/material_model/visco_plastic.h>
 #include <aspect/utilities.h>
 #include <deal.II/fe/fe_values.h>
@@ -235,6 +236,10 @@ namespace aspect
               std::vector<double>::const_iterator max_composition = std::max_element(volume_fractions.begin(), volume_fractions.end());
               plastic_yielding = isostrain_viscosities.composition_yielding[std::distance(volume_fractions.begin(), max_composition)];
 
+              // Fill the additional viscosity outputs that will be used for tidal heating.
+              if (in.requests_property(MaterialProperties::additional_outputs) && out.template has_additional_output_object<MaterialModel::ViscosityWithoutElasticityAdditionalOutputs<dim>>())
+                fill_viscosity_without_elasticity_outputs(i, volume_fractions, out, isostrain_viscosities, rheology->viscosity_averaging);
+
               // Compute viscosity derivatives if they are requested
               if (const std::shared_ptr<MaterialModel::MaterialModelDerivatives<dim>> derivatives =
                     out.template get_additional_output_object<MaterialModel::MaterialModelDerivatives<dim>>())
@@ -250,6 +255,7 @@ namespace aspect
               // quantities we set above and that would otherwise remain uninitialized
               isostrain_viscosities.composition_yielding.clear();
               isostrain_viscosities.composition_viscosities.clear();
+              isostrain_viscosities.composition_viscosity_without_elasticity.clear();
               isostrain_viscosities.drucker_prager_parameters.clear();
               isostrain_viscosities.diffusion_viscosities.clear();
               isostrain_viscosities.dislocation_viscosities.clear();
@@ -485,6 +491,26 @@ namespace aspect
 
       if (this->get_parameters().enable_elasticity)
         rheology->elastic_rheology.create_elastic_additional_outputs(out);
+    }
+
+
+    template <int dim>
+    void
+    ViscoPlastic<dim>::fill_viscosity_without_elasticity_outputs (const unsigned int i,
+                                                                  const std::vector<double> &volume_fractions,
+                                                                  MaterialModel::MaterialModelOutputs<dim> &out,
+                                                                  const MaterialModel::IsostrainViscosities &isostrain_viscosities,
+                                                                  const MaterialModel::MaterialUtilities::CompositionalAveragingOperation &average_type) const
+    {
+      const std::shared_ptr<ViscosityWithoutElasticityAdditionalOutputs<dim>> viscous_out =
+        out.template get_additional_output_object<ViscosityWithoutElasticityAdditionalOutputs<dim>>();
+      if (viscous_out != nullptr)
+        {
+          viscous_out->viscosity_without_elasticity[i] =
+            MaterialModel::MaterialUtilities::average_value(volume_fractions,
+                                                            isostrain_viscosities.composition_viscosity_without_elasticity,
+                                                            average_type);
+        }
     }
 
   }

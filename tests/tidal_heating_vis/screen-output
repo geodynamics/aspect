@@ -1,0 +1,84 @@
+
+Number of active cells: 100 (on 2 levels)
+Number of degrees of freedom: 6,844 (882+121+441+900+900+900+900+900+900)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Skipping ve_stress_xx composition solve because RHS is zero.
+   Skipping ve_stress_yy composition solve because RHS is zero.
+   Skipping ve_stress_xy composition solve because RHS is zero.
+   Skipping ve_stress_xx_old composition solve because RHS is zero.
+   Skipping ve_stress_yy_old composition solve because RHS is zero.
+   Skipping ve_stress_xy_old composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 34+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.59199e-16, 0, 0, 0, 0, 0, 0, 1.82561e-14
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.82561e-14
+
+
+   Postprocessing:
+     RMS, max velocity:                                 7.83e-14 m/year, 9.66e-13 m/year
+     Temperature min/avg/max:                           109.8 K, 190 K, 270.2 K
+     Writing graphical output:                          output-tidal_heating_vis/solution/solution-00000
+     Pressure min/avg/max:                              -1.237e-09 Pa, 5.961e+07 Pa, 1.192e+08 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1.751e+18 Pa s, 9.17e+12 kg
+     Heating rate (average/total):                      5.619e-10 W/kg, 5152 W
+
+*** Timestep 1:  t=1000 years, dt=1000 years
+   Solving composition reactions... in 1 substep(s).
+   Solving temperature system... 8 iterations.
+   Solving ve_stress_xx system ... 0 iterations.
+   Solving ve_stress_yy system ... 0 iterations.
+   Solving ve_stress_xy system ... 0 iterations.
+   Solving ve_stress_xx_old system ... 0 iterations.
+   Solving ve_stress_yy_old system ... 0 iterations.
+   Solving ve_stress_xy_old system ... 0 iterations.
+   Solving Stokes system (GMG)... 36+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000109848, 3.05358e-14, 5.43923e-14, 4.07545e-14, 0, 0, 0, 1.03068e-14
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000109848
+
+   Solving temperature system... 6 iterations.
+   Solving ve_stress_xx system ... 0 iterations.
+   Solving ve_stress_yy system ... 0 iterations.
+   Solving ve_stress_xy system ... 0 iterations.
+   Solving ve_stress_xx_old system ... 0 iterations.
+   Solving ve_stress_yy_old system ... 0 iterations.
+   Solving ve_stress_xy_old system ... 0 iterations.
+   Solving Stokes system (GMG)... 37+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.8341e-07, 2.00619e-14, 3.90619e-14, 3.10012e-14, 0, 0, 0, 2.67103e-15
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 4.8341e-07
+
+
+   Postprocessing:
+     RMS, max velocity:                                 2.11e-13 m/year, 3.39e-12 m/year
+     Temperature min/avg/max:                           109.8 K, 190 K, 270.3 K
+     Writing graphical output:                          output-tidal_heating_vis/solution/solution-00001
+     Pressure min/avg/max:                              -6.608e-09 Pa, 5.961e+07 Pa, 1.192e+08 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1.517e+19 Pa s, 9.17e+12 kg
+     Heating rate (average/total):                      5.64e-10 W/kg, 5172 W
+
+*** Timestep 2:  t=2000 years, dt=1000 years
+   Solving composition reactions... in 1 substep(s).
+   Solving temperature system... 5 iterations.
+   Solving ve_stress_xx system ... 0 iterations.
+   Solving ve_stress_yy system ... 0 iterations.
+   Solving ve_stress_xy system ... 0 iterations.
+   Solving ve_stress_xx_old system ... 0 iterations.
+   Solving ve_stress_yy_old system ... 0 iterations.
+   Solving ve_stress_xy_old system ... 0 iterations.
+   Solving Stokes system (GMG)... 38+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.24024e-07, 4.69183e-13, 3.47577e-13, 1.19733e-13, 0, 0, 0, 1.43476e-14
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 3.24024e-07
+
+
+   Postprocessing:
+     RMS, max velocity:                                 1.63e-13 m/year, 2.17e-12 m/year
+     Temperature min/avg/max:                           109.8 K, 190 K, 270.4 K
+     Writing graphical output:                          output-tidal_heating_vis/solution/solution-00002
+     Pressure min/avg/max:                              -5.715e-09 Pa, 5.961e+07 Pa, 1.192e+08 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1.517e+19 Pa s, 9.17e+12 kg
+     Heating rate (average/total):                      5.661e-10 W/kg, 5191 W
+
+Termination requested by criterion: end time
+
+
+

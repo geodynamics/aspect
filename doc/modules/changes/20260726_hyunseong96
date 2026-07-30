@@ -1,0 +1,3 @@
+Changed: Now the tidal heating module only uses the viscosity without elastic contributions from the material model visco plastic.
+<br>
+(Hyunseong Kim, 2026/07/26)
