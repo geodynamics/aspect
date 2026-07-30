@@ -1,0 +1,55 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 5
+# 11: Iterations for Stokes solver
+# 12: Velocity iterations in Stokes preconditioner
+# 13: Schur complement iterations in Stokes preconditioner
+# 14: Minimal value for composition plastic_strain
+# 15: Maximal value for composition plastic_strain
+# 16: Global mass for composition plastic_strain
+# 17: Minimal value for composition noninitial_plastic_strain
+# 18: Maximal value for composition noninitial_plastic_strain
+# 19: Global mass for composition noninitial_plastic_strain
+# 20: Minimal value for composition crust_upper
+# 21: Maximal value for composition crust_upper
+# 22: Global mass for composition crust_upper
+# 23: Minimal value for composition crust_lower
+# 24: Maximal value for composition crust_lower
+# 25: Global mass for composition crust_lower
+# 26: Minimal value for composition mantle_lithosphere
+# 27: Maximal value for composition mantle_lithosphere
+# 28: Global mass for composition mantle_lithosphere
+# 29: Outward heat flux density for boundary with id 0 ("left") (W/m)
+# 30: Outward heat flux density for boundary with id 1 ("right") (W/m)
+# 31: Outward heat flux density for boundary with id 2 ("bottom") (W/m)
+# 32: Outward heat flux density for boundary with id 3 ("top") (W/m)
+# 33: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 34: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 35: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 36: Outward heat flux through boundary with indicator 3 ("top") (W)
+# 37: Outward mass flux through boundary with indicator 0 ("left") (kg/yr)
+# 38: Outward mass flux through boundary with indicator 1 ("right") (kg/yr)
+# 39: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
+# 40: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
+# 41: Number of advected particles
+# 42: Particle file name
+# 43: Minimal pressure (Pa)
+# 44: Average pressure (Pa)
+# 45: Maximal pressure (Pa)
+# 46: Minimal temperature (K)
+# 47: Average temperature (K)
+# 48: Maximal temperature (K)
+# 49: Average nondimensional temperature (K)
+# 50: Minimum topography (m)
+# 51: Maximum topography (m)
+# 52: RMS velocity (m/year)
+# 53: Max. velocity (m/year)
+0 0.000000000000e+00 0.000000000000e+00 200 1953 861 4000 5  0  0 93 93 223 0.00000000e+00 1.47228034e+00 6.04110428e+09 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.00000000e+00 4.00000000e+09 0.00000000e+00 1.00000000e+00 4.00000000e+09  0.00000000e+00 1.00000000e+00 1.10000000e+10 1.89957219e-01 1.89957219e-01 -3.44040206e-01 5.50093675e-02 1.89957219e+04 1.89957219e+04 -6.88080412e+04 1.10018735e+04 7.63345333e+05 7.63345333e+05 -1.60578000e+06  2.21598380e-02 3200 output-interface_continental_extension_mixed_compositions_particles/particles/particles-00000 -4.18785817e+07 1.39237576e+09 2.99622671e+09 2.73000000e+02 9.98333333e+02 1.61300000e+03 5.41293532e-01  0.00000000e+00 0.00000000e+00 2.10815413e-03 3.53553391e-03 
+1 1.000000000000e+04 1.000000000000e+04 200 1953 861 4000 5 27 10 84 84 252 0.00000000e+00 1.47231295e+00 6.04235829e+09 0.00000000e+00 6.54742479e-04 1.41859428e+06 0.00000000e+00 1.00000000e+00 4.00000303e+09 0.00000000e+00 1.00000000e+00 4.00000002e+09 -1.10826214e-07 1.00006514e+00 1.10022502e+10 1.89968958e-01 1.89971548e-01 -3.44977476e-01 5.50107126e-02 1.89970675e+04 1.89971992e+04 -6.89954951e+04 1.10021425e+04 7.63350769e+05 7.63345855e+05 -1.60578000e+06 -7.67778897e+00 3200 output-interface_continental_extension_mixed_compositions_particles/particles/particles-00001 -4.39388655e+07 1.39369520e+09 2.99664901e+09 2.73000000e+02 9.98483021e+02 1.61300000e+03 5.41405240e-01 -1.82497295e+00 1.68437535e+00 2.15961936e-03 3.53553391e-03 

@@ -1,0 +1,54 @@
+# This test checks the 'interface weakening' viscosity prefactor scheme of
+# the visco plastic material model in a setup that combines particle- and
+# field-advected compositional fields. The model setup is a simplified
+# (coarser and shorter) version of the continental extension cookbook and is
+# based on the test continental_extension_mixed_compositions_particles,
+# which this test includes.
+#
+# The interface weakening scheme multiplies the viscosity of selected
+# compositions by a prescribed factor in regions where the two compositions
+# listed in 'Interface weakening compositions' are simultaneously present
+# above a threshold value, i.e. within the numerically smeared transition
+# band along the material interface between them. In this test, the
+# viscosities of the upper and lower crust are multiplied by 1e-5 within
+# the band along the upper crust--lower crust interface, creating a weak
+# decoupling zone there, while the background, the mantle lithosphere and
+# all single-composition regions retain their unmodified viscosities.
+#
+# The test verifies that the scheme is parsed correctly and runs in
+# combination with particle-advected compositional fields, and that the
+# weakening localizes deformation along the crustal interface.
+# The exact value of the weakening factor is verified separately in the
+# interface_weakening test, which computes the weakened viscosity 
+# analytically.
+
+include $ASPECT_SOURCE_DIR/tests/continental_extension_mixed_compositions_particles.prm
+
+set End time                               = 10000
+
+# Advect the lower crust with particles as well, so that both compositions
+# of the weakened interface are tracked by particles.
+subsection Compositional fields
+  set Compositional field methods = particles, particles, particles, particles, field
+  set Mapped particle properties  = plastic_strain: plastic_strain, \
+                                    noninitial_plastic_strain: noninitial_plastic_strain, \
+                                    crust_upper: initial crust_upper, \
+                                    crust_lower: initial crust_lower
+end
+
+# All compositions tracked by particles must use the same finite element,
+# so crust_lower uses the same polynomial degree and discontinuous
+# discretization as the other particle-advected fields.
+subsection Discretization
+  set Composition polynomial degree                = 1,1,1,1,1
+  set Use discontinuous composition discretization = true, true, true, true, true
+end
+
+subsection Material model
+  subsection Visco Plastic
+    set Viscosity prefactor scheme       = interface weakening
+    set Interface weakening factors      = background: 1.0, crust_upper: 1e-5, crust_lower: 1e-5, mantle_lithosphere: 1.0
+    set Interface weakening threshold    = 1e-6
+    set Interface weakening compositions = crust_upper, crust_lower
+  end
+end
