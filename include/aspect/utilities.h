@@ -155,6 +155,27 @@ namespace aspect
                                  const std::string &id_text);
 
     /**
+     * Given an array @p values, consider three cases:
+     * - If it has size @p N, return the original array.
+     * - If it has size one, return an array of size @p N where all
+     *   elements are equal to the one element of @p value.
+     * - If it has any other size, throw an exception that uses
+     *   @p id_text as an identifying string.
+     *
+     * This function is typically used for parameter lists that can either
+     * contain different values for each of a set of objects (e.g., for
+     * each compositional field), or contain a single value that is then
+     * used for each object.
+     */
+    template <typename T>
+    void 
+    possibly_extend_from_1_to_N (const std::vector<T> &values,
+                                 const unsigned int N,
+                                 const std::string &id_text,
+                                 std::vector<T>& out);
+
+
+    /**
      * A namespace that contains options and functions able to parse
      * a map of double values from a string representation of the form
      * "key1 : value1, key2 : value2, etc". The parsing and output
@@ -1334,6 +1355,7 @@ namespace aspect
       // will be happy
       return std::vector<T> ();
     }
+
 
     inline
     void

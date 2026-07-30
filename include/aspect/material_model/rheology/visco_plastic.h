@@ -21,6 +21,7 @@
 #ifndef _aspect_material_model_rheology_visco_plastic_h
 #define _aspect_material_model_rheology_visco_plastic_h
 
+#include "aspect/utilities.h"
 #include <aspect/global.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/utilities.h>
@@ -205,6 +206,23 @@ namespace aspect
           calculate_isostrain_viscosities ( const MaterialModel::MaterialModelInputs<dim> &in,
                                             const unsigned int i,
                                             const std::vector<double> &volume_fractions,
+                                            const std::vector<double> &phase_function_values = std::vector<double>(),
+                                            const std::vector<unsigned int> &n_phase_transitions_per_composition =
+                                              std::vector<unsigned int>()) const;
+
+          /**
+           * This function calculates viscosities assuming that all the compositional fields
+           * experience the same strain rate (isostrain).
+           * If @p n_phase_transitions_per_composition points to a vector of
+           * unsigned integers this is considered the number of phase transitions
+           * for each compositional field and viscosity will be first computed on
+           * each phase and then averaged for each compositional field.
+           */
+          void
+          calculate_isostrain_viscosities ( const MaterialModel::MaterialModelInputs<dim> &in,
+                                            const unsigned int i,
+                                            const std::vector<double> &volume_fractions,
+                                            IsostrainViscosities &output_parameters,
                                             const std::vector<double> &phase_function_values = std::vector<double>(),
                                             const std::vector<unsigned int> &n_phase_transitions_per_composition =
                                               std::vector<unsigned int>()) const;
@@ -457,6 +475,7 @@ namespace aspect
            */
           Rheology::DruckerPrager<dim> drucker_prager_plasticity;
 
+          aspect::Utilities::ScratchSpace<IsostrainViscosities> isostrain_viscosities_space;
       };
     }
   }
