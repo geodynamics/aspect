@@ -35,7 +35,7 @@ This parameter only describes which boundaries have a fixed composition, but not
 :name: parameters:Boundary_20composition_20model/List_20of_20model_20names
 **Default value:**
 
-**Pattern:** [MultipleSelection ascii data|box|box with lithosphere boundary indicators|function|initial composition|spherical constant ]
+**Pattern:** [MultipleSelection ascii data|box|box with lithosphere boundary indicators|function|initial composition|mesh deformation|spherical constant ]
 
 **Documentation:** A comma-separated list of boundary composition models that will be used to initialize the composition. These plugins are loaded in the order given, and modify the existing composition field via the operators listed in &rsquo;List of model operators&rsquo;.
 
@@ -57,6 +57,10 @@ The format of these functions follows the syntax understood by the muparser libr
 
 Because this class simply takes what the initial composition had described, this class can not know certain pieces of information such as the minimal and maximal composition on the boundary. For operations that require this, for example in post-processing, this boundary composition model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section &ldquo;Boundary composition model/Initial composition&rdquo;.
 
+&lsquo;mesh deformation&rsquo;: A model in which the composition at the boundary is retrieved from the active mesh deformation plugins.
+
+The active mesh deformation plugins can each return a value for the compositional fields that are prescribed on a boundary; their values are summed per field. If a mesh deformation plugin does not implement the boundary composition function, a default value of zero is returned.
+
 &lsquo;spherical constant&rsquo;: A model in which the composition is chosen constant on the inner and outer boundaries of a sphere, spherical shell, chunk or ellipsoidal chunk. Parameters are read from subsection &rsquo;Spherical constant&rsquo;.
 ::::
 
@@ -73,7 +77,7 @@ Because this class simply takes what the initial composition had described, this
 :name: parameters:Boundary_20composition_20model/Model_20name
 **Default value:** unspecified
 
-**Pattern:** [Selection ascii data|box|box with lithosphere boundary indicators|function|initial composition|spherical constant|unspecified ]
+**Pattern:** [Selection ascii data|box|box with lithosphere boundary indicators|function|initial composition|mesh deformation|spherical constant|unspecified ]
 
 **Documentation:** Select one of the following models:
 
@@ -92,6 +96,10 @@ The format of these functions follows the syntax understood by the muparser libr
 &lsquo;initial composition&rsquo;: A model in which the composition at the boundary is chosen to be the same as given in the initial conditions.
 
 Because this class simply takes what the initial composition had described, this class can not know certain pieces of information such as the minimal and maximal composition on the boundary. For operations that require this, for example in post-processing, this boundary composition model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section &ldquo;Boundary composition model/Initial composition&rdquo;.
+
+&lsquo;mesh deformation&rsquo;: A model in which the composition at the boundary is retrieved from the active mesh deformation plugins.
+
+The active mesh deformation plugins can each return a value for the compositional fields that are prescribed on a boundary; their values are summed per field. If a mesh deformation plugin does not implement the boundary composition function, a default value of zero is returned.
 
 &lsquo;spherical constant&rsquo;: A model in which the composition is chosen constant on the inner and outer boundaries of a sphere, spherical shell, chunk or ellipsoidal chunk. Parameters are read from subsection &rsquo;Spherical constant&rsquo;.
 
