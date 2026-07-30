@@ -1,0 +1,30 @@
+include $ASPECT_SOURCE_DIR/benchmarks/tosi-aniso-benchmark/anisotropic_viscoplastic.prm
+
+set Additional shared libraries            = $ASPECT_SOURCE_DIR/benchmarks/tosi-aniso-benchmark/plugin/libtosi-aniso.so
+set Output directory                       = output-tosi-isotropic-viscoplastic
+
+# Setting the fields to static stops the mapping from particles to grid.
+# This essentially disables the coupling between CPO and flow. 
+# To reduce runtime, one could not include particles all together.
+subsection Compositional fields
+  set Number of fields = 14
+  set Compositional field methods = prescribed field, \
+                                    static, static, static, static, \
+                                    static, static, static, static, \
+                                    static, static, static, static, \
+                                    static
+  set Mapped particle properties  = # no mapping 
+end
+
+# reduce number of particles when interpolation is not needed
+subsection Particles
+  set Minimum particles per cell  = 1
+  set Maximum particles per cell  = 2
+end 
+
+subsection Material model
+  subsection CPO-induced Anisotropic Viscosity   
+    set Fluidity constant   = 100  # chosen to match plume passing lid timing
+    set Stress exponent     = 3.5  # chosen as representative for disocation creep
+  end
+end
