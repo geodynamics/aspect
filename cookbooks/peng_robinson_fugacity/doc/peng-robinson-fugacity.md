@@ -64,7 +64,7 @@ The calculation can be checked independently against the {cite:t}`baumannFugacit
 ```{figure-md} fig:peng-robinson-fugacity-field
 <img src="peng-robinson-fugacity-field.png" style="width:100.0%" />
 
-Water fugacity at the initial timestep from ASPECT (left) and from the independent Wolfram/Mathematica implementation (center). The solid black and dashed green vertical lines mark the profile location at $\sim x=750$ km. The corresponding ASPECT and Wolfram/Mathematica profiles overlap across the full model depth (right). The profile becomes nearly vertical below approximately 77 km because pressure is limited to 2.5 GPa; at greater depths, fugacity changes only in response to temperature.
+Water fugacity at the initial timestep from ASPECT (left) and from the independent Wolfram/Mathematica implementation (center). The solid black and dashed green vertical lines mark the profile location at $\sim x=750$ km. The corresponding ASPECT and Wolfram/Mathematica profiles overlap across the full model depth (right). The profile becomes nearly vertical below approximately 77 km, where the pressure supplied to the equation of state reaches its 2.5 GPa limit.
 ```
 
 In this example, diffusion creep is disabled. The dislocation-creep fugacity exponent $r/n$ is zero for the background and overriding plate and 0.25 for the crust. After applying the fugacity factor in Equation {math:numref}`eq:peng-robinson-viscosity-factor`, the visco-plastic material model performs its usual viscosity averaging and applies the configured viscosity limits and plastic yielding. The named additional output `fugacity` makes the calculated fugacity available for visualization.
