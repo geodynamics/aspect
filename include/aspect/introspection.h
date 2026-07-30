@@ -64,13 +64,14 @@ namespace aspect
       density = 5,
       entropy = 6,
       generic = 7,
-      unspecified = 8
+      stress_fraction = 8,
+      unspecified = 9
     } type;
 
     /**
      * The number of different types defined in Type.
      */
-    constexpr static unsigned int n_types = 9;
+    constexpr static unsigned int n_types = 10;
 
     /**
      * This function translates an input string into the
@@ -93,6 +94,8 @@ namespace aspect
       else if (input == "density")
         return CompositionalFieldDescription::density;
       else if (input == "entropy")
+        return CompositionalFieldDescription::entropy;
+      else if (input == "stress fraction")
         return CompositionalFieldDescription::entropy;
       else if (input == "generic")
         return CompositionalFieldDescription::generic;
