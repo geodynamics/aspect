@@ -402,7 +402,7 @@ namespace aspect
          * Loop over all mesh deformation objects that are active on the boundary
          * with the ID boundary_indicator and sum their contributions to the compositional field
          * with index compositional_field at the given position.
-         * For example, the plugin might want to set the field representating sediment to 1
+         * For example, the plugin might want to set the field representing sediment to 1
          * if deposition occurs, or a field representing deposition depth to the depth below sea level.
          */
         double

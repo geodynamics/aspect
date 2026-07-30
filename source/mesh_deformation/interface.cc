@@ -664,9 +664,6 @@ namespace aspect
     {
       double composition = 0.0;
 
-      // TODO check whether the field is not a stress field or of another type
-      // that should not be set by the mesh deformation model.
-
       // Loop over all mesh deformation objects that are assigned to this
       // boundary indicator and sum their contributions
       for (const auto &deformation_object : mesh_deformation_objects.at(boundary_indicator))

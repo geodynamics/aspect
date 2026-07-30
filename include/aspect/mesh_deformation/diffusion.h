@@ -74,7 +74,6 @@ namespace aspect
          */
         bool needs_surface_stabilization () const override;
 
-
         /**
          * Declare parameters for the diffusion of the surface.
          */
