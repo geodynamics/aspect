@@ -29,6 +29,7 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <iomanip>
 #include <limits>
 #include <sstream>
 #include <utility>
@@ -61,6 +62,8 @@ namespace aspect
       {
         const std::array<double,2> target_fractions = {{0.8, 0.9}};
 
+        // Find the range of strain rates across all processes. This range
+        // provides the initial search interval for both cutoff values.
         double local_minimum_strain_rate = std::numeric_limits<double>::max();
         double local_maximum_strain_rate = std::numeric_limits<double>::lowest();
         for (const auto &entry : local_deformation_area_pairs)
@@ -74,9 +77,14 @@ namespace aspect
         const double global_maximum_strain_rate =
           Utilities::MPI::max(local_maximum_strain_rate, mpi_communicator);
 
+        // If the strain rate is constant throughout all cells, the fraction
+        // of the deformation equals the fraction of the surface area.
         if (global_minimum_strain_rate == global_maximum_strain_rate)
           return target_fractions;
 
+        // The lower bounds include more than the target deformation and the
+        // upper bounds include less. Extend the interval by one floating-point
+        // value so that it initially contains all possible cutoff values.
         std::array<double,2> lower_thresholds;
         std::array<double,2> upper_thresholds;
         lower_thresholds.fill(std::nextafter(global_minimum_strain_rate,
@@ -86,6 +94,9 @@ namespace aspect
 
         for (unsigned int iteration=0; iteration<std::numeric_limits<double>::digits; ++iteration)
           {
+            // Use a geometric midpoint for positive strain rates because they
+            // can span many orders of magnitude. Fall back to an arithmetic
+            // midpoint if the interval contains zero.
             double test_thresholds[2];
             for (unsigned int i=0; i<target_fractions.size(); ++i)
               {
@@ -99,6 +110,9 @@ namespace aspect
                   test_thresholds[i] = lower_thresholds[i];
               }
 
+            // Each process sums the deformation above both trial thresholds.
+            // The MPI reduction makes the corresponding global sums available
+            // on every process without gathering the quadrature-point data.
             double local_deformation_above_threshold[2] = {0.0, 0.0};
             for (const auto &entry : local_deformation_area_pairs)
               for (unsigned int i=0; i<target_fractions.size(); ++i)
@@ -110,6 +124,9 @@ namespace aspect
                                 mpi_communicator,
                                 global_deformation_above_threshold);
 
+            // A threshold that includes too much deformation is too low and
+            // becomes the new lower bound. Otherwise it becomes the new upper
+            // bound.
             for (unsigned int i=0; i<target_fractions.size(); ++i)
               if (global_deformation_above_threshold[i] > target_fractions[i] * global_total_deformation)
                 lower_thresholds[i] = test_thresholds[i];
@@ -117,6 +134,9 @@ namespace aspect
                 upper_thresholds[i] = test_thresholds[i];
           }
 
+        // The bisection bounds need not coincide with an actual quadrature
+        // point value. Select the smallest globally available strain rate
+        // above each final lower bound as the discrete cutoff value.
         double local_cutoff_strain_rates[2] = {std::numeric_limits<double>::max(),
                                                std::numeric_limits<double>::max()
                                               };
@@ -134,6 +154,9 @@ namespace aspect
           Assert(cutoff_strain_rates[i] != std::numeric_limits<double>::max(),
                  ExcInternalError());
 
+        // Store, for both targets, the deformation and area strictly above the
+        // cutoff and the area exactly at the cutoff in one array so that they
+        // can be combined using a single MPI reduction.
         constexpr unsigned int deformation_above_offset = 0;
         constexpr unsigned int area_above_offset = 2;
         constexpr unsigned int area_at_cutoff_offset = 4;
@@ -155,14 +178,18 @@ namespace aspect
         std::array<double,2> area_fractions;
         for (unsigned int i=0; i<target_fractions.size(); ++i)
           {
+            // All points at the cutoff have the same strain rate. Include only
+            // the fraction of their area needed to reach the target deformation
+            // exactly, then normalize the selected area by the total area.
             const double remaining_deformation =
               target_fractions[i] * global_total_deformation - global_sums[deformation_above_offset+i];
-            const double deformation_at_cutoff =
-              cutoff_strain_rates[i] * global_sums[area_at_cutoff_offset+i];
-            const double tolerance = 100.0 * std::numeric_limits<double>::epsilon() * global_total_deformation;
 
-            Assert(remaining_deformation >= -tolerance &&
-                   remaining_deformation <= deformation_at_cutoff + tolerance,
+            Assert(remaining_deformation >=
+                   -100.0 * std::numeric_limits<double>::epsilon() * global_total_deformation
+                   &&
+                   remaining_deformation <=
+                   cutoff_strain_rates[i] * global_sums[area_at_cutoff_offset+i]
+                   + 100.0 * std::numeric_limits<double>::epsilon() * global_total_deformation,
                    ExcInternalError());
 
             const double area_at_cutoff =
@@ -270,7 +297,8 @@ namespace aspect
       statistics.set_scientific("Plateness p90", false);
 
       std::ostringstream out;
-      out << "F80=" << f80
+      out << std::setprecision(3)
+          << "F80=" << f80
           << ", F90=" << f90
           << ", p80=" << p80
           << ", p90=" << p90;
@@ -332,7 +360,7 @@ namespace aspect
                                   "on the top boundary using the second invariant of the deviatoric "
                                   "strain-rate tensor. F80 and F90 are the smallest fractions of the "
                                   "top-boundary area that contain 80% and 90% of the integrated strain-rate "
-                                  "invariant, respectively. Smaller valuesof F80 and F90 indicate more strongly localized "
+                                  "invariant, respectively. Smaller values of F80 and F90 indicate more strongly localized "
                                   "surface deformation. The corresponding plateness values are computed as "
                                   "p = 1 - F/reference_fraction. A value of one represents the limiting case "
                                   "of deformation localized into an infinitesimally small area, zero corresponds "

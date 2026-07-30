@@ -6,8 +6,8 @@ Number of degrees of freedom: 4,030 (2,910+150+970)
    Skipping temperature solve because RHS is zero.
 
    Postprocessing:
-     RMS, max velocity:            0.665 m/s, 1 m/s
-     Surface plateness statistics: F80=0.798, F90=0.899, p80=-0.331, p90=-0.498
+     RMS, max velocity:            0.979 m/s, 1.52 m/s
+     Surface plateness statistics: F80=0.141, F90=0.195, p80=0.766, p90=0.675
 
 Termination requested by criterion: end time
 
