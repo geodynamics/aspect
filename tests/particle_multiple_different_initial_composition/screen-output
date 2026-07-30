@@ -6,8 +6,8 @@ Number of degrees of freedom: 15,627 (6,387+4,290+561+2,145+561+561+561+561)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
    Solving porosity system ... 0 iterations.
    Solving Stokes system (direct)... done.
    Solving fluid velocity system... 12 iterations.
@@ -15,8 +15,8 @@ Number of degrees of freedom: 15,627 (6,387+4,290+561+2,145+561+561+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Solving temperature system... 0 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
    Solving porosity system ... 0 iterations.
    Solving Stokes system (direct)... done.
    Solving fluid velocity system... 12 iterations.
@@ -34,8 +34,8 @@ Number of degrees of freedom: 15,627 (6,387+4,290+561+2,145+561+561+561+561)
 
 *** Timestep 1:  t=3000 years, dt=3000 years
    Solving temperature system... 7 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
    Solving porosity system ... 4 iterations.
    Solving Stokes system (direct)... done.
    Solving fluid velocity system... 12 iterations.
@@ -43,8 +43,8 @@ Number of degrees of freedom: 15,627 (6,387+4,290+561+2,145+561+561+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1.76669
 
    Solving temperature system... 5 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
    Solving porosity system ... 4 iterations.
    Solving Stokes system (direct)... done.
    Solving fluid velocity system... 12 iterations.
@@ -52,8 +52,8 @@ Number of degrees of freedom: 15,627 (6,387+4,290+561+2,145+561+561+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0625681
 
    Solving temperature system... 4 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
    Solving porosity system ... 3 iterations.
    Solving Stokes system (direct)... done.
    Solving fluid velocity system... 12 iterations.
@@ -61,8 +61,8 @@ Number of degrees of freedom: 15,627 (6,387+4,290+561+2,145+561+561+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00195499
 
    Solving temperature system... 3 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
    Solving porosity system ... 3 iterations.
    Solving Stokes system (direct)... done.
    Solving fluid velocity system... 12 iterations.
@@ -70,8 +70,8 @@ Number of degrees of freedom: 15,627 (6,387+4,290+561+2,145+561+561+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 4: 0.000150215
 
    Solving temperature system... 2 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
    Solving porosity system ... 2 iterations.
    Solving Stokes system (direct)... done.
    Solving fluid velocity system... 12 iterations.

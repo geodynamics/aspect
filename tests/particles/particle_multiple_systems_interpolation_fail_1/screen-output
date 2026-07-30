@@ -4,8 +4,8 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
 An error occurred in file <initial_conditions.cc> in function
 (line in output replaced by default.sh script)

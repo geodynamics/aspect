@@ -16,8 +16,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -30,8 +30,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 1:  t=0.03 seconds, dt=0.03 seconds
    Solving temperature system... 9 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -44,8 +44,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 2:  t=0.06 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -58,8 +58,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 3:  t=0.09 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -72,8 +72,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 4:  t=0.12 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -86,8 +86,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 5:  t=0.15 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -100,8 +100,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 6:  t=0.18 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -114,8 +114,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 7:  t=0.21 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -128,8 +128,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 8:  t=0.24 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -142,8 +142,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 9:  t=0.27 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -156,8 +156,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 10:  t=0.3 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -170,8 +170,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 11:  t=0.33 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -184,8 +184,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 12:  t=0.36 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -198,8 +198,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 13:  t=0.39 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -212,8 +212,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 14:  t=0.42 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -226,8 +226,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 15:  t=0.45 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -240,8 +240,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 16:  t=0.48 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -254,8 +254,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 17:  t=0.51 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -268,8 +268,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 18:  t=0.54 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -282,8 +282,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 19:  t=0.57 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -296,8 +296,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 20:  t=0.6 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -310,8 +310,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 21:  t=0.63 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -324,8 +324,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 22:  t=0.66 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -338,8 +338,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 23:  t=0.69 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -352,8 +352,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 24:  t=0.72 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -366,8 +366,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 25:  t=0.75 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -380,8 +380,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 26:  t=0.78 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -394,8 +394,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 27:  t=0.81 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -408,8 +408,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 28:  t=0.84 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -422,8 +422,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 29:  t=0.87 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -436,8 +436,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 30:  t=0.9 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -450,8 +450,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 31:  t=0.93 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -464,8 +464,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 32:  t=0.96 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -478,8 +478,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 33:  t=0.99 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
@@ -492,8 +492,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
 
 *** Timestep 34:  t=1 seconds, dt=0.01 seconds
    Solving temperature system... 7 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
 
    Postprocessing:
      RMS, max velocity:                                                                 0.1 m/s, 0.1 m/s
