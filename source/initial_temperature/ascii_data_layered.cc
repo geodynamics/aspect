@@ -63,7 +63,8 @@ namespace aspect
       {
         Utilities::AsciiDataLayered<dim>::declare_parameters(prm,
                                                              "$ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/",
-                                                             "initial_isotherm_500K_box_3d.txt");
+                                                             "initial_isotherm_500K_box_3d.txt",
+                                                             "Ascii data layered");
       }
       prm.leave_subsection();
     }
@@ -75,7 +76,8 @@ namespace aspect
     {
       prm.enter_subsection ("Initial temperature model");
       {
-        Utilities::AsciiDataLayered<dim>::parse_parameters(prm);
+        Utilities::AsciiDataLayered<dim>::parse_parameters(prm,
+                                                           "Ascii data layered");
       }
       prm.leave_subsection();
     }

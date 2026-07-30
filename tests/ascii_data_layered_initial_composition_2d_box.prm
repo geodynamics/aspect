@@ -33,7 +33,7 @@ end
 subsection Initial composition model
   set Model name = ascii data layered
 
-  subsection Ascii data model
+  subsection Ascii data layered
     set Data directory        = $ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/test/
     set Data file names       = initial_composition_top_mantle_box_2d.txt, initial_composition_top_crust_box_2d.txt
     set Interpolation scheme  = piecewise constant

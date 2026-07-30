@@ -81,6 +81,53 @@ The format of valid entries for this parameter is that of a map given as &ldquo;
 When &ldquo;composition is specified, the initial model is treated as a standard composition field with bounds between 0 and 1 assumed, The initial fluid fractions are then based on an iterated midpoint quadrature. Resultant volume fractions outside of the bounds will be coerced to the nearest valid value (ie 0 or 1). If &ldquo;level set&ldquo; is specified, the initial data will be assumed to be in the form of a signed distance level set function (i.e. a function which is positive when in the fluid, negative outside, and zero on the interface and the magnitude is always the distance to the interface so the gradient is one everywhere).
 ::::
 
+(parameters:Initial_20composition_20model/Ascii_20data_20layered)=
+## **Subsection:** Initial composition model / Ascii data layered
+::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Initial_20composition_20model/Ascii_20data_20layered/Data_20directory>`
+:name: parameters:Initial_20composition_20model/Ascii_20data_20layered/Data_20directory
+**Default value:** $ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/test/
+
+**Pattern:** [DirectoryName]
+
+**Documentation:** The name of a directory that contains the model data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT. A trailing slash at the end of the directory path is optional; the plugin will automatically append a &rsquo;/&rsquo; when the parameters are parsed if it is missing.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Data file name<parameters:Initial_20composition_20model/Ascii_20data_20layered/Data_20file_20name>`
+:name: parameters:Initial_20composition_20model/Ascii_20data_20layered/Data_20file_20name
+**Default value:** initial_composition_top_mantle_box_3d.txt
+
+**Pattern:** [Anything]
+
+**Documentation:** The file name of the model data.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Data file names<parameters:Initial_20composition_20model/Ascii_20data_20layered/Data_20file_20names>`
+:name: parameters:Initial_20composition_20model/Ascii_20data_20layered/Data_20file_20names
+**Default value:** initial_composition_top_mantle_box_3d.txt
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** The file names of the model data (comma separated).
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Interpolation scheme<parameters:Initial_20composition_20model/Ascii_20data_20layered/Interpolation_20scheme>`
+:name: parameters:Initial_20composition_20model/Ascii_20data_20layered/Interpolation_20scheme
+**Default value:** linear
+
+**Pattern:** [Selection piecewise constant|linear ]
+
+**Documentation:** Method to interpolate between layer boundaries. Select from piecewise constant or linear. Piecewise constant takes the value from the nearest layer boundary above the data point. The linear option interpolates linearly between layer boundaries. Above and below the domain given by the layer boundaries, the values aregiven by the top and bottom layer boundary.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Scale factor<parameters:Initial_20composition_20model/Ascii_20data_20layered/Scale_20factor>`
+:name: parameters:Initial_20composition_20model/Ascii_20data_20layered/Scale_20factor
+**Default value:** 1.
+
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
+::::
+
 (parameters:Initial_20composition_20model/Ascii_20data_20model)=
 ## **Subsection:** Initial composition model / Ascii data model
 ::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Initial_20composition_20model/Ascii_20data_20model/Data_20directory>`
@@ -94,20 +141,11 @@ When &ldquo;composition is specified, the initial model is treated as a standard
 
 ::::{dropdown} __Parameter:__ {ref}`Data file name<parameters:Initial_20composition_20model/Ascii_20data_20model/Data_20file_20name>`
 :name: parameters:Initial_20composition_20model/Ascii_20data_20model/Data_20file_20name
-**Default value:** initial_composition_top_mantle_box_3d.txt
+**Default value:** box_2d.txt
 
 **Pattern:** [Anything]
 
 **Documentation:** The file name of the model data.
-::::
-
-::::{dropdown} __Parameter:__ {ref}`Data file names<parameters:Initial_20composition_20model/Ascii_20data_20model/Data_20file_20names>`
-:name: parameters:Initial_20composition_20model/Ascii_20data_20model/Data_20file_20names
-**Default value:** initial_composition_top_mantle_box_3d.txt
-
-**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
-
-**Documentation:** The file names of the model data (comma separated).
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`First point on slice<parameters:Initial_20composition_20model/Ascii_20data_20model/First_20point_20on_20slice>`
@@ -117,15 +155,6 @@ When &ldquo;composition is specified, the initial model is treated as a standard
 **Pattern:** [Anything]
 
 **Documentation:** Point that determines the plane in which the 2d slice lies in. This variable is only used if &rsquo;Slice dataset in 2d plane&rsquo; is true. The slice will go through this point, the point defined by the parameter &rsquo;Second point on slice&rsquo;, and the center of the model domain. After the rotation, this first point will lie along the (0,1,0) axis of the coordinate system. The coordinates of the point have to be given in Cartesian coordinates.
-::::
-
-::::{dropdown} __Parameter:__ {ref}`Interpolation scheme<parameters:Initial_20composition_20model/Ascii_20data_20model/Interpolation_20scheme>`
-:name: parameters:Initial_20composition_20model/Ascii_20data_20model/Interpolation_20scheme
-**Default value:** linear
-
-**Pattern:** [Selection piecewise constant|linear ]
-
-**Documentation:** Method to interpolate between layer boundaries. Select from piecewise constant or linear. Piecewise constant takes the value from the nearest layer boundary above the data point. The linear option interpolates linearly between layer boundaries. Above and below the domain given by the layer boundaries, the values aregiven by the top and bottom layer boundary.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Scale factor<parameters:Initial_20composition_20model/Ascii_20data_20model/Scale_20factor>`
