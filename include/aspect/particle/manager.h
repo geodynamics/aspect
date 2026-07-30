@@ -128,7 +128,7 @@ namespace aspect
         void initialize();
 
         /**
-         * Update the particle manager.
+         * Update the particle manager at the beginning of each time step.
         */
         void update();
 
@@ -398,7 +398,13 @@ namespace aspect
         std::unique_ptr<Integrator::Interface<dim>> integrator;
 
         /**
-         * Random number generator used for creating and deleting particles
+         * Random number generator used for creating and deleting particles.
+         *
+         * This variable is not considered part of the state of the particle
+         * manager and is consequently not serialized. It is re-initialized
+         * in the update() function at the beginning of each time step, and so
+         * has a deterministic state at the beginning of each time step. It
+         * does not need to be restored from a checkpoint.
          */
         std::mt19937 random_number_generator;
 

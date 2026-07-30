@@ -118,6 +118,23 @@ namespace aspect
       Assert (particle_manager_index != numbers::invalid_unsigned_int,
               ExcInternalError());
 
+      // Give the random number generator a deterministic state at
+      // the beginning of each time step so that we don't have to serialize
+      // it. This is relevant because the random number generator is used
+      // to generate new particles and so might be used different numbers
+      // of times on different processes, which would lead to different
+      // states of the random number generator on different MPI ranks.
+      // We could serialize the random number generators from all processes,
+      // but this would require (i) a global MPI operation, and (ii) we
+      // wouldn't quite know what to do if we restart with a different
+      // number of MPI processes than we had when we created the checkpoint.
+      // The work-around to both issues is to set the state of the random
+      // number generator to a deterministic value at the beginning of
+      // each time step.
+      random_number_generator.seed(this->get_timestep_number() * 1000000  +
+                                   particle_manager_index * 100000 +
+                                   Utilities::MPI::this_mpi_process(this->get_mpi_communicator()));
+
       generator->update();
       integrator->update();
       interpolator->update();
