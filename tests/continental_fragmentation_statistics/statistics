@@ -1,0 +1,17 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Continental area
+# 10: Continental perimeter
+# 11: Number of continental blocks
+# 12: Largest continental block area
+# 13: Largest-block fragmentation index
+# 14: Continental perimeter-to-area ratio
+# 15: Normalized perimeter fragmentation index
+# 16: Average continental drift speed
+0 0.000000000000e+00 0.000000000000e+00 24 1123 351 351 0 2.00000000e+00 8.00000000e+00 2 1.00000000e+00 0.500000 4.00000000e+00 0.373343 0.00000000e+00

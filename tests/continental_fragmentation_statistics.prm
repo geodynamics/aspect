@@ -1,0 +1,69 @@
+# Test continental fragmentation statistics with two disconnected unit-square
+# continent blocks on the top surface of a three-dimensional box.
+
+set Dimension               = 3
+set End time                = 0
+set Nonlinear solver scheme = no Advection, no Stokes
+set Output directory        = output
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent      = 6
+    set Y extent      = 4
+    set Z extent      = 1
+    set X repetitions = 6
+    set Y repetitions = 4
+    set Z repetitions = 1
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement   = 0
+  set Initial adaptive refinement = 0
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+subsection Material model
+  set Model name = simple
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields  = continent
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names = x,y,z
+    set Function expression = if(((x>=1) && (x<=2) && (y>=1) && (y<=2)) || \
+                                 ((x>=4) && (x<=5) && (y>=1) && (y<=2)), 1, 0)
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = continental fragmentation statistics
+
+  subsection Continental fragmentation statistics
+    set Continent field names       = continent
+    set Continent threshold         = 0.5
+    set Minimum block area          = 0
+    set Output verbose screen line  = true
+    set Write surface map           = true
+    set Write block summary         = true
+  end
+end
