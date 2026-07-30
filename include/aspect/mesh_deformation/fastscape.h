@@ -72,8 +72,11 @@ namespace aspect
                                                  const std::set<types::boundary_id> &boundary_ids) const override;
 
         /**
-         * This function returns user-defined constant compositions at the
-         * boundaries.
+         * This function returns the compositional field value at the
+         * requested point on the requested boundary. If the fastscape
+         * plugin cannot provide a boundary condition for a field (e.g.
+         * for a field storing viscoelastic stresses), a value of zero
+         * is returned.
          *
          * @copydoc aspect::MeshDeformation::Interface::boundary_composition()
          */
