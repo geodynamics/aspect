@@ -1,0 +1,28 @@
+
+Number of active cells: 40 (on 1 levels)
+Number of degrees of freedom: 1,783 (486+82+243+243+243+243+243)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+   Solving Stokes system (GMG)... 97+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.60334e-16, 1.32758e-16, 1.66593e-16, 1.66593e-16, 0, 8.61271e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 8.61271e-06
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_adiabat_profile_initial_composition/solution/solution-00000
+     RMS, max velocity:                  2.15e-13 m/year, 1.79e-12 m/year
+     Temperature min/avg/max:            1096 K, 1121 K, 1143 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0/1/1e+09 // 2070/2070/4.14e+12 // 2070/2070/4.14e+12 // 3126/3308/6.45e+12
+
+Termination requested by criterion: end time
+
+
+

@@ -1,0 +1,40 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for composition solver 3
+# 13: Iterations for composition solver 4
+# 14: Iterations for Stokes solver
+# 15: Velocity iterations in Stokes preconditioner
+# 16: Schur complement iterations in Stokes preconditioner
+# 17: Visualization file name
+# 18: RMS velocity (m/year)
+# 19: Max. velocity (m/year)
+# 20: Minimal temperature (K)
+# 21: Average temperature (K)
+# 22: Maximal temperature (K)
+# 23: Average nondimensional temperature (K)
+# 24: Outward mass flux through boundary with indicator 0 ("left") (kg/yr)
+# 25: Outward mass flux through boundary with indicator 1 ("right") (kg/yr)
+# 26: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
+# 27: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
+# 28: Minimal value for composition percent_enstatite
+# 29: Maximal value for composition percent_enstatite
+# 30: Global mass for composition percent_enstatite
+# 31: Minimal value for composition entropy_forsterite
+# 32: Maximal value for composition entropy_forsterite
+# 33: Global mass for composition entropy_forsterite
+# 34: Minimal value for composition entropy_enstatite
+# 35: Maximal value for composition entropy_enstatite
+# 36: Global mass for composition entropy_enstatite
+# 37: Minimal value for composition density_field
+# 38: Maximal value for composition density_field
+# 39: Global mass for composition density_field
+0 0.000000000000e+00 0.000000000000e+00 40 568 243 972 1 0 0 0 0 0 97 98 98 output-entropy_adiabat_profile_initial_composition/solution/solution-00000 2.14950294e-13 1.79101039e-12 1.09611653e+03 1.12069649e+03 1.14341458e+03 6.51469933e-03 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.00000000e+00 1.00000000e+09 2.07000000e+03 2.07000000e+03 4.14000000e+12 2.07000000e+03 2.07000000e+03 4.14000000e+12 3.12577749e+03 3.30794524e+03 6.44981756e+12 

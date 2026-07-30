@@ -53,13 +53,44 @@
 
 (parameters:Adiabatic_20conditions_20model/Compute_20entropy_20profile)=
 ## **Subsection:** Adiabatic conditions model / Compute entropy profile
+::::{dropdown} __Parameter:__ {ref}`Composition profile<parameters:Adiabatic_20conditions_20model/Compute_20entropy_20profile/Composition_20profile>`
+:name: parameters:Adiabatic_20conditions_20model/Compute_20entropy_20profile/Composition_20profile
+**Default value:** initial composition
+
+**Pattern:** [Selection initial composition|function ]
+
+**Documentation:** Select between two methods for calculating the adiabatic profile. The default, &rsquo;initial composition&rsquo;, computes the profile using the initial compositions of all chemical fields and the entropy value specified by &rsquo;Surface entropy&rsquo; for the entropy fields. You can also use &rsquo;function&rsquo; to specify a depth-dependent compositional profile for computing the adiabatic profile. If you use &rsquo;function&rsquo;, you should also specify the corresponding function for the entropy field. Keep in mind that entropy should be constant along an adiabat. The function is defined in terms of depth, which may differ from the initial composition function.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Function constants<parameters:Adiabatic_20conditions_20model/Compute_20entropy_20profile/Function_20constants>`
+:name: parameters:Adiabatic_20conditions_20model/Compute_20entropy_20profile/Function_20constants
+**Default value:**
+
+**Pattern:** [Anything]
+
+**Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form &lsquo;var1=value1, var2=value2, ...&rsquo;.
+
+A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Function expression<parameters:Adiabatic_20conditions_20model/Compute_20entropy_20profile/Function_20expression>`
+:name: parameters:Adiabatic_20conditions_20model/Compute_20entropy_20profile/Function_20expression
+**Default value:** 0
+
+**Pattern:** [Anything]
+
+**Documentation:** The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as &lsquo;sin&rsquo; or &lsquo;cos&rsquo;. In addition, it may contain expressions like &lsquo;if(x>0, 1, -1)&rsquo; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
+
+If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Number of points<parameters:Adiabatic_20conditions_20model/Compute_20entropy_20profile/Number_20of_20points>`
 :name: parameters:Adiabatic_20conditions_20model/Compute_20entropy_20profile/Number_20of_20points
 **Default value:** 1000
 
 **Pattern:** [Integer range 5...2147483647 (inclusive)]
 
-**Documentation:** The number of points we use to compute the adiabatic profile. The higher the number of points, the more accurate the downward integration from the adiabatic surface conditions will be.
+**Documentation:** The number of points we use to compute the adiabatic profile. The higher the number of points, the more accurate the downward integration from the adiabatic surface conditions will be. Setting this value to n * (the number of cells in the vertical direction) + 1 can reduce interpolation errors.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Surface entropy<parameters:Adiabatic_20conditions_20model/Compute_20entropy_20profile/Surface_20entropy>`
@@ -68,7 +99,16 @@
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The surface entropy for the profile.
+**Documentation:** The entropy for the adiabat profile.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Variable names<parameters:Adiabatic_20conditions_20model/Compute_20entropy_20profile/Variable_20names>`
+:name: parameters:Adiabatic_20conditions_20model/Compute_20entropy_20profile/Variable_20names
+**Default value:** x,t
+
+**Pattern:** [Anything]
+
+**Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
 ::::
 
 (parameters:Adiabatic_20conditions_20model/Compute_20profile)=

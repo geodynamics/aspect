@@ -25,6 +25,7 @@
 
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/initial_composition/interface.h>
+#include <deal.II/base/parsed_function.h>
 
 namespace aspect
 {
@@ -119,7 +120,7 @@ namespace aspect
          *
          * This variable is read from the parameter file through a parameter called 'Surface entropy'.
          */
-        double surface_entropy;
+        double profile_entropy;
 
         /**
          * Vectors of values of temperatures and pressures on a transect into
@@ -135,6 +136,27 @@ namespace aspect
          * with regard to the depth coordinate.
          */
         double delta_z;
+
+        /**
+         * An enum describing the different options to compute the reference
+         * profile for composition.
+         */
+        enum CompositionProfile
+        {
+          initial_composition,
+          reference_function
+        };
+
+        /**
+        * Selected option to compute the reference profile for composition.
+        */
+        CompositionProfile reference_composition;
+
+        /**
+         * Function object that computes the reference composition profile
+         * if the reference_composition variable is set to reference_function.
+         */
+        std::unique_ptr<Functions::ParsedFunction<1>> composition_function;
 
         /**
          * A shared pointer to the initial composition object
