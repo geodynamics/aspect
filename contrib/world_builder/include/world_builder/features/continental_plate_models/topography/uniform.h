@@ -75,6 +75,10 @@ namespace WorldBuilder
                                   const Objects::NaturalCoordinate &position_in_natural_coordinates,
                                   double topography) const override final;
 
+            /**
+             * Return a guaranteed upper bound for this topography model.
+             */
+            double maximum_topography() const override final;
 
           private:
             // uniform topography submodule parameters

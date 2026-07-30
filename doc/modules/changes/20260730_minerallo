@@ -1,0 +1,5 @@
+New: Initial topography can now be prescribed through the
+Geodynamic World Builder. The plugin reads the surface topography
+and maximum expected elevation from the configured World Builder file.
+<br>
+(Michael Pons, 2026/07/29)

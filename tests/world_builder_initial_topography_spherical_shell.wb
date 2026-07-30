@@ -1,0 +1,23 @@
+{
+  "version": "1.1",
+  "coordinate system": {
+    "model": "spherical",
+    "depth method": "begin at end segment"
+  },
+  "cross section": [[0,0], [90,0]],
+  "features":
+  [
+    {
+      "model": "continental plate",
+      "name": "western arc",
+      "coordinates": [[-1,-1], [45,-1], [45,1], [-1,1]],
+      "topography models": [{"model": "uniform", "topography": 50000}]
+    },
+    {
+      "model": "continental plate",
+      "name": "eastern arc",
+      "coordinates": [[45,-1], [91,-1], [91,1], [45,1]],
+      "topography models": [{"model": "uniform", "topography": 100000}]
+    }
+  ]
+}

@@ -821,7 +821,12 @@ namespace WorldBuilder
     /**
      * Register plugin
      */
+    double
+    Fault::maximum_topography() const
+    {
+      return -std::numeric_limits<double>::infinity();
+    }
+
     WB_REGISTER_FEATURE(Fault, fault)
   } // namespace Features
 } // namespace WorldBuilder
-
