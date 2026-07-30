@@ -1135,7 +1135,8 @@ namespace aspect
         // Luckily we don't need to go over DoFs on each cell, because we
         // have IndexSets to help us:
 
-        // we need to operate only on p_f not on p_c
+        // In the case of melt, we have three contributions.
+        // First, the RHS of the p_f equation.
         const IndexSet &idxset = parameters.include_melt_transport ?
                                  introspection.index_sets.locally_owned_fluid_pressure_dofs
                                  :
@@ -1153,11 +1154,95 @@ namespace aspect
         // are already distributed to the right hand side in
         // current_constraints.distribute.
         const double global_int_rhs = Utilities::MPI::sum(int_rhs, mpi_communicator);
-        const double correction = - global_int_rhs / global_volume;
+        // TODO: we do not know the correct sign here for the case of melt
+        double correction = - global_int_rhs / global_volume;
 
-        for (unsigned int i=0; i < idxset.n_elements(); ++i)
+        std::cout << "p_f RHS correction: " << correction << std::endl;
+
+        IndexSet &H_idxset = parameters.include_melt_transport ?
+                             introspection.index_sets.locally_owned_melt_pressure_dofs
+                             :
+                             introspection.index_sets.locally_owned_pressure_dofs;
+        H_idxset.subtract_set(idxset);
+
+        if (parameters.include_melt_transport)
           {
-            types::global_dof_index idx = idxset.nth_index_in_set(i);
+            // Second, we need the integral over the velocity boundary conditions.
+            // They are in the RHS of the total pressure equation.
+            int_rhs = 0.0;
+            for (unsigned int i=0; i < H_idxset.n_elements(); ++i)
+              {
+                types::global_dof_index idx = H_idxset.nth_index_in_set(i);
+                int_rhs += vector(idx);
+              }
+
+            const double global_int_divu = Utilities::MPI::sum(int_rhs, mpi_communicator);
+            // TODO: we do not know the correct sign here for the case of melt
+            correction += global_int_divu / global_volume;
+
+            std::cout << "p_t RHS correction: " << global_int_divu / global_volume << std::endl;
+
+            // Third, we need the boundary integral of
+            // n * K_D * grad p_f.
+
+            // create a quadrature formula based on the fluid pressure element.
+            // TODO: how to get fluid pressure?
+            const Quadrature<dim-1> &quadrature_formula = introspection.face_quadratures.velocities;
+
+            FEFaceValues<dim> fe_face_values (*mapping,
+                                              dof_handler.get_fe(),
+                                              quadrature_formula,
+                                              update_values            | update_gradients |
+                                              update_normal_vectors    |
+                                              update_quadrature_points | update_JxW_values);
+
+            MaterialModel::MaterialModelInputs<dim> in(fe_face_values.n_quadrature_points, parameters.n_compositional_fields);
+            MaterialModel::MaterialModelOutputs<dim> out(fe_face_values.n_quadrature_points, parameters.n_compositional_fields);
+            in.requested_properties = MaterialModel::MaterialProperties::density | MaterialModel::MaterialProperties::additional_outputs;
+            MeltHandler<dim>::create_material_model_outputs(out);
+            const std::shared_ptr<const MaterialModel::MeltOutputs<dim>> melt_outputs
+              = out.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
+
+            // integrate over all boundaries
+            double local_boundary_integral = 0.0;
+            double global_boundary_integral = 0.0;
+
+            for (const auto &cell : dof_handler.active_cell_iterators())
+              if (cell->is_locally_owned())
+                for (const unsigned int f : cell->face_indices())
+                  if (cell->at_boundary(f))
+                    {
+                      fe_face_values.reinit (cell, f);
+                      in.reinit(fe_face_values, cell, introspection, solution);
+                      material_model->evaluate(in, out);
+
+                      // Get the boundary conditions for the fluid pressure gradient.
+                      // This is already the part that is normal to the boundary.
+                      std::vector<double> grad_p_f(fe_face_values.n_quadrature_points);
+                      melt_handler->get_boundary_fluid_pressure().fluid_pressure_gradient(
+                        cell->face(f)->boundary_id(),
+                        in,
+                        out,
+                        fe_face_values.get_normal_vectors(),
+                        grad_p_f);
+
+                      for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
+                        {
+                          const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
+                          local_boundary_integral += K_D * grad_p_f[q] * fe_face_values.JxW(q);
+                        }
+                    }
+
+            // Collect contributions from all processors.
+            global_boundary_integral = Utilities::MPI::sum (local_boundary_integral, mpi_communicator);
+            correction += global_boundary_integral;
+          }
+
+        std::cout << "Final correction: " << correction << std::endl;
+
+        for (unsigned int i=0; i < H_idxset.n_elements(); ++i)
+          {
+            types::global_dof_index idx = H_idxset.nth_index_in_set(i);
             vector(idx) += correction * pressure_shape_function_integrals(idx);
           }
 

@@ -117,7 +117,7 @@ namespace aspect
 
           for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
             {
-              double porosity = std::max(in.composition[i][porosity_idx],1e-4);
+              const double porosity = std::max(in.composition[i][porosity_idx],1e-4);
               out.viscosities[i] = eta_0 * std::exp(alpha*(porosity - background_porosity));
               if (in.requests_property(MaterialModel::MaterialProperties::viscosity))
                 {
@@ -146,6 +146,7 @@ namespace aspect
           if (melt_out != nullptr)
             for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
               {
+                const double porosity = std::max(in.composition[i][porosity_idx],0.0);
                 melt_out->inverse_compaction_viscosities[i] = std::pow(porosity/background_porosity, compaction_viscosity_exponent) / xi_0;
                 melt_out->fluid_viscosities[i]= eta_f;
                 melt_out->permeabilities[i]= reference_permeability * std::pow(porosity,permeability_exponent);
