@@ -24,6 +24,7 @@
 
 #include <aspect/prescribed_stokes_solution/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/parsed_function.h>
 
@@ -95,6 +96,11 @@ namespace aspect
          * A function object representing the components of the fluid velocity (in models with melt transport).
          */
         Functions::ParsedFunction<dim> prescribed_fluid_velocity_function;
+        /**
+         * The coordinate representation to evaluate the function. Possible
+         * choices are depth, cartesian and spherical.
+         */
+        Utilities::Coordinates::CoordinateSystem coordinate_system;
     };
   }
 }
