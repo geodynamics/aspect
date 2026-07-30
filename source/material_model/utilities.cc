@@ -877,8 +877,12 @@ namespace aspect
 
       std::vector<double>
       compute_only_composition_fractions(const std::vector<double> &compositional_fields,
-                                         const std::vector<unsigned int> &indices_to_use)
+                                         const std::vector<unsigned int> &indices_to_use,
+                                         const double minimum_fraction)
       {
+        AssertThrow(minimum_fraction <= 1.0,
+                    ExcMessage("The minimum composition fraction must not be greater than one."));
+
         std::vector<double> composition_fractions(indices_to_use.size()+1);
 
         // Clip the compositional fields so they are between zero and one,
@@ -889,6 +893,10 @@ namespace aspect
         for (unsigned int i=0; i < x_comp.size(); ++i)
           {
             x_comp[i] = std::min(std::max(compositional_fields[indices_to_use[i]], 0.0), 1.0);
+
+            if (x_comp[i] < minimum_fraction)
+              x_comp[i] = 0.0;
+
             sum_composition += x_comp[i];
           }
 
@@ -914,8 +922,12 @@ namespace aspect
 
       std::vector<double>
       compute_composition_fractions(const std::vector<double> &compositional_fields,
-                                    const ComponentMask &field_mask)
+                                    const ComponentMask &field_mask,
+                                    const double minimum_fraction)
       {
+        AssertThrow(minimum_fraction <= 1.0,
+                    ExcMessage("The minimum composition fraction must not be greater than one."));
+
         std::vector<double> composition_fractions(compositional_fields.size()+1);
 
         // Clip the compositional fields so they are between zero and one,
@@ -926,6 +938,10 @@ namespace aspect
           if (field_mask[i] == true)
             {
               x_comp[i] = std::min(std::max(x_comp[i], 0.0), 1.0);
+
+              if (x_comp[i] < minimum_fraction)
+                x_comp[i] = 0.0;
+
               sum_composition += x_comp[i];
             }
 

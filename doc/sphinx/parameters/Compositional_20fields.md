@@ -43,6 +43,15 @@ These choices correspond to the following methods by which compositional fields 
 The format of valid entries for this parameter is that of a map given as &ldquo;key1: value1, key2: value2 [component2], key3: value3 [component4], ...&rdquo; where each key must be a valid field name of the &ldquo;particles&rdquo; type, and each value must be one of the currently selected particle properties. Component is a component index of the particle property that is 0 by default, but can be set up to n-1, where n is the number of vector components of this particle property. The component indicator only needs to be set if not the first component of the particle property should be mapped (e.g. the $y$-component of the velocity at the particle positions).
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Minimum volume fraction<parameters:Compositional_20fields/Minimum_20volume_20fraction>`
+:name: parameters:Compositional_20fields/Minimum_20volume_20fraction
+**Default value:** 0.0
+
+**Pattern:** [Double 0...1 (inclusive)]
+
+**Documentation:** Chemical compositional field values strictly smaller than this value can be treated as absent when material models compute composition fractions. The default value includes every nonnegative compositional field value.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Names of fields<parameters:Compositional_20fields/Names_20of_20fields>`
 :name: parameters:Compositional_20fields/Names_20of_20fields
 **Default value:**

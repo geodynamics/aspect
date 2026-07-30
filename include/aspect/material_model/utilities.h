@@ -30,6 +30,8 @@
 
 #include <mpi.h>
 
+#include <limits>
+
 
 namespace aspect
 {
@@ -365,13 +367,17 @@ namespace aspect
        * one, we assume that there is no background field (i.e., that field value
        * is zero). Otherwise, the difference between the sum of the compositional
        * fields and 1.0 is assumed to be the amount of the background field.
+       * Selected fields strictly smaller than @p minimum_fraction are set to
+       * zero before computing and normalizing the fractions. The default value
+       * preserves the behavior of including every selected field.
        * This function makes no assumptions about the units of the
        * compositional field values; for example, they could correspond to
        * mass or volume fractions.
        */
       std::vector<double>
       compute_only_composition_fractions(const std::vector<double> &compositional_fields,
-                                         const std::vector<unsigned int> &indices_to_use);
+                                         const std::vector<unsigned int> &indices_to_use,
+                                         const double minimum_fraction = -std::numeric_limits<double>::max());
 
       /**
        * For multicomponent material models: Given a vector of compositional
@@ -387,13 +393,17 @@ namespace aspect
        * compositional fields to use during the computation (e.g. because
        * some fields contain unrelated quantities (like strain,
        * porosity, or trace elements). By default, all fields are included.
+       * Selected fields strictly smaller than @p minimum_fraction are set to
+       * zero before computing and normalizing the fractions. The default value
+       * preserves the behavior of including every selected field.
        * This function makes no assumptions about the units of the
        * compositional field values; for example, they could correspond to
        * mass or volume fractions.
        */
       std::vector<double>
       compute_composition_fractions(const std::vector<double> &compositional_fields,
-                                    const ComponentMask &field_mask = ComponentMask());
+                                    const ComponentMask &field_mask = ComponentMask(),
+                                    const double minimum_fraction = -std::numeric_limits<double>::max());
 
       /**
        * Given a vector of component masses,
