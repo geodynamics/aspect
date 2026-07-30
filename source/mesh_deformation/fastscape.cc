@@ -727,11 +727,11 @@ namespace aspect
                       {
                         const unsigned int field = chemical_composition_idx[c];
                         fe_face_values[this->introspection().extractors.compositional_fields[field]].get_function_values(this->get_solution(), composition_values_array[field]);
-                        Assert(composition_values_array[c].size() > 0,
+                        Assert(composition_values_array[field].size() > 0,
                                ExcMessage("Composition_values_array[c] is empty"));
                       }
                   }
-                
+
                 for (unsigned int corner = 0; corner < face_corners.size(); ++corner)
                   {
                     const Point<dim> vertex = fe_face_values.quadrature_point(corner);
@@ -764,7 +764,7 @@ namespace aspect
                         composition_values.insert(composition_values.begin(), std::max(0.0, 1.0 - volume_fraction_sum));
                         bedrock_river_incision_rate_at_point = MaterialModel::MaterialUtilities::average_value (composition_values, constant_bedrock_river_incision_rate, MaterialModel::MaterialUtilities::arithmetic);
                         bedrock_transport_coefficient_at_point = MaterialModel::MaterialUtilities::average_value (composition_values, constant_bedrock_transport_coefficient, MaterialModel::MaterialUtilities::arithmetic);
-                      }                    
+                      }
 
                     // If we're in 2D, we want to take the values and apply them to every row of X points.
                     if (dim == 2)
@@ -905,8 +905,6 @@ namespace aspect
       for (unsigned int i = 0; i < local_aspect_values[1].size(); ++i)
         {
           const int global_index = local_aspect_values[1][i];
-          Assert(static_cast<std::size_t>(global_index) < global_to_local.size(),
-                 ExcMessage("The index for filling fastscape arrays is out of bounds. This index array is constructed in get_aspect_values() and should contain values only within the bounds of the FastScape mesh. This error may be caused by an improperly set maximum_surface_refinement_level, additional_refinement_levels, and surface_refinement_difference."));
           global_to_local[global_index] = i;
         }
 
@@ -927,32 +925,30 @@ namespace aspect
           const double y = grid_extent[1].first + (iy - use_ghost_nodes) * fastscape_dy;
 
           const int index = global_to_local[i];
-          
+
           double bedrock_river_incision_rate_local = numbers::signaling_nan<double>();
           double bedrock_transport_coefficient_local = numbers::signaling_nan<double>();
 
-          if (use_compositional_erosion_bedrock && index >= 0 && static_cast<std::size_t>(index) < local_aspect_values[dim+3].size())
-          {
-            bedrock_river_incision_rate_local = time_scaling_factor * local_aspect_values[dim+2][index];
-            bedrock_transport_coefficient_local = time_scaling_factor * local_aspect_values[dim+3][index];
-          }
-          if (!use_kf_distribution_function)
-            bedrock_river_incision_rate_local = constant_bedrock_river_incision_rate[0];
-          if (!use_kd_distribution_function)
-            bedrock_transport_coefficient_local = constant_bedrock_transport_coefficient[0];
-
-          bedrock_river_incision_rate_array[i] =
-            (use_kf_distribution_function)
-            ?  // update with time scaling
-            time_scaling_factor * kf_distribution_function.value(Point<2>(x, y))
-            :
-            bedrock_river_incision_rate_local;
-          bedrock_transport_coefficient_array[i] =
-            (use_kd_distribution_function)
-            ?  // update with time scaling
-            time_scaling_factor * kd_distribution_function.value(Point<2>(x, y))
-            :
-            bedrock_transport_coefficient_local;
+          if (use_compositional_erosion_bedrock)
+            {
+              AssertThrow(index>=0,
+                          ExcMessage("No local aspect data was found for a FastScape mesh node."));
+              bedrock_river_incision_rate_local = time_scaling_factor * local_aspect_values[dim+2][index];
+              bedrock_transport_coefficient_local = time_scaling_factor * local_aspect_values[dim+3][index];
+            }
+          else
+            {
+              if (!use_kf_distribution_function)
+                bedrock_river_incision_rate_local = time_scaling_factor * constant_bedrock_river_incision_rate[0];
+              else
+                bedrock_river_incision_rate_local = time_scaling_factor * kf_distribution_function.value(Point<2>(x, y));
+              if (!use_kd_distribution_function)
+                bedrock_transport_coefficient_local = time_scaling_factor * constant_bedrock_transport_coefficient[0];
+              else
+                bedrock_transport_coefficient_local = time_scaling_factor * kd_distribution_function.value(Point<2>(x, y));
+            }
+          bedrock_river_incision_rate_array[i] = bedrock_river_incision_rate_local;
+          bedrock_transport_coefficient_array[i] = bedrock_transport_coefficient_local;
 
           if (elevation[i] == std::numeric_limits<double>::max() && !is_ghost_node(i,false) || std::isnan(elevation[i]))
             {
@@ -2201,8 +2197,8 @@ namespace aspect
                 constant_bedrock_transport_coefficient = Utilities::MapParsing::parse_map_to_double_array(prm.get(options.property_name), options);
               }
             AssertThrow(!(use_compositional_erosion_bedrock &&
-              (use_kf_distribution_function || use_kd_distribution_function)),
-            ExcMessage("Compositional erosion for bedrock cannot be used together with kf or kd distribution functions."));
+                          (use_kf_distribution_function || use_kd_distribution_function)),
+                        ExcMessage("Compositional erosion for bedrock cannot be used together with kf or kd distribution functions."));
             bedrock_deposition_g = prm.get_double("Bedrock deposition coefficient");
             sediment_deposition_g = prm.get_double("Sediment deposition coefficient");
             slope_exponent_p = prm.get_double("Multi-direction slope exponent");
