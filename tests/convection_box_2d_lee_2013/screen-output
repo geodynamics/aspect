@@ -1,22 +1,4 @@
------------------------------------------------------------------------------
---                             This is ASPECT                              --
--- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
------------------------------------------------------------------------------
---     . version 3.1.0-pre (main, 9f11ce0e3)
---     . using deal.II 9.7.0
---     .       with 32 bit indices
---     .       with vectorization level 1 (SSE2, 2 doubles, 128 bits)
---     . using Trilinos 16.2.0
---     . using p4est 2.8.7
---     . using Geodynamic World Builder 1.1.0
---     . running in OPTIMIZED mode
---     . running with 1 MPI process
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&cbfheatflux=1&mf=1&sha=9f11ce0e3&src=code
------------------------------------------------------------------------------
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)
 
@@ -29,7 +11,7 @@ Number of degrees of freedom: 268 (162+25+81)
      Temperature min/avg/max:                                  273 K, 1773 K, 3273 K
      Average density / Average viscosity / Total mass:         3778 kg/m^3, 3.75e+23 Pa s, 3.778e+15 kg
      Heat flux densities for boundaries:                       0 W/m, 0 W/m, -0.015 W/m, 0.015 W/m
-     Viscous dissipation per field and for whole domain (W/m): 1.316
+     Viscous dissipation per field and for whole domain (W/m): 2.633
      Heat fluxes through boundary parts:                       0 W, 0 W, -1.5e+04 W, 1.5e+04 W
      Pressure min/avg/max:                                     -2.203e+06 Pa, 1.918e+10 Pa, 3.779e+10 Pa
 
@@ -42,7 +24,7 @@ Number of degrees of freedom: 268 (162+25+81)
      Temperature min/avg/max:                                  273 K, 1773 K, 3273 K
      Average density / Average viscosity / Total mass:         3778 kg/m^3, 3.75e+23 Pa s, 3.778e+15 kg
      Heat flux densities for boundaries:                       0 W/m, 0 W/m, -0.015 W/m, 0.015 W/m
-     Viscous dissipation per field and for whole domain (W/m): 1.516
+     Viscous dissipation per field and for whole domain (W/m): 3.032
      Heat fluxes through boundary parts:                       0 W, 0 W, -1.5e+04 W, 1.5e+04 W
      Pressure min/avg/max:                                     -2.364e+06 Pa, 1.918e+10 Pa, 3.779e+10 Pa
 
@@ -55,33 +37,11 @@ Number of degrees of freedom: 268 (162+25+81)
      Temperature min/avg/max:                                  273 K, 1773 K, 3273 K
      Average density / Average viscosity / Total mass:         3778 kg/m^3, 3.75e+23 Pa s, 3.778e+15 kg
      Heat flux densities for boundaries:                       0 W/m, 0 W/m, -0.015 W/m, 0.015 W/m
-     Viscous dissipation per field and for whole domain (W/m): 1.753
+     Viscous dissipation per field and for whole domain (W/m): 3.505
      Heat fluxes through boundary parts:                       0 W, 0 W, -1.5e+04 W, 1.5e+04 W
      Pressure min/avg/max:                                     -2.542e+06 Pa, 1.918e+10 Pa, 3.779e+10 Pa
 
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start     |     0.169s |            |
-|                                              |            |            |
-| Section                          | no. calls |  wall time | % of total |
-+----------------------------------+-----------+------------+------------+
-| Assemble Stokes system rhs       |         3 |   0.00435s |       2.6% |
-| Assemble temperature system      |         3 |   0.00286s |       1.7% |
-| Build Stokes preconditioner      |         3 |  0.000489s |      0.29% |
-| Build temperature preconditioner |         3 |  0.000547s |      0.32% |
-| Initialization                   |         1 |     0.128s |        76% |
-| Postprocessing                   |         3 |   0.00826s |       4.9% |
-| Setup dof systems                |         1 |   0.00339s |         2% |
-| Setup initial conditions         |         1 |  0.000812s |      0.48% |
-| Setup matrices                   |         1 |  0.000396s |      0.23% |
-| Solve Stokes system              |         3 |    0.0125s |       7.4% |
-| Solve temperature system         |         3 |  0.000652s |      0.38% |
-+----------------------------------+-----------+------------+------------+
 
--- Total wallclock time elapsed including restarts: 0s
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&cbfheatflux=1&mf=1&sha=9f11ce0e3&src=code
------------------------------------------------------------------------------
