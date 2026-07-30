@@ -73,7 +73,7 @@ namespace aspect
     assemblers->stokes_preconditioner.push_back(std::make_unique<aspect::Assemblers::StokesPreconditioner<dim>>());
     assemblers->stokes_system.push_back(std::make_unique<aspect::Assemblers::StokesIncompressibleTerms<dim>>());
 
-    if (material_model->is_compressible() || parameters.enable_prescribed_dilation)
+    if (material_model->is_compressible() || parameters.enable_prescribed_dilation || prescribed_dilation_manager.get_active_plugin_names().size() > 0)
       {
         // The compressible part of the preconditioner is only necessary if we use the simplified A block
         if (parameters.use_full_A_block_preconditioner == false)
@@ -137,6 +137,9 @@ namespace aspect
       assemblers->stokes_system.push_back(
         std::make_unique<aspect::Assemblers::StokesPressureRHSCompatibilityModification<dim>>());
 
+    if (prescribed_dilation_manager.get_active_plugin_names().size() > 0)
+      assemblers->stokes_system.push_back(
+        std::make_unique<aspect::Assemblers::StokesPrescribedDilation<dim>>());
   }
 
   template <int dim>

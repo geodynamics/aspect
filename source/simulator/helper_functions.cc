@@ -109,6 +109,7 @@ namespace aspect
     GeometryModel::write_plugin_graph<dim>(out);
     GravityModel::write_plugin_graph<dim>(out);
     HeatingModel::Manager<dim>::write_plugin_graph(out);
+    PrescribedDilation::Manager<dim>::write_plugin_graph(out);
     InitialComposition::Manager<dim>::write_plugin_graph(out);
     InitialTemperature::Manager<dim>::write_plugin_graph(out);
     MaterialModel::write_plugin_graph<dim>(out);

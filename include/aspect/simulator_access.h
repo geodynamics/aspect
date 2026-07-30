@@ -58,6 +58,11 @@ namespace aspect
     template <int dim> class Manager;
   }
 
+  namespace PrescribedDilation
+  {
+    template <int dim> class Manager;
+  }
+
   namespace MaterialModel
   {
     template <int dim> class Interface;
@@ -831,6 +836,14 @@ namespace aspect
        */
       const HeatingModel::Manager<dim> &
       get_heating_model_manager () const;
+
+      /**
+       * Return a pointer to the manager of the prescribed dilation.
+       * This can then, for example, be used to get the names of the dilation models
+       * used in a computation.
+       */
+      const PrescribedDilation::Manager<dim> &
+      get_prescribed_dilation_manager () const;
 
       /**
        * Return a reference to the manager of the mesh refinement strategies.

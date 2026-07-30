@@ -219,6 +219,21 @@ namespace aspect
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                 internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
+
+    /**
+     * This class adds source term to the right hand side of the
+     * continuity equation. The prescribed quantity is taken from
+     * PrescribedDilation plugin.
+     */
+    template <int dim>
+    class StokesPrescribedDilation : public Assemblers::Interface<dim>,
+      public SimulatorAccess<dim>
+    {
+      public:
+        void
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
+    };
   }
 }
 

@@ -340,6 +340,8 @@ namespace aspect
 
     heating_model_manager.initialize_simulator(*this);
     heating_model_manager.parse_parameters (prm);
+    prescribed_dilation_manager.initialize_simulator(*this);
+    prescribed_dilation_manager.parse_parameters (prm);
 
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(gravity_model.get()))
       sim->initialize_simulator (*this);
@@ -570,7 +572,7 @@ namespace aspect
     do_pressure_rhs_compatibility_modification = ((material_model->is_compressible() && !parameters.include_melt_transport)
                                                   ||
                                                   (parameters.include_melt_transport && !material_model->is_compressible())
-                                                  || parameters.enable_prescribed_dilation)
+                                                  || parameters.enable_prescribed_dilation || prescribed_dilation_manager.get_active_plugin_names().size() > 0)
                                                  &&
                                                  (open_velocity_boundary_indicators.size() == 0);
 
@@ -691,6 +693,7 @@ namespace aspect
     geometry_model->update();
     material_model->update();
     gravity_model->update();
+    prescribed_dilation_manager.update();
     heating_model_manager.update();
     adiabatic_conditions->update();
     mesh_refinement_manager.update();

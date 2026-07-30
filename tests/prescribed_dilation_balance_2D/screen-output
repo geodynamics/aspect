@@ -1,0 +1,100 @@
+
+Number of active cells: 8 (on 1 levels)
+Number of degrees of freedom: 150 (90+15+45)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 10+0 iterations.
+
+   Postprocessing:
+     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, 0 kg/s, -2.092e-15 kg/s
+
+*** Timestep 1:  t=0.4463 seconds, dt=0.4463 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (AMG)... 0+0 iterations.
+
+   Postprocessing:
+     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, 0 kg/s, -2.092e-15 kg/s
+
+*** Timestep 2:  t=0.8926 seconds, dt=0.4463 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (AMG)... 0+0 iterations.
+
+   Postprocessing:
+     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, 0 kg/s, -2.092e-15 kg/s
+
+*** Timestep 3:  t=1.3389 seconds, dt=0.4463 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (AMG)... 0+0 iterations.
+
+   Postprocessing:
+     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, 0 kg/s, -2.092e-15 kg/s
+
+*** Timestep 4:  t=1.7852 seconds, dt=0.4463 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (AMG)... 0+0 iterations.
+
+   Postprocessing:
+     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, 0 kg/s, -2.092e-15 kg/s
+
+*** Timestep 5:  t=2.2315 seconds, dt=0.4463 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (AMG)... 0+0 iterations.
+
+   Postprocessing:
+     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, 0 kg/s, -2.092e-15 kg/s
+
+*** Timestep 6:  t=2.6778 seconds, dt=0.4463 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (AMG)... 0+0 iterations.
+
+   Postprocessing:
+     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, 0 kg/s, -2.092e-15 kg/s
+
+*** Timestep 7:  t=3.1241 seconds, dt=0.4463 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (AMG)... 0+0 iterations.
+
+   Postprocessing:
+     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, 0 kg/s, -2.092e-15 kg/s
+
+*** Timestep 8:  t=3.5704 seconds, dt=0.4463 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (AMG)... 0+0 iterations.
+
+   Postprocessing:
+     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, 0 kg/s, -2.092e-15 kg/s
+
+*** Timestep 9:  t=4.0167 seconds, dt=0.4463 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (AMG)... 0+0 iterations.
+
+   Postprocessing:
+     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, 0 kg/s, -2.092e-15 kg/s
+
+*** Timestep 10:  t=4.463 seconds, dt=0.4463 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (AMG)... 0+0 iterations.
+
+   Postprocessing:
+     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, 0 kg/s, -2.092e-15 kg/s
+
+*** Timestep 11:  t=4.9093 seconds, dt=0.4463 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (AMG)... 0+0 iterations.
+
+   Postprocessing:
+     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, 0 kg/s, -2.092e-15 kg/s
+
+*** Timestep 12:  t=5 seconds, dt=0.0907021 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (AMG)... 0+0 iterations.
+
+   Postprocessing:
+     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, 0 kg/s, -2.092e-15 kg/s
+
+Termination requested by criterion: end time
+
+
+
