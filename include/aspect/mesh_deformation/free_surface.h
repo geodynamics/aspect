@@ -75,16 +75,6 @@ namespace aspect
         bool needs_surface_stabilization () const override;
 
         /**
-        * This function returns user-defined constant compositions at the
-        * boundaries.
-        *
-        * @copydoc aspect::MeshDeformation::Interface::boundary_composition()
-        */
-        double boundary_composition (const types::boundary_id boundary_indicator,
-                                     const Point<dim> &position,
-                                     const unsigned int compositional_field) const override;
-
-        /**
          * Declare parameters for the free surface handling.
          */
         static

@@ -302,18 +302,6 @@ namespace aspect
 
 
     template <int dim>
-    double
-    FreeSurface<dim>::
-    boundary_composition (const types::boundary_id boundary_indicator,
-                          const Point<dim> &/*position*/,
-                          const unsigned int compositional_field) const
-    {
-      return 0.0;
-    }
-
-
-
-    template <int dim>
     void FreeSurface<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection ("Mesh deformation");

@@ -217,6 +217,19 @@ namespace aspect
 
 
 
+        template <int dim>
+        double
+        Interface<dim>::
+        boundary_composition (const types::boundary_id /*boundary_indicator*/,
+                              const Point<dim> &/*position*/,
+                              const unsigned int /*compositional_field*/) const
+                              {
+                                AssertThrow(false, ExcMessage("The boundary_composition function is not implemented for this mesh deformation plugin."));
+                                return 0.0;
+                              }
+
+
+
     template <int dim>
     MeshDeformationHandler<dim>::MeshDeformationHandler (Simulator<dim> &simulator)
       : sim(simulator),  // reference to the simulator that owns the MeshDeformationHandler

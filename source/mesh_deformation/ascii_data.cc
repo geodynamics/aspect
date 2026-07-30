@@ -82,18 +82,6 @@ namespace aspect
 
 
     template <int dim>
-    double
-    AsciiData<dim>::
-    boundary_composition (const types::boundary_id boundary_indicator,
-                          const Point<dim> &/*position*/,
-                          const unsigned int compositional_field) const
-    {
-      return 0.0;
-    }
-
-
-
-    template <int dim>
     void
     AsciiData<dim>::declare_parameters (ParameterHandler &prm)
     {
