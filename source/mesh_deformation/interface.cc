@@ -217,16 +217,16 @@ namespace aspect
 
 
 
-        template <int dim>
-        double
-        Interface<dim>::
-        boundary_composition (const types::boundary_id /*boundary_indicator*/,
-                              const Point<dim> &/*position*/,
-                              const unsigned int /*compositional_field*/) const
-                              {
-                                AssertThrow(false, ExcMessage("The boundary_composition function is not implemented for this mesh deformation plugin."));
-                                return 0.0;
-                              }
+    template <int dim>
+    double
+    Interface<dim>::
+    boundary_composition (const types::boundary_id /*boundary_indicator*/,
+                          const Point<dim> &/*position*/,
+                          const unsigned int /*compositional_field*/) const
+    {
+      AssertThrow(false, ExcMessage("The boundary_composition function is not implemented for this mesh deformation plugin."));
+      return 0.0;
+    }
 
 
 
@@ -663,6 +663,9 @@ namespace aspect
                                                        const unsigned int compositional_field) const
     {
       double composition = 0.0;
+
+      // TODO check whether the field is not a stress field or of another type
+      // that should not be set by the mesh deformation model.
 
       // Loop over all mesh deformation objects that are assigned to this
       // boundary indicator and sum their contributions
