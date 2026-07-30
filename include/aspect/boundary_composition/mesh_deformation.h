@@ -50,55 +50,13 @@ namespace aspect
         initialize () override;
 
         /**
-         * This function returns the boundary compositions that are provided.
-         * by the active mesh deformation objects.
-         * @copydoc aspect::BoundaryComposition::Interface::boundary_composition()
+         * This function returns the composition value returned by the
+         * mesh deformation interface, which is the sum of the boundary compositions
+         * provided by the active mesh deformation objects.
          */
         double boundary_composition (const types::boundary_id boundary_indicator,
                                      const Point<dim> &position,
                                      const unsigned int compositional_field) const override;
-
-        /**
-         * Return the minimal composition on that part of the boundary on
-         * which Dirichlet conditions are posed.
-         */
-        // virtual
-        // double minimal_composition (const std::set<types::boundary_id> &fixed_boundary_ids) const;
-
-        /**
-         * Return the maximal composition on that part of the boundary on
-         * which Dirichlet conditions are posed.
-         */
-        // virtual
-        // double maximal_composition (const std::set<types::boundary_id> &fixed_boundary_ids) const;
-
-        /**
-         * Declare the parameters this class takes through input files.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        /**
-         * Read the parameters this class declares from the parameter file.
-         */
-        void
-        parse_parameters (ParameterHandler &prm) override;
-
-      private:
-        /**
-         * Compositions at the inner and outer boundaries.
-         *
-         * This variable is read from the parameter file through a parameter called 'Minimal composition'.
-         */
-        // double min_composition;
-
-        /**
-         * Compositions at the inner and outer boundaries.
-         *
-         * This variable is read from the parameter file through a parameter called 'Maximal composition'.
-         */
-        // double max_composition;
     };
   }
 }

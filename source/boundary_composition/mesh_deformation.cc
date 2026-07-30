@@ -51,36 +51,6 @@ namespace aspect
       return this->get_mesh_deformation_handler().boundary_composition(boundary_indicator, position, compositional_field);
     }
 
-
-
-    template <int dim>
-    void
-    MeshDeformation<dim>::declare_parameters (ParameterHandler &prm)
-    {
-      prm.enter_subsection("Boundary composition model");
-      {
-        prm.enter_subsection("Mesh deformation");
-        {
-        }
-        prm.leave_subsection ();
-      }
-      prm.leave_subsection ();
-    }
-
-
-    template <int dim>
-    void
-    MeshDeformation<dim>::parse_parameters (ParameterHandler &prm)
-    {
-      prm.enter_subsection("Boundary composition model");
-      {
-        prm.enter_subsection("Mesh deformation");
-        {
-        }
-        prm.leave_subsection ();
-      }
-      prm.leave_subsection ();
-    }
   }
 }
 
@@ -92,17 +62,12 @@ namespace aspect
     ASPECT_REGISTER_BOUNDARY_COMPOSITION_MODEL(MeshDeformation,
                                                "mesh deformation",
                                                "A model in which the composition at the boundary "
-                                               "is chosen to be the same as given in the initial "
-                                               "conditions."
+                                               "is retrieved from the active mesh deformation plugins."
                                                "\n\n"
-                                               "Because this class simply takes what the initial "
-                                               "composition had described, this class can not "
-                                               "know certain pieces of information such as the "
-                                               "minimal and maximal composition on the boundary. "
-                                               "For operations that require this, for example in "
-                                               "post-processing, this boundary composition model "
-                                               "must therefore be told what the minimal and "
-                                               "maximal values on the boundary are. This is done "
-                                               "using parameters set in section ``Boundary composition model/Initial composition''.")
+                                               "The active mesh deformation plugins can each return "
+                                               "a value for the compositional fields that are prescribed on "
+                                               "a boundary; their values are summed per field. If a mesh "
+                                               "deformation plugin does not implement the boundary composition "
+                                               "function, a default value of zero is returned.")
   }
 }
