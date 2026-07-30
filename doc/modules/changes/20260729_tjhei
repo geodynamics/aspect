@@ -1,0 +1,5 @@
+New: Added a ``finite element information`` postprocessor that prints the
+finite element space of every solution variable at time zero. For
+compositional fields, the output includes the field index, name, and type.
+<br>
+(Timo Heister, 2026/07/29)

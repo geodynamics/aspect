@@ -74,7 +74,7 @@ subsection Discretization
 end
 
 subsection Postprocess
-  set List of postprocessors = temperature statistics, composition statistics, matrix statistics
+  set List of postprocessors = temperature statistics, composition statistics, matrix statistics, finite element information
 end
 
 # This is the new part: We declare that there will
