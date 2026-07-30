@@ -9,7 +9,7 @@
 :name: parameters:Compositional_20fields/Compositional_20field_20methods
 **Default value:**
 
-**Pattern:** [List of <[Selection field|particles|volume of fluid|static|melt field|darcy field|prescribed field|prescribed field with diffusion ]> of length 0...4294967295 (inclusive)]
+**Pattern:** [List of <[Selection field|particles|volume of fluid|static|melt field|darcy field|function defined field|prescribed field|prescribed field with diffusion ]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A comma separated list denoting the solution method of each compositional field. Each entry of the list must be one of the currently implemented field methods.
 
@@ -80,4 +80,46 @@ Each entry of the list must be one of several recognized types: * &ldquo;chemica
 * &ldquo;unspecified&rdquo;: The unspecified type is intended to tell ASPECT that the user has not explicitly indicated the type of this field. ASPECT will then try to detect the type automatically based on the name, but will default to &ldquo;chemical composition&rdquo; if the name does not correspond to a known type.
 
 Note that while ASPECT&rsquo;s functionality can make use of the field types, not all of the code will make use of it. It is the user&rsquo;s responsibility to check that the chosen material model and other plugins interpret the compositional fields as intended.
+::::
+
+(parameters:Compositional_20fields/Function_20defined_20fields)=
+## **Subsection:** Compositional fields / Function defined fields
+::::{dropdown} __Parameter:__ {ref}`Coordinate system<parameters:Compositional_20fields/Function_20defined_20fields/Coordinate_20system>`
+:name: parameters:Compositional_20fields/Function_20defined_20fields/Coordinate_20system
+**Default value:** depth
+
+**Pattern:** [Selection depth|cartesian|spherical ]
+
+**Documentation:** A selection that determines the assumed coordinate system for the function variables. Allowed values are &lsquo;depth&rsquo;, &lsquo;cartesian&rsquo; and &lsquo;spherical&rsquo;. &lsquo;depth&rsquo; will create a function, in which only the first variable is non-zero, which is interpreted to be the depth of the point. &lsquo;spherical&rsquo; coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Function constants<parameters:Compositional_20fields/Function_20defined_20fields/Function_20constants>`
+:name: parameters:Compositional_20fields/Function_20defined_20fields/Function_20constants
+**Default value:**
+
+**Pattern:** [Anything]
+
+**Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form &lsquo;var1=value1, var2=value2, ...&rsquo;.
+
+A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Function expression<parameters:Compositional_20fields/Function_20defined_20fields/Function_20expression>`
+:name: parameters:Compositional_20fields/Function_20defined_20fields/Function_20expression
+**Default value:** 0; 0
+
+**Pattern:** [Anything]
+
+**Documentation:** The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as &lsquo;sin&rsquo; or &lsquo;cos&rsquo;. In addition, it may contain expressions like &lsquo;if(x>0, 1, -1)&rsquo; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
+
+If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Variable names<parameters:Compositional_20fields/Function_20defined_20fields/Variable_20names>`
+:name: parameters:Compositional_20fields/Function_20defined_20fields/Variable_20names
+**Default value:** x,y,t
+
+**Pattern:** [Anything]
+
+**Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
 ::::

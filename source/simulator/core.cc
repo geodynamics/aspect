@@ -700,8 +700,10 @@ namespace aspect
     if (parameters.mesh_deformation_enabled)
       mesh_deformation->update();
 
-    if (prescribed_stokes_solution.get())
-      prescribed_stokes_solution->update();
+    if (parameters.convert_to_years)
+      parameters.compositional_field_advection_function.set_time(time / year_in_seconds);
+    else
+      parameters.compositional_field_advection_function.set_time(time);
 
     for (auto &particle_manager : particle_managers)
       particle_manager.update();
@@ -957,6 +959,7 @@ namespace aspect
           case Parameters<dim>::AdvectionFieldMethod::fem_melt_field:
           case Parameters<dim>::AdvectionFieldMethod::fem_darcy_field:
           case Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion:
+          case Parameters<dim>::AdvectionFieldMethod::fem_function_field:
             return true;
           case Parameters<dim>::AdvectionFieldMethod::particles:
           case Parameters<dim>::AdvectionFieldMethod::volume_of_fluid:

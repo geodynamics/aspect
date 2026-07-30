@@ -797,6 +797,165 @@ namespace aspect
     }
 
 
+    template <int dim>
+    void
+    FunctionSystem<dim>::execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+                                  internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
+    {
+      // This function is similar to the AdvectionSystem::execute function, but it uses a user-defined
+      // function to compute the advection velocity field instead of using the velocity field from the
+      // solution vector. The rest of the assembly process is similar to that of the AdvectionSystem.
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
+      internal::Assembly::CopyData::AdvectionSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::AdvectionSystem<dim>& > (data_base);
+      const Introspection<dim> &introspection = this->introspection();
+      const FiniteElement<dim> &fe = this->get_fe();
+
+      const Functions::ParsedFunction<dim> &compositional_field_advection_function = this->get_parameters().compositional_field_advection_function;
+
+      const AdvectionField advection_field = *scratch.advection_field;
+
+      Assert(advection_field.advection_method(introspection)
+             == Parameters<dim>::AdvectionFieldMethod::fem_function_field,
+             ExcMessage("The 'FunctionSystem' assembler can only be executed for fields "
+                        "that use the advection method 'function field'."));
+
+      const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+      const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
+
+      // Is this check necessary for a function advection method??
+      const bool use_supg = (this->get_parameters().advection_stabilization_method
+                             == Parameters<dim>::AdvectionStabilizationMethod::supg);
+      AssertThrow(use_supg == false,
+                  ExcMessage("The Function field advection method does not support the use of SUPG"));
+
+      const bool   use_bdf2_scheme = (this->get_timestep_number() > 1);
+      const double time_step = this->get_timestep();
+      const double old_time_step = this->get_old_timestep();
+
+      const double bdf2_factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
+                                                     (time_step + old_time_step)) : 1.0;
+      const unsigned int solution_component = advection_field.component_index(introspection);
+      const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
+
+      for (unsigned int q=0; q<n_q_points; ++q)
+        {
+          // Precompute the values of shape functions and their gradients.
+          // We only need to look up values of shape functions if they
+          // belong to 'our' component. They are zero otherwise anyway.
+          // Note that we later only look at the values that we do set here.
+          for (unsigned int i=0, i_advection=0; i_advection<advection_dofs_per_cell;/*increment at end of loop*/)
+            {
+              if (fe.system_to_component_index(i).first == solution_component)
+                {
+                  scratch.grad_phi_field[i_advection] = scratch.finite_element_values[solution_field].gradient (i,q);
+                  scratch.phi_field[i_advection]      = scratch.finite_element_values[solution_field].value (i,q);
+                  ++i_advection;
+                }
+              ++i;
+            }
+
+          const double reaction_term = scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable];
+
+          const double field_term_for_rhs
+            = (use_bdf2_scheme ?
+               (scratch.old_field_values[q] *
+                (1 + time_step/old_time_step)
+                -
+                scratch.old_old_field_values[q] *
+                (time_step * time_step) /
+                (old_time_step * (time_step + old_time_step)))
+               :
+               scratch.old_field_values[q]);
+
+          Tensor<1,dim> current_u;
+          const Point<dim> position = scratch.material_model_inputs.position[q];
+
+          for (unsigned int d=0; d<dim; ++d)
+            {
+              current_u[d] = compositional_field_advection_function.value(position,d);
+
+              if (this->convert_output_to_years())
+                current_u[d] /= year_in_seconds;
+            }
+
+          // Does this function method need to do this as well? Or do we want to make sure
+          // that the velocity is always the function velocity regardless of mesh deformation.
+          if (this->get_parameters().mesh_deformation_enabled)
+            current_u -= scratch.mesh_velocity_values[q];
+          const double JxW = scratch.finite_element_values.JxW(q);
+
+          //     // Perform the assembly. We only need to loop over advection
+          //     // shape functions because these are the only contributions computed here.
+          for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
+            {
+              data.local_rhs(i)
+              += (field_term_for_rhs * scratch.phi_field[i]
+                  + scratch.phi_field[i]
+                  * reaction_term)
+                 * JxW;
+
+              for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
+                {
+                  data.local_matrix(i,j)
+                  += (
+                       (time_step * scratch.artificial_viscosity
+                        * (scratch.grad_phi_field[i] * scratch.grad_phi_field[j]))
+                       + ((time_step * (scratch.phi_field[i] * (current_u * scratch.grad_phi_field[j])))
+                          + (bdf2_factor * scratch.phi_field[i] * scratch.phi_field[j]))
+                     )
+                     * JxW;
+                }
+            }
+        }
+    }
+
+
+
+    template <int dim>
+    std::vector<double>
+    FunctionSystem<dim>::compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
+    {
+      // This function is similar to the AdvectionSystem::execute function, but it uses a user-defined
+      // function to compute the advection velocity field instead of using the velocity field from the
+      // solution vector. The rest of the assembly process is similar to that of the AdvectionSystem.
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>&> (scratch_base);
+
+      const AdvectionField advection_field = *scratch.advection_field;
+      const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+      std::vector<double> residuals(n_q_points);
+      const Functions::ParsedFunction<dim> &compositional_field_advection_function = this->get_parameters().compositional_field_advection_function;
+      // compositional_field_advection_function.set_time(this->get_time());
+
+      for (unsigned int q=0; q < n_q_points; ++q)
+        {
+          Tensor<1,dim> current_u;
+          const Point<dim> position = scratch.material_model_inputs.position[q];
+
+          for (unsigned int d=0; d<dim; ++d)
+            {
+              current_u[d] = compositional_field_advection_function.value(position,d);
+
+              if (this->convert_output_to_years())
+                current_u[d] /= year_in_seconds;
+            }
+
+          const double dField_dt = (this->get_old_timestep() == 0.0) ? 0.0 :
+                                   (
+                                     ((scratch.old_field_values)[q] - (scratch.old_old_field_values)[q])
+                                     / this->get_old_timestep());
+          const double u_grad_field = current_u * (scratch.old_field_grads[q] +
+                                                   scratch.old_old_field_grads[q]) / 2;
+
+          const double dreaction_term_dt = (this->get_old_timestep() == 0) ? 0.0 :
+                                           scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]
+                                           / this->get_old_timestep();
+
+          residuals[q] = std::abs(dField_dt + u_grad_field - dreaction_term_dt);
+        }
+      return residuals;
+    }
+
+
 
     template <int dim>
     void
@@ -819,11 +978,13 @@ namespace aspect
 
       const double time_step = this->get_timestep();
 
-      Assert(advection_field.is_discontinuous(introspection)
-             && advection_field.advection_method(introspection)
-             == Parameters<dim>::AdvectionFieldMethod::fem_field,
+      Assert((advection_field.is_discontinuous(introspection)
+              && (advection_field.advection_method(introspection)
+                  == Parameters<dim>::AdvectionFieldMethod::fem_function_field)
+              || (advection_field.is_discontinuous(introspection)
+                  == Parameters<dim>::AdvectionFieldMethod::fem_field)),
              ExcMessage("The 'AdvectionSystemBoundaryFace' assembler can only be executed for fields "
-                        "that use the advection method 'field' and a discontinuous discretization."));
+                        "that use the advection method 'field' or 'function field' and a discontinuous discretization."));
 
       // Number of DoFs associated with the element for the
       // system currently being assembled.
@@ -1750,6 +1911,7 @@ namespace aspect
   template class AdvectionSystem<dim>; \
   template class DiffusionSystem<dim>; \
   template class DarcySystem<dim>; \
+  template class FunctionSystem<dim>; \
   template class AdvectionSystemBoundaryFace<dim>; \
   template class AdvectionSystemInteriorFace<dim>; \
   template class AdvectionSystemBoundaryHeatFlux<dim>; \

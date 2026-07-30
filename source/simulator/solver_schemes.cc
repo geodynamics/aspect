@@ -272,6 +272,7 @@ namespace aspect
             case Parameters<dim>::AdvectionFieldMethod::fem_melt_field:
             case Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion:
             case Parameters<dim>::AdvectionFieldMethod::fem_darcy_field:
+            case Parameters<dim>::AdvectionFieldMethod::fem_function_field:
             {
               // if this is a prescribed field with diffusion, we first have to copy the material model
               // outputs into the prescribed field before we assemble and solve the equation

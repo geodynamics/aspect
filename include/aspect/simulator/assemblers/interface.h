@@ -54,7 +54,7 @@ namespace aspect
          * individual scratch objects for the different equations.
          */
         template <int dim>
-        struct ScratchBase
+        struct ScratchBase // DERIVE THIS FROM Plugins::InterfaceBase
         {
           ScratchBase()
             :
@@ -682,7 +682,7 @@ namespace aspect
      *   in this class.
      */
     template <int dim>
-    class Manager
+    class Manager : public Plugins::ManagerBase<Interface<dim>>
     {
       public:
 

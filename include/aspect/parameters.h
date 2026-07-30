@@ -23,7 +23,9 @@
 #define _aspect_parameters_h
 
 #include <deal.II/base/parameter_handler.h>
+#include <deal.II/base/parsed_function.h>
 
+#include <aspect/coordinate_systems.h>
 #include <aspect/global.h>
 #include <aspect/material_model/interface.h>
 
@@ -217,6 +219,7 @@ namespace aspect
         static_field,
         fem_melt_field,
         fem_darcy_field,
+        fem_function_field,
         prescribed_field,
         prescribed_field_with_diffusion
       };
@@ -538,6 +541,9 @@ namespace aspect
     Parameters (ParameterHandler &prm,
                 const MPI_Comm mpi_communicator);
 
+
+    // void update();
+
     /**
      * Declare the run-time parameters this class takes, and call the
      * respective <code>declare_parameters</code> functions of the namespaces
@@ -834,6 +840,20 @@ namespace aspect
      * field. Consequently the vector has n_compositional_fields entries.
      */
     std::vector<typename AdvectionFieldMethod::Kind> compositional_field_methods;
+
+    /**
+     * Parsed advection velocity function used by compositional fields with
+     * method 'function defined field'. This function determined the velocity
+     * of a compositional field at a given point in space and in time.
+     */
+    Functions::ParsedFunction<dim> compositional_field_advection_function;
+
+    /**
+     * The coordinate representation to evaluate the
+     * compositional_field_advection_function. Possible choices are depth,
+     * cartesian and spherical.
+     */
+    Utilities::Coordinates::CoordinateSystem compositional_field_advection_function_coordinate_system;
 
     /**
      * Map from compositional index to a pair "particle property", "component",
