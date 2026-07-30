@@ -118,7 +118,7 @@ jobs:
       run: |
             rm -rf $GITHUB_WORKSPACE/performance_1_results/;
             mkdir -p $GITHUB_WORKSPACE/performance_1_results/
-    - name: Run performance benchmark 
+    - name: Run performance benchmark 1
       shell: bash
       run: |
             cd $GITHUB_WORKSPACE/cbdr/;
@@ -126,7 +126,19 @@ jobs:
             cat $GITHUB_WORKSPACE/result_1.csv;
             cat $GITHUB_WORKSPACE/result_1.csv | cargo run --release analyze --disable-dynamic-printing > $GITHUB_WORKSPACE/performance_1_results/analyze_1.log ||:;
             cat $GITHUB_WORKSPACE/performance_1_results/analyze_1.log
+    - name: Run performance benchmark 2
+      shell: bash
+      run: |
+            cd $GITHUB_WORKSPACE/cbdr/;
+            time cargo run --release sample --timeout=1800s "main:$GITHUB_WORKSPACE/main/source/build/./aspect-release  $GITHUB_WORKSPACE/feature/source/build/tests/performance_nsinker_gmg_idr.x.prm" "feature:$GITHUB_WORKSPACE/feature/source/build/./aspect-release $GITHUB_WORKSPACE/feature/source/build/tests/performance_nsinker_gmg_idr.x.prm" > $GITHUB_WORKSPACE/result_2.csv;
+            cat $GITHUB_WORKSPACE/result_2.csv;
+            cat $GITHUB_WORKSPACE/result_2.csv | cargo run --release analyze --disable-dynamic-printing > $GITHUB_WORKSPACE/performance_1_results/analyze_2.log ||:;
+            cat $GITHUB_WORKSPACE/performance_2_results/analyze_2.log
     - uses: actions/upload-artifact@v7
       with:
         name: performance_1_results
         path: performance_1_results/
+    - uses: actions/upload-artifact@v7
+      with:
+        name: performance_2_results
+        path: performance_2_results/
