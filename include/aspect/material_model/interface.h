@@ -556,10 +556,18 @@ namespace aspect
          * @param n_comp The number of vector quantities (in the order in which
          * the Introspection class reports them) for which output will be
          * computed.
+         * @param remove_additional_outputs If set to true, any additional outputs
+         *   attached to this object will be removed. In that case, the resulting
+         *   MaterialModelOutputs object will be as if it had been constructed from
+         *   scratch via the constructor that takes the number of quadrature
+         *   points and number of compositions as arguments. If set to false,
+         *   and if additional outputs are attached, these objects will remain
+         *   untouched.
          */
         void
         resize(const unsigned int n_points,
-               const unsigned int n_comp);
+               const unsigned int n_comp,
+               const bool remove_additional_outputs = true);
 
         /**
          * Copy constructor. This constructor copies all data members of the
