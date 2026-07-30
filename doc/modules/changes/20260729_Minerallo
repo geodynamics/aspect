@@ -1,0 +1,6 @@
+Fixed: Mesh deformation now uses geometry-specific periodicity constraints,
+including the rotation of vector components in curved geometries. This fixes
+free surfaces in phi-periodic spherical shell geometries, which previously
+failed while constructing constraints.
+<br>
+(Pons Michaël, 2026/07/29)
