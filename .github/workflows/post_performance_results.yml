@@ -43,7 +43,7 @@ jobs:
               per_page: 100,
             });
 
-            const names = Array.from({ length: 1 }, (_, i) => `performance_${i + 1}_results`);
+            const names = Array.from({ length: 2 }, (_, i) => `performance_${i + 1}_results`);
 
             for (const name of names) {
               const artifact = data.artifacts.find(a => a.name === name);
@@ -67,7 +67,7 @@ jobs:
       - name: Unzip artifacts
         run: |
           set -e
-          for i in $(seq 1 8); do
+          for i in $(seq 1 2); do
             f="performance_${i}_results.zip"
             if [ -f "$f" ]; then
               unzip -o "$f"
@@ -96,6 +96,27 @@ jobs:
             echo "wall_time_1_CI_low=$(echo "$line" | sed 's/\[/ /g; s/\]/ /g' | awk '{print $8}')"
             echo "wall_time_1_CI_high=$(echo "$line" | sed 's/\[/ /g; s/\]/ /g' | awk '{print $10}')"
           } >> "$GITHUB_OUTPUT"
+
+    - name: Retrieve performance benchmark 2
+      id: retrieve_performance_2
+      env:
+        benchmark_number: 2
+      run: |
+          set -e
+          file="$GITHUB_WORKSPACE/performance_2_results/analyze_2.log"
+          cat "$file"
+          line=$(grep wall_time "$file" | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g')
+          samples=$(grep samples "$file" | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g')
+          {
+            echo "wall_time_2_main_mean=$(echo "$line" | awk '{print $2}')"
+            echo "wall_time_2_main_std_dev=$(echo "$line" | awk '{print $4}')"
+            echo "wall_time_2_main_samples=$(echo "$samples" | awk '{print $2}')"
+            echo "wall_time_2_feature_mean=$(echo "$line" | awk '{print $5}')"
+            echo "wall_time_2_feature_std_dev=$(echo "$line" | awk '{print $7}')"
+            echo "wall_time_2_feature_samples=$(echo "$samples" | awk '{print $3}')"
+            echo "wall_time_2_CI_low=$(echo "$line" | sed 's/\[/ /g; s/\]/ /g' | awk '{print $8}')"
+            echo "wall_time_2_CI_high=$(echo "$line" | sed 's/\[/ /g; s/\]/ /g' | awk '{print $10}')"
+          } >> "$GITHUB_OUTPUT"
     - name: Find Comment
       id: find_comment
       continue-on-error: true
@@ -115,4 +136,5 @@ jobs:
             | Benchmark | Main | Feature | Difference (99.9% CI) |
             | --- | --- | --- | --- |
             | Continental extension | ${{ steps.retrieve_performance_1.outputs.wall_time_1_main_mean }} ± ${{ steps.retrieve_performance_1.outputs.wall_time_1_main_std_dev }} (s=${{ steps.retrieve_performance_1.outputs.wall_time_1_main_samples }})| ${{ steps.retrieve_performance_1.outputs.wall_time_1_feature_mean }} ± ${{ steps.retrieve_performance_1.outputs.wall_time_1_feature_std_dev }} (s=${{ steps.retrieve_performance_1.outputs.wall_time_1_feature_samples }})| ${{ steps.retrieve_performance_1.outputs.wall_time_1_CI_low }} .. ${{ steps.retrieve_performance_1.outputs.wall_time_1_CI_high }} |
+            | GMG nsinker | ${{ steps.retrieve_performance_2.outputs.wall_time_2_main_mean }} ± ${{ steps.retrieve_performance_2.outputs.wall_time_2_main_std_dev }} (s=${{ steps.retrieve_performance_2.outputs.wall_time_2_main_samples }})| ${{ steps.retrieve_performance_2.outputs.wall_time_2_feature_mean }} ± ${{ steps.retrieve_performance_2.outputs.wall_time_2_feature_std_dev }} (s=${{ steps.retrieve_performance_2.outputs.wall_time_2_feature_samples }})| ${{ steps.retrieve_performance_2.outputs.wall_time_2_CI_low }} .. ${{ steps.retrieve_performance_2.outputs.wall_time_2_CI_high }} |
         edit-mode: replace
