@@ -144,9 +144,11 @@ jobs:
         fi
     - name: lcov
       if: ${{ matrix.coverage != '' }}
-      working-directory: ${{github.workspace}}/build
       run: |
-        lcov --capture --directory ${{github.workspace}}/build --output-file coverage.info;
+        cd build
+        pwd
+        lcov --capture --directory . --output-file coverage.info;
+        pwd
         lcov --remove coverage.info '${{github.workspace}}/build/*' '${{github.workspace}}/include/*' '${{github.workspace}}/tests/*' '/usr/*' -o coverage_filtered.info
     - name: Coveralls
       if: ${{ matrix.coverage != '' }}
