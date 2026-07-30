@@ -59,7 +59,7 @@ To apply the equation of state to another pure fluid, replace the **critical tem
 In [ASPECT](https://github.com/geodynamics/aspect/blob/main/source/material_model/rheology/compositional_viscosity_prefactors.cc), the values of the universal Peng-Robinson coefficients 0.45724 and 0.07780, do not change for different fluids. 
 
 
-The calculation can be checked independently against the {cite:t}`baumannFugacityEquationState2015` implementation of the Peng-Robinson equation for water presented . That implementation solves the compressibility-factor cubic analytically. The comparison below applies those equations at the temperature and adiabatic pressure of each ASPECT output point. For a direct implementation check, the independent calculation uses exactly the same constants and decimal precision as ASPECT: $R=8.3144621$ J mol$^{-1}$ K$^{-1}$, $a_0=0.45724$, and $b_0=0.07780$. Both implementations calculate $\kappa$ from the water acentric factor $\omega=0.344$, giving $\kappa=0.873236$. The demonstration itself exposes pressures only up to 30 MPa; here its published equations are evaluated up to the same 2.5 GPa pressure limit used by ASPECT.
+The calculation can be checked independently against the {cite:t}`baumannFugacityEquationState2015` implementation of the Peng-Robinson equation for water. That implementation solves the compressibility-factor cubic analytically. The comparison below applies those equations at the temperature and adiabatic pressure of each ASPECT output point. For a direct implementation check, the independent calculation uses exactly the same constants and decimal precision as ASPECT: $R=8.3144621$ J mol$^{-1}$ K$^{-1}$, $a_0=0.45724$, and $b_0=0.07780$. Both implementations calculate $\kappa$ from the water acentric factor $\omega=0.344$, giving $\kappa=0.873236$. The demonstration itself exposes pressures only up to 30 MPa; here its published equations are evaluated up to the same 2.5 GPa pressure limit used by ASPECT.
 
 ```{figure-md} fig:peng-robinson-fugacity-field
 <img src="peng-robinson-fugacity-field.png" style="width:100.0%" />
@@ -130,7 +130,7 @@ The input parameter `Water fugacity exponents for dislocation creep` controls th
 
 The wet-quartz dislocation-creep parameters assigned to the crust follow {cite:t}`tokle:etal:2019`, with the prefactor converted to the SI units used by this model.
 
-In the next section, we compare two models: one uses the Peng-Robinson viscosity weakening implementation (reference model), the other does not (comparison model). The comparison model does not use `Viscosity prefactor scheme` and associated Peng-Robinson parameters. All other physical and numerical parameters are the same, so differences between the two solutions isolate the influence of the fugacity-dependent viscosity factor.
+In the next section, we compare two models: one uses the Peng-Robinson viscosity weakening implementation (comparison model), the other does not (reference model). The reference model does not use `Viscosity prefactor scheme` and associated Peng-Robinson parameters. All other physical and numerical parameters are the same, so differences between the two solutions isolate the influence of the fugacity-dependent viscosity factor.
 
 ## Effect on the brittle--ductile transition
 

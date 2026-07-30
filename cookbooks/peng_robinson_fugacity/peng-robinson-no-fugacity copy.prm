@@ -1,0 +1,207 @@
+# Reference subduction example without water-fugacity weakening.
+# Coordinates use y=0 at the bottom and y=300 km at the surface.
+
+set Dimension                     = 2
+set End time                     = 10e6
+set Use years instead of seconds = true
+set Output directory             = output-peng-robinson-no-fugacity
+set Pressure normalization       = surface
+set Surface pressure             = 1e5
+set CFL number                             = 1
+set Timing output frequency                = 2
+set Max nonlinear iterations               = 10
+set Nonlinear solver scheme                = single Advection, no Stokes
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent      = 1200e3
+    set Y extent      = 300e3
+    set X repetitions = 12
+    set Y repetitions = 3
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields  = ocrust, op
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names = x,y
+    # The crustal thickness is measured approximately normal to the slab,
+    # rather than vertically, so it stays 10 km thick around the bend.
+    # The 80 km OP is clipped against the slab top and cannot overlap ocrust.
+    set Function constants = H=300e3, bend=500e3, curvature=800e3, crust=20e3, plate_thickness=80e3
+    set Function expression = if(((H-y)-if(x<=bend,0,(x-bend)^2/curvature))/sqrt(1+(if(x<=bend,0,2*(x-bend)/curvature))^2)>=0 && \
+                                 ((H-y)-if(x<=bend,0,(x-bend)^2/curvature))/sqrt(1+(if(x<=bend,0,2*(x-bend)/curvature))^2)<crust,1,0) ; \
+                              if(x>bend && \
+                                 (H-y)<min(plate_thickness,(x-bend)^2/curvature),1,0)
+  end
+end
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators = left, right, bottom, top
+  set List of model names = initial composition
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names = x,y
+    # Temperature regions:
+    # 1. The 80 km thermal slab follows the same flat and curved slab top.
+    #    Distance and temperature are measured approximately normal to the
+    #    slab, avoiding vertical stretching where the slab bends.
+    # 2. The overriding plate has its own 80 km linear geotherm.
+    # 3. Everything else is mantle background at exactly 1573 K.
+    set Function constants = H=300e3, bend=500e3, curvature=800e3, plate_thickness=80e3, Ts=273, Tm=1573
+    set Function expression = if(((H-y)-if(x<=bend,0,(x-bend)^2/curvature))/sqrt(1+(if(x<=bend,0,2*(x-bend)/curvature))^2)>=0 && \
+                                 ((H-y)-if(x<=bend,0,(x-bend)^2/curvature))/sqrt(1+(if(x<=bend,0,2*(x-bend)/curvature))^2)<plate_thickness, \
+                                 Ts+(Tm-Ts)*((H-y)-if(x<=bend,0,(x-bend)^2/curvature))/(plate_thickness*sqrt(1+(if(x<=bend,0,2*(x-bend)/curvature))^2)), \
+                              if(x>bend && \
+                                 (H-y)<min(plate_thickness,(x-bend)^2/curvature), \
+                                 Ts+(Tm-Ts)*(H-y)/plate_thickness, \
+                                 Tm))
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = left, bottom, top
+  set List of model names = initial temperature
+end
+
+subsection Boundary traction model
+  set Fixed traction boundary indicators = bottom y:initial lithostatic pressure
+  subsection Initial lithostatic pressure
+   set Representative point= 0,200e3
+   set Number of integration points = 1000
+end
+
+# Prescribe the complete kinematic slab velocity instead of solving Stokes.
+# This keeps the slab and ocrust at exactly 2 cm/yr through the bend and
+# makes the geometry/advection development step inexpensive.
+subsection Prescribed Stokes solution
+  set Model name = function
+  subsection Velocity function
+    set Variable names = x,y
+    set Function constants = H=300e3, bend=500e3, curvature=800e3, plate_thickness=80e3, v=0.02
+    set Function expression = if(((H-y)-if(x<=bend,0,(x-bend)^2/curvature))/sqrt(1+(if(x<=bend,0,2*(x-bend)/curvature))^2)>=0 && \
+                                 ((H-y)-if(x<=bend,0,(x-bend)^2/curvature))/sqrt(1+(if(x<=bend,0,2*(x-bend)/curvature))^2)<plate_thickness, \
+                                 v/sqrt(1+(if(x<=bend,0,2*(x-bend)/curvature))^2),0) ; \
+                              if(((H-y)-if(x<=bend,0,(x-bend)^2/curvature))/sqrt(1+(if(x<=bend,0,2*(x-bend)/curvature))^2)>=0 && \
+                                 ((H-y)-if(x<=bend,0,(x-bend)^2/curvature))/sqrt(1+(if(x<=bend,0,2*(x-bend)/curvature))^2)<plate_thickness, \
+                                 -v*(if(x<=bend,0,2*(x-bend)/curvature))/sqrt(1+(if(x<=bend,0,2*(x-bend)/curvature))^2),0)
+  end
+
+  subsection Pressure function
+    set Variable names = x,y
+    set Function constants = H=300e3, rho=3300, g=9.81, ps=1e5
+    set Function expression = ps+rho*g*(H-y)
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    set Viscous flow law      = composite
+    set Viscosity averaging scheme  =   geometric
+    # Step 1 is kinematically driven. Keep all materials neutrally buoyant
+    # so the prescribed 2 cm/yr plate motion is not overwhelmed by slab pull.
+    set Thermal expansivities = 0, 0, 0
+    set Densities             = 3300, 3300, 3300
+
+    set Minimum strain rate = 1e-15
+    set Minimum viscosity   = 1e18
+    set Maximum viscosity   = 2.5e23
+    set Grain size = 1
+
+    # Disable diffusion creep. Entries are background, ocrust, op.
+    set Prefactors for diffusion creep           = 1e-50, 1e-50, 1e-50
+    set Stress exponents for diffusion creep     = 1, 1, 1
+    set Grain size exponents for diffusion creep = 0, 0, 0
+    set Activation energies for diffusion creep  = 0, 0, 0
+    set Activation volumes for diffusion creep   = 0, 0, 0
+
+    # The oceanic crust uses the wet-quartz dislocation-creep parameters of
+    # Tokle, Hirth, and Behr (2019, 10.1016/j.epsl.2018.10.017), converted to
+    # the SI and fugacity units used here. The overriding plate temporarily
+    # uses the background mantle law.
+    set Prefactors for dislocation creep          = 2.93e-17, 1.363990010960491e-41, 2.93e-17
+    set Stress exponents for dislocation creep    = 3.5, 4, 3.5
+    set Activation energies for dislocation creep = 540e3, 125e3, 540e3
+    set Activation volumes for dislocation creep  = 12e-6, 0, 12e-6
+
+    set Angles of internal friction =   5,2.5,20  
+    set Maximum yield stress = 5e8
+  end
+end
+
+subsection Discretization
+  set Stokes velocity polynomial degree = 2
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 1
+  set Initial adaptive refinement        = 5
+  set Time steps between mesh refinement = 0
+  set Strategy                           = minimum refinement function
+  set Run postprocessors on initial refinement = false
+  set Skip setup initial conditions on initial refinement = true
+  set Skip solvers on initial refinement = true
+
+  subsection Minimum refinement function
+    set Coordinate system = cartesian
+    set Variable names = x,y
+    set Function constants = H=300e3, bend=500e3, curvature=800e3, crust=10e3
+    # Use nested refinement halos around the middle of the oceanic crust.
+    # The broad outer halo finds the slab even on the initial coarse mesh.
+    # Successively narrower halos then bring the complete 10 km crust,
+    # including its flat part, to level 6 everywhere along the slab.
+    # Tight halos at the slab top (D=0) and crust base (D=2*crust=20 km)
+    # give level 7 at both interfaces.
+    set Function expression = if(abs(((H-y)-if(x<=bend,0,(x-bend)^2/curvature))/sqrt(1+(if(x<=bend,0,2*(x-bend)/curvature))^2))<=5e3,7, \
+                              if(abs(((H-y)-if(x<=bend,0,(x-bend)^2/curvature))/sqrt(1+(if(x<=bend,0,2*(x-bend)/curvature))^2)-2*crust)<=5e3,7, \
+                              if(abs(((H-y)-if(x<=bend,0,(x-bend)^2/curvature))/sqrt(1+(if(x<=bend,0,2*(x-bend)/curvature))^2)-0.5*crust)<=10e3,7, \
+                              if(abs(((H-y)-if(x<=bend,0,(x-bend)^2/curvature))/sqrt(1+(if(x<=bend,0,2*(x-bend)/curvature))^2)-0.5*crust)<=20e3,6, \
+                              if(abs(((H-y)-if(x<=bend,0,(x-bend)^2/curvature))/sqrt(1+(if(x<=bend,0,2*(x-bend)/curvature))^2)-0.5*crust)<=40e3,5, \
+                              if(abs(((H-y)-if(x<=bend,0,(x-bend)^2/curvature))/sqrt(1+(if(x<=bend,0,2*(x-bend)/curvature))^2)-0.5*crust)<=80e3,4,1))))))
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = composition statistics, material statistics, pressure statistics, visualization
+
+  subsection Visualization
+    set Interpolate output            = false
+    set List of output variables      = named additional outputs, material properties, strain rate, error indicator
+    set Output format                 = vtu
+    set Time between graphical output = 1e3
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 40
+    set Linear solver tolerance             = 1e-3
+  end
+end
