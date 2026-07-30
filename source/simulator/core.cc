@@ -1995,6 +1995,8 @@ namespace aspect
 
     try
       {
+        signals.pre_nonlinear_solver(*this);
+
         switch (parameters.nonlinear_solver)
           {
             case NonlinearSolver::no_Advection_no_Stokes:
