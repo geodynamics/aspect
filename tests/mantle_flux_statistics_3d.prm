@@ -1,0 +1,93 @@
+# A prescribed hot upwelling and cold downwelling in a 3D spherical shell.
+# The test checks the three-dimensional flux units, structure counts, and VTU fields.
+# MPI: 2
+
+set Dimension                         = 3
+set Use years instead of seconds      = true
+set End time                          = 0
+set Nonlinear solver scheme           = single Advection, no Stokes
+set Output directory                  = output-mantle_flux_statistics_3d
+
+subsection Geometry model
+  set Model name = spherical shell
+  subsection Spherical shell
+    set Inner radius  = 1e6
+    set Outer radius  = 2e6
+    set Opening angle = 360
+  end
+end
+
+subsection Gravity model
+  set Model name = radial constant
+  subsection Radial constant
+    set Magnitude = 10
+  end
+end
+
+subsection Adiabatic conditions model
+  set Model name = function
+  subsection Function
+    set Function expression = 1000; 0; 3300
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Variable names = x,y,z
+    set Function expression = 1000 + if(x/sqrt(x*x+y*y+z*z)>0.65,200,if(x/sqrt(x*x+y*y+z*z)<-0.65,-200,0))
+  end
+end
+
+subsection Prescribed Stokes solution
+  set Model name = function
+  subsection Velocity function
+    set Variable names = x,y,z
+    set Function expression = if(x/sqrt(x*x+y*y+z*z)>0.65,1,if(x/sqrt(x*x+y*y+z*z)<-0.65,-1,0))*x/sqrt(x*x+y*y+z*z); \
+                              if(x/sqrt(x*x+y*y+z*z)>0.65,1,if(x/sqrt(x*x+y*y+z*z)<-0.65,-1,0))*y/sqrt(x*x+y*y+z*z); \
+                              if(x/sqrt(x*x+y*y+z*z)>0.65,1,if(x/sqrt(x*x+y*y+z*z)<-0.65,-1,0))*z/sqrt(x*x+y*y+z*z)
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators =
+end
+
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Reference density             = 3300
+    set Reference temperature         = 1000
+    set Thermal expansion coefficient = 4e-5
+    set Thermal conductivity          = 4
+    set Reference specific heat       = 1250
+    set Viscosity                     = 1e21
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 1
+  set Initial adaptive refinement        = 0
+  set Time steps between mesh refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = mantle flux statistics, visualization
+
+  subsection Mantle flux statistics
+    set Measurement depths                  = 500e3
+    set Measurement layer half thickness    = 150e3
+    set Cold temperature anomaly threshold  = -100
+    set Hot temperature anomaly threshold   = 100
+    set Maximum point spacing               = 600e3
+    set Minimum points per structure        = 2
+    set Minimum slab length                 = 0
+  end
+
+  subsection Visualization
+    set List of output variables            = mantle flux, nonadiabatic temperature, spherical velocity components
+    set Output format                       = vtu
+    set Time between graphical output       = 0
+    set Number of grouped files             = 0
+  end
+end

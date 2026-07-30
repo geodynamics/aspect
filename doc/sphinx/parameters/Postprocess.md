@@ -9,7 +9,7 @@
 :name: parameters:Postprocess/List_20of_20postprocessors
 **Default value:**
 
-**Pattern:** [MultipleSelection ODE statistics|Stokes residual|basic statistics|boundary densities|boundary pressures|boundary strain rate residual statistics|boundary velocity residual statistics|command|composition statistics|composition velocity statistics|core statistics|crystal preferred orientation|current surface|depth average|domain volume statistics|dynamic topography|entropy statistics|entropy viscosity statistics|fluid velocity statistics|geoid|global statistics|gravity calculation|heat flux densities|heat flux map|heat flux statistics|heating statistics|load balance statistics|mass flux statistics|material statistics|matrix statistics|maximum depth of field|melt statistics|memory statistics|mobility statistics|particle count statistics|particle distribution score|particle distribution statistics|particles|point values|pressure statistics|rotation statistics|sea level|spherical velocity statistics|temperature statistics|timing statistics|topography|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization|volume of fluid statistics ]
+**Pattern:** [MultipleSelection ODE statistics|Stokes residual|basic statistics|boundary densities|boundary pressures|boundary strain rate residual statistics|boundary velocity residual statistics|command|composition statistics|composition velocity statistics|core statistics|crystal preferred orientation|current surface|depth average|domain volume statistics|dynamic topography|entropy statistics|entropy viscosity statistics|fluid velocity statistics|geoid|global statistics|gravity calculation|heat flux densities|heat flux map|heat flux statistics|heating statistics|load balance statistics|mantle flux statistics|mass flux statistics|material statistics|matrix statistics|maximum depth of field|melt statistics|memory statistics|mobility statistics|particle count statistics|particle distribution score|particle distribution statistics|particles|point values|pressure statistics|rotation statistics|sea level|spherical velocity statistics|temperature statistics|timing statistics|topography|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization|volume of fluid statistics ]
 
 **Documentation:** A comma separated list of postprocessor objects that should be run at the end of each time step. Some of these postprocessors will declare their own parameters which may, for example, include that they will actually do something only every so many time steps or years. Alternatively, the text &lsquo;all&rsquo; indicates that all available postprocessors should be run after each time step.
 
@@ -83,6 +83,8 @@ The &ldquo;heat flux densities&rdquo; postprocessor computes the same quantity a
 &lsquo;heating statistics&rsquo;: A postprocessor that computes some statistics about heating, averaged by volume.
 
 &lsquo;load balance statistics&rsquo;: A postprocessor that computes statistics about the distribution of cells, and if present particles across subdomains. In particular, it computes maximal, average and minimal number of cells across all ranks. If there are particles it also computes the maximal, average, and minimum number of particles across all ranks, and maximal, average, and minimal ratio between local number of particles and local number of cells across all processes. All of these numbers can be useful to assess the load balance between different MPI ranks, as the difference between the minimal and maximal load should be as small as possible.
+
+&lsquo;mantle flux statistics&rsquo;: Measures hot outward flow (plumes) and cold inward flow (slabs) across layers at selected depths in spherical and Cartesian geometries. It reports volume flux, temperature-anomaly flux, thermal-buoyancy mass flux, thermal-buoyancy force rate, the number of detected structures, slab length, and plume radius. In two-dimensional models, fluxes are reported per unit length in the missing third direction. Rate units follow the global choice to use years or seconds in output.
 
 &lsquo;mass flux statistics&rsquo;: A postprocessor that computes some statistics about the mass flux across boundaries. For each boundary indicator (see your geometry description for which boundary indicators are used), the mass flux is computed in outward direction, i.e., from the domain to the outside, using the formula $\int_{\Gamma_i} \rho \mathbf v \cdot \mathbf n$ where $\Gamma_i$ is the part of the boundary with indicator $i$, $\rho$ is the density as reported by the material model, $\mathbf v$ is the velocity, and $\mathbf n$ is the outward normal.
 
@@ -774,6 +776,89 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 **Documentation:** The maximum number of time steps between each generation of gravity output files.
 ::::
 
+(parameters:Postprocess/Mantle_20flux_20statistics)=
+## **Subsection:** Postprocess / Mantle flux statistics
+::::{dropdown} __Parameter:__ {ref}`Cold temperature anomaly threshold<parameters:Postprocess/Mantle_20flux_20statistics/Cold_20temperature_20anomaly_20threshold>`
+:name: parameters:Postprocess/Mantle_20flux_20statistics/Cold_20temperature_20anomaly_20threshold
+**Default value:** -200
+
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+
+**Documentation:** A point colder than this value and moving inward is treated as slab material. Units: K.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Hot temperature anomaly threshold<parameters:Postprocess/Mantle_20flux_20statistics/Hot_20temperature_20anomaly_20threshold>`
+:name: parameters:Postprocess/Mantle_20flux_20statistics/Hot_20temperature_20anomaly_20threshold
+**Default value:** 200
+
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+
+**Documentation:** A point hotter than this value and moving outward is treated as plume material. Units: K.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Maximum point spacing<parameters:Postprocess/Mantle_20flux_20statistics/Maximum_20point_20spacing>`
+:name: parameters:Postprocess/Mantle_20flux_20statistics/Maximum_20point_20spacing
+**Default value:** 80000
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Largest surface distance between neighboring cell centers that belong to the same plume or slab. Units: m.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Measurement depths<parameters:Postprocess/Mantle_20flux_20statistics/Measurement_20depths>`
+:name: parameters:Postprocess/Mantle_20flux_20statistics/Measurement_20depths
+**Default value:** 440e3
+
+**Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** Depths below the surface where plume and slab fluxes are measured. Units: m.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Measurement layer half thickness<parameters:Postprocess/Mantle_20flux_20statistics/Measurement_20layer_20half_20thickness>`
+:name: parameters:Postprocess/Mantle_20flux_20statistics/Measurement_20layer_20half_20thickness
+**Default value:** 20000
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Half the thickness of the layer sampled around each measurement depth. Units: m.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Minimum points per structure<parameters:Postprocess/Mantle_20flux_20statistics/Minimum_20points_20per_20structure>`
+:name: parameters:Postprocess/Mantle_20flux_20statistics/Minimum_20points_20per_20structure
+**Default value:** 5
+
+**Pattern:** [Integer range 1...2147483647 (inclusive)]
+
+**Documentation:** Smallest number of detected cell centers needed to count a plume or slab.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Minimum slab length<parameters:Postprocess/Mantle_20flux_20statistics/Minimum_20slab_20length>`
+:name: parameters:Postprocess/Mantle_20flux_20statistics/Minimum_20slab_20length
+**Default value:** 0
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Do not count cold structures shorter than this surface distance. Units: m.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Time between cluster files<parameters:Postprocess/Mantle_20flux_20statistics/Time_20between_20cluster_20files>`
+:name: parameters:Postprocess/Mantle_20flux_20statistics/Time_20between_20cluster_20files
+**Default value:** 0
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Time between cluster files. Zero writes a file every time the postprocessor runs. Units: years when output uses years; seconds otherwise.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Write cluster files<parameters:Postprocess/Mantle_20flux_20statistics/Write_20cluster_20files>`
+:name: parameters:Postprocess/Mantle_20flux_20statistics/Write_20cluster_20files
+**Default value:** false
+
+**Pattern:** [Bool]
+
+**Documentation:** Write the cell centers assigned to each plume and slab to mantle_flux_clusters.NNNNN files.
+::::
+
 (parameters:Postprocess/Memory_20statistics)=
 ## **Subsection:** Postprocess / Memory statistics
 ::::{dropdown} __Parameter:__ {ref}`Output peak virtual memory (VmPeak)<parameters:Postprocess/Memory_20statistics/Output_20peak_20virtual_20memory_20_28VmPeak_29>`
@@ -1099,7 +1184,7 @@ Of course, activating this option also greatly increases the amount of data ASPE
 :name: parameters:Postprocess/Visualization/List_20of_20output_20variables
 **Default value:**
 
-**Pattern:** [MultipleSelection ISA rotation timescale|Vp anomaly|Vs anomaly|adiabat|artificial viscosity|artificial viscosity composition|boundary indicators|boundary strain rate residual|boundary velocity residual|compositional vector|darcy velocity|density anomaly|depth|depth including mesh deformation|dynamic topography|entropy average|error indicator|geoid|grain lag angle|gravity|heat flux map|heating|material properties|maximum horizontal compressive stress|melt fraction|melt material properties|named additional outputs|nonadiabatic pressure|nonadiabatic temperature|particle count|partition|prescribed solution|principal stress|shear stress|spd factor|spherical velocity components|strain rate|strain rate tensor|stress|stress residual|stress second invariant|surface dynamic topography|surface elevation|surface strain rate tensor|surface stress|temperature anomaly|vertical heat flux|volume of fluid values|volumetric strain rate ]
+**Pattern:** [MultipleSelection ISA rotation timescale|Vp anomaly|Vs anomaly|adiabat|artificial viscosity|artificial viscosity composition|boundary indicators|boundary strain rate residual|boundary velocity residual|compositional vector|darcy velocity|density anomaly|depth|depth including mesh deformation|dynamic topography|entropy average|error indicator|geoid|grain lag angle|gravity|heat flux map|heating|mantle flux|material properties|maximum horizontal compressive stress|melt fraction|melt material properties|named additional outputs|nonadiabatic pressure|nonadiabatic temperature|particle count|partition|prescribed solution|principal stress|shear stress|spd factor|spherical velocity components|strain rate|strain rate tensor|stress|stress residual|stress second invariant|surface dynamic topography|surface elevation|surface strain rate tensor|surface stress|temperature anomaly|vertical heat flux|volume of fluid values|volumetric strain rate ]
 
 **Documentation:** A comma separated list of visualization objects that should be run whenever writing graphical output. By default, the graphical output files will always contain the primary variables velocity, pressure, and temperature. However, one frequently wants to also visualize derived quantities, such as the thermodynamic phase that corresponds to a given temperature-pressure value, or the corresponding seismic wave speeds. The visualization objects do exactly this: they compute such derived quantities and place them into the output file. The current parameter is the place where you decide which of these additional output variables you want to have in your output file.
 
@@ -1198,6 +1283,8 @@ Physical units: $\frac{\text{W}}{\text{m}^2}$.
 &lsquo;heating&rsquo;: A visualization output object that generates output for all the heating terms used in the energy equation.
 
 Physical units: $\frac{\text{W}}{\text{m}^3}$\si{\watt\per\cubic\meter}.
+
+&lsquo;mantle flux&rsquo;: Writes four fields used by the mantle flux statistics postprocessor: the detected mantle structure, temperature-anomaly flux density, and the thermal-buoyancy mass-flux and force-rate densities. Radial velocity and nonadiabatic temperature are available through existing visualization postprocessors. The mantle structure field is 1 for plume material, -1 for slab material, and 0 for background mantle.
 
 &lsquo;material properties&rsquo;: A visualization output object that generates output for the material properties given by the material model. The current postprocessor allows to output a (potentially large) subset of all of the information provided by material models at once, with just a single material model evaluation per output point. Although individual properties can still be listed in the &ldquo;List of output variables&rdquo;, this visualization plugin is called internally to avoid duplicated evaluations of the material model.
 
