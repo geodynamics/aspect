@@ -1,0 +1,8 @@
+Changed: Models with melt transport can now use discontinuous elements for
+compositional fields, with two exceptions: the porosity field and fields
+that are advected with the melt velocity still require continuous elements.
+Compositional fields that are advected as finite element fields with the
+solid velocity now use the same discontinuous Galerkin (DG) face terms as
+models without melt transport.
+<br>
+(Ryan Stoner, 2026/07/30)
