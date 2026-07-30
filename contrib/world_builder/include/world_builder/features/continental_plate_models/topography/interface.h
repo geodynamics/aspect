@@ -80,6 +80,13 @@ namespace WorldBuilder
             double get_topography(const Point<3> &position,
                                   const Objects::NaturalCoordinate &position_in_natural_coordinates,
                                   double topography) const = 0;
+
+            /**
+             * Return a guaranteed upper bound for this topography model.
+             */
+            virtual
+            double maximum_topography() const = 0;
+
             /**
              * A function to register a new type. This is part of the automatic
              * registration of the object factory.

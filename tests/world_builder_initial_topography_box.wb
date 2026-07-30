@@ -1,0 +1,20 @@
+{
+  "version": "1.1",
+  "coordinate system": {"model": "cartesian"},
+  "cross section": [[0,0], [100000,0]],
+  "features":
+  [
+    {
+      "model": "continental plate",
+      "name": "western highland",
+      "coordinates": [[-1000,-1000], [50000,-1000], [50000,1000], [-1000,1000]],
+      "topography models": [{"model": "uniform", "topography": 10000}]
+    },
+    {
+      "model": "continental plate",
+      "name": "eastern highland",
+      "coordinates": [[50000,-1000], [101000,-1000], [101000,1000], [50000,1000]],
+      "topography models": [{"model": "uniform", "topography": 30000}]
+    }
+  ]
+}

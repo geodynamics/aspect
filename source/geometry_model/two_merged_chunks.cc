@@ -22,6 +22,12 @@
 #include <aspect/geometry_model/two_merged_chunks.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 #include <aspect/geometry_model/initial_topography_model/ascii_data.h>
+#ifdef ASPECT_WITH_WORLD_BUILDER
+#  include <world_builder/config.h>
+#  if WORLD_BUILDER_VERSION_GTE(1,1,1)
+#    include <aspect/geometry_model/initial_topography_model/world_builder.h>
+#  endif
+#endif
 
 #include <aspect/simulator_signals.h>
 #include <deal.II/grid/grid_generator.h>
@@ -39,9 +45,20 @@ namespace aspect
     void
     TwoMergedChunks<dim>::initialize ()
     {
-      AssertThrow(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()) ||
-                  Plugins::plugin_type_matches<const InitialTopographyModel::AsciiData<dim>>(this->get_initial_topography_model()),
-                  ExcMessage("At the moment, only the Zero or AsciiData initial topography model can be used with the TwoMergedChunks geometry model."));
+      bool supported_topography_model =
+        Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()) ||
+        Plugins::plugin_type_matches<const InitialTopographyModel::AsciiData<dim>>(this->get_initial_topography_model());
+#ifdef ASPECT_WITH_WORLD_BUILDER
+#  if WORLD_BUILDER_VERSION_GTE(1,1,1)
+      supported_topography_model =
+        supported_topography_model ||
+        Plugins::plugin_type_matches<const InitialTopographyModel::WorldBuilder<dim>>(this->get_initial_topography_model());
+#  endif
+#endif
+
+      AssertThrow(supported_topography_model,
+                  ExcMessage("At the moment, only the Zero, AsciiData, or World Builder "
+                             "initial topography model can be used with the TwoMergedChunks geometry model."));
 
       manifold = std::make_unique<internal::ChunkGeometry<dim>>(this->get_initial_topography_model_pointer(),
                                                                  point1[1],

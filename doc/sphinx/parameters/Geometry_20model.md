@@ -617,7 +617,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 :name: parameters:Geometry_20model/Initial_20topography_20model/Model_20name
 **Default value:** zero topography
 
-**Pattern:** [Selection ascii data|function|prm polygon|zero topography ]
+**Pattern:** [Selection ascii data|function|prm polygon|world builder|zero topography ]
 
 **Documentation:** Select one of the following models:
 
@@ -626,6 +626,8 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 &lsquo;function&rsquo;: Implementation of a model in which the initial topography is described by a function in Cartesian or spherical coordinates.
 
 &lsquo;prm polygon&rsquo;: An initial topography model that defines the initial topography as constant inside each of a set of polygonal parts of the surface. The polygons, and their associated surface elevation, are defined in the &lsquo;Geometry model/Initial topography/Prm polygon&rsquo; section.
+
+&lsquo;world builder&rsquo;: Specify the initial topography through the Geodynamic World Builder. World Builder topography models are queried from the file selected by the top-level parameter &lsquo;World builder file&rsquo;. ASPECT obtains the maximum expected topography directly from World Builder.
 
 &lsquo;zero topography&rsquo;: Implementation of a model in which the initial topography is zero.
 ::::
