@@ -1011,6 +1011,8 @@ configure_file(
 set(ASPECT_RUN_ALL_TESTS OFF CACHE BOOL "Set up complete test suite to run.")
 set(ASPECT_NEED_TEST_CONFIGURE ON CACHE BOOL "If true, reconfigure test project.")
 set(ASPECT_COMPARE_TEST_RESULTS ON CACHE BOOL "Compare test results with high accuracy.")
+set(ASPECT_ENABLE_PERFORMANCE_TESTS OFF CACHE BOOL "If true, enable performance tests. These are likely to cause timeouts on CI systems.")
+
 
 configure_file(
   ${CMAKE_SOURCE_DIR}/tests/cmake/CTestCustom.ctest.in
@@ -1086,6 +1088,7 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt
     COMMAND ${CMAKE_COMMAND} -G "${ASPECT_TEST_GENERATOR}"
         -D ASPECT_RUN_ALL_TESTS=${ASPECT_RUN_ALL_TESTS}
         -D ASPECT_COMPARE_TEST_RESULTS=${ASPECT_COMPARE_TEST_RESULTS}
+        -D ASPECT_ENABLE_PERFORMANCE_TESTS=${ASPECT_ENABLE_PERFORMANCE_TESTS}
         -D Aspect_DIR=${CMAKE_BINARY_DIR}
         -D CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
         -D ASPECT_BINARY=${CMAKE_BINARY_DIR}/aspect

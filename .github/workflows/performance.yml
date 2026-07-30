@@ -73,6 +73,7 @@ jobs:
         -D ASPECT_TEST_GENERATOR='Ninja' \
         -D ASPECT_PRECOMPILE_HEADERS=ON \
         -D ASPECT_UNITY_BUILD=ON \
+        -D ASPECT_ENABLE_PERFORMANCE_TESTS=ON \
         -D ASPECT_WITH_FASTSCAPE=OFF \
         -D ASPECT_RUN_ALL_TESTS=ON \
         -D ASPECT_COMPARE_TEST_RESULTS=OFF \
@@ -99,6 +100,7 @@ jobs:
         -D ASPECT_TEST_GENERATOR='Ninja' \
         -D ASPECT_PRECOMPILE_HEADERS=ON \
         -D ASPECT_UNITY_BUILD=ON \
+        -D ASPECT_ENABLE_PERFORMANCE_TESTS=ON \
         -D ASPECT_WITH_FASTSCAPE=OFF \
         -D ASPECT_RUN_ALL_TESTS=ON \
         -D ASPECT_COMPARE_TEST_RESULTS=OFF \
@@ -122,7 +124,7 @@ jobs:
       shell: bash
       run: |
             cd $GITHUB_WORKSPACE/cbdr/;
-            time cargo run --release sample --timeout=1800s "main:$GITHUB_WORKSPACE/main/source/build/./aspect-release  $GITHUB_WORKSPACE/feature/source/build/tests/performance_continental_extension.x.prm" "feature:$GITHUB_WORKSPACE/feature/source/build/./aspect-release $GITHUB_WORKSPACE/feature/source/build/tests/performance_continental_extension.x.prm" > $GITHUB_WORKSPACE/result_1.csv;
+            time cargo run --release sample --timeout=1800s "main:$GITHUB_WORKSPACE/main/source/build/./aspect-release  $GITHUB_WORKSPACE/feature/source/build/tests/performance/performance_continental_extension.x.prm" "feature:$GITHUB_WORKSPACE/feature/source/build/./aspect-release $GITHUB_WORKSPACE/feature/source/build/tests/performance/performance_continental_extension.x.prm" > $GITHUB_WORKSPACE/result_1.csv;
             cat $GITHUB_WORKSPACE/result_1.csv;
             cat $GITHUB_WORKSPACE/result_1.csv | cargo run --release analyze --disable-dynamic-printing > $GITHUB_WORKSPACE/performance_1_results/analyze_1.log ||:;
             cat $GITHUB_WORKSPACE/performance_1_results/analyze_1.log
