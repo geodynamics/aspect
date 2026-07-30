@@ -23,8 +23,8 @@ jobs:
       }}
   steps:
     - name: Download artifacts
-        uses: actions/github-script@v8
-        with:
+      uses: actions/github-script@v8
+      with:
           script: |
             const fs = require('fs');
             const path = require('path');
@@ -64,8 +64,8 @@ jobs:
               core.info(`Saved ${filePath}`);
             }
 
-      - name: Unzip artifacts
-        run: |
+    - name: Unzip artifacts
+      run: |
           set -e
           for i in $(seq 1 8); do
             f="performance_${i}_results.zip"
