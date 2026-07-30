@@ -1,0 +1,30 @@
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving anomaly system ... 0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
+
+Number of active cells: 166 (on 6 levels)
+Number of degrees of freedom: 3,238 (1,518+202+759+759)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Advecting particles...  done.
+   Solving anomaly system ... 0 iterations.
+   Solving Stokes system (GMG)... 17+0 iterations.
+
+   Postprocessing:
+     Particle manager 1 properties:
+       initial anomaly
+     Particle manager 2 properties:
+       function
+     Writing particle output: output-particle_information/particles/particles-00000, output-particle_information/particles-2/particles-2-00000
+
+Termination requested by criterion: end time
+
+
+
