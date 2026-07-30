@@ -133,7 +133,7 @@ namespace aspect
           // Collect the values of all reaction progress variables and use
           // them to modify the equation of state properties of the individual phases
           // before phase averaging.
-          const std::vector<unsigned int> reaction_progress_indices =
+          const std::vector<unsigned int> &reaction_progress_indices =
             this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::reaction_progress);
 
           if (reaction_progress_indices.size() != 0)
