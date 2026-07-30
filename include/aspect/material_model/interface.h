@@ -959,12 +959,14 @@ namespace aspect
      * Some material models can compute things that are not used anywhere
      * in the physics modules of ASPECT, but that may be of interest for
      * visualization purposes. An example would be a material model that can
-     * compute seismic velocities -- these are irrelevant to the rest of
-     * ASPECT, but would be nice to have for postprocessing.
+     * compute seismic velocities -- these are irrelevant to the core of
+     * ASPECT (say, for assembling matrices), but would be nice to have
+     * for postprocessing where we may want to look at these derived
+     * quantities during visualization of the solution.
      *
      * This class is a base class for material models to provide this kind
      * of information. It follows the scheme laid out by
-     * AdditionalMaterialModelOutputs but also provides an interface by which
+     * AdditionalMaterialOutputs but also provides an interface by which
      * consumers of these objects (e.g., the
      * Postprocess::Visualization::NamedAdditionalOutputs class) can query the
      * names and values material models have put into these additional
@@ -973,8 +975,9 @@ namespace aspect
      * names. Consequently, the material models have to describe what
      * values and how many values they can produce.)
      *
-     * This class is then this base class for additional named material model outputs
-     * to be added to the MaterialModel::MaterialModelOutputs structure.
+     * This class is then this base class for additional named
+     * material model outputs to be added to the
+     * MaterialModel::MaterialModelOutputs structure.
      */
     template <int dim>
     class NamedAdditionalMaterialOutputs : public AdditionalMaterialOutputs<dim>
