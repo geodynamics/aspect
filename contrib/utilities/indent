@@ -147,7 +147,7 @@ find tests include source benchmarks cookbooks unit_tests \
   | xargs -0 -P 10 -I {} bash -c "indent_file {}"
 
 
-echo "--- Fixing permsissions, line endings, tabs, and whitespace"
+echo "--- Fixing permissions, line endings, tabs, and whitespace"
 
 
 # Find all source files that should be checked for invalid characters
