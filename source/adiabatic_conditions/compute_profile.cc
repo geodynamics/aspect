@@ -277,20 +277,26 @@ namespace aspect
           return property.front();
         }
 
-      const double floating_index = z/delta_z;
-      const unsigned int i = static_cast<unsigned int>(floating_index);
+      const double normalized_distance_from_surface = z/delta_z;
+      // This value is index of the point immediately above the depth z
+      // It is also the normalized distance from the surface to the point at index i.
+      const unsigned int i = static_cast<unsigned int>(normalized_distance_from_surface);
 
-      // If p is close to an existing value use that one. This prevents
-      // asking for values at i+1 while initializing i+1 (when p is at the
-      // depth of index i).
-      const double distance_to_closest_profile_point = floating_index-std::floor(floating_index+0.5);
-      if (distance_to_closest_profile_point >=0.0 && distance_to_closest_profile_point < 1e-6)
+      // Check if p is close to, and immediately beyond, an existing value.
+      // If so, use that one. This prevents asking for values at i+1 while
+      // initializing i+1 (when p is at the depth of index i).
+
+      // This value is negative if it is closer to i+1 than to i.
+      // It is positive if it is closer to i than to i+1 or it is
+      // larger than i+1.
+      const double normalized_distance_to_closest_profile_point = normalized_distance_from_surface-std::floor(normalized_distance_from_surface+0.5);
+      if (normalized_distance_to_closest_profile_point >=0.0 && normalized_distance_to_closest_profile_point < 1e-6)
         return property[i];
 
       Assert (i+1 < property.size(), ExcInternalError());
 
       // now do the linear interpolation
-      const double d = floating_index - i;
+      const double d = normalized_distance_from_surface - i;
       Assert ((d>=0) && (d<=1), ExcInternalError());
 
       return d*property[i+1] + (1.-d)*property[i];
