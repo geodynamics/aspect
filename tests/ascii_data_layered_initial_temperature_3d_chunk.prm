@@ -30,7 +30,7 @@ end
 subsection Initial temperature model
   set Model name = ascii data layered
 
-  subsection Ascii data model
+  subsection Ascii data layered
     set Data directory        = $ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/
     set Data file names       = initial_isotherm_1000K_chunk_3d.txt, initial_isotherm_500K_chunk_3d.txt
     set Interpolation scheme  = linear
