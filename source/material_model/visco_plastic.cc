@@ -130,6 +130,23 @@ namespace aspect
                                            :
                                            eos_outputs_all_phases.densities[0];
 
+          // Collect the values of all reaction progress variables and use
+          // them to modify the equation of state properties of the individual phases
+          // before phase averaging.
+          const std::vector<unsigned int> &reaction_progress_indices =
+            this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::reaction_progress);
+
+          if (reaction_progress_indices.size() != 0)
+            {
+              std::vector<double> reaction_progress_values(reaction_progress_indices.size(), 0.0);
+              for (unsigned int j=0; j<reaction_progress_indices.size(); ++j)
+                reaction_progress_values[j] = in.composition[i][reaction_progress_indices[j]];
+
+              reaction_progress_modify_equation_of_state_outputs(reaction_progress_values,
+                                                                 reaction_progress_mapping,
+                                                                 n_phase_transitions_for_each_chemical_composition,
+                                                                 eos_outputs_all_phases);
+            }
           // The phase index is set to invalid_unsigned_int, because it is only used internally
           // in phase_average_equation_of_state_outputs to loop over all existing phases
           MaterialUtilities::PhaseFunctionInputs<dim> phase_inputs(in.temperature[i],
@@ -396,6 +413,16 @@ namespace aspect
                              "those corresponding to chemical compositions. "
                              "If only one value is given, then all use the same value. "
                              "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
+          prm.declare_entry ("Reaction progress mapping", "",
+                             Patterns::List (Patterns::Integer(0)),
+                             "A list of indices that maps each phase transition to a "
+                             "reaction-progress compositional field. For example, an entry "
+                             "of 0 indicates that the corresponding phase transition uses "
+                             "the 0th reaction-progress composition. All following phase "
+                             "transitions will be affected by the former transition's "
+                             "reaction kinetics. A negative value means the phase transition "
+                             "is assumed to be equilibrium."
+                            );
         }
         prm.leave_subsection();
       }
@@ -461,6 +488,8 @@ namespace aspect
               rheology->parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(n_phases_for_each_chemical_composition));
             }
 
+          reaction_progress_mapping = Utilities::string_to_unsigned_int
+                                      (Utilities::split_string_list(prm.get ("Reaction progress mapping")));
         }
         prm.leave_subsection();
       }

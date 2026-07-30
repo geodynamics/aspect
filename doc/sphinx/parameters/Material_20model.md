@@ -5359,6 +5359,15 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 **Documentation:** A prefactor for the pressure term in the viscosity approximation, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: None
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Reaction progress mapping<parameters:Material_20model/Visco_20Plastic/Reaction_20progress_20mapping>`
+:name: parameters:Material_20model/Visco_20Plastic/Reaction_20progress_20mapping
+**Default value:**
+
+**Pattern:** [List of <[Integer range 0...2147483647 (inclusive)]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** A list of indices that maps each phase transition to a reaction-progress compositional field. For example, an entry of 0 indicates that the corresponding phase transition uses the 0th reaction-progress composition. All following phase transitions will be affected by the former transition&rsquo;s reaction kinetics. A negative value means the phase transition is assumed to be equilibrium.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Reference pressures for Frank Kamenetskii<parameters:Material_20model/Visco_20Plastic/Reference_20pressures_20for_20Frank_20Kamenetskii>`
 :name: parameters:Material_20model/Visco_20Plastic/Reference_20pressures_20for_20Frank_20Kamenetskii
 **Default value:** 1.7976931348623157e+308
