@@ -47,6 +47,7 @@
 #include <boost/serialization/unique_ptr.hpp>
 
 #include <random>
+#include <sstream>
 #include <vector>
 
 namespace aspect
@@ -398,7 +399,11 @@ namespace aspect
         std::unique_ptr<Integrator::Interface<dim>> integrator;
 
         /**
-         * Random number generator used for creating and deleting particles
+         * A random number generator that is used for creating and deleting particles
+         * in a random manner.
+         *
+         * This variable is part of the state of the object, and so it is
+         * serialized along with all of the other stateful variables here.
          */
         std::mt19937 random_number_generator;
 
@@ -575,6 +580,22 @@ namespace aspect
     void Manager<dim>::serialize (Archive &ar, const unsigned int)
     {
       ar &particle_manager_index;
+
+      if constexpr (Archive::is_saving::value)
+        {
+          std::ostringstream os;
+          os << random_number_generator << std::flush;
+          ar &os.str();
+        }
+      else
+        {
+          std::string random_number_generator_state;
+          ar &random_number_generator_state;
+          std::istringstream is(random_number_generator_state);
+          is >> random_number_generator;
+          AssertThrow(!is.fail(),
+                      ExcMessage("Could not restore the particle manager random number generator."));
+        }
 
       // Note that although Boost claims to handle serialization of pointers
       // correctly, at least for the case of unique_ptr it seems to not work.
