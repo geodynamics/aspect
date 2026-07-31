@@ -1749,6 +1749,20 @@ namespace aspect
           assemblers.advection_system[i].push_back(
             std::make_unique<Assemblers::MeltAdvectionSystem<dim>> ());
 
+        // non-melt discontinuous compositional fields need the face terms of the DG formulation.
+        if (i>0
+            && this->get_parameters().use_discontinuous_composition_discretization[i-1])
+          {
+            assemblers.advection_system_on_boundary_face[i].push_back(
+              std::make_unique<aspect::Assemblers::AdvectionSystemBoundaryFace<dim>>());
+
+            assemblers.advection_system_on_interior_face[i].push_back(
+              std::make_unique<aspect::Assemblers::AdvectionSystemInteriorFace<dim>>());
+
+            assemblers.advection_system_assembler_on_face_properties[i].need_face_material_model_data = true;
+            assemblers.advection_system_assembler_on_face_properties[i].need_face_finite_element_evaluation = true;
+          }
+
         if (this->get_parameters().fixed_heat_flux_boundary_indicators.size() != 0)
           {
             assemblers.advection_system_on_boundary_face[i].push_back(
@@ -1844,12 +1858,31 @@ namespace aspect
   void
   MeltHandler<dim>::initialize () const
   {
-    // The additional terms in the temperature systems have not been ported
+    // The additional terms in the temperature system have not been ported
     // to the DG formulation:
-    AssertThrow(!this->get_parameters().use_discontinuous_temperature_discretization &&
-                !this->get_parameters().have_discontinuous_composition_discretization,
+    AssertThrow(!this->get_parameters().use_discontinuous_temperature_discretization,
                 ExcMessage("Using discontinuous elements for temperature "
-                           "or composition in models with melt transport is currently not implemented.") );
+                           "in models with melt transport is currently not implemented.") );
+
+    // In models with melt transport, the assemblers for compositional
+    // fields that are advected as finite element fields (except for porosity
+    // and melt-advected fields) can include discontinuous Galerkin face terms.
+    // Compositional fields that are not advected as finite element fields,
+    // for example fields tracked by particles, can also use discontinuous
+    // elements.
+    for (unsigned int c=0; c<this->introspection().n_compositional_fields; ++c)
+      {
+        const typename Parameters<dim>::AdvectionFieldMethod::Kind method =
+          this->get_parameters().compositional_field_methods[c];
+
+        if (this->get_parameters().use_discontinuous_composition_discretization[c])
+          AssertThrow(method != Parameters<dim>::AdvectionFieldMethod::fem_melt_field &&
+                      !this->is_porosity(AdvectionField::composition(c)),
+                      ExcMessage("Using discontinuous elements for the porosity field "
+                                 "or for compositional fields that are advected with the "
+                                 "melt velocity is currently not implemented in models "
+                                 "with melt transport.") );
+      }
     if (melt_parameters.use_discontinuous_p_c)
       AssertThrow(!this->model_has_prescribed_stokes_solution(),
                   ExcMessage("You can not use a discontinuous p_c in a model "
