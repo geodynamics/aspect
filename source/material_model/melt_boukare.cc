@@ -472,10 +472,10 @@ namespace aspect
             const double molar_composition_of_solid = molar_composition_of_melt * c_Fe_endmember;
 
             new_molar_composition_of_solid = std::clamp(molar_composition_of_solid, 0.0, molar_composition_of_bulk);
-            new_molar_composition_of_melt = std::min(std::max(molar_composition_of_melt, molar_composition_of_bulk), 1.0);
+            new_molar_composition_of_melt = std::clamp(molar_composition_of_melt, molar_composition_of_bulk, 1.0);
 
             if (std::abs(molar_composition_of_melt - molar_composition_of_solid) > std::numeric_limits<double>::min())
-              melt_molar_fraction = std::min(std::max((molar_composition_of_bulk - molar_composition_of_solid) / (molar_composition_of_melt - molar_composition_of_solid), 0.0), 1.0);
+              melt_molar_fraction = std::clamp((molar_composition_of_bulk - molar_composition_of_solid) / (molar_composition_of_melt - molar_composition_of_solid), 0.0, 1.0);
             // If solid and melt composition are the same, there is no two-phase region.
             // If we are not above the liquidus, we are below the solidus.
             else

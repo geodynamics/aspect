@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
+#include <algorithm>
 #include <aspect/geometry_model/chunk.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 #include <aspect/geometry_model/initial_topography_model/ascii_data.h>
@@ -603,9 +603,9 @@ namespace aspect
       // plus initial topography. Negative depth is not allowed.
       if (this->simulator_is_past_initialization() &&
           !Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()))
-        return std::min(std::max(point2[0]+ manifold->topography_for_point(position) - position.norm(), 0.), maximal_depth());
+        return std::clamp(point2[0] + manifold->topography_for_point(position) - position.norm(), 0., maximal_depth());
       else
-        return std::min(std::max(point2[0]-position.norm(), 0.), maximal_depth());
+        return std::clamp(point2[0] - position.norm(), 0., maximal_depth());
     }
 
 

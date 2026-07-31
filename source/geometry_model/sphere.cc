@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
+#include <algorithm>
 #include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 
@@ -82,7 +82,7 @@ namespace aspect
     double
     Sphere<dim>::depth(const Point<dim> &position) const
     {
-      return std::min (std::max (R-position.norm(), 0.), maximal_depth());
+      return std::clamp(R - position.norm(), 0., maximal_depth());
     }
 
     template <int dim>
@@ -98,7 +98,7 @@ namespace aspect
     Sphere<dim>::representative_point(const double depth) const
     {
       Point<dim> p;
-      p(dim-1) = std::min (std::max(R - depth, 0.), maximal_depth());
+      p(dim-1) = std::clamp(R - depth, 0., maximal_depth());
       return p;
     }
 

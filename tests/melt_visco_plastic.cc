@@ -580,7 +580,7 @@ namespace aspect
                 }
 
               // Limit the viscosity with specified minimum and maximum bounds
-              out.viscosities[i] = std::min(std::max(out.viscosities[i], min_viscosity), max_viscosity);
+              out.viscosities[i] = std::clamp(out.viscosities[i], min_viscosity, max_viscosity);
 
               // Compute the volumetric yield strength (Keller et al. eq (38))
               volumetric_yield_strength[i] = viscous_stress - tensile_strength;
@@ -631,7 +631,7 @@ namespace aspect
                 }
 
               // Limit the viscosity with specified minimum and maximum bounds
-              melt_out->compaction_viscosities[i] = std::min(std::max(melt_out->compaction_viscosities[i], min_viscosity), max_viscosity);
+              melt_out->compaction_viscosities[i] = std::clamp(melt_out->compaction_viscosities[i], min_viscosity, max_viscosity);
             }
         }
 

@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
+#include <algorithm>
 #include <aspect/geometry_model/two_merged_boxes.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 
@@ -368,7 +368,7 @@ namespace aspect
 
       const double topo = get_topography_at_point(position);
       const double d = extents[dim-1] + topo - (position(dim-1)-lower_box_origin[dim-1]);
-      return std::min (std::max (d, 0.), maximal_depth());
+      return std::clamp(d, 0., maximal_depth());
     }
 
 

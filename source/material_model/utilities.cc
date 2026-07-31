@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
+#include <algorithm>
 #include <aspect/global.h>
 #include <aspect/simulator_access.h>
 #include <aspect/structured_data.h>
@@ -892,7 +892,7 @@ namespace aspect
 
         for (unsigned int i=0; i < x_comp.size(); ++i)
           {
-            x_comp[i] = std::min(std::max(compositional_fields[indices_to_use[i]], 0.0), 1.0);
+            x_comp[i] = std::clamp(compositional_fields[indices_to_use[i]], 0.0, 1.0);
 
             if (x_comp[i] < minimum_fraction)
               x_comp[i] = 0.0;
@@ -937,7 +937,7 @@ namespace aspect
         for (unsigned int i=0; i < x_comp.size(); ++i)
           if (field_mask[i] == true)
             {
-              x_comp[i] = std::min(std::max(x_comp[i], 0.0), 1.0);
+              x_comp[i] = std::clamp(x_comp[i], 0.0, 1.0);
 
               if (x_comp[i] < minimum_fraction)
                 x_comp[i] = 0.0;
