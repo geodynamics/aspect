@@ -26,6 +26,7 @@
 #include <aspect/simulator_access.h>
 
 #include <array>
+#include <set>
 
 namespace aspect
 {
@@ -81,6 +82,16 @@ namespace aspect
          */
         StructuredDataLookup(const unsigned int n_components,
                              const double scale_factor);
+
+        /**
+         * Constructor that explicitly prescribes the number of data columns
+         * in the data file, a constant scale factor to be applied to all
+         * data values, and a set of component indices for which to compute
+         * and store the logarithm of the data values.
+         */
+        StructuredDataLookup(const unsigned int n_components,
+                             const double scale_factor,
+                             const std::set<unsigned int> &log_components);
 
         /**
          * This constructor relies on the list of column names at the beginning
@@ -177,6 +188,10 @@ namespace aspect
          * - ASCII files (typically ending in .txt)
          * - gzip compressed ASCII files (ending in .gz)
          * - URLs starting with "http" (handled by libDAB)
+         *
+         * @param filename The name of the file to load.
+         * The file format is determined by the file extension.
+         * @param communicator The MPI communicator to use for loading the file.
          */
         void
         load_file(const std::string &filename,
@@ -315,6 +330,12 @@ namespace aspect
          * to transform the unit of the data.
          */
         const double scale_factor;
+
+        /**
+         * A set of component indices for which to compute the logarithm of the
+         * data values (for ascii files).
+         */
+        std::set<unsigned int> log_components;
 
         /**
          * Stores whether the coordinate values are equidistant or not,

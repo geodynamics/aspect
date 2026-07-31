@@ -132,6 +132,19 @@ namespace aspect
         double cohesion;
 
         /**
+         * Parameters limiting the specific heat capacity.
+         * max_limit_specific_heat defines the maximum specific heat capacity allowed by the model.
+         * This value is defined by the 'Maximum limited specific heat capacity' parameter.
+         * max_exact_specific_heat is the exact specific heat capacity value at which the
+         * transition from exact to limited specific heat capacity occurs.
+         * This value is defined by the 'Maximum exact specific heat capacity' parameter.
+         * ln_ratio_max_exact_max_limit_specific_heat is the natural logarithm of the ratio of these two values.
+         */
+        double max_limit_specific_heat;
+        double max_exact_specific_heat;
+        double ln_ratio_max_exact_max_limit_specific_heat;
+
+        /**
          * Iteration parameters for multicomponent equilibration.
          * Max iteration is the maximum allowed number of iterations for multicomponent equilibration to
          * reach the tolerance value, which is the maximum temperature difference between the different components

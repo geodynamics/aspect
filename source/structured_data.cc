@@ -55,12 +55,28 @@ namespace aspect
 
     template <int dim>
     StructuredDataLookup<dim>::StructuredDataLookup(const unsigned int n_components,
+                                                    const double scale_factor,
+                                                    const std::set<unsigned int> &log_components)
+      :
+      n_components(n_components),
+      data(n_components),
+      maximum_component_value(n_components),
+      scale_factor(scale_factor),
+      log_components(log_components),
+      coordinate_values_are_equidistant(false)
+    {}
+
+
+
+    template <int dim>
+    StructuredDataLookup<dim>::StructuredDataLookup(const unsigned int n_components,
                                                     const double scale_factor)
       :
       n_components(n_components),
       data(n_components),
       maximum_component_value(n_components),
       scale_factor(scale_factor),
+      log_components(),
       coordinate_values_are_equidistant(false)
     {}
 
@@ -73,6 +89,7 @@ namespace aspect
       data(),
       maximum_component_value(),
       scale_factor(scale_factor),
+      log_components(),
       coordinate_values_are_equidistant(false)
     {}
 
@@ -534,7 +551,20 @@ namespace aspect
                 {
                   // This is a data value, so scale and store:
                   const unsigned int component = column_num - dim;
-                  data_tables[component](idx) = temp_data * scale_factor;
+
+                  if (log_components.find(component) != log_components.end())
+                    {
+                      AssertThrow(temp_data > 0.0,
+                                  ExcMessage("The data value in column "
+                                             + Utilities::int_to_string(component) + " in row "
+                                             + Utilities::int_to_string(row_num)
+                                             + " in file " + filename +
+                                             "\nThis class expects the data values to be strictly positive, because "
+                                             "you have requested the logarithm of the data value to be stored. Please check your data file."));
+                      data_tables[component](idx) = std::log(temp_data * scale_factor);
+                    }
+                  else
+                    data_tables[component](idx) = temp_data * scale_factor;
                 }
 
               ++read_data_entries;
@@ -870,27 +900,30 @@ namespace aspect
       if (crash_if_not_in_range)
         {
           const std::vector<double> &x_coordinates = get_interpolation_point_coordinates(0);
+          const std::vector<double> &y_coordinates = get_interpolation_point_coordinates(1);
 
           AssertThrow (position[0] >= (x_coordinates[0] * (1. - 10. * std::numeric_limits<double>::epsilon())) && position[0] <= (x_coordinates[x_coordinates.size()-1] * (1. + 10. * std::numeric_limits<double>::epsilon())),
-                       ExcMessage("The requested position "
+                       ExcMessage("The requested x position "
                                   + std::to_string(position[0])
                                   + " is outside the range of the data (minimum value = "
                                   + std::to_string(x_coordinates[0])
                                   + " , maximum value = "
                                   + std::to_string(x_coordinates[x_coordinates.size()-1])
-                                  + ")."
+                                  + "). "
+                                  + "The requested y position is " + std::to_string(position[1])
+                                  + "."
                                  ));
 
-          const std::vector<double> &y_coordinates = get_interpolation_point_coordinates(1);
-
           AssertThrow (position[1] >= (y_coordinates[0] * (1. - 10. * std::numeric_limits<double>::epsilon())) && position[1] <= (y_coordinates[y_coordinates.size()-1] * (1. + 10. * std::numeric_limits<double>::epsilon())),
-                       ExcMessage("The requested position "
+                       ExcMessage("The requested y position "
                                   + std::to_string(position[1])
                                   + " is outside the range of the data (minimum value = "
                                   + std::to_string(y_coordinates[0])
                                   + " , maximum value = "
                                   + std::to_string(y_coordinates[y_coordinates.size()-1])
-                                  + ")."
+                                  + "). "
+                                  + "The requested x position is " + std::to_string(position[0])
+                                  + "."
                                  ));
         }
 

@@ -1013,6 +1013,15 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Documentation:** The file name of the material data. The first material data file is intended for the background composition.
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Maximum exact specific heat capacity<parameters:Material_20model/Entropy_20model/Maximum_20exact_20specific_20heat_20capacity>`
+:name: parameters:Material_20model/Entropy_20model/Maximum_20exact_20specific_20heat_20capacity
+**Default value:** 1e50
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The maximum specific heat capacity that is exactly equal to the value given by the thermodynamic lookup table.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Maximum iteration for multicomponent equilibration<parameters:Material_20model/Entropy_20model/Maximum_20iteration_20for_20multicomponent_20equilibration>`
 :name: parameters:Material_20model/Entropy_20model/Maximum_20iteration_20for_20multicomponent_20equilibration
 **Default value:** 50
@@ -1029,6 +1038,15 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The relative cutoff value for lateral viscosity variations caused by temperature deviations. The viscosity may vary laterally by this factor squared.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Maximum limited specific heat capacity<parameters:Material_20model/Entropy_20model/Maximum_20limited_20specific_20heat_20capacity>`
+:name: parameters:Material_20model/Entropy_20model/Maximum_20limited_20specific_20heat_20capacity
+**Default value:** 1e50
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The maximum allowed value for the specific heat capacity.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Maximum thermal conductivity<parameters:Material_20model/Entropy_20model/Maximum_20thermal_20conductivity>`
