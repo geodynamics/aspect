@@ -46,6 +46,10 @@
 namespace aspect
 {
   template <int dim> class SimulatorAccess;
+  namespace MaterialModel
+  {
+    template <int dim> class MeltOutputs;
+  }
 
   namespace GeometryModel
   {
@@ -421,6 +425,17 @@ namespace aspect
     std::vector<std::string>
     expand_dimensional_variable_names (const std::vector<std::string> &var_declarations);
 
+
+    template <int dim>
+    Tensor<1, dim>
+    calculate_approximate_darcy_velocity (const MaterialModel::MaterialModelInputs<dim> &in,
+                                          const MaterialModel::MaterialModelOutputs<dim> &out,
+                                          const std::shared_ptr<const MaterialModel::MeltOutputs<dim>> fluid_out,
+                                          const Tensor<1, dim> &solid_velocity,
+                                          const Tensor<1, dim> &gravity,
+                                          const unsigned int porosity_idx,
+                                          const unsigned int q,
+                                          const bool use_pressure_gradient_for_darcy_field);
     /**
      * Returns an IndexSet that contains all locally active DoFs that belong to
      * the given component_mask.

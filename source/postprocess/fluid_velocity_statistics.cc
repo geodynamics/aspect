@@ -111,14 +111,11 @@ namespace aspect
                 for (unsigned int q = 0; q < n_q_points; ++q)
                   {
                     const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(fe_values.quadrature_point(q));
-                    const double porosity = std::max(in.composition[q][porosity_idx], 1e-10);
-                    const double solid_density = out.densities[q];
-                    const double fluid_density = fluid_out->fluid_densities[q];
-                    const double fluid_viscosity = fluid_out->fluid_viscosities[q];
-                    const double permeability = fluid_out->permeabilities[q];
-                    const Tensor<1,dim> darcy_velocity = solid_velocity_values[q] -
-                                                         (permeability / fluid_viscosity / porosity) *
-                                                         gravity * (solid_density - fluid_density);
+                    Tensor<1,dim> darcy_velocity =
+                      aspect::Utilities::calculate_approximate_darcy_velocity(in, out,
+                                                                              fluid_out, solid_velocity_values[q],
+                                                                              gravity, porosity_idx, q,
+                                                                              this->get_parameters().use_pressure_gradient_for_darcy_field);
                     local_max_fluid_velocity = std::max (darcy_velocity.norm(),
                                                          local_max_fluid_velocity);
                   }
