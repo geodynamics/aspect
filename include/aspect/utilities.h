@@ -99,7 +99,7 @@ namespace aspect
             /**
              * Constructor
              */
-            ScopedScratchObject (ScratchSpace<T> &/*space_*/);
+            ScopedScratchObject (const ScratchSpace<T> &/*space_*/);
 
             /**
              * Destructor: return the object to the pool
@@ -109,17 +109,17 @@ namespace aspect
             /**
              * Get a reference to the object.
              */
-            operator T &();
+            operator T &() const;
 
           private:
-            ScratchSpace &space;
+            const ScratchSpace &space;
             T &t;
         };
 
         /**
          * returns an object from the pool. If there are no unused objects, it creates a new object and returns it.
          */
-        T &get_object_from_pool();
+        T &get_object_from_pool() const;
 
         /**
          * Destructor
@@ -129,13 +129,11 @@ namespace aspect
         /**
          * returns an object to the pool to be reused later.
          */
-        void return_object_to_pool (T &t);
+        void return_object_to_pool (T &t) const;
 
       private:
-        dealii::Threads::ThreadLocalStorage<std::list<std::pair<T,bool>>>  object_list;
+        mutable dealii::Threads::ThreadLocalStorage<std::list<std::pair<T,bool>>>  object_list;
     };
-
-    //template<typename T> thread_local std::list<std::pair<T,bool>> ScratchSpace<T>::object_list = {};
 
     /**
      * Given an array @p values, consider three cases:
@@ -1261,7 +1259,7 @@ namespace aspect
   namespace Utilities
   {
     template<typename T>
-    T &ScratchSpace<T>::get_object_from_pool()
+    T &ScratchSpace<T>::get_object_from_pool() const
     {
       for (auto &pair : object_list.get())
         if (pair.second == false)
@@ -1275,7 +1273,7 @@ namespace aspect
     }
 
     template<typename T>
-    void ScratchSpace<T>::return_object_to_pool (T &t)
+    void ScratchSpace<T>::return_object_to_pool (T &t) const
     {
       for (auto &pair : object_list.get())
         if (&pair.first == &t)
@@ -1288,14 +1286,10 @@ namespace aspect
 
     template<typename T>
     ScratchSpace<T>::~ScratchSpace ()
-    {
-
-      for (auto &pair : object_list.get())
-        pair.first.clear();
-    }
+    {}
 
     template<typename T>
-    ScratchSpace<T>::ScopedScratchObject::ScopedScratchObject(ScratchSpace<T> &space_)
+    ScratchSpace<T>::ScopedScratchObject::ScopedScratchObject(const ScratchSpace<T> &space_)
       : space (space_),
         t (space.get_object_from_pool())
     {}
@@ -1307,7 +1301,7 @@ namespace aspect
     }
 
     template<typename T>
-    ScratchSpace<T>::ScopedScratchObject::operator T &()
+    ScratchSpace<T>::ScopedScratchObject::operator T &() const
     {
       return t;
     }
