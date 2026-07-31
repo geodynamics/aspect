@@ -1,0 +1,32 @@
+
+Number of active cells: 48 (on 2 levels)
+Number of degrees of freedom: 792 (480+72+240)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           100 K, 100 K, 100 K
+     Writing graphical output:                          output-tidal_heating_latitude_2D/solution/solution-00000
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 8.705e+14 kg
+     Heating rate (average/total):                      8.156e-09 W/kg, 7.1e+06 W
+
+*** Timestep 1:  t=100000 years, dt=100000 years
+   Solving temperature system... 10 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           106.6 K, 112.2 K, 118.6 K
+     Writing graphical output:                          output-tidal_heating_latitude_2D/solution/solution-00001
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 8.705e+14 kg
+     Heating rate (average/total):                      8.156e-09 W/kg, 7.1e+06 W
+
+Termination requested by criterion: end time
+
+
+

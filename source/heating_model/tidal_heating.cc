@@ -28,6 +28,7 @@
 #include <aspect/geometry_model/ellipsoidal_chunk.h>
 #include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/gravity_model/radial_with_tidal_potential.h>
 
 namespace aspect
 {
@@ -44,9 +45,8 @@ namespace aspect
                        Plugins::plugin_type_matches<GeometryModel::TwoMergedChunks<dim>>(this->get_geometry_model()) ||
                        Plugins::plugin_type_matches<GeometryModel::EllipsoidalChunk<dim>>(this->get_geometry_model()) ||
                        Plugins::plugin_type_matches<GeometryModel::Sphere<dim>>(this->get_geometry_model()) ||
-                       Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim>>(this->get_geometry_model())) &&
-                      dim==3,
-                      ExcMessage("Latitudinal variation of strain rate can only be used with 3-dimensional geometry models that "
+                       Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim>>(this->get_geometry_model())),
+                      ExcMessage("Latitudinal variation of strain rate can only be used with models that "
                                  "have either a spherical or ellipsoidal natural coordinate system."));
         }
     }
@@ -79,8 +79,13 @@ namespace aspect
           if (strain_rate_distribution == latitudinal_variation)
             {
               const Point<dim> position = material_model_inputs.position[q];
-              const double theta = Utilities::Coordinates::cartesian_to_spherical_coordinates(position)[dim-1];
-              local_tidal_strain_rate = ( maximum_tidal_strain_rate - minimum_tidal_strain_rate ) / 2. * std::cos( theta * 2. ) + ( maximum_tidal_strain_rate + minimum_tidal_strain_rate ) / 2.;
+              double colatitude = Utilities::Coordinates::cartesian_to_spherical_coordinates(position)[dim-1];
+              if constexpr (dim == 2)
+                {
+                  colatitude = colatitude - numbers::PI / 2.;
+                }
+
+              local_tidal_strain_rate = ( maximum_tidal_strain_rate - minimum_tidal_strain_rate ) / 2. * std::cos( colatitude * 2. ) + ( maximum_tidal_strain_rate + minimum_tidal_strain_rate ) / 2.;
             }
           else if (strain_rate_distribution == constant)
             {
@@ -132,7 +137,8 @@ namespace aspect
                              Patterns::Selection("constant|latitudinal variation"),
                              "Choose how the time-averaged tidal strain rate is distributed. "
                              "If 'constant', the tidal strain rate is fixed to 'Constant tidal strain rate'. "
-                             "If 'latitudinal variation', 'Maximum tidal strain rate' and 'Minimum tidal strain rate' are used.");
+                             "If 'latitudinal variation', 'Maximum tidal strain rate' and 'Minimum tidal strain rate' are used. "
+                             "On 2D geometry, y axis works as polar axis for latitudinal variation. ");
           prm.declare_entry ("Maximum tidal strain rate", "2.81e-10",
                              Patterns::Double (0),
                              "Maximum time-averaged tidal strain rate by lunar diurnal tide at the poles. "
@@ -167,7 +173,12 @@ namespace aspect
           if (prm.get ("Custom distribution of tidal strain rate") == "constant")
             strain_rate_distribution = constant;
           else if (prm.get ("Custom distribution of tidal strain rate") == "latitudinal variation")
-            strain_rate_distribution = latitudinal_variation;
+            {
+              if (dim==2 && Plugins::plugin_type_matches<GravityModel::RadialWithTidalPotential<dim>>(this->get_gravity_model()))
+                throw ExcMessage ("On 2D, tidal heating and gravity with tidal potential have different lateral variations: latitudinal and longitudinal variation, respectively");
+
+              strain_rate_distribution = latitudinal_variation;
+            }
           else
             AssertThrow (false, ExcMessage ("Not a valid custom distribution of tidal strain rate."));
           maximum_tidal_strain_rate = prm.get_double ("Maximum tidal strain rate");
@@ -194,6 +205,7 @@ namespace aspect
                                   "Selecting 'latitudinal variation' from 'Custom distribution of tidal strain rate' allows simplified latitudinal variation "
                                   "with cosine function, 'Maximum tidal strain rate' and 'Minimum tidal strain rate. "
                                   "Latitudinal variation of tidal strain rate is shown in Fig.3 from Nimmo et al. (2007) (https://doi.org/10.1016/j.icarus.2007.04.021). "
+                                  "On 2D geometry, y axis works as polar axis for latitudinal variation. "
                                   "Unit: \\si{\\watt\\per\\meter\\cubed}.")
   }
 }

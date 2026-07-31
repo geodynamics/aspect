@@ -1,0 +1,100 @@
+# This parameter file tests the latitudinally varying tidal heating plugin on 2D geometry
+# where the viscosity is constant.
+
+
+set Dimension                              = 2
+set Use years instead of seconds           = true
+set End time                               = 1e5
+
+set Output directory                       = tidal_heating_latitude_2D
+
+set Maximum first time step                    = 1e5
+set CFL number                                 = 0.8
+set Maximum time step                          = 1e5
+
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+
+subsection Geometry model
+  set Model name = spherical shell
+  subsection Spherical shell
+    set Outer radius = 1560800
+    set Inner radius = 1460800
+    set Opening angle = 360
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Coordinate system = spherical
+    set Variable names = r, phi,theta
+    set Function expression = 100
+  end
+end
+
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators = top, bottom
+end
+
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 0 #1.3
+  end
+end
+
+
+subsection Material model
+  set Model name = simpler
+  subsection Simpler model
+    set Reference density = 917
+    set Reference specific heat = 2110
+    set Reference temperature = 100
+    set Thermal conductivity = 0 #1.93
+    set Thermal expansion coefficient = 0 #1.6e-4
+    set Viscosity = 1e14
+  end
+end
+
+
+subsection Heating model
+  set List of model names = tidal heating
+  subsection Tidal heating
+    set Tidal frequency = 2.048e-5
+    set Elastic shear modulus = 3.3e9
+    set Custom distribution of tidal strain rate = latitudinal variation
+    set Maximum tidal strain rate = 2.81e-10
+    set Minimum tidal strain rate = 1.67e-10
+  end
+end
+
+
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 1
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, visualization, basic statistics, \
+			       pressure statistics, material statistics, heating statistics
+
+  subsection Visualization
+    set Time between graphical output = 1e5
+    set Output format                 = vtu
+    set List of output variables      = material properties, strain rate, shear stress, stress, nonadiabatic pressure, heating
+  end
+end
