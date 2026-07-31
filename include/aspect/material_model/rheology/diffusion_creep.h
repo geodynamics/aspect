@@ -90,8 +90,8 @@ namespace aspect
            */
           const DiffusionCreepParameters
           compute_creep_parameters (const unsigned int composition,
-                                    const std::vector<double> &phase_function_values = std::vector<double>(),
-                                    const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
+                                    const std::vector<double> &phase_function_values = {},
+                                    const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
           /**
            * Compute the viscosity based on the diffusion creep law with
@@ -105,8 +105,8 @@ namespace aspect
           compute_viscosity (const double pressure,
                              const double temperature,
                              const unsigned int composition,
-                             const std::vector<double> &phase_function_values = std::vector<double>(),
-                             const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
+                             const std::vector<double> &phase_function_values = {},
+                             const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
           /**
            * Compute the viscosity based on the diffusion creep law for the given @p grain_size.
@@ -120,8 +120,8 @@ namespace aspect
                              const double temperature,
                              const double grain_size,
                              const unsigned int composition,
-                             const std::vector<double> &phase_function_values = std::vector<double>(),
-                             const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
+                             const std::vector<double> &phase_function_values = {},
+                             const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
           /**
            * Compute the strain rate and first stress derivative as a function
