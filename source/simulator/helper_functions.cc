@@ -549,6 +549,19 @@ namespace aspect
         (timestep_number % parameters.checkpoint_steps == 0))
       write_regular_checkpoint = true;
 
+    // Do a checkpoint if indicated by checkpoint parameters
+    if (write_regular_checkpoint)
+      {
+        create_snapshot(/*is_additional_checkpoint = */ false);
+
+        // matrices will be regenerated after a resume, so do that here too
+        // to be consistent. otherwise we would get different results
+        // for a restarted computation than for one that ran straight
+        // through
+        rebuild_stokes_matrix =
+          rebuild_stokes_preconditioner = true;
+      }
+
     // See if an additional checkpoint needs to be created. Time has already been advanced
     // to the next timestep, so we need a checkpoint if the next additional checkpoint time
     // is less than the current time.
@@ -569,19 +582,11 @@ namespace aspect
                (parameters.additional_checkpoint_times.front () < time))
           parameters.additional_checkpoint_times
           .erase (parameters.additional_checkpoint_times.begin());
-      }
 
-    // Do a checkpoint if indicated by checkpoint parameters
-    if (write_regular_checkpoint)
-      {
-        create_snapshot(/*is_additional_checkpoint = */ false);
-        // matrices will be regenerated after a resume, so do that here too
-        // to be consistent. otherwise we would get different results
-        // for a restarted computation than for one that ran straight
-        // through
         rebuild_stokes_matrix =
           rebuild_stokes_preconditioner = true;
       }
+
     return write_regular_checkpoint;
   }
 
