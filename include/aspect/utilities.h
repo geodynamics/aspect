@@ -168,11 +168,11 @@ namespace aspect
      * used for each object.
      */
     template <typename T>
-    void 
+    void
     possibly_extend_from_1_to_N (const std::vector<T> &values,
                                  const unsigned int N,
                                  const std::string &id_text,
-                                 std::vector<T>& out);
+                                 std::vector<T> &out);
 
 
     /**
