@@ -21,6 +21,7 @@
 #include <aspect/particle/property/elastic_stress.h>
 #include <aspect/material_model/visco_plastic.h>
 #include <aspect/material_model/viscoelastic.h>
+#include <aspect/material_model/compositing.h>
 #include <aspect/initial_composition/interface.h>
 #include <aspect/particle/world.h>
 
@@ -45,10 +46,12 @@ namespace aspect
       void
       ElasticStress<dim>::initialize ()
       {
-        AssertThrow((Plugins::plugin_type_matches<const MaterialModel::ViscoPlastic<dim>>(this->get_material_model())
-                     ||
-                     Plugins::plugin_type_matches<const MaterialModel::Viscoelastic<dim>>(this->get_material_model())),
-                    ExcMessage("This particle property only makes sense in combination with the viscoelastic or visco_plastic material model."));
+        AssertThrow(Plugins::plugin_type_matches<const MaterialModel::ViscoPlastic<dim>>(this->get_material_model())
+                    ||
+                    Plugins::plugin_type_matches<const MaterialModel::Viscoelastic<dim>>(this->get_material_model())
+                    ||
+                    Plugins::plugin_type_matches<const MaterialModel::Compositing<dim>>(this->get_material_model()),
+                    ExcMessage("This particle property only makes sense in combination with the viscoelastic, visco_plastic, or compositing material model."));
 
         AssertThrow(this->get_parameters().enable_elasticity == true,
                     ExcMessage ("This particle property should only be used if 'Enable elasticity' is set to true"));
