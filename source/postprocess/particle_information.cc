@@ -23,6 +23,7 @@
 #include <aspect/particle/manager.h>
 
 #include <limits>
+#include <sstream>
 
 
 namespace aspect
@@ -38,11 +39,12 @@ namespace aspect
           || this->get_pre_refinement_step() != std::numeric_limits<unsigned int>::max())
         return {"", ""};
 
+      std::ostringstream output;
       for (unsigned int particle_manager_index = 0;
            particle_manager_index < this->n_particle_managers();
            ++particle_manager_index)
         {
-          this->get_pcout() << "     Particle manager " << particle_manager_index+1 << " properties:" << std::endl;
+          output << "Particle manager " << particle_manager_index+1 << " properties:" << std::endl;
 
           const auto property_names = this->get_particle_manager(particle_manager_index)
                                       .get_property_manager()
@@ -52,10 +54,10 @@ namespace aspect
             // The particle integrator adds internal storage to every world.
             // This is not a particle property selected by the user.
             if (property_name != "internal: integrator properties")
-              this->get_pcout() << "       " << property_name << std::endl;
+              output << "  " << property_name << std::endl;
         }
 
-      return {"", ""};
+      return {"Particle information:", output.str()};
     }
   }
 }
