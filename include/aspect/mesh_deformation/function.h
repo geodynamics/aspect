@@ -24,6 +24,7 @@
 
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/parsed_function.h>
 
@@ -83,6 +84,12 @@ namespace aspect
          * A function object representing the mesh deformation.
          */
         Functions::ParsedFunction<dim> function;
+
+        /**
+         * The coordinate representation to evaluate the function. Possible
+         * choices are depth, cartesian and spherical.
+         */
+        Utilities::Coordinates::CoordinateSystem coordinate_system;
     };
   }
 }

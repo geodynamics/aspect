@@ -79,6 +79,15 @@ This surface velocity is used to deform the surface and as a boundary condition 
 
 (parameters:Mesh_20deformation/Boundary_20function)=
 ## **Subsection:** Mesh deformation / Boundary function
+::::{dropdown} __Parameter:__ {ref}`Coordinate system<parameters:Mesh_20deformation/Boundary_20function/Coordinate_20system>`
+:name: parameters:Mesh_20deformation/Boundary_20function/Coordinate_20system
+**Default value:** cartesian
+
+**Pattern:** [Selection cartesian|spherical|depth ]
+
+**Documentation:** A selection that determines the assumed coordinate system for the function variables. Allowed values are &lsquo;cartesian&rsquo;, &lsquo;spherical&rsquo;, and &lsquo;depth&rsquo;. &lsquo;spherical&rsquo; coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. &lsquo;depth&rsquo; will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Function constants<parameters:Mesh_20deformation/Boundary_20function/Function_20constants>`
 :name: parameters:Mesh_20deformation/Boundary_20function/Function_20constants
 **Default value:**

@@ -20,6 +20,7 @@
 
 
 #include <aspect/mesh_deformation/function.h>
+#include <aspect/geometry_model/interface.h>
 
 #include <deal.II/numerics/vector_tools.h>
 
@@ -70,8 +71,11 @@ namespace aspect
           {
             Tensor<1,dim> velocity;
 
+            // convert the position into the selected coordinate system
+            const Utilities::NaturalCoordinate<dim> point = this->get_geometry_model().cartesian_to_other_coordinates(x, coordinate_system);
+
             for (unsigned int d=0; d<dim; ++d)
-              velocity[d] = function.value(x, d);
+              velocity[d] = function.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()), d);
 
             if (this->convert_output_to_years())
               velocity /= year_in_seconds;
@@ -106,6 +110,16 @@ namespace aspect
       {
         prm.enter_subsection ("Boundary function");
         {
+          prm.declare_entry ("Coordinate system", "cartesian",
+                             Patterns::Selection ("cartesian|spherical|depth"),
+                             "A selection that determines the assumed coordinate "
+                             "system for the function variables. Allowed values "
+                             "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
+                             "are interpreted as r,phi or r,phi,theta in 2d/3d "
+                             "respectively with theta being the polar angle. `depth' "
+                             "will create a function, in which only the first "
+                             "parameter is non-zero, which is interpreted to "
+                             "be the depth of the point.");
           Functions::ParsedFunction<dim>::declare_parameters (prm, dim);
         }
         prm.leave_subsection();
@@ -134,6 +148,8 @@ namespace aspect
                         << "is shown below.\n";
               throw;
             }
+
+          coordinate_system = Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
         }
         prm.leave_subsection();
       }
