@@ -430,11 +430,10 @@ namespace aspect
 
     template <int dim>
     void
-    MaterialModelOutputs<dim>::resize(const unsigned int n_points, const unsigned int n_comp)
+    MaterialModelOutputs<dim>::resize(const unsigned int n_points,
+                                      const unsigned int n_comp,
+                                      const bool remove_additional_outputs)
     {
-      AssertThrow(additional_outputs.size() == 0,
-                  ExcMessage("The resize() function is not implemented if additional material outputs are attached."));
-
       viscosities.assign(n_points, numbers::signaling_nan<double>());
       densities.assign(n_points, numbers::signaling_nan<double>());
       thermal_expansion_coefficients.assign(n_points, numbers::signaling_nan<double>());
@@ -444,6 +443,9 @@ namespace aspect
       entropy_derivative_pressure.assign(n_points, numbers::signaling_nan<double>());
       entropy_derivative_temperature.assign(n_points, numbers::signaling_nan<double>());
       reaction_terms.assign(n_points, std::vector<double>(n_comp, numbers::signaling_nan<double>()));
+
+      if (remove_additional_outputs == true)
+        additional_outputs.clear();
     }
 
 
