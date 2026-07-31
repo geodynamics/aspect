@@ -1,0 +1,15 @@
+
+Number of active cells: 96 (on 1 levels)
+Number of degrees of freedom: 4,030 (2,910+150+970)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+
+   Postprocessing:
+     RMS, max velocity:            0.979 m/s, 1.52 m/s
+     Surface plateness statistics: F80=0.141, F90=0.195, p80=0.766, p90=0.675
+
+Termination requested by criterion: end time
+
+
+

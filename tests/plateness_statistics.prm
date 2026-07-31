@@ -1,0 +1,64 @@
+# MPI: 2
+
+# Verify the plateness statistics postprocessor using the prescribed pure-shear
+# velocity u=(x,-y,0). Its strain-rate second invariant is uniform on the
+# surface, so analytically F80=0.8 and F90=0.9. With a reference fraction of
+# 0.6, the corresponding plateness values are p80=-1/3 and p90=-1/2. The
+# computed values differ slightly because of the curved finite-element
+# representation of the spherical shell.
+
+set Dimension                    = 3
+set Use years instead of seconds = false
+set End time                     = 0
+set Nonlinear solver scheme      = single Advection, no Stokes
+
+subsection Prescribed Stokes solution
+  set Model name = function
+
+  subsection Velocity function
+    set Variable names = x,y,z,t
+    set Function expression = x; -y; 0
+  end
+end
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius = 0.5
+    set Outer radius = 1
+  end
+end
+
+subsection Material model
+  set Model name = simple
+end
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 0
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement   = 0
+  set Initial adaptive refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, plateness statistics
+
+  subsection Plateness statistics
+    set Reference fraction = 0.6
+  end
+end

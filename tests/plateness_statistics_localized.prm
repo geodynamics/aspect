@@ -1,0 +1,64 @@
+# MPI: 2
+
+# Verify the plateness statistics postprocessor for strongly localized
+# deformation. The prescribed velocity u=(sign(x),0,0) represents two rigid
+# surface regions separated by a spreading ridge at x=0. In the continuum
+# limit all deformation occurs at the ridge, so F80 and F90 approach zero and
+# p80 and p90 approach one. On the finite-element mesh, the discontinuity is
+# represented across a narrow band of cells and the values remain finite.
+
+set Dimension                    = 3
+set Use years instead of seconds = false
+set End time                     = 0
+set Nonlinear solver scheme      = single Advection, no Stokes
+
+subsection Prescribed Stokes solution
+  set Model name = function
+
+  subsection Velocity function
+    set Variable names = x,y,z,t
+    set Function expression = if(x<0,-1,1); 0; 0
+  end
+end
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius = 0.5
+    set Outer radius = 1
+  end
+end
+
+subsection Material model
+  set Model name = simple
+end
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 0
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement   = 0
+  set Initial adaptive refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, plateness statistics
+
+  subsection Plateness statistics
+    set Reference fraction = 0.6
+  end
+end
