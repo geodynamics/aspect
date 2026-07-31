@@ -73,6 +73,7 @@
 #include <iostream>
 #include <locale>
 #include <string>
+#include <vector>
 
 
 
@@ -1685,21 +1686,56 @@ namespace aspect
     // whatever the postprocessors have generated
     if (Utilities::MPI::this_mpi_process(mpi_communicator)==0)
       {
-        // determine the width of the first column of text so that
-        // everything gets nicely aligned; then output everything
+        // Determine the width of the first column of text so that everything
+        // gets nicely aligned. A postprocessor may return multiple output
+        // rows by separating them with newline characters.
         {
+          const auto split_output_lines = [] (const std::string &output)
+          {
+            std::vector<std::string> lines;
+            std::size_t line_start = 0;
+            std::size_t line_end;
+
+            while ((line_end = output.find('\n', line_start)) != std::string::npos)
+              {
+                lines.emplace_back(output.substr(line_start, line_end - line_start));
+                line_start = line_end + 1;
+              }
+
+            if (line_start < output.size())
+              lines.emplace_back(output.substr(line_start));
+
+            return lines;
+          };
+
           unsigned int width = 0;
           for (const auto &p : output_list)
-            width = std::max<unsigned int> (width, p.first.size());
+            for (const auto &line : split_output_lines(p.first))
+              width = std::max<unsigned int> (width, line.size());
 
           for (const auto &p : output_list)
-            pcout << "     "
-                  << std::left
-                  << std::setw(width)
-                  << p.first
-                  << ' '
-                  << p.second
-                  << std::endl;
+            {
+              const std::vector<std::string> first_column_lines = split_output_lines(p.first);
+              const std::vector<std::string> second_column_lines = split_output_lines(p.second);
+              const unsigned int n_lines = std::max(first_column_lines.size(),
+                                                    second_column_lines.size());
+
+              for (unsigned int line = 0; line < n_lines; ++line)
+                {
+                  pcout << "     ";
+
+                  if (p.first.empty() == false)
+                    pcout << std::left
+                          << std::setw(width)
+                          << (line < first_column_lines.size() ? first_column_lines[line] : "")
+                          << ' ';
+
+                  if (line < second_column_lines.size())
+                    pcout << second_column_lines[line];
+
+                  pcout << std::endl;
+                }
+            }
         }
 
         pcout << std::endl;

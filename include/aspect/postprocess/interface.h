@@ -83,8 +83,11 @@ namespace aspect
          * @return A pair of strings that will be printed to the screen after
          * running the postprocessor in two columns; typically the first
          * column contains a description of what the data is and the second
-         * contains a numerical value of this data. If there is nothing to
-         * print, simply return two empty strings.
+         * contains a numerical value of this data. Each string may contain
+         * multiple lines separated by newline characters. Corresponding lines
+         * are printed in the same row; missing lines in either column are
+         * left blank. If there is nothing to print, simply return two empty
+         * strings.
          */
         virtual
         std::pair<std::string,std::string>
