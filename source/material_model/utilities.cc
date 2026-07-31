@@ -1107,22 +1107,51 @@ namespace aspect
                      const enum CompositionalAveragingOperation &average_type,
                      const PhaseUtilities::PhaseAveragingOperation operation)
       {
-        // Calculate base index and assign base value
-        unsigned int composition_index = 0;
+        const unsigned int n_compositions = n_phase_transitions_per_composition.size();
+
+        AssertThrow(volume_fractions.size() == n_compositions,
+                    ExcMessage("The volume fractions and n_phase_transitions_per_composition vectors used "
+                               "for averaging must have the same length. You have provided "
+                               + Utilities::int_to_string(volume_fractions.size()) +
+                               " volume fractions and "
+                               + Utilities::int_to_string(n_compositions) +
+                               " composition transition counts."));
+
+        unsigned int expected_n_phase_transitions = 0;
+        for (const unsigned int n_phase_transitions_for_composition : n_phase_transitions_per_composition)
+          expected_n_phase_transitions += n_phase_transitions_for_composition;
+
+        AssertThrow(phase_function_values.size() == expected_n_phase_transitions,
+                    ExcMessage("The phase_function_values vector has to contain one entry per phase transition. "
+                               "You have provided " + Utilities::int_to_string(phase_function_values.size()) +
+                               " phase-function values, but the n_phase_transitions_per_composition vector requires "
+                               + Utilities::int_to_string(expected_n_phase_transitions) + "."));
+
+        const unsigned int expected_n_parameter_values = expected_n_phase_transitions + n_compositions;
+        AssertThrow(parameter_values.size() == expected_n_parameter_values,
+                    ExcMessage("The parameter_values vector has to contain one value per phase. "
+                               "You have provided " + Utilities::int_to_string(parameter_values.size()) +
+                               " values, but the n_phase_transitions_per_composition vector requires "
+                               + Utilities::int_to_string(expected_n_parameter_values) + "."));
+
+        // Calculate base index and assign base value.
         unsigned int start_phase_index = 0;
         std::vector<double> values;
+        values.reserve(n_compositions);
 
-        for (auto &n_phase_transitions_for_composition : n_phase_transitions_per_composition)
+        for (unsigned int composition_index = 0; composition_index < n_compositions; ++composition_index)
           {
+            const unsigned int n_phase_transitions_for_composition =
+              n_phase_transitions_per_composition[composition_index];
+
             values.push_back(phase_average_value(phase_function_values,
                                                  parameter_values,
                                                  composition_index,
                                                  start_phase_index,
-                                                 n_phase_transitions_per_composition[composition_index],
+                                                 n_phase_transitions_for_composition,
                                                  operation));
 
             start_phase_index += n_phase_transitions_for_composition + 1;
-            ++composition_index;
           }
 
         return average_value(volume_fractions, values, average_type);
@@ -1202,6 +1231,8 @@ namespace aspect
                                   const unsigned int composition_index,
                                   const PhaseUtilities::PhaseAveragingOperation operation)
       {
+        AssertIndexRange(composition_index, n_phase_transitions_per_composition.size());
+
         // Calculate base index and assign base value
         unsigned int start_phase_index = 0;
         for (unsigned int i=0; i<composition_index; ++i)
@@ -1226,6 +1257,8 @@ namespace aspect
                                   const unsigned int n_phase_transitions_for_composition,
                                   const PhaseUtilities::PhaseAveragingOperation operation)
       {
+        AssertIndexRange(start_phase_index, parameter_values.size());
+
         double averaged_parameter = parameter_values[start_phase_index];
         if (n_phase_transitions_for_composition > 0)
           {
@@ -1238,6 +1271,7 @@ namespace aspect
                 const unsigned int phase_index = start_phase_index + i;
 
                 Assert(phase_index+1<parameter_values.size(), ExcInternalError());
+                Assert(phase_index-composition_index<phase_function_values.size(), ExcInternalError());
                 if (operation == PhaseUtilities::logarithmic)
                   {
                     // First average by log values and then take the exponential.

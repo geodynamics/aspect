@@ -445,8 +445,8 @@ namespace aspect
                                                const ParameterHandler &prm);
 
       /**
-         * Utilities for material models with multiple phases
-         */
+        * Utilities for material models with multiple phases
+        */
       namespace PhaseUtilities
       {
         /**

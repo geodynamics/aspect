@@ -89,7 +89,12 @@ namespace aspect
       /* The following returns whether or not the material is plastically yielding
        * as documented in evaluate.
        */
-      const IsostrainViscosities isostrain_viscosities = rheology->calculate_isostrain_viscosities(in, 0, volume_fractions, phase_function_values, phase_function.n_phase_transitions_for_each_composition());
+      const IsostrainViscosities isostrain_viscosities =
+        rheology->calculate_isostrain_viscosities(in,
+                                                  0,
+                                                  volume_fractions,
+                                                  phase_function_values,
+                                                  n_phase_transitions_for_each_chemical_composition);
 
       const std::vector<double>::const_iterator max_composition = std::max_element(volume_fractions.begin(), volume_fractions.end());
       const bool plastic_yielding = isostrain_viscosities.composition_yielding[std::distance(volume_fractions.begin(), max_composition)];
@@ -181,7 +186,11 @@ namespace aspect
 
           if (define_conductivities == false)
             {
-              double thermal_diffusivity = MaterialUtilities::average_value(volume_fractions, phase_function_values, phase_function.n_phase_transitions_for_each_composition(), thermal_diffusivities, MaterialUtilities::arithmetic);
+              double thermal_diffusivity = MaterialUtilities::average_value(volume_fractions,
+                                                                            phase_function_values,
+                                                                            n_phase_transitions_for_each_chemical_composition,
+                                                                            thermal_diffusivities,
+                                                                            MaterialUtilities::arithmetic);
 
               // Thermal conductivity at the given positions. If the temperature equation uses
               // the reference density profile formulation, use the reference density to
@@ -199,7 +208,11 @@ namespace aspect
             {
               // Use thermal conductivity values specified in the parameter file, if this
               // option was selected.
-              out.thermal_conductivities[i] = MaterialUtilities::average_value(volume_fractions, phase_function_values, phase_function.n_phase_transitions_for_each_composition(), thermal_conductivities, MaterialUtilities::arithmetic);
+              out.thermal_conductivities[i] = MaterialUtilities::average_value(volume_fractions,
+                                                                               phase_function_values,
+                                                                               n_phase_transitions_for_each_chemical_composition,
+                                                                               thermal_conductivities,
+                                                                               MaterialUtilities::arithmetic);
             }
 
           out.compressibilities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.compressibilities, MaterialUtilities::arithmetic);
@@ -471,7 +484,7 @@ namespace aspect
           compositional_field_names.insert(compositional_field_names.begin(),"background");
 
           Utilities::MapParsing::Options options(chemical_field_names, "Thermal diffusivities");
-          options.list_of_allowed_keys = compositional_field_names;
+          options.list_of_allowed_keys = chemical_field_names;
           options.allow_multiple_values_per_key = true;
           options.n_values_per_key = n_phases_for_each_chemical_composition;
           options.check_values_per_key = (options.n_values_per_key.size() != 0);
