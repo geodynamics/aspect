@@ -1,0 +1,41 @@
+# Check that the post compute reactions signal triggers
+
+set Dimension = 2
+set End time                               = 0.5
+set Start time                             = 0
+set Nonlinear solver scheme                = single Advection, no Stokes
+set CFL number                             = 1.0
+set Maximum first time step                = 0.5
+set Pressure normalization                 = no
+set Use years instead of seconds           = false
+
+subsection Prescribed Stokes solution
+  set Model name = function
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+    set X repetitions = 1
+    set Y repetitions = 1
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+subsection Material model
+  set Model name = simple
+end
+
+subsection Mesh refinement
+  set Initial global refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors =
+end

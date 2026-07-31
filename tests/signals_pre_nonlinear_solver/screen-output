@@ -1,0 +1,22 @@
+
+Loading shared library <./libsignals_pre_nonlinear_solver.debug.so>
+
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 31 (18+4+9)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+Signal was triggered
+   Skipping temperature solve because RHS is zero.
+
+   Postprocessing:
+
+*** Timestep 1:  t=0.5 seconds, dt=0.5 seconds
+Signal was triggered
+   Skipping temperature solve because RHS is zero.
+
+   Postprocessing:
+
+Termination requested by criterion: end time
+
+
+
