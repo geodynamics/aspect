@@ -28,6 +28,7 @@
 
 #include <aspect/geometry_model/interface.h>
 #include <aspect/geometry_model/ellipsoidal_chunk.h>
+#include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/heating_model/interface.h>
 #include <aspect/heating_model/adiabatic_heating.h>
 #include <aspect/material_model/interface.h>
@@ -2810,12 +2811,18 @@ namespace aspect
   {
     if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::default_solver)
       {
+        const bool has_periodic_boundaries =
+          geometry_model->get_periodic_boundary_pairs().size() > 0;
+        const bool supports_periodic_gmg =
+          dim == 2
+          && dynamic_cast<const GeometryModel::SphericalShell<dim> *>(geometry_model.get()) != nullptr;
+
         // Catch all situations that are not supported by the GMG solver:
         //   - Melt transport
         //   - Ellipsoidal geometry
         //   - Locally conservative discretization
         //   - Implicit reference density profile
-        //   - Periodic boundaries
+        //   - Periodic boundaries outside a spherical shell
         //   - Stokes velocity degree not 2 or 3
         //   - Material averaging explicitly disabled
         //   - Robin boundary conditions
@@ -2824,7 +2831,7 @@ namespace aspect
             parameters.use_locally_conservative_discretization == true ||
             (material_model->is_compressible() == true && parameters.formulation_mass_conservation ==
              Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile) ||
-            (geometry_model->get_periodic_boundary_pairs().size()) > 0 ||
+            (has_periodic_boundaries && !supports_periodic_gmg) ||
             (parameters.stokes_velocity_degree < 2 || parameters.stokes_velocity_degree > 3) ||
             parameters.material_averaging == MaterialModel::MaterialAveraging::none ||
             boundary_convective_heating_manager.get_fixed_convective_heating_boundary_indicators().size() != 0)
