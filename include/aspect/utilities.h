@@ -128,7 +128,7 @@ namespace aspect
         /**
          * Destructor
          */
-        ~ScratchSpace();
+        ~ScratchSpace() = default;
 
         /**
          * returns an object to the pool to be reused later.
@@ -1298,10 +1298,6 @@ namespace aspect
           }
       AssertThrow(false, ExcMessage("You are tying to return an object to the pool which has apparently not been allocated by this pool."));
     }
-
-    template<typename T>
-    ScratchSpace<T>::~ScratchSpace ()
-    {}
 
     template<typename T>
     ScratchSpace<T>::ScopedScratchObject::ScopedScratchObject(const ScratchSpace<T> &space_)
