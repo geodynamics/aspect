@@ -240,8 +240,7 @@ namespace aspect
         const double a1 = A - 3.0*B*B - 2.0*B;
         const double a2 = B - 1.0;
 
-        // Transform Z^3 + a2*Z^2 + a1*Z + a0 = 0 to the depressed
-        // cubic y^3 + p*y + q = 0 and calculate all real roots.
+        // Calculate the real roots of Z^3 + a2*Z^2 + a1*Z + a0 = 0.
         const double p = a1 - a2*a2/3.0;
         const double q = 2.0*a2*a2*a2/27.0 - a2*a1/3.0 + a0;
         const double discriminant = q*q/4.0 + p*p*p/27.0;
