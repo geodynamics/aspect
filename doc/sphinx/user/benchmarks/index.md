@@ -96,6 +96,7 @@ benchmarks/viscoelastic_relaxation/README.md
 benchmarks/viscoelastic_plastic_simple_shear/README.md
 benchmarks/viscoelastic_bending_beam/README.md
 benchmarks/viscoelastic_plate_flexure/doc/README.md
+benchmarks/elastic_line_load/doc/elastic_line_load.md
 benchmarks/free_surface_tractions/viscoelastic/README.md
 benchmarks/free_surface_tractions/viscous/README.md
 benchmarks/zhong_et_al_93/README.md

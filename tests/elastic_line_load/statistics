@@ -1,0 +1,35 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Average density (kg/m^3)
+# 14: Average viscosity (Pa s)
+# 15: Total mass (kg)
+# 16: Minimal value for composition ve_stress_xx
+# 17: Maximal value for composition ve_stress_xx
+# 18: Global mass for composition ve_stress_xx
+# 19: Minimal value for composition ve_stress_yy
+# 20: Maximal value for composition ve_stress_yy
+# 21: Global mass for composition ve_stress_yy
+# 22: Minimal value for composition ve_stress_xy
+# 23: Maximal value for composition ve_stress_xy
+# 24: Global mass for composition ve_stress_xy
+# 25: Minimal value for composition ve_stress_xx_old
+# 26: Maximal value for composition ve_stress_xx_old
+# 27: Global mass for composition ve_stress_xx_old
+# 28: Minimal value for composition ve_stress_yy_old
+# 29: Maximal value for composition ve_stress_yy_old
+# 30: Global mass for composition ve_stress_yy_old
+# 31: Minimal value for composition ve_stress_xy_old
+# 32: Maximal value for composition ve_stress_xy_old
+# 33: Global mass for composition ve_stress_xy_old
+# 34: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 450 4278 1891 24300 2 0 242 246 246 2.68043850e+03 3.15569520e+22 4.82478930e+14 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 output-elastic_line_load/solution/solution-00000 
