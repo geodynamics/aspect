@@ -1,0 +1,21 @@
+# This setup models the relaxation of elastic stresses in the absence
+# of drivers.
+# The analytical solution is:
+#     \tau_{xx} = \tau_{xx_{t0}} \exp(-t \frac{\mu}{\eta_{viscous}}),
+# where \tau_{xx} is the first component of the stored stress tensor,
+# \mu is the shear modulus and \eta_{viscous} the viscous viscosity.
+# This test is a shortened version of the viscoelastic_relaxation_particles
+# benchmark, which it includes.
+
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_relaxation/viscoelastic_relaxation_particles.prm
+
+set End time                               = 250
+
+# Pin the Stokes solver type so that the results are directly comparable to
+# the melt twin test melt_0percent_viscoelastic_relaxation_particles: melt transport
+# does not support the matrix-free GMG solver, so the twin uses block AMG.
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block AMG
+  end
+end

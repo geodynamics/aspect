@@ -1,0 +1,38 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Minimal value for composition ve_stress_xx
+# 14: Maximal value for composition ve_stress_xx
+# 15: Global mass for composition ve_stress_xx
+# 16: Minimal value for composition ve_stress_yy
+# 17: Maximal value for composition ve_stress_yy
+# 18: Global mass for composition ve_stress_yy
+# 19: Minimal value for composition ve_stress_xy
+# 20: Maximal value for composition ve_stress_xy
+# 21: Global mass for composition ve_stress_xy
+# 22: Minimal value for composition ve_stress_xx_old
+# 23: Maximal value for composition ve_stress_xx_old
+# 24: Global mass for composition ve_stress_xx_old
+# 25: Minimal value for composition ve_stress_yy_old
+# 26: Maximal value for composition ve_stress_yy_old
+# 27: Global mass for composition ve_stress_yy_old
+# 28: Minimal value for composition ve_stress_xy_old
+# 29: Maximal value for composition ve_stress_xy_old
+# 30: Global mass for composition ve_stress_xy_old
+# 31: RMS velocity (m/year)
+# 32: Max. velocity (m/year)
+# 33: Visualization file name
+# 34: Number of advected particles
+# 35: Particle file name
+0 0.000000000000e+00 0.000000000000e+00 100 1003 441 5400  2 0  18  18  17 2.00000000e+07 2.00000000e+07 2.00000000e+17 -2.00000000e+07 -2.00000000e+07 -2.00000000e+17  0.00000000e+00 0.00000000e+00  0.00000000e+00 2.00000000e+07 2.00000000e+07 2.00000000e+17 -2.00000000e+07 -2.00000000e+07 -2.00000000e+17  0.00000000e+00 0.00000000e+00  0.00000000e+00 2.38918651e-15 3.72037266e-15 output-viscoelastic_relaxation_particles/solution/solution-00000 2500 output-viscoelastic_relaxation_particles/particles/particles-00000 
+1 1.250000000000e+02 1.250000000000e+02 100 1003 441 5400 20 0 300 300 300 1.99214176e+07 1.99214176e+07 1.99214176e+17 -1.99214176e+07 -1.99214176e+07 -1.99214176e+17 -4.42768398e-08 3.44730539e-08 -2.51866824e+01 1.99214176e+07 1.99214176e+07 1.99214176e+17 -1.99214176e+07 -1.99214176e+07 -1.99214176e+17 -4.42527302e-08 3.44768362e-08 -2.52363310e+01 1.50781594e-16 4.64578057e-16                                                               "" 2500                                                                 "" 
+2 2.500000000000e+02 1.250000000000e+02 100 1003 441 5400 20 0 300 300 300 1.98431440e+07 1.98431440e+07 1.98431440e+17 -1.98431440e+07 -1.98431440e+07 -1.98431440e+17 -4.81876293e-08 3.14430595e-08 -1.75753250e+01 1.98431440e+07 1.98431440e+07 1.98431440e+17 -1.98431440e+07 -1.98431440e+07 -1.98431440e+17 -4.82359855e-08 3.13610724e-08 -1.76979743e+01 1.39393934e-16 3.67856964e-16                                                               "" 2500                                                                 "" 

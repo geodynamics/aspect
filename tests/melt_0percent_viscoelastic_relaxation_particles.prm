@@ -1,0 +1,70 @@
+# This setup models the relaxation of elastic stresses in the absence
+# of drivers, with the two-phase flow (melt transport) machinery active at
+# zero porosity.
+# The analytical solution is:
+#     \tau_{xx} = \tau_{xx_{t0}} \exp(-t \frac{\mu}{\eta_{viscous}}),
+# where \tau_{xx} is the first component of the stored stress tensor,
+# \mu is the shear modulus and \eta_{viscous} the viscous viscosity.
+# This test is a shortened version of the viscoelastic_relaxation_particles
+# benchmark, which it includes, with the visco plastic material model wrapped
+# by the reactive fluid transport model and porosity and bound fluid fields
+# added (both zero, so the results should match the corresponding test
+# without melt transport, viscoelastic_relaxation_particles).
+
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_relaxation/viscoelastic_relaxation_particles.prm
+
+set End time                               = 250
+set Output directory                       = melt_0percent_viscoelastic_relaxation_particles
+set Adiabatic surface temperature          = 293.0
+
+# Add the porosity and bound fluid fields required by the reactive fluid
+# transport material model. The stress fields remain on particles.
+subsection Compositional fields
+  set Number of fields = 8
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old, porosity, bound_fluid
+  set Types of fields  = stress, stress, stress, stress, stress, stress, porosity, generic
+  set Compositional field methods = particles, particles, particles, particles, particles, particles, field, field
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  =
+    set Function expression = 20e6; -20e6; 0; 20e6; -20e6; 0; 0; 0
+  end
+end
+
+subsection Material model
+  set Model name = reactive fluid transport
+
+  subsection Reactive Fluid Transport Model
+    set Base model                  = visco plastic
+    set Reference fluid density     = 2800
+    set Reference fluid viscosity   = 10
+    set Reference permeability      = 1e-8
+    set Fluid reaction time scale for operator splitting = 125
+    set Fluid-solid reaction scheme = no reaction
+  end
+end
+
+# The included benchmark sets a single 'true' that would expand to all fields.
+# The stress fields remain discontinuous, but the porosity and bound fluid
+# fields use the default continuous discretization.
+subsection Discretization
+  set Use discontinuous composition discretization = true, true, true, true, true, true, false, false
+end
+
+subsection Melt settings
+  set Include melt transport = true
+end
+
+# Melt transport does not support the matrix-free GMG Stokes solver. Pin the
+# solver type explicitly so that the setup matches the non-melt twin test
+# viscoelastic_relaxation_particles, which pins the same solver; otherwise
+# the two tests would differ by solver noise in addition to the melt terms.
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block AMG
+  end
+end

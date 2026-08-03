@@ -1,0 +1,106 @@
+
+Number of active cells: 25 (on 1 levels)
+Number of degrees of freedom: 2,380 (242+111+242+36+36+225+225+225+225+225+225+121+121+121)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 20+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.01044e-16, 0, 0, 0, 0, 0, 0, 0, 1.05694e-16, 0, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 19+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.12765e-16, 0, 0, 0, 0, 0, 0, 0, 1.05694e-16, 0, 0.196321
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.196321
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 17+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.91432e-16, 0, 0, 0, 0, 0, 0, 0, 1.05694e-16, 0, 5.9055
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 5.9055
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 19+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.85716e-16, 0, 0, 0, 0, 0, 0, 0, 1.05694e-16, 0, 3.99196
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 3.99196
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 20+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.8426e-16, 0, 0, 0, 0, 0, 0, 0, 1.05694e-16, 0, 0.0465467
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.0465467
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
+   Postprocessing:
+     RMS, max velocity:     0.00527 m/year, 0.00898 m/year
+     Writing depth average: output-melt_10percent_alpha0_viscoelastic_bending_beam_particles/depth_average
+
+*** Timestep 1:  t=500 years, dt=500 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving porosity system ... 8 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 16+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.30265e-16, 0, 0, 0, 0, 0, 0, 0, 0.000703956, 0, 0.938129
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.938129
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving porosity system ... 8 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 11+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.12204e-16, 0, 0, 0, 0, 0, 0, 0, 0.0001111, 0, 0.010398
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.010398
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving porosity system ... 4 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 8+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.23801e-16, 0, 0, 0, 0, 0, 0, 0, 5.55696e-08, 0, 3.05124e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 3.05124e-06
+
+
+   Postprocessing:
+     RMS, max velocity:     0.00527 m/year, 0.00904 m/year
+     Writing depth average: output-melt_10percent_alpha0_viscoelastic_bending_beam_particles/depth_average
+
+Termination requested by criterion: end time
+
+
+
+
+WARNING: During this computation 1 nonlinear solver failures occurred!

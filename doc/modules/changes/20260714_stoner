@@ -1,0 +1,10 @@
+New: Elasticity can now be combined with two-phase melt transport. The melt
+Stokes assembler adds the stored elastic (deviatoric) shear stress as a force
+on the solid momentum equation (after Keller et al. 2013). Setting porosity to
+zero recovers purely viscous behavior predicted by single-phase flow (i.e. in
+cells without melt the melt momentum operator reduces exactly to the
+incompressible Stokes equation). In addition, visco-plastic strain weakening and the elastic-stress
+and strain-invariant particle properties work when the visco-plastic model is
+wrapped by the reactive fluid transport model.
+<br>
+(Ryan Stoner, 2026/07/14)
