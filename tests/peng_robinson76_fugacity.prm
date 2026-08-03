@@ -118,6 +118,7 @@ subsection Material model
     set Critical temperature = 647.3
     set Critical pressure    = 22.12e6
     set Acentric factor      = 0.344
+    set Pressure cutoff      = 2.5e9
   end
 end
 

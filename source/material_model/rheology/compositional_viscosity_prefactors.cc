@@ -102,7 +102,7 @@ namespace aspect
               const double adiabatic_pressure =
                 this->get_adiabatic_conditions().pressure(in.position[q]);
               const double pressure_for_fugacity =
-                std::min(adiabatic_pressure, 2.5e9);
+                std::min(adiabatic_pressure, pressure_cutoff);
 
               // The parameters contain r/n, so the viscosity dependence is
               // f^(-r/n).
@@ -179,7 +179,7 @@ namespace aspect
             const double adiabatic_pressure =
               this->get_adiabatic_conditions().pressure(in.position[point_index]);
             const double pressure_for_fugacity =
-              std::min(adiabatic_pressure, 2.5e9);
+              std::min(adiabatic_pressure, pressure_cutoff);
 
             fugacity_out->fugacities[point_index] =
               compute_fugacity(in.temperature[point_index],
@@ -214,10 +214,10 @@ namespace aspect
         AssertThrow(temperature > 0.0 && pressure >= 0.0,
                     ExcMessage("Temperature must be positive and absolute "
                                "pressure must be non-negative."));
-        AssertThrow(pressure <= 2.5e9,
+        AssertThrow(pressure <= pressure_cutoff,
                     ExcMessage("The Peng-Robinson fugacity calculation cannot "
-                               "be evaluated above 2.5 GPa because fugacity "
-                               "behavior is not constrained above that pressure."));
+                               "be evaluated above the configured pressure cutoff of "
+                               + Utilities::to_string(pressure_cutoff) + " Pa."));
 
         // The zero-pressure limit is an ideal, infinitely dilute vapor.
         if (pressure == 0.0)
@@ -424,6 +424,15 @@ namespace aspect
                            "of Peng & Robinson (1976, 10.1021/i160057a011). This parameter "
                            "is only used for the 'peng_robinson76_fugacity' scheme. "
                            "Units: none.");
+        prm.declare_entry ("Pressure cutoff", "2.5e9",
+                           Patterns::Double (0.0),
+                           "Maximum pressure used in the Peng-Robinson fugacity "
+                           "calculation. Pressures above this value are set to the "
+                           "cutoff. Fugacity can still change with temperature above "
+                           "this pressure. The default is 2.5 GPa because fugacity is "
+                           "not constrained at higher pressures. This parameter is "
+                           "only used with the 'peng_robinson76_fugacity' viscosity "
+                           "prefactor scheme. Units: Pa.");
       }
 
 
@@ -466,6 +475,10 @@ namespace aspect
             critical_temperature = prm.get_double ("Critical temperature");
             critical_pressure = prm.get_double ("Critical pressure");
             acentric_factor = prm.get_double ("Acentric factor");
+            pressure_cutoff = prm.get_double ("Pressure cutoff");
+
+            AssertThrow(pressure_cutoff > 0.0,
+                        ExcMessage("The parameter 'Pressure cutoff' must be greater than zero."));
 
             // Peng & Robinson (1976), equation (18).
             kappa = 0.37464

@@ -219,6 +219,12 @@ namespace aspect
            */
           double acentric_factor;
 
+          /**
+           * Maximum pressure in Pa used in the Peng-Robinson fugacity calculation.
+           * Pressures above this value are set to the cutoff.
+           */
+          double pressure_cutoff;
+
       };
     }
   }

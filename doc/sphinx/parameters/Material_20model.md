@@ -5395,6 +5395,15 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 **Documentation:** List of prefactors for the yield stress, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. The prefactor is multiplied with the yield stress computed from the Drucker-Prager plasticity parameters. Default value is 1.0.
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Pressure cutoff<parameters:Material_20model/Visco_20Plastic/Pressure_20cutoff>`
+:name: parameters:Material_20model/Visco_20Plastic/Pressure_20cutoff
+**Default value:** 2.5e9
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Maximum pressure used in the Peng-Robinson fugacity calculation. Pressures above this value are set to the cutoff. Fugacity can still change with temperature above this pressure. The default is 2.5 GPa because fugacity is not constrained at higher pressures. This parameter is only used with the &rsquo;peng_robinson76_fugacity&rsquo; viscosity prefactor scheme. Units: Pa.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Pressure prefactors for Frank Kamenetskii<parameters:Material_20model/Visco_20Plastic/Pressure_20prefactors_20for_20Frank_20Kamenetskii>`
 :name: parameters:Material_20model/Visco_20Plastic/Pressure_20prefactors_20for_20Frank_20Kamenetskii
 **Default value:** 0.0
