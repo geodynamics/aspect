@@ -63,80 +63,32 @@ namespace aspect
             // Because the ratios of the diffusion and dislocation strain rates are not known, stress is also unknown
             // We use KINSOL to find the second invariant of the stress tensor that satisfies the total strain rate.
 
-            // The power law creep equation is
-            // edot_ii_i = A_i * stress_ii_i^{n_i} * d^{-m} \exp\left(-\frac{E_i^\ast + PV_i^\ast}{n_iRT}\right)
-            // where ii indicates the square root of the second invariant and
-            // i corresponds to diffusion or dislocation creep
-
-            // For diffusion creep, viscosity is grain size dependent
-            const Rheology::DiffusionCreepParameters diffusion_creep_parameters = diffusion_creep.compute_creep_parameters(j);
-
-            // For dislocation creep, viscosity is grain size independent (m=0)
-            const Rheology::DislocationCreepParameters dislocation_creep_parameters = dislocation_creep.compute_creep_parameters(j);
-
-
-            SUNDIALS::KINSOL<Vector<double>> nonlinear_solver(kinsol_settings);
-            double log_strain_rate_deriv;
-            nonlinear_solver.reinit_vector = [&](Vector<double> &x)
-            {
-              x.reinit(1);
-            };
-
-            nonlinear_solver.residual =
-              [&](const Vector<double> &current_log_stress_ii,
-                  Vector<double>       &residual)
-            {
-              std::tie(residual(0), log_strain_rate_deriv) = compute_log_strain_rate_residual_and_derivative(
-                                                               current_log_stress_ii[0], pressure, temperature, diffusion_creep_parameters, dislocation_creep_parameters, log_edot_ii
-                                                             );
-            };
-
-            nonlinear_solver.setup_jacobian =
-              [&](const Vector<double> & /*current_log_stress_ii*/,
-                  const Vector<double> & /*current_f*/)
-            {
-              // Do nothing here, because we calculate the Jacobian in the residual function
-            };
-
-            nonlinear_solver.solve_with_jacobian = [&](const Vector<double> &residual,
-                                                       Vector<double> &solution,
-                                                       const double /*tolerance*/)
-            {
-              solution(0) = residual(0) / log_strain_rate_deriv;
-            };
-
+            // Update the current parameters for the nonlinear solver to use in the residual and derivative calculations
+            current_diffusion_creep_parameters = diffusion_creep.compute_creep_parameters(j);
+            current_dislocation_creep_parameters = dislocation_creep.compute_creep_parameters(j);
+            current_pressure = pressure;
+            current_temperature = temperature;
+            current_log_edot_ii = log_edot_ii;
 
             // Our starting guess for the stress assumes that all strain is
             // accommodated by either diffusion creep, dislocation creep,
             // or by the maximum viscosity limiter.
-            const double prefactor_stress_diffusion = diffusion_creep_parameters.prefactor *
-                                                      std::pow(grain_size, -diffusion_creep_parameters.grain_size_exponent) *
-                                                      std::exp(-(std::max(diffusion_creep_parameters.activation_energy + pressure*diffusion_creep_parameters.activation_volume,0.0))/
-                                                               (constants::gas_constant*temperature));
-
-            const double prefactor_stress_dislocation = dislocation_creep_parameters.prefactor *
-                                                        std::exp(-(std::max(dislocation_creep_parameters.activation_energy + pressure*dislocation_creep_parameters.activation_volume,0.0))/
-                                                                 (constants::gas_constant*temperature));
+            const double stress_ii_over_edot_ii_diffusion = 1. / (current_diffusion_creep_parameters.prefactor *
+                                                                  std::pow(grain_size, -current_diffusion_creep_parameters.grain_size_exponent) *
+                                                                  std::exp(-(std::max(current_diffusion_creep_parameters.activation_energy + pressure*current_diffusion_creep_parameters.activation_volume,0.0))/
+                                                                           (constants::gas_constant*temperature)));
 
             // The initial guess for the stress is chosen to be the minimum of the stress
-            // that would be required to accommodate all strain by a single mechanism.
-            // This is a good starting guess, because over most of strain-rate space,
-            // the creep mechanism with the lowest viscosity (and therefore generating
-            // the lowest stress; stress_ii = 2*eta*edot_ii) will accommodate most of the strain.
-            double stress_ii = std::min(
-            {
-              std::pow(edot_ii/prefactor_stress_diffusion, 1./diffusion_creep_parameters.stress_exponent),
-              std::pow(edot_ii/prefactor_stress_dislocation, 1./dislocation_creep_parameters.stress_exponent),
-              0.5 / maximum_viscosity
-            });
+            // that would be required to accommodate all strain by either diffusion creep
+            // or by the viscosity limiter.
+            double stress_ii = std::min({stress_ii_over_edot_ii_diffusion, 2.0 * maximum_viscosity}) * edot_ii;
 
             // KINSOL works on vectors and so the scalar (log) stress is inserted into
-            // a vector of length 1
-            Vector<double> log_stress_ii(1);
-            log_stress_ii[0] = std::log(stress_ii);
+            // a reusable vector of length 1.
+            nonlinear_solver_state[0] = std::log(stress_ii);
 
-            nonlinear_solver.solve(log_stress_ii);
-            stress_ii = std::exp(log_stress_ii[0]);
+            nonlinear_solver->solve(nonlinear_solver_state);
+            stress_ii = std::exp(nonlinear_solver_state[0]);
             composition_viscosities[j] = std::clamp(stress_ii/edot_ii/2.0, minimum_viscosity, maximum_viscosity);
           }
         return composition_viscosities;
@@ -351,6 +303,40 @@ namespace aspect
         kinsol_settings.function_tolerance = log_strain_rate_residual_threshold;
         kinsol_settings.maximum_non_linear_iterations = stress_max_iteration_number;
         kinsol_settings.maximum_setup_calls = 1;
+
+        nonlinear_solver = std::make_unique<SUNDIALS::KINSOL<Vector<double>>>(kinsol_settings);
+
+        nonlinear_solver->reinit_vector = [&](Vector<double> &x)
+        {
+          x.reinit(1);
+        };
+
+        nonlinear_solver->setup_jacobian =
+          [&](const Vector<double> & /*current_log_stress_ii*/,
+              const Vector<double> & /*current_f*/)
+        {
+          // Do nothing here, because we calculate the Jacobian in the residual function
+        };
+
+        nonlinear_solver->residual =
+          [&](const Vector<double> &current_log_stress_ii,
+              Vector<double>       &residual)
+        {
+          std::tie(residual(0), current_log_strain_rate_deriv) = compute_log_strain_rate_residual_and_derivative(
+                                                                   current_log_stress_ii[0], current_pressure, current_temperature, current_diffusion_creep_parameters, current_dislocation_creep_parameters, current_log_edot_ii
+                                                                 );
+        };
+
+        nonlinear_solver->solve_with_jacobian =
+          [&](const Vector<double> &residual,
+              Vector<double> &solution,
+              const double /*tolerance*/)
+        {
+          solution(0) = residual(0) / current_log_strain_rate_deriv;
+        };
+
+        nonlinear_solver_state.reinit(1);
+
       }
     }
   }
