@@ -4750,6 +4750,15 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 (parameters:Material_20model/Visco_20Plastic)=
 ## **Subsection:** Material model / Visco Plastic
+::::{dropdown} __Parameter:__ {ref}`Acentric factor<parameters:Material_20model/Visco_20Plastic/Acentric_20factor>`
+:name: parameters:Material_20model/Visco_20Plastic/Acentric_20factor
+**Default value:** 0.344
+
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Acentric factor of the fluid. Peng & Robinson describe kappa as a constant characteristic of each substance and correlate it against the acentric factor as kappa=0.37464+1.54226*omega-0.26992*omega^2 in equation (18) of Peng & Robinson (1976, 10.1021/i160057a011). This parameter is only used for the &rsquo;peng_robinson76_fugacity&rsquo; scheme. Units: none.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Activation energies for Peierls creep<parameters:Material_20model/Visco_20Plastic/Activation_20energies_20for_20Peierls_20creep>`
 :name: parameters:Material_20model/Visco_20Plastic/Activation_20energies_20for_20Peierls_20creep
 **Default value:** 320e3
@@ -4874,6 +4883,24 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of constant viscosity prefactors (i.e., multiplicative factors) for background material and compositional fields, for a total of N+1 where N is the number of all compositional fields or only those corresponding to chemical compositions. Units: none.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Critical pressure<parameters:Material_20model/Visco_20Plastic/Critical_20pressure>`
+:name: parameters:Material_20model/Visco_20Plastic/Critical_20pressure
+**Default value:** 22.12e6
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Critical pressure of the fluid used by the Peng-Robinson equation of state. This parameter is only used when &rsquo;Viscosity prefactor scheme&rsquo; is &rsquo;peng_robinson76_fugacity&rsquo;. Units: Pa.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Critical temperature<parameters:Material_20model/Visco_20Plastic/Critical_20temperature>`
+:name: parameters:Material_20model/Visco_20Plastic/Critical_20temperature
+**Default value:** 647.3
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Critical temperature of the fluid used by the Peng-Robinson equation of state. This parameter is only used when &rsquo;Viscosity prefactor scheme&rsquo; is &rsquo;peng_robinson76_fugacity&rsquo;. Units: K.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Cutoff stresses for Peierls creep<parameters:Material_20model/Visco_20Plastic/Cutoff_20stresses_20for_20Peierls_20creep>`
@@ -5662,9 +5689,9 @@ If a compositional field named &rsquo;noninitial\_plastic\_strain&rsquo; is incl
 :name: parameters:Material_20model/Visco_20Plastic/Viscosity_20prefactor_20scheme
 **Default value:** none
 
-**Pattern:** [Selection none|HK04 olivine hydration ]
+**Pattern:** [Selection none|HK04 olivine hydration|peng_robinson76_fugacity|interface weakening ]
 
-**Documentation:** Select what type of viscosity multiplicative prefactor scheme to apply. Allowed entries are &rsquo;none&rsquo;, and &rsquo;HK04 olivine hydration&rsquo;. HK04 olivine hydration calculates the viscosity change due to hydrogen incorporation into olivine following Hirth & Kohlstedt 2004 (10.1029/138GM06). none does not modify the viscosity. Units: none.
+**Documentation:** Select what type of viscosity multiplicative prefactor scheme to apply. Allowed entries are &rsquo;none&rsquo;, &rsquo;HK04 olivine hydration&rsquo;, &rsquo;peng_robinson76_fugacity&rsquo;, and &rsquo;interface weakening&rsquo;. &rsquo;HK04 olivine hydration&rsquo; calculates the viscosity change due to hydrogen incorporation into olivine following Hirth & Kohlstedt 2004 (10.1029/138GM06). &rsquo;peng_robinson76_fugacity&rsquo; estimates the fugacity of a configurable pure fluid from temperature and adiabatic pressure using the Peng-Robinson equation of state and applies the configured fugacity exponents to the viscosity. &rsquo;interface weakening&rsquo; reduces the viscous contribution by a constant amount to mimic a thin, weak interface between two compositional fields. &rsquo;none&rsquo; does not modify the viscosity. Units: none.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Viscosity ratios for Frank Kamenetskii<parameters:Material_20model/Visco_20Plastic/Viscosity_20ratios_20for_20Frank_20Kamenetskii>`

@@ -29,7 +29,6 @@
 
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/parameter_handler.h>
-#include <deal.II/bundled/boost/math/tools/cubic_roots.hpp>
 #include <aspect/simulator_signals.h>
 #include <aspect/parameters.h>
 
@@ -241,17 +240,52 @@ namespace aspect
         const double a1 = A - 3.0*B*B - 2.0*B;
         const double a2 = B - 1.0;
 
-        // Calculate the real roots of Z^3 + a2*Z^2 + a1*Z + a0 = 0.
-        const std::array<double,3> roots =
-          boost::math::tools::cubic_roots(1.0, a2, a1, a0);
+        // Transform Z^3 + a2*Z^2 + a1*Z + a0 = 0 to the depressed
+        // cubic y^3 + p*y + q = 0 and calculate all real roots.
+        const double p = a1 - a2*a2/3.0;
+        const double q = 2.0*a2*a2*a2/27.0 - a2*a1/3.0 + a0;
+        const double discriminant = q*q/4.0 + p*p*p/27.0;
+
+        std::array<double,3> roots = {{0.0, 0.0, 0.0}};
+        unsigned int n_roots = 0;
+
+        if (discriminant > 0.0)
+          {
+            roots[0] = std::cbrt(-q/2.0 + std::sqrt(discriminant))
+                       + std::cbrt(-q/2.0 - std::sqrt(discriminant))
+                       - a2/3.0;
+            n_roots = 1;
+          }
+        else
+          {
+            const double amplitude = 2.0*std::sqrt(std::max(0.0, -p/3.0));
+
+            if (amplitude == 0.0)
+              {
+                roots[0] = -a2/3.0;
+                n_roots = 1;
+              }
+            else
+              {
+                const double cosine_argument =
+                  std::clamp(3.0*q/(p*amplitude), -1.0, 1.0);
+                const double theta = std::acos(cosine_argument)/3.0;
+
+                for (unsigned int i=0; i<3; ++i)
+                  roots[i] = amplitude
+                             * std::cos(theta + 2.0*numbers::PI*i/3.0)
+                             - a2/3.0;
+                n_roots = 3;
+              }
+          }
 
 
         // Retain physical roots and order them from liquid-like (small Z) to
         // vapor-like (large Z).
         std::vector<double> physical_roots;
-        for (const double root : roots)
-          if (std::isfinite(root) && root > B)
-            physical_roots.push_back(root);
+        for (unsigned int i=0; i<n_roots; ++i)
+          if (roots[i] > B)
+            physical_roots.push_back(roots[i]);
 
         std::sort(physical_roots.begin(), physical_roots.end());
         physical_roots.erase(std::unique(physical_roots.begin(),
@@ -355,12 +389,42 @@ namespace aspect
                            "'Interface weakening'. Units: none.");
 
         prm.declare_entry ("Viscosity prefactor scheme", "none",
-                           Patterns::Selection("none|HK04 olivine hydration"),
+                           Patterns::Selection("none|HK04 olivine hydration|peng_robinson76_fugacity|interface weakening"),
                            "Select what type of viscosity multiplicative prefactor scheme to apply. "
-                           "Allowed entries are 'none', and 'HK04 olivine hydration'. HK04 olivine "
-                           "hydration calculates the viscosity change due to hydrogen incorporation "
-                           "into olivine following Hirth & Kohlstedt 2004 (10.1029/138GM06). none "
-                           "does not modify the viscosity. Units: none.");
+                           "Allowed entries are 'none', 'HK04 olivine hydration', "
+                           "'peng_robinson76_fugacity', and 'interface weakening'. "
+                           "'HK04 olivine hydration' calculates the viscosity change due to "
+                           "hydrogen incorporation into olivine following Hirth & Kohlstedt "
+                           "2004 (10.1029/138GM06). 'peng_robinson76_fugacity' estimates "
+                           "the fugacity of a configurable pure fluid from temperature and "
+                           "adiabatic pressure using the Peng-Robinson equation of state and "
+                           "applies the configured fugacity exponents to the viscosity. "
+                           "'interface weakening' reduces the viscous contribution by a "
+                           "constant amount to mimic a thin, weak interface between two "
+                           "compositional fields. 'none' does not modify the viscosity. "
+                           "Units: none.");
+
+        prm.declare_entry ("Critical temperature", "647.3",
+                           Patterns::Double (0.0),
+                           "Critical temperature of the fluid used by the Peng-Robinson "
+                           "equation of state. This parameter is only used when "
+                           "'Viscosity prefactor scheme' is 'peng_robinson76_fugacity'. "
+                           "Units: K.");
+        prm.declare_entry ("Critical pressure", "22.12e6",
+                           Patterns::Double (0.0),
+                           "Critical pressure of the fluid used by the Peng-Robinson "
+                           "equation of state. This parameter is only used when "
+                           "'Viscosity prefactor scheme' is 'peng_robinson76_fugacity'. "
+                           "Units: Pa.");
+        prm.declare_entry ("Acentric factor", "0.344",
+                           Patterns::Double (),
+                           "Acentric factor of the fluid. Peng & Robinson describe kappa "
+                           "as a constant characteristic of each substance and correlate "
+                           "it against the acentric factor as "
+                           "kappa=0.37464+1.54226*omega-0.26992*omega^2 in equation (18) "
+                           "of Peng & Robinson (1976, 10.1021/i160057a011). This parameter "
+                           "is only used for the 'peng_robinson76_fugacity' scheme. "
+                           "Units: none.");
       }
 
 
@@ -396,6 +460,56 @@ namespace aspect
                                                    options);
             minimum_mass_fraction_water_for_dry_creep = Utilities::MapParsing::parse_map_to_double_array (prm.get("Minimum mass fraction bound water content for fugacity"),
                                                         options);
+          }
+        if (prm.get ("Viscosity prefactor scheme") == "peng_robinson76_fugacity")
+          {
+            viscosity_prefactor_scheme = peng_robinson76_fugacity;
+            critical_temperature = prm.get_double ("Critical temperature");
+            critical_pressure = prm.get_double ("Critical pressure");
+            acentric_factor = prm.get_double ("Acentric factor");
+
+            // Peng & Robinson (1976), equation (18).
+            kappa = 0.37464
+                    + 1.54226*acentric_factor
+                    - 0.26992*acentric_factor*acentric_factor;
+
+            std::vector<std::string> compositional_field_names =
+              this->introspection().get_composition_names();
+            std::vector<std::string> chemical_field_names =
+              this->introspection().chemical_composition_field_names();
+
+            compositional_field_names.insert(compositional_field_names.begin(), "background");
+            chemical_field_names.insert(chemical_field_names.begin(), "background");
+
+            Utilities::MapParsing::Options options(
+              chemical_field_names,
+              "Water fugacity exponents for diffusion creep");
+            options.list_of_allowed_keys = compositional_field_names;
+            diffusion_water_fugacity_exponents =
+              Utilities::MapParsing::parse_map_to_double_array(
+                prm.get("Water fugacity exponents for diffusion creep"), options);
+
+            options.property_name = "Water fugacity exponents for dislocation creep";
+            dislocation_water_fugacity_exponents =
+              Utilities::MapParsing::parse_map_to_double_array(
+                prm.get("Water fugacity exponents for dislocation creep"), options);
+          }
+        if (prm.get ("Viscosity prefactor scheme") == "interface weakening")
+          {
+            weakening_field_names = Utilities::split_string_list(prm.get("Interface weakening compositions"));
+            AssertThrow(weakening_field_names.size() == 2,
+                        ExcMessage("'Interface weakening compositions' must list exactly two field names. Instead, you have listed: "
+                                   + Utilities::to_string(weakening_field_names.size()) + "."));
+            std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
+            std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
+            compositional_field_names.insert(compositional_field_names.begin(), "background");
+            chemical_field_names.insert(chemical_field_names.begin(), "background");
+
+            Utilities::MapParsing::Options options(chemical_field_names, "Interface weakening factors");
+            options.list_of_allowed_keys = compositional_field_names;
+            interface_weakening_factors = Utilities::MapParsing::parse_map_to_double_array(prm.get("Interface weakening factors"), options);
+            interface_weakening_threshold = prm.get_double("Interface weakening threshold");
+            viscosity_prefactor_scheme = interface_weakening;
           }
       }
     }

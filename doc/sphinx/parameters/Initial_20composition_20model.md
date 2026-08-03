@@ -94,7 +94,7 @@ When &ldquo;composition is specified, the initial model is treated as a standard
 
 ::::{dropdown} __Parameter:__ {ref}`Data file name<parameters:Initial_20composition_20model/Ascii_20data_20model/Data_20file_20name>`
 :name: parameters:Initial_20composition_20model/Ascii_20data_20model/Data_20file_20name
-**Default value:** box_2d.txt
+**Default value:** initial_composition_top_mantle_box_3d.txt
 
 **Pattern:** [Anything]
 

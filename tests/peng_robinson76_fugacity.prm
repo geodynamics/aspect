@@ -9,7 +9,7 @@
 # pressure, with the EOS pressure limited to 2.5 GPa because its behavior is
 # unconstrained above that pressure. The crust dislocation-creep viscosity is
 # multiplied by f^(-r/n), with r/n=0.25, while the background exponent is
-# zero. The Peng-Robinson viscosity modifier assumes the material is in equilibrium 
+# zero. The Peng-Robinson viscosity modifier assumes the material is in equilibrium
 # with a pure fluid or vapor phase.
 
 set Dimension                     = 2
