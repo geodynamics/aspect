@@ -1,4 +1,4 @@
-# This test verifies that the adiabatic profile is computed correctly for multiple compositions.
+# This test verifies that the adiabatic profile is computed correctly for multiple compositions using initial compositions.
 # The setup is the same as entropy_multicomponent_5, except that the simulation terminates immediately after initialization.
 # The Fo fraction increases from 0% to 100%, while the En fraction decreases from 100% to 0%.
 # The average entropy is set to a constant value of 2070.
@@ -92,10 +92,7 @@ subsection Adiabatic conditions model
   subsection Compute entropy profile
     set Surface entropy = 2070
     set Composition profile = initial composition
-    set Number of points = 4001
-    # set Variable names = y
-    # set Function expression = y*(1/200000);2070 ;2070  ;0
-    
+    set Number of points = 4001    
   end
 end
 
@@ -135,5 +132,3 @@ subsection Postprocess
     end
   end
 end
-
-set End time                               = 0.

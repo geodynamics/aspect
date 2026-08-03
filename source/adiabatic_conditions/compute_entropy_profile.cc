@@ -143,8 +143,8 @@ namespace aspect
             {
               // If the adiabatic profile is calculated using the initial composition.
               // We use one entropy value for the adiabat calculation, since entropy is constant along an adiabat.
-              // We use 'Surface entropy' for all entropy fields and the initial composition for the other compositional fields.
-              // If there are multiple chemicalcompositions, at every point of the depth, we calculate the adiabatic temperature using the
+              // We use 'profile_entropy' for all entropy fields and the initial composition for the other compositional fields.
+              // If there are multiple chemical compositions, at every depth point, we calculate the adiabatic temperature using the
               // multi-composition entropy equilibration.
               if (reference_composition == initial_composition)
                 if (this->introspection().get_composition_descriptions()[c].type == CompositionalFieldDescription::entropy)
@@ -154,13 +154,13 @@ namespace aspect
 
               // If the adiabatic profile is calculated using a user-defined function,
               // both the chemical compositions and compositions' entropies should be specified by a function.
-              // If there are multiple chemicalcompositions, at every point of the depth, we calculate the adiabatic temperature using the
+              // If there are multiple chemical compositions, at every depth point, we calculate the adiabatic temperature using the
               // multi-composition entropy equilibration.
               else if (reference_composition == reference_function)
                 {
                   // The function is written in terms of depth.
                   // This is different from the initial composition function.
-                  double depth = this->get_geometry_model().depth(representative_point);
+                  const double depth = this->get_geometry_model().depth(representative_point);
                   const Point<1> p(depth);
 
                   for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
