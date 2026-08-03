@@ -40,12 +40,12 @@ jobs:
         clean: false
 
     - name: Checkout feature
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         path: feature/source
 
     - name: Checkout main
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         ref: main
         path: main/source
