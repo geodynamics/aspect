@@ -136,8 +136,8 @@ namespace aspect
            * using the fugacity of a pure fluid at a given temperature and
            * pressure determined using the
            * Peng-Robinson equation of state introduced by Peng & Robinson
-           * (1976, 10.1021/i160057a011). The use of adiabatic
-           * pressure assumes fluid-saturated conditions. The viscosity is
+           * (1976, 10.1021/i160057a011). The viscosity modification
+           * assumes that the material is saturated in the pure fluid. The viscosity is
            * calculated as
            * $\eta=\eta_{\mathrm{base}}f_{\mathrm{H_2O}}^{-r/n}$. Fugacity is
            * composition-independent because it depends only on temperature

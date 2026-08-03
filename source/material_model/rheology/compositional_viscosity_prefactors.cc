@@ -205,7 +205,7 @@ namespace aspect
         const double P_c = critical_pressure;
         const double R = constants::gas_constant;
 
-        // Dimensionless constants in the original Peng-Robinson formulation.
+        // Dimensionless constants in the original Peng-Robinson formulation. These are independent of the composition of the fluid modelled.
         // These are independent of the composition of the fluid modelled.
         // Equations 9 and 10 Peng & Robinson (1976, 10.1021/i160057a011)
         const double a_coefficient = 0.45724;
