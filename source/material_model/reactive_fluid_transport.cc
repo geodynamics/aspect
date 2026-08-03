@@ -172,7 +172,12 @@ namespace aspect
       base_model->update();
     }
 
-
+    template <int dim>
+    const MaterialModel::Interface<dim> &
+    ReactiveFluidTransport<dim>::get_base_model() const
+    {
+      return *base_model;
+    }
 
     template <int dim>
     void
@@ -188,13 +193,21 @@ namespace aspect
           // Modify the viscosity from the base model based on the presence of fluid.
           if (in.requests_property(MaterialProperties::viscosity))
             {
-              // Scale the base model viscosity value based on the porosity.
+              // check if the model includes viscoelasticity
+              const std::shared_ptr<ElasticOutputs<dim>> elastic_out = out.template get_additional_output_object<ElasticOutputs<dim>>();
+
+              // Scale the base model viscosity value based on the presence of fluid.
               for (unsigned int q=0; q<out.n_evaluation_points(); ++q)
                 {
                   const double porosity = std::max(in.composition[q][porosity_idx],0.0);
                   out.viscosities[q] *= (1.0 - porosity) * std::exp(- alpha_phi * porosity);
+                  if (elastic_out != nullptr)
+                    {
+                      elastic_out->elastic_force[q] *= (1.0 - porosity) * std::exp(-alpha_phi * porosity);
+                    }
                 }
             }
+
 
           // Fill the melt outputs if they exist. Note that the MeltOutputs class was originally
           // designed for two-phase flow material models in ASPECT that model the flow of melt,
@@ -248,6 +261,8 @@ namespace aspect
                   reaction_fraction       = reaction_time_step_size / fluid_reaction_time_scale;
                 }
 
+              const std::vector<CompositionalFieldDescription> &composition_descriptions =
+                this->introspection().get_composition_descriptions();
               std::vector<double> eq_free_fluid_fractions(out.n_evaluation_points());
               melt_fractions(in, eq_free_fluid_fractions, &out);
 
@@ -321,7 +336,10 @@ namespace aspect
                       else if (c == porosity_idx && this->get_timestep_number() > 0)
                         // Apply the volume fraction change to the porosity, which is a volume fraction
                         reaction_rate_out->reaction_rates[q][c] = porosity_change / reaction_time_step_size;
-                      else
+                      else if (composition_descriptions[c].type != CompositionalFieldDescription::stress)
+                        // Set the reaction rate to zero for all other fields, with the exception
+                        // of elastic stresses, where the reaction rates were previously set in
+                        // the base model and should not be overwritten.
                         reaction_rate_out->reaction_rates[q][c] = 0.0;
                     }
                 }

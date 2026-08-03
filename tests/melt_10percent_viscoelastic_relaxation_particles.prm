@@ -1,0 +1,29 @@
+# This model produces results identical to melt_0percent_viscoelastic_relaxation_particles
+# except that two-phase flow is active (uniform porosity of 10%).
+#
+# The analytical solution is the same as the 0 porosity case:
+#     \tau_{xx} = \tau_{xx_{t0}} \exp(-t \frac{\mu}{\eta_{viscous}}),
+# where \mu = 1e10 Pa is the shear modulus and \eta_{viscous} = 1e22 Pa s
+# the viscous viscosity. The test reproduces it to 5 significant digits:
+#     t = 125 yr:  1.99214176e7 Pa (analytical 1.99212614e7 Pa)
+#     t = 250 yr:  1.98431440e7 Pa (analytical 1.98428328e7 Pa)
+#
+# The stresses relax at the same rate as at zero porosity because melt
+# weakening scales the effective viscosity in the momentum equation, while
+# the viscoelastic stress update retains the relaxation time of the elastic
+# solid. The solid velocity remains exactly zero throughout the run.
+
+include $ASPECT_SOURCE_DIR/tests/melt_0percent_viscoelastic_relaxation_particles.prm
+
+set End time                               = 250
+set Output directory                       = melt_10percent_viscoelastic_relaxation_particles
+set Adiabatic surface temperature          = 293.0
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  =
+    set Function expression = 20e6; -20e6; 0; 20e6; -20e6; 0; 0.1; 0
+  end
+end

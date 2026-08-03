@@ -1,0 +1,119 @@
+# This test checks viscoelastic stress buildup with a
+# constant strain rate and an elastic time step equal
+# to the numerical time step. The fixed elastic time
+# step used during the first time step is equal to the
+# numerical time step. Viscoelastic stresses (sigma_xx,
+# sigma_yy, sigma_xy) are tracked with active particles.
+# The parameter file is derived from the 2D
+# viscoelastic_stress_build_up benchmark with modifications
+# to the compositional field method, resolution, end time, material properties and
+# postprocessors.
+
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build_up/viscoelastic_stress_build_up.prm
+
+
+#  Global parameters
+set End time                               = 2e3
+set Output directory                       = melt_0percent_viscoelastic_numerical_elastic_time_step_particles
+
+# For particles, the stress update is done by the particle property elastic stress,
+# so we do not need the operator splitting.
+set Use operator splitting                 = false
+
+# Model geometry (100x100 km, 5 km spacing)
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 20
+    set Y repetitions = 20
+    set X extent      = 100e3
+    set Y extent      = 100e3
+  end
+end
+
+# Track compositional fields with active particles
+subsection Compositional fields
+  set Number of fields = 8
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old, porosity, bound_fluid
+  set Types of fields  = stress, stress, stress, stress, stress, stress, porosity, generic
+  set Compositional field methods = particles, particles, particles, particles, particles, particles, field, field
+  set Mapped particle properties  = ve_stress_xx:ve_stress_xx, ve_stress_yy:ve_stress_yy, ve_stress_xy:ve_stress_xy, ve_stress_xx_old:ve_stress_xx_old, ve_stress_yy_old:ve_stress_yy_old, ve_stress_xy_old:ve_stress_xy_old
+end
+
+# Spatial domain of different compositional fields:
+# ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old, porosity, bound_fluid
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 0;\
+                              0;\
+                              0;\
+                              0;\
+                              0;\
+                              0;\
+                              0;\
+			      0;
+  end
+end
+
+subsection Discretization
+  set Use discontinuous composition discretization = true, true, true, true, true, true, false, false
+  subsection Stabilization parameters
+    set Use limiter for discontinuous composition solution = false, false, false, false, false, false, false, false
+    set Global composition maximum =  1.e11,  1.e11,  1.e11,  1.e11,  1.e11,  1.e11, 1.0, 1.0
+    set Global composition minimum = -1.e11, -1.e11, -1.e11, -1.e11, -1.e11, -1.e11, 0.0, 0.0
+  end
+end
+
+# Material model
+subsection Material model
+  set Model name = reactive fluid transport
+  subsection Reactive Fluid Transport Model
+    set Base model                  = viscoelastic
+    set Reference fluid density     = 2800
+    set Reference fluid viscosity   = 10
+    set Reference permeability      = 1e-8
+    set Fluid-solid reaction scheme = no reaction
+  end
+
+  subsection Viscoelastic
+    set Densities                   = 2800
+    set Viscosities                 = 1.e21
+    set Elastic shear moduli        = 1.e10
+    set Use fixed elastic time step = false
+    set Fixed elastic time step     = 1e3
+    set Viscosity averaging scheme  = harmonic
+  end
+end
+
+subsection Melt settings
+  set Include melt transport = true
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = basic statistics, composition statistics, particles
+
+  subsection Particles
+    set Time between data output    = 1e9
+    set Data output format          = vtu
+  end
+end
+
+subsection Particles
+  set Minimum particles per cell  = 25
+  set Maximum particles per cell  = 35
+  set Load balancing strategy     = remove and add particles
+  set List of particle properties = initial composition, elastic stress
+  set Interpolation scheme        = linear least squares
+  set Particle generator name     = random uniform
+
+  subsection Generator
+    subsection Random uniform
+      set Number of particles = 12e3
+    end
+  end
+end

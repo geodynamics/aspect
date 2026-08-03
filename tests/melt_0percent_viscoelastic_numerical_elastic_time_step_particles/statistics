@@ -1,0 +1,43 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 7
+# 11: Iterations for composition solver 8
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
+# 15: Minimal value for composition ve_stress_xx
+# 16: Maximal value for composition ve_stress_xx
+# 17: Global mass for composition ve_stress_xx
+# 18: Minimal value for composition ve_stress_yy
+# 19: Maximal value for composition ve_stress_yy
+# 20: Global mass for composition ve_stress_yy
+# 21: Minimal value for composition ve_stress_xy
+# 22: Maximal value for composition ve_stress_xy
+# 23: Global mass for composition ve_stress_xy
+# 24: Minimal value for composition ve_stress_xx_old
+# 25: Maximal value for composition ve_stress_xx_old
+# 26: Global mass for composition ve_stress_xx_old
+# 27: Minimal value for composition ve_stress_yy_old
+# 28: Maximal value for composition ve_stress_yy_old
+# 29: Global mass for composition ve_stress_yy_old
+# 30: Minimal value for composition ve_stress_xy_old
+# 31: Maximal value for composition ve_stress_xy_old
+# 32: Global mass for composition ve_stress_xy_old
+# 33: Minimal value for composition porosity
+# 34: Maximal value for composition porosity
+# 35: Global mass for composition porosity
+# 36: Minimal value for composition bound_fluid
+# 37: Maximal value for composition bound_fluid
+# 38: Global mass for composition bound_fluid
+# 39: Number of advected particles
+# 40: Particle file name
+0 0.000000000000e+00 0.000000000000e+00 400 3803 441 28800 2 0 0 0 27 27 188 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 11971 output-melt_0percent_viscoelastic_numerical_elastic_time_step_particles/particles/particles-00000 
+1 1.000000000000e+03 1.000000000000e+03 400 3803 441 28800 1 0 0 0  0  0   0 4.79487346e+06 4.79488745e+06 4.79488155e+16 -4.79488740e+06 -4.79487562e+06 -4.79488154e+16 -7.08713256e+00 5.02089154e+00 -1.17841901e+09 4.79487346e+06 4.79488745e+06 4.79488155e+16 -4.79488740e+06 -4.79487562e+06 -4.79488154e+16 -7.08513727e+00 5.02200974e+00 -1.17426439e+09 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 11972                                                                                       "" 
+2 2.000000000000e+03 1.000000000000e+03 400 3803 441 28800 1 0 0 0  0  0   0 8.43958645e+06 8.43961093e+06 8.43960079e+16 -8.43961108e+06 -8.43959036e+06 -8.43960079e+16 -1.25699796e+01 8.79733667e+00 -2.15446497e+09 8.43958645e+06 8.43961093e+06 8.43960079e+16 -8.43961108e+06 -8.43959036e+06 -8.43960079e+16 -1.25664747e+01 8.79923326e+00 -2.14716222e+09 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 11968                                                                                       "" 

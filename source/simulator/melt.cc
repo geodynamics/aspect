@@ -403,6 +403,8 @@ namespace aspect
         = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
       const std::shared_ptr<const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>> force
         = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>();
+      const std::shared_ptr<const MaterialModel::ElasticOutputs<dim>> elastic_outputs
+        = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::ElasticOutputs<dim>>();
 
       const double pressure_scaling = this->get_pressure_scaling();
 
@@ -441,6 +443,10 @@ namespace aspect
                     {
                       scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
                       scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
+                    }
+                  else if (this->get_parameters().enable_elasticity)
+                    {
+                      scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
                     }
                   ++i_stokes;
                 }
@@ -520,6 +526,10 @@ namespace aspect
                                    )
                                    * JxW;
 
+              if (elastic_outputs != nullptr && this->get_parameters().enable_elasticity)
+                data.local_rhs(i) += (elastic_outputs->elastic_force[q] * scratch.grads_phi_u[i])
+                                     * JxW;
+
               if (scratch.rebuild_stokes_matrix)
                 for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
                   {
@@ -550,6 +560,29 @@ namespace aspect
             }
         }
 
+    }
+
+
+
+    template <int dim>
+    void
+    MeltStokesSystem<dim>::
+    create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
+    {
+      MeltInterface<dim>::create_additional_material_model_outputs(outputs);
+      const unsigned int n_points = outputs.n_evaluation_points();
+
+      if (this->get_parameters().enable_elasticity &&
+          !outputs.template has_additional_output_object<MaterialModel::ElasticOutputs<dim>>())
+        {
+          outputs.additional_outputs.push_back(
+            std::make_unique<MaterialModel::ElasticOutputs<dim>> (n_points));
+        }
+
+      Assert(!this->get_parameters().enable_elasticity
+             ||
+             outputs.template get_additional_output_object<MaterialModel::ElasticOutputs<dim>>()->elastic_force.size()
+             == n_points, ExcInternalError());
     }
 
 
@@ -1883,6 +1916,7 @@ namespace aspect
                                  "melt velocity is currently not implemented in models "
                                  "with melt transport.") );
       }
+
     if (melt_parameters.use_discontinuous_p_c)
       AssertThrow(!this->model_has_prescribed_stokes_solution(),
                   ExcMessage("You can not use a discontinuous p_c in a model "

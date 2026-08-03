@@ -1,0 +1,334 @@
+
+Number of active cells: 100 (on 1 levels)
+Number of degrees of freedom: 6,844 (882+121+441+900+900+900+900+900+900)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 9.69506e-17, 0, 0, 0, 0, 0, 0, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 9.69506e-17, 0, 0, 0, 0, 0, 0, 5.43827e-13
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 5.43827e-13
+
+
+   Postprocessing:
+     Compositions min/max/mass: 2e+07/2e+07/2e+17 // -2e+07/-2e+07/-2e+17 // 0/0/0 // 2e+07/2e+07/2e+17 // -2e+07/-2e+07/-2e+17 // 0/0/0
+     RMS, max velocity:         2.39e-15 m/year, 3.72e-15 m/year
+     Writing graphical output:  output-viscoelastic_relaxation_particles/solution/solution-00000
+     Writing particle output:   output-viscoelastic_relaxation_particles/particles/particles-00000
+
+*** Timestep 1:  t=125 years, dt=125 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.57008e-16, 0, 0, 0, 0, 0, 0, 0.673608
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.673608
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.20172e-17, 0, 0, 0, 0, 0, 0, 0.528346
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.528346
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.20172e-17, 0, 0, 0, 0, 0, 0, 0.537114
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.537114
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.20172e-17, 0, 0, 0, 0, 0, 0, 0.515653
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.515653
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.20172e-17, 0, 0, 0, 0, 0, 0, 0.550887
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.550887
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.20172e-17, 0, 0, 0, 0, 0, 0, 0.497591
+      Relative nonlinear residual (total system) after nonlinear iteration 6: 0.497591
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.20172e-17, 0, 0, 0, 0, 0, 0, 0.514466
+      Relative nonlinear residual (total system) after nonlinear iteration 7: 0.514466
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.20172e-17, 0, 0, 0, 0, 0, 0, 0.522753
+      Relative nonlinear residual (total system) after nonlinear iteration 8: 0.522753
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.20172e-17, 0, 0, 0, 0, 0, 0, 0.58098
+      Relative nonlinear residual (total system) after nonlinear iteration 9: 0.58098
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.20172e-17, 0, 0, 0, 0, 0, 0, 0.52227
+      Relative nonlinear residual (total system) after nonlinear iteration 10: 0.52227
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.20172e-17, 0, 0, 0, 0, 0, 0, 0.512293
+      Relative nonlinear residual (total system) after nonlinear iteration 11: 0.512293
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.20172e-17, 0, 0, 0, 0, 0, 0, 0.501104
+      Relative nonlinear residual (total system) after nonlinear iteration 12: 0.501104
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.20172e-17, 0, 0, 0, 0, 0, 0, 0.546161
+      Relative nonlinear residual (total system) after nonlinear iteration 13: 0.546161
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.20172e-17, 0, 0, 0, 0, 0, 0, 0.511411
+      Relative nonlinear residual (total system) after nonlinear iteration 14: 0.511411
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.20172e-17, 0, 0, 0, 0, 0, 0, 0.569137
+      Relative nonlinear residual (total system) after nonlinear iteration 15: 0.569137
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.20172e-17, 0, 0, 0, 0, 0, 0, 0.523204
+      Relative nonlinear residual (total system) after nonlinear iteration 16: 0.523204
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.20172e-17, 0, 0, 0, 0, 0, 0, 0.578138
+      Relative nonlinear residual (total system) after nonlinear iteration 17: 0.578138
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.20172e-17, 0, 0, 0, 0, 0, 0, 0.519796
+      Relative nonlinear residual (total system) after nonlinear iteration 18: 0.519796
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.20172e-17, 0, 0, 0, 0, 0, 0, 0.546659
+      Relative nonlinear residual (total system) after nonlinear iteration 19: 0.546659
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.20172e-17, 0, 0, 0, 0, 0, 0, 0.50994
+      Relative nonlinear residual (total system) after nonlinear iteration 20: 0.50994
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
+   Postprocessing:
+     Compositions min/max/mass:    1.992e+07/1.992e+07/1.992e+17 // -1.992e+07/-1.992e+07/-1.992e+17 // -4.428e-08/3.447e-08/-25.19 // 1.992e+07/1.992e+07/1.992e+17 // -1.992e+07/-1.992e+07/-1.992e+17 // -4.425e-08/3.448e-08/-25.24
+     RMS, max velocity:            1.51e-16 m/year, 4.65e-16 m/year
+     Number of advected particles: 2500
+
+*** Timestep 2:  t=250 years, dt=125 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.51359e-16, 0, 0, 0, 0, 0, 0, 0.856064
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.856064
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24586e-16, 0, 0, 0, 0, 0, 0, 0.49993
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.49993
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24586e-16, 0, 0, 0, 0, 0, 0, 0.455963
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.455963
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24586e-16, 0, 0, 0, 0, 0, 0, 0.448773
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.448773
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24586e-16, 0, 0, 0, 0, 0, 0, 0.461501
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.461501
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24586e-16, 0, 0, 0, 0, 0, 0, 0.485786
+      Relative nonlinear residual (total system) after nonlinear iteration 6: 0.485786
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24586e-16, 0, 0, 0, 0, 0, 0, 0.450336
+      Relative nonlinear residual (total system) after nonlinear iteration 7: 0.450336
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24586e-16, 0, 0, 0, 0, 0, 0, 0.44035
+      Relative nonlinear residual (total system) after nonlinear iteration 8: 0.44035
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24586e-16, 0, 0, 0, 0, 0, 0, 0.470144
+      Relative nonlinear residual (total system) after nonlinear iteration 9: 0.470144
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24586e-16, 0, 0, 0, 0, 0, 0, 0.491533
+      Relative nonlinear residual (total system) after nonlinear iteration 10: 0.491533
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24586e-16, 0, 0, 0, 0, 0, 0, 0.471055
+      Relative nonlinear residual (total system) after nonlinear iteration 11: 0.471055
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24586e-16, 0, 0, 0, 0, 0, 0, 0.444395
+      Relative nonlinear residual (total system) after nonlinear iteration 12: 0.444395
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24586e-16, 0, 0, 0, 0, 0, 0, 0.491955
+      Relative nonlinear residual (total system) after nonlinear iteration 13: 0.491955
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24586e-16, 0, 0, 0, 0, 0, 0, 0.492105
+      Relative nonlinear residual (total system) after nonlinear iteration 14: 0.492105
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24586e-16, 0, 0, 0, 0, 0, 0, 0.471135
+      Relative nonlinear residual (total system) after nonlinear iteration 15: 0.471135
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24586e-16, 0, 0, 0, 0, 0, 0, 0.444415
+      Relative nonlinear residual (total system) after nonlinear iteration 16: 0.444415
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24586e-16, 0, 0, 0, 0, 0, 0, 0.474224
+      Relative nonlinear residual (total system) after nonlinear iteration 17: 0.474224
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24586e-16, 0, 0, 0, 0, 0, 0, 0.433737
+      Relative nonlinear residual (total system) after nonlinear iteration 18: 0.433737
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24586e-16, 0, 0, 0, 0, 0, 0, 0.441874
+      Relative nonlinear residual (total system) after nonlinear iteration 19: 0.441874
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24586e-16, 0, 0, 0, 0, 0, 0, 0.444887
+      Relative nonlinear residual (total system) after nonlinear iteration 20: 0.444887
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
+   Postprocessing:
+     Compositions min/max/mass:    1.984e+07/1.984e+07/1.984e+17 // -1.984e+07/-1.984e+07/-1.984e+17 // -4.819e-08/3.144e-08/-17.58 // 1.984e+07/1.984e+07/1.984e+17 // -1.984e+07/-1.984e+07/-1.984e+17 // -4.824e-08/3.136e-08/-17.7
+     RMS, max velocity:            1.39e-16 m/year, 3.68e-16 m/year
+     Number of advected particles: 2500
+
+Termination requested by criterion: end time
+
+
+
+
+WARNING: During this computation 2 nonlinear solver failures occurred!
