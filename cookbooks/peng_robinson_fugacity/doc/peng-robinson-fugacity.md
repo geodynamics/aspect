@@ -40,14 +40,14 @@ The models are run for 10 Myr so that the prescribed initial temperature field c
 
 ## Peng-Robinson fugacity
 
-Fugacity is the effective pressure of a real fluid and accounts for non-ideal fluid behavior. The model assumes water-saturated conditions. Consequently, the adiabatic pressure is used as the fluid pressure. The `peng_robinson76_fugacity` calculates the fugacity of a configurable fluid from pressure and temperature using the Peng-Robinson equation of state introduced by {cite:t}`peng:robinson:1976`. The default thermodynamic parameters describe water. The pressure supplied to the equation of state is limited to 2.5 GPa because fugacity behavior is not constrained above that pressure.
+Fugacity is the effective pressure of a real fluid and accounts for non-ideal fluid behavior. The model assumes water-saturated conditions. Consequently, the adiabatic pressure is used as the fluid pressure. The `peng_robinson76_fugacity` calculates the fugacity of a configurable fluid from pressure and temperature using the Peng-Robinson equation of state introduced by {cite:t}`peng:robinson:1976`. The default thermodynamic parameters describe water. The default pressure cutoff is 2.5 GPa because fugacity behavior is not constrained above that pressure.
 
 The default thermodynamic parameters describe water:
 
 ```{literalinclude} ../peng-robinson-fugacity.prm
 :language: parameter
 :start-at: set Viscosity prefactor scheme
-:end-at: set Acentric factor
+:end-at: set Pressure cutoff
 ```
 
 To apply the equation of state to another pure fluid, replace the **critical temperature**, **critical pressure**, and **acentric factor ($\omega$)** with values for that fluid. Peng and Robinson describe $\kappa$ as a constant characteristic of each substance and correlate it against the acentric factor in equation (18) of {cite:t}`peng:robinson:1976`. ASPECT uses that correlation:
@@ -58,8 +58,14 @@ To apply the equation of state to another pure fluid, replace the **critical tem
 
 In [ASPECT](https://github.com/geodynamics/aspect/blob/main/source/material_model/rheology/compositional_viscosity_prefactors.cc), the values of the universal Peng-Robinson coefficients 0.45724 and 0.07780, do not change for different fluids. 
 
+The `Pressure cutoff` parameter sets the maximum pressure used in the
+fugacity calculation. At greater adiabatic pressures, fugacity can still
+change with temperature but does not respond to further pressure increases.
+The suitability of the default 2.5 GPa cutoff should be reassessed when using
+a different fluid.
 
-The calculation can be checked independently against the {cite:t}`baumannFugacityEquationState2015` implementation of the Peng-Robinson equation for water. That implementation solves the compressibility-factor cubic analytically. The comparison below applies those equations at the temperature and adiabatic pressure of each ASPECT output point. For a direct implementation check, the independent calculation uses exactly the same constants and decimal precision as ASPECT: $R=8.3144621$ J mol$^{-1}$ K$^{-1}$, $a_0=0.45724$, and $b_0=0.07780$. Both implementations calculate $\kappa$ from the water acentric factor $\omega=0.344$, giving $\kappa=0.873236$. The demonstration itself exposes pressures only up to 30 MPa; here its published equations are evaluated up to the same 2.5 GPa pressure limit used by ASPECT.
+
+The calculation can be checked independently against the {cite:t}`baumannFugacityEquationState2015` implementation of the Peng-Robinson equation for water. That implementation solves the compressibility-factor cubic analytically. The comparison below applies those equations at the temperature and adiabatic pressure of each ASPECT output point. For a direct implementation check, the independent calculation uses exactly the same constants and decimal precision as ASPECT: $R=8.3144621$ J mol$^{-1}$ K$^{-1}$, $a_0=0.45724$, and $b_0=0.07780$. Both implementations calculate $\kappa$ from the water acentric factor $\omega=0.344$, giving $\kappa=0.873236$. The demonstration itself exposes pressures only up to 30 MPa; here its published equations are evaluated up to the same 2.5 GPa pressure cutoff used by ASPECT.
 
 ```{figure-md} fig:peng-robinson-fugacity-field
 <img src="peng-robinson-fugacity-field.png" style="width:100.0%" />
@@ -71,7 +77,7 @@ The sharp fugacity maximum near 80 km depth occurs where the profile enters
 the cold slab. Across this boundary, the prescribed initial temperature drops
 abruptly from approximately 1500 K to less than 400 K. At nearly the same
 depth, the pressure supplied to the equation of state reaches its 2.5 GPa
-limit. Pressure therefore remains fixed while the Peng-Robinson fugacity
+cutoff. Pressure therefore remains fixed while the Peng-Robinson fugacity
 responds strongly to the slab temperature, reaching approximately
 $1.6\times10^{12}$ Pa. As temperature increases with depth inside the slab,
 fugacity decreases again. The agreement between the ASPECT and independent
@@ -176,8 +182,8 @@ This example is designed to illustrate one rheological effect, rather than to re
   can describe a different pure fluid as explained above, but fluid mixtures
   and fluid--rock chemical interactions are not included.
 
-- The 2.5 GPa pressure limit prevents unconstrained extrapolation of the
-  Peng-Robinson calculation. Below the depth where the limit is reached,
+- The default 2.5 GPa pressure cutoff prevents unconstrained extrapolation of
+  the Peng-Robinson calculation. Below the depth where the cutoff is reached,
   fugacity can still vary with temperature, but not with further increases in
   adiabatic pressure.
 
