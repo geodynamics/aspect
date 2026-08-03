@@ -45,7 +45,6 @@ namespace aspect
            */
           CompositionalViscosityPrefactors();
 
-
           /**
            * Declare the parameters this function takes through input files.
            */
