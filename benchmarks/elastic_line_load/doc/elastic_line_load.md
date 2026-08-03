@@ -30,7 +30,7 @@ $E$ is related to $G$ with:
 ```{math}
 G = \frac{E}{2(1 + \nu)}
 ```
-where $\nu$ is Poisson's ratio. For an incompressible material, which we assume is that case in this benchmark, $\nu$ = 0.5.
+where $\nu$ is Poisson's ratio. For an incompressible material, which we assume is the case in this benchmark, $\nu$ = 0.5.
 When $G$ is very large, the first term goes to 0 and $\sigma$ is related to the time derivative of the strain.
 If $\eta$ is very large, then the second term goes to 0, the time derivatives cancel out, and $\sigma$ is
 related to $\epsilon$. By making the viscosity large, we approximate a purely elastic response. The model setup,
@@ -147,7 +147,3 @@ example we place a physical boundary at 300 km depth.
 Plotting stresses along the surface and beneath the center of the load. Note the very small magnitudes of stress in the
 bottom middle panel.
 ```
-
-Output from ASPECT's topography postprocessor compared to the analytic solution
-is shown in {numref}`fig:flexure-comparison`. Both the flexural amplitude and the
-flexural wavelength are accurately recovered.
