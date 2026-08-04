@@ -738,7 +738,7 @@ namespace aspect
 
                     // Find what x point we're at. Add 1 or 2 depending on if ghost nodes are used.
                     // Subtract the origin point so that it corresponds to an origin of 0,0 in FastScape.
-                    const double indx = 1+use_ghost_nodes+(vertex(0) - grid_extent[0].first)/fastscape_dx;
+                    const double indx = 1+use_ghost_nodes+(vertex(0) - grid_extent[0].first)/fastscape_dx;                   
 
                     // The quadrature rule is created so that there are enough interpolation points in the
                     // lowest resolved ASPECT surface cell to fill out the FastScape mesh. However, as the
@@ -853,9 +853,6 @@ namespace aspect
             velocity_y[index] = 0;
           else
             velocity_y[index] = local_aspect_values[3][i];
-
-          bedrock_river_incision_rate_array[index] = time_scaling_factor * local_aspect_values[dim+2][i];
-          bedrock_transport_coefficient_array[index] = time_scaling_factor * local_aspect_values[dim+3][i];
         }
 
       for (unsigned int p=1; p<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
@@ -894,8 +891,6 @@ namespace aspect
               else
                 velocity_y[index] = local_aspect_values[3][i];
 
-              bedrock_river_incision_rate_array[index] = time_scaling_factor * local_aspect_values[dim+2][i];
-              bedrock_transport_coefficient_array[index] = time_scaling_factor * local_aspect_values[dim+3][i];
             }
         }
 
@@ -924,26 +919,30 @@ namespace aspect
           const double x = grid_extent[0].first + (ix - use_ghost_nodes) * fastscape_dx;
           const double y = grid_extent[1].first + (iy - use_ghost_nodes) * fastscape_dy;
 
-          const int index = global_to_local[i];
-
+          const int idx = global_to_local[i];
           double bedrock_river_incision_rate_local = numbers::signaling_nan<double>();
           double bedrock_transport_coefficient_local = numbers::signaling_nan<double>();
-
           if (use_compositional_erosion_bedrock)
             {
-              AssertThrow(index>=0,
-                          ExcMessage("No local aspect data was found for a FastScape mesh node."));
-              bedrock_river_incision_rate_local = time_scaling_factor * local_aspect_values[dim+2][index];
-              bedrock_transport_coefficient_local = time_scaling_factor * local_aspect_values[dim+3][index];
+              AssertThrow(idx >= 0,
+                          ExcMessage("Missing data from ASPECT for fastscape mesh"));
+              AssertThrow(static_cast<unsigned int>(idx) < local_aspect_values[dim+2].size(),
+                          ExcMessage("ASPECT data out of bounds for fastscape mesh"));
+              bedrock_river_incision_rate_local = time_scaling_factor * local_aspect_values[dim+2][idx];
+              bedrock_transport_coefficient_local = time_scaling_factor * local_aspect_values[dim+3][idx];
             }
           else
             {
               if (!use_kf_distribution_function)
-                bedrock_river_incision_rate_local = time_scaling_factor * constant_bedrock_river_incision_rate[0];
+                {
+                  bedrock_river_incision_rate_local = time_scaling_factor * constant_bedrock_river_incision_rate[0];
+                }
               else
                 bedrock_river_incision_rate_local = time_scaling_factor * kf_distribution_function.value(Point<2>(x, y));
               if (!use_kd_distribution_function)
-                bedrock_transport_coefficient_local = time_scaling_factor * constant_bedrock_transport_coefficient[0];
+                {
+                  bedrock_transport_coefficient_local = time_scaling_factor * constant_bedrock_transport_coefficient[0];
+                }
               else
                 bedrock_transport_coefficient_local = time_scaling_factor * kd_distribution_function.value(Point<2>(x, y));
             }
