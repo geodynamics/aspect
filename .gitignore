@@ -11,6 +11,7 @@
 /.vscode/
 /.cache/
 **/.DS_Store
+**/__pycache__/
 /AspectConfig.cmake
 /CMakeLists.txt.user*
 /CTestTestfile.cmake
