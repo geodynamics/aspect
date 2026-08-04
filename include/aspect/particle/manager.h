@@ -129,7 +129,7 @@ namespace aspect
 
         /**
          * Update the particle manager at the beginning of each time step.
-        */
+         */
         void update();
 
         /**
