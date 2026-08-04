@@ -739,7 +739,7 @@ namespace aspect
                     // Find what x point we're at. Add 1 or 2 depending on if ghost nodes are used.
                     // Subtract the origin point so that it corresponds to an origin of 0,0 in FastScape.
                     const double indx = 1+use_ghost_nodes+(vertex(0) - grid_extent[0].first)/fastscape_dx;
-                    
+
                     // The quadrature rule is created so that there are enough interpolation points in the
                     // lowest resolved ASPECT surface cell to fill out the FastScape mesh. However, as the
                     // same rule is used for all cell sizes, higher resolution areas will have interpolation
