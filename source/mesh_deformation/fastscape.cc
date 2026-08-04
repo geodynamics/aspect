@@ -738,8 +738,8 @@ namespace aspect
 
                     // Find what x point we're at. Add 1 or 2 depending on if ghost nodes are used.
                     // Subtract the origin point so that it corresponds to an origin of 0,0 in FastScape.
-                    const double indx = 1+use_ghost_nodes+(vertex(0) - grid_extent[0].first)/fastscape_dx;                   
-
+                    const double indx = 1+use_ghost_nodes+(vertex(0) - grid_extent[0].first)/fastscape_dx;
+                    
                     // The quadrature rule is created so that there are enough interpolation points in the
                     // lowest resolved ASPECT surface cell to fill out the FastScape mesh. However, as the
                     // same rule is used for all cell sizes, higher resolution areas will have interpolation
@@ -748,7 +748,6 @@ namespace aspect
                     if (std::abs(indx - std::round(indx)) >= node_tolerance)
                       continue;
 
-                    // Initialize the bedrock river incision rate and diffusivity to be the first value in the input array
                     double bedrock_river_incision_rate_at_point = numbers::signaling_nan<double>();
                     double bedrock_transport_coefficient_at_point = numbers::signaling_nan<double>();
                     if (use_compositional_erosion_bedrock)
