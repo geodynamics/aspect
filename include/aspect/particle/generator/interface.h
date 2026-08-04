@@ -67,9 +67,11 @@ namespace aspect
       class Interface : public SimulatorAccess<dim>, public ParticleInterfaceBase
       {
         public:
-          virtual
           void
-          initialize () override;
+          initialize() override;
+
+          void
+          update() override;
 
           void
           save (std::map<std::string, std::string> &status_strings) const override;
@@ -162,8 +164,13 @@ namespace aspect
                                       Particles::ParticleHandler<dim> &particle_handler) const;
 
           /**
-           * Random number generator. For reproducibility of tests it is
-           * initialized in the constructor with a constant.
+           * Random number generator.
+           *
+           * This variable is not considered part of the state of the particle
+           * manager and is consequently not serialized. It is re-initialized in the
+           * initialize() and update() functions at the beginning of each time step, and so
+           * has a deterministic state at the beginning of each time step. It
+           * does not need to be restored from a checkpoint.
            */
           std::mt19937            random_number_generator;
       };
