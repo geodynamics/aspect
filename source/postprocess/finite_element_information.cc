@@ -22,6 +22,7 @@
 #include <aspect/postprocess/finite_element_information.h>
 
 #include <limits>
+#include <sstream>
 
 
 namespace aspect
@@ -36,7 +37,7 @@ namespace aspect
       if (this->get_timestep_number() > 0 || this->get_pre_refinement_step() != std::numeric_limits<unsigned int>::max())
         return {"", ""};
 
-      this->get_pcout() << "     Finite element spaces:" << std::endl;
+      std::ostringstream output;
 
       unsigned int compositional_field_index = 0;
       const auto &compositional_field_names = this->introspection().get_composition_names();
@@ -46,19 +47,18 @@ namespace aspect
         if (variable.name == "compositions")
           for (unsigned int i = 0; i < variable.multiplicity; ++i)
             {
-              this->get_pcout() << "       "
-                                << "composition " << compositional_field_index << ": "
-                                << compositional_field_names[compositional_field_index]
-                                << " (" << CompositionalFieldDescription::type_to_string(compositional_field_descriptions[compositional_field_index].type)
-                                << "): " << variable.fe->get_name()
-                                << std::endl;
+              output << "composition " << compositional_field_index << ": "
+                     << compositional_field_names[compositional_field_index]
+                     << " (" << CompositionalFieldDescription::type_to_string(compositional_field_descriptions[compositional_field_index].type)
+                     << "): " << variable.fe->get_name()
+                     << std::endl;
               ++compositional_field_index;
             }
         else
-          this->get_pcout() << "       " << variable.name << ": "
-                            << variable.fe->get_name() << std::endl;
+          output << variable.name << ": "
+                 << variable.fe->get_name() << std::endl;
 
-      return {"", ""};
+      return {"Finite element spaces:", output.str()};
     }
   }
 }

@@ -9,17 +9,16 @@ Number of degrees of freedom: 7,973 (2,178+289+1,089+1,089+1,024+2,304)
    Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
-     Finite element spaces:
-       velocity: FE_Q<2>(2)
-       pressure: FE_Q<2>(1)
-       temperature: FE_Q<2>(2)
-       composition 0: advection_field (chemical composition): FE_Q<2>(2)
-       composition 1: advection_particle (chemical composition): FE_DGQ<2>(1)
-       composition 2: advection_particle2 (chemical composition): FE_DGQ<2>(2)
      RMS, max velocity:         0.000181 m/s, 0.000404 m/s
      Compositions min/max/mass: 0/1/0.1825 // 0/1/0.07566 // 0/0/0
      Writing particle output:   output-composition_cg_dg_particle/particles/particles-00000
      Writing graphical output:  output-composition_cg_dg_particle/solution/solution-00000
+     Finite element spaces:     velocity: FE_Q<2>(2)
+                                pressure: FE_Q<2>(1)
+                                temperature: FE_Q<2>(2)
+                                composition 0: advection_field (chemical composition): FE_Q<2>(2)
+                                composition 1: advection_particle (chemical composition): FE_DGQ<2>(1)
+                                composition 2: advection_particle2 (chemical composition): FE_DGQ<2>(2)
 
 *** Timestep 1:  t=70 seconds, dt=70 seconds
    Skipping temperature solve because RHS is zero.
