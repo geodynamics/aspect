@@ -11,4 +11,7 @@
 # 11: Iterations for Stokes solver
 # 12: Velocity iterations in Stokes preconditioner
 # 13: Schur complement iterations in Stokes preconditioner
-0 0.000000000000e+00 0.000000000000e+00 64 659 289 289 3 0 0 95 176 128 
+# 14: Average density (kg/m^3)
+# 15: Average viscosity (Pa s)
+# 16: Total mass (kg)
+0 0.000000000000e+00 0.000000000000e+00 64 659 289 289 3 0 0 95 176 128 3.24182308e+03 3.56902445e+26 7.29410193e+15 

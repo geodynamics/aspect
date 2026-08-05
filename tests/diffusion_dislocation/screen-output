@@ -23,6 +23,8 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
 
 
    Postprocessing:
+     Average density / Average viscosity / Total mass:  3242 kg/m^3, 3.569e+26 Pa s, 7.294e+15 kg
+     Writing depth average:                             output-diffusion_dislocation/depth_average
 
 Termination requested by criterion: end step
 
