@@ -28,6 +28,10 @@
 #include <aspect/material_model/rheology/diffusion_creep.h>
 #include <aspect/material_model/rheology/dislocation_creep.h>
 
+#include <deal.II/sundials/kinsol.h>
+
+#include <memory>
+
 namespace aspect
 {
   namespace MaterialModel
@@ -84,9 +88,23 @@ namespace aspect
            * assuming that each composition experiences the same strain rate.
            */
           std::vector<double>
-          calculate_isostrain_viscosities ( const double pressure,
-                                            const double temperature,
-                                            const SymmetricTensor<2,dim> &strain_rate) const;
+          calculate_isostrain_viscosities(const double pressure,
+                                          const double temperature,
+                                          const SymmetricTensor<2, dim> &strain_rate) const;
+
+          /**
+           * Compute the residual of the natural logarithm of the strain rate
+           * and the derivative with respect to the logarithm of the stress
+           * at the current value of the logarithm of the stress.
+           */
+          std::pair<double, double>
+          compute_log_strain_rate_residual_and_derivative(
+            const double current_log_stress_ii,
+            const double pressure,
+            const double temperature,
+            const Rheology::DiffusionCreepParameters &diffusion_creep_parameters,
+            const Rheology::DislocationCreepParameters &dislocation_creep_parameters,
+            const double log_edot_ii) const;
 
           /**
            * Compute the viscosity based on the composite viscous creep law,
@@ -94,17 +112,16 @@ namespace aspect
            * volume fractions.
            */
           double
-          compute_viscosity (const double pressure,
-                             const double temperature,
-                             const std::vector<double> &volume_fractions,
-                             const SymmetricTensor<2,dim> &strain_rate) const;
+          compute_viscosity(const double pressure,
+                            const double temperature,
+                            const std::vector<double> &volume_fractions,
+                            const SymmetricTensor<2, dim> &strain_rate) const;
 
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters(ParameterHandler &prm);
 
         private:
           /**
@@ -148,6 +165,45 @@ namespace aspect
            *  This variable is read from the parameter file through a parameter called 'Viscosity averaging scheme'.
            */
           MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
+
+          /**
+           * SUNDIALS KINSOL nonlinear solver for computing the stress from the strain rate.
+           * The solver is initialized in the parse_parameters function.
+           * The solver is used in the calculate_isostrain_viscosities function.
+           * The solver is used to solve for the stress that satisfies the composite viscous creep law
+           */
+          std::unique_ptr<SUNDIALS::KINSOL<Vector<double>>> nonlinear_solver;
+
+          /**
+           * SUNDIALS KINSOL settings for the nonlinear solver.
+           * The settings are initialized in the parse_parameters function.
+           */
+          SUNDIALS::KINSOL<Vector<double>>::AdditionalData kinsol_settings;
+
+          /**
+           * State variables for the nonlinear solver.
+           * These variables are used to store the current state of the nonlinear solver.
+           * They are updated in the calculate_isostrain_viscosities function.
+           */
+          mutable Vector<double> nonlinear_solver_state;
+
+          /**
+           * Current diffusion and dislocation creep parameters for the nonlinear solver.
+           * These variables are used to store the current diffusion and dislocation creep parameters
+           * for the nonlinear solver. They are updated in the calculate_isostrain_viscosities function.
+           */
+          mutable Rheology::DiffusionCreepParameters current_diffusion_creep_parameters;
+          mutable Rheology::DislocationCreepParameters current_dislocation_creep_parameters;
+
+          /**
+           * Current pressure, temperature, and strain rate for the nonlinear solver.
+           * These variables are used to store the current pressure, temperature, and strain rate
+           * for the nonlinear solver. They are updated in the calculate_isostrain_viscosities function.
+           */
+          mutable double current_pressure;
+          mutable double current_temperature;
+          mutable double current_log_edot_ii;
+          mutable double current_log_strain_rate_deriv;
 
       };
 
