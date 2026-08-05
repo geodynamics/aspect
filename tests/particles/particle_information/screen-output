@@ -18,11 +18,11 @@ Number of degrees of freedom: 3,238 (1,518+202+759+759)
    Solving Stokes system (GMG)... 17+0 iterations.
 
    Postprocessing:
-     Particle manager 1 properties:
-       initial anomaly
-     Particle manager 2 properties:
-       function
      Writing particle output: output-particle_information/particles/particles-00000, output-particle_information/particles-2/particles-2-00000
+     Particle information:    Particle manager 1 properties:
+                                initial anomaly
+                              Particle manager 2 properties:
+                                function
 
 Termination requested by criterion: end time
 
