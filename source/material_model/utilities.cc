@@ -1038,7 +1038,7 @@ namespace aspect
       double
       average_value (const std::vector<double> &volume_fractions,
                      const std::vector<double> &parameter_values,
-                     const enum CompositionalAveragingOperation &average_type)
+                     const enum CompositionalAveragingOperation &average_operation)
       {
         Assert(volume_fractions.size() == parameter_values.size(),
                ExcMessage ("The volume fractions and parameter values vectors used for averaging "
@@ -1050,7 +1050,7 @@ namespace aspect
 
         double averaged_parameter = 0.0;
 
-        switch (average_type)
+        switch (average_operation)
           {
             case arithmetic:
             {
@@ -1104,8 +1104,8 @@ namespace aspect
                      const std::vector<double> &phase_function_values,
                      const std::vector<unsigned int> &n_phase_transitions_per_composition,
                      const std::vector<double> &parameter_values,
-                     const enum CompositionalAveragingOperation &average_type,
-                     const PhaseUtilities::PhaseAveragingOperation operation)
+                     const enum CompositionalAveragingOperation &composition_average_operation,
+                     const PhaseUtilities::PhaseAveragingOperation phase_average_operation)
       {
         const unsigned int n_compositions = n_phase_transitions_per_composition.size();
 
@@ -1149,12 +1149,12 @@ namespace aspect
                                                  composition_index,
                                                  start_phase_index,
                                                  n_phase_transitions_for_composition,
-                                                 operation));
+                                                 phase_average_operation));
 
             start_phase_index += n_phase_transitions_for_composition + 1;
           }
 
-        return average_value(volume_fractions, values, average_type);
+        return average_value(volume_fractions, values, composition_average_operation);
       }
 
 
