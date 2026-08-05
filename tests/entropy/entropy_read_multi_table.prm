@@ -32,7 +32,8 @@ subsection Adiabatic conditions model
 
   subsection Compute entropy profile
     # Entropy equivalent to T=1560.29 K according to the used table
-    set Surface entropy = 2500
+    set Composition profile = function
+    set Function expression = 0.2;2500;2500;0
   end
 end
 
