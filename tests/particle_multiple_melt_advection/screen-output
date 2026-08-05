@@ -6,8 +6,8 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -17,8 +17,8 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.168325
 
    Solving temperature system... 0 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -38,8 +38,8 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
 
 *** Timestep 1:  t=3221.68 years, dt=3221.68 years
    Solving temperature system... 7 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
    Solving porosity system ... 4 iterations.
    Solving peridotite system ... 4 iterations.
    Rebuilding Stokes preconditioner...
@@ -49,8 +49,8 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0309886
 
    Solving temperature system... 5 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
    Solving porosity system ... 4 iterations.
    Solving peridotite system ... 3 iterations.
    Rebuilding Stokes preconditioner...
@@ -60,8 +60,8 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00179812
 
    Solving temperature system... 4 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
    Solving porosity system ... 3 iterations.
    Solving peridotite system ... 3 iterations.
    Rebuilding Stokes preconditioner...
@@ -71,8 +71,8 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 3: 8.27806e-05
 
    Solving temperature system... 3 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
    Solving porosity system ... 3 iterations.
    Solving peridotite system ... 2 iterations.
    Rebuilding Stokes preconditioner...
@@ -91,8 +91,8 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
 
 *** Timestep 2:  t=6000 years, dt=2778.32 years
    Solving temperature system... 7 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
    Solving porosity system ... 3 iterations.
    Solving peridotite system ... 3 iterations.
    Rebuilding Stokes preconditioner...
@@ -102,8 +102,8 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00618754
 
    Solving temperature system... 4 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
    Solving porosity system ... 3 iterations.
    Solving peridotite system ... 2 iterations.
    Rebuilding Stokes preconditioner...
@@ -113,8 +113,8 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000131941
 
    Solving temperature system... 3 iterations.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
    Solving porosity system ... 2 iterations.
    Solving peridotite system ... 2 iterations.
    Rebuilding Stokes preconditioner...

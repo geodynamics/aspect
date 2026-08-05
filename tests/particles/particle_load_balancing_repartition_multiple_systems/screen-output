@@ -12,8 +12,8 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
-   Advecting particles...  done.
-   Advecting particles...  done.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
    Solving C_1 system ... 0 iterations.
    Solving Stokes system (GMG)... 12+0 iterations.
 
