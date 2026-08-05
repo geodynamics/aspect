@@ -23,7 +23,7 @@ jobs:
       }}
     steps:
       - name: Download artifacts
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require('fs');
