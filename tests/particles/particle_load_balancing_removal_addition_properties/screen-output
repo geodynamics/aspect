@@ -32,7 +32,7 @@ Skipping mesh refinement, because no cells were flagged for refinement/coarsenin
    Solving Stokes system (GMG)... 3+0 iterations.
 
    Postprocessing:
-     Number of advected particles: 74
+     Number of advected particles: 73
 
 Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 

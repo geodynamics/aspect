@@ -67,8 +67,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001373 W, 0.001373 W, 0.04583 W, -0.04791 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00003
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00003
-     Particle distribution score min/avg/max/stdev:                                     0/0.00212402/0.09375/0.0110953
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00417523/0.0446339, 0.065426/0.0742845, 0.0285714/0.2
+     Particle distribution score min/avg/max/stdev:                                     0/0.00183919/0.0666667/0.00929347
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00409842/0.0279508, 0.065433/0.0741764, 0.0285714/0.175
 
 *** Timestep 4:  t=0.12 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -81,8 +81,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001381 W, 0.001381 W, 0.04583 W, -0.04791 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00004
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00004
-     Particle distribution score min/avg/max/stdev:                                     0/0.00217823/0.09375/0.0112583
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00124199/0.0562372, 0.0578071/0.0609041, 0.0285714/0.17284
+     Particle distribution score min/avg/max/stdev:                                     0/0.00197478/0.0666667/0.00973818
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00118748/0.0395285, 0.0578836/0.0608243, 0.0285714/0.15
 
 *** Timestep 5:  t=0.15 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -95,8 +95,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001389 W, 0.001389 W, 0.04583 W, -0.0479 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00005
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00005
-     Particle distribution score min/avg/max/stdev:                                     0/0.00211037/0.09375/0.0108109
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00488709/0.0562372, 0.0654021/0.075761, 0.0353982/0.17284
+     Particle distribution score min/avg/max/stdev:                                     0/0.00197478/0.0666667/0.00973818
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00477328/0.0395285, 0.0654957/0.0755873, 0.0357143/0.15
 
 *** Timestep 6:  t=0.18 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -109,8 +109,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001398 W, 0.001398 W, 0.04583 W, -0.0479 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00006
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00006
-     Particle distribution score min/avg/max/stdev:                                     0/0.00209871/0.09375/0.00990463
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00517268/0.0562372, 0.0651157/0.0760887, 0.0335196/0.17284
+     Particle distribution score min/avg/max/stdev:                                     0/0.00177917/0.0520833/0.00833272
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00517275/0.0596212, 0.0652119/0.0762799, 0.0335196/0.2
 
 *** Timestep 7:  t=0.21 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -123,8 +123,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001406 W, 0.001406 W, 0.04582 W, -0.0479 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00007
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00007
-     Particle distribution score min/avg/max/stdev:                                     0/0.00211223/0.09375/0.0100745
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00143215/0.0562372, 0.0577866/0.0612685, 0.0223464/0.17284
+     Particle distribution score min/avg/max/stdev:                                     0/0.00194179/0.0833333/0.00961099
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00140534/0.0596212, 0.0578194/0.0613879, 0.0223464/0.2
 
 *** Timestep 8:  t=0.24 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -137,8 +137,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001415 W, 0.001415 W, 0.04582 W, -0.0479 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00008
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00008
-     Particle distribution score min/avg/max/stdev:                                     0/0.00597957/0.197917/0.0280028
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00502826/0.0509025, 0.0642781/0.0752688, 0.0104167/0.197531
+     Particle distribution score min/avg/max/stdev:                                     0/0.00597359/0.208333/0.0280973
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00521639/0.0847791, 0.0640739/0.0757794, 0.0104167/0.275
 
 *** Timestep 9:  t=0.27 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -151,8 +151,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001424 W, 0.001424 W, 0.04582 W, -0.04789 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00009
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00009
-     Particle distribution score min/avg/max/stdev:                                     0/0.0057394/0.15625/0.0256116
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00230511/0.0667425, 0.0565761/0.0621456, 0/0.192771
+     Particle distribution score min/avg/max/stdev:                                     0/0.00679251/0.260417/0.0325029
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00246446/0.0960143, 0.0563582/0.0625652, 0/0.25
 
 *** Timestep 10:  t=0.3 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -165,8 +165,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001432 W, 0.001432 W, 0.04582 W, -0.04789 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00010
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00010
-     Particle distribution score min/avg/max/stdev:                                     0/0.00571445/0.208333/0.0258262
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.0023165/0.0709592, 0.0565814/0.0621095, 0/0.192771
+     Particle distribution score min/avg/max/stdev:                                     0/0.00667439/0.260417/0.0319906
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00247353/0.0898779, 0.0564429/0.0624184, 0/0.222222
 
 *** Timestep 11:  t=0.33 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -179,8 +179,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.00144 W, 0.00144 W, 0.04582 W, -0.04789 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00011
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00011
-     Particle distribution score min/avg/max/stdev:                                     0/0.00636223/0.260417/0.0301736
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00236792/0.0724772, 0.0564243/0.0620927, 0/0.168675
+     Particle distribution score min/avg/max/stdev:                                     0/0.00748595/0.260417/0.0360472
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00256545/0.0898779, 0.0564335/0.0625459, 0/0.222222
 
 *** Timestep 12:  t=0.36 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -193,8 +193,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001447 W, 0.001447 W, 0.04582 W, -0.04788 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00012
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00012
-     Particle distribution score min/avg/max/stdev:                                     0/0.00636612/0.260417/0.0288203
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00264828/0.0708329, 0.0563412/0.0625999, 0/0.176471
+     Particle distribution score min/avg/max/stdev:                                     0/0.00726703/0.260417/0.0351288
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00273359/0.082587, 0.0561923/0.0627837, 0/0.197531
 
 *** Timestep 13:  t=0.39 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -207,8 +207,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001455 W, 0.001455 W, 0.04582 W, -0.04788 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00013
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00013
-     Particle distribution score min/avg/max/stdev:                                     0/0.00715517/0.260417/0.0318206
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00570248/0.0794515, 0.0628776/0.0753774, 0/0.197674
+     Particle distribution score min/avg/max/stdev:                                     0/0.00805622/0.333333/0.0396934
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00576484/0.0732863, 0.0628308/0.0755123, 0/0.169492
 
 *** Timestep 14:  t=0.42 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -221,8 +221,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001462 W, 0.001462 W, 0.04581 W, -0.04788 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00014
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00014
-     Particle distribution score min/avg/max/stdev:                                     0/0.00602887/0.22/0.026708
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00249563/0.0794515, 0.0564876/0.0625657, 0.0104167/0.197674
+     Particle distribution score min/avg/max/stdev:                                     0/0.00672585/0.260417/0.0304266
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00249228/0.061748, 0.0563126/0.0624312, 0/0.157025
 
 *** Timestep 15:  t=0.45 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -235,8 +235,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001469 W, 0.001469 W, 0.04581 W, -0.04788 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00015
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00015
-     Particle distribution score min/avg/max/stdev:                                     0/0.00630271/0.22/0.0280209
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00616796/0.0764605, 0.0640948/0.0776165, 0.0165289/0.195402
+     Particle distribution score min/avg/max/stdev:                                     0/0.00677326/0.260417/0.0302971
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00629012/0.0597785, 0.0637779/0.077654, 0/0.181818
 
 *** Timestep 16:  t=0.48 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -249,8 +249,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001475 W, 0.001475 W, 0.04581 W, -0.04787 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00016
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00016
-     Particle distribution score min/avg/max/stdev:                                     0/0.00672877/0.209877/0.0273774
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00647248/0.0742994, 0.0636355/0.0777214, 0/0.181818
+     Particle distribution score min/avg/max/stdev:                                     0/0.00774972/0.260417/0.0327093
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00644032/0.0621547, 0.063699/0.0778253, 0/0.165289
 
 *** Timestep 17:  t=0.51 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -263,8 +263,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001482 W, 0.001482 W, 0.04581 W, -0.04787 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00017
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00017
-     Particle distribution score min/avg/max/stdev:                                     0/0.00691717/0.209877/0.0266351
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.0029344/0.0691223, 0.0559777/0.0630756, 0/0.181818
+     Particle distribution score min/avg/max/stdev:                                     0/0.00722685/0.260417/0.0309081
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00280409/0.0601781, 0.0562521/0.0631687, 0.00813008/0.181818
 
 *** Timestep 18:  t=0.54 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -277,8 +277,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001489 W, 0.001489 W, 0.04581 W, -0.04787 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00018
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00018
-     Particle distribution score min/avg/max/stdev:                                     0/0.00726323/0.209877/0.028308
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00600095/0.0691223, 0.0622553/0.0756469, 0/0.181818
+     Particle distribution score min/avg/max/stdev:                                     0/0.00773899/0.209877/0.0312861
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00591351/0.0601781, 0.0625562/0.0759413, 0.010989/0.181818
 
 *** Timestep 19:  t=0.57 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -291,8 +291,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001496 W, 0.001496 W, 0.04581 W, -0.04787 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00019
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00019
-     Particle distribution score min/avg/max/stdev:                                     0/0.00749674/0.22/0.0271917
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00291658/0.0580288, 0.0557564/0.0628082, 0.0104167/0.159091
+     Particle distribution score min/avg/max/stdev:                                     0/0.00604379/0.22/0.0246334
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00264414/0.0580288, 0.0562647/0.0628178, 0.0104167/0.145161
 
 *** Timestep 20:  t=0.6 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -305,8 +305,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001502 W, 0.001502 W, 0.04581 W, -0.04786 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00020
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00020
-     Particle distribution score min/avg/max/stdev:                                     0/0.00736052/0.22/0.0273583
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.0030744/0.0627577, 0.0555436/0.0631191, 0/0.170455
+     Particle distribution score min/avg/max/stdev:                                     0/0.00667673/0.22/0.025977
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00289614/0.0580288, 0.0558513/0.063081, 0.0104167/0.147727
 
 *** Timestep 21:  t=0.63 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -319,8 +319,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001507 W, 0.001507 W, 0.04581 W, -0.04786 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00021
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00021
-     Particle distribution score min/avg/max/stdev:                                     0/0.00767514/0.22/0.0281114
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00306831/0.0580288, 0.0556269/0.0630768, 0.0104167/0.159091
+     Particle distribution score min/avg/max/stdev:                                     0/0.00751738/0.22/0.0285137
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00290528/0.0580288, 0.0558939/0.0630949, 0.0104167/0.153226
 
 *** Timestep 22:  t=0.66 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -333,8 +333,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001511 W, 0.001511 W, 0.0458 W, -0.04786 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00022
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00022
-     Particle distribution score min/avg/max/stdev:                                     0/0.00816994/0.22/0.030126
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.0031444/0.0629503, 0.055666/0.0633478, 0/0.159091
+     Particle distribution score min/avg/max/stdev:                                     0/0.00673939/0.22/0.0270394
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00280939/0.0580288, 0.0560883/0.0630101, 0.0142857/0.16129
 
 *** Timestep 23:  t=0.69 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -347,8 +347,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001513 W, 0.001513 W, 0.0458 W, -0.04786 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00023
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00023
-     Particle distribution score min/avg/max/stdev:                                     0/0.00918393/0.260417/0.0340998
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00615144/0.073809, 0.0616153/0.0755221, 0/0.193182
+     Particle distribution score min/avg/max/stdev:                                     0/0.00663685/0.22/0.0258676
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00567573/0.053809, 0.0624031/0.0750049, 0.0142857/0.142857
 
 *** Timestep 24:  t=0.72 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -361,8 +361,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001515 W, 0.001515 W, 0.0458 W, -0.04785 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00024
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00024
-     Particle distribution score min/avg/max/stdev:                                     0/0.00695801/0.1875/0.0257782
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00302899/0.0565334, 0.055671/0.0632118, 0/0.159091
+     Particle distribution score min/avg/max/stdev:                                     0/0.00657573/0.18/0.0242008
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00289047/0.0484517, 0.055805/0.0631999, 0.0104167/0.158333
 
 *** Timestep 25:  t=0.75 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -375,8 +375,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001515 W, 0.001515 W, 0.0458 W, -0.04785 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00025
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00025
-     Particle distribution score min/avg/max/stdev:                                     0/0.00592635/0.18/0.0215953
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00307309/0.0498723, 0.0558086/0.0635451, 0/0.147727
+     Particle distribution score min/avg/max/stdev:                                     0/0.00726388/0.239583/0.0275175
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00313715/0.0661681, 0.0556015/0.0636656, 0/0.181818
 
 *** Timestep 26:  t=0.78 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -389,8 +389,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001515 W, 0.001515 W, 0.0458 W, -0.04785 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00026
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00026
-     Particle distribution score min/avg/max/stdev:                                     0/0.00666528/0.18/0.023102
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00667717/0.051756, 0.0629997/0.0779771, 0/0.155738
+     Particle distribution score min/avg/max/stdev:                                     0/0.00799885/0.239583/0.0304626
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00690228/0.0682444, 0.0627697/0.0784678, 0/0.173554
 
 *** Timestep 27:  t=0.81 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -403,8 +403,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001513 W, 0.001513 W, 0.0458 W, -0.04784 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00027
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00027
-     Particle distribution score min/avg/max/stdev:                                     0/0.00863695/0.260417/0.0311405
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00339653/0.0564516, 0.0553448/0.0639226, 0/0.153226
+     Particle distribution score min/avg/max/stdev:                                     0/0.00808162/0.224377/0.029311
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00340702/0.0531395, 0.0555234/0.0642773, 0/0.181818
 
 *** Timestep 28:  t=0.84 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -417,8 +417,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.00151 W, 0.00151 W, 0.0458 W, -0.04784 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00028
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00028
-     Particle distribution score min/avg/max/stdev:                                     0/0.00917426/0.260417/0.0333808
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00348159/0.0570247, 0.0555435/0.0642743, 0/0.181818
+     Particle distribution score min/avg/max/stdev:                                     0/0.0087616/0.239583/0.0313319
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00344857/0.0579434, 0.0553101/0.0641334, 0/0.181818
 
 *** Timestep 29:  t=0.87 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -431,8 +431,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001507 W, 0.001507 W, 0.04579 W, -0.04784 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00029
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00029
-     Particle distribution score min/avg/max/stdev:                                     0/0.00934492/0.260417/0.0312171
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00650609/0.0587325, 0.0616093/0.0764333, 0/0.176471
+     Particle distribution score min/avg/max/stdev:                                     0/0.00891932/0.22/0.0294848
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00648487/0.0543117, 0.061518/0.0764201, 0/0.172414
 
 *** Timestep 30:  t=0.9 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -445,8 +445,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001502 W, 0.001502 W, 0.04579 W, -0.04783 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00030
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00030
-     Particle distribution score min/avg/max/stdev:                                     0/0.00919239/0.260417/0.0318261
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00363577/0.0557061, 0.0551129/0.064216, 0/0.186047
+     Particle distribution score min/avg/max/stdev:                                     0/0.00838847/0.239583/0.030077
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00354901/0.0637783, 0.0552652/0.0639898, 0.0104167/0.172131
 
 *** Timestep 31:  t=0.93 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -459,8 +459,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001498 W, 0.001498 W, 0.04579 W, -0.04783 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00031
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00031
-     Particle distribution score min/avg/max/stdev:                                     0/0.00974583/0.260417/0.031812
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00369367/0.0567712, 0.0549279/0.064217, 0/0.186047
+     Particle distribution score min/avg/max/stdev:                                     0/0.00782077/0.22/0.0276458
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00341521/0.0514511, 0.0553366/0.0638184, 0.0104167/0.149425
 
 *** Timestep 32:  t=0.96 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -473,8 +473,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001493 W, 0.001493 W, 0.04579 W, -0.04783 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00032
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00032
-     Particle distribution score min/avg/max/stdev:                                     0/0.00970873/0.260417/0.0316345
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.0036693/0.0611951, 0.0547509/0.0639337, 0/0.204545
+     Particle distribution score min/avg/max/stdev:                                     0/0.00820048/0.22/0.0285247
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00339811/0.0558873, 0.0556531/0.0639829, 0.0104167/0.170455
 
 *** Timestep 33:  t=0.99 seconds, dt=0.03 seconds
    Solving temperature system... 8 iterations.
@@ -487,8 +487,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001488 W, 0.001488 W, 0.04579 W, -0.04782 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00033
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00033
-     Particle distribution score min/avg/max/stdev:                                     0/0.00977325/0.229167/0.0313615
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00385061/0.0727628, 0.0548038/0.0644991, 0/0.227273
+     Particle distribution score min/avg/max/stdev:                                     0/0.00868353/0.22/0.029537
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00344696/0.067593, 0.055565/0.0641012, 0/0.185484
 
 *** Timestep 34:  t=1 seconds, dt=0.01 seconds
    Solving temperature system... 7 iterations.
@@ -501,8 +501,8 @@ Number of degrees of freedom: 3,736 (2,282+313+1,141)
      Heat fluxes through boundary parts:                                                0.001485 W, 0.001485 W, 0.04579 W, -0.04782 W
      Writing graphical output:                                                          output-particle_score_statistics_multiple_particle_managers/solution/solution-00034
      Writing particle output:                                                           output-particle_score_statistics_multiple_particle_managers/particles/particles-00034
-     Particle distribution score min/avg/max/stdev:                                     0/0.00931322/0.229167/0.0299519
-     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00377764/0.064703, 0.0549857/0.0643908, 0/0.218391
+     Particle distribution score min/avg/max/stdev:                                     0/0.00930527/0.291667/0.0326909
+     Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max): 0/0.00353822/0.0711363, 0.0554054/0.064232, 0/0.215909
 
 Termination requested by criterion: end time
 

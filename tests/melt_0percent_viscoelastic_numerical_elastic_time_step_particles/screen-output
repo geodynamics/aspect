@@ -36,12 +36,12 @@ Number of degrees of freedom: 34,209 (3,362+1,641+3,362+441+441+3,600+3,600+3,60
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
    Solving fluid velocity system... 11 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.35373e-16, 0, 0, 0, 0, 0, 0, 0, 0, 7.8978e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.8978e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.35373e-16, 0, 0, 0, 0, 0, 0, 0, 0, 7.89777e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.89777e-08
 
 
    Postprocessing:
-     Compositions min/max/mass:    4.795e+06/4.795e+06/4.795e+16 // -4.795e+06/-4.795e+06/-4.795e+16 // -7.087/5.021/-1.178e+09 // 4.795e+06/4.795e+06/4.795e+16 // -4.795e+06/-4.795e+06/-4.795e+16 // -7.085/5.022/-1.174e+09 // 0/0/0 // 0/0/0
+     Compositions min/max/mass:    4.795e+06/4.795e+06/4.795e+16 // -4.795e+06/-4.795e+06/-4.795e+16 // -7.087/5.021/-1.179e+09 // 4.795e+06/4.795e+06/4.795e+16 // -4.795e+06/-4.795e+06/-4.795e+16 // -7.085/5.022/-1.175e+09 // 0/0/0 // 0/0/0
      Number of advected particles: 11972
 
 *** Timestep 2:  t=2000 years, dt=1000 years
@@ -52,12 +52,12 @@ Number of degrees of freedom: 34,209 (3,362+1,641+3,362+441+441+3,600+3,600+3,60
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
    Solving fluid velocity system... 11 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.38865e-16, 0, 0, 0, 0, 0, 0, 0, 0, 9.41028e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 9.41028e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.38865e-16, 0, 0, 0, 0, 0, 0, 0, 0, 9.41067e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 9.41067e-08
 
 
    Postprocessing:
-     Compositions min/max/mass:    8.44e+06/8.44e+06/8.44e+16 // -8.44e+06/-8.44e+06/-8.44e+16 // -12.57/8.797/-2.154e+09 // 8.44e+06/8.44e+06/8.44e+16 // -8.44e+06/-8.44e+06/-8.44e+16 // -12.57/8.799/-2.147e+09 // 0/0/0 // 0/0/0
+     Compositions min/max/mass:    8.44e+06/8.44e+06/8.44e+16 // -8.44e+06/-8.44e+06/-8.44e+16 // -12.57/8.797/-2.153e+09 // 8.44e+06/8.44e+06/8.44e+16 // -8.44e+06/-8.44e+06/-8.44e+16 // -12.57/8.799/-2.146e+09 // 0/0/0 // 0/0/0
      Number of advected particles: 11968
 
 Termination requested by criterion: end time
