@@ -1,0 +1,8 @@
+ Fixed: The Initial Composition and Initial
+ Temperature plugins ``Ascii data layered'' now
+ use their own subsection header ``Ascii data
+ layered'' instead of ``Ascii data model''.
+ Therefore the plugins now show up in the manual
+ with their own subsection.
+ <br>
+ (Anne Glerum 2026/08/01)
