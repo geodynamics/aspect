@@ -22,7 +22,7 @@
 # interface_weakening test, which computes the weakened viscosity 
 # analytically.
 
-include $ASPECT_SOURCE_DIR/tests/continental_extension_mixed_compositions_particles.prm
+include $ASPECT_SOURCE_DIR/tests/cookbooks/continental_extension_mixed_compositions_particles.prm
 
 set End time                               = 10000
 
