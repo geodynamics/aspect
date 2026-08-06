@@ -122,3 +122,7 @@ subsection Solver parameters
     set Number of cheap Stokes solver steps = 30
   end
 end
+
+subsection Postprocess
+  set List of postprocessors = material statistics, depth average
+end
