@@ -218,6 +218,19 @@ namespace aspect
 
 
     template <int dim>
+    double
+    Interface<dim>::
+    boundary_composition (const types::boundary_id /*boundary_indicator*/,
+                          const Point<dim> &/*position*/,
+                          const unsigned int /*compositional_field*/) const
+    {
+      AssertThrow(false, ExcMessage("The boundary_composition function is not implemented for this mesh deformation plugin."));
+      return 0.0;
+    }
+
+
+
+    template <int dim>
     MeshDeformationHandler<dim>::MeshDeformationHandler (Simulator<dim> &simulator)
       : sim(simulator),  // reference to the simulator that owns the MeshDeformationHandler
         mesh_deformation_fe (FE_Q<dim>(sim.parameters.stokes_velocity_degree),dim),
@@ -642,6 +655,26 @@ namespace aspect
     }
 
 
+
+    template <int dim>
+    double
+    MeshDeformationHandler<dim>::boundary_composition (const types::boundary_id boundary_indicator,
+                                                       const Point<dim> &position,
+                                                       const unsigned int compositional_field) const
+    {
+      double composition = 0.0;
+
+      // Loop over all mesh deformation objects that are assigned to this
+      // boundary indicator and sum their contributions
+      for (const auto &deformation_object : mesh_deformation_objects.at(boundary_indicator))
+        {
+          composition += deformation_object->boundary_composition(boundary_indicator,
+                                                                  position,
+                                                                  compositional_field);
+        }
+
+      return composition;
+    }
 
     template <int dim>
     void MeshDeformationHandler<dim>::make_constraints()
