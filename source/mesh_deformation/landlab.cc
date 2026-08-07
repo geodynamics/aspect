@@ -274,7 +274,8 @@ namespace aspect
           // postprocessing.
           PyDict_SetItemString(pDict_auxiliary, "ASPECT dimension", PyLong_FromLong(dim));
           PyDict_SetItemString(pDict_auxiliary, "ASPECT model time", PyFloat_FromDouble(this->get_time()));
-          PyDict_SetItemString(pDict_auxiliary, "ASPECT timestep", PyFloat_FromDouble(this->get_timestep_number()));
+          PyDict_SetItemString(pDict_auxiliary, "ASPECT timestep size", PyFloat_FromDouble(this->get_timestep()));
+          PyDict_SetItemString(pDict_auxiliary, "ASPECT timestep number", PyFloat_FromDouble(this->get_timestep_number()));
           PyDict_SetItemString(pDict_auxiliary, "ASPECT output directory", PyUnicode_FromString(this->get_output_directory().c_str()));
 
           // Call update_until(), which is the main loop in Landlab that evolves the topography.
