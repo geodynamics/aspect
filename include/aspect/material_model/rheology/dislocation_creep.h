@@ -86,8 +86,8 @@ namespace aspect
            */
           const DislocationCreepParameters
           compute_creep_parameters (const unsigned int composition,
-                                    const std::vector<double> &phase_function_values = std::vector<double>(),
-                                    const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
+                                    const std::vector<double> &phase_function_values = {},
+                                    const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
           /**
            * Compute the viscosity based on the dislocation creep law.
@@ -101,8 +101,8 @@ namespace aspect
                              const double pressure,
                              const double temperature,
                              const unsigned int composition,
-                             const std::vector<double> &phase_function_values = std::vector<double>(),
-                             const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
+                             const std::vector<double> &phase_function_values = {},
+                             const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
           /**
            * Compute the strain rate and first stress derivative

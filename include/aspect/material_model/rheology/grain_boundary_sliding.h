@@ -90,8 +90,8 @@ namespace aspect
            */
           const GrainBoundarySlidingParameters
           compute_slide_parameters (const unsigned int composition,
-                                    const std::vector<double> &phase_function_values = std::vector<double>(),
-                                    const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
+                                    const std::vector<double> &phase_function_values = {},
+                                    const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
           /**
           * Compute the viscosity based on the grain boundary sliding law with
@@ -106,8 +106,8 @@ namespace aspect
                              const double pressure,
                              const double temperature,
                              const unsigned int composition,
-                             const std::vector<double> &phase_function_values = std::vector<double>(),
-                             const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
+                             const std::vector<double> &phase_function_values = {},
+                             const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
           /**
            * Compute the viscosity based on the grain boundary sliding law for the given @p grain_size.
@@ -122,8 +122,8 @@ namespace aspect
                              const double temperature,
                              const double grain_size,
                              const unsigned int composition,
-                             const std::vector<double> &phase_function_values = std::vector<double>(),
-                             const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
+                             const std::vector<double> &phase_function_values = {},
+                             const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
         private:
 

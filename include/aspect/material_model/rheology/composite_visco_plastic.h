@@ -103,8 +103,8 @@ namespace aspect
                              const std::vector<double> &volume_fractions,
                              const SymmetricTensor<2,dim> &strain_rate,
                              std::vector<double> &partial_strain_rates,
-                             const std::vector<double> &phase_function_values = std::vector<double>(),
-                             const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
+                             const std::vector<double> &phase_function_values = {},
+                             const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
         private:
           /**
@@ -122,8 +122,8 @@ namespace aspect
                                        const std::vector<double> &volume_fractions,
                                        const SymmetricTensor<2,dim> &strain_rate,
                                        std::vector<double> &partial_strain_rates,
-                                       const std::vector<double> &phase_function_values = std::vector<double>(),
-                                       const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
+                                       const std::vector<double> &phase_function_values = {},
+                                       const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
           /**
            * Compute the total strain rate and the first derivative of log strain rate
@@ -150,8 +150,8 @@ namespace aspect
                                        const std::vector<double> &volume_fractions,
                                        const SymmetricTensor<2,dim> &strain_rate,
                                        std::vector<double> &partial_strain_rates,
-                                       const std::vector<double> &phase_function_values = std::vector<double>(),
-                                       const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
+                                       const std::vector<double> &phase_function_values = {},
+                                       const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
 
           /**
@@ -169,8 +169,8 @@ namespace aspect
                                          const unsigned int composition,
                                          const SymmetricTensor<2,dim> &strain_rate,
                                          std::vector<double> &partial_strain_rates,
-                                         const std::vector<double> &phase_function_values = std::vector<double>(),
-                                         const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
+                                         const std::vector<double> &phase_function_values = {},
+                                         const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
           /**
            * Compute the total strain rate and the first derivative of log strain rate
