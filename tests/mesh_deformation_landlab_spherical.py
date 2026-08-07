@@ -1,5 +1,3 @@
-print("mesh_deformation_external_landlab_01.py")
-
 import numpy as np
 import landlab
 from landlab.components import LinearDiffuser
@@ -8,7 +6,7 @@ current_time = 0
 
 comm = None
 
-mg = None
+model_grid = None
 elevation = None
 linear_diffuser = None
 
@@ -37,17 +35,18 @@ def finalize():
 # dict_variable_name_to_value_in_nodes is a dictionary mapping variables
 # (x velocity, y velocity, temperature, etc.) to an array of values in each
 # node.
-def update_until(end_time, ASPECT_dim, dict_variable_name_to_value_in_nodes):
-    global current_time
+def update_until(aspect_solution_dict, aspect_auxiliary_dict):
+    global current_time, linear_diffuser
+    end_time = aspect_auxiliary_dict["ASPECT model time"]
     dt = end_time - current_time
     
-    deposition_erosion = np.zeros(mg.number_of_nodes)
+    deposition_erosion = np.zeros(model_grid.number_of_nodes)
 
     print(f"update_until: end_time = {end_time}")
 
-    x_velocity = dict_variable_name_to_value_in_nodes["x velocity"]
-    y_velocity = dict_variable_name_to_value_in_nodes["y velocity"]
-    z_velocity = dict_variable_name_to_value_in_nodes["z velocity"]
+    x_velocity = aspect_solution_dict["x velocity"]
+    y_velocity = aspect_solution_dict["y velocity"]
+    z_velocity = aspect_solution_dict["z velocity"]
 
     if dt>0:
         n_substeps = 10
@@ -69,36 +68,39 @@ def update_until(end_time, ASPECT_dim, dict_variable_name_to_value_in_nodes):
     return deposition_erosion
 
 def set_mesh_information(dict_grid_information):
-    global mg, elevation, linear_diffuser
+    global model_grid, elevation, linear_diffuser
 
-    if not mg:
-        print("* Creating HexModelGrid ...")
-        mg = landlab.HexModelGrid((5, 6), node_layout="rect", spacing=0.2)
-        print("* Creating topographic elevation ...")
-        elevation = mg.add_zeros("topographic__elevation", at="node")
-        # Add reproducible noise to topography:
-        np.random.seed(42)
-        elevation += 1000 + np.random.rand(elevation.size) / 10.0
-        print("\tnumber of nodes:", mg.number_of_nodes)
-        print("\tnode coordinates:", mg.node_x, mg.node_y)
+    if not model_grid:
+        print("* Creating Spherical Grid ...")
 
-        D = 0.01 # m2
-        print("* Creating LinearDiffuser ... with D =", D)
-        linear_diffuser = LinearDiffuser(mg, linear_diffusivity=D)
+        model_grid = landlab.IcosphereGlobalGrid(radius=20, mesh_densification_level=2)
+
+        print("model grid nodes", len(model_grid.x_of_node))
+        elevation = model_grid.add_zeros("topographic__elevation", at="node")
+        elevation[model_grid.theta_of_node < np.pi/2] += 1.0
+
+        D = 0.01
+        linear_diffuser = LinearDiffuser(model_grid, linear_diffusivity=D)
 
         print("* Done")
 
 # Return the x coordinates of the locally owned nodes on this
-# MPI rank. grid_id is always 0.
-def get_grid_x(grid_id):
-    global mg
-    return mg.node_x
+# MPI rank.
+def get_grid_x(grid_dictionary):
+    global model_grid
+    return model_grid.x_of_node.copy()
 
 # Return the y coordinates of the locally owned nodes on this
-# MPI rank. grid_id is always 0.
-def get_grid_y(grid_id):
-    global mg
-    return mg.node_y
+# MPI rank.
+def get_grid_y(grid_dictionary):
+    global model_grid
+    return model_grid.y_of_node.copy()
+
+# Return the z coordinates of the locally owned nodes on this
+# MPI rank.
+def get_grid_z(grid_dictionary):
+    global model_grid
+    return model_grid.z_of_node.copy()
 
 # Return the initial topography at the start of the simulation
 # in each node.
@@ -120,8 +122,11 @@ if __name__ == "__main__":
     dt = 0.1
     for n in range(3):
         data = {}
-        data["x velocity"] = np.zeros(mg.number_of_nodes)
-        data["y velocity"] = np.zeros(mg.number_of_nodes)
-        data["z velocity"] = np.zeros(mg.number_of_nodes)
-        update_until(n*dt, data)
+        data["x velocity"] = np.zeros(model_grid.number_of_nodes)
+        data["y velocity"] = np.zeros(model_grid.number_of_nodes)
+        data["z velocity"] = np.zeros(model_grid.number_of_nodes)
+
+        time = {}
+        time["ASPECT model time"] = n*dt
+        update_until(data, time)
         write_output()
