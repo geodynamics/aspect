@@ -48,51 +48,51 @@ Number of degrees of freedom: 9,241 (3,566+454+1,783+3,438)
    Solving Stokes system (GMG)... 14+0 iterations.
 
    Postprocessing:
-     Number of advected particles: 11576
+     Number of advected particles: 11572
      RMS, max velocity:            0.0142 m/year, 0.038 m/year
      Compositions min/max/mass:    0/1/1.593e+10
 
 Number of active cells: 358 (on 7 levels)
 Number of degrees of freedom: 8,739 (3,390+432+1,695+3,222)
 
-*** Timestep 3:  t=331665 years, dt=108060 years
+*** Timestep 3:  t=331657 years, dt=108052 years
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 14+0 iterations.
 
    Postprocessing:
-     Number of advected particles: 10638
+     Number of advected particles: 10637
      RMS, max velocity:            0.0143 m/year, 0.0385 m/year
      Compositions min/max/mass:    0/1/1.59e+10
 
-Number of active cells: 373 (on 7 levels)
-Number of degrees of freedom: 9,108 (3,534+450+1,767+3,357)
+Number of active cells: 382 (on 7 levels)
+Number of degrees of freedom: 9,306 (3,606+459+1,803+3,438)
 
-*** Timestep 4:  t=444534 years, dt=112869 years
+*** Timestep 4:  t=444485 years, dt=112829 years
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
-   Solving Stokes system (GMG)... 15+0 iterations.
+   Solving Stokes system (GMG)... 16+0 iterations.
 
    Postprocessing:
-     Number of advected particles: 10122
+     Number of advected particles: 10179
      RMS, max velocity:            0.0144 m/year, 0.0388 m/year
      Compositions min/max/mass:    0/1/1.584e+10
 
 Number of active cells: 412 (on 7 levels)
 Number of degrees of freedom: 9,927 (3,822+486+1,911+3,708)
 
-*** Timestep 5:  t=500000 years, dt=55465.7 years
+*** Timestep 5:  t=500000 years, dt=55514.8 years
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
-     Number of advected particles: 10105
+     Number of advected particles: 10133
      RMS, max velocity:            0.0145 m/year, 0.039 m/year
      Compositions min/max/mass:    0/1/1.585e+10
 
-Number of active cells: 409 (on 7 levels)
-Number of degrees of freedom: 9,809 (3,766+479+1,883+3,681)
+Number of active cells: 412 (on 7 levels)
+Number of degrees of freedom: 9,875 (3,790+482+1,895+3,708)
 
 Termination requested by criterion: end time
 
