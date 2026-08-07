@@ -833,7 +833,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of stress exponents, $n_{\text{diffusion}}$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. The stress exponent for diffusion creep is almost always equal to one. If only one value is given, then all use the same value.  Units: None.
+**Documentation:** List of stress exponents, $n_{\text{diffusion}}$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. This is a deprecated parameter, as the stress exponent for diffusion creep must always equal one. This parameter will be removed in a future version of ASPECT. Units: None.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Stress exponents for dislocation creep<parameters:Material_20model/Diffusion_20dislocation/Stress_20exponents_20for_20dislocation_20creep>`
@@ -5529,7 +5529,7 @@ If a compositional field named &rsquo;noninitial\_plastic\_strain&rsquo; is incl
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of stress exponents, $n_{\text{diffusion}}$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. The stress exponent for diffusion creep is almost always equal to one. If only one value is given, then all use the same value.  Units: None.
+**Documentation:** List of stress exponents, $n_{\text{diffusion}}$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. This is a deprecated parameter, as the stress exponent for diffusion creep must always equal one. This parameter will be removed in a future version of ASPECT. Units: None.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Stress exponents for dislocation creep<parameters:Material_20model/Visco_20Plastic/Stress_20exponents_20for_20dislocation_20creep>`
