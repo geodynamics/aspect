@@ -155,6 +155,9 @@ namespace aspect
       void
       Tian2019Solubility<dim>::declare_parameters (ParameterHandler &prm)
       {
+
+        ReactionModel::FluidExtractor<dim>::declare_parameters(prm);
+
         prm.declare_entry ("Use adiabatic pressure for reactions", "false",
                            Patterns::Bool(),
                            "If true, the adiabatic pressure is used in the Tian 2019 solubility model. "
@@ -193,10 +196,14 @@ namespace aspect
                     ExcMessage("The Tian approximation only works "
                                "if there is a compositional field called peridotite."));
         use_adiabatic_pressure_for_reactions = prm.get_bool ("Use adiabatic pressure for reactions");
-        tian_max_peridotite_water         = prm.get_double ("Maximum weight percent water in peridotite");
-        tian_max_gabbro_water             = prm.get_double ("Maximum weight percent water in gabbro");
-        tian_max_MORB_water               = prm.get_double ("Maximum weight percent water in MORB");
-        tian_max_sediment_water           = prm.get_double ("Maximum weight percent water in sediment");
+        tian_max_peridotite_water            = prm.get_double ("Maximum weight percent water in peridotite");
+        tian_max_gabbro_water                = prm.get_double ("Maximum weight percent water in gabbro");
+        tian_max_MORB_water                  = prm.get_double ("Maximum weight percent water in MORB");
+        tian_max_sediment_water              = prm.get_double ("Maximum weight percent water in sediment");
+
+        // Extraction model
+        fluid_extractor.initialize_simulator (this->get_simulator());
+        fluid_extractor.parse_parameters(prm);
       }
     }
   }
