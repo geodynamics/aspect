@@ -1,98 +1,92 @@
 
-importing 'mesh_deformation_landlab_01' ...
-Number of active cells: 64 (on 3 levels)
-Number of degrees of freedom: 3,041 (2,187+125+729)
+Number of active cells: 768 (on 2 levels)
+Number of degrees of freedom: 28,690 (20,790+970+6,930)
 
-Number of mesh deformation degrees of freedom: 2,187
-WARNING: not all evaluation points were found inside the domain!
-Evaluation points not found:
-Point 11: 1.1 0.173205 1
-Point 23: 1.1 0.519615 1
-   Solving mesh displacement system... 6 iterations.
+Number of mesh deformation degrees of freedom: 20,790
+* Creating IcosphereGlobalGrid ...
+* The number of Landlab grid nodes is:  162
+* The node coordinates (in radians) are: [2.12437069 1.01722197 4.15881462 5.26596334 4.71238898 1.57079633
+ 4.71238898 1.57079633 0.         0.         3.14159265 3.14159265
+ 2.58801829 2.58801829 1.93566015 1.2059325  1.57079633 1.2059325
+ 1.93566015 2.58801829 2.58801829 3.14159265 0.55357436 0.55357436
+ 3.69516701 0.         3.69516701 3.69516701 0.         3.69516701
+ 0.55357436 0.55357436 5.72961095 5.72961095 5.07725281 4.34752515
+ 4.71238898 4.34752515 5.07725281 5.72961095 5.72961095 0.
+ 2.35027265 2.27766698 2.03680989 2.91667265 2.58801829 2.84897561
+ 1.7983051  2.19719071 2.11046776 1.73998373 1.84758351 1.34328755
+ 1.57079633 1.29400915 1.40160893 1.10478276 1.73998373 2.03680989
+ 1.10478276 1.40160893 1.7983051  1.57079633 1.34328755 2.27766698
+ 2.35027265 2.11046776 2.19719071 2.84897561 2.58801829 2.91667265
+ 2.58801829 3.14159265 2.87193166 2.87193166 3.14159265 0.86392567
+ 0.79132001 1.03112489 0.94440194 0.29261704 0.55357436 0.22492
+ 2.58801829 1.57079633 3.36651265 3.14159265 4.71238898 3.69516701
+ 4.17271754 3.41125365 3.43420969 3.43420969 3.41125365 3.93291266
+ 3.69516701 3.93291266 3.14159265 3.36651265 1.57079633 2.58801829
+ 4.17271754 3.69516701 4.71238898 0.94440194 1.03112489 0.79132001
+ 0.86392567 0.22492    0.55357436 0.29261704 5.4918653  5.41925963
+ 5.17840255 6.05826531 5.72961095 5.99056827 4.93989776 5.33878337
+ 5.25206042 4.88157638 4.98917616 4.4848802  4.71238898 4.4356018
+ 4.54320158 4.24637541 4.88157638 5.17840255 4.24637541 4.54320158
+ 4.93989776 4.71238898 4.4848802  5.41925963 5.4918653  5.25206042
+ 5.33878337 5.99056827 5.72961095 6.05826531 5.72961095 0.
+ 6.01352431 6.01352431 0.         5.72961095 0.         0.55357436
+ 4.00551833 4.08599459 3.69516701 4.08599459 4.00551833 3.69516701
+ 0.         5.72961095 0.55357436 0.269661   0.269661   0.55357436] [1.57079633 1.57079633 1.57079633 1.57079633 0.55357436 0.55357436
+ 2.58801829 2.58801829 2.12437069 1.01722197 2.12437069 1.01722197
+ 1.25663706 0.62831853 1.04719755 1.04719755 1.57079633 2.0943951
+ 2.0943951  2.51327412 1.88495559 1.57079633 0.62831853 1.25663706
+ 0.62831853 0.         1.88495559 1.25663706 3.14159265 2.51327412
+ 1.88495559 2.51327412 1.25663706 0.62831853 1.04719755 1.04719755
+ 1.57079633 2.0943951  2.0943951  2.51327412 1.88495559 1.57079633
+ 1.40947549 1.13147493 1.30788606 0.80407115 0.9424778  1.12199202
+ 0.79252919 0.81180364 0.53027408 1.30480532 1.57079633 0.79252919
+ 1.01722197 1.57079633 1.30480532 1.30788606 1.83678734 1.83370659
+ 1.83370659 1.83678734 2.34906346 2.12437069 2.34906346 2.01011773
+ 1.73211717 2.61131857 2.32978902 2.01960063 2.19911486 2.3375215
+ 1.57079633 1.84758351 1.73397944 1.40761322 1.29400915 1.13147493
+ 1.40947549 0.53027408 0.81180364 1.12199202 0.9424778  0.80407115
+ 0.31415927 0.27678718 0.80407115 0.55357436 0.27678718 0.31415927
+ 0.53027408 1.40761322 1.12199202 2.01960063 1.73397944 1.40947549
+ 1.57079633 1.73211717 2.58801829 2.3375215  2.86480547 2.82743339
+ 2.61131857 2.82743339 2.86480547 2.32978902 2.61131857 1.73211717
+ 2.01011773 2.3375215  2.19911486 2.01960063 1.40947549 1.13147493
+ 1.30788606 0.80407115 0.9424778  1.12199202 0.79252919 0.81180364
+ 0.53027408 1.30480532 1.57079633 0.79252919 1.01722197 1.57079633
+ 1.30480532 1.30788606 1.83678734 1.83370659 1.83370659 1.83678734
+ 2.34906346 2.12437069 2.34906346 2.01011773 1.73211717 2.61131857
+ 2.32978902 2.01960063 2.19911486 2.3375215  1.57079633 1.84758351
+ 1.73397944 1.40761322 1.29400915 0.31415927 0.55357436 0.31415927
+ 1.13147493 0.81180364 0.9424778  2.32978902 2.01011773 2.19911486
+ 2.58801829 2.82743339 2.82743339 1.40761322 1.73397944 1.57079633]
+* Creating topographic elevation ...
+* Creating LinearDiffuser ... with D = 0.01
+* Done initializing Landlab mesh.
+   Solving mesh displacement system... 12 iterations.
 *** Timestep 0:  t=0 seconds, dt=0 seconds
+Landlab running update_until: end_time = 0.0
    Solving mesh displacement system... 0 iterations.
 
    Postprocessing:
-     Writing graphical output: output-mesh_deformation_landlab_01/solution/solution-00000
-     Topography min/max:       0 m, 1000 m
+     Writing graphical output: output/solution/solution-00000
+     Topography min/max:       7.105e-15 m, 1 m
 
 *** Timestep 1:  t=0.0005 seconds, dt=0.0005 seconds
+Landlab running update_until: end_time = 0.0005
    Solving mesh displacement system... 0 iterations.
 
    Postprocessing:
-     Writing graphical output: output-mesh_deformation_landlab_01/solution/solution-00001
-     Topography min/max:       0 m, 1000 m
+     Writing graphical output: output/solution/solution-00001
+     Topography min/max:       7.105e-15 m, 1 m
 
 *** Timestep 2:  t=0.001 seconds, dt=0.0005 seconds
+Landlab running update_until: end_time = 0.001
    Solving mesh displacement system... 0 iterations.
 
    Postprocessing:
-     Writing graphical output: output-mesh_deformation_landlab_01/solution/solution-00002
-     Topography min/max:       0 m, 1000 m
-
-*** Timestep 3:  t=0.0015 seconds, dt=0.0005 seconds
-   Solving mesh displacement system... 0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-mesh_deformation_landlab_01/solution/solution-00003
-     Topography min/max:       0 m, 1000 m
-
-*** Timestep 4:  t=0.002 seconds, dt=0.0005 seconds
-   Solving mesh displacement system... 0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-mesh_deformation_landlab_01/solution/solution-00004
-     Topography min/max:       0 m, 1000 m
-
-*** Timestep 5:  t=0.0025 seconds, dt=0.0005 seconds
-   Solving mesh displacement system... 0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-mesh_deformation_landlab_01/solution/solution-00005
-     Topography min/max:       0 m, 1000 m
-
-*** Timestep 6:  t=0.003 seconds, dt=0.0005 seconds
-   Solving mesh displacement system... 0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-mesh_deformation_landlab_01/solution/solution-00006
-     Topography min/max:       0 m, 1000 m
-
-*** Timestep 7:  t=0.0035 seconds, dt=0.0005 seconds
-   Solving mesh displacement system... 0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-mesh_deformation_landlab_01/solution/solution-00007
-     Topography min/max:       0 m, 1000 m
-
-*** Timestep 8:  t=0.004 seconds, dt=0.0005 seconds
-   Solving mesh displacement system... 0 iterations.
-
-   Postprocessing:
-     Writing graphical output: output-mesh_deformation_landlab_01/solution/solution-00008
-     Topography min/max:       0 m, 1000 m
+     Writing graphical output: output/solution/solution-00002
+     Topography min/max:       7.105e-15 m, 1 m
 
 Termination requested by criterion: end time
 
 
 
-mesh_deformation_landlab_01.py
-* Creating HexModelGrid ...
-* Creating topographic elevation ...
-	number of nodes: 30
-	node coordinates: [0.  0.2 0.4 0.6 0.8 1.  0.1 0.3 0.5 0.7 0.9 1.1 0.  0.2 0.4 0.6 0.8 1.
- 0.1 0.3 0.5 0.7 0.9 1.1 0.  0.2 0.4 0.6 0.8 1. ] [0.       0.       0.       0.       0.       0.       0.173205 0.173205
- 0.173205 0.173205 0.173205 0.173205 0.34641  0.34641  0.34641  0.34641
- 0.34641  0.34641  0.519615 0.519615 0.519615 0.519615 0.519615 0.519615
- 0.69282  0.69282  0.69282  0.69282  0.69282  0.69282 ]
-* Creating LinearDiffuser ... with D = 0.01
-* Done
-update_until: end_time = 0.0
-update_until: end_time = 0.0005
-update_until: end_time = 0.001
-update_until: end_time = 0.0015
-update_until: end_time = 0.002
-update_until: end_time = 0.0025
-update_until: end_time = 0.003
-update_until: end_time = 0.0035
-update_until: end_time = 0.004

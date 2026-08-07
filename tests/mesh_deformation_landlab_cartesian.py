@@ -1,30 +1,14 @@
-print("mesh_deformation_landlab_cartesian.py")
-
 import numpy as np
 import landlab
 from landlab.components import LinearDiffuser
 
 current_time    = 0
-comm            = None
 model_grid      = None
 elevation       = None
 linear_diffuser = None
 
 def initialize(comm_handle):
-    if not comm_handle is None:
-        # Convert the handle back to an MPI communicator
-        global comm
-        comm = MPI.Comm.f2py(comm_handle)
-
-        rank = comm.Get_rank()
-        size = comm.Get_size()
-
-        print(f"Python: Hello from Rank {rank} of {size}")
-
-        data = 1
-        globalsum = comm.allreduce(data, op=MPI.SUM)
-        if comm.rank == 0:
-            print(f"\tPython: testing communication; sum {globalsum}")
+    pass
 
 def finalize():
     pass
@@ -42,7 +26,7 @@ def update_until(aspect_solution_dict, aspect_auxiliary_dict):
     
     deposition_erosion = np.zeros(model_grid.number_of_nodes)
 
-    print(f"update_until: end_time = {end_time}")
+    print(f"Landlab running update_until: end_time = {end_time}", flush=True)
 
     x_velocity = aspect_solution_dict["x velocity"]
     y_velocity = aspect_solution_dict["y velocity"]
@@ -52,7 +36,6 @@ def update_until(aspect_solution_dict, aspect_auxiliary_dict):
         n_substeps = 10
         sub_dt = dt / n_substeps
         for _ in range(n_substeps):
-
           elevation_before = elevation
           
           linear_diffuser.run_one_step(sub_dt)
@@ -68,22 +51,24 @@ def set_mesh_information(dict_grid_information):
     global model_grid, elevation, linear_diffuser
 
     if not model_grid:
-        print("* Creating HexModelGrid ...")
+        print("* Creating HexModelGrid ...", flush=True)
         model_grid = landlab.HexModelGrid((5, 6), node_layout="rect", spacing=0.2)
-        print("* Creating topographic elevation ...")
+
+        print("* The number of Landlab grid nodes is: ", len(model_grid.x_of_node), flush=True)
+        print("* The node coordinates (in meters) are:", model_grid.node_x, model_grid.node_y, flush=True)
+
+        print("* Creating topographic elevation ...", flush=True)
         elevation = model_grid.add_zeros("topographic__elevation", at="node")
 
         # Add reproducible noise to topography:
         np.random.seed(42)
         elevation += 1000 + np.random.rand(elevation.size) / 10.0
-        print("\tnumber of nodes:", model_grid.number_of_nodes)
-        print("\tnode coordinates:", model_grid.node_x, model_grid.node_y)
 
         D = 0.01 # m2
-        print("* Creating LinearDiffuser ... with D =", D)
+        print("* Creating LinearDiffuser ... with D =", D, flush=True)
         linear_diffuser = LinearDiffuser(model_grid, linear_diffusivity=D)
 
-        print("* Done")
+        print("* Done initializing Landlab mesh.", flush=True)
 
 # Return the x coordinates of the locally owned nodes on this
 # MPI rank. grid_id is always 0.

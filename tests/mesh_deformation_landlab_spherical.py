@@ -2,29 +2,13 @@ import numpy as np
 import landlab
 from landlab.components import LinearDiffuser
 
-current_time = 0
-
-comm = None
-
-model_grid = None
-elevation = None
+current_time    = 0
+model_grid      = None
+elevation       = None
 linear_diffuser = None
 
 def initialize(comm_handle):
-    if not comm_handle is None:
-        # Convert the handle back to an MPI communicator
-        global comm
-        comm = MPI.Comm.f2py(comm_handle)
-
-        rank = comm.Get_rank()
-        size = comm.Get_size()
-
-        print(f"Python: Hello from Rank {rank} of {size}")
-
-        data = 1
-        globalsum = comm.allreduce(data, op=MPI.SUM)
-        if comm.rank == 0:
-            print(f"\tPython: testing communication; sum {globalsum}")
+    pass
 
 def finalize():
     pass
@@ -42,7 +26,7 @@ def update_until(aspect_solution_dict, aspect_auxiliary_dict):
     
     deposition_erosion = np.zeros(model_grid.number_of_nodes)
 
-    print(f"update_until: end_time = {end_time}")
+    print(f"Landlab running update_until: end_time = {end_time}", flush=True)
 
     x_velocity = aspect_solution_dict["x velocity"]
     y_velocity = aspect_solution_dict["y velocity"]
@@ -52,10 +36,6 @@ def update_until(aspect_solution_dict, aspect_auxiliary_dict):
         n_substeps = 10
         sub_dt = dt / n_substeps
         for _ in range(n_substeps):
-          
-          # TODO:
-          #uplift(z_velocity * sub_dt)
-          #advect(x_velocity * sub_dt, y_velocity * sub_dt)
           elevation_before = elevation
           
           linear_diffuser.run_one_step(sub_dt)
@@ -71,18 +51,22 @@ def set_mesh_information(dict_grid_information):
     global model_grid, elevation, linear_diffuser
 
     if not model_grid:
-        print("* Creating Spherical Grid ...")
+        print("* Creating IcosphereGlobalGrid ...", flush=True)
 
         model_grid = landlab.IcosphereGlobalGrid(radius=20, mesh_densification_level=2)
 
-        print("model grid nodes", len(model_grid.x_of_node))
+        print("* The number of Landlab grid nodes is: ", len(model_grid.x_of_node), flush=True)
+        print("* The node coordinates (in radians) are:", model_grid.phi_of_node, model_grid.theta_of_node, flush=True)
+
+        print("* Creating topographic elevation ...", flush=True)
         elevation = model_grid.add_zeros("topographic__elevation", at="node")
         elevation[model_grid.theta_of_node < np.pi/2] += 1.0
 
         D = 0.01
+        print("* Creating LinearDiffuser ... with D =", D, flush=True)
         linear_diffuser = LinearDiffuser(model_grid, linear_diffusivity=D)
 
-        print("* Done")
+        print("* Done initializing Landlab mesh.", flush=True)
 
 # Return the x coordinates of the locally owned nodes on this
 # MPI rank.
@@ -117,7 +101,7 @@ if __name__ == "__main__":
     initialize(MPI.Comm.py2f(comm))
 
     set_mesh_information({})
-    print("grid coordinates:", get_grid_x(0), get_grid_y(0))
+    print("grid coordinates:", get_grid_x(0), get_grid_y(0), flush=True)
 
     dt = 0.1
     for n in range(3):
