@@ -16,7 +16,7 @@ subsection Geometry model
 end
 
 subsection Initial temperature model
-  set Model name = harmonic perturbation
+  set List of model names = harmonic perturbation
 
   subsection Harmonic perturbation
     set Magnitude = 30
@@ -40,7 +40,7 @@ subsection Compositional fields
 end
 
 subsection Initial composition model
-  set Model name = slab model
+  set List of model names = slab model
 
   # The following lines point to the location of the slab2 model
   # data file, generated using the jupyter notebook in the

@@ -68,7 +68,7 @@ print('ageop=',ageop,'Tm=',Tm,'Ts=',Ts,'kappa=',kappa)
 # - add some () to make expressions clearer
 #
 # subsection Initial temperature model
-# 	set Model name = function
+# 	set List of model names = function
 # 	subsection Function
 #		set Variable names = x,y
 #		set Function constants = ymax=1.0e6, xtrm= 2.200e6, vsub=7.927e-10, \

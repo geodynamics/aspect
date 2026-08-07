@@ -66,7 +66,7 @@ subsection Geometry model
 end
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     # Temperature function

@@ -27,7 +27,7 @@ subsection Boundary velocity model
 end
 
 subsection Initial temperature model
-  set Model name = patch on S40RTS
+  set List of model names = patch on S40RTS
 
   subsection Patch on S40RTS
     set Maximum grid depth = 700000

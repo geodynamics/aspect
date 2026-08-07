@@ -62,7 +62,7 @@ end
 # Spatial domain of different compositional fields
 # Make the beam 9x longer than it is wide to ensure the 'thin' approximation is valid
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,y

@@ -61,7 +61,7 @@ end
 #   surface heat flow (qs) = 0.0635 W/m^2; basal heat flow = 0.365 W/m^2;
 #   mantle thermal conductivity (km) = 3.65 (W/(m K));
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names = x,y
@@ -99,7 +99,7 @@ end
 
 # Initial composition model
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,y

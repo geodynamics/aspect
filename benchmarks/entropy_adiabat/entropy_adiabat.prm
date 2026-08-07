@@ -52,7 +52,7 @@ subsection Initial temperature model
   # is recalculated from the entropy during the first timestep.
   # The value below corresponds to the entropy of 2534 J/kg/K
   # used as the top boundary condition.
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 1600.1243896484375

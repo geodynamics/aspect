@@ -72,7 +72,7 @@ subsection Gravity model
 end
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function constants  = x0=150000,a = 0.2, b = 75000, c = 10000, d=0.0
@@ -82,7 +82,7 @@ subsection Initial temperature model
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function constants  = x0=150000,a = 0.2, b = 75000, c = 10000, d=0.0

@@ -20,7 +20,7 @@ set Output directory                       = melt_10percent_viscoelastic_relaxat
 set Adiabatic surface temperature          = 293.0
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
   subsection Function
     set Variable names      = x,y
     set Function constants  =

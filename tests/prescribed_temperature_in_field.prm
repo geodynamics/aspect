@@ -30,7 +30,7 @@ subsection Initial composition model
 end
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = if(x<=0.4, 1000, 100)

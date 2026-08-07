@@ -46,7 +46,7 @@ end
 subsection Initial temperature model
   # We convert the initial temperature from the
   # initial entropy.
-  set Model name = prescribed temperature
+  set List of model names = prescribed temperature
 end
 
 # No boundary temperature conditions necessary, they are set from entropy.

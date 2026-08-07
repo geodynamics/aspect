@@ -145,7 +145,7 @@ end
 # set to 0, while the initial plastic strain is randomized
 # between 0.5 and 1.5.
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,y
@@ -200,7 +200,7 @@ end
 #       plugin is illustrated in the test for this cookbook
 #       (tests/continental_extension.prm).
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names = x,y

@@ -84,7 +84,6 @@ end
 
 #### Temperature model
 subsection Initial temperature model
-  #set Model name = adiabatic
   set List of model names =  adiabatic, function
   set List of model operators = add
 

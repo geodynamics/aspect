@@ -34,7 +34,7 @@ subsection Geometry model
 end
 
 subsection Initial temperature model
-  set Model name = prescribed temperature
+  set List of model names = prescribed temperature
 end
 
 # We prescribe temperatures according to the data table.

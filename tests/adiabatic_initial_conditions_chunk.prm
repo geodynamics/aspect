@@ -31,7 +31,7 @@ subsection Geometry model
 end
 
 subsection Initial temperature model
-  set Model name = adiabatic
+  set List of model names = adiabatic
 
   subsection Adiabatic
     set Radius          = 400000.0

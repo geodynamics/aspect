@@ -46,7 +46,7 @@ subsection Compositional fields
 end
 
 subsection Initial composition model
-  set Model name = adiabatic density
+  set List of model names = adiabatic density
 end
 
 subsection Geometry model
@@ -96,7 +96,7 @@ subsection Boundary velocity model
 end
 
 subsection Initial temperature model
-  set Model name = adiabatic
+  set List of model names = adiabatic
 end
 
 subsection Material model

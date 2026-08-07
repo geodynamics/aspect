@@ -22,7 +22,7 @@ subsection Compositional fields
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = if (x-y>1,1,0)
@@ -48,7 +48,7 @@ subsection Gravity model
 end
 
 subsection Initial temperature model
-  set Model name = harmonic perturbation
+  set List of model names = harmonic perturbation
 
   subsection Harmonic perturbation
     set Magnitude = 200.0

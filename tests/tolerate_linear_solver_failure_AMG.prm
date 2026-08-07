@@ -96,7 +96,7 @@ end
 # to 0 and the initial plastic strain is randomized between
 # 0.5 and 1.5.
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
   subsection Function
     set Variable names      = x,y
     set Function expression = 0; \
@@ -129,7 +129,7 @@ end
 
 # Initial temperature field
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
   subsection Function
     set Variable names = x,y
     set Function constants = h=100e3, ts1=273, ts2=633, ts3=893, \

@@ -63,7 +63,7 @@ end
 # matches the boundary conditions defined below plus
 # a small perturbation:
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 1746.794 - z/183540.0 * 300
@@ -72,7 +72,7 @@ subsection Initial temperature model
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 1.0

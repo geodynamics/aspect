@@ -48,7 +48,7 @@ end
 # As such, no variations in temperature are needed and both the boundary and initial temperatures are held constant.
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression       = 293
@@ -93,7 +93,7 @@ subsection Compositional fields
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,y

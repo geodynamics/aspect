@@ -34,7 +34,7 @@ end
 # We assume no initial temperature perturbation, so that 
 # the initial temperature is equal to the adiabatic temperature profile.
 subsection Initial temperature model
-  set Model name = adiabatic
+  set List of model names = adiabatic
 end
 
 subsection Boundary temperature model

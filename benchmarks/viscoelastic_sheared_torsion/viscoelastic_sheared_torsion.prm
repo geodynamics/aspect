@@ -133,7 +133,7 @@ end
 # Spatial domain of different compositional fields.
 # The elastic stress tensor components are set to 0 initially.
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0
@@ -178,7 +178,7 @@ end
 # The temperature plays no role in this model
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 293

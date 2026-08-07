@@ -79,14 +79,9 @@ namespace aspect
 
         const std::string model_name = prm.get ("Model name");
 
-        AssertThrow (model_name == "unspecified" || this->plugin_names.size() == 0,
-                     ExcMessage ("The parameter 'Model name' is only used for reasons"
-                                 "of backwards compatibility and can not be used together with "
-                                 "the new functionality 'List of model names'. Please add your "
-                                 "initial composition model to the list instead."));
-
-        if (!(model_name == "unspecified"))
-          this->plugin_names.push_back(model_name);
+        AssertThrow (model_name == "unspecified",
+                     ExcMessage ("The parameter 'Model name' is deprecated. Please add your "
+                                 "initial composition model to the parameter 'List of model names' instead."));
 
         // create operator list
         const std::vector<std::string> model_operator_names =

@@ -28,7 +28,7 @@ end
 
 # # Initialize 1% (0.01) porosity blob.
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,y,t

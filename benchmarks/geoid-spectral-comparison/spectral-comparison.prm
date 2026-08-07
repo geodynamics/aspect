@@ -54,7 +54,7 @@ end
 # by spherical harmonics up to degree 20 that are radially interpolated
 # with a cubic spline.
 subsection Initial temperature model
-  set Model name = S40RTS perturbation
+  set List of model names = S40RTS perturbation
 
   subsection S40RTS perturbation
     # The two input options here are S20RTS or the higher resolution

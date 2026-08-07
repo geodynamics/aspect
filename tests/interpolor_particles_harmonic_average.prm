@@ -16,5 +16,5 @@ subsection Compositional fields
 end
 
 subsection Initial composition model
-  set Model name = unspecified
+  set List of model names = 
 end

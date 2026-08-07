@@ -21,7 +21,7 @@ subsection Geometry model
 end
 
 subsection Initial temperature model
-  set Model name = ascii data layered
+  set List of model names = ascii data layered
 
   subsection Ascii data layered
     set Data directory        = $ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/

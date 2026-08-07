@@ -32,7 +32,7 @@ end
 
 # Change seed size from 800x400 to 4000x2000 meters
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,y

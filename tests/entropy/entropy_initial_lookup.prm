@@ -25,7 +25,7 @@ end
 subsection Initial temperature model
   # A constant initial temperature is assigned
   # There is a decreasing in the entropy with increasing pressure.
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 1600.0

@@ -100,7 +100,7 @@ end
 # In addition to the adiabatic profile, there are thermal boundary
 # layers at the surface and the core-mantle boundary.
 subsection Initial temperature model
-  set Model name = adiabatic
+  set List of model names = adiabatic
 
   subsection Adiabatic
     set Age top boundary layer = 5e7

@@ -59,7 +59,7 @@ end
 
 # Uniform temperature of 293 K
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 293
@@ -99,7 +99,7 @@ end
 
 # Initialize a porosity of 2% (0.02) everywhere.
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,y

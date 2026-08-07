@@ -70,7 +70,7 @@ subsection Boundary velocity model
 end
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     # In contrast to the other latent heat test we need a small temperature

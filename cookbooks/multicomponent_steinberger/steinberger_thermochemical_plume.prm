@@ -22,7 +22,7 @@ end
 # size = radius of the compositional anomaly
 # k, c = slope and intercept determine the fraction of eclogite change with depth
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Coordinate system   = cartesian
