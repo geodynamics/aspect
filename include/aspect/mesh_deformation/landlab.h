@@ -45,8 +45,6 @@ namespace aspect
     class Landlab : public ParallelUnstructuredInterface<dim>
     {
       public:
-        Landlab();
-
         /**
          * Initialize function, this creates the Python interpreter and
          * and loads the Landlab Python module.
@@ -115,11 +113,6 @@ namespace aspect
          * The name of the Landlab Python module without the .py extension.
          */
         std::string script_module_name;
-
-        /**
-         * The argument to pass to the Landlab Python module.
-         */
-        std::string script_argument;
 
         /**
          * Whether the ASPECT geometry is spherical.

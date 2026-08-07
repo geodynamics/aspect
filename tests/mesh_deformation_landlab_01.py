@@ -1,6 +1,5 @@
 print("mesh_deformation_external_landlab_01.py")
 
-from mpi4py import MPI
 import numpy as np
 import landlab
 from landlab.components import LinearDiffuser

@@ -74,22 +74,16 @@ namespace aspect
   namespace MeshDeformation
   {
     template <int dim>
-    Landlab<dim>::Landlab()
-    {}
-
-
-
-    template <int dim>
     void
     Landlab<dim>::initialize ()
     {
       // Determine whether we are in a spherical geometry or not, which affects how we interpret the coordinates of the evaluation points.
-      if (Plugins::plugin_type_matches<GeometryModel::Chunk<dim>>(this->get_geometry_model()) ||
-          Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim>>(this->get_geometry_model()) ||
-          Plugins::plugin_type_matches<GeometryModel::Sphere<dim>>(this->get_geometry_model()))
+      if (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::CoordinateSystem::spherical)
         is_spherical = true;
-      else
+      else if (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::CoordinateSystem::cartesian)
         is_spherical = false;
+      else
+        AssertThrow(false, ExcMessage("The Landlab mesh deformation plugin only supports Cartesian and spherical geometries."));
 
       unsigned int rank = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
 
@@ -100,7 +94,6 @@ namespace aspect
 
       if (this_rank_runs_landlab)
         {
-#if defined(ASPECT_WITH_PYTHON) && defined(ASPECT_WITH_LANDLAB)          
           // Append script dirs so env packages (venv site-packages, PYTHONPATH) are found first
           // for "import landlab":
           PyRun_SimpleString("import sys");
@@ -140,12 +133,6 @@ namespace aspect
 
           Py_DECREF(pArgs);
           Py_DECREF(pValue);
-
-#else
-          AssertThrow(false, ExcMessage("ASPECT needs to be configure with Python support "
-                                        "(ASPECT_WITH_PYTHON=ON in CMake) to be able to "
-                                        "use the Landlab mesh deformation model."));
-#endif
         }
     }
 
@@ -224,8 +211,6 @@ namespace aspect
               Py_DECREF(pgrid_y);
             if (pgrid_z)
               Py_DECREF(pgrid_z);
-
-            std::cout << "FINISHING UPDATE()" << std::endl;
 
             this->set_evaluation_points(surface_points);
           }
@@ -362,7 +347,6 @@ namespace aspect
                                                const types::boundary_id boundary_indicator,
                                                AffineConstraints<double> &constraints) const
     {
-// #if defined(ASPECT_WITH_PYTHON) && defined(ASPECT_WITH_LANDLAB)
       // We need to initialize the evaluation points in order to extract the initial topography
       // from Landlab and apply it as constraints on the initial mesh in ASPECT. This means that
       // we need to call update(), which determines the evaluation points, which requires that
@@ -413,14 +397,9 @@ namespace aspect
           if (constraints.can_store_line(index))
             if (constraints.is_constrained(index)==false)
               {
-#if DEAL_II_VERSION_GTE(9,6,0)
                 constraints.add_constraint(index,
                                            {},
                                            initial_deformation_ghosted(index));
-#else
-                constraints.add_line(index);
-                constraints.set_inhomogeneity(index, initial_deformation_ghosted(index));
-#endif
               }
         }
     }
@@ -445,10 +424,6 @@ namespace aspect
           prm.declare_entry("Script name", "",
                             Patterns::Anything(),
                             "Name of the Python module to load (without .py extension).");
-          prm.declare_entry("Script argument", "",
-                            Patterns::Anything(),
-                            "An arbitrary string to be passed to the initialize() function in the "
-                            "Python script. Can be used to specify a configuration file or other option.");
         }
         prm.leave_subsection();
       }
@@ -471,7 +446,6 @@ namespace aspect
 
           script_path        = prm.get("Script path");
           script_module_name = prm.get("Script name");
-          script_argument    = prm.get("Script argument");
         }
         prm.leave_subsection ();
       }
