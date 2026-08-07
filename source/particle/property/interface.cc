@@ -607,8 +607,8 @@ namespace aspect
                       for (unsigned int property_component = 0; property_component < n_property_components; ++property_component)
                         particle_properties.push_back(interpolated_properties[0][start_index+property_component]);
                     }
-                  // Otherwise use the value of the boundary condition of the corresponding compositional field
-                  else
+                  // Otherwise use the value of the boundary condition of the corresponding compositional field.
+                  else if (!manager.boundaries_with_fixed_subset_of_fields_exist())
                     {
                       const types::boundary_id boundary_id = cell->face(boundary_face)->boundary_id();
                       const unsigned int n_property_components = property_information.get_components_by_plugin_index(property_index);
@@ -632,6 +632,48 @@ namespace aspect
                                                                                            field_to_use.compositional_variable);
 
                           particle_properties.push_back(field_boundary_value);
+                        }
+                    }
+                  // Not all fields need to be fixed on a fixed boundary composition boundary. Those fields that
+                  // are not fixed, still need to be interpolated.
+                  else
+                    {
+                      const std::vector<std::vector<double>> interpolated_properties = interpolator.properties_at_points(particle_handler,
+                                                                                        std::vector<Point<dim>> (1,particle_location),
+                                                                                        ComponentMask(property_information.n_components(),true),
+                                                                                        found_cell);
+
+                      const unsigned int start_index = property_information.get_position_by_plugin_index(property_index);
+                      const types::boundary_id boundary_id = cell->face(boundary_face)->boundary_id();
+                      const unsigned int n_property_components = property_information.get_components_by_plugin_index(property_index);
+
+                      for (unsigned int particle_property_component = 0; particle_property_component < n_property_components; ++particle_property_component)
+                        {
+                          // Ask the particle property which field index to use to evaluate boundary condition
+                          const AdvectionField field_to_use = p->advection_field_for_boundary_initialization(particle_property_component);
+
+                          Assert(field_to_use.is_temperature() == false,
+                                 ExcMessage("Interpolating temperature boundary conditions to particles is not supported."));
+                          Assert(field_to_use.compositional_variable < this->n_compositional_fields(),
+                                 ExcMessage("The composition index specified in the function"
+                                            "advection_field_for_boundary_initialization() by the particle property "
+                                            "<" + property_information.get_field_name_by_index(property_index) +"> is "
+                                            "larger than the number of compositional fields. This is not possible "
+                                            "and likely a bug in the particle property plugin."));
+
+                          // Check whether this field is fixed on this boundary, ...
+                          if (manager.field_is_fixed_on_boundary(boundary_id, field_to_use.compositional_variable))
+                            {
+                              const double field_boundary_value = manager.boundary_composition(boundary_id,
+                                                                                               particle_location,
+                                                                                               field_to_use.compositional_variable);
+
+                              particle_properties.push_back(field_boundary_value);
+                            }
+                          // otherwise interpolate.
+                          else
+                            particle_properties.push_back(interpolated_properties[0][start_index+particle_property_component]);
+
                         }
                     }
 
