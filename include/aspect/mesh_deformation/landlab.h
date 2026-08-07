@@ -85,8 +85,8 @@ namespace aspect
          * Parse parameters.
          */
         void parse_parameters (ParameterHandler &prm) override;
-        
-#if defined(ASPECT_WITH_PYTHON) && defined(ASPECT_WITH_LANDLAB)
+
+#if defined(ASPECT_WITH_LANDLAB)
       private:
         /**
          * The number of MPI ranks are participating in the Landlab simulation.
