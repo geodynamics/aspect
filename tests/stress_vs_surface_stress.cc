@@ -18,4 +18,4 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include "simple_shear.cc"
+#include "benchmarks/simple_shear.cc"

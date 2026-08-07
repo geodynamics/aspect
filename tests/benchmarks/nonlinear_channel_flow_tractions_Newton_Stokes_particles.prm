@@ -1,7 +1,7 @@
 # Like the poiseuille_2d.prm test and based on the nonlinear channel
 # flow benchmark, but adds passive particles.
 
-include $ASPECT_SOURCE_DIR/tests/nonlinear_channel_flow_tractions_Newton_Stokes.prm
+include $ASPECT_SOURCE_DIR/tests/benchmarks/nonlinear_channel_flow_tractions_Newton_Stokes.prm
 
 set Dimension = 2
 set Additional shared libraries = ./libsimple_nonlinear.so
