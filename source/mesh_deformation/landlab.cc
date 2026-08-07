@@ -237,7 +237,7 @@ namespace aspect
 
           // Create dictionary to hold variable names and their corresponding data
           PyObject *pDict_solution  = PyDict_New();
-          PyObject *pDict_auxillary = PyDict_New();
+          PyObject *pDict_auxiliary = PyDict_New();
 
           // Add velocities
           std::vector<std::string> variable_names = {"x velocity", "y velocity"};
@@ -272,20 +272,20 @@ namespace aspect
           // Create a second dictionary which holds other information that is useful for Landlab to know about the ASPECT model.
           // This is used for keeping landlab and ASPECT in sync while running, and also for checkpointing/restarting and 
           // postprocessing.
-          PyDict_SetItemString(pDict_auxillary, "ASPECT dimension", PyLong_FromLong(dim));
-          PyDict_SetItemString(pDict_auxillary, "ASPECT model time", PyFloat_FromDouble(this->get_time()));
-          PyDict_SetItemString(pDict_auxillary, "ASPECT timestep", PyFloat_FromDouble(this->get_timestep_number()));
-          PyDict_SetItemString(pDict_auxillary, "ASPECT output directory", PyUnicode_FromString(this->get_output_directory().c_str()));
+          PyDict_SetItemString(pDict_auxiliary, "ASPECT dimension", PyLong_FromLong(dim));
+          PyDict_SetItemString(pDict_auxiliary, "ASPECT model time", PyFloat_FromDouble(this->get_time()));
+          PyDict_SetItemString(pDict_auxiliary, "ASPECT timestep", PyFloat_FromDouble(this->get_timestep_number()));
+          PyDict_SetItemString(pDict_auxiliary, "ASPECT output directory", PyUnicode_FromString(this->get_output_directory().c_str()));
 
           // Call update_until(), which is the main loop in Landlab that evolves the topography.
           // update_until() returns the change in the topography, which we convert to a mesh
           // velocity in ASPECT.
-          PyObject *pArgs  = PyTuple_Pack(2, pDict_solution, pDict_auxillary);
+          PyObject *pArgs  = PyTuple_Pack(2, pDict_solution, pDict_auxiliary);
           PyObject *pValue = call_python_function(pModule, "update_until", pArgs);
 
           // Remove these python objects from memory.
           Py_DECREF(pDict_solution);
-          Py_DECREF(pDict_auxillary);
+          Py_DECREF(pDict_auxiliary);
           Py_DECREF(pArgs);
 
           // Convert the returned numpy array to a C++ view and compute the mesh velocities in ASPECT.
