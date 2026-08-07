@@ -444,7 +444,22 @@ namespace aspect
       parse_compositional_averaging_operation (const std::string &parameter_name,
                                                const ParameterHandler &prm);
 
-
+      /**
+        * Utilities for material models with multiple phases
+        */
+      namespace PhaseUtilities
+      {
+        /**
+         * Enumeration for selecting which averaging scheme to use when
+         * averaging the properties of different phases.
+         * Select between arithmetic and logarithmic.
+         */
+        enum PhaseAveragingOperation
+        {
+          arithmetic,
+          logarithmic
+        };
+      }
 
       /**
        * For multicomponent material models:
@@ -454,7 +469,7 @@ namespace aspect
        * values at a given quadrature point. This means that properties have to
        * be averaged based on the fractions of each compositional field present.
        * This function performs this type of averaging. The averaging is based
-       * on the choice in @p average_type. Averaging is conducted over the
+       * on the choice in @p average_operation. Averaging is conducted over the
        * compositional fields given in @p volume_fractions. This means that
        * @p volume_fractions and @p parameter_values have to have the same size,
        * which would typically be the number of compositional fields used in the
@@ -467,9 +482,28 @@ namespace aspect
        */
       double average_value (const std::vector<double> &volume_fractions,
                             const std::vector<double> &parameter_values,
-                            const CompositionalAveragingOperation &average_type);
+                            const CompositionalAveragingOperation &average_operation);
 
-
+      /**
+       * Overloaded average_value function to account for the case when there
+       * may be phase transitions within one or more compositions. The argument
+       * @p volume_fractions contains the volume fractions of each composition, while
+       * @p phase_function_values contains the values of the phase functions for all
+       * phases over all the compositions, which vary between 0 and 1.
+       * The vector @p n_phase_transitions_per_composition contains the number of
+       * phase transitions for each composition, which is used to determine which phase
+       * transitions belong to which composition. The vector @p parameter_values contains
+       * the values of the parameter to be averaged for all phases over all compositions.
+       * The averaging over compositions is based on the choice in
+       * @p composition_average_operation while the averaging over phases is based on
+       * the choice in @p phase_average_operation .
+       */
+      double average_value(const std::vector<double> &volume_fractions,
+                           const std::vector<double> &phase_function_values,
+                           const std::vector<unsigned int> &n_phase_transitions_per_composition,
+                           const std::vector<double> &parameter_values,
+                           const enum CompositionalAveragingOperation &composition_average_operation,
+                           const PhaseUtilities::PhaseAveragingOperation phase_average_operation = PhaseUtilities::PhaseAveragingOperation::arithmetic);
 
       /**
        * This function computes averages of multicomponent thermodynamic properties
@@ -492,27 +526,6 @@ namespace aspect
                                               const std::vector<double> &volume_fractions,
                                               const unsigned int i,
                                               MaterialModelOutputs<dim> &out);
-
-
-
-      /**
-       * Utilities for material models with multiple phases
-       */
-      namespace PhaseUtilities
-      {
-        /**
-         * Enumeration for selecting which averaging scheme to use when
-         * averaging the properties of different phases.
-         * Select between arithmetic and logarithmic.
-         */
-        enum PhaseAveragingOperation
-        {
-          arithmetic,
-          logarithmic
-        };
-      }
-
-
 
       /**
       * This function modifies the parameter values of all phases for a given composition
@@ -542,22 +555,22 @@ namespace aspect
                                        const unsigned int composition_index,
                                        const PhaseUtilities::PhaseAveragingOperation operation = PhaseUtilities::arithmetic);
 
-
-
       /**
        * Material models compute output quantities such as the viscosity, the
        * density, etc. For some models, these values may depend on the phase in
        * addition to the composition, and more than one phase field might have
        * nonzero values at a given quadrature point. This means that properties
        * for each composition have to be averaged based on the fractions of each
-       * phase field present. This function performs this type of averaging.
-       * The averaging is based on the choice in @p operation. Averaging is conducted
-       * over the phase functions given in @p phase_function_values, with
-       * @p parameter_values containing values of all individual phases. Unlike the average_value
-       * function defined for compositions, averaging in this function is calculated based
-       * on phase functions and the change of variables on the trajectory of phase boundaries.
-       * Thus on a single phase boundary, values of variables change gradually from one phase
-       * to the other. The values of the phase function used to average the properties varies
+       * phase field present. This function performs this averaging on a single
+       * composition given by the @p composition_index argument.
+       * Averaging is conducted over the phase functions given in
+       * @p phase_function_values, with @p parameter_values containing values of
+       * all individual phases, where both of these vectors contain values for all
+       * phases over all compositions. The vector @p n_phase_transitions_per_composition
+       * contains the number of phase transitions for each composition,
+       * which is used to determine which phase transitions belong to the
+       * selected composition. The averaging is based on the choice in @p operation.
+       * The values of the phase function used to average the properties varies
        * between 0 and 1.
        */
       double phase_average_value (const std::vector<double> &phase_function_values,
@@ -565,6 +578,28 @@ namespace aspect
                                   const std::vector<double> &parameter_values,
                                   const unsigned int composition_index,
                                   const PhaseUtilities::PhaseAveragingOperation operation = PhaseUtilities::arithmetic);
+
+      /**
+       * Overloaded phase_average_value function. Like the other
+       * phase_average_value function, this function averages over the phases
+       * of a single composition given by @p composition_index. The only
+       * difference is that this function assumes that the caller knows the
+       * index @p start_phase_index corresponding to the first phase in the
+       * desired composition, with @p n_phase_transitions_for_composition
+       * equal to the number of phase transitions for that composition.
+       *
+       * As in the other phase_average_value function, the arguments
+       * @p phase_function_values and @p parameter_values contain the
+       * values for all phases over all compositions, and the averaging
+       * is based on the choice given by the @p operation argument.
+       */
+      double phase_average_value(const std::vector<double> &phase_function_values,
+                                 const std::vector<double> &parameter_values,
+                                 const unsigned int composition_index,
+                                 const unsigned int start_phase_index,
+                                 const unsigned int n_phase_transitions_for_composition,
+                                 const PhaseUtilities::PhaseAveragingOperation operation = PhaseUtilities::arithmetic);
+
       /**
        * Return whether the phase transition with index
        * @p phase_transition_index has an associated reaction progress value in
