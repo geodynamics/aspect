@@ -1,7 +1,7 @@
 # Test "landlab" mesh deformation Landlab Python module in a
 # 3d box
 #
-# Enable if: ASPECT_WITH_PYTHON
+# Enable if: ASPECT_WITH_PYTHON && ASPECT_WITH_LANDLAB
 # MPI: 1
 
 set Dimension                              = 3
