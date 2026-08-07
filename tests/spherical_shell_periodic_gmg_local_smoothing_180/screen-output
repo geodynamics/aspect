@@ -1,0 +1,74 @@
+
+Number of active cells: 96 (on 3 levels)
+Number of degrees of freedom: 1,448 (882+125+441)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 
+     GMG coarse size A: 78, coarse size S: 14
+     GMG levels: 3
+     Viscosity range: 1e+22 - 1e+22
+     GMG workload imbalance: 1
+     Stokes solver (GMRES): 15+0 iterations.
+     Schur complement preconditioner: 16+0 iterations.
+     A block preconditioner: 16+0 iterations.
+
+Number of active cells: 240 (on 4 levels)
+Number of degrees of freedom: 3,574 (2,186+295+1,093)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 
+     GMG coarse size A: 78, coarse size S: 14
+     GMG levels: 4
+     Viscosity range: 1e+22 - 1e+22
+     GMG workload imbalance: 1
+     Stokes solver (GMRES): 16+0 iterations.
+     Schur complement preconditioner: 17+0 iterations.
+     A block preconditioner: 17+0 iterations.
+
+Number of active cells: 384 (on 5 levels)
+Number of degrees of freedom: 6,077 (3,726+488+1,863)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 
+     GMG coarse size A: 78, coarse size S: 14
+     GMG levels: 5
+     Viscosity range: 1e+22 - 1e+22
+     GMG workload imbalance: 1
+     Stokes solver (GMRES): 20+0 iterations.
+     Schur complement preconditioner: 21+0 iterations.
+     A block preconditioner: 21+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-spherical_shell_periodic_gmg_local_smoothing_180/solution/solution-00000
+     RMS, max velocity:        0.0614 m/year, 0.271 m/year
+     Temperature min/avg/max:  -10.54 K, 138.1 K, 4273 K
+
+Number of active cells: 528 (on 5 levels)
+Number of degrees of freedom: 7,812 (4,786+633+2,393)
+
+*** Timestep 1:  t=1000 years, dt=1000 years
+   Solving temperature system... 8 iterations.
+   Solving Stokes system (GMG)... 
+     GMG coarse size A: 78, coarse size S: 14
+     GMG levels: 5
+     Viscosity range: 1e+22 - 1e+22
+     GMG workload imbalance: 1
+     Stokes solver (GMRES): 13+0 iterations.
+     Schur complement preconditioner: 14+0 iterations.
+     A block preconditioner: 14+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-spherical_shell_periodic_gmg_local_smoothing_180/solution/solution-00001
+     RMS, max velocity:        0.0614 m/year, 0.271 m/year
+     Temperature min/avg/max:  -536.9 K, 138.1 K, 4273 K
+
+Number of active cells: 534 (on 5 levels)
+Number of degrees of freedom: 7,903 (4,842+640+2,421)
+
+Termination requested by criterion: end time
+
+
+
