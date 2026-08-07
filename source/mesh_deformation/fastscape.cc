@@ -152,7 +152,11 @@ namespace aspect
                                 const double *vexp,
                                 unsigned int *astep,
                                 const char *c,
-                                const unsigned int *length);
+                                const unsigned int *length,
+                                const double *model_height,
+                                const unsigned int *model_dim,
+                                const double *adjustment,
+                                const double *time);
 #endif
 
       /**
@@ -315,6 +319,17 @@ namespace aspect
                                    true /*do not print message in log file*/);
 
       last_output_time = 0;
+      output_file_number = 0;
+
+      if (!this->get_parameters().resume_computation
+          && Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+        {
+          const std::string dir = this->get_output_directory() + "fastscape/";
+          std::filesystem::remove(dir + ".pvd_index");
+          std::filesystem::remove(dir + "Topography.pvd");
+          std::filesystem::remove(dir + "SeaLevel.pvd");
+          std::filesystem::remove(dir + "Basement.pvd");
+        }
     }
 
 
@@ -964,11 +979,18 @@ namespace aspect
 
       // Because on the first timestep we will create an initial VTK file before running FastScape
       // and a second after, we first set the visualization step to zero.
-      unsigned int visualization_step = 0;
       const unsigned int current_timestep = this->get_timestep_number ();
       const std::string dirname = (this->get_output_directory() + "fastscape/");
       const char *dirname_char=dirname.c_str();
       const unsigned int dirname_length = dirname.length();
+      const GeometryModel::Box<dim> &geometry =
+        Plugins::get_plugin_as_type<const GeometryModel::Box<dim>>(this->get_geometry_model());
+
+      // This is used so that the FastScape visualization defaults to showing
+      // up slightly above the ASPECT surface.
+      const double model_height = geometry.get_extents()[dim-1];
+      const unsigned model_dim = dim;
+      const double ghost_node_adjustment = fastscape_dx*use_ghost_nodes;
 
       // Set time step
       fastscape_set_dt_(&fastscape_timestep_in_years);
@@ -979,20 +1001,29 @@ namespace aspect
           {
 #ifdef ASPECT_HAVE_FASTSCAPE_NAMED_VTK
             this->get_pcout() << "      Writing initial VTK..." << std::endl;
+
+            const double time_in_years_or_seconds = 0;
+            unsigned int initial_file_number = 0;
+
             // FastScape by default visualizes a field called HHHHH,
             // and the parameter this shows will be whatever is given as the first
             // position. extra_vtk_field is set to the river incision rate by default.
             fastscape_named_vtk_(extra_vtk_field.data(),
                                  &vexp,
-                                 &visualization_step,
+                                 &initial_file_number,
                                  dirname_char,
-                                 &dirname_length);
+                                 &dirname_length,
+                                 &model_height,
+                                 &model_dim,
+                                 &ghost_node_adjustment,
+                                 &time_in_years_or_seconds);
 #else
             (void)extra_vtk_field;
             (void)vexp;
-            (void)visualization_step;
             (void)dirname_char;
             (void)dirname_length;
+            (void)model_height;
+            (void)model_dim;
 
             this->get_pcout() << "      Not writing initial VTK because the FastScape library does not support this functionality."
                               << std::endl;
@@ -1056,7 +1087,20 @@ namespace aspect
           {
 #ifdef ASPECT_HAVE_FASTSCAPE_NAMED_VTK
             this->get_pcout() << "      Writing FastScape VTK..." << std::endl;
-            visualization_step = current_timestep;
+
+            const double time_in_years_or_seconds = (this->convert_output_to_years() ?
+                                                     this->get_time() / year_in_seconds :
+                                                     this->get_time());
+
+            // up the counter of the number of the file by one, but not in
+            // the very first output step. if we run postprocessors on all
+            // iterations, only increase file number in the first nonlinear iteration
+            const bool increase_file_number = (this->get_nonlinear_iteration() == 0) || (!this->get_parameters().run_postprocessors_on_nonlinear_iterations);
+            if (output_file_number == numbers::invalid_unsigned_int)
+              output_file_number = 0;
+            else if (increase_file_number)
+              ++output_file_number;
+
             // Get the output directory name and name length again
             // to avoid Fortran error that the dirname has length -1,
             // eventhough dirname_length passes the correct length.
@@ -1065,15 +1109,20 @@ namespace aspect
             const unsigned int dirname_length = dirname.length();
             fastscape_named_vtk_(extra_vtk_field.data(),
                                  &vexp,
-                                 &visualization_step,
+                                 &output_file_number,
                                  dirname_char,
-                                 &dirname_length);
+                                 &dirname_length,
+                                 &model_height,
+                                 &model_dim,
+                                 &ghost_node_adjustment,
+                                 &time_in_years_or_seconds);
 #else
             (void)extra_vtk_field;
             (void)vexp;
-            (void)visualization_step;
             (void)dirname_char;
             (void)dirname_length;
+            (void)model_height;
+            (void)model_dim;
 
             this->get_pcout() << "      Not writing FastScape VTK because the FastScape library does not support this functionality."
                               << std::endl;
@@ -1595,7 +1644,8 @@ namespace aspect
     template <class Archive>
     void FastScape<dim>::serialize (Archive &ar, const unsigned int)
     {
-      ar &last_output_time;
+      ar &last_output_time
+      & output_file_number;
     }
 
 
