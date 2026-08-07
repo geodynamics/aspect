@@ -57,7 +57,7 @@ end
 
 # Uniform temperature of 293 K
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 293
@@ -79,7 +79,7 @@ end
 
 # Define an initial blob of porosity with a max value of 1% in the middle of the model.
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,y,t

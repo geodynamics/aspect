@@ -20,7 +20,7 @@ subsection Geometry model
 end
 
 subsection Initial temperature model
-  set Model name = harmonic perturbation
+  set List of model names = harmonic perturbation
 
   subsection Harmonic perturbation
     set Magnitude             = 3

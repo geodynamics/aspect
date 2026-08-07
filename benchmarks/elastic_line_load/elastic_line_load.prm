@@ -116,7 +116,7 @@ end
 # The temperature does not influence the model, so just set it to some
 # constant value.
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
   subsection Function
     set Function expression = 500
   end
