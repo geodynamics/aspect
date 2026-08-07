@@ -270,7 +270,7 @@ namespace aspect
             }
 
           // Create a second dictionary which holds other information that is useful for Landlab to know about the ASPECT model.
-          // This is used for keeping landlab and ASPECT in sync while running, and also for checkpointing/restarting and 
+          // This is used for keeping landlab and ASPECT in sync while running, and also for checkpointing/restarting and
           // postprocessing.
           PyDict_SetItemString(pDict_auxiliary, "ASPECT dimension", PyLong_FromLong(dim));
           PyDict_SetItemString(pDict_auxiliary, "ASPECT model time", PyFloat_FromDouble(this->get_time()));
