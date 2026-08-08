@@ -138,6 +138,12 @@ namespace aspect
     template <int dim>      class Manager;
   }
 
+  namespace Adjoint
+  {
+    template <int dim>      class KernelRepository;
+    template <int dim>      class Manager;
+  }
+
   struct DefectCorrectionResiduals
   {
     double initial_residual;
@@ -505,6 +511,15 @@ namespace aspect
        * <code>source/simulator/solver_schemes.cc</code>.
        */
       void solve_no_advection_iterated_defect_correction_stokes ();
+
+      /**
+       * This function implements the instantaneous Stokes adjoint scheme.
+       * The actual adjoint workflow is delegated to the Adjoint manager.
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver_schemes.cc</code>.
+       */
+      void solve_stokes_adjoint ();
 
       /**
        * This function implements one scheme for the various
@@ -1744,6 +1759,14 @@ namespace aspect
       Parameters<dim>                     parameters;
 
       /**
+       * Manager for the instantaneous adjoint workflow. It is stored as a
+       * persistent simulator-owned object so that adjoint states, objective
+       * contributions, kernels, and optimization history can live across
+       * repeated adjoint solves.
+       */
+      std::unique_ptr<Adjoint::Manager<dim>> adjoint_manager;
+
+      /**
        * Unique pointer for an instance of the MeltHandler. This way,
        * if we do not need the machinery for doing melt stuff, we do
        * not even allocate it.
@@ -2143,6 +2166,7 @@ namespace aspect
 
       friend class boost::serialization::access;
       friend class SimulatorAccess<dim>;
+      friend class Adjoint::Manager<dim>;
       friend class MeshDeformation::MeshDeformationHandler<dim>;
       friend class VolumeOfFluidHandler<dim>;
       friend class StokesMatrixFreeHandler<dim>;
