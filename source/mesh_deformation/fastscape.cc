@@ -540,7 +540,7 @@ namespace aspect
                   // (by default -1). If a different rate is set for sediment and
                   // bedrock, the sediment rate is only used for sediment layers
                   // at least 1 m thick.
-                  if (sediment_river_incision_rate < 0. || sediment_thickness <= 1.)
+                  if (sediment_river_incision_rate < 0. || sediment_thickness <= 1. || std::isnan(sediment_thickness))
                     combined_kf[i] = bedrock_river_incision_rate_array[i];
                   else if (sediment_river_incision_rate >= 0. && sediment_thickness > 1.)
                     combined_kf[i] = sediment_river_incision_rate;
@@ -554,7 +554,7 @@ namespace aspect
                   // (by default -1). If a different rate is set for sediment and bedrock,
                   // the sediment coefficient is only used for sediment layers
                   // at least 1 m thick.
-                  if (sediment_transport_coefficient < 0 || sediment_thickness <= 1.)
+                  if (sediment_transport_coefficient < 0 || sediment_thickness <= 1. || std::isnan(sediment_thickness))
                     combined_kd[i] = bedrock_transport_coefficient_array[i];
                   else if (sediment_transport_coefficient >= 0. && sediment_thickness > 1.)
                     combined_kd[i] = sediment_transport_coefficient;
@@ -578,8 +578,13 @@ namespace aspect
                   const double marine_diffusion_coefficient = silt_fraction[i] * silt_transport_coefficient + (1. - silt_fraction[i]) * sand_transport_coefficient;
                   combined_kd[i] = marine_diffusion_coefficient;
                 }
+              else if (elevation[i] < current_sea_level && !use_marine_component)
+                std::cout<<"Below sea level and not use marine component"<<std::endl;
               else
                 {
+                  std::cout<<"elevation[i]: "<<elevation[i]<<std::endl;
+                  std::cout<<"current_sea_level: "<<current_sea_level<<std::endl;
+                  std::cout<<"use_marine_component: "<<use_marine_component<<std::endl;
                   AssertThrow (false, ExcMessage ("Unexpected conditions reached while filling the kf and kd arrays in the FastScape interface."));
                 }
             }
@@ -699,8 +704,12 @@ namespace aspect
     FastScape<dim>::get_aspect_values() const
     {
 
+      std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
+      const std::vector<unsigned int> chemical_composition_idx = this->introspection().chemical_composition_field_indices();
+      const unsigned int n_chemical_compositional_fields = chemical_composition_idx.size();
+
       const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
-      std::vector<std::vector<double>> local_aspect_values(dim+2, std::vector<double>());
+      std::vector<std::vector<double>> local_aspect_values(dim+4, std::vector<double>());
 
       // Get a quadrature rule that exists only on the corners, and increase the refinement if specified.
       const QIterated<dim-1> face_corners (QTrapezoid<1>(),
@@ -720,9 +729,22 @@ namespace aspect
                 if ( cell->face(face_no)->boundary_id() != relevant_boundary)
                   continue;
 
+                std::vector<std::vector<double>> composition_values_array(this->n_compositional_fields(), std::vector<double>(face_corners.size()));
                 std::vector<Tensor<1,dim>> vel(face_corners.size());
                 fe_face_values.reinit(cell, face_no);
                 fe_face_values[this->introspection().extractors.velocities].get_function_values(this->get_solution(), vel);
+
+                if (use_compositional_erosion_bedrock)
+                  {
+                    // Get compositional erosional parameters from compositional values, for chemical compositions + background mantle
+                    for (unsigned int c=0; c<n_chemical_compositional_fields; ++c)
+                      {
+                        const unsigned int field = chemical_composition_idx[c];
+                        fe_face_values[this->introspection().extractors.compositional_fields[field]].get_function_values(this->get_solution(), composition_values_array[field]);
+                        Assert(composition_values_array[field].size() > 0,
+                               ExcMessage("Composition_values_array[c] is empty"));
+                      }
+                  }
 
                 for (unsigned int corner = 0; corner < face_corners.size(); ++corner)
                   {
@@ -740,6 +762,22 @@ namespace aspect
                     if (std::abs(indx - std::round(indx)) >= node_tolerance)
                       continue;
 
+                    double bedrock_river_incision_rate_at_point = numbers::signaling_nan<double>();
+                    double bedrock_transport_coefficient_at_point = numbers::signaling_nan<double>();
+                    if (use_compositional_erosion_bedrock)
+                      {
+                        std::vector<double> composition_values(n_chemical_compositional_fields);
+                        double volume_fraction_sum = 0;
+                        for (unsigned int c=0; c < n_chemical_compositional_fields; ++c)
+                          {
+                            composition_values[c] = composition_values_array[chemical_composition_idx[c]][corner];
+                            volume_fraction_sum = volume_fraction_sum + composition_values_array[chemical_composition_idx[c]][corner];
+                          }
+                        // Add background material fraction at the beginning
+                        composition_values.insert(composition_values.begin(), std::max(0.0, 1.0 - volume_fraction_sum));
+                        bedrock_river_incision_rate_at_point = MaterialModel::MaterialUtilities::average_value (composition_values, constant_bedrock_river_incision_rate, MaterialModel::MaterialUtilities::arithmetic);
+                        bedrock_transport_coefficient_at_point = MaterialModel::MaterialUtilities::average_value (composition_values, constant_bedrock_transport_coefficient, MaterialModel::MaterialUtilities::arithmetic);
+                      }
 
                     // If we're in 2D, we want to take the values and apply them to every row of X points.
                     if (dim == 2)
@@ -766,6 +804,9 @@ namespace aspect
                                 // Always convert to m/yr for FastScape
                                 local_aspect_values[2+d].push_back(vel[corner][d]*year_in_seconds);
                               }
+
+                            local_aspect_values[dim+2].push_back(bedrock_river_incision_rate_at_point);
+                            local_aspect_values[dim+3].push_back(bedrock_transport_coefficient_at_point);
                           }
                       }
                     // 3D case
@@ -790,6 +831,9 @@ namespace aspect
                           {
                             local_aspect_values[2+d].push_back(vel[corner][d]*year_in_seconds);
                           }
+
+                        local_aspect_values[dim+2].push_back(bedrock_river_incision_rate_at_point);
+                        local_aspect_values[dim+3].push_back(bedrock_transport_coefficient_at_point);
                       }
                   }
               }
@@ -807,6 +851,8 @@ namespace aspect
                                                std::vector<double> &velocity_z,
                                                std::vector<std::vector<double>> &local_aspect_values) const
     {
+      const double time_scaling_factor = (this->convert_output_to_years() ? 1.0 : year_in_seconds);
+
       for (unsigned int i=0; i<local_aspect_values[1].size(); ++i)
         {
           // In get_aspect_values(), we store an integer value as a double in local_aspect_values[1][...].
@@ -857,14 +903,24 @@ namespace aspect
                 velocity_y[index] = 0;
               else
                 velocity_y[index] = local_aspect_values[3][i];
+
             }
+        }
+
+      bool fastscape_mesh_filled = true;
+
+      std::vector<int> global_to_local(bedrock_transport_coefficient_array.size(),-1);
+      for (unsigned int i = 0; i < local_aspect_values[1].size(); ++i)
+        {
+          const int global_index = local_aspect_values[1][i];
+          global_to_local[global_index] = i;
         }
 
       // Initialize the bedrock river incision rate and transport coefficient,
       // and check that there are no empty mesh points due to
       // an improperly set maximum_surface_refinement_level, additional_refinement_levels,
       // and surface_refinement_difference
-      bool fastscape_mesh_filled = true;
+
       const unsigned int fastscape_array_size = fastscape_nx*fastscape_ny;
       for (unsigned int i=0; i<fastscape_array_size; ++i)
         {
@@ -876,36 +932,44 @@ namespace aspect
           const double x = grid_extent[0].first + (ix - use_ghost_nodes) * fastscape_dx;
           const double y = grid_extent[1].first + (iy - use_ghost_nodes) * fastscape_dy;
 
-          // Set the time scaling factor based on the unit of time, as Fastscape always
-          // expects units in years, not seconds. Therefore, the factor is used to scale
-          // the quantities when "Use years instead of seconds" in ASPECT is set to false.
-          // In that case the transport coefficient has units ${m^2/s}$, and the river
-          // incision rate units of $m^(1-2drainage_area_exponent)/s}$, so we multiply
-          // with a year in seconds.
-          const double time_scaling_factor = (this->convert_output_to_years() ? 1.0 : year_in_seconds);
-          // Set bedrock transport coefficient kd either from a function or a constant.
-          bedrock_transport_coefficient_array[i] =
-            (use_kd_distribution_function
-             ?
-             time_scaling_factor * kd_distribution_function.value(Point<2>(x, y))
-             :
-             time_scaling_factor * constant_bedrock_transport_coefficient);
+          const int idx = global_to_local[i];
+          double bedrock_river_incision_rate_local = numbers::signaling_nan<double>();
+          double bedrock_transport_coefficient_local = numbers::signaling_nan<double>();
+          if (use_compositional_erosion_bedrock)
+            {
+              AssertThrow(idx >= 0,
+                          ExcMessage("Missing data from ASPECT for fastscape mesh"));
+              AssertThrow(static_cast<unsigned int>(idx) < local_aspect_values[dim+2].size(),
+                          ExcMessage("ASPECT data out of bounds for fastscape mesh"));
+              bedrock_river_incision_rate_local = time_scaling_factor * local_aspect_values[dim+2][idx];
+              bedrock_transport_coefficient_local = time_scaling_factor * local_aspect_values[dim+3][idx];
+            }
+          else
+            {
+              if (!use_kf_distribution_function)
+                {
+                  bedrock_river_incision_rate_local = time_scaling_factor * constant_bedrock_river_incision_rate[0];
+                }
+              else
+                bedrock_river_incision_rate_local = time_scaling_factor * kf_distribution_function.value(Point<2>(x, y));
+              if (!use_kd_distribution_function)
+                {
+                  bedrock_transport_coefficient_local = time_scaling_factor * constant_bedrock_transport_coefficient[0];
+                }
+              else
+                bedrock_transport_coefficient_local = time_scaling_factor * kd_distribution_function.value(Point<2>(x, y));
+            }
+          bedrock_river_incision_rate_array[i] = bedrock_river_incision_rate_local;
+          bedrock_transport_coefficient_array[i] = bedrock_transport_coefficient_local;
 
-          // Set bedrock river incision rate kf either from a function or a constant.
-          bedrock_river_incision_rate_array[i] =
-            (use_kf_distribution_function)
-            ?
-            time_scaling_factor * kf_distribution_function.value(Point<2>(x, y))
-            :
-            time_scaling_factor * constant_bedrock_river_incision_rate;
-
-
-          // If this is a boundary node that is a ghost node then ignore that it
-          // has not filled yet as the ghost nodes haven't been set.
-          if (elevation[i] == std::numeric_limits<double>::max() && !is_ghost_node(i,false))
-            fastscape_mesh_filled = false;
+          if (elevation[i] == std::numeric_limits<double>::max() && !is_ghost_node(i,false) || std::isnan(elevation[i]))
+            {
+              fastscape_mesh_filled = false;
+            }
         }
 
+      // If this is a boundary node that is a ghost node then ignore that it
+      // has not filled yet as the ghost nodes haven't been set.
       fastscape_mesh_filled = Utilities::MPI::broadcast(this->get_mpi_communicator(), fastscape_mesh_filled, 0);
       AssertThrow (fastscape_mesh_filled == true,
                    ExcMessage("The FastScape mesh is missing data. A likely cause for this is that the "
@@ -1861,6 +1925,10 @@ namespace aspect
                               Patterns::Double(),
                               "Deposition coefficient for sediment. A value smaller than 0 sets this to the same as the bedrock deposition coefficient.");
             // Define Bedrock river incision rate (Kf) as a constant value or a time-dependent user-defined function
+            prm.declare_entry("Allow compositional erosion for bedrock", "false",
+                              Patterns::Bool (),
+                              "Whether to allow chemical compositions to have different erosional parameters for bedrock, "
+                              "including river incision rate and diffusivity.");
             prm.declare_entry("Use kf distribution function", "false",
                               Patterns::Bool(),
                               "Whether to define bedrock river incision rate using a distribution function. "
@@ -1868,8 +1936,9 @@ namespace aspect
                               "the parameter ``Bedrock river incision rate''. Units: ${m^(1-2drainage_area_exponent)/yr}$ "
                               "if ``Use years instead of seconds'' is true; otherwise, the units are ${m^(1-2drainage_area_exponent)/s}$.");
             prm.declare_entry("Bedrock river incision rate", "1e-5",
-                              Patterns::Double(),
-                              "River incision rate for bedrock in the Stream Power Law. "
+                              Patterns::List(Patterns::Double(0.)),
+                              "A list of river incision rate for bedrock in the Stream Power Law, for background mantle and chemical "
+                              "composition fields, for a total of N+1 values, where N is the number of chemical composition fields. "
                               "Units: ${m^(1-2drainage_area_exponent)/yr}$ if ``Use years instead of seconds'' is true; "
                               "otherwise, the units are ${m^(1-2drainage_area_exponent)/s}$.");
             prm.enter_subsection ("kf distribution function");
@@ -1891,9 +1960,10 @@ namespace aspect
                               "``Bedrock diffusivity''. Units: ${m^2/yr}$ if ``Use years instead of seconds'' "
                               "is true; otherwise, the units are ${m^2/s}$.");
             prm.declare_entry("Bedrock diffusivity", "1e-2",
-                              Patterns::Double(),
-                              "Transport coefficient (diffusivity) for bedrock. Units: ${m^2/yr}$ if ``Use years instead of seconds'' "
-                              "is true; otherwise, the units are ${m^2/s}$.");
+                              Patterns::List(Patterns::Double(0.)),
+                              "A list of transport coefficient (diffusivity) for bedrock, for background mantle and chemical "
+                              "composition fields, for a total of N+1 values, where N is the number of chemical composition fields. "
+                              " Units: ${m^2/yr}$ if ``Use years instead of seconds'' is true; otherwise, the units are ${m^2/s}$.");
             prm.enter_subsection ("kd distribution function");
             {
               Functions::ParsedFunction<2>::declare_parameters(prm, 2);
@@ -1986,7 +2056,7 @@ namespace aspect
             prm.declare_entry("Depth averaging thickness", "1e2",
                               Patterns::Double(),
                               "Depth averaging for the sand-silt equation. Units: ${m}$");
-            prm.declare_entry("Sand transport coefficient", "5e2",
+            prm.declare_entry("Sand transport coefficient", "2.5e2",
                               Patterns::Double(),
                               "Transport coefficient (diffusivity) for sand. Units: ${m^2/yr}$");
             prm.declare_entry("Silt transport coefficient", "2.5e2",
@@ -2094,8 +2164,17 @@ namespace aspect
             // with a year in seconds. The bedrock values are scaled when filling the FastScape
             // arrays.
             const double time_scaling_factor = (this->convert_output_to_years() ? 1.0 : year_in_seconds);
+
             sediment_river_incision_rate = time_scaling_factor * prm.get_double("Sediment river incision rate");
+            use_compositional_erosion_bedrock = prm.get_bool("Allow compositional erosion for bedrock");
             // kf
+            // Make options file for parsing maps to double arrays for bedrock river incision rate and bedrock transport coefficient
+            std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
+            // Establish that a background field is required here
+            chemical_field_names.insert(chemical_field_names.begin(),"background");
+            Utilities::MapParsing::Options options(chemical_field_names, "");
+            options.list_of_allowed_keys = chemical_field_names;
+            options.property_name = "Bedrock river incision rate";
             use_kf_distribution_function = prm.get_bool("Use kf distribution function");
             if (use_kf_distribution_function)
               {
@@ -2107,11 +2186,14 @@ namespace aspect
                 // If using the function description for the kf, no parts of the code
                 // base should use the constant_bedrock_river_incision_rate variable. Poison it to
                 // make sure it really isn't used anywhere:
-                constant_bedrock_river_incision_rate = numbers::signaling_nan<double>();
+                constant_bedrock_river_incision_rate.assign(
+                  constant_bedrock_river_incision_rate.size(),
+                  numbers::signaling_nan<double>()
+                );
               }
             else
               {
-                constant_bedrock_river_incision_rate = prm.get_double("Bedrock river incision rate");
+                constant_bedrock_river_incision_rate = Utilities::MapParsing::parse_map_to_double_array(prm.get(options.property_name), options);
               }
             sediment_transport_coefficient = time_scaling_factor * prm.get_double("Sediment diffusivity");
             // kd
@@ -2126,12 +2208,19 @@ namespace aspect
                 // If using the function description for the kd, no parts of the code
                 // base should use the constant_bedrock_river_incision_rate variable. Poison it to
                 // make sure it really isn't used anywhere:
-                constant_bedrock_transport_coefficient = numbers::signaling_nan<double>();
+                constant_bedrock_transport_coefficient.assign(
+                  constant_bedrock_transport_coefficient.size(),
+                  numbers::signaling_nan<double>()
+                );
               }
             else
               {
-                constant_bedrock_transport_coefficient = prm.get_double("Bedrock diffusivity");
+                options.property_name = "Bedrock diffusivity";
+                constant_bedrock_transport_coefficient = Utilities::MapParsing::parse_map_to_double_array(prm.get(options.property_name), options);
               }
+            AssertThrow(!(use_compositional_erosion_bedrock &&
+                          (use_kf_distribution_function || use_kd_distribution_function)),
+                        ExcMessage("Compositional erosion for bedrock cannot be used together with kf or kd distribution functions."));
             bedrock_deposition_g = prm.get_double("Bedrock deposition coefficient");
             sediment_deposition_g = prm.get_double("Sediment deposition coefficient");
             slope_exponent_p = prm.get_double("Multi-direction slope exponent");
@@ -2192,7 +2281,6 @@ namespace aspect
             sand_silt_averaging_depth = prm.get_double("Depth averaging thickness");
             sand_transport_coefficient = prm.get_double("Sand transport coefficient");
             silt_transport_coefficient = prm.get_double("Silt transport coefficient");
-
             if (!this->convert_output_to_years())
               {
                 sand_transport_coefficient *= year_in_seconds;
