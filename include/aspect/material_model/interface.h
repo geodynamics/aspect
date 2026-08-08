@@ -1455,6 +1455,19 @@ namespace aspect
                        MaterialModel::MaterialModelOutputs<dim> &out) const = 0;
 
         /**
+         * Called by the operator splitting solver after integrating reaction
+         * rates (ARKode or fixed step) but before the updated fields are
+         * written back to the solution vector. Material models with
+         * compositional fields that must remain within a physical range (for
+         * example cumulative reaction progress fields that have to stay in
+         * [0,1]) can clamp the composition values in @p in in place. The default
+         * implementation does nothing.
+         */
+        virtual
+        void
+        clamp_reaction_progress_fields (MaterialModel::MaterialModelInputs<dim> &in) const;
+
+        /**
          * If this material model can produce additional named outputs
          * that are derived from NamedAdditionalOutputs, create them in here.
          * By default, this does nothing.
