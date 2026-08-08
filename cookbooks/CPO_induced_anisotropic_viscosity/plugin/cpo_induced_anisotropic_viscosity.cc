@@ -460,7 +460,7 @@ namespace aspect
                       // for the zero-th timestep calculating the scalar viscosity based on the strain-rate -> i.e. isotropic response
                       double edot_ii=std::max(std::sqrt(std::max(-Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(deviatoric_strain_rate)*2, 0.)),
                                               min_strain_rate);
-                      out.viscosities[q] = 1/Gamma * std::pow(edot_ii,((1. - n)/n));
+                      out.viscosities[q] = std::pow(Gamma, -1/n) * std::pow(edot_ii,((1. - n)/n));
                     }
                   // Assign an isotropic viscosity tensor
                   SymmetricTensor<2,6> viscosity_tensor;
@@ -595,6 +595,7 @@ namespace aspect
           activation_energy = prm.get_double("Activation energy");
           relative_tolerance = prm.get_double("Relative tolerance for iteration");
           max_iteration = prm.get_integer("Maximum number of iterations");
+          use_analytical_inversion =  prm.get_bool("Use analytical inversion");
           CnI_F = dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Coefficients and intercept for F")));
           CnI_G = dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Coefficients and intercept for G")));
           CnI_H = dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Coefficients and intercept for H")));
