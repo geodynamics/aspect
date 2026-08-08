@@ -1,0 +1,11 @@
+
+Loading shared library <./libcheckpoint_13_particle_generator_random.debug.so>
+* starting from beginning:
+Executing the following command:
+cd output-checkpoint_13_particle_generator_random ; rm -rf output1.tmp ; (cat /ssd/aspect-git8/tests/checkpoint_13_particle_generator_random.prm  ;  echo 'set Output directory = output1.tmp' ) | env -i PATH="$PATH" mpirun --oversubscribe -np 2 ../../aspect -- > /dev/null
+Executing the following command:
+cd output-checkpoint_13_particle_generator_random ;  rm -rf output2.tmp ; mkdir output2.tmp ;  mv output1.tmp/restart output2.tmp/
+* now resuming:
+Executing the following command:
+cd output-checkpoint_13_particle_generator_random ; (cat /ssd/aspect-git8/tests/checkpoint_13_particle_generator_random.prm  ;  echo 'set Output directory = output2.tmp'  ;  echo 'set Resume computation = true' ) | env -i PATH="$PATH" mpirun --oversubscribe -np 2 ../../aspect -- > /dev/null
+* now comparing:
