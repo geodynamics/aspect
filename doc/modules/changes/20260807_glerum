@@ -1,0 +1,11 @@
+ Changed: The parameter ``Model name'' has been removed
+ from the Boundary Composition and Boundary
+ Temperature subsections after being deprecated for
+ a long time. In addition, using ``Model name'' will now
+ throw an error when used in the Initial Composition and
+ Initial Temperature subsections. In all cases, ``List of
+ model names'' should be used instead. A script is available
+ for updating existing prm files in the contrib/utilities/
+ folder.
+ <br>
+ (Anne Glerum 2026/08/07)
