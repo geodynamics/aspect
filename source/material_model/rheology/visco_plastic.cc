@@ -145,6 +145,45 @@ namespace aspect
 
 
 
+    namespace
+    {
+      std::vector<std::string> make_pressure_factor_additional_outputs_names()
+      {
+        std::vector<std::string> names;
+        names.emplace_back("current_pressure_factors");
+        return names;
+      }
+    }
+
+
+
+    template <int dim>
+    PressureFactorAdditionalOutputs<dim>::PressureFactorAdditionalOutputs(const unsigned int n_points)
+      : NamedAdditionalMaterialOutputs<dim>(make_pressure_factor_additional_outputs_names()),
+        pressure_factors(n_points, numbers::signaling_nan<double>())
+    {}
+
+
+
+    template <int dim>
+    std::vector<double>
+    PressureFactorAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
+    {
+      AssertIndexRange (idx, 1);
+      switch (idx)
+        {
+          case 0:
+            return pressure_factors;
+
+          default:
+            AssertThrow(false, ExcInternalError());
+        }
+      // We will never get here, so just return something
+      return pressure_factors;
+    }
+
+
+
     namespace Rheology
     {
 
@@ -437,6 +476,14 @@ namespace aspect
             if (allow_negative_pressures_in_plasticity == false)
               pressure_for_plasticity = std::max(pressure_for_plasticity,0.0);
 
+            // If we use a pressure factor model, then adjust the pressure for plasticity.
+            if (pressure_factor_model.get_pressure_factor_model() != PressureFactorModel::none)
+              pressure_for_plasticity = pressure_factor_model.compute_scaled_pressure(in,
+                                                                                      pressure_for_plasticity,
+                                                                                      i,
+                                                                                      j);
+
+
             // Step 5a: calculate the Drucker-Prager yield stress
             const double yield_stress = drucker_prager_plasticity.compute_yield_stress(pressure_for_plasticity,
                                                                                        output_parameters.drucker_prager_parameters[j]);
@@ -714,6 +761,8 @@ namespace aspect
       {
         Rheology::StrainDependent<dim>::declare_parameters (prm);
 
+        Rheology::PressureFactor<dim>::declare_parameters (prm);
+
         Rheology::FrictionModels<dim>::declare_parameters (prm);
 
         Rheology::Elasticity<dim>::declare_parameters (prm);
@@ -977,6 +1026,9 @@ namespace aspect
         drucker_prager_plasticity.initialize_simulator (this->get_simulator());
         drucker_prager_plasticity.parse_parameters(prm, expected_n_phases_per_composition);
 
+        pressure_factor_model.initialize_simulator (this->get_simulator());
+        pressure_factor_model.parse_parameters(prm, expected_n_phases_per_composition);
+
         // Stress limiter parameter (does not allow for phases per composition)
         options.property_name = "Stress limiter exponents";
         options.allow_multiple_values_per_key = false;
@@ -1052,6 +1104,7 @@ namespace aspect
                 plastic_out->yield_stresses[i] += volume_fractions[j] * drucker_prager_plasticity.compute_yield_stress(pressure_for_plasticity,
                                                   drucker_prager_parameters);
               }
+
           }
       }
 
@@ -1112,6 +1165,38 @@ namespace aspect
                   volume_fractions,
                   isostrain_viscosities.diffusion_viscosities,
                   viscosity_averaging);
+          }
+      }
+
+
+      template <int dim>
+      void
+      Rheology::ViscoPlastic<dim>::create_pressure_factor_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+      {
+        if (out.template has_additional_output_object<PressureFactorAdditionalOutputs<dim>>() == false)
+          {
+            const unsigned int n_points = out.n_evaluation_points();
+            out.additional_outputs.push_back(
+              std::make_unique<PressureFactorAdditionalOutputs<dim>>(n_points));
+          }
+      }
+
+      template <int dim>
+      void
+      Rheology::ViscoPlastic<dim>::fill_pressure_factor_outputs(
+        const unsigned int i,
+        const std::vector<double> &volume_fractions,
+        const MaterialModel::MaterialModelInputs<dim> &in,
+        MaterialModel::MaterialModelOutputs<dim> &out) const
+      {
+        if (const std::shared_ptr<PressureFactorAdditionalOutputs<dim>> pressure_factor_out =
+              out.template get_additional_output_object<PressureFactorAdditionalOutputs<dim>>())
+          {
+            pressure_factor_out->pressure_factors[i] = 0;
+
+            // Average over the volume fractions.
+            for (unsigned int j = 0; j < volume_fractions.size(); ++j)
+              pressure_factor_out->pressure_factors[i] += volume_fractions[j] * pressure_factor_model.compute_pressure_factor(in, i, j);
           }
       }
     }
