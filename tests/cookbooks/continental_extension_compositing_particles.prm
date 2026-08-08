@@ -2,7 +2,7 @@
 # the combination of particles, compositing material model and plastic weakening.
 # This test modifies from the continental_extension_mixed_compositions_particles by
 # including compositing material model. 
-include $ASPECT_SOURCE_DIR/tests/continental_extension_mixed_compositions_particles.prm
+include $ASPECT_SOURCE_DIR/tests/cookbooks/continental_extension_mixed_compositions_particles.prm
 
 subsection Material model
   set Model name = compositing

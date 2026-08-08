@@ -1,7 +1,7 @@
 # This is a variation of the initial_condition_S20RTS.prm test
 # that tests the same plugin for 2D models.
 
-include $ASPECT_SOURCE_DIR/tests/initial_condition_S20RTS.prm
+include $ASPECT_SOURCE_DIR/tests/cookbooks/initial_condition_S20RTS.prm
 
 set Dimension = 2
 
