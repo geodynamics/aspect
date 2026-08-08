@@ -1,0 +1,6 @@
+Fixed: When mesh deformation is enabled, the adiabatic pressure used by the
+visco-plastic material model for plastic yielding and viscous creep is now
+evaluated using depth below the current deformed surface. This prevents surface
+depressions such as trenches from becoming artificially strong.
+<br>
+(Michaël Pons, 2026/07/28)

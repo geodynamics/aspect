@@ -70,6 +70,12 @@ namespace aspect
         double depth( const Point<dim> &position) const override;
 
         /**
+         * Give the height above the initially perturbed surface.
+         */
+        double
+        height_above_reference_mesh_surface(const Point<dim> &position) const override;
+
+        /**
          * Give the maximal depth of a point.
          */
         double maximal_depth() const override;
@@ -118,6 +124,27 @@ namespace aspect
     ReboundBox<dim>::depth(const Point<dim> &position) const
     {
       return maximal_depth()-position(dim-1);
+    }
+
+    template <int dim>
+    double
+    ReboundBox<dim>::height_above_reference_mesh_surface(const Point<dim> &position) const
+    {
+      const unsigned int n_intervals = this->get_repetitions()[0];
+      const double interval_coordinate =
+        position[0] / this->get_extents()[0] * n_intervals;
+      const unsigned int interval =
+        std::min(static_cast<unsigned int>(interval_coordinate), n_intervals-1);
+      const double unit_position = interval_coordinate - interval;
+      const double left_height =
+        std::cos(order * 2.0 * M_PI * interval / n_intervals) * amplitude;
+      const double right_height =
+        std::cos(order * 2.0 * M_PI * (interval+1) / n_intervals) * amplitude;
+      const double surface_height =
+        this->get_extents()[dim-1]
+        + (1.0-unit_position) * left_height
+        + unit_position * right_height;
+      return position[dim-1] - surface_height;
     }
 
     template <int dim>
