@@ -1,0 +1,44 @@
+
+Loading shared library <./libparticle_manager_reaction_test.debug.so>
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 1,526 (578+81+289+289+289)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 12+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 5/5/9.112e+12 // 0/0/0
+     RMS, max velocity:         0.105 m/year, 0.225 m/year
+     Temperature min/avg/max:   0 K, 500 K, 1000 K
+     Writing depth average:     output-particle_manager_reaction_test/depth_average
+     Writing particle output:   output-particle_manager_reaction_test/particles/particles-00000
+
+*** Timestep 1:  t=100000 years, dt=100000 years
+   Solving temperature system... 9 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 5+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0 // 5/5/9.112e+12
+     RMS, max velocity:         0.105 m/year, 0.225 m/year
+     Temperature min/avg/max:   0 K, 500 K, 1000 K
+     Writing particle output:   output-particle_manager_reaction_test/particles/particles-00001
+
+*** Timestep 2:  t=200000 years, dt=100000 years
+   Solving temperature system... 10 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 5+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0 // 5/5/9.112e+12
+     RMS, max velocity:         0.105 m/year, 0.225 m/year
+     Temperature min/avg/max:   0 K, 500 K, 1000 K
+     Writing particle output:   output-particle_manager_reaction_test/particles/particles-00002
+
+Termination requested by criterion: end time
+
+
+

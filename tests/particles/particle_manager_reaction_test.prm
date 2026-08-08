@@ -1,0 +1,158 @@
+# This is a simple setup for testing particle property
+# 'general composition reaction'. At timestep 1 the composition 
+# from first field is subtracted and added to another field. 
+# This test shows particle values are successfully updated, 
+# through 'reaction_terms' accessed from material model, by 
+# the particle property 'general composition reaction'.
+
+
+set Dimension                              = 2
+set Use years instead of seconds           = true
+set End time                               = 2e5
+set Nonlinear solver tolerance             = 1e-5
+set Maximum time step                      = 1e5
+set Adiabatic surface temperature          = 500
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1350000
+    set Y extent = 1350000
+  end
+end
+
+subsection Heating model
+  set List of model names = adiabatic heating
+end
+
+# Set the reference profile.
+subsection Adiabatic conditions model
+  set Model name = function
+
+  subsection Function
+    set Function constants = density=1000
+    set Function expression = 500; density*10*depth; density
+    set Variable names = depth
+  end
+end
+
+
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields  = phase_1, phase_2
+  set Mapped particle properties = phase_1:phase_1 , phase_2:phase_2
+  set Compositional field methods = particles, particles
+end
+
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    set Variable names = x,y
+    # Initially phase_1 is 5 everywhere and phase_2 is zero
+    set Function expression = 5; 0
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = h=1350000, A=10
+    set Function expression = 1000*(1-z/h)
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names = box
+
+  subsection Box
+    set Top temperature = 0
+    set Bottom temperature = 1000
+  end
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left:function, right:function
+  set Tangential velocity boundary indicators = top, bottom
+
+  subsection Function
+    set Variable names = x,y
+    set Function constants = L=1350000, U=0.2
+    set Function expression = 0; U*(1-2*x/L)
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+subsection Material model
+  set Model name = particle reaction test
+  set Material averaging = harmonic average only viscosity
+
+  subsection Composition reaction model
+    set Viscosity = 1e20
+    set Density differential for compositional field 1 = 0
+    set Density differential for compositional field 2 = 0
+    set Reaction depth = 675000
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 3
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = composition statistics,velocity statistics, temperature statistics, depth average, particles
+
+  subsection Depth average
+    set Number of zones = 12
+    set Time between graphical output = 6e5
+  end
+
+  subsection Particles
+    set Time between data output      = 0
+    set Data output format            = ascii
+  end
+  subsection Particles 2
+    set Time between data output = 0
+    set Data output format = ascii
+  end
+
+end
+
+
+subsection Particles
+  set List of particle properties = general composition reaction
+  set Particle generator name       = reference cell
+  set Minimum particles per cell = 40
+  set Load balancing strategy     = remove and add particles
+  subsection General composition reaction
+    set Selected compositional fields = phase_1, phase_2
+  end
+  subsection Generator
+    subsection Reference cell
+      set Number of particles per cell per direction = 1
+    end
+  end
+end
+
+subsection Termination criteria
+  set Termination criteria = end time
+end
