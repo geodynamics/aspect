@@ -627,7 +627,7 @@ namespace aspect
         // For ranks other than the root:
         {
           for (unsigned int i=0; i<local_aspect_values.size(); ++i)
-            MPI_Ssend(&local_aspect_values[i][0], local_aspect_values[i].size(), MPI_DOUBLE,
+            MPI_Ssend(&local_aspect_values[i].data(), local_aspect_values[i].size(), MPI_DOUBLE,
                       /* destination is root= */ 0,
                       /* tag= */ 42,
                       this->get_mpi_communicator());
@@ -837,7 +837,7 @@ namespace aspect
             }
 
           for (unsigned int i=0; i<local_aspect_values.size(); ++i)
-            MPI_Recv(&local_aspect_values[i][0], incoming_size, MPI_DOUBLE,
+            MPI_Recv(&local_aspect_values[i].data(), incoming_size, MPI_DOUBLE,
                      /* sender= */ p,
                      /* tag = */ 42,
                      this->get_mpi_communicator(), &status);
