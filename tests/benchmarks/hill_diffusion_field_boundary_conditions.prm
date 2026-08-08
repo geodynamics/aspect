@@ -8,7 +8,7 @@
 # conditions should be applied (inflow/deposition),
 # or not (outflow/erosion).
 
-include $ASPECT_SOURCE_DIR/tests/hill_diffusion.prm
+include $ASPECT_SOURCE_DIR/tests/benchmarks/hill_diffusion.prm
 
 set Dimension                              = 2
 set Nonlinear solver scheme                = single Advection, single Stokes
