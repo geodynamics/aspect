@@ -1,0 +1,83 @@
+# This is a test for the velocity points residual postprocessor.
+# The input ascii data file has two points that have
+# zero velocities. The modeled velocities at these points
+# is evaluated using point values postprocessor, which
+# should give same velocities as the velocity residual
+# postprocessor in this case.
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = true
+
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 660000
+    set Y extent = 660000
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0, 1, 2, 3
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+# The perturbation will be added to the temperature given
+# by the function plugin.
+subsection Initial temperature model
+  set List of model names = function, random Gaussian perturbation
+
+  subsection Function
+    set Function expression = 500
+  end
+
+  subsection Random Gaussian perturbation
+    set Number of perturbations = 10
+  end
+end
+
+
+# Compared to the passive material model, we here make
+# the density composition dependent by letting it depend
+# linearly on the value of the first compositional field.
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Thermal conductivity                           = 1
+    set Thermal expansion coefficient                  = 1e-4
+    set Viscosity                                      = 1e20
+    set Reference density                              = 3300
+    set Reference temperature                          = 500
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 5
+  set Time steps between mesh refinement = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, velocity points residual, point values
+
+  subsection Point values
+    set Evaluation points = 0, 0  ; \
+                            0 , 330000
+  end
+
+  subsection Visualization
+    set Interpolate output = false
+    set Number of grouped files       = 0
+    set Output format                 = gnuplot
+  end
+end
