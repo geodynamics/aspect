@@ -67,7 +67,7 @@ namespace aspect
        * If "Output rotation as" is set to "euler angles" in the parameter file, the output number
        * 1, 3, 5 will save the phi1, theta, phi2 or olivine and 7, 8, 9 will be the same
        * for enstatite, and they will be 1 (dim) double instead of 3 (dim) doubles.
-       * 
+       *
        * If "Output rotation as" is set to "quaternion" in the parameter file, the layout of the data vector per particle is the following
        * 1 quaternion scalar part of olivine  -> 1 double, starts at:
        *                                         data_position + 1,
@@ -89,7 +89,7 @@ namespace aspect
        *                                         data_position + 17,
        * 10 eigenvalues of c axis of enstatite-> 2 doubles, starts at:
        *                                         data_position + 19,
-       * 
+       *
        * @ingroup ParticleProperties
        */
       template <int dim>

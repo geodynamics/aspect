@@ -188,7 +188,7 @@ Since the AV material model computes viscosity based on the evolving CPO stored 
 ```{literalinclude} cpo_particle_property.part.prm
 ```
 
-Note: These settings are similar to those used for simulations involving CPO alone. However, for the AV model, it is essential to set `Use rotation matrix = false` in the CPO Bingham Average subsection, so that the CPO is represented using Euler angles, as required.
+Note: These settings are similar to those used for simulations involving CPO alone. However, for the AV model, it is essential to set `Output rotation as = euler angles` in the CPO Bingham Average subsection, so that the CPO is represented using Euler angles, as required.
 
 - **Compositional fields**: The eigenvalues and Euler angles of the CPO tensor are stored in compositional fields. This requires the following input file section:
 
