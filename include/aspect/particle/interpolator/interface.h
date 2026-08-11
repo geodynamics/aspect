@@ -113,10 +113,27 @@ namespace aspect
                                       void (*declare_parameters_function) (ParameterHandler &),
                                       std::unique_ptr<Interface<dim>> (*factory_function) ());
 
+
       /**
-       * A function that given the name of a model returns a pointer to an
-       * object that describes it. Ownership of the pointer is transferred to
-       * the caller.
+       * A function that given the name of an interpolation scheme
+       * returns a pointer to an object that describes it.
+       * Ownership of the pointer is transferred to the caller.
+       *
+       * The model object returned is not yet initialized and has not
+       * read its runtime parameters yet.
+       *
+       * @ingroup ParticleInterpolators
+       */
+      template <int dim>
+      std::unique_ptr<Interface<dim>>
+      create_particle_interpolator (const std::string &interpolator_name);
+
+
+      /**
+       * A function that reads the name of an interpolation scheme
+       * from the parameter object and then returns a pointer
+       * to an object that describes it.
+       * Ownership of the pointer is transferred to the caller.
        *
        * The model object returned is not yet initialized and has not
        * read its runtime parameters yet.

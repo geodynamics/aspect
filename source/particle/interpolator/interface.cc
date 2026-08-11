@@ -58,18 +58,27 @@ namespace aspect
 
       template <int dim>
       std::unique_ptr<Interface<dim>>
-      create_particle_interpolator (ParameterHandler &prm)
+      create_particle_interpolator (const std::string &interpolator_name)
       {
-        std::string name;
-        name = prm.get ("Interpolation scheme");
-
         // 'bilinear least squares' is the deprecated old name of the 'linear least squares'
         // interpolator. The old name will be removed in the future.
-        if (name == "bilinear least squares")
-          name = "linear least squares";
+        if (interpolator_name == "bilinear least squares")
+          return std::get<dim>(registered_plugins).create_plugin ("linear least squares",
+                                                                  "Particle::Interpolator name");
+        else
+          return std::get<dim>(registered_plugins).create_plugin (interpolator_name,
+                                                                  "Particle::Interpolator name");
+      }
 
-        return std::get<dim>(registered_plugins).create_plugin (name,
-                                                                "Particle::Interpolator name");
+
+
+      template <int dim>
+      std::unique_ptr<Interface<dim>>
+      create_particle_interpolator (ParameterHandler &prm)
+      {
+        const std::string name = prm.get ("Interpolation scheme");
+
+        return create_particle_interpolator<dim> (name);
       }
 
 
@@ -135,6 +144,10 @@ namespace aspect
   template \
   void \
   write_plugin_graph<dim> (std::ostream &); \
+  \
+  template \
+  std::unique_ptr<Interface<dim>> \
+  create_particle_interpolator<dim> (const std::string &interpolator_name); \
   \
   template \
   std::unique_ptr<Interface<dim>> \
