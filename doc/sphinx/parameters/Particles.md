@@ -264,6 +264,19 @@ The following properties are available:
 **Documentation:** This determines how many samples are taken when using the random draw volume averaging. Setting it to zero means that the number of samples is set to be equal to the number of grains.
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Output rotation as<parameters:Particles/CPO_20Bingham_20Average/Output_20rotation_20as>`
+:name: parameters:Particles/CPO_20Bingham_20Average/Output_20rotation_20as
+**Default value:** full matrix
+
+**Pattern:** [Selection full matrix|euler angles|quaternion ]
+
+**Documentation:** This determines whether the orientations will be saved as
+1) Eigenvectors i.e. one full rotation matrix for each axis.
+2) Euler angles in the zxz convention (not equivalent to the Bunge convention). They represent a passive rotation matrix derived from the principal eigenvectors of each axis.
+3) A unit quaternion representing an active rotation matrix derived from the principal eigenvectors of each axis.
+Possible options are full matrix, euler angles and quaternion
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Random number seed<parameters:Particles/CPO_20Bingham_20Average/Random_20number_20seed>`
 :name: parameters:Particles/CPO_20Bingham_20Average/Random_20number_20seed
 **Default value:** 1
@@ -271,15 +284,6 @@ The following properties are available:
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** The seed used to generate random numbers. This will make sure that results are reproducible as long as the problem is run with the same amount of MPI processes. It is implemented as final seed = Random number seed + MPI Rank.
-::::
-
-::::{dropdown} __Parameter:__ {ref}`Use rotation matrix<parameters:Particles/CPO_20Bingham_20Average/Use_20rotation_20matrix>`
-:name: parameters:Particles/CPO_20Bingham_20Average/Use_20rotation_20matrix
-**Default value:** true
-
-**Pattern:** [Bool]
-
-**Documentation:** This determines whether the orientations will be saved as rotation matrices or Euler angles. Setting it to fause means that the orientations will be saved as Euler angles.
 ::::
 
 (parameters:Particles/Composition_20reaction)=
