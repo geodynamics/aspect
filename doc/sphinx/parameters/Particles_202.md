@@ -277,6 +277,18 @@ Possible options are full matrix, euler angles and quaternion
 **Documentation:** The seed used to generate random numbers. This will make sure that results are reproducible as long as the problem is run with the same amount of MPI processes. It is implemented as final seed = Random number seed + MPI Rank.
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Use rotation matrix<parameters:Particles_202/CPO_20Bingham_20Average/Use_20rotation_20matrix>`
+:name: parameters:Particles_202/CPO_20Bingham_20Average/Use_20rotation_20matrix
+**Default value:** true
+
+**Pattern:** [Bool]
+
+**Documentation:** This determines whether the orientations will be saved as rotation matrices or Euler angles.This is a deprecated parameter please use <Output rotation as> instead.
+Use rotation matrix = true will be mapped to Output rotation as = full matrix.
+Use rotation matrix = false will be mapped to Output rotation as = euler angles.
+
+::::
+
 (parameters:Particles_202/Composition_20reaction)=
 ## **Subsection:** Particles 2 / Composition reaction
 ::::{dropdown} __Parameter:__ {ref}`List of products<parameters:Particles_202/Composition_20reaction/List_20of_20products>`

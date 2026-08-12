@@ -239,7 +239,7 @@ namespace aspect
            * This variable is read from the parameter file through a parameter
            * called 'Output rotation as'.
            */
-          std::string output_rotation;
+          std::string output_format;
 
       };
     }

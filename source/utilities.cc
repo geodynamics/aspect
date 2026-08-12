@@ -3451,8 +3451,13 @@ namespace aspect
 
 
       Tensor<2,3>
-      quaternion_to_rotation_matrix(const double w,const double x, const double y, const double z)
+      quaternion_to_rotation_matrix(const std::array<double,4> &quaternion)
       {
+        const double w = quaternion[0];
+        const double x = quaternion[1];
+        const double y = quaternion[2];
+        const double z = quaternion[3];
+
         Tensor<2,3> rotation_matrix;
         rotation_matrix[0][0] = Utilities::fixed_power<2>(x)- Utilities::fixed_power<2>(y) - Utilities::fixed_power<2>(z) + Utilities::fixed_power<2>(w);
         rotation_matrix[1][1] = Utilities::fixed_power<2>(y)- Utilities::fixed_power<2>(z) - Utilities::fixed_power<2>(x) + Utilities::fixed_power<2>(w);
@@ -3591,7 +3596,7 @@ namespace aspect
   { \
     std::array<double,4> rotation_matrix_to_quaternion(const Tensor<2,3> &rotation_matrix, const long double tolerance); \
     \
-    Tensor<2,3> quaternion_to_rotation_matrix(const double w, const double x, const double y, const double z); \
+    Tensor<2,3> quaternion_to_rotation_matrix(const std::array<double,4> &quaternion); \
   }
 
 

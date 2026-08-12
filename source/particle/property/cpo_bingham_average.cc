@@ -73,21 +73,21 @@ namespace aspect
                                                                         n_samples,
                                                                         this->random_number_generator);
 
-            if (output_rotation == "full matrix")
+            if (output_format == "full matrix")
               {
                 const std::array<std::array<double,6>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices, std::integral_constant<int,6> {});
                 for (unsigned int i = 0; i < 3; ++i)
                   for (unsigned int j = 0; j < 6; ++j)
                     data.emplace_back(bingham_average[i][j]);
               }
-            else if (output_rotation == "euler angles")
+            else if (output_format == "euler angles")
               {
                 const std::array<std::array<double,4>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices, std::integral_constant<int,4> {});
                 for (unsigned int i = 0; i < 3; ++i)
                   for (unsigned int j = 0; j < 4; ++j)
                     data.emplace_back(bingham_average[i][j]);
               }
-            else if (output_rotation == "quaternion")
+            else if (output_format == "quaternion")
               {
                 const std::pair<std::array<double, 4>, std::array<std::array<double,2>,3>> bingham_average = compute_bingham_average(weighted_rotation_matrices, std::integral_constant<int,2> {});
 
@@ -100,7 +100,7 @@ namespace aspect
               }
             else
               {
-                AssertThrow(false, ExcMessage(output_rotation + " is not a valid output type. Please choose from the list full matrix|euler angles|quaternion"));
+                AssertThrow(false, ExcMessage(output_format + " is not a valid output type. Please choose from the list full matrix|euler angles|quaternion"));
               }
 
           }
@@ -130,7 +130,7 @@ namespace aspect
 
                 const std::vector<Tensor<2,3>> weighted_rotation_matrices = Utilities::rotation_matrices_random_draw_volume_weighting(volume_fractions_grains, rotation_matrices_grains, n_samples, this->random_number_generator);
 
-                if (output_rotation == "full matrix")
+                if (output_format == "full matrix")
                   {
                     std::array<std::array<double,6>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices, std::integral_constant<int,6> {});
 
@@ -138,7 +138,7 @@ namespace aspect
                       for (unsigned int j = 0; j < 6; ++j)
                         data[this->data_position + mineral_i*18 + i*6 + j] = bingham_average[i][j];
                   }
-                else if (output_rotation == "euler angles")
+                else if (output_format == "euler angles")
                   {
                     std::array<std::array<double,4>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices, std::integral_constant<int,4> {});
 
@@ -146,7 +146,7 @@ namespace aspect
                       for (unsigned int j = 0; j < 4; ++j)
                         data[this->data_position + mineral_i*12 + i*4 + j] = bingham_average[i][j];
                   }
-                else if (output_rotation == "quaternion")
+                else if (output_format == "quaternion")
                   {
                     std::pair<std::array<double, 4>, std::array<std::array<double,2>,3>> bingham_average = compute_bingham_average(weighted_rotation_matrices, std::integral_constant<int,2> {});
 
@@ -159,7 +159,7 @@ namespace aspect
                   }
                 else
                   {
-                    AssertThrow(false, ExcMessage(output_rotation + " is not a valid output type. Please choose from the list full matrix|euler angles|quaternion"));
+                    AssertThrow(false, ExcMessage(output_format + " is not a valid output type. Please choose from the list full matrix|euler angles|quaternion"));
                   }
               }
           }
@@ -171,7 +171,7 @@ namespace aspect
       std::array<std::array<double,6>,3>
       CpoBinghamAverage<dim>::compute_bingham_average(std::vector<Tensor<2,3>> matrices, std::integral_constant<int,6>) const
       {
-        AssertThrow(output_rotation == "full matrix", ExcMessage("Must use rotation matrix when array length == 6"));
+        AssertThrow(output_format == "full matrix", ExcMessage("Must use rotation matrix when array length == 6"));
 
         SymmetricTensor<2,3> sum_matrix_a;
         SymmetricTensor<2,3> sum_matrix_b;
@@ -243,7 +243,7 @@ namespace aspect
       std::array<std::array<double,4>,3>
       CpoBinghamAverage<dim>::compute_bingham_average(std::vector<Tensor<2,3>> matrices, std::integral_constant<int,4>) const
       {
-        AssertThrow(output_rotation == "euler angles", ExcMessage("Must use euler angles when array length == 4"));
+        AssertThrow(output_format == "euler angles", ExcMessage("Must use euler angles when array length == 4"));
 
         SymmetricTensor<2,3> sum_matrix_a;
         SymmetricTensor<2,3> sum_matrix_b;
@@ -333,7 +333,7 @@ namespace aspect
       std::pair<std::array<double, 4>, std::array<std::array<double,2>,3>>
       CpoBinghamAverage<dim>::compute_bingham_average(std::vector<Tensor<2,3>> matrices, std::integral_constant<int,2>) const
       {
-        AssertThrow(output_rotation == "quaternion", ExcMessage("must use quaternion when array length == 2"));
+        AssertThrow(output_format == "quaternion", ExcMessage("must use quaternion when array length == 2"));
 
         SymmetricTensor<2,3> sum_matrix_a;
         SymmetricTensor<2,3> sum_matrix_b;
@@ -457,7 +457,7 @@ namespace aspect
       {
         std::vector<std::pair<std::string,unsigned int>> property_information;
         property_information.reserve(6*n_minerals);
-        if (output_rotation == "full matrix")
+        if (output_format == "full matrix")
           {
             for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
               {
@@ -469,7 +469,7 @@ namespace aspect
                 property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues c axis",3);
               }
           }
-        else if (output_rotation == "euler angles")
+        else if (output_format == "euler angles")
           {
             for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
               {
@@ -481,7 +481,7 @@ namespace aspect
                 property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues c axis",3);
               }
           }
-        else if (output_rotation == "quaternion")
+        else if (output_format == "quaternion")
           {
             for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
               {
@@ -497,7 +497,7 @@ namespace aspect
           }
         else
           {
-            AssertThrow(false, ExcMessage(output_rotation + " is not a valid output type. Please choose from the list full matrix|euler angles|quaternion"));
+            AssertThrow(false, ExcMessage(output_format + " is not a valid output type. Please choose from the list full matrix|euler angles|quaternion"));
           }
 
         return property_information;
@@ -529,6 +529,13 @@ namespace aspect
                              "\n2) Euler angles in the zxz convention (not equivalent to the Bunge convention). They represent a passive rotation matrix derived from the principal eigenvectors of each axis."
                              "\n3) A unit quaternion representing an active rotation matrix derived from the principal eigenvectors of each axis."
                              "\nPossible options are full matrix, euler angles and quaternion");
+          prm.declare_entry ("Use rotation matrix","true",
+                             Patterns::Bool(),
+                             "This determines whether the orientations will be saved as rotation "
+                             "matrices or Euler angles."
+                             "This is a deprecated parameter please use <Output rotation as> instead.\n"
+                             "Use rotation matrix = true will be mapped to Output rotation as = full matrix.\n"
+                             "Use rotation matrix = false will be mapped to Output rotation as = euler angles.\n");
         }
         prm.leave_subsection ();
       }
@@ -549,9 +556,30 @@ namespace aspect
           n_grains = cpo_particle_property->get_number_of_grains();
           n_minerals = cpo_particle_property->get_number_of_minerals();
           n_samples = prm.get_integer("Number of samples");
-          output_rotation = prm.get("Output rotation as");
           if (n_samples == 0)
             n_samples = n_grains;
+
+          output_format = prm.get("Output rotation as");
+          const bool use_rotmat = prm.get_bool ("Use rotation matrix");
+          if (!use_rotmat)
+            {
+              if (output_format == "full matrix")
+                {
+                  if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+                    {
+                      std::cout << "Warning: You are using the deprecated parameter <Use rotation matrix>. " << std::endl << "         Use the new parameter <Output rotation as> instead." << std::endl << "         Your rotation will still be output as euler angles." << std::endl;
+                    }
+                }
+              else if (output_format == "euler angles")
+                {
+                  if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+                    {
+                      std::cout << "Warning: You are using the deprecated parameter <Use rotation matrix>. " << std::endl << "         and the new parameter <Output rotation as>." << std::endl << "         Please only use the new parameter <Output rotation as>." << std::endl;
+                    }
+                }
+              // set output format to desired output by the user
+              output_format = "euler angles";
+            }
         }
         prm.leave_subsection ();
       }
