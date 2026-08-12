@@ -82,6 +82,13 @@ namespace aspect
       }
 
 
+      template <int dim>
+      std::string
+      get_valid_interpolator_names_pattern ()
+      {
+        return std::get<dim>(registered_plugins).get_pattern_of_names ();
+      }
+
 
       template <int dim>
       void
@@ -89,7 +96,7 @@ namespace aspect
       {
         // declare the entry in the parameter file
         const std::string pattern_of_names
-          = std::get<dim>(registered_plugins).get_pattern_of_names ();
+          = get_valid_interpolator_names_pattern<dim>();
 
         // 'bilinear least squares' is the deprecated old name of the 'linear least squares'
         // interpolator. The old name will be removed in the future.
@@ -136,6 +143,10 @@ namespace aspect
                                        const std::string &, \
                                        void ( *) (ParameterHandler &), \
                                        std::unique_ptr<Interface<dim>>( *) ()); \
+  \
+  template \
+  std::string \
+  get_valid_interpolator_names_pattern<dim> (); \
   \
   template  \
   void \

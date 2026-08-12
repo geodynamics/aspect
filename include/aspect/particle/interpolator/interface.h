@@ -84,11 +84,15 @@ namespace aspect
 
 
       /**
-       * Return a list of names (separated by '|') of possible interpolator
-       * classes for particles.
+       * Return a string that consists of the names of interpolator classes
+       * for particles that can be selected.
+       * These names are separated by a vertical line '|' so
+       * that the string can be an input to the deal.II classes
+       * Patterns::Selection or Patterns::MultipleSelection.
        */
+      template <int dim>
       std::string
-      interpolator_object_names ();
+      get_valid_interpolator_names_pattern ();
 
 
       /**
