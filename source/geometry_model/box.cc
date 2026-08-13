@@ -417,6 +417,21 @@ namespace aspect
 
 
     template <int dim>
+    std::array<double, dim>
+    Box<dim>::cartesian_to_depth_coordinates (const Point<dim> &position) const
+    {
+      std::array<double, dim> depth_coordinates;
+      depth_coordinates[0] = this->depth(position);
+
+      for (unsigned int d = 0; d < dim-1; ++d)
+        depth_coordinates[d+1] = position[d];
+
+      return depth_coordinates;
+    }
+
+
+
+    template <int dim>
     void
     Box<dim>::declare_parameters (ParameterHandler &prm)
     {
