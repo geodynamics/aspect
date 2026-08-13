@@ -123,6 +123,9 @@ namespace aspect
           void
           initialize () override;
 
+          void
+          update () override;
+
           /**
            * Initialization function. This function is called once at the
            * creation of every particle for every property to initialize its
@@ -199,12 +202,6 @@ namespace aspect
           void
           parse_parameters (ParameterHandler &prm) override;
 
-          void
-          save (std::map<std::string, std::string> &status_strings) const override;
-
-          void
-          load (const std::map<std::string, std::string> &status_strings) override;
-
         private:
           /**
            * stores the position of the cpo data in the particle property vector
@@ -218,8 +215,13 @@ namespace aspect
           const Particle::Property::CrystalPreferredOrientation<dim> *cpo_particle_property;
 
           /**
-           * Random number generator. For reproducibility of tests it is
-           * initialized in the constructor with a constant plus the MPI rank.
+           * Random number generator.
+           *
+           * This variable is not considered part of the state of the particle
+           * manager and is consequently not serialized. It is re-initialized in the
+           * initialize() and update() functions at the beginning of each time step, and so
+           * has a deterministic state at the beginning of each time step. It
+           * does not need to be restored from a checkpoint.
            */
           mutable std::mt19937 random_number_generator;
 
