@@ -418,6 +418,10 @@ namespace aspect
     adiabatic_conditions->parse_parameters (prm);
     adiabatic_conditions->initialize ();
 
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(initial_topography_model.get()))
+      sim->initialize_simulator (*this);
+    initial_topography_model->required_initialize ();
+
     // Create a boundary traction manager
     boundary_traction_manager.initialize_simulator (*this);
     boundary_traction_manager.parse_parameters (prm);
