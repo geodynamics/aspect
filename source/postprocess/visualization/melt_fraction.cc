@@ -152,10 +152,10 @@ namespace aspect
               // Calculate the melt fraction for the non peridotite compositional field
               double total_melt_fraction = 0.0;
               double total_comp_fraction = 0.0;
-              for (unsigned int mc=0; mc<melting_model.size(); ++mc)
+              for (const auto &model : melting_model)
                 {
-                  const unsigned int comp_index = this->introspection().compositional_index_for_name(melting_model[mc]);
-                  const double comp_melt_fraction = melt_fraction(temperature, pressure, melting_model[mc]);
+                  const unsigned int comp_index = this->introspection().compositional_index_for_name(model);
+                  const double comp_melt_fraction = melt_fraction(temperature, pressure, model);
                   total_melt_fraction += composition[comp_index] * comp_melt_fraction;
                   total_comp_fraction += composition[comp_index];
                 }
