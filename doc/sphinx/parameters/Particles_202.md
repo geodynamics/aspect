@@ -66,7 +66,7 @@ Select one of the following models:
 :name: parameters:Particles_202/Interpolation_20scheme
 **Default value:** cell average
 
-**Pattern:** [Selection cell average|distance weighted average|harmonic average|linear least squares|nearest neighbor|quadratic least squares|bilinear least squares ]
+**Pattern:** [Selection cell average|distance weighted average|harmonic average|linear least squares|nearest neighbor|quadratic least squares|quaternion average|bilinear least squares ]
 
 **Documentation:** Select one of the following models:
 
@@ -81,6 +81,8 @@ Select one of the following models:
 &lsquo;nearest neighbor&rsquo;: Return the properties of the nearest neighboring particle in the current cell, or nearest particle in nearest neighboring cell if current cell is empty. In case the neighboring cells are also empty, and &rsquo;Allow cells without particles&rsquo; is set to true, the interpolator returns 0. Otherwise, an exception is thrown.
 
 &lsquo;quadratic least squares&rsquo;: Interpolates particle properties onto a vector of points using a quadratic least squares method. Note that deal.II must be configured with BLAS/LAPACK.
+
+&lsquo;quaternion average&rsquo;: Return a quaternion average with taking into account the orthotropic symmetry group
 
 &lsquo;bilinear least squares&rsquo;: Deprecated, now an alias for &lsquo;linear least squares&rsquo;. This alias will be removed in the future.
 ::::
@@ -264,13 +266,13 @@ The following properties are available:
 **Documentation:** The seed used to generate random numbers. This will make sure that results are reproducible as long as the problem is run with the same amount of MPI processes. It is implemented as final seed = Random number seed + MPI Rank.
 ::::
 
-::::{dropdown} __Parameter:__ {ref}`Use rotation matrix<parameters:Particles_202/CPO_20Bingham_20Average/Use_20rotation_20matrix>`
-:name: parameters:Particles_202/CPO_20Bingham_20Average/Use_20rotation_20matrix
-**Default value:** true
+::::{dropdown} __Parameter:__ {ref}`output rotation as<parameters:Particles_202/CPO_20Bingham_20Average/output_20rotation_20as>`
+:name: parameters:Particles_202/CPO_20Bingham_20Average/output_20rotation_20as
+**Default value:** full matrix
 
-**Pattern:** [Bool]
+**Pattern:** [Selection full matrix|euler angles|quaternion ]
 
-**Documentation:** This determines whether the orientations will be saved as rotation matrices or Euler angles. Setting it to fause means that the orientations will be saved as Euler angles.
+**Documentation:** possible options are full matrix, euler angles and quaternionThis determines whether the orientations will be saved as eigenvectors i.e. full rotation, Euler angles in the zxz convention (not equivalent to the Bunge convention) or as a unit quaternion.
 ::::
 
 (parameters:Particles_202/Composition_20reaction)=
@@ -993,6 +995,26 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Pattern:** [List of <[Bool]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** Limit the interpolation of particle properties onto the cell, so that the value of each property is no smaller than its minimum and no larger than its maximum on the particles of each cell, and the average of neighboring cells. If more than one value is given, it will be treated as a list with one component per particle property.
+::::
+
+(parameters:Particles_202/Interpolator/Quaternion_20average)=
+## **Subsection:** Particles 2 / Interpolator / Quaternion average
+::::{dropdown} __Parameter:__ {ref}`Base interpolation scheme<parameters:Particles_202/Interpolator/Quaternion_20average/Base_20interpolation_20scheme>`
+:name: parameters:Particles_202/Interpolator/Quaternion_20average/Base_20interpolation_20scheme
+**Default value:** cell average
+
+**Pattern:** [Selection cell average|distance weighted average|harmonic average|linear least squares|nearest neighbor|quadratic least squares|quaternion average ]
+
+**Documentation:** Scheme that is used to interpolate everything but quaternions
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Symmetry group<parameters:Particles_202/Interpolator/Quaternion_20average/Symmetry_20group>`
+:name: parameters:Particles_202/Interpolator/Quaternion_20average/Symmetry_20group
+**Default value:** triclinic
+
+**Pattern:** [Selection triclinic|orthorhombic ]
+
+**Documentation:** symmetry group of underlying rotations that are supposed to be averagedthis determines which symmetry operators are used to project rotationsinto the fundamental zone of the respective symmetry group
 ::::
 
 (parameters:Particles_202/Melt_20particle)=
