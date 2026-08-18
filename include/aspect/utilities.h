@@ -1541,6 +1541,24 @@ namespace aspect
       consistent_second_invariant_of_deviatoric_tensor(const SymmetricTensor<2,dim> &input);
     }
 
+    namespace Quaternions
+    {
+      /**
+       * converts a rotation matrix to quaternions multiplied by their scalar component
+       * these quaternions are supposedly to be usefull in advection problems
+       * (Dealing with the Quaternion Antipodal Problem for Advecting Fields - Richard Becker 2017)
+       */
+      std::array<double,4> rotation_matrix_to_quaternion(const Tensor<2,3> &rotation_matrix, const long double tolerance);
+
+      /**
+       * general relation between a unit quaternion and a rotation matrix
+       * which follows from the quaternion algebra
+       * e.g. (https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation)
+       * advection quaternions should be normalized before being used in this
+       */
+      Tensor<2,3> quaternion_to_rotation_matrix(const double w,const double x, const double y, const double z);
+    }
+
   }
 #endif
 }

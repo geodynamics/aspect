@@ -138,13 +138,16 @@ namespace aspect
            * the moment of inertia for spinning that sphere. Here we just use it to get three averaged
            * axis associated with the densest clustering of points for each axis. the a to c axis vectors
            * are stored in the first to last array respectively. This function is declared with array
-           * length 6 and 4 for rotation matrix or Euler angle representations.
+           * length 6, 4 or 2 for rotation matrix, Euler angle or quaternion representations.
            */
           std::array<std::array<double,6>,3>
           compute_bingham_average(std::vector<Tensor<2,3>> matrices, std::integral_constant<int,6>) const;
 
           std::array<std::array<double,4>,3>
           compute_bingham_average(std::vector<Tensor<2,3>> matrices, std::integral_constant<int,4>) const;
+
+          std::pair<std::array<double, 4>, std::array<std::array<double,2>,3>>
+          compute_bingham_average(std::vector<Tensor<2,3>> matrices, std::integral_constant<int,2>) const;
 
           /**
            * Declare the parameters this class takes through input files.
@@ -209,12 +212,12 @@ namespace aspect
           unsigned int n_samples;
 
           /**
-           * This variable determines whether the orientations are represented by rotation matrix or Euler angles.
+           * This variable determines whether the orientations are represented by a rotation matrix, Euler angles or a quaternion
            *
            * This variable is read from the parameter file through a parameter
            * called 'Use rotation matrix'.
            */
-          bool use_rotmat;
+          std::string output_rotation;
 
       };
     }
