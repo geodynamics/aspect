@@ -1,0 +1,52 @@
+include $ASPECT_SOURCE_DIR/benchmarks/rotation_average/rotation_box_base.prm
+set Output directory         = $ASPECT_SOURCE_DIR/benchmarks/rotation_average/output-rotation-average-euler-angles-handedness-unchecked
+
+subsection Discretization
+  set Composition polynomial degree = 0, 2, 2, \
+                                      0, 2, 2, \
+                                      0, 2, 2, \
+                                      0
+  set Use discontinuous composition discretization = true, false, false, \
+                                                     true, false, false, \
+                                                     true, false, false, \
+                                                     true,
+end
+
+
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    set Function expression = 0; 1/3; 1/3;\
+                              0; 1/3; 1/3;\
+                              0; 1/3; 1/3;\
+                              0
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 10
+  set Names of fields = phi1, eigvalue_a1, eigvalue_a2,\
+                        theta, eigvalue_b1, eigvalue_b2,\
+                        phi2, eigvalue_c1, eigvalue_c2,\
+                        water
+  set Compositional field methods = particles, particles, particles,\
+                                    particles, particles, particles,\
+                                    particles, particles, particles,\
+                                    static
+  set Mapped particle properties = phi1:cpo mineral 0 phi1[0], eigvalue_a1:cpo mineral 0 eigenvalues a axis[0], eigvalue_a2:cpo mineral 0 eigenvalues a axis[1],\
+                                   theta:cpo mineral 0 theta[0], eigvalue_b1:cpo mineral 0 eigenvalues b axis[0], eigvalue_b2:cpo mineral 0 eigenvalues b axis[1],\
+                                   phi2:cpo mineral 0 phi2[0], eigvalue_c1:cpo mineral 0 eigenvalues c axis[0], eigvalue_c2:cpo mineral 0 eigenvalues c axis[1]
+  set Types of fields = generic, generic, generic,\
+                        generic, generic, generic,\
+                        generic, generic, generic,\
+                        generic
+end
+
+subsection Particles
+  set Interpolation scheme = cell average
+
+  subsection CPO Bingham Average
+    set output rotation as = euler angles
+  end
+end

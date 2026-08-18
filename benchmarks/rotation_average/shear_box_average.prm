@@ -1,0 +1,195 @@
+set Output directory         = $ASPECT_SOURCE_DIR/benchmarks/rotation_average/output-shearbox-markley-average-lin-ev
+set CFL number                   = 0.1
+set Timing output frequency      = 10000
+set Dimension                    = 2
+set Pressure normalization       = surface
+set Surface pressure             = 0
+set Nonlinear solver scheme      = single Advection, single Stokes
+set End time                     = 3.5
+set Use years instead of seconds = false
+
+
+# # # geometry and mesh # # #
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+    set Box origin X coordinate = -0.5
+    set Box origin Y coordinate = -0.5
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 0
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+# # # gravity and prescribed solution # # #
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 1600
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names = box
+  set Fixed temperature boundary indicators = bottom, top, left, right
+
+  subsection Box
+    set Bottom temperature = 1600
+    set Top temperature    = 1600
+    set Left temperature   = 1600
+    set Right temperature  = 1600
+  end
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators =  top:function, bottom:function, left:function, right:function
+
+  subsection Function
+    set Variable names = x,y,t
+    set Function expression = y;0
+  end
+end
+
+# # # material model # # #
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 1
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 1e-10
+    set Viscosity                     = 1
+  end
+end
+
+
+# # # compositional fields and discretization # # #
+
+subsection Compositional fields
+  set Number of fields = 11
+  set Names of fields = qw, qx, qy, qz, \
+                        eigvalue_a1, eigvalue_a2, \
+                        eigvalue_b1, eigvalue_b2, \
+                        eigvalue_c1, eigvalue_c2, \
+                        water
+  set Compositional field methods = particles, particles, particles, particles, \
+                                    particles, particles, particles, particles, particles, particles,  \
+                                    static
+
+  set Mapped particle properties = qw:cpo mineral 0 q.w[0], qx:cpo mineral 0 q.n[0], qy:cpo mineral 0 q.n[1], qz:cpo mineral 0 q.n[2], \
+  eigvalue_a1:cpo mineral 0 eigenvalues a axis[0], eigvalue_a2:cpo mineral 0 eigenvalues a axis[1], \
+  eigvalue_b1:cpo mineral 0 eigenvalues b axis[0], eigvalue_b2:cpo mineral 0 eigenvalues b axis[1], \
+  eigvalue_c1:cpo mineral 0 eigenvalues c axis[0], eigvalue_c2:cpo mineral 0 eigenvalues c axis[1]
+
+  set Types of fields = generic, generic, generic, generic, \
+                        generic, generic, generic, generic, generic, generic,  \
+                        generic
+end
+
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    set Function expression = 1; 0; 0; 0;\
+                              1/3; 1/3; 1/3; 1/3; 1/3; 1/3;\
+                              0
+  end
+end
+
+subsection Discretization
+  set Composition polynomial degree = 0, 0, 0, 0, \
+                                      2, 2, 2, 2, 2, 2, \
+                                      0
+  set Use discontinuous composition discretization = true, true, true, true, \
+                                                     false, false, false, false, false, false,\
+                                                     true,
+end
+
+# # # post process # # #
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, visualization, particles, crystal preferred orientation
+
+  subsection Visualization
+    set Time between graphical output = 0.01
+    set List of output variables = stress, material properties, strain rate
+
+    subsection Material properties
+      set List of material properties = viscosity
+    end
+  end
+
+  subsection Crystal Preferred Orientation
+    set Time between data output = 0.01
+    set Write in background thread = true
+    set Compress cpo data files = false
+    set Write out raw cpo data = mineral 0: volume fraction, mineral 0: Euler angles #, mineral 1: volume fraction, mineral 1: Euler angles
+    set Write out draw volume weighted cpo data = # mineral 0: volume fraction, mineral 0: Euler angles, mineral 1: volume fraction, mineral 1: Euler angles
+  end
+
+  subsection Particles
+    set Time between data output = 0.01
+    set Data output format       = vtu
+    set Exclude output properties = volume fraction, rotation_matrix
+  end
+end
+
+subsection Particles
+    set List of particle properties = integrated strain, crystal preferred orientation, cpo bingham average, integrated strain invariant, velocity, pT path
+    set Interpolation scheme          = quaternion average
+    subsection Interpolator
+      subsection Quaternion average
+        set Base interpolation scheme = quadratic least squares
+      end
+    end
+    set Particle generator name = ascii file
+
+    subsection Generator
+        subsection Ascii file
+            set Data directory = $ASPECT_SOURCE_DIR//benchmarks/rotation_average/
+            set Data file name = particle_three.dat
+        end
+    end
+
+  subsection Crystal Preferred Orientation
+    set Random number seed = 301
+    set Number of grains per particle = 2000
+    set Property advection method = Backward Euler
+    set Property advection tolerance = 1e-10
+    set CPO derivatives algorithm = D-Rex 2004
+
+    subsection Initial grains
+      set Minerals = Olivine: A-fabric
+      set Volume fractions minerals = 1
+    end
+
+    subsection D-Rex 2004
+      set Mobility = 0
+      set Stress exponents = 3.5
+      set Exponents p = 1.5
+      set Nucleation efficiency = 0
+      set Threshold GBS = 0.3
+    end
+  end
+
+  subsection CPO Bingham Average
+    set Random number seed = 200
+    set output rotation as = quaternion
+  end
+end
