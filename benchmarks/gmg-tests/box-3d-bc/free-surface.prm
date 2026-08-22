@@ -1,0 +1,34 @@
+# free surface + topography on top
+
+set Dimension = 3
+
+include base.prm
+
+set Pressure normalization = no
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left,right,back,front
+  set Zero velocity boundary indicators = bottom
+  #open:
+end
+
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: ascii data & free surface
+
+  subsection Free surface
+    set Free surface stabilization theta = 0.5
+  end
+
+  subsection Ascii data model
+    set Data directory = .
+    set Data file name = topography.txt
+  end
+end
+
+subsection Postprocess
+  subsection Visualization
+    set Output mesh displacement = true
+    set Output undeformed mesh = true
+  end
+end
