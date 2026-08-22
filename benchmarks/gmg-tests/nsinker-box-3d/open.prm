@@ -1,0 +1,10 @@
+# open top boundary
+
+set Dimension = 3
+
+include base.prm
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators = left,right,bottom,front,back
+  # top: free
+end

@@ -1,0 +1,9 @@
+# no slip on all sides
+
+set Dimension = 3
+
+include base.prm
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators = left,right,bottom,top,front,back
+end

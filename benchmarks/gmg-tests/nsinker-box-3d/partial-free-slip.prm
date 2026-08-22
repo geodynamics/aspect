@@ -1,0 +1,12 @@
+# free slip on some sides
+
+set Dimension = 3
+
+include base.prm
+
+
+subsection Boundary velocity model
+# free slip: left, front
+  set Zero velocity boundary indicators = right,bottom,top,back
+  set Tangential velocity boundary indicators = left,front
+end

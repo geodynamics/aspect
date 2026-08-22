@@ -1,0 +1,17 @@
+# partially prescribed (nonzero)
+
+set Dimension = 3
+
+include base.prm
+
+
+subsection Boundary velocity model
+# free slip: left
+  set Zero velocity boundary indicators = right,top,bottom,back
+  set Tangential velocity boundary indicators = left
+  set Prescribed velocity boundary indicators = front xy: function
+
+  subsection Function
+    set Function expression = sin(pi*x)*z*(1-z); 0; 0
+  end
+end

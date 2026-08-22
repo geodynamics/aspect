@@ -101,6 +101,10 @@ free_surface_tractions/: dummy
 geoid-spectral-comparison/: dummy
 	@$(def); run_prm $@ spectral-comparison.prm "subsection Mesh refinement\n set Initial global refinement=2\n end"
 
+gmg-tests/:  dummy
+	+@$(def); make_lib $@/nsinker-box-3d
+	@$(def); run_all_prms $@/nsinker-box-3d
+
 inclusion/: dummy
 	+@$(def); make_lib $@
 	@$(def); run_prm $@ global.prm.base
