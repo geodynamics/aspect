@@ -1558,17 +1558,11 @@ namespace aspect
     // Reconstruct the constraint-matrix:
     constraints.reinit (dof_handler.locally_owned_dofs(), introspection.index_sets.system_relevant_set);
 
-    // Set up the constraints for periodic boundary conditions:
-
-    // Note: this has to happen _before_ we do hanging node constraints,
-    // because inconsistent constraints could be generated in parallel otherwise.
-    geometry_model->make_periodicity_constraints(dof_handler,
-                                                 constraints);
-
-    //  Make hanging node constraints:
+    //  Make hanging node constraints (for adaptivity) and then periodic constraints:
     DoFTools::make_hanging_node_constraints (dof_handler,
                                              constraints);
-
+    geometry_model->make_periodicity_constraints(dof_handler,
+                                                 constraints);
 
     compute_initial_velocity_boundary_constraints(constraints);
     constraints.close();
