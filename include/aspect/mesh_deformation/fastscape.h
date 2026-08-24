@@ -72,6 +72,19 @@ namespace aspect
                                                  const std::set<types::boundary_id> &boundary_ids) const override;
 
         /**
+         * This function returns the compositional field value at the
+         * requested point on the requested boundary. If the fastscape
+         * plugin cannot provide a boundary condition for a field (e.g.
+         * for a field storing viscoelastic stresses), a value of zero
+         * is returned.
+         *
+         * @copydoc aspect::MeshDeformation::Interface::boundary_composition()
+         */
+        double boundary_composition (const types::boundary_id boundary_indicator,
+                                     const Point<dim> &position,
+                                     const unsigned int compositional_field) const override;
+
+        /**
          * Returns whether or not the plugin requires surface stabilization
          */
         bool needs_surface_stabilization () const override;
