@@ -1,0 +1,41 @@
+#### This tests a Boundary Composition plugin that
+# calls the active mesh deformation plugins to
+# prescribe the composition on the fixed boundary.
+# The fastscape mesh deformation plugin will only
+# provide non-zero values for the fields ``deposition_depth''
+# and ``sediment_age''. The boundary function plugin
+# does not implement the boundary composition function
+# and therefore the interface should return a value of 0
+# for all compositional fields. 
+# Results should therefore be exactly the same as for the
+# fastscape_boundary_composition.prm test.
+# Enable if: ASPECT_WITH_FASTSCAPE
+
+include $ASPECT_SOURCE_DIR/tests/fastscape_boundary_composition.prm
+
+####  Global parameters
+set Dimension                              = 2
+set End time                               = 1.4e5
+set Output directory                       = fastscape_boundary_composition_2
+
+####  Fastscape parameters
+subsection Mesh deformation
+  set Mesh deformation boundary indicators        = top: fastscape, top: boundary function
+
+  subsection Fastscape
+    set Use marine component = true
+    subsection Marine parameters
+      # Shallow sea level to start marine deposition early
+      set Sea level = -10
+      # The coarser grained sand is expected
+      # to be transported less far than the
+      # finer grained silt, so the transport
+      # coefficient is lower.
+      set Silt transport coefficient = 5e2
+      set Sand transport coefficient = 1e2
+    end
+  end
+  subsection Boundary function
+    set Function expression = 0; 0
+  end
+end
