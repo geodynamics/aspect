@@ -1505,6 +1505,8 @@ namespace aspect
             constraint.reinit(locally_relevant_dofs);
 #endif
 
+            DoFTools::make_hanging_node_constraints(dof_handler, constraint);
+
             this->get_geometry_model().make_periodicity_constraints(dof_handler,
                                                                     constraint);
 
@@ -1586,8 +1588,6 @@ namespace aspect
                   }
               }
 
-            DoFTools::make_hanging_node_constraints(dof_handler, constraint);
-
             sim.prescribed_solution_manager.constrain_solution(constraint);
 
             // Let plugins add more constraints if they so choose:
@@ -1618,10 +1618,10 @@ namespace aspect
             constraint.reinit(locally_relevant_dofs);
 #endif
 
+            DoFTools::make_hanging_node_constraints(dof_handler, constraint);
             this->get_geometry_model().make_periodicity_constraints(dof_handler,
                                                                     constraint);
 
-            DoFTools::make_hanging_node_constraints(dof_handler, constraint);
             constraint.close();
           }
 
