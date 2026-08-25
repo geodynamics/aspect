@@ -6,6 +6,7 @@ A parallel, extensible finite element code.
 - ASPECT is a C++ CMake project
 - unit tests are in /unit_tests/ and are implemented using the Catch2 framework; they are run via ``aspect --test`` (also wired as a ctest target)
 - tests are in /tests/, can be run using ``ctest``. By default only a small subset runs; enable the full suite with ``make setup_tests``. Also see /doc/sphinx/user/extending/testing/running-tests.md
+- use ``./aspect --validate parameter-file.prm`` to parse a parameter file and exit, reporting any syntax or parameter errors without running the simulation
 - instructions for code formatting, use ``./contrib/utilities/indent`` at /CONTRIBUTING.md
 
 ## Layout
