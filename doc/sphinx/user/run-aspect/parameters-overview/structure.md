@@ -31,6 +31,15 @@ you do not *need* to specify a parameter in the input file: if a parameter
 isn't listed, then the program will simply use the default provided when
 declaring the parameter.
 
+To check a parameter file for syntax and parameter errors without running a
+simulation, pass it to ASPECT with the `--validate` option:
+
+``` ksh
+./aspect --validate parameter-file.prm
+```
+
+ASPECT will parse the parameter file and exit, reporting any errors it finds.
+
 :::{note}
 In cases where a parameter requires a significant amount of text, you can end a line in the
 input file with a backslash. This indicates that the following line will simply continue to be part
