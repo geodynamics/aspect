@@ -1,0 +1,17 @@
+include $ASPECT_SOURCE_DIR/benchmarks/rotation_average/rotation_box_orthorhombic.prm
+set Output directory         = output-rotation-average-triclinic
+
+# # # Particles # # # 
+# We can use a triclinic average or a general rotation average.
+# This average is well know in the aviation industry. 
+# (Markley et.al. 2007, https://doi.org/10.2514/1.28949)
+# For comparison we use the cell average instead 
+# of a linear least squares interpolator. 
+subsection Particles
+  subsection Interpolator
+    subsection Quaternion average
+      set Base interpolation scheme = cell average
+      set Symmetry group            = triclinic
+    end
+  end
+end

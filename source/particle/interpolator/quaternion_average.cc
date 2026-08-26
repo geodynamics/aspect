@@ -57,21 +57,25 @@ namespace aspect
         // average mineral agregates separately
         for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
           {
-            // collect all quaternions in the cell
-            std::vector<std::array<double,4>> quat_array;
-            quat_array.reserve(n_particles);
-            for (const auto &particle : particle_range)
+            // makes sure to not average minerals that are not to be interpolated
+            if (selected_properties[quaternion_data_pos[mineral_i]])
               {
-                const ArrayView<const double> &particle_properties = particle.get_properties();
-                std::array<double,4> quaternion;
-                for (unsigned int j = 0; j < 4; ++j)
-                  quaternion[j] = particle_properties[quaternion_data_pos[mineral_i] + j];
-                quat_array.push_back(quaternion);
+                // collect all quaternions in the cell
+                std::vector<std::array<double,4>> quat_array;
+                quat_array.reserve(n_particles);
+                for (const auto &particle : particle_range)
+                  {
+                    const ArrayView<const double> &particle_properties = particle.get_properties();
+                    std::array<double,4> quaternion;
+                    for (unsigned int j = 0; j < 4; ++j)
+                      quaternion[j] = particle_properties[quaternion_data_pos[mineral_i] + j];
+                    quat_array.push_back(quaternion);
+                  }
+                if (symmetry_group == "triclinic")
+                  mean_quat[mineral_i] = markley_average(quat_array, unit_weights);
+                else
+                  mean_quat[mineral_i] = symmetry_average(quat_array, unit_weights);
               }
-            if (symmetry_group == "triclinic")
-              mean_quat[mineral_i] = markley_average(quat_array, unit_weights);
-            else
-              mean_quat[mineral_i] = symmetry_average(quat_array, unit_weights);
           }
 
 
@@ -84,9 +88,10 @@ namespace aspect
                                                                   cell);
 
         for (unsigned int mineral_i = 0; mineral_i < n_minerals; mineral_i++)
-          for (unsigned int pos_index=0; pos_index<positions.size(); pos_index++)
-            for (unsigned int j = 0; j<4; j++)
-              cell_properties[pos_index][quaternion_data_pos[mineral_i]+j] = mean_quat[mineral_i][j];
+          if (selected_properties[quaternion_data_pos[mineral_i]])
+            for (unsigned int pos_index=0; pos_index<positions.size(); pos_index++)
+              for (unsigned int j = 0; j<4; j++)              
+                cell_properties[pos_index][quaternion_data_pos[mineral_i]+j] = mean_quat[mineral_i][j];
 
         return cell_properties;
       }
@@ -308,8 +313,6 @@ namespace aspect
         std::array<double,4> quat_mean = markley_average(quat_array, weights);
 
         // find maximal geodesic from initial mean
-        // this corresponds to the rotation closest to the edge of the fundamental zone
-        // for an antipodal distribution this is likely to be close to the actual mean
         std::vector<double> geodesics(n_particles);
         for (unsigned int j=0; j<n_particles; j++)
           geodesics[j] = SO3_geodesic(quat_array[j], quat_mean);
