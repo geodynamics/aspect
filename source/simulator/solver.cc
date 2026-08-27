@@ -22,18 +22,11 @@
 #include <aspect/simulator.h>
 #include <aspect/global.h>
 #include <aspect/melt.h>
-#include <aspect/simulator/solver/block_stokes_preconditioner.h>
 #include <aspect/simulator/solver/stokes_matrix_based.h>
 #include <aspect/simulator/solver/stokes_matrix_free.h>
 #include <aspect/simulator/solver/stokes_direct.h>
-#include <aspect/mesh_deformation/interface.h>
 
-#include <deal.II/base/signaling_nan.h>
 #include <deal.II/lac/solver_gmres.h>
-#include <deal.II/lac/solver_bicgstab.h>
-#include <deal.II/lac/solver_cg.h>
-#include <deal.II/fe/fe_values.h>
-#include <deal.II/lac/trilinos_vector.h>
 
 namespace aspect
 {

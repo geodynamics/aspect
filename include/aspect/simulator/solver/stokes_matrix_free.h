@@ -21,16 +21,9 @@
 #ifndef _aspect_simulator_solver_stokes_matrix_free_h
 #define _aspect_simulator_solver_stokes_matrix_free_h
 
-#include <aspect/simulator/solver/matrix_free_operators.h>
 #include <aspect/global.h>
 #include <aspect/parameters.h>
 #include <aspect/simulator/solver/interface.h>
-#include <aspect/utilities.h>
-
-#include <deal.II/multigrid/mg_transfer_matrix_free.h>
-#include <deal.II/multigrid/mg_transfer_global_coarsening.templates.h>
-
-#include <deal.II/lac/solver_bicgstab.h>
 
 namespace aspect
 {
