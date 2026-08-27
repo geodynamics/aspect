@@ -1,0 +1,25 @@
+
+Number of active cells: 64 (on 3 levels)
+Number of degrees of freedom: 3,041 (2,187+125+729)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 40+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-periodic_box_adaptive_amg/solution/solution-00000
+
+Number of active cells: 127 (on 4 levels)
+Number of degrees of freedom: 6,197 (4,470+237+1,490)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 42+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-periodic_box_adaptive_amg/solution/solution-00001
+
+Termination requested by criterion: end time
+
+
+

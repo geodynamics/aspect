@@ -1,0 +1,35 @@
+
+Number of active cells: 64 (on 3 levels)
+Number of degrees of freedom: 3,041 (2,187+125+729)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving Stokes system (GMG-GC)... 
+     GMG coarse size A: 81, coarse size S: 8
+     GMG levels: 3
+     Viscosity range: 1 - 1
+     Stokes solver (GMRES): 17+0 iterations.
+     Schur complement preconditioner: 18+0 iterations.
+     A block preconditioner: 18+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-periodic_box_adaptive_gmggc/solution/solution-00000
+
+Number of active cells: 127 (on 4 levels)
+Number of degrees of freedom: 6,197 (4,470+237+1,490)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving Stokes system (GMG-GC)... 
+     GMG coarse size A: 81, coarse size S: 8
+     GMG levels: 4
+     Viscosity range: 1 - 1
+     Stokes solver (GMRES): 18+0 iterations.
+     Schur complement preconditioner: 19+0 iterations.
+     A block preconditioner: 19+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-periodic_box_adaptive_gmggc/solution/solution-00001
+
+Termination requested by criterion: end time
+
+
+
