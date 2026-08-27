@@ -24,6 +24,7 @@
 
 #include <aspect/boundary_traction/interface.h>
 #include <aspect/simulator_access.h>
+#include <map>
 
 
 namespace aspect
@@ -78,33 +79,45 @@ namespace aspect
       private:
 
         /**
-         * The number of integration points.
-         *
-         * This variable is read from the parameter file through a parameter called 'Number of integration points'.
+         * The number of integration points per profile.
          */
         unsigned int n_points;
 
         /**
-         * Depth interval spacing between each two data points in the pressure profile.
+         * Default representative point used for boundaries not listed in
+         * representative_point_per_boundary_name. The depth coordinate is ignored.
          */
-        double delta_z;
-
-        /*
-         * The user-specified point where to calculate the pressure profile.
-         * The vertical coordinate/radius is ignored.
-         */
-        Point<dim> representative_point;
+        Point<dim> default_representative_point;
 
         /**
-         * The computed lithostatic pressure profile.
+         * Per-boundary representative points keyed by symbolic boundary name.
+         * Overrides default_representative_point for the listed boundaries.
          */
-        std::vector<double> pressure;
+        std::map<std::string, Point<dim>> representative_point_per_boundary_name;
 
         /**
-         * Return the lithostatic pressure at a given point of the domain
-         * based on depth interpolation between computed pressure values.
+         * Computed lithostatic pressure profiles, one entry per boundary indicator.
          */
-        double interpolate_pressure (const Point<dim> &p) const;
+        std::map<types::boundary_id, std::vector<double>> pressure_profiles;
+
+        /**
+         * Depth spacing between integration points, one entry per boundary indicator.
+         */
+        std::map<types::boundary_id, double> delta_z_per_boundary;
+
+        /**
+         * Compute the lithostatic pressure profile along the column defined by
+         * the lateral coordinates of representative_point (depth coordinate ignored).
+         * Returns {pressure_vector, delta_z}.
+         */
+        std::pair<std::vector<double>, double>
+        compute_pressure_profile (Point<dim> representative_point) const;
+
+        /**
+         * Interpolate the stored pressure profile for boundary bid at position p.
+         */
+        double interpolate_pressure (const Point<dim> &p,
+                                     types::boundary_id bid) const;
 
         /**
          * The id of the bottom boundary.

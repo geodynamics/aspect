@@ -70,18 +70,36 @@ namespace aspect
       else
         prescribe_constant_pressure_at_bottom_boundary = false;
 
-      // The below is adapted from adiabatic_conditions/initial_profile.cc,
-      // but we use the initial temperature and composition and only calculate
-      // a pressure profile with depth.
+      // Translate any per-boundary symbolic names to IDs, then compute a profile per boundary.
+      std::map<types::boundary_id, Point<dim>> per_boundary_id;
+      for (const auto &entry : representative_point_per_boundary_name)
+        per_boundary_id[this->get_geometry_model().translate_symbolic_boundary_name_to_id(entry.first)] = entry.second;
 
-      // The number of compositional fields
+      for (const types::boundary_id bid : traction_bi)
+        {
+          const Point<dim> rep_pt = per_boundary_id.count(bid) != 0
+                                      ? per_boundary_id.at(bid)
+                                      : default_representative_point;
+          const std::pair<std::vector<double>, double> profile = compute_pressure_profile(rep_pt);
+          pressure_profiles[bid]    = profile.first;
+          delta_z_per_boundary[bid] = profile.second;
+        }
+    }
+
+
+    template <int dim>
+    std::pair<std::vector<double>, double>
+    InitialLithostaticPressure<dim>::compute_pressure_profile (Point<dim> representative_point) const
+    {
+      // Adapted from adiabatic_conditions/initial_profile.cc, but uses
+      // initial temperature/composition and integrates only pressure with depth.
+
       const unsigned int n_compositional_fields = this->n_compositional_fields();
 
-      // The pressure at the surface
-      pressure[0]    = this->get_surface_pressure();
+      std::vector<double> pressure(n_points, -1.0);
+      pressure[0] = this->get_surface_pressure();
 
-      // For spherical(-like) domains, modify the representative point:
-      // go from degrees to radians...
+      // For spherical(-like) domains, go from degrees to radians...
       std::array<double, dim> spherical_representative_point;
       for (unsigned int d=0; d<dim; ++d)
         spherical_representative_point[d] = representative_point[d];
@@ -99,10 +117,7 @@ namespace aspect
                    (this->get_geometry_model().point_is_in_domain(Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(spherical_representative_point)))),
                   ExcMessage("The reference point does not lie with the domain."));
 
-      // Set the radius of the representative point to the surface radius for spherical domains
-      // or set the vertical coordinate to the surface value for box domains.
-      // Also get the depth extent without including initial topography, and the vertical coordinate
-      // of the bottom boundary (radius for spherical and z-coordinate for Cartesian domains).
+      // Set the radius / vertical coordinate to the surface and get the depth extent.
       double depth_extent = 0.;
       if (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model()))
         {
@@ -180,7 +195,7 @@ namespace aspect
         }
 
       // The spacing of the depth profile at the location of the representative point.
-      delta_z = (depth_extent + topo) / (n_points-1);
+      const double delta_z = (depth_extent + topo) / (n_points-1);
 
       // Set up the input for the density function of the material model.
       typename MaterialModel::Interface<dim>::MaterialModelInputs in(1, n_compositional_fields);
@@ -278,7 +293,9 @@ namespace aspect
               -std::numeric_limits<double>::epsilon() * pressure.size(),
               ExcInternalError());
 
+      return std::make_pair(pressure, delta_z);
     }
+
 
     template <int dim>
     Tensor<1,dim>
@@ -299,9 +316,9 @@ namespace aspect
       // will not have a depth equal to the deepest depth of the profile.
       Tensor<1, dim> traction;
       if (prescribe_constant_pressure_at_bottom_boundary && boundary_indicator == bottom_boundary_id)
-        traction = -pressure.back() * normal_vector;
+        traction = -pressure_profiles.at(bottom_boundary_id).back() * normal_vector;
       else
-        traction = -interpolate_pressure(position) * normal_vector;
+        traction = -interpolate_pressure(position, boundary_indicator) * normal_vector;
 
       return traction;
     }
@@ -309,8 +326,11 @@ namespace aspect
     template <int dim>
     double
     InitialLithostaticPressure<dim>::
-    interpolate_pressure (const Point<dim> &p) const
+    interpolate_pressure (const Point<dim> &p, const types::boundary_id bid) const
     {
+      const std::vector<double> &pressure = pressure_profiles.at(bid);
+      const double delta_z = delta_z_per_boundary.at(bid);
+
       // The depth at which we need the pressure.
       const double z = this->get_geometry_model().depth(p);
 
@@ -358,6 +378,14 @@ namespace aspect
                             Patterns::Integer(0),
                             "The number of integration points over which we integrate the lithostatic pressure "
                             "downwards.");
+          prm.declare_entry ("Representative points per boundary", "",
+                             Patterns::Anything(),
+                             "An optional list of boundary-specific representative points that override "
+                             "the default 'Representative point'. "
+                             "Format: boundary\\_name : x, y [; boundary\\_name : x, y ...] (2D) or "
+                             "boundary\\_name : x, y, z [; ...] (3D). "
+                             "The depth coordinate is ignored as with 'Representative point'. "
+                             "Units: \\si{\\meter} or degrees.");
         }
         prm.leave_subsection();
       }
@@ -385,8 +413,36 @@ namespace aspect
             dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Representative point")));
           AssertThrow(rep_point.size() == dim, ExcMessage("Representative point does not have the right dimensions."));
           for (unsigned int d = 0; d<dim; ++d)
-            representative_point[d] = rep_point[d];
+            default_representative_point[d] = rep_point[d];
           n_points = prm.get_integer("Number of integration points");
+
+          const std::string per_boundary_str = prm.get("Representative points per boundary");
+          if (!per_boundary_str.empty())
+            {
+              for (const auto &entry : dealii::Utilities::split_string_list(per_boundary_str, ';'))
+                {
+                  const std::size_t colon = entry.find(':');
+                  AssertThrow(colon != std::string::npos,
+                              ExcMessage("Invalid format for 'Representative points per boundary': "
+                                         "each entry must be 'boundary_name : coordinates'."));
+                  std::string bname = entry.substr(0, colon);
+                  bname.erase(0, bname.find_first_not_of(" \t"));
+                  bname.erase(bname.find_last_not_of(" \t") + 1);
+                  std::string coords_str = entry.substr(colon + 1);
+                  coords_str.erase(0, coords_str.find_first_not_of(" \t"));
+                  coords_str.erase(coords_str.find_last_not_of(" \t") + 1);
+
+                  const std::vector<double> coords =
+                    dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(coords_str));
+                  AssertThrow(coords.size() == dim,
+                              ExcMessage("Representative point for boundary '" + bname +
+                                         "' does not have the right dimensions."));
+                  Point<dim> pt;
+                  for (unsigned int d = 0; d < dim; ++d)
+                    pt[d] = coords[d];
+                  representative_point_per_boundary_name[bname] = pt;
+                }
+            }
         }
         prm.leave_subsection();
       }
@@ -394,8 +450,6 @@ namespace aspect
 
       // Check that we have enough integration points for this mesh.
       AssertThrow(Utilities::pow(2u,refinement) <= n_points, ExcMessage("Not enough integration points for this resolution."));
-
-      pressure.resize(n_points,-1);
     }
 
   }
