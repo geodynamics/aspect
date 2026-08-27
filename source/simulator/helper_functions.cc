@@ -39,6 +39,7 @@
 #include <aspect/postprocess/visualization.h>
 #include <aspect/prescribed_solution/interface.h>
 #include <aspect/prescribed_stokes_solution/interface.h>
+#include <aspect/simulator/solver/stokes_matrix_free.h>
 
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
@@ -1296,6 +1297,15 @@ namespace aspect
       return false;
     else
       return true;
+  }
+
+
+
+  template <int dim>
+  bool
+  Simulator<dim>::is_stokes_matrix_free() const
+  {
+    return dynamic_cast<StokesMatrixFreeHandler<dim>*>(stokes_solver.get()) != nullptr;
   }
 
 
@@ -2886,6 +2896,7 @@ namespace aspect
   template double Simulator<dim>::compute_initial_stokes_residual(); \
   template bool Simulator<dim>::stokes_matrix_depends_on_solution() const; \
   template bool Simulator<dim>::stokes_A_block_is_symmetric() const; \
+  template bool Simulator<dim>::is_stokes_matrix_free() const; \
   template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec) const;\
   template void Simulator<dim>::apply_limiter_to_dg_solutions(const AdvectionField &advection_field); \
   template void Simulator<dim>::compute_unique_advection_support_points(const std::vector<AdvectionField> &advection_fields, \

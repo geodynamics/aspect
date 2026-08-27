@@ -152,6 +152,11 @@ namespace aspect
     template <int dim> class Manager;
   }
 
+  namespace StokesSolver
+  {
+    template <int dim> class Interface;
+  }
+
   namespace TimeStepping
   {
     template <int dim> class Manager;
@@ -1038,7 +1043,7 @@ namespace aspect
       /**
        * Return true if using the block GMG Stokes solver.
        */
-      bool is_stokes_matrix_free();
+      bool is_stokes_matrix_free() const;
 
       /**
        * Return a reference to the StokesMatrixFreeHandler that controls the
@@ -1046,6 +1051,12 @@ namespace aspect
        */
       const StokesMatrixFreeHandler<dim> &
       get_stokes_matrix_free () const;
+
+      /**
+       * Return a reference to the active Stokes solver.
+       */
+      const StokesSolver::Interface<dim> &
+      get_stokes_solver () const;
 
       /**
        * Return a reference to the PrescribedSolution::Manager that manages the
