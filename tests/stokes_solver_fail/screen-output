@@ -29,11 +29,12 @@ Additional information:
 (line in output replaced by default.sh script)
     void dealii::SolverFGMRES<VectorType>::solve(const MatrixType&,
     VectorType&, const VectorType&, const PreconditionerType&) [with
-    MatrixType = aspect::internal::StokesBlock; PreconditionerType =
+    MatrixType = aspect::StokesSolver::internal::StokesBlock;
+    PreconditionerType =
     aspect::internal::BlockSchurPreconditioner<aspect::internal::InverseVelocityBlock<dealii::TrilinosWrappers::PreconditionAMG,
     dealii::TrilinosWrappers::MPI::Vector,
     dealii::TrilinosWrappers::SparseMatrix>,
-    aspect::internal::SchurComplementOperator,
+    aspect::StokesSolver::internal::SchurComplementOperator,
     dealii::TrilinosWrappers::SparseMatrix,
     dealii::TrilinosWrappers::MPI::BlockVector>; VectorType =
     dealii::TrilinosWrappers::MPI::BlockVector]

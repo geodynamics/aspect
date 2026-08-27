@@ -98,6 +98,9 @@ namespace aspect
   {
     template <int dim>
     class Direct;
+
+    template <int dim>
+    class MatrixBased;
   }
 
   template <int dim, int velocity_degree>
@@ -2136,6 +2139,11 @@ namespace aspect
       std::unique_ptr<StokesMatrixFreeHandler<dim>> stokes_matrix_free;
 
       /**
+       * Unique pointer for the matrix-based Stokes solver
+       */
+      std::unique_ptr<StokesSolver::MatrixBased<dim>> stokes_matrix_based;
+
+      /**
        * Unique pointer for the direct Stokes solver
        */
       std::unique_ptr<StokesSolver::Direct<dim>> stokes_direct;
@@ -2146,6 +2154,7 @@ namespace aspect
       friend class MeshDeformation::MeshDeformationHandler<dim>;
       friend class VolumeOfFluidHandler<dim>;
       friend class StokesMatrixFreeHandler<dim>;
+      friend class StokesSolver::MatrixBased<dim>;
       template <int dimension, int velocity_degree> friend class StokesMatrixFreeHandlerLocalSmoothingImplementation;
       template <int dimension, int velocity_degree> friend class StokesMatrixFreeHandlerGlobalCoarseningImplementation;
       friend struct Parameters<dim>;
