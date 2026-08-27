@@ -23,11 +23,8 @@
 #include <aspect/simulator/solver/stokes_matrix_free.h>
 #include <aspect/simulator/solver/stokes_matrix_free_global_coarsening.h>
 #include <aspect/simulator/solver/block_stokes_preconditioner.h>
-#include <aspect/mesh_deformation/interface.h>
 
 #include <aspect/mesh_deformation/interface.h>
-#include <aspect/mesh_deformation/free_surface.h>
-#include <aspect/melt.h>
 #include <aspect/newton.h>
 
 #include <deal.II/fe/mapping_q.h>
@@ -36,10 +33,7 @@
 
 #include <deal.II/matrix_free/tools.h>
 #include <deal.II/lac/solver_gmres.h>
-#include <deal.II/lac/read_write_vector.templates.h>
 #include <deal.II/lac/solver_idr.h>
-#include <deal.II/lac/solver_cg.h>
-#include <deal.II/lac/solver_bicgstab.h>
 #include <deal.II/lac/precondition.h>
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/dofs/dof_handler.h>

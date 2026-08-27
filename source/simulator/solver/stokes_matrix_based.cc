@@ -24,7 +24,6 @@
 #include <aspect/global.h>
 #include <aspect/simulator/solver/block_stokes_preconditioner.h>
 
-#include <deal.II/base/signaling_nan.h>
 #include <deal.II/lac/solver_gmres.h>
 #include <deal.II/lac/solver_cg.h>
 
