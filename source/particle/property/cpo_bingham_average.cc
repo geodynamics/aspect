@@ -53,6 +53,20 @@ namespace aspect
 
       template <int dim>
       void
+      CpoBinghamAverage<dim>::update ()
+      {
+        // Set the random number generator seed to a different value for each MPI process and
+        // timestep to ensure that the random numbers are different for each process and timestep,
+        // but at the same time reproducible for each process and timestep. With this trick,
+        // we don't have to serialize the random number generator.
+        const unsigned int my_rank = Utilities::MPI::this_mpi_process(MPI_COMM_WORLD);
+        this->random_number_generator.seed(random_number_seed + my_rank + this->get_timestep_number());
+      }
+
+
+
+      template <int dim>
+      void
       CpoBinghamAverage<dim>::initialize_one_particle_property(const Point<dim> &,
                                                                std::vector<double> &data) const
       {
@@ -406,32 +420,6 @@ namespace aspect
             n_samples = n_grains;
         }
         prm.leave_subsection ();
-      }
-
-
-
-      template <int dim>
-      void
-      CpoBinghamAverage<dim>::save (std::map<std::string, std::string> &status_strings) const
-      {
-        std::ostringstream os;
-        os << random_number_generator;
-        status_strings["CpoBinghamAverage"] = os.str();
-      }
-
-
-
-      template <int dim>
-      void
-      CpoBinghamAverage<dim>::load (const std::map<std::string, std::string> &status_strings)
-      {
-        const auto saved_state = status_strings.find("CpoBinghamAverage");
-        if (saved_state != status_strings.end())
-          {
-            std::istringstream is (saved_state->second);
-            is >> random_number_generator;
-            AssertThrow(!is.fail(), ExcMessage("Could not restore the CPO Bingham average random number generator."));
-          }
       }
     }
   }
