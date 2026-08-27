@@ -1430,6 +1430,46 @@ namespace aspect
 
 
       template <int dim>
+      unsigned int
+      PhaseFunctionDiscrete<dim>::
+      get_dominant_phase_index (const double temperature,
+                                const double pressure,
+                                const unsigned int composition_index) const
+      {
+        AssertIndexRange(composition_index, material_lookup.size());
+
+        const double pressure_in_bar     = std::max(pressure / 1.e5, minimum_pressure[composition_index]);
+        const double clamped_temperature = std::max(temperature,      minimum_temperature[composition_index]);
+
+        const std::vector<double> &temperature_points =
+          material_lookup[composition_index]->get_interpolation_point_coordinates(0);
+        const std::vector<double> &pressure_points =
+          material_lookup[composition_index]->get_interpolation_point_coordinates(1);
+
+        const unsigned int i_T = static_cast<unsigned int>(
+          std::round((clamped_temperature - minimum_temperature[composition_index]) /
+                     interval_temperature[composition_index]));
+        const unsigned int i_p = static_cast<unsigned int>(
+          std::round((pressure_in_bar - minimum_pressure[composition_index]) /
+                     interval_pressure[composition_index]));
+
+        Point<2> tp(temperature_points[i_T], pressure_points[i_p]);
+        return static_cast<unsigned int>(std::round(material_lookup[composition_index]->get_data(tp, 7)));
+      }
+
+
+      template <int dim>
+      unsigned int
+      PhaseFunctionDiscrete<dim>::
+      n_compositions () const
+      {
+        return material_lookup.size();
+      }
+
+
+
+
+      template <int dim>
       double
       PhaseFunction<dim>::compute_value (const PhaseFunctionInputs<dim> &in) const
       {

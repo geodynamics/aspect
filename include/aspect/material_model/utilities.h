@@ -661,6 +661,27 @@ namespace aspect
           void
           parse_parameters (ParameterHandler &prm);
 
+          /**
+           * Return the dominant phase index from the P-T lookup table for the
+           * chemical composition identified by @p composition_index (0 =
+           * background, 1 = first chemical composition field, etc.) at the
+           * given @p temperature (in K) and @p pressure (in Pa).  The
+           * returned value is the integer phase label stored in column 7 of
+           * the corresponding material data file.
+           */
+          unsigned int
+          get_dominant_phase_index (const double temperature,
+                                    const double pressure,
+                                    const unsigned int composition_index) const;
+
+          /**
+           * Return the number of chemical compositions (including background)
+           * for which lookup tables have been loaded, i.e. the size of
+           * material_file_names.
+           */
+          unsigned int
+          n_compositions () const;
+
 
         private:
           /**

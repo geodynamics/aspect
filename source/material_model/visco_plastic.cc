@@ -30,6 +30,36 @@ namespace aspect
 {
   namespace MaterialModel
   {
+    namespace
+    {
+      std::vector<std::string>
+      make_dominant_phase_output_names (const std::vector<std::string> &composition_names)
+      {
+        std::vector<std::string> names;
+        for (const auto &name : composition_names)
+          names.push_back("dominant_phase_" + name);
+        return names;
+      }
+    }
+
+    template <int dim>
+    DominantPhaseOutputs<dim>::DominantPhaseOutputs (const unsigned int n_points,
+                                                      const std::vector<std::string> &composition_names)
+      : NamedAdditionalMaterialOutputs<dim>(make_dominant_phase_output_names(composition_names)),
+        dominant_phase_indices(composition_names.size(),
+                               std::vector<double>(n_points, numbers::signaling_nan<double>()))
+    {}
+
+
+    template <int dim>
+    std::vector<double>
+    DominantPhaseOutputs<dim>::get_nth_output (const unsigned int idx) const
+    {
+      AssertIndexRange(idx, dominant_phase_indices.size());
+      return dominant_phase_indices[idx];
+    }
+
+
     template <int dim>
     void
     ViscoPlastic<dim>::initialize()
@@ -279,6 +309,19 @@ namespace aspect
             {
               rheology->fill_plastic_outputs(i, volume_fractions, plastic_yielding, in, out, isostrain_viscosities);
               rheology->fill_viscosity_outputs(i, volume_fractions, out, isostrain_viscosities);
+
+              // Fill dominant phase outputs when the discrete phase function is active.
+              if (use_dominant_phase_for_viscosity)
+                {
+                  if (const std::shared_ptr<DominantPhaseOutputs<dim>> phase_out
+                        = out.template get_additional_output_object<DominantPhaseOutputs<dim>>())
+                    {
+                      for (unsigned int c = 0; c < phase_function_discrete->n_compositions(); ++c)
+                        phase_out->dominant_phase_indices[c][i] =
+                          static_cast<double>(phase_function_discrete->get_dominant_phase_index(
+                                               in.temperature[i], in.pressure[i], c));
+                    }
+                }
             }
 
           if (this->get_parameters().enable_elasticity)
@@ -485,6 +528,18 @@ namespace aspect
 
       if (this->get_parameters().enable_elasticity)
         rheology->elastic_rheology.create_elastic_additional_outputs(out);
+
+      if (use_dominant_phase_for_viscosity)
+        {
+          if (out.template has_additional_output_object<DominantPhaseOutputs<dim>>() == false)
+            {
+              std::vector<std::string> names = {"background"};
+              for (const auto &name : this->introspection().chemical_composition_field_names())
+                names.push_back(name);
+              out.additional_outputs.push_back(
+                std::make_unique<DominantPhaseOutputs<dim>>(out.n_evaluation_points(), names));
+            }
+        }
     }
 
   }
@@ -495,6 +550,13 @@ namespace aspect
 {
   namespace MaterialModel
   {
+#define INSTANTIATE(dim) \
+  template class DominantPhaseOutputs<dim>;
+
+    ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
+
     ASPECT_REGISTER_MATERIAL_MODEL(ViscoPlastic,
                                    "visco plastic",
                                    "An implementation of an incompressible visco(elastic)-plastic rheology "

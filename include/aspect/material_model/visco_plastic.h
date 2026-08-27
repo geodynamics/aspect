@@ -180,6 +180,37 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
+
+    /**
+     * Additional output fields for the dominant phase index of each chemical
+     * composition, looked up from the P-T material data file (column 7).
+     * One scalar field per chemical composition (including background) is
+     * written, carrying the integer phase label that is dominant at the
+     * local pressure and temperature.  This output is only created when
+     * "Use dominant phase for viscosity" is @p true.
+     */
+    template <int dim>
+    class DominantPhaseOutputs : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        /**
+         * Constructor.  @p n_points is the number of evaluation points;
+         * @p composition_names contains one name per chemical composition
+         * (background first) and determines the number of scalar fields.
+         */
+        DominantPhaseOutputs (const unsigned int n_points,
+                              const std::vector<std::string> &composition_names);
+
+        std::vector<double> get_nth_output (const unsigned int idx) const override;
+
+        /**
+         * Dominant phase indices for each chemical composition (outer index)
+         * at each evaluation point (inner index).  Values are stored as
+         * @p double so they fit the NamedAdditionalMaterialOutputs interface.
+         */
+        std::vector<std::vector<double>> dominant_phase_indices;
+    };
+
     template <int dim>
     class ViscoPlastic : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
