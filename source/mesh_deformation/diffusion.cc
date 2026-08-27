@@ -34,6 +34,7 @@
 #include <deal.II/lac/precondition.h>
 #include <deal.II/lac/trilinos_precondition.h>
 #include <deal.II/lac/sparsity_tools.h>
+#include <chrono>
 #include <boost/lexical_cast.hpp>
 
 namespace aspect
@@ -93,6 +94,8 @@ namespace aspect
     {
       // Check that the current timestep does not exceed the diffusion timestep
       check_diffusion_time_step(mesh_deformation_dof_handler, boundary_ids);
+
+      const auto t_diffusion_start = std::chrono::steady_clock::now();
 
       // Set up constraints
       AffineConstraints<double> matrix_constraints(mesh_locally_relevant, mesh_locally_relevant);
@@ -211,6 +214,8 @@ namespace aspect
 
       matrix_constraints.close();
 
+      const auto t_after_constraints = std::chrono::steady_clock::now();
+
       // Set up the system to solve
       LinearAlgebra::SparseMatrix matrix;
 
@@ -234,6 +239,8 @@ namespace aspect
       LinearAlgebra::Vector system_rhs, solution;
       system_rhs.reinit(mesh_locally_owned, this->get_mpi_communicator());
       solution.reinit(mesh_locally_owned, this->get_mpi_communicator());
+
+      const auto t_after_matrix_setup = std::chrono::steady_clock::now();
 
       // Initialize Gauss-Legendre quadrature for degree+1 quadrature points of the surface faces
       const QGauss<dim-1> face_quadrature(mesh_deformation_dof_handler.get_fe().degree+1);
@@ -403,6 +410,8 @@ namespace aspect
       system_rhs.compress (VectorOperation::add);
       matrix.compress(VectorOperation::add);
 
+      const auto t_after_assembly = std::chrono::steady_clock::now();
+
       // Jacobi seems to be fine here.  Other preconditioners (ILU, IC) run into trouble
       // because the matrix is mostly empty, since we don't touch internal vertices.
       LinearAlgebra::PreconditionJacobi preconditioner_mass;
@@ -432,6 +441,17 @@ namespace aspect
                                                            exc,
                                                            this->get_mpi_communicator());
         }
+
+      const auto t_after_solve = std::chrono::steady_clock::now();
+      const auto ms = [](auto a, auto b) {
+        return std::chrono::duration_cast<std::chrono::milliseconds>(b-a).count();
+      };
+      this->get_pcout()
+        << "   Diffusion timing [ms]: constraints=" << ms(t_diffusion_start, t_after_constraints)
+        << "  matrix_setup=" << ms(t_after_constraints, t_after_matrix_setup)
+        << "  assembly=" << ms(t_after_matrix_setup, t_after_assembly)
+        << "  solve(" << solver_control.last_step() << " iters)=" << ms(t_after_assembly, t_after_solve)
+        << std::endl;
 
       // Distribute constraints on mass matrix
       matrix_constraints.distribute (solution);
