@@ -29,6 +29,7 @@
 #include <aspect/gravity_model/interface.h>
 #include <aspect/geometry_model/interface.h>
 #include <deal.II/base/array_view.h>
+#include <deal.II/dofs/dof_tools.h>
 
 #include <fstream>
 
@@ -111,6 +112,26 @@ namespace aspect
 #else
       AssertThrow(false, ExcMessage("To use the 'Landlab' mesh deformation plugin, ASPECT needs to be configured using ASPECT_WITH_LANDLAB=ON."));
 #endif
+    }
+
+
+
+    template <int dim>
+    double
+    Landlab<dim>::
+    boundary_composition (const types::boundary_id boundary_indicator,
+                          const Point<dim> &/*position*/,
+                          const unsigned int compositional_field) const
+    {
+      if (boundary_indicator != this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top"))
+        return 0.0;
+
+      if ( this->introspection().compositional_name_exists("sediment_age") &&
+           compositional_field == this->introspection().compositional_index_for_name("sediment_age"))
+        {
+          return this->get_parameters().convert_to_years ? this->get_time()/year_in_seconds : this->get_time();
+        }
+      return 0.0;
     }
 
 
