@@ -652,15 +652,11 @@ namespace aspect
     // has the correct boundary values:
     u0 = 0;
 
-#if DEAL_II_VERSION_GTE(9,6,0)
     IndexSet stokes_dofs (this->get_dof_handler().n_dofs());
     stokes_dofs.add_range (0, u0.size());
     const AffineConstraints<double> current_stokes_constraints
       = this->get_current_constraints().get_view (stokes_dofs);
     current_stokes_constraints.distribute(u0);
-#else
-    this->get_current_constraints().distribute(u0);
-#endif
 
     u0.update_ghost_values();
 
@@ -1380,15 +1376,11 @@ namespace aspect
     solution_copy.update_ghost_values();
     internal::ChangeVectorTypes::copy(distributed_stokes_solution,solution_copy);
 
-#if DEAL_II_VERSION_GTE(9,6,0)
     IndexSet stokes_dofs (this->get_dof_handler().n_dofs());
     stokes_dofs.add_range (0, distributed_stokes_solution.size());
     const AffineConstraints<double> current_stokes_constraints
       = this->get_current_constraints().get_view (stokes_dofs);
     current_stokes_constraints.distribute(distributed_stokes_solution);
-#else
-    this->get_current_constraints().distribute(distributed_stokes_solution);
-#endif
 
     // now rescale the pressure back to real physical units
     distributed_stokes_solution.block(block_p) *= this->get_pressure_scaling();
@@ -1493,11 +1485,7 @@ namespace aspect
             DoFTools::extract_locally_relevant_dofs(dof_handler, locally_relevant_dofs);
 #endif
 
-#if DEAL_II_VERSION_GTE(9,6,0)
             constraint.reinit(dof_handler.locally_owned_dofs(), locally_relevant_dofs);
-#else
-            constraint.reinit(locally_relevant_dofs);
-#endif
 
             this->get_geometry_model().make_periodicity_constraints(dof_handler,
                                                                     constraint);
@@ -1606,11 +1594,7 @@ namespace aspect
             DoFTools::extract_locally_relevant_dofs(dof_handler, locally_relevant_dofs);
 #endif
 
-#if DEAL_II_VERSION_GTE(9,6,0)
             constraint.reinit(dof_handler.locally_owned_dofs(), locally_relevant_dofs);
-#else
-            constraint.reinit(locally_relevant_dofs);
-#endif
 
             this->get_geometry_model().make_periodicity_constraints(dof_handler,
                                                                     constraint);

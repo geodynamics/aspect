@@ -96,12 +96,8 @@ namespace aspect
 
             if (integrator_substep == 0)
               {
-#if DEAL_II_VERSION_GTE(9, 6, 0)
                 // Get a reference to the particle location, so that we can update it in-place
                 Point<dim> &location = p.get_location();
-#else
-                Point<dim> location = p.get_location();
-#endif
                 k[0] = dt * (*old_velocity);
 
                 Point<dim> new_location = location + 0.5 * k[0];
@@ -116,14 +112,9 @@ namespace aspect
                   {
                     properties[property_indices[0] + i] = location[i];
                     properties[property_indices[1] + i] = k[0][i];
-#if DEAL_II_VERSION_GTE(9, 6, 0)
                     location[i] = new_location[i];
-#endif
                   }
 
-#if !DEAL_II_VERSION_GTE(9, 6, 0)
-                p.set_location(new_location);
-#endif
               }
             else if (integrator_substep == 1)
               {

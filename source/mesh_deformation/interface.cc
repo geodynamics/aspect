@@ -765,15 +765,9 @@ namespace aspect
                     {
                       if (plugin_constraints.is_constrained(local_line) == false)
                         {
-#if DEAL_II_VERSION_GTE(9,6,0)
                           plugin_constraints.add_constraint(local_line,
                                                             {},
                                                             current_plugin_constraints.get_inhomogeneity(local_line));
-#else
-                          plugin_constraints.add_line(local_line);
-                          plugin_constraints.set_inhomogeneity(local_line,
-                                                               current_plugin_constraints.get_inhomogeneity(local_line));
-#endif
                         }
                       else
                         {
@@ -803,12 +797,8 @@ namespace aspect
       // because this object is used for updating the displacement in
       // compute_mesh_displacements().
       mesh_velocity_constraints.clear();
-#if DEAL_II_VERSION_GTE(9,6,0)
       mesh_velocity_constraints.reinit(mesh_deformation_dof_handler.locally_owned_dofs(),
                                        mesh_locally_relevant);
-#else
-      mesh_velocity_constraints.reinit(mesh_locally_relevant);
-#endif
       // mesh_velocity_constraints can use the same hanging node
       // information that was used for mesh_vertex constraints.
       mesh_velocity_constraints.merge(mesh_vertex_constraints);
@@ -885,15 +875,9 @@ namespace aspect
                     {
                       if (plugin_constraints.is_constrained(local_line) == false)
                         {
-#if DEAL_II_VERSION_GTE(9,6,0)
                           plugin_constraints.add_constraint(local_line,
                                                             {},
                                                             current_plugin_constraints.get_inhomogeneity(local_line));
-#else
-                          plugin_constraints.add_line(local_line);
-                          plugin_constraints.set_inhomogeneity(local_line,
-                                                               current_plugin_constraints.get_inhomogeneity(local_line));
-#endif
                         }
                       else
                         {
@@ -1222,15 +1206,10 @@ namespace aspect
 
 
           AffineConstraints<double> level_constraints;
-#if DEAL_II_VERSION_GTE(9,6,0)
           level_constraints.reinit(mesh_deformation_dof_handler.locally_owned_mg_dofs(level),
                                    relevant_dofs);
           for (const auto index : mg_constrained_dofs.get_boundary_indices(level))
             level_constraints.constrain_dof_to_zero(index);
-#else
-          level_constraints.reinit(relevant_dofs);
-          level_constraints.add_lines(mg_constrained_dofs.get_boundary_indices(level));
-#endif
           level_constraints.close();
 
           const Mapping<dim> &mapping = get_level_mapping(level);
@@ -1240,12 +1219,8 @@ namespace aspect
           if (!no_flux_boundary.empty())
             {
               AffineConstraints<double> user_level_constraints;
-#if DEAL_II_VERSION_GTE(9,6,0)
               user_level_constraints.reinit(mesh_deformation_dof_handler.locally_owned_mg_dofs(level),
                                             relevant_dofs);
-#else
-              user_level_constraints.reinit(relevant_dofs);
-#endif
               const IndexSet &refinement_edge_indices =
                 mg_constrained_dofs.get_refinement_edge_indices(level);
               VectorTools::compute_no_normal_flux_constraints_on_level(
@@ -1663,12 +1638,8 @@ namespace aspect
       // after setup_dofs(), as is done, for instance, during mesh
       // refinement.
       mesh_vertex_constraints.clear();
-#if DEAL_II_VERSION_GTE(9,6,0)
       mesh_vertex_constraints.reinit(mesh_deformation_dof_handler.locally_owned_dofs(),
                                      mesh_locally_relevant);
-#else
-      mesh_vertex_constraints.reinit(mesh_locally_relevant);
-#endif
       DoFTools::make_hanging_node_constraints(mesh_deformation_dof_handler, mesh_vertex_constraints);
 
       // We can safely close this now

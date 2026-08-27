@@ -66,7 +66,6 @@ namespace aspect
       // overall vector, so that they form a contiguous range starting
       // at zero. The assertion checks this, but this could easily be
       // generalized if the Stokes block were not starting at zero.
-#if DEAL_II_VERSION_GTE(9,6,0)
       {
         Assert (velocity_block_index == 0, ExcNotImplemented());
       }
@@ -75,9 +74,6 @@ namespace aspect
       stokes_dofs.add_range (0, distributed_stokes_solution.size());
       const AffineConstraints<double> current_stokes_constraints
         = this->get_current_constraints().get_view (stokes_dofs);
-#else
-      const AffineConstraints<double> &current_stokes_constraints = this->get_current_constraints();
-#endif
 
       double initial_nonlinear_residual = numbers::signaling_nan<double>();
       double final_linear_residual      = numbers::signaling_nan<double>();

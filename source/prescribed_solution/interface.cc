@@ -111,16 +111,11 @@ namespace aspect
                     !current_constraints.is_constrained(local_dof_indices[q]) &&
                     should_be_constrained[q] == true)
                   {
-#if DEAL_II_VERSION_GTE(9,6,0)
                     // Add a constraint of the form dof[q] = u_i
                     // to the list of constraints.
                     current_constraints.add_constraint(local_dof_indices[q],
                                                        {},
                                                        solution[q]);
-#else
-                    current_constraints.add_line(local_dof_indices[q]);
-                    current_constraints.set_inhomogeneity(local_dof_indices[q], solution[q]);
-#endif
 
                   }
               }
