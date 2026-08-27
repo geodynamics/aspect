@@ -461,26 +461,15 @@ namespace aspect
     select_default_solver_and_averaging();
 
     if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg)
-      {
-        stokes_matrix_free = create_matrix_free_solver<dim>(*this, parameters);
-        stokes_matrix_free->initialize_simulator(*this);
-        stokes_matrix_free->parse_parameters(prm);
-        stokes_matrix_free->initialize();
-      }
+      stokes_solver = create_matrix_free_solver<dim>(*this, parameters);
     else if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::direct_solver)
-      {
-        stokes_direct = std::make_unique<StokesSolver::Direct<dim>>();
-        stokes_direct->initialize_simulator(*this);
-        stokes_direct->parse_parameters(prm);
-        stokes_direct->initialize();
-      }
+      stokes_solver = std::make_unique<StokesSolver::Direct<dim>>();
     else
-      {
-        stokes_matrix_based = std::make_unique<StokesSolver::MatrixBased<dim>>(*this);
-        stokes_matrix_based->initialize_simulator(*this);
-        stokes_matrix_based->parse_parameters(prm);
-        stokes_matrix_based->initialize();
-      }
+      stokes_solver = std::make_unique<StokesSolver::MatrixBased<dim>>(*this);
+
+    stokes_solver->initialize_simulator(*this);
+    stokes_solver->parse_parameters(prm);
+    stokes_solver->initialize();
 
     postprocess_manager.initialize_simulator (*this);
     postprocess_manager.parse_parameters (prm);
@@ -1015,10 +1004,10 @@ namespace aspect
     if (solver_scheme_solves_stokes_equations(parameters))
       {
         // The matrix-free solver does not work with melt transport
-        Assert(!(parameters.include_melt_transport && stokes_matrix_free),
+        Assert(!(parameters.include_melt_transport && is_stokes_matrix_free()),
                ExcNotImplemented());
 
-        if (stokes_matrix_free)
+        if (is_stokes_matrix_free())
           {
             // nothing couples in the matrix free solver
           }
@@ -1594,8 +1583,8 @@ namespace aspect
     rebuild_stokes_preconditioner = true;
 
     // Setup matrix-free dofs
-    if (stokes_matrix_free)
-      stokes_matrix_free->setup_dofs();
+    if (is_stokes_matrix_free())
+      dynamic_cast<StokesMatrixFreeHandler<dim>*>(stokes_solver.get())->setup_dofs();
 
     computing_timer.leave_subsection("Setup dof systems");
   }
@@ -2005,8 +1994,8 @@ namespace aspect
         compute_current_constraints ();
 
         // GMG boundary conditions are currently handled as part of setup_dofs()
-        if (stokes_matrix_free)
-          stokes_matrix_free->setup_dofs();
+        if (is_stokes_matrix_free())
+          dynamic_cast<StokesMatrixFreeHandler<dim>*>(stokes_solver.get())->setup_dofs();
 
         // if compute_current_constraints() changed which DoFs are constrained,
         // we need to rebuild the system matrices
@@ -2434,8 +2423,6 @@ namespace aspect
     pcout << resource_output.str();
 
     CitationInfo::print_info_block (pcout);
-
-    stokes_matrix_free.reset();
   }
 }
 

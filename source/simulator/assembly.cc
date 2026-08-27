@@ -381,7 +381,7 @@ namespace aspect
   void
   Simulator<dim>::assemble_stokes_preconditioner ()
   {
-    if (stokes_matrix_free)
+    if (is_stokes_matrix_free())
       return;
 
     system_preconditioner_matrix = 0;
@@ -764,7 +764,7 @@ namespace aspect
 
     if (assemble_newton_stokes_system)
       {
-        if (!assemble_newton_stokes_matrix && !stokes_matrix_free)
+        if (!assemble_newton_stokes_matrix && !is_stokes_matrix_free())
           timer_section_name += " rhs";
         else if (assemble_newton_stokes_matrix && newton_handler->parameters.newton_derivative_scaling_factor == 0)
           timer_section_name += " Picard";
@@ -772,7 +772,7 @@ namespace aspect
           timer_section_name += " Newton";
       }
 
-    if (stokes_matrix_free)
+    if (is_stokes_matrix_free())
       {
         rebuild_stokes_matrix = false;
         assemble_newton_stokes_matrix = false;
@@ -793,7 +793,7 @@ namespace aspect
     // Note that for Dirichlet boundary conditions in matrix-free computations,
     // we will update the right-hand side with boundary information in
     // StokesMatrixFreeHandler::correct_stokes_rhs().
-    if (!stokes_matrix_free)
+    if (!is_stokes_matrix_free())
       Assert(rebuild_stokes_matrix || boundary_velocity_manager.get_prescribed_boundary_velocity_indicators().empty(),
              ExcInternalError("If we have inhomogeneous constraints, we must re-assemble the system matrix."));
 
@@ -885,8 +885,8 @@ namespace aspect
     system_rhs.compress(VectorOperation::add);
 
     // If we change the system_rhs, matrix-free Stokes must update
-    if (stokes_matrix_free)
-      stokes_matrix_free->assemble();
+    if (is_stokes_matrix_free())
+      dynamic_cast<StokesMatrixFreeHandler<dim>*>(stokes_solver.get())->assemble();
 
     // if the model is compressible then we need to adjust the right hand
     // side of the equation to make it compatible with the matrix on the

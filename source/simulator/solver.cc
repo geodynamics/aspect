@@ -22,9 +22,7 @@
 #include <aspect/simulator.h>
 #include <aspect/global.h>
 #include <aspect/melt.h>
-#include <aspect/simulator/solver/stokes_matrix_based.h>
-#include <aspect/simulator/solver/stokes_matrix_free.h>
-#include <aspect/simulator/solver/stokes_direct.h>
+#include <aspect/simulator/solver/interface.h>
 
 #include <deal.II/lac/solver_gmres.h>
 
@@ -211,44 +209,15 @@ namespace aspect
   {
     computing_timer.enter_subsection("Solve Stokes system");
 
-    const std::string name = [&]() -> std::string
-    {
-      if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg)
-        return stokes_matrix_free->name();
-      if (parameters.use_direct_stokes_solver)
-        return stokes_direct->name();
-
-      return stokes_matrix_based->name();
-    }();
-
-    pcout << "   Solving Stokes system (" << name << ")... " << std::flush;
+    pcout << "   Solving Stokes system (" << stokes_solver->name() << ")... " << std::flush;
 
     StokesSolver::SolverOutputs outputs;
 
-    if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg)
-      {
-        outputs = stokes_matrix_free->solve(system_matrix,
-                                            system_rhs,
-                                            assemble_newton_stokes_system,
-                                            last_pressure_normalization_adjustment,
-                                            solution_vector);
-      }
-    else if (parameters.use_direct_stokes_solver)
-      {
-        outputs = stokes_direct->solve(system_matrix,
-                                       system_rhs,
-                                       assemble_newton_stokes_system,
-                                       last_pressure_normalization_adjustment,
-                                       solution_vector);
-      }
-    else
-      {
-        outputs = stokes_matrix_based->solve(system_matrix,
-                                             system_rhs,
-                                             assemble_newton_stokes_system,
-                                             last_pressure_normalization_adjustment,
-                                             solution_vector);
-      }
+    outputs = stokes_solver->solve(system_matrix,
+                                   system_rhs,
+                                   assemble_newton_stokes_system,
+                                   last_pressure_normalization_adjustment,
+                                   solution_vector);
 
     last_pressure_normalization_adjustment = outputs.pressure_normalization_adjustment;
 
