@@ -23,6 +23,7 @@
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 #include <aspect/geometry_model/box.h>
+#include <aspect/geometry_model/two_merged_boxes.h>
 #include <aspect/simulator.h>
 #include <aspect/simulator/solver/matrix_free_operators.h>
 #include <aspect/simulator/solver/stokes_matrix_free.h>
@@ -1420,7 +1421,8 @@ namespace aspect
                   {
                     Point<dim-1> surface_point;
                     std::array<double, dim> natural_coord = this->get_geometry_model().cartesian_to_natural_coordinates(fs_fe_values.quadrature_point(j));
-                    if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()))
+                    if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()) ||
+                        Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()))
                       {
                         for (unsigned int d=0; d<dim-1; ++d)
                           surface_point[d] = natural_coord[d];
