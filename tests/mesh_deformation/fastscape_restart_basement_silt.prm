@@ -29,7 +29,7 @@
 #
 # Enable if: ASPECT_WITH_FASTSCAPE
 
-include $ASPECT_SOURCE_DIR/tests/fastscape_test_fixed_ghost_nodes.prm
+include $ASPECT_SOURCE_DIR/tests/mesh_deformation/fastscape_test_fixed_ghost_nodes.prm
 
 set End time           = 1.2e5
 set Resume computation = false
