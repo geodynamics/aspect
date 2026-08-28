@@ -1,7 +1,7 @@
 # This test is identical to function_mesh_deformation_tangential_mesh_velocity_spherical.prm
 # but with spherical coordinates.
 
-include $ASPECT_SOURCE_DIR/tests/function_mesh_deformation_tangential_mesh_velocity_spherical.prm
+include $ASPECT_SOURCE_DIR/tests/mesh_deformation/function_mesh_deformation_tangential_mesh_velocity_spherical.prm
 
 
 subsection Mesh deformation
