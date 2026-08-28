@@ -5,7 +5,7 @@
 # copied from fastscape_boundary_composition.prm
 # Enable if: ASPECT_WITH_LANDLAB
 
-include $ASPECT_SOURCE_DIR/tests/fastscape_test_open_ghost_nodes.prm
+include $ASPECT_SOURCE_DIR/tests/mesh_deformation/fastscape_test_open_ghost_nodes.prm
 
 ####  Global parameters
 set Dimension                              = 2
@@ -30,7 +30,7 @@ subsection Mesh deformation
 
   subsection Landlab
     set Script name = landlab_boundary_composition
-    set Script path = $ASPECT_SOURCE_DIR/tests/
+    set Script path = $ASPECT_SOURCE_DIR/tests/mesh_deformation/
   end
 end
 

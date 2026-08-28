@@ -3,7 +3,7 @@
 
 set Dimension = 3
 
-include $ASPECT_SOURCE_DIR/tests/chunk_initial_topography_ascii_data_3d.prm
+include $ASPECT_SOURCE_DIR/tests/mesh_deformation/chunk_initial_topography_ascii_data_3d.prm
 
 set Nonlinear solver scheme = no Advection, no Stokes
 

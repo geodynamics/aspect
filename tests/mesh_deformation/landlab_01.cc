@@ -33,7 +33,7 @@ int f()
       AssertThrow(false, dealii::ExcMessage("Numpy init failed!"));
     }
 
-  PyRun_SimpleString("import sys; sys.path.append(\"" ASPECT_SOURCE_DIR "/tests\")");
+  PyRun_SimpleString("import sys; sys.path.append(\"" ASPECT_SOURCE_DIR "/tests/mesh_deformation\")");
 
   // avoid floating point exceptions in Landlab Python code:
 #ifdef ASPECT_USE_FP_EXCEPTIONS

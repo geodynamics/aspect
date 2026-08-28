@@ -10,7 +10,7 @@
 
 # MPI: 1
 
-include $ASPECT_SOURCE_DIR/tests/box_initial_mesh_deformation_inverted_cells_fail.prm
+include $ASPECT_SOURCE_DIR/tests/mesh_deformation/box_initial_mesh_deformation_inverted_cells_fail.prm
 
 subsection Mesh deformation
   set Number of initial mesh deformation substeps = 10

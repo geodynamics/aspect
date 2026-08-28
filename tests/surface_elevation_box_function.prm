@@ -3,7 +3,7 @@
 
 set Dimension = 2
 
-include $ASPECT_SOURCE_DIR/tests/box_initial_topography_function.prm
+include $ASPECT_SOURCE_DIR/tests/mesh_deformation/box_initial_topography_function.prm
 
 set Nonlinear solver scheme = no Advection, no Stokes
 
