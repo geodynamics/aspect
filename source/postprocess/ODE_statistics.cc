@@ -71,17 +71,11 @@ namespace aspect
     std::pair<std::string,std::string>
     ODEStatistics<dim>::execute (TableHandler &statistics)
     {
-#if DEAL_II_VERSION_GTE(9,6,0)
       const double average_iteration_count = number_of_solves > 0
                                              ?
                                              total_iteration_count / number_of_solves
                                              :
                                              total_iteration_count;
-#else
-      // The computation is not correct for dealii versions older than
-      // June 2024.
-      const double average_iteration_count = std::numeric_limits<double>::quiet_NaN();
-#endif
       statistics.add_value("Average iterations for ODE solver",
                            average_iteration_count);
 

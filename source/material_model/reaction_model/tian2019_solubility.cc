@@ -104,31 +104,18 @@ namespace aspect
 
             for (unsigned int j = 0; j<devolatilization_enthalpy_changes[i].size(); ++j)
               {
-#if DEAL_II_VERSION_GTE(9, 6, 0)
                 LR_values[i] += devolatilization_enthalpy_changes[i][j] * Utilities::pow(inverse_pressure_for_reaction, devolatilization_enthalpy_changes[i].size() - 1 - j);
-#else
-                LR_values[i] += devolatilization_enthalpy_changes[i][j] * std::pow(inverse_pressure_for_reaction, devolatilization_enthalpy_changes[i].size() - 1 - j);
-#endif
               }
 
             for (unsigned int j = 0; j<water_mass_fractions[i].size(); ++j)
               {
-#if DEAL_II_VERSION_GTE(9, 6, 0)
                 csat_values[i] += i==3 ? water_mass_fractions[i][j] * Utilities::pow(std::log10(pressure_for_reaction_in_GPa), water_mass_fractions[i].size() - 1 - j) :\
                                   water_mass_fractions[i][j] * Utilities::pow(pressure_for_reaction_in_GPa, water_mass_fractions[i].size() - 1 - j);
-#else
-                csat_values[i] += i==3 ? water_mass_fractions[i][j] * std::pow(std::log10(pressure_for_reaction_in_GPa), water_mass_fractions[i].size() - 1 - j) :\
-                                  water_mass_fractions[i][j] * std::pow(pressure_for_reaction_in_GPa, water_mass_fractions[i].size() - 1 - j);
-#endif
               }
 
             for (unsigned int j = 0; j<devolatilization_onset_temperatures[i].size(); ++j)
               {
-#if DEAL_II_VERSION_GTE(9, 6, 0)
                 Td_values[i] += devolatilization_onset_temperatures[i][j] * Utilities::pow(pressure_for_reaction_in_GPa, devolatilization_onset_temperatures[i].size() - 1 - j);
-#else
-                Td_values[i] += devolatilization_onset_temperatures[i][j] * std::pow(pressure_for_reaction_in_GPa, devolatilization_onset_temperatures[i].size() - 1 - j);
-#endif
               }
           }
 

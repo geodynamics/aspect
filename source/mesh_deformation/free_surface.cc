@@ -97,9 +97,7 @@ namespace aspect
 
       // set up constraints
       AffineConstraints<double> mass_matrix_constraints(
-#if DEAL_II_VERSION_GTE(9,6,0)
         mesh_deformation_dof_handler.locally_owned_dofs(),
-#endif
         mesh_locally_relevant);
       DoFTools::make_hanging_node_constraints(mesh_deformation_dof_handler, mass_matrix_constraints);
 
@@ -277,14 +275,9 @@ namespace aspect
           if (mesh_velocity_constraints.can_store_line(index))
             if (mesh_velocity_constraints.is_constrained(index)==false)
               {
-#if DEAL_II_VERSION_GTE(9,6,0)
                 mesh_velocity_constraints.add_constraint(index,
                                                          {},
                                                          boundary_velocity[index]);
-#else
-                mesh_velocity_constraints.add_line(index);
-                mesh_velocity_constraints.set_inhomogeneity(index, boundary_velocity[index]);
-#endif
               }
         }
     }

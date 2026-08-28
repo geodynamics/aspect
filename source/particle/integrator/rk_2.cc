@@ -87,12 +87,8 @@ namespace aspect
             if (integrator_substep == 0)
               {
                 const Tensor<1,dim> k1 = dt * (*old_velocity);
-#if DEAL_II_VERSION_GTE(9, 6, 0)
                 // Get a reference to the particle location, so that we can update it in-place
                 Point<dim> &location = it->get_location();
-#else
-                Point<dim> location = it->get_location();
-#endif
                 Point<dim> new_location = location + 0.5 * k1;
 
                 // Check if we crossed a periodic boundary and if necessary adjust positions
@@ -103,13 +99,8 @@ namespace aspect
                 for (unsigned int i=0; i<dim; ++i)
                   {
                     properties[property_index_old_location + i] = location[i];
-#if DEAL_II_VERSION_GTE(9, 6, 0)
                     location[i] = new_location[i];
-#endif
                   }
-#if !DEAL_II_VERSION_GTE(9, 6, 0)
-                it->set_location(new_location);
-#endif
               }
             else if (integrator_substep == 1)
               {
@@ -119,11 +110,7 @@ namespace aspect
                                          :
                                          dt * (*old_velocity);
 
-#if DEAL_II_VERSION_GTE(9, 6, 0)
                 Point<dim> &location = it->get_location();
-#else
-                Point<dim> location = it->get_location();
-#endif
 
                 for (unsigned int i=0; i<dim; ++i)
                   location[i] = properties[property_index_old_location + i] + k2[i];
@@ -132,9 +119,6 @@ namespace aspect
                 if (at_periodic_boundary)
                   this->get_geometry_model().adjust_positions_for_periodicity(location);
 
-#if !DEAL_II_VERSION_GTE(9, 6, 0)
-                it->set_location(location);
-#endif
               }
             else
               {

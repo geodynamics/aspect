@@ -58,14 +58,9 @@ namespace aspect
                   {
                     // set some nonsensical values:
                     const double value = static_cast<double>(index) * 10.0;
-#if DEAL_II_VERSION_GTE(9,6,0)
                     constraints.add_constraint(index,
                                                {},
                                                value);
-#else
-                    constraints.add_line(index);
-                    constraints.set_inhomogeneity(index, value);
-#endif
                   }
             }
 
