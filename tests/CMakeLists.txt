@@ -493,6 +493,7 @@ add_subdirectory(postprocess)
 add_subdirectory(prescribed_solution)
 add_subdirectory(reactions_and_two_phase_flow)
 add_subdirectory(rheology)
+add_subdirectory(volume_of_fluid)
 
 if (ASPECT_ENABLE_PERFORMANCE_TESTS)
   add_subdirectory(performance)
