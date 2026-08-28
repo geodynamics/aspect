@@ -1,0 +1,237 @@
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 3,556 (2,178+289+1,089)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 9+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 2.3304e-16, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 2.3304e-16, 7.08361e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.08361e-08
+
+
+   Postprocessing:
+     Writing particle output: output-particle_generation_time/particles/particles-00000
+
+*** Timestep 1:  t=0.15625 years, dt=0.15625 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 1.81564e-13, 7.08361e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08361e-08
+
+
+   Postprocessing:
+     Number of advected particles: 24800
+
+*** Timestep 2:  t=0.3125 years, dt=0.15625 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 1.24056e-13, 7.08361e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08361e-08
+
+
+   Postprocessing:
+     Number of advected particles: 24800
+
+*** Timestep 3:  t=0.46875 years, dt=0.15625 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 1.24056e-13, 7.08361e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08361e-08
+
+
+   Postprocessing:
+     Number of advected particles: 24381
+
+*** Timestep 4:  t=0.625 years, dt=0.15625 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 1.24056e-13, 7.08361e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08361e-08
+
+
+   Postprocessing:
+     Number of advected particles: 24203
+
+*** Timestep 5:  t=0.78125 years, dt=0.15625 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 1.24056e-13, 7.08361e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08361e-08
+
+
+   Postprocessing:
+     Number of advected particles: 23884
+
+*** Timestep 6:  t=0.9375 years, dt=0.15625 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 1.24056e-13, 7.08361e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08361e-08
+
+
+   Postprocessing:
+     Number of advected particles: 23631
+
+*** Timestep 7:  t=1.09375 years, dt=0.15625 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 1.24056e-13, 7.08361e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08361e-08
+
+
+   Postprocessing:
+     Number of advected particles: 23380
+
+*** Timestep 8:  t=1.25 years, dt=0.15625 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 1.24056e-13, 7.08361e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08361e-08
+
+
+   Postprocessing:
+     Number of advected particles: 23117
+
+*** Timestep 9:  t=1.40625 years, dt=0.15625 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 1.24056e-13, 7.08361e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08361e-08
+
+
+   Postprocessing:
+     Number of advected particles: 22863
+
+*** Timestep 10:  t=1.5625 years, dt=0.15625 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 1.24056e-13, 7.08361e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08361e-08
+
+
+   Postprocessing:
+     Number of advected particles: 22585
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+*** Timestep 11:  t=1.71875 years, dt=0.15625 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 2+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 2.9345e-14, 1.34876e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.34876e-07
+
+
+   Postprocessing:
+     Number of advected particles: 17585
+
+*** Timestep 12:  t=2.01719 years, dt=0.298437 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 2+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 4.7786e-14, 2.48532e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.48532e-07
+
+
+   Postprocessing:
+     Number of advected particles: 16453
+
+*** Timestep 13:  t=2.32969 years, dt=0.3125 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 3+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 4.78011e-14, 2.26412e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.26412e-07
+
+
+   Postprocessing:
+     Number of advected particles: 15634
+
+*** Timestep 14:  t=2.64219 years, dt=0.3125 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 1+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 5.2778e-14, 1.04281e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.04281e-07
+
+
+   Postprocessing:
+     Number of advected particles: 14656
+
+*** Timestep 15:  t=2.95469 years, dt=0.3125 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 3+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 4.96752e-14, 1.84323e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.84323e-07
+
+
+   Postprocessing:
+     Number of advected particles: 13759
+
+*** Timestep 16:  t=3.26719 years, dt=0.3125 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 2+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 6.35879e-14, 1.11964e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.11964e-07
+
+
+   Postprocessing:
+     Number of advected particles: 12825
+
+*** Timestep 17:  t=3.57969 years, dt=0.3125 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 2+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 5.77567e-14, 1.25989e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.25989e-07
+
+
+   Postprocessing:
+     Number of advected particles: 11923
+
+*** Timestep 18:  t=3.89219 years, dt=0.3125 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 5.71396e-14, 6.68775e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 6.68775e-08
+
+
+   Postprocessing:
+     Number of advected particles: 11011
+
+*** Timestep 19:  t=4 years, dt=0.107813 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 2.66731e-14, 8.85311e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 8.85311e-08
+
+
+   Postprocessing:
+     Writing particle output: output-particle_generation_time/particles/particles-00001
+
+Termination requested by criterion: end time
+
+
+

@@ -1,0 +1,76 @@
+# This is a test for the particle generation time property. It is a box with a 
+# prescribed downward flow. New particle are generated at the top of the box
+# and advected downwards.
+
+set Dimension                              = 2
+set End time                               = 4
+set Maximum time step                      = 1
+set Output directory                       = particle-generation-time-output
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Use years instead of seconds           = true
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 5
+    set Y extent = 5
+  end
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = top:function 
+  set Tangential velocity boundary indicators = left, right
+
+  subsection Function
+    set Function expression = 0; -1
+  end
+end
+
+subsection Gravity model
+  set Model name = ascii data
+end
+
+subsection Initial temperature model
+  set List of model names =  function
+
+  subsection Function
+    set Coordinate system   = depth
+    set Function expression = 1000
+  end
+end
+
+subsection Material model
+  set Model name = simple
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 4
+end
+
+subsection Postprocess
+  set List of postprocessors = particles
+
+  subsection Particles
+    set Time between data output = 4
+    set Data output format = gnuplot
+  end
+end
+
+subsection Particles
+    set Load balancing strategy = remove and add particles
+    set Minimum particles per cell = 50
+    set Maximum particles per cell = 300
+
+    set List of particle properties = particle generation time
+    set Particle generator name = reference cell
+    set Update ghost particles = true
+
+
+    subsection Generator
+      subsection Reference cell
+        set Number of particles per cell per direction = 10
+      end
+    end
+end
