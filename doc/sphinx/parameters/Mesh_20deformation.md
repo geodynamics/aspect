@@ -37,6 +37,8 @@ Using this definition, the plugin then solves for one time step, i.e., using as 
 This surface velocity is used to deform the surface and as a boundary condition for solving the Laplace equation to determine the mesh velocity in the domain interior. Diffusion can be applied every timestep, mimicking surface processes of erosion and deposition, or at a user-defined timestep interval to purely smooth the surface topography to avoid too great a distortion of mesh elements when a free surface is also used.
 
 &lsquo;free surface&rsquo;: A plugin that computes the deformation of surface vertices according to the solution of the flow problem. In particular this means if the surface of the domain is left open to flow, this flow will carry the mesh with it. The implementation was described in {cite}`rose_freesurface`, with the stabilization of the free surface originally described in {cite}`kaus:etal:2010`.
+
+&lsquo;landlab&rsquo;: A mesh deformation plugin that lets a Python script control the deformation of the surface. It is meant for coupling with the landscape evolution code Landlab, but any other script that provides the necessary functions can be used. It is necessary to have Python and numpy with their C APIs installed and that ASPECT_WITH_PYTHON and ASPECT_WITH_LANDLAB are enabled when ASPECT is configured with CMake.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Mesh deformation mapping order<parameters:Mesh_20deformation/Mesh_20deformation_20mapping_20order>`
@@ -157,4 +159,33 @@ If the function you are describing represents a vector-valued function with mult
 **Pattern:** [Selection normal|vertical ]
 
 **Documentation:** After each time step the free surface must be advected in the direction of the velocity field. Mass conservation requires that the mesh velocity is in the normal direction of the surface. However, for steep topography or large curvature, advection in the normal direction can become ill-conditioned, and instabilities in the mesh can form. Projection of the mesh velocity onto the local vertical direction can preserve the mesh quality better, but at the cost of slightly poorer mass conservation of the domain.
+::::
+
+(parameters:Mesh_20deformation/Landlab)=
+## **Subsection:** Mesh deformation / Landlab
+::::{dropdown} __Parameter:__ {ref}`MPI ranks for Landlab<parameters:Mesh_20deformation/Landlab/MPI_20ranks_20for_20Landlab>`
+:name: parameters:Mesh_20deformation/Landlab/MPI_20ranks_20for_20Landlab
+**Default value:** 1
+
+**Pattern:** [Integer range 1...2147483647 (inclusive)]
+
+**Documentation:** Number of ranks to use for the Landlab simulation. Currently, only 1 is supported.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Script name<parameters:Mesh_20deformation/Landlab/Script_20name>`
+:name: parameters:Mesh_20deformation/Landlab/Script_20name
+**Default value:**
+
+**Pattern:** [Anything]
+
+**Documentation:** Name of the Python module to load (without .py extension).
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Script path<parameters:Mesh_20deformation/Landlab/Script_20path>`
+:name: parameters:Mesh_20deformation/Landlab/Script_20path
+**Default value:**
+
+**Pattern:** [Anything]
+
+**Documentation:** Path to the Python script to execute. Relative paths and the placeholders ASPECT_SOURCE_DIR and ASPECT_BINARY_DIR are allowed.
 ::::

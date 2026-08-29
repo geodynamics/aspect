@@ -114,6 +114,28 @@ namespace aspect
                                        static_cast<size_t>(PyArray_SIZE(arr)));
     }
 
+    /**
+     * Call a Python function from module @p pModule with name @p func_name
+     * Returns the result (caller must Py_DECREF). Throws on error.
+     */
+    inline
+    PyObject *call_python_function(PyObject *pModule, const char *func_name, PyObject *pArgs = nullptr)
+    {
+      PyObject *pFunc = PyObject_GetAttrString(pModule, func_name);
+      if (!pFunc || !PyCallable_Check(pFunc))
+        AssertThrow(false, ExcMessage(std::string("Failed to load function: ") + func_name));
+
+      PyObject *pValue = PyObject_CallObject(pFunc, pArgs);
+      Py_DECREF(pFunc);
+
+      if (pValue == nullptr)
+        {
+          if (PyErr_Occurred())
+            PyErr_Print();
+          AssertThrow(false, ExcMessage(std::string(func_name) + " returned NULL"));
+        }
+      return pValue;
+    }
   }
 #endif
 }

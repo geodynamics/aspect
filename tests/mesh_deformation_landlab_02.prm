@@ -1,0 +1,7 @@
+# Test "landlab" mesh deformation Landlab Python module in a
+# 3d box, with ASPECT in parallel and landlab in serial.
+#
+# Enable if: ASPECT_WITH_LANDLAB
+# MPI: 2
+
+include $ASPECT_SOURCE_DIR/tests/mesh_deformation_landlab_01.prm
