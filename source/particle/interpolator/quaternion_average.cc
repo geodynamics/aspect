@@ -43,6 +43,9 @@ namespace aspect
           particle_handler.particles_in_cell(cell);
 
         const unsigned int n_particles = std::distance(particle_range.begin(),particle_range.end());
+
+        AssertThrow(n_particles > 0, ExcMessage("A cell does not contain any particles. This case is not yet supported by the quaternion average."));
+
         const unsigned int n_particle_properties = particle_handler.n_properties_per_particle();
         AssertThrow(selected_properties.size() == not_quaternion_properties.size(), ExcMessage("component masks have unequal length") );
         ComponentMask selected_properties_not_quaternions = selected_properties & not_quaternion_properties;

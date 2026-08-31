@@ -1,4 +1,4 @@
-set Output directory         = output-shearbox-average-orthorhombic
+set Output directory             = output-shearbox-average-orthorhombic
 set CFL number                   = 0.1
 set Timing output frequency      = 10000
 set Dimension                    = 2
