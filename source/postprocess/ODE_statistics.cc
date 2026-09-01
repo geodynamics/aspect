@@ -21,11 +21,7 @@
 
 #include <aspect/postprocess/ODE_statistics.h>
 
-#include <deal.II/base/quadrature_lib.h>
-#include <deal.II/fe/fe_values.h>
-#include <aspect/simulator.h>
-
-
+#include <aspect/simulator_signals.h>
 
 namespace aspect
 {

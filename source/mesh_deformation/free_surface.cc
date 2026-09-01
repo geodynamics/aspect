@@ -21,11 +21,10 @@
 
 #include <aspect/mesh_deformation/free_surface.h>
 #include <aspect/simulator_signals.h>
+#include <aspect/boundary_velocity/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/simulator/assemblers/interface.h>
-#include <aspect/melt.h>
-#include <aspect/simulator.h>
 #include <aspect/linear_algebra_types.h>
 
 #include <deal.II/dofs/dof_tools.h>

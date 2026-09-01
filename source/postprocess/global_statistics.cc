@@ -20,7 +20,8 @@
 
 
 #include <aspect/postprocess/global_statistics.h>
-#include <aspect/simulator.h>
+
+#include <aspect/simulator_signals.h>
 
 namespace aspect
 {

@@ -19,12 +19,12 @@
  */
 
 #include <aspect/particle/property/cpo_bingham_average.h>
+
 #include <aspect/particle/manager.h>
+#include <aspect/particle/property/interface.h>
+#include <aspect/particle/property/crystal_preferred_orientation.h>
 
 #include <aspect/utilities.h>
-#include <aspect/simulator.h>
-
-#include <boost/serialization/map.hpp>
 
 namespace aspect
 {
@@ -394,8 +394,8 @@ namespace aspect
         prm.enter_subsection("CPO Bingham Average");
         {
           // Get a pointer to the CPO particle property.
-          cpo_particle_property = std::make_unique<const Particle::Property::CrystalPreferredOrientation<dim>> (
-                                    this->get_particle_manager(this->get_particle_manager_index()).get_property_manager().template get_matching_active_plugin<Particle::Property::CrystalPreferredOrientation<dim>>());
+          cpo_particle_property = &this->get_particle_manager(this->get_particle_manager_index()).
+                                  get_property_manager().template get_matching_active_plugin<Particle::Property::CrystalPreferredOrientation<dim>>();
 
           random_number_seed = prm.get_integer ("Random number seed");
           n_grains = cpo_particle_property->get_number_of_grains();

@@ -20,7 +20,6 @@
 
 
 #include <aspect/particle/property/melt_particle.h>
-#include <aspect/simulator.h>
 #include <aspect/melt.h>
 
 namespace aspect

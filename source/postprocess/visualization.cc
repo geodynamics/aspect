@@ -20,14 +20,15 @@
 
 
 #include <aspect/postprocess/visualization.h>
+
 #include <aspect/global.h>
 #include <aspect/utilities.h>
-#include <aspect/simulator_access.h>
-#include <aspect/simulator.h>
+#include <aspect/simulator_signals.h>
+
 #include <aspect/geometry_model/interface.h>
 #include <aspect/mesh_deformation/interface.h>
-#include <deal.II/fe/mapping_q1_eulerian.h>
 
+#include <deal.II/fe/mapping_q1_eulerian.h>
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/numerics/data_out.h>
 #include <deal.II/numerics/data_out_faces.h>

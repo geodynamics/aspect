@@ -20,16 +20,7 @@
 
 
 #include <aspect/postprocess/topography.h>
-#include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/sphere.h>
-#include <aspect/geometry_model/spherical_shell.h>
-#include <aspect/geometry_model/chunk.h>
-#include <aspect/simulator.h>
-#include <aspect/global.h>
-
-#include <deal.II/fe/fe_values.h>
-#include <deal.II/base/quadrature_lib.h>
-#include <deal.II/fe/fe_values.h>
 
 #include <cmath>
 #include <limits>

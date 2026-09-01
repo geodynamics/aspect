@@ -19,8 +19,9 @@
 */
 
 #include <aspect/postprocess/visualization/boundary_strain_rate_residual.h>
+
+#include <aspect/geometry_model/interface.h>
 #include <aspect/postprocess/boundary_strain_rate_residual_statistics.h>
-#include <aspect/simulator.h>
 
 namespace aspect
 {

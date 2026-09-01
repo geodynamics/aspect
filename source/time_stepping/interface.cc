@@ -20,7 +20,8 @@
 
 
 #include <aspect/time_stepping/interface.h>
-#include <aspect/simulator.h>
+
+#include <aspect/utilities.h>
 
 namespace aspect
 {

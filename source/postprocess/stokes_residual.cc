@@ -20,18 +20,8 @@
 
 
 #include <aspect/postprocess/stokes_residual.h>
-#include <aspect/simulator.h>
-#include <aspect/global.h>
 
-#include <deal.II/grid/grid_generator.h>
-#include <deal.II/grid/tria.h>
-#include <deal.II/fe/fe_dgq.h>
-#include <deal.II/dofs/dof_handler.h>
-#include <deal.II/numerics/data_out_stack.h>
-
-
-#include <cmath>
-#include <vector>
+#include <aspect/simulator_signals.h>
 
 namespace aspect
 {

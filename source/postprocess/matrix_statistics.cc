@@ -21,12 +21,7 @@
 
 #include <aspect/postprocess/matrix_statistics.h>
 
-#include <aspect/simulator.h>
 #include <aspect/utilities.h>
-
-#include <string>
-
-#include <mpi.h>
 
 
 namespace aspect

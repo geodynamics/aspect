@@ -20,9 +20,11 @@
 
 
 #include <aspect/postprocess/visualization/darcy_velocity.h>
+
+#include <aspect/gravity_model/interface.h>
+
 #include <aspect/utilities.h>
 #include <aspect/melt.h>
-#include <aspect/simulator.h>
 
 namespace aspect
 {

@@ -20,13 +20,7 @@
 
 
 #include <aspect/postprocess/rotation_statistics.h>
-#include <aspect/material_model/simple.h>
-#include <aspect/global.h>
 #include <aspect/simulator.h>
-
-#include <deal.II/base/quadrature_lib.h>
-#include <deal.II/fe/fe_values.h>
-
 
 namespace aspect
 {

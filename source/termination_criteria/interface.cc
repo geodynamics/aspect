@@ -20,7 +20,6 @@
 
 
 #include <aspect/termination_criteria/interface.h>
-#include <aspect/simulator.h>
 #include <aspect/utilities.h>
 
 #include <typeinfo>

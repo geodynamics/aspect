@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/timing_statistics.h>
-#include <aspect/simulator.h>
 
 namespace aspect
 {

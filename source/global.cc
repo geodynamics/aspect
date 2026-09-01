@@ -31,6 +31,7 @@
 #endif
 
 #include <cstring>
+#include <fstream>
 
 #include <mpi.h>
 

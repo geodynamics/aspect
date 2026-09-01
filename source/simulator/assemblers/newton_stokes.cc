@@ -18,11 +18,13 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/simulator.h>
 #include <aspect/newton.h>
-#include <aspect/simulator_access.h>
+
 #include <aspect/utilities.h>
 #include <aspect/material_model/rheology/elasticity.h>
+#include <aspect/prescribed_dilation/interface.h>
+#include <aspect/gravity_model/interface.h>
+#include <aspect/boundary_traction/interface.h>
 
 namespace aspect
 {

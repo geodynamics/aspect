@@ -21,8 +21,6 @@
 
 #include <aspect/heating_model/shear_heating_with_melt.h>
 #include <aspect/melt.h>
-#include <aspect/simulator.h>
-#include <deal.II/numerics/fe_field_function.h>
 
 
 namespace aspect

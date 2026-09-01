@@ -18,10 +18,10 @@
   <http://www.gnu.org/licenses/>.
 */
 
+#include <aspect/solution_evaluator.h>
+
 #include <aspect/global.h>
 #include <aspect/utilities.h>
-#include <aspect/solution_evaluator.h>
-#include <aspect/simulator.h>
 #include <aspect/melt.h>
 
 namespace aspect
