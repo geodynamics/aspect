@@ -507,6 +507,11 @@ namespace aspect
         double sediment_deposition_g;
 
         /**
+         * Flag for allowing chemical compositions to have different erosional parameters for bedrock
+         */
+        bool use_compositional_erosion_bedrock;
+
+        /**
          * Function of bedrock river incision rate (kf) for the stream power law.
          * Represents the parameter `kf` in the FastScape landscape evolution equation.
          * Units: ${m^(1-2drainage_area_exponent)/yr}$ if "Use years instead of seconds in output" is true;
@@ -530,7 +535,7 @@ namespace aspect
          * convert it into  ${m^(1-2drainage_area_exponent)/yr}$ for Fastscape.
          * This variable is read from the parameter file through a parameter called 'Bedrock river incision rate'.
          */
-        double constant_bedrock_river_incision_rate;
+        std::vector<double> constant_bedrock_river_incision_rate;
 
         /**
          * Sediment river incision rate for the stream power law.
@@ -567,7 +572,7 @@ namespace aspect
          * This function is only used only if use_kf_distribution_function is false.
          * This variable is read from the parameter file through a parameter called 'Bedrock diffusivity'.
          */
-        double constant_bedrock_transport_coefficient;
+        std::vector<double> constant_bedrock_transport_coefficient;
 
         /**
          * Sediment transport coefficient for hillslope diffusion.
