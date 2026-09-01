@@ -2159,7 +2159,6 @@ namespace aspect
       friend class StokesMatrixFreeHandler<dim>;
       friend class StokesSolver::MatrixBased<dim>;
       template <int dimension, int velocity_degree> friend class StokesMatrixFreeHandlerLocalSmoothingImplementation;
-      template <int dimension, int velocity_degree> friend class StokesMatrixFreeHandlerGlobalCoarseningImplementation;
       friend struct Parameters<dim>;
   };
 }

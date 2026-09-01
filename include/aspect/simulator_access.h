@@ -983,6 +983,16 @@ namespace aspect
       pressure_rhs_needs_compatibility_modification() const;
 
       /**
+       * Return whether to the best of our knowledge the A block of the
+       * Stokes system is symmetric. This is the case for most models, except
+       * if additional non-symmetric terms are added by special assemblers
+       * (e.g., the free surface stabilization term). This can be important
+       * information for picking the preconditioner of the A block.
+       */
+      bool
+      stokes_A_block_is_symmetric() const;
+
+      /**
        * Return whether the model uses a prescribed Stokes solution.
        */
       bool

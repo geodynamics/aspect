@@ -119,7 +119,7 @@ namespace aspect
        * model and storing the information necessary for a later call
        * to solve().
        */
-      void assemble() override;
+      void assemble(LinearAlgebra::BlockVector &system_rhs) override;
 
       /**
        * Computes and sets the diagonal for both the mass matrix operator and the A-block
@@ -171,7 +171,7 @@ namespace aspect
        * Add correction to system RHS for non-zero boundary condition. See description in
        * StokesMatrixFreeHandler::correct_stokes_rhs() for more information.
        */
-      void correct_stokes_rhs();
+      void correct_stokes_rhs(LinearAlgebra::BlockVector &system_rhs);
 
 
       Simulator<dim> &sim;

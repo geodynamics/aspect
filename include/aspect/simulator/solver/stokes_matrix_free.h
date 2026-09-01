@@ -53,7 +53,7 @@ namespace aspect
        * model and storing the information necessary for a later call
        * to solve().
        */
-      virtual void assemble()=0;
+      virtual void assemble(LinearAlgebra::BlockVector &system_rhs)=0;
 
       /**
        * Computes and sets the diagonal for both the mass matrix

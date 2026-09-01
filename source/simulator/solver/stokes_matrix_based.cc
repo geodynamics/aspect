@@ -587,7 +587,7 @@ namespace aspect
         system_matrix.block(velocity_block_index,velocity_block_index),
         *sim.Amg_preconditioner,
         /* do_solve_A = */ false,
-        sim.stokes_A_block_is_symmetric(),
+        this->stokes_A_block_is_symmetric(),
         this->get_parameters().linear_solver_A_block_tolerance);
       const aspect::internal::BlockSchurPreconditioner<aspect::internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG, LinearAlgebra::Vector, LinearAlgebra::SparseMatrix>,
             internal::SchurComplementOperator, LinearAlgebra::SparseMatrix, LinearAlgebra::BlockVector>
@@ -601,7 +601,7 @@ namespace aspect
         system_matrix.block(velocity_block_index,velocity_block_index),
         *sim.Amg_preconditioner,
         /* do_solve_A = */ true,
-        sim.stokes_A_block_is_symmetric(),
+        this->stokes_A_block_is_symmetric(),
         this->get_parameters().linear_solver_A_block_tolerance);
       const aspect::internal::BlockSchurPreconditioner<aspect::internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG, LinearAlgebra::Vector, LinearAlgebra::SparseMatrix>,
             internal::SchurComplementOperator, LinearAlgebra::SparseMatrix, LinearAlgebra::BlockVector>
@@ -747,10 +747,10 @@ namespace aspect
                                              solver_control_expensive);
 
       // do some cleanup now that we have the solution
-      sim.remove_nullspace(solution_vector, distributed_stokes_solution);
+      this->remove_nullspace(solution_vector, distributed_stokes_solution);
 
       if (solve_newton_system == false)
-        outputs.pressure_normalization_adjustment = sim.normalize_pressure(solution_vector);
+        outputs.pressure_normalization_adjustment = this->normalize_pressure(solution_vector);
 
       return outputs;
     }
