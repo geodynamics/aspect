@@ -30,7 +30,6 @@
 namespace aspect
 {
 
-#ifdef ASPECT_WITH_FASTSCAPE
 
   namespace MeshDeformation
   {
@@ -185,16 +184,20 @@ namespace aspect
     template <int dim>
     FastScape<dim>::~FastScape ()
     {
+#ifdef ASPECT_WITH_FASTSCAPE
       // It doesn't seem to matter if this is done on all processors or only on the one that runs
       // FastScape as the destroy function checks if the memory is allocated.
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         fastscape_destroy_();
+#endif
     }
 
     template <int dim>
     void
     FastScape<dim>::initialize ()
     {
+#ifdef ASPECT_WITH_FASTSCAPE
+
       CitationInfo::add("fastscape");
 
       const GeometryModel::Box<dim> *box_geometry
@@ -315,6 +318,9 @@ namespace aspect
                                    true /*do not print message in log file*/);
 
       last_output_time = 0;
+#else
+      AssertThrow(false, ExcMessage("The FastScape plugin was requested, but ASPECT was not compiled with FastScape support."));
+#endif
     }
 
 
@@ -324,6 +330,7 @@ namespace aspect
                                                              AffineConstraints<double> &mesh_velocity_constraints,
                                                              const std::set<types::boundary_id> &boundary_ids) const
     {
+#ifdef ASPECT_WITH_FASTSCAPE
 
       // Because there is no increase in time during timestep 0, we return and only
       // initialize and run FastScape from timestep 1 and on.
@@ -691,6 +698,11 @@ namespace aspect
                                                   mesh_velocity_constraints);
 
       this->get_computing_timer().leave_subsection("FastScape plugin");
+#else
+      (void) mesh_deformation_dof_handler;
+      (void) mesh_velocity_constraints;
+      (void) boundary_ids;
+#endif
     }
 
 
@@ -698,6 +710,7 @@ namespace aspect
     std::vector<std::vector<double>>
     FastScape<dim>::get_aspect_values() const
     {
+#ifdef ASPECT_WITH_FASTSCAPE
 
       const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
       std::vector<std::vector<double>> local_aspect_values(dim+2, std::vector<double>());
@@ -795,6 +808,9 @@ namespace aspect
               }
 
       return local_aspect_values;
+#else
+      return std::vector<std::vector<double>>();
+#endif
     }
 
 
@@ -807,6 +823,7 @@ namespace aspect
                                                std::vector<double> &velocity_z,
                                                std::vector<std::vector<double>> &local_aspect_values) const
     {
+#ifdef ASPECT_WITH_FASTSCAPE
       for (unsigned int i=0; i<local_aspect_values[1].size(); ++i)
         {
           // In get_aspect_values(), we store an integer value as a double in local_aspect_values[1][...].
@@ -910,6 +927,15 @@ namespace aspect
       AssertThrow (fastscape_mesh_filled == true,
                    ExcMessage("The FastScape mesh is missing data. A likely cause for this is that the "
                               "maximum surface refinement or surface refinement difference are improperly set."));
+#else
+      (void) elevation;
+      (void) bedrock_transport_coefficient_array;
+      (void) bedrock_river_incision_rate_array;
+      (void) velocity_x;
+      (void) velocity_y;
+      (void) velocity_z;
+      (void) local_aspect_values;
+#endif
     }
 
 
@@ -919,6 +945,7 @@ namespace aspect
                                               std::vector<double> &silt_fraction,
                                               bool restart) const
     {
+#ifdef ASPECT_WITH_FASTSCAPE
       Assert (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0, ExcInternalError());
 
       // Initialize FastScape with grid and extent.
@@ -942,6 +969,12 @@ namespace aspect
           if (use_marine_component)
             fastscape_init_f_(silt_fraction.data());
         }
+#else
+      (void) elevation;
+      (void) basement;
+      (void) silt_fraction;
+      (void) restart;
+#endif
     }
 
 
@@ -955,6 +988,7 @@ namespace aspect
                                            const double &fastscape_timestep_in_years,
                                            const unsigned int &fastscape_iterations) const
     {
+#ifdef ASPECT_WITH_FASTSCAPE
       // This function can only be called on the root process where we run
       // Fastscape:
       Assert (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0,
@@ -1082,6 +1116,16 @@ namespace aspect
       }
 
       this->get_computing_timer().leave_subsection("Execute FastScape");
+#else
+      (void) elevation;
+      (void) extra_vtk_field;
+      (void) velocity_x;
+      (void) velocity_y;
+      (void) velocity_z;
+      (void) bedrock_transport_coefficient_array;
+      (void) fastscape_timestep_in_years;
+      (void) fastscape_iterations;
+#endif
     }
 
 
@@ -1090,6 +1134,7 @@ namespace aspect
                                                    std::vector<double> &bedrock_transport_coefficient_array,
                                                    std::vector<double> &bedrock_river_incision_rate_array) const
     {
+#ifdef ASPECT_WITH_FASTSCAPE
       // First for the wind barrier, we find the maximum height and index
       // along each line in the x and y direction.
       // If wind is east or west, we find maximum point for each ny row along x.
@@ -1215,6 +1260,11 @@ namespace aspect
                 }
             }
         }
+#else
+      (void) elevation;
+      (void) bedrock_transport_coefficient_array;
+      (void) bedrock_river_incision_rate_array;
+#endif
     }
 
 
@@ -1227,6 +1277,7 @@ namespace aspect
                                          const double &fastscape_timestep_in_years,
                                          const bool init) const
     {
+#ifdef ASPECT_WITH_FASTSCAPE
       // Copy the slopes at each point, this will be used to set an H
       // at the ghost nodes if a boundary mass flux is given.
       const unsigned int fastscape_array_size = fastscape_nx*fastscape_ny;
@@ -1509,12 +1560,22 @@ namespace aspect
               velocity_z[op_side-jj] = velocity_z[side+jj];
             }
         }
+#else
+      (void) elevation;
+      (void) velocity_x;
+      (void) velocity_y;
+      (void) velocity_z;
+      (void) bedrock_transport_coefficient_array;
+      (void) fastscape_timestep_in_years;
+      (void) init;
+#endif
     }
 
     template <int dim>
     bool FastScape<dim>::is_ghost_node(const unsigned int &index,
                                        const bool &exclude_boundaries) const
     {
+#ifdef ASPECT_WITH_FASTSCAPE
       if (use_ghost_nodes == false && exclude_boundaries == false)
         return false;
 
@@ -1527,6 +1588,11 @@ namespace aspect
         return true;
       else
         return false;
+#else
+      (void) index;
+      (void) exclude_boundaries;
+      return false;
+#endif
     }
 
 
@@ -1537,6 +1603,7 @@ namespace aspect
                                     const unsigned int &fastscape_nx,
                                     const unsigned int &fastscape_ny) const
     {
+#ifdef ASPECT_WITH_FASTSCAPE
       // Create data table based off of the given size.
       Table<dim,double> data_table;
       data_table.TableBase<dim,double>::reinit(size_idx);
@@ -1587,6 +1654,13 @@ namespace aspect
         }
 
       return data_table;
+#else
+      (void) values;
+      (void) size_idx;
+      (void) fastscape_nx;
+      (void) fastscape_ny;
+      return Table<dim,double>();
+#endif
     }
 
 
@@ -1598,6 +1672,7 @@ namespace aspect
                           const Point<dim> &position,
                           const unsigned int compositional_field) const
     {
+#ifdef ASPECT_WITH_FASTSCAPE
       // FastScape is only applied to the top boundary of the model domain.
       // If a composition value is requested for any other boundary,
       // return zero.
@@ -1637,6 +1712,12 @@ namespace aspect
         }
       else
         return 0.0;
+#else
+      (void) boundary_indicator;
+      (void) position;
+      (void) compositional_field;
+      return 0.0;
+#endif
     }
 
 
@@ -1645,7 +1726,11 @@ namespace aspect
     template <class Archive>
     void FastScape<dim>::serialize (Archive &ar, const unsigned int)
     {
+#ifdef ASPECT_WITH_FASTSCAPE
       ar &last_output_time;
+#else
+      (void) ar;
+#endif
     }
 
 
@@ -1654,6 +1739,7 @@ namespace aspect
     void
     FastScape<dim>::save (std::map<std::string, std::string> &status_strings) const
     {
+#ifdef ASPECT_WITH_FASTSCAPE
       // FastScape elevation values for restart.
       std::vector<double> elevation;
 
@@ -1711,6 +1797,9 @@ namespace aspect
       }
 
       status_strings["FastScape"] = os.str();
+#else
+      (void) status_strings;
+#endif
     }
 
 
@@ -1719,6 +1808,7 @@ namespace aspect
     void
     FastScape<dim>::load (const std::map<std::string, std::string> &status_strings)
     {
+#ifdef ASPECT_WITH_FASTSCAPE
       // FastScape elevation values for restart.
       std::vector<double> elevation;
 
@@ -1750,12 +1840,16 @@ namespace aspect
                              basement,
                              silt_fraction,
                              true);
+#else
+      (void) status_strings;
+#endif
     }
 
     template <int dim>
     void
     FastScape<dim>::update()
     {
+#ifdef ASPECT_WITH_FASTSCAPE
       // Set the time in seconds or years in each
       // of the used functions.
       const double time = this->get_time();
@@ -1775,6 +1869,7 @@ namespace aspect
         {
           sea_level_function.set_time(scaled_time);
         }
+#endif
     }
 
 
@@ -1783,7 +1878,11 @@ namespace aspect
     FastScape<dim>::
     needs_surface_stabilization () const
     {
+#ifdef ASPECT_WITH_FASTSCAPE
       return true;
+#else
+      return false;
+#endif
     }
 
 
@@ -2309,5 +2408,4 @@ namespace aspect
 
   }
 
-#endif
 }
