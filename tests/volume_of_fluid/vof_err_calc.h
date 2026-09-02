@@ -229,8 +229,8 @@ namespace aspect
 
     template <int dim>
     std::vector<double> VolumeOfFluidSpecifiedSolutionDiff<dim>::calc_error_level_set (const Function<dim> &func,
-        const unsigned int n_samp,
-        const unsigned int f_ind)
+                                                                                       const unsigned int n_samp,
+                                                                                       const unsigned int f_ind)
     {
       const LinearAlgebra::BlockVector &solution = this->get_solution();
 
@@ -312,7 +312,7 @@ namespace aspect
                 }
               const double dot = normal * xU;
               const double computed_fluid_fraction_at_point = VolumeOfFluid::Utilities::compute_fluid_fraction (h * normal,
-                                                              (d_compute - dot));
+                                                                                                                (d_compute - dot));
               const double diff = abs (solution_fluid_fraction_at_point - computed_fluid_fraction_at_point);
               val += diff * fe_err.JxW (i);
             }

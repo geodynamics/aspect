@@ -291,10 +291,10 @@ namespace aspect
 
     template <class OperatorType, class StokesMatrixType, class SchurComplementMatrixType, class VectorType>
     SchurApproximation<OperatorType, StokesMatrixType, SchurComplementMatrixType, VectorType>::SchurApproximation(const OperatorType &schur_preconditioner,
-        const StokesMatrixType &stokes_matrix,
-        const SchurComplementMatrixType &Schur_complement_block,
-        const bool do_solve_Schur_complement,
-        const double Schur_complement_tolerance)
+                                                                                                                  const StokesMatrixType &stokes_matrix,
+                                                                                                                  const SchurComplementMatrixType &Schur_complement_block,
+                                                                                                                  const bool do_solve_Schur_complement,
+                                                                                                                  const double Schur_complement_tolerance)
       :
       schur_preconditioner(schur_preconditioner),
       stokes_matrix(stokes_matrix),
@@ -307,7 +307,7 @@ namespace aspect
 
     template<class OperatorType, class StokesMatrixType, class SchurComplementMatrixType, class VectorType>
     void SchurApproximation<OperatorType, StokesMatrixType, SchurComplementMatrixType, VectorType>::vmult(VectorType &dst,
-        const VectorType &src) const
+                                                                                                          const VectorType &src) const
     {
       if (do_solve_Schur_complement)
         {

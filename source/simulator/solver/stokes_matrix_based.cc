@@ -519,8 +519,8 @@ namespace aspect
           // pressure).
           const double velocity_residual = system_matrix.block(velocity_block_index,
                                                                pressure_block_index).residual (distributed_stokes_solution.block(velocity_block_index),
-                                                                   linearized_stokes_initial_guess.block(pressure_block_index),
-                                                                   system_rhs.block(velocity_block_index));
+                                                                                               linearized_stokes_initial_guess.block(pressure_block_index),
+                                                                                               system_rhs.block(velocity_block_index));
           const double pressure_residual = system_rhs.block(pressure_block_index).l2_norm();
 
           solver_tolerance = this->get_parameters().linear_stokes_solver_tolerance *

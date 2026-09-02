@@ -31,8 +31,8 @@ void post_constraints_creation (const SimulatorAccess<dim> &simulator_access,
                                 AffineConstraints<double> &current_constraints)
 {
   simulator_access.get_statistics_object()
-  .add_value ("number of constraints",
-              current_constraints.n_constraints());
+                  .add_value ("number of constraints",
+                              current_constraints.n_constraints());
 }
 
 

@@ -21,12 +21,12 @@
 #include <aspect/global.h>
 
 #ifdef ASPECT_WITH_WORLD_BUILDER
-#  include <world_builder/config.h>
-#  include <world_builder/world.h>
+  #include <world_builder/config.h>
+  #include <world_builder/world.h>
 
-#  include <aspect/initial_temperature/world_builder.h>
-#  include <aspect/geometry_model/interface.h>
-#  include <aspect/gravity_model/interface.h>
+  #include <aspect/initial_temperature/world_builder.h>
+  #include <aspect/geometry_model/interface.h>
+  #include <aspect/gravity_model/interface.h>
 #endif
 
 

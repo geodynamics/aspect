@@ -84,10 +84,10 @@ namespace aspect
 
           // Calculate volume fractions from mass fractions
           const std::vector<double> mass_fractions = MaterialUtilities::compute_only_composition_fractions(in.composition[i],
-                                                     this->introspection().chemical_composition_field_indices());
+                                                                                                           this->introspection().chemical_composition_field_indices());
           const std::vector<double> volume_fractions = MaterialUtilities::compute_volumes_from_masses(mass_fractions,
-                                                       eos_outputs.densities,
-                                                       true);
+                                                                                                      eos_outputs.densities,
+                                                                                                      true);
 
           // Specific quantities are mass averaged
           out.specific_heat[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs.specific_heat_capacities, MaterialUtilities::arithmetic);
@@ -105,9 +105,9 @@ namespace aspect
           std::vector<double> phase_averaged_thermal_conductivities(volume_fractions.size());
           for (unsigned int c=0; c<volume_fractions.size(); ++c)
             phase_averaged_thermal_conductivities[c] = MaterialUtilities::phase_average_value(phase_function_values,
-                                                       n_phase_transitions_for_each_chemical_composition,
-                                                       thermal_conductivities,
-                                                       c);
+                                                                                              n_phase_transitions_for_each_chemical_composition,
+                                                                                              thermal_conductivities,
+                                                                                              c);
           out.thermal_conductivities[i] = MaterialUtilities::average_value (volume_fractions, phase_averaged_thermal_conductivities, MaterialUtilities::arithmetic);
 
 
@@ -227,7 +227,7 @@ namespace aspect
                                               std::make_unique<std::vector<unsigned int>>(n_phases_for_each_chemical_composition));
 
           viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
-                                prm);
+                                                                                            prm);
 
           // Make options file for parsing maps to double arrays
           std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();

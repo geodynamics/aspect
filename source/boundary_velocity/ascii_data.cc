@@ -69,7 +69,7 @@ namespace aspect
     template <int dim>
     Tensor<1,dim>
     AsciiData<dim>::
-    boundary_velocity (const types::boundary_id ,
+    boundary_velocity (const types::boundary_id,
                        const Point<dim> &position) const
     {
       Tensor<1,dim> velocity;

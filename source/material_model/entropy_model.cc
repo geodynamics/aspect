@@ -100,7 +100,7 @@ namespace aspect
         }
 
       lateral_viscosity_prefactor_lookup = std::make_unique<internal::LateralViscosityLookup>(data_directory+lateral_viscosity_file_name,
-                                           this->get_mpi_communicator());
+                                                                                              this->get_mpi_communicator());
     }
 
 

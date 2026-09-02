@@ -130,7 +130,7 @@ namespace aspect
                 "<evaluation_point_y> ")
             << (dim == 3 ? "<evaluation_point_z> " : "")
             << ("<velocity_x> "
-                "<velocity_y> ")
+              "<velocity_y> ")
             << (dim == 3 ? "<velocity_z> " : "")
             << "<pressure> <temperature>";
           for (unsigned int c=0; c<this->n_compositional_fields(); ++c)

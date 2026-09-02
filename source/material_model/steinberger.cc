@@ -459,7 +459,7 @@ namespace aspect
           max_eta                         = prm.get_double ("Maximum viscosity");
           max_lateral_eta_variation       = prm.get_double ("Maximum lateral viscosity variation");
           viscosity_averaging_scheme      = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
-                                            prm);
+                                                                                                        prm);
 
           // Thermal conductivity parameters
           if (prm.get ("Thermal conductivity formulation") == "constant")

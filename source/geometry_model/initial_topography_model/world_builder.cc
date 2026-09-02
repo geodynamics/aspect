@@ -12,17 +12,17 @@
 #include <aspect/global.h>
 
 #ifdef ASPECT_WITH_WORLD_BUILDER
-#  include <world_builder/config.h>
-#  if WORLD_BUILDER_VERSION_GTE(1,1,1)
-#    include <aspect/geometry_model/initial_topography_model/world_builder.h>
-#    include <aspect/geometry_model/interface.h>
-#    include <aspect/geometry_model/chunk.h>
-#    include <aspect/geometry_model/spherical_shell.h>
-#    include <aspect/geometry_model/two_merged_chunks.h>
-#    include <aspect/utilities.h>
+  #include <world_builder/config.h>
+  #if WORLD_BUILDER_VERSION_GTE(1,1,1)
+    #include <aspect/geometry_model/initial_topography_model/world_builder.h>
+    #include <aspect/geometry_model/interface.h>
+    #include <aspect/geometry_model/chunk.h>
+    #include <aspect/geometry_model/spherical_shell.h>
+    #include <aspect/geometry_model/two_merged_chunks.h>
+    #include <aspect/utilities.h>
 
-#    include <world_builder/world.h>
-#  endif
+    #include <world_builder/world.h>
+  #endif
 #endif
 
 

@@ -3123,8 +3123,8 @@ namespace aspect
 
           std::unique_ptr<Function<dim>> ref_func
             = std::make_unique<AnalyticSolutions::FunctionSolCx<dim>>(material_model.get_eta_B(),
-                                                                       material_model.get_background_density(),
-                                                                       this->n_compositional_fields());
+                                                                      material_model.get_background_density(),
+                                                                      this->n_compositional_fields());
 
           const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities + 2);
 

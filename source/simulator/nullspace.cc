@@ -329,7 +329,7 @@ namespace aspect
 
     // copy into the locally relevant vector
     relevant_dst.block(introspection.block_indices.velocities) =
-      tmp_distributed_stokes.block(introspection.block_indices.velocities);
+                  tmp_distributed_stokes.block(introspection.block_indices.velocities);
   }
 
 
@@ -495,7 +495,7 @@ namespace aspect
 
     // copy into the locally relevant vector
     relevant_dst.block(introspection.block_indices.velocities) =
-      tmp_distributed_stokes.block(introspection.block_indices.velocities);
+                  tmp_distributed_stokes.block(introspection.block_indices.velocities);
   }
 
 }

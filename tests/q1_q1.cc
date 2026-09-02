@@ -107,7 +107,7 @@ namespace aspect
          */
         virtual
         Tensor<1,dim>
-        boundary_velocity (const types::boundary_id ,
+        boundary_velocity (const types::boundary_id,
                            const Point<dim> &position) const;
 
       private:
@@ -257,7 +257,7 @@ namespace aspect
     template <>
     Tensor<1,2>
     DoneaHuertaBoundary<2>::
-    boundary_velocity (const types::boundary_id ,
+    boundary_velocity (const types::boundary_id,
                        const Point<2> &p) const
     {
       const DoneaHuertaMaterial<2> *
@@ -271,7 +271,7 @@ namespace aspect
     template <>
     Tensor<1,3>
     DoneaHuertaBoundary<3>::
-    boundary_velocity (const types::boundary_id ,
+    boundary_velocity (const types::boundary_id,
                        const Point<3> &) const
     {
       Assert (false, ExcNotImplemented());

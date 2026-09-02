@@ -24,10 +24,10 @@
 #include <aspect/melt.h>
 
 #ifdef ASPECT_WITH_LIBDAP
-#include <D4Connect.h>
-#include <Connect.h>
-#include <Response.h>
-#include <Array.h>
+  #include <D4Connect.h>
+  #include <Connect.h>
+  #include <Response.h>
+  #include <Array.h>
 #endif
 
 #include <array>
@@ -80,8 +80,8 @@ namespace aspect
       for (unsigned int i=0; i<rows.size(); ++i)
         {
           std::vector<std::string> current_columns = Utilities::possibly_extend_from_1_to_N(Utilities::split_string_list(rows[i]),
-                                                     n_columns,
-                                                     property_name);
+                                                                                            n_columns,
+                                                                                            property_name);
 
           for (unsigned int j=0; j<current_columns.size(); ++j)
             {
@@ -3380,7 +3380,8 @@ namespace aspect
           permutation_operator_3d[1][0][2]  = -1;
           permutation_operator_3d[2][1][0]  = -1;
           return permutation_operator_3d;
-        }();
+        }
+        ();
 
         return t;
       }

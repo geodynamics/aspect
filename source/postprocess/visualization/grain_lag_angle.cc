@@ -47,7 +47,7 @@ namespace aspect
       GrainLagAngle<dim>::execute() const
       {
         std::pair<std::string, std::unique_ptr<Vector<float>>> return_value("grain_lag_angle",
-                                                                              std::make_unique<Vector<float>>(this->get_triangulation().n_active_cells()));
+                                                                            std::make_unique<Vector<float>>(this->get_triangulation().n_active_cells()));
 
         const QMidpoint<dim> quadrature_formula;
         const unsigned int n_q_points = quadrature_formula.size(); // this is 1 for QMidpoint
@@ -72,7 +72,7 @@ namespace aspect
                         this->get_solution());
               // Also get velocity gradients
               std::vector<Tensor<2, dim>> velocity_gradient(n_q_points,
-                                                             Tensor<2, dim>());
+                                                            Tensor<2, dim>());
               fe_values[this->introspection().extractors.velocities].get_function_gradients(
                 this->get_solution(), velocity_gradient);
 

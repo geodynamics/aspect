@@ -71,7 +71,7 @@ namespace aspect
         // compute compressive stress components at quadrature points
         const unsigned int n_tensor_components = SymmetricTensor<2,dim>::n_independent_components;
         std::vector<Vector<double>> stress_components(n_quadrature_points,
-                                                       Vector<double>(n_tensor_components));
+                                                      Vector<double>(n_tensor_components));
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {

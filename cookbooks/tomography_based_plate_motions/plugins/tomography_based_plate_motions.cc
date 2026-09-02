@@ -202,8 +202,8 @@ namespace aspect
       // temperature and velocity, we want to update the lateral average profile after each temperature
       // and Stokes solve.
       this->get_signals().post_stokes_solver.connect([&](const SimulatorAccess<dim> &,
-                                                         const unsigned int ,
-                                                         const unsigned int ,
+                                                         const unsigned int,
+                                                         const unsigned int,
                                                          const SolverControl &,
                                                          const SolverControl &)
       {
@@ -211,8 +211,8 @@ namespace aspect
       });
 
       this->get_signals().post_advection_solver.connect([&](const SimulatorAccess<dim> &,
-                                                            const unsigned int ,
-                                                            const unsigned int ,
+                                                            const unsigned int,
+                                                            const unsigned int,
                                                             const SolverControl &)
       {
         this->update();

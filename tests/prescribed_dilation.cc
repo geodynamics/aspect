@@ -132,7 +132,7 @@ namespace aspect
     template <>
     Tensor<1,2>
     MyBoundary<2>::
-    boundary_velocity (const types::boundary_id ,
+    boundary_velocity (const types::boundary_id,
                        const Point<2> &p) const
     {
       return AnalyticSolutions::velocity (p, eta);
@@ -143,7 +143,7 @@ namespace aspect
     template <>
     Tensor<1,3>
     MyBoundary<3>::
-    boundary_velocity (const types::boundary_id ,
+    boundary_velocity (const types::boundary_id,
                        const Point<3> &p) const
     {
       Assert (false, ExcNotImplemented());

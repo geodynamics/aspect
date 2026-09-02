@@ -238,7 +238,7 @@ namespace aspect
         options.list_of_allowed_keys = compositional_field_names;
 
         dynamic_angles_of_internal_friction = Utilities::MapParsing::parse_map_to_double_array (prm.get("Dynamic angles of internal friction"),
-                                              options);
+                                                                                                options);
 
         // Convert angles from degrees to radians
         for (double &angle : dynamic_angles_of_internal_friction)

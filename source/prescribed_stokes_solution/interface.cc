@@ -71,7 +71,7 @@ namespace aspect
         return nullptr;
 
       std::unique_ptr<Interface<dim>>plugin = std::get<dim>(registered_plugins).create_plugin (model_name,
-                                               "Prescribed Stokes solution::Model name");
+                                                                                               "Prescribed Stokes solution::Model name");
       return plugin;
     }
 

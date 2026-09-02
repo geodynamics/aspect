@@ -69,7 +69,7 @@ void MPI_max_and_data(const double &local_max,
                       double &global_data)
 {
   MPI_Op myop;
-  MPI_Op_create(&myop_func, /* commutes? */ 1 ,&myop);
+  MPI_Op_create(&myop_func, /* commutes? */ 1,&myop);
 
   double local[] = {local_max, local_data};
   double global[2];
@@ -864,7 +864,7 @@ namespace aspect
             {
               fe_values.reinit (cell);
               fe_values[this->introspection().extractors.compositional_fields[porosity_index]].get_function_values (this->get_solution(),
-                  compositional_values);
+                                                                                                                    compositional_values);
               for (unsigned int q=0; q<n_q_points; ++q)
                 {
                   const double composition = compositional_values[q];
@@ -891,7 +891,7 @@ namespace aspect
           {
             fe_values.reinit (cell);
             fe_values[this->introspection().extractors.compositional_fields[porosity_index]].get_function_values (this->get_solution(),
-                compositional_values);
+                                                                                                                  compositional_values);
 
             for (unsigned int q=0; q<n_q_points; ++q)
               {
@@ -940,7 +940,7 @@ namespace aspect
         {
           store_initial_pressure();
           ref_func = std::make_unique<AnalyticSolutions::FunctionSolitaryWave<dim>>(offset,0.0,initial_pressure,
-                                                                                     this->get_geometry_model().maximal_depth(), this->introspection().n_components);
+                                                                                    this->get_geometry_model().maximal_depth(), this->introspection().n_components);
         }
 
       double delta=0;

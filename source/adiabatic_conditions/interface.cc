@@ -132,7 +132,7 @@ namespace aspect
       prm.leave_subsection ();
 
       std::unique_ptr<Interface<dim>>plugin = std::get<dim>(registered_plugins).create_plugin (model_name,
-                                               "Adiabatic Conditions model::Model name");
+                                                                                               "Adiabatic Conditions model::Model name");
 
       return plugin;
 

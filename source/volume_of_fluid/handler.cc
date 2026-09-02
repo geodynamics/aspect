@@ -334,7 +334,7 @@ namespace aspect
       const std::vector<std::string> x_initialization_type = Utilities::split_string_list(prm.get("Volume of fluid initialization type"));
 
       initialization_data_type = std::vector<VolumeOfFluid::VolumeOfFluidInputType::Kind> (n_volume_of_fluid_fields,
-                                 VolumeOfFluid::VolumeOfFluidInputType::composition);
+                                                                                           VolumeOfFluid::VolumeOfFluidInputType::composition);
 
       for (const auto &p : x_initialization_type)
         {

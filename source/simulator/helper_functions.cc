@@ -71,26 +71,26 @@ namespace aspect
   {
     // write the preamble
     out << "digraph Plugins\n"
-        "{\n"
-        "  splines=line;\n"
-        "  splines=true;\n"
-        "  overlap=false;\n"
-        "  edge [fontname=\"FreeSans\",\n"
-        "        fontsize=\"10\",\n"
-        "        labelfontname=\"FreeSans\",\n"
-        "        labelfontsize=\"10\",\n"
-        "        color=\"black\",\n"
-        "        style=\"solid\"];\n"
-        "  node [fontname=\"FreeSans\",\n"
-        "        fontsize=\"10\",\n"
-        "        shape=\"rectangle\",\n"
-        "        height=0.2,\n"
-        "        width=0.4,\n"
-        "        color=\"black\",\n"
-        "        fillcolor=\"white\",\n"
-        "        style=\"filled\"];\n"
-        "  layout=neato;\n"
-        "\n";
+           "{\n"
+           "  splines=line;\n"
+           "  splines=true;\n"
+           "  overlap=false;\n"
+           "  edge [fontname=\"FreeSans\",\n"
+           "        fontsize=\"10\",\n"
+           "        labelfontname=\"FreeSans\",\n"
+           "        labelfontsize=\"10\",\n"
+           "        color=\"black\",\n"
+           "        style=\"solid\"];\n"
+           "  node [fontname=\"FreeSans\",\n"
+           "        fontsize=\"10\",\n"
+           "        shape=\"rectangle\",\n"
+           "        height=0.2,\n"
+           "        width=0.4,\n"
+           "        color=\"black\",\n"
+           "        fillcolor=\"white\",\n"
+           "        style=\"filled\"];\n"
+           "  layout=neato;\n"
+           "\n";
 
     // then also write nodes for the Simulator and SimulatorAccess classes,
     // and an arrow from the former to the latter to indicate flow of
@@ -438,24 +438,24 @@ namespace aspect
     = [] (const typename DoFHandler<dim>::active_cell_iterator &cell) -> std::uint8_t
     {
       if (cell->refine_flag_set())
-        return 1;
+      return 1;
       if (cell->coarsen_flag_set())
         return 2;
-      return 0;
-    };
-    auto unpack
-    = [] (const typename DoFHandler<dim>::active_cell_iterator &cell, const std::uint8_t &flag) -> void
+        return 0;
+      };
+  auto unpack
+  = [] (const typename DoFHandler<dim>::active_cell_iterator &cell, const std::uint8_t &flag) -> void
     {
       cell->clear_coarsen_flag();
       cell->clear_refine_flag();
       if (flag==1)
-        cell->set_refine_flag();
+      cell->set_refine_flag();
       else if (flag==2)
         cell->set_coarsen_flag();
-    };
+      };
 
-    GridTools::exchange_cell_data_to_ghosts<std::uint8_t, DoFHandler<dim>>
-    (dof_handler, pack, unpack);
+  GridTools::exchange_cell_data_to_ghosts<std::uint8_t, DoFHandler<dim>>
+  (dof_handler, pack, unpack);
   }
 
 
@@ -560,7 +560,7 @@ namespace aspect
         // for a restarted computation than for one that ran straight
         // through
         rebuild_stokes_matrix =
-          rebuild_stokes_preconditioner = true;
+        rebuild_stokes_preconditioner = true;
       }
 
     // See if an additional checkpoint needs to be created. Time has already been advanced
@@ -585,7 +585,7 @@ namespace aspect
           .erase (parameters.additional_checkpoint_times.begin());
 
         rebuild_stokes_matrix =
-          rebuild_stokes_preconditioner = true;
+        rebuild_stokes_preconditioner = true;
       }
 
     return write_regular_checkpoint;
@@ -2330,7 +2330,7 @@ namespace aspect
                 if (consider_fluid_velocity)
                   {
                     fe_face_values[introspection.variable("fluid velocity").extractor_vector()].get_function_values(current_linearization_point,
-                        face_current_fluid_velocity_values);
+                                                                                                                    face_current_fluid_velocity_values);
                   }
 
                 // ... check if the face is an outflow boundary by integrating the normal velocities
@@ -2667,7 +2667,7 @@ namespace aspect
 
     // Swap old content back in:
     current_linearization_point.block(introspection.block_indices.velocities)
-    .swap(temp_velocity_linearization_point);
+                               .swap(temp_velocity_linearization_point);
 
     pcout << "   Initial Newton Stokes residual = " << initial_newton_residual << ", v = " << initial_newton_residual_vel << ", p = " << initial_newton_residual_p << std::endl << std::endl;
     return initial_newton_residual;

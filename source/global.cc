@@ -27,7 +27,7 @@
 #include <deal.II/base/vectorization.h>
 
 #ifdef ASPECT_WITH_WORLD_BUILDER
-#include <world_builder/config.h>
+  #include <world_builder/config.h>
 #endif
 
 #include <cstring>

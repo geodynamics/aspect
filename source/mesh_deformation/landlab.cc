@@ -23,7 +23,7 @@
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/patterns.h>
 #if DEAL_II_VERSION_GTE(9,8,0)
-#include <deal.II/numerics/data_out_points.h>
+  #include <deal.II/numerics/data_out_points.h>
 #endif
 
 #include <aspect/gravity_model/interface.h>

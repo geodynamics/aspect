@@ -330,7 +330,7 @@ namespace aspect
     SphericalShell<dim>::initialize ()
     {
       manifold = std::make_unique<internal::SphericalManifoldWithTopography<dim>>(this->get_initial_topography_model_pointer(),
-                                                                                   R0, R1);
+                                                                                  R0, R1);
     }
 
 

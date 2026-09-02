@@ -424,7 +424,7 @@ namespace aspect
               // get volumetric strain rate
               // see Keller et al. eq. 11.
               fe_values[this->introspection().extractors.velocities].get_function_divergences (this->get_solution(),
-                  volumetric_strain_rates);
+                                                                                               volumetric_strain_rates);
             }
 
           const double time_scale = this->convert_output_to_years() ? year_in_seconds : 1.0;
@@ -914,7 +914,7 @@ namespace aspect
           ref_viscosity = prm.get_double ("Reference viscosity");
 
           viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
-                                prm);
+                                                                                            prm);
 
           linear_viscosities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Linear viscosities"))),
                                                                        n_fields,

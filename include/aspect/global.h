@@ -38,13 +38,13 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 #include <boost/container/small_vector.hpp>
 
 #ifdef ASPECT_USE_TPETRA
-#include <deal.II/lac/trilinos_tpetra_vector.h>
-#include <deal.II/lac/trilinos_tpetra_block_vector.h>
-#include <deal.II/lac/trilinos_tpetra_sparse_matrix.h>
-#include <deal.II/lac/trilinos_tpetra_block_sparse_matrix.h>
+  #include <deal.II/lac/trilinos_tpetra_vector.h>
+  #include <deal.II/lac/trilinos_tpetra_block_vector.h>
+  #include <deal.II/lac/trilinos_tpetra_sparse_matrix.h>
+  #include <deal.II/lac/trilinos_tpetra_block_sparse_matrix.h>
 #else
-#include <deal.II/lac/trilinos_sparse_matrix.h>
-#include <deal.II/lac/trilinos_block_sparse_matrix.h>
+  #include <deal.II/lac/trilinos_sparse_matrix.h>
+  #include <deal.II/lac/trilinos_block_sparse_matrix.h>
 #endif
 
 
@@ -267,49 +267,49 @@ namespace aspect
   namespace LinearAlgebra
   {
 #ifdef ASPECT_USE_TPETRA
-    /**
-     * Typedef for the vector type used.
-     */
-    using Vector = dealii::LinearAlgebra::TpetraWrappers::Vector<double>;
+  /**
+  * Typedef for the vector type used.
+  */
+  using Vector = dealii::LinearAlgebra::TpetraWrappers::Vector<double>;
 
-    /**
-     * Typedef for the type used to describe vectors that consist of multiple
-     * blocks.
-     */
-    using BlockVector = dealii::LinearAlgebra::TpetraWrappers::BlockVector<double>;
+  /**
+  * Typedef for the type used to describe vectors that consist of multiple
+  * blocks.
+  */
+  using BlockVector = dealii::LinearAlgebra::TpetraWrappers::BlockVector<double>;
 
-    /**
-     * Typedef for the sparse matrix type used.
-     */
-    using SparseMatrix = dealii::LinearAlgebra::TpetraWrappers::SparseMatrix<double>;
+  /**
+  * Typedef for the sparse matrix type used.
+  */
+  using SparseMatrix = dealii::LinearAlgebra::TpetraWrappers::SparseMatrix<double>;
 
-    /**
-     * Typedef for the type used to describe sparse matrices that consist of
-     * multiple blocks.
-     */
-    using BlockSparseMatrix = dealii::LinearAlgebra::TpetraWrappers::BlockSparseMatrix<double>;
+  /**
+  * Typedef for the type used to describe sparse matrices that consist of
+  * multiple blocks.
+  */
+  using BlockSparseMatrix = dealii::LinearAlgebra::TpetraWrappers::BlockSparseMatrix<double>;
 #else
-    /**
-    * Typedef for the vector type used.
-    */
-    using Vector = dealii::TrilinosWrappers::MPI::Vector;
+  /**
+  * Typedef for the vector type used.
+  */
+  using Vector = dealii::TrilinosWrappers::MPI::Vector;
 
-    /**
-     * Typedef for the type used to describe vectors that consist of multiple
-     * blocks.
-     */
-    using BlockVector = dealii::TrilinosWrappers::MPI::BlockVector;
+  /**
+  * Typedef for the type used to describe vectors that consist of multiple
+  * blocks.
+  */
+  using BlockVector = dealii::TrilinosWrappers::MPI::BlockVector;
 
-    /**
-     * Typedef for the sparse matrix type used.
-     */
-    using SparseMatrix = dealii::TrilinosWrappers::SparseMatrix;
+  /**
+  * Typedef for the sparse matrix type used.
+  */
+  using SparseMatrix = dealii::TrilinosWrappers::SparseMatrix;
 
-    /**
-     * Typedef for the type used to describe sparse matrices that consist of
-     * multiple blocks.
-     */
-    using BlockSparseMatrix = dealii::TrilinosWrappers::BlockSparseMatrix;
+  /**
+  * Typedef for the type used to describe sparse matrices that consist of
+  * multiple blocks.
+  */
+  using BlockSparseMatrix = dealii::TrilinosWrappers::BlockSparseMatrix;
 #endif
   }
 

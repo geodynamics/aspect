@@ -586,7 +586,7 @@ namespace aspect
     const unsigned int n_slices = depth_bounds.size()-1;
 
     std::vector<std::vector<double>> values(n_properties,
-                                             std::vector<double>(n_slices,0.0));
+                                            std::vector<double>(n_slices,0.0));
     std::vector<double> volume(n_slices,0.0);
 
     // We would like to use a quadrature formula that is appropriately accurate laterally,
@@ -619,7 +619,7 @@ namespace aspect
     std::unique_ptr<Quadrature<dim>> quadrature_formula;
     if (geometry_unique_depth_direction != numbers::invalid_unsigned_int)
       quadrature_formula = std::make_unique<Quadrature<dim>>(internal::get_quadrature_formula<dim>(lateral_quadrature_degree,
-                                                              geometry_unique_depth_direction));
+                                                                                                   geometry_unique_depth_direction));
     else
       quadrature_formula = std::make_unique<Quadrature<dim>>(QIterated<dim>(QMidpoint<1>(),10));
 
@@ -631,9 +631,9 @@ namespace aspect
                              update_values | update_gradients | update_quadrature_points | update_JxW_values);
 
     std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),
-                                                          std::vector<double> (n_q_points));
+                                                         std::vector<double> (n_q_points));
     std::vector<std::vector<double>> output_values(n_properties,
-                                                    std::vector<double>(n_q_points));
+                                                   std::vector<double>(n_q_points));
 
     MaterialModel::MaterialModelInputs<dim> in(n_q_points,
                                                this->n_compositional_fields());

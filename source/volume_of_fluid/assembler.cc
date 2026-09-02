@@ -137,11 +137,11 @@ namespace aspect
 
     template <int dim>
     void VolumeOfFluidAssembler<dim>::local_assemble_boundary_face_volume_of_fluid_system (const VolumeOfFluidField<dim> &field,
-        const bool update_from_old,
-        const typename DoFHandler<dim>::active_cell_iterator &cell,
-        const unsigned int face_no,
-        internal::Assembly::Scratch::VolumeOfFluidSystem<dim> &scratch,
-        internal::Assembly::CopyData::VolumeOfFluidSystem<dim> &data) const
+                                                                                           const bool update_from_old,
+                                                                                           const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                                                                           const unsigned int face_no,
+                                                                                           internal::Assembly::Scratch::VolumeOfFluidSystem<dim> &scratch,
+                                                                                           internal::Assembly::CopyData::VolumeOfFluidSystem<dim> &data) const
     {
       const double volume_fraction_threshold = this->get_volume_of_fluid_handler().get_volume_fraction_threshold();
 
@@ -302,11 +302,11 @@ namespace aspect
 
     template <int dim>
     void VolumeOfFluidAssembler<dim>::local_assemble_internal_face_volume_of_fluid_system (const VolumeOfFluidField<dim> &field,
-        const bool update_from_old,
-        const typename DoFHandler<dim>::active_cell_iterator &cell,
-        const unsigned int face_no,
-        internal::Assembly::Scratch::VolumeOfFluidSystem<dim> &scratch,
-        internal::Assembly::CopyData::VolumeOfFluidSystem<dim> &data) const
+                                                                                           const bool update_from_old,
+                                                                                           const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                                                                           const unsigned int face_no,
+                                                                                           internal::Assembly::Scratch::VolumeOfFluidSystem<dim> &scratch,
+                                                                                           internal::Assembly::CopyData::VolumeOfFluidSystem<dim> &data) const
     {
       const double volume_fraction_threshold = this->get_volume_of_fluid_handler().get_volume_fraction_threshold();
       const bool old_velocity_available = (this->get_timestep_number() > 0);

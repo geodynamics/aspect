@@ -452,9 +452,9 @@ namespace aspect
                                                 1.0;
 
                           active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]
-                            = derivatives->viscosity_derivative_wrt_pressure[q] *
-                              derivatives->viscosity_derivative_averaging_weights[q] *
-                              newton_derivative_scaling_factor;
+                                          = derivatives->viscosity_derivative_wrt_pressure[q] *
+                                            derivatives->viscosity_derivative_averaging_weights[q] *
+                                            newton_derivative_scaling_factor;
                           Assert(std::isfinite(active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]),
                                  ExcMessage("active_cell_data.newton_factor_wrt_pressure_table is not finite: " + std::to_string(active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]) +
                                             ". Relevant variables are derivatives->viscosity_derivative_wrt_pressure[q] = " + std::to_string(derivatives->viscosity_derivative_wrt_pressure[q]) +
@@ -465,12 +465,12 @@ namespace aspect
                             for (unsigned int n=0; n<dim; ++n)
                               {
                                 active_cell_data.strain_rate_table(cell, q)[m][n][i]
-                                  = effective_strain_rate[m][n];
+                                                = effective_strain_rate[m][n];
 
                                 active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i]
-                                  = derivatives->viscosity_derivative_wrt_strain_rate[q][m][n] *
-                                    derivatives->viscosity_derivative_averaging_weights[q] *
-                                    newton_derivative_scaling_factor * alpha;
+                                                = derivatives->viscosity_derivative_wrt_strain_rate[q][m][n] *
+                                                  derivatives->viscosity_derivative_averaging_weights[q] *
+                                                  newton_derivative_scaling_factor * alpha;
 
                                 Assert(std::isfinite(active_cell_data.strain_rate_table(cell, q)[m][n][i]),
                                        ExcMessage("active_cell_data.strain_rate_table has an element which is not finite: " + std::to_string(active_cell_data.strain_rate_table(cell, q)[m][n][i])));
@@ -481,7 +481,7 @@ namespace aspect
                           if (active_cell_data.enable_prescribed_dilation)
                             {
                               active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]
-                                = derivatives->dilation_derivative_wrt_pressure[q] * newton_derivative_scaling_factor;
+                                              = derivatives->dilation_derivative_wrt_pressure[q] * newton_derivative_scaling_factor;
                               Assert(std::isfinite(active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]),
                                      ExcMessage("active_cell_data.dilation_derivative_wrt_pressure_table is not finite: " + std::to_string(active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]) +
                                                 ". Relevant variables are derivatives->dilation_derivative_wrt_pressure[q] = " + std::to_string(derivatives->dilation_derivative_wrt_pressure[q]) +
@@ -491,8 +491,8 @@ namespace aspect
                                 for (unsigned int n=0; n<dim; ++n)
                                   {
                                     active_cell_data.dilation_derivative_wrt_strain_rate_table(cell,q)[m][n][i]
-                                      = derivatives->dilation_derivative_wrt_strain_rate[q][m][n] *
-                                        newton_derivative_scaling_factor;
+                                                    = derivatives->dilation_derivative_wrt_strain_rate[q][m][n] *
+                                                      newton_derivative_scaling_factor;
                                     Assert(std::isfinite(active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]),
                                            ExcMessage("active_cell_data.dilation_derivative_wrt_strain_rate_table is not finite: " + std::to_string(active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]) +
                                                       ". Relevant variables are derivatives->dilation_derivative_wrt_strain_rate[q] = " + std::to_string(derivatives->dilation_derivative_wrt_pressure[q]) +
@@ -624,7 +624,7 @@ namespace aspect
                                                            g_norm;
                       for (unsigned int d = 0; d < dim; ++d)
                         active_cell_data.free_surface_stabilization_term_table(face - n_faces_interior, q)[d][i]
-                          = pressure_perturbation * g_hat[d];
+                                        = pressure_perturbation * g_hat[d];
                     }
                 }
             }
@@ -773,10 +773,10 @@ namespace aspect
   template <int dim, int velocity_degree>
   StokesSolver::SolverOutputs
   StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim,velocity_degree>::solve(const LinearAlgebra::BlockSparseMatrix &/*system_matrix*/,
-      const LinearAlgebra::BlockVector &system_rhs,
-      const bool solve_newton_system,
-      const double last_pressure_normalization_adjustment,
-      LinearAlgebra::BlockVector &solution_vector)
+                                                                                    const LinearAlgebra::BlockVector &system_rhs,
+                                                                                    const bool solve_newton_system,
+                                                                                    const double last_pressure_normalization_adjustment,
+                                                                                    LinearAlgebra::BlockVector &solution_vector)
   {
     StokesSolver::SolverOutputs outputs;
 

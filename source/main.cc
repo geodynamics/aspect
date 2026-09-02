@@ -34,16 +34,16 @@
 #include <utility>
 
 #ifdef DEBUG
-#ifdef ASPECT_USE_FP_EXCEPTIONS
-#include <cfenv>
-#endif
+  #ifdef ASPECT_USE_FP_EXCEPTIONS
+    #include <cfenv>
+  #endif
 #endif
 
 #if ASPECT_USE_SHARED_LIBS==1
-#  include <dlfcn.h>
-#  ifdef ASPECT_HAVE_LINK_H
-#    include <link.h>
-#  endif
+  #include <dlfcn.h>
+  #ifdef ASPECT_HAVE_LINK_H
+    #include <link.h>
+  #endif
 #endif
 
 // This define has to be in exactly one translation unit and sets up the catch testing framework
@@ -607,16 +607,16 @@ namespace
           }
         if (i_am_proc_0)
           std::cout << "The provided parameter file is valid."
-                    "\n\n"
-                    "Note: This validation only checks parameter file syntax errors, like typos\n"
-                    "in keywords or parameter names, and that each parameter value satisfies a\n"
-                    "basic check by itself. However, it may miss more nuanced errors that\n"
-                    "are only checked when the model actually begins running. In particular,\n"
-                    "checks that involve two or more parameters can not be verified at this\n"
-                    "stage of an ASPECT run. Examples for such errors that can not already\n"
-                    "be reported here are: (i) That every boundary is assigned exactly one type\n"
-                    "of boundary condition; (ii) that parameters that take a list with values for\n"
-                    "each composition field receive a list of the correct size."
+                       "\n\n"
+                       "Note: This validation only checks parameter file syntax errors, like typos\n"
+                       "in keywords or parameter names, and that each parameter value satisfies a\n"
+                       "basic check by itself. However, it may miss more nuanced errors that\n"
+                       "are only checked when the model actually begins running. In particular,\n"
+                       "checks that involve two or more parameters can not be verified at this\n"
+                       "stage of an ASPECT run. Examples for such errors that can not already\n"
+                       "be reported here are: (i) That every boundary is assigned exactly one type\n"
+                       "of boundary condition; (ii) that parameters that take a list with values for\n"
+                       "each composition field receive a list of the correct size."
                     << std::endl;
         return;
       }

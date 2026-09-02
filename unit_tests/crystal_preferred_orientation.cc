@@ -472,7 +472,7 @@ TEST_CASE("CPO core: Spin tensor")
     // The correct analytical solution to check against
     // Note that this still has to be multiplied with with volume fraction
     // of each grain to get the same solution as D-Rex would get.
-    double solution[5] = {0.0, 0.0, 0.0, 0.0 ,0.0};
+    double solution[5] = {0.0, 0.0, 0.0, 0.0,0.0};
     for (unsigned int iii = 0; iii < derivatives.first.size(); ++iii)
       CHECK(derivatives.first[iii] == Approx(solution[iii]));
 
@@ -773,7 +773,7 @@ TEST_CASE("CPO")
 
 
     // The correct analytical solution to check against
-    double solution[5] = {3.150563756, -0.787640939, -0.787640939, -0.787640939 ,-0.787640939};
+    double solution[5] = {3.150563756, -0.787640939, -0.787640939, -0.787640939,-0.787640939};
     for (unsigned int i = 0; i < derivatives.first.size(); ++i)
       CHECK(derivatives.first[i] == Approx(solution[i]));
 
@@ -1002,7 +1002,7 @@ TEST_CASE("CPO")
                                                        true);
 
     // The correct analytical solution to check against
-    double solution[5] = {2.5350823696, -0.6337705924, -0.6337705924, -0.6337705924 ,-0.6337705924};
+    double solution[5] = {2.5350823696, -0.6337705924, -0.6337705924, -0.6337705924,-0.6337705924};
     for (unsigned int i = 0; i < derivatives.first.size(); ++i)
       CHECK(derivatives.first[i] == Approx(solution[i]));
 

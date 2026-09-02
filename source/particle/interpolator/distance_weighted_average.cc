@@ -61,8 +61,8 @@ namespace aspect
 
         // Create with signaling NaNs
         std::vector<std::vector<double>> cell_properties(n_interpolate_positions,
-                                                          std::vector<double>(n_particle_properties,
-                                                                              numbers::signaling_nan<double>()));
+                                                         std::vector<double>(n_particle_properties,
+                                                                             numbers::signaling_nan<double>()));
 
         // Set requested properties to 0.0
         for (unsigned int index_positions = 0; index_positions < n_interpolate_positions; ++index_positions)

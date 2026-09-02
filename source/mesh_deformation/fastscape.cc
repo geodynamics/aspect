@@ -381,7 +381,7 @@ namespace aspect
           if (current_timestep == 1)
             {
               this->get_pcout() << "   Initializing FastScape... " << (1+maximum_surface_refinement_level+additional_refinement_levels) <<
-                                " levels, cell size: " << fastscape_dx << " m." << std::endl;
+                                   " levels, cell size: " << fastscape_dx << " m." << std::endl;
 
               // Set ghost nodes before initializing.
               if (use_ghost_nodes)

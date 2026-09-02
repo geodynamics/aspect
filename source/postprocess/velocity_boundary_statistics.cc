@@ -74,7 +74,7 @@ namespace aspect
                 fe_face_values.reinit (cell, f);
                 // extract velocities
                 fe_face_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
-                    velocities);
+                                                                                                 velocities);
                 // determine the max, min, and squared velocity on the face
                 // also determine the face area
                 double local_max = std::numeric_limits<double>::lowest();

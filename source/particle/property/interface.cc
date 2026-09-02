@@ -597,9 +597,9 @@ namespace aspect
                   if (cell_at_fixed_boundary == false)
                     {
                       const std::vector<std::vector<double>> interpolated_properties = interpolator.properties_at_points(particle_handler,
-                                                                                        std::vector<Point<dim>> (1,particle_location),
-                                                                                        ComponentMask(property_information.n_components(),true),
-                                                                                        found_cell);
+                                                                                                                         std::vector<Point<dim>> (1,particle_location),
+                                                                                                                         ComponentMask(property_information.n_components(),true),
+                                                                                                                         found_cell);
 
                       const unsigned int n_property_components = property_information.get_components_by_plugin_index(property_index);
                       const unsigned int start_index = property_information.get_position_by_plugin_index(property_index);
@@ -684,7 +684,7 @@ namespace aspect
       Manager<dim>::get_update_flags () const
       {
         const unsigned int n_components = this->introspection().n_components;
-        std::vector<UpdateFlags> update (n_components , update_default);
+        std::vector<UpdateFlags> update (n_components, update_default);
         for (const auto &p : this->plugin_objects)
           {
             for (unsigned int i=0; i<n_components; ++i)

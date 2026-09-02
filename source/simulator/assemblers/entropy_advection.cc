@@ -60,7 +60,7 @@ namespace aspect
       const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
 
       scratch.finite_element_values[introspection.extractors.temperature].get_function_values (this->get_old_solution(),
-          scratch.old_temperature_values);
+                                                                                               scratch.old_temperature_values);
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
@@ -94,17 +94,17 @@ namespace aspect
               for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
                 {
                   data.local_rhs(i)
-                  += field_term_for_rhs * scratch.phi_field[i] * JxW;
+                      += field_term_for_rhs * scratch.phi_field[i] * JxW;
 
                   for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
                     {
                       data.local_matrix(i,j)
-                      += (
-                           (time_step * scratch.material_model_outputs.thermal_conductivities[q]
-                            * (scratch.grad_phi_field[i] * scratch.grad_phi_field[j]))
-                           + (scratch.phi_field[i] * scratch.phi_field[j]) * density_c_P
-                         )
-                         * JxW;
+                          += (
+                               (time_step * scratch.material_model_outputs.thermal_conductivities[q]
+                                * (scratch.grad_phi_field[i] * scratch.grad_phi_field[j]))
+                               + (scratch.phi_field[i] * scratch.phi_field[j]) * density_c_P
+                             )
+                             * JxW;
                     }
                 }
             }
@@ -149,23 +149,23 @@ namespace aspect
               for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
                 {
                   data.local_rhs(i)
-                  += (field_term_for_rhs * scratch.phi_field[i]
-                      + diffusion_term * scratch.phi_field[i]
-                      + time_step * scratch.phi_field[i] * gamma)
-                     *
-                     JxW;
+                      += (field_term_for_rhs * scratch.phi_field[i]
+                          + diffusion_term * scratch.phi_field[i]
+                          + time_step * scratch.phi_field[i] * gamma)
+                         *
+                         JxW;
 
                   for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
                     {
                       data.local_matrix(i,j)
-                      += (
-                           (time_step * scratch.artificial_viscosity
-                            * scratch.grad_phi_field[i] * scratch.grad_phi_field[j])
-                           + ((time_step * (scratch.phi_field[i] * (current_u * scratch.grad_phi_field[j])))
-                              + (bdf2_factor * scratch.phi_field[i] * scratch.phi_field[j])) *
-                           (rho_T)
-                         )
-                         * JxW;
+                          += (
+                               (time_step * scratch.artificial_viscosity
+                                * scratch.grad_phi_field[i] * scratch.grad_phi_field[j])
+                               + ((time_step * (scratch.phi_field[i] * (current_u * scratch.grad_phi_field[j])))
+                                  + (bdf2_factor * scratch.phi_field[i] * scratch.phi_field[j])) *
+                               (rho_T)
+                             )
+                             * JxW;
                     }
                 }
             }
@@ -264,7 +264,7 @@ namespace aspect
       AssertThrow (Plugins::plugin_type_matches<MaterialModel::EntropyModel<dim>>
                    (simulator_access.get_material_model()) ||
                    Plugins::plugin_type_matches<MaterialModel::Compositing<dim>>
-                   (simulator_access.get_material_model()) ,
+                   (simulator_access.get_material_model()),
                    ExcMessage ("The entropy advection assembler can only be used with the "
                                "material models 'entropy model' or 'compositing'."));
 

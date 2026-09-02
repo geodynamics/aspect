@@ -223,7 +223,7 @@ namespace aspect
           if (viscosity_source == list)
             {
               /* check that length of depth values and viscosity values are compatible */
-              AssertThrow( depth_values.size() == viscosity_values.size() ,
+              AssertThrow( depth_values.size() == viscosity_values.size(),
                            ExcMessage("Depth list must be same size as Viscosity list"));
               /* check that list is in ascending order */
               for (unsigned int i=1; i<depth_values.size(); ++i)

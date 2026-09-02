@@ -39,7 +39,7 @@ namespace aspect
           const double pressure= in.pressure[i];
           const std::vector<double> composition = in.composition[i];
           const std::vector<double> volume_fractions = MaterialUtilities::compute_only_composition_fractions(composition,
-                                                       this->introspection().chemical_composition_field_indices());
+                                                                                                             this->introspection().chemical_composition_field_indices());
 
           // densities
           double density = 0.0;

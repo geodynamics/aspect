@@ -436,7 +436,7 @@ namespace aspect
     {
       public:
         Tensor<1,dim>
-        boundary_velocity (const types::boundary_id ,
+        boundary_velocity (const types::boundary_id,
                            const Point<dim> &position) const override
         {
           Assert (dim==2, ExcNotImplemented());
@@ -494,8 +494,8 @@ namespace aspect
 
           compute_density_error = (material_model.analytical_density() == false);
           reference_solution = std::make_unique<AnalyticSolutions::FunctionAnnulus<dim>>(material_model.get_k(),
-                                                                                          n_components,
-                                                                                          material_model.use_transient_solution());
+                                                                                         n_components,
+                                                                                         material_model.use_transient_solution());
         }
 
 

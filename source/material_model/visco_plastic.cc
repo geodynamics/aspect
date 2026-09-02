@@ -49,8 +49,8 @@ namespace aspect
       Assert(in.n_evaluation_points() == 1, ExcInternalError());
 
       const std::vector<double> volume_fractions = MaterialUtilities::compute_only_composition_fractions(in.composition[0],
-                                                   this->introspection().chemical_composition_field_indices(),
-                                                   this->get_parameters().minimum_composition_fraction);
+                                                                                                         this->introspection().chemical_composition_field_indices(),
+                                                                                                         this->get_parameters().minimum_composition_fraction);
 
       /* The following handles phases in a similar way as in the 'evaluate' function.
        * Results then enter the calculation of plastic yielding.
@@ -170,8 +170,8 @@ namespace aspect
                                                   eos_outputs);
 
           const std::vector<double> volume_fractions = MaterialUtilities::compute_only_composition_fractions(in.composition[i],
-                                                       this->introspection().chemical_composition_field_indices(),
-                                                       this->get_parameters().minimum_composition_fraction);
+                                                                                                             this->introspection().chemical_composition_field_indices(),
+                                                                                                             this->get_parameters().minimum_composition_fraction);
 
           // not strictly correct if thermal expansivities are different, since we are interpreting
           // these compositions as volume fractions, but the error introduced should not be too bad.

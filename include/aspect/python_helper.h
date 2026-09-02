@@ -28,47 +28,47 @@
 
 #ifdef ASPECT_WITH_PYTHON
 
-// Python does not like it if this macro is already defined. This happens at
-// least in some versions of Trilinos and can trigger only with certain unity
-// build options:
-#ifdef HAVE_SYS_TIME_H
-#  undef HAVE_SYS_TIME_H
-#endif
-#define PY_SSIZE_T_CLEAN
-#include <Python.h>
+  // Python does not like it if this macro is already defined. This happens at
+  // least in some versions of Trilinos and can trigger only with certain unity
+  // build options:
+  #ifdef HAVE_SYS_TIME_H
+    #undef HAVE_SYS_TIME_H
+  #endif
+  #define PY_SSIZE_T_CLEAN
+  #include <Python.h>
 
-// Declare that we are compatible with numpy 1.7 API and don't want any
-// compile warnings for deprecated API calls:
-#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+  // Declare that we are compatible with numpy 1.7 API and don't want any
+  // compile warnings for deprecated API calls:
+  #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 
-// Define a unique symbol name for the numpy Python API for used when building
-// the ASPECT executable. This will be used by numpy to declare a static member
-// variable that will be initialized using the import_array() function (see below).
-#ifndef PY_ARRAY_UNIQUE_SYMBOL
-#  define PY_ARRAY_UNIQUE_SYMBOL ASPECT_ARRAY_API
-#endif
+  // Define a unique symbol name for the numpy Python API for used when building
+  // the ASPECT executable. This will be used by numpy to declare a static member
+  // variable that will be initialized using the import_array() function (see below).
+  #ifndef PY_ARRAY_UNIQUE_SYMBOL
+    #define PY_ARRAY_UNIQUE_SYMBOL ASPECT_ARRAY_API
+  #endif
 
-// NumPY API requires a call to import_array() to be made before usage
-// but only once per executable. We will define
-// ASPECT_NUMPY_DEFINE_API in exactly one translation unit per
-// executable/shared library (in main.cc and any plugin that uses
-// Python). All other translation units including this header will
-// therefore define NO_IMPORT_ARRAY that asks numpy to skip defining
-// import_array().
-#ifndef ASPECT_NUMPY_DEFINE_API
-#  define NO_IMPORT_ARRAY
-#endif
+  // NumPY API requires a call to import_array() to be made before usage
+  // but only once per executable. We will define
+  // ASPECT_NUMPY_DEFINE_API in exactly one translation unit per
+  // executable/shared library (in main.cc and any plugin that uses
+  // Python). All other translation units including this header will
+  // therefore define NO_IMPORT_ARRAY that asks numpy to skip defining
+  // import_array().
+  #ifndef ASPECT_NUMPY_DEFINE_API
+    #define NO_IMPORT_ARRAY
+  #endif
 
-#include <numpy/arrayobject.h>
+  #include <numpy/arrayobject.h>
 
-// Clean up any of the macros defined above. This is important if we
-// are doing a unity build:
-#ifdef ASPECT_NUMPY_DEFINE_API
-#  undef ASPECT_NUMPY_DEFINE_API
-#endif
-#ifdef NO_IMPORT_ARRAY
-#  undef NO_IMPORT_ARRAY
-#endif
+  // Clean up any of the macros defined above. This is important if we
+  // are doing a unity build:
+  #ifdef ASPECT_NUMPY_DEFINE_API
+    #undef ASPECT_NUMPY_DEFINE_API
+  #endif
+  #ifdef NO_IMPORT_ARRAY
+    #undef NO_IMPORT_ARRAY
+  #endif
 #endif
 
 

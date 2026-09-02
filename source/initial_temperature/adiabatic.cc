@@ -253,7 +253,7 @@ namespace aspect
                 {
                   // choose the center of the perturbation at half angle along the inner radius
                   mid_point(0) = inner_radius * std::sin(half_opening_angle),
-                  mid_point(1) = inner_radius * std::cos(half_opening_angle);
+                            mid_point(1) = inner_radius * std::cos(half_opening_angle);
                 }
               else if (dim==3)
                 {
@@ -263,15 +263,15 @@ namespace aspect
                   if (shell_geometry_model.opening_angle() == 90)
                     {
                       mid_point(0) = inner_radius*std::sqrt(1./3),
-                      mid_point(1) = inner_radius*std::sqrt(1./3),
-                      mid_point(2) = inner_radius*std::sqrt(1./3);
+                                mid_point(1) = inner_radius*std::sqrt(1./3),
+                                mid_point(2) = inner_radius*std::sqrt(1./3);
                     }
                   else
                     {
                       // otherwise do the same as in 2d
                       mid_point(0) = inner_radius * std::sin(half_opening_angle) * std::cos(half_opening_angle),
-                      mid_point(1) = inner_radius * std::sin(half_opening_angle) * std::sin(half_opening_angle),
-                      mid_point(2) = inner_radius * std::cos(half_opening_angle);
+                                mid_point(1) = inner_radius * std::sin(half_opening_angle) * std::sin(half_opening_angle),
+                                mid_point(2) = inner_radius * std::cos(half_opening_angle);
                     }
                 }
             }
@@ -290,7 +290,7 @@ namespace aspect
                 {
                   // choose the center of the perturbation at half angle along the inner radius
                   mid_point(0) = inner_radius * std::cos(longitude_midpoint),
-                  mid_point(1) = inner_radius * std::sin(longitude_midpoint);
+                            mid_point(1) = inner_radius * std::sin(longitude_midpoint);
                 }
               else if (dim==3)
                 {

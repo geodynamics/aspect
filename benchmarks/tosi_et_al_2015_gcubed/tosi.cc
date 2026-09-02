@@ -549,7 +549,7 @@ namespace aspect
       // the values of the compositional fields are stored as blockvectors for each field
       // we have to extract them in this structure
       std::vector<std::vector<double>> prelim_composition_values (this->n_compositional_fields(),
-                                                                   std::vector<double> (n_q_points));
+                                                                  std::vector<double> (n_q_points));
 
       typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_q_points,
                                                                      this->n_compositional_fields());
@@ -588,7 +588,7 @@ namespace aspect
               }
 
             fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
-                in.strain_rate);
+                                                                                                     in.strain_rate);
 
             // get the output from the material model
             this->get_material_model().evaluate(in, out);

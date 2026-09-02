@@ -195,7 +195,7 @@ namespace aspect
                                         bool is_velocity)
             : DataPostprocessorVector<dim>(name,
                                            update_values),
-            is_velocity(is_velocity)
+              is_velocity(is_velocity)
           {}
 
 

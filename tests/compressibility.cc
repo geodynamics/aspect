@@ -158,16 +158,16 @@ namespace aspect
               {
                 fe_face_values.reinit (cell,f);
                 fe_face_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
-                    in.temperature);
+                                                                                                  in.temperature);
                 fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
                                                                                                in.pressure);
                 fe_face_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
-                    in.strain_rate);
+                                                                                                              in.strain_rate);
                 for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                   fe_face_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
-                      composition_values[c]);
+                                                                                                               composition_values[c]);
                 fe_face_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
-                    velocity_values);
+                                                                                                 velocity_values);
 
                 in.position = fe_face_values.get_quadrature_points();
                 for (unsigned int i=0; i<fe_face_values.n_quadrature_points; ++i)

@@ -206,10 +206,10 @@ namespace aspect
             if (partial_strain_rates[3] > 0.)
               {
                 drpr_stress = 2.*partial_strain_rates[3]*drucker_prager_power->compute_viscosity(p.cohesion,
-                              p.angle_internal_friction,
-                              pressure,
-                              partial_strain_rates[3],
-                              p.max_yield_stress);
+                                                                                                 p.angle_internal_friction,
+                                                                                                 pressure,
+                                                                                                 partial_strain_rates[3],
+                                                                                                 p.max_yield_stress);
               }
             else
               {

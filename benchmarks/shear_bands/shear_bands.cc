@@ -374,8 +374,8 @@ namespace aspect
 
       interpolate_noise
         = std::make_unique<Functions::InterpolatedUniformGridData<dim>> (grid_extents,
-                                                                          grid_intervals,
-                                                                          white_noise);
+                                                                         grid_intervals,
+                                                                         white_noise);
     }
 
 
@@ -760,7 +760,7 @@ namespace aspect
           {
             fe_values.reinit (cell);
             fe_values[this->introspection().extractors.velocities].get_function_divergences (this->get_solution(),
-                velocity_divergences);
+                                                                                             velocity_divergences);
             position = fe_values.get_quadrature_points();
 
             for (unsigned int q = 0; q < n_q_points; ++q)

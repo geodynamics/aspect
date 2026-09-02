@@ -29,9 +29,9 @@
 #include <deal.II/grid/grid_tools.h>
 
 #if DEAL_II_VERSION_GTE(9,7,0)
-#include <deal.II/numerics/solution_transfer.h>
+  #include <deal.II/numerics/solution_transfer.h>
 #else
-#include <deal.II/distributed/solution_transfer.h>
+  #include <deal.II/distributed/solution_transfer.h>
 #endif
 
 #include <deal.II/fe/mapping_q_cache.h>
@@ -42,7 +42,7 @@
 #include <limits>
 
 #ifdef DEAL_II_WITH_ZLIB
-#  include <zlib.h>
+  #include <zlib.h>
 #endif
 
 namespace aspect

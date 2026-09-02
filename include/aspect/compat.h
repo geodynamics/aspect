@@ -31,7 +31,7 @@
 #include <deal.II/grid/manifold_lib.h>
 
 #if !DEAL_II_VERSION_GTE(9,7,0)
-#  include <deal.II/grid/grid_generator.h>
+  #include <deal.II/grid/grid_generator.h>
 #endif
 
 #include <deal.II/multigrid/mg_transfer_matrix_free.h>
@@ -69,17 +69,17 @@ namespace aspect
 
 #if !DEAL_II_VERSION_GTE(9,7,0)
   /**
-   * A type alias for the SmartPointer class that makes sure the new
-   * name of the class, ObserverPointer, can be used in all versions of
-   * deal.II. The SmartPointer class was renamed to ObserverPointer in
-   * deal.II 9.7.
-   */
+  * A type alias for the SmartPointer class that makes sure the new
+  * name of the class, ObserverPointer, can be used in all versions of
+  * deal.II. The SmartPointer class was renamed to ObserverPointer in
+  * deal.II 9.7.
+  */
   template <typename T, typename P = void>
   using ObserverPointer = dealii::SmartPointer<T, P>;
 
   /**
-   * Same for the transition from Subscriptor to EnableObserverPointer.
-   */
+  * Same for the transition from Subscriptor to EnableObserverPointer.
+  */
   using EnableObserverPointer = dealii::Subscriptor;
 #endif
 

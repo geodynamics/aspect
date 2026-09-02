@@ -358,23 +358,23 @@ namespace aspect
         options.list_of_allowed_keys = compositional_field_names;
 
         start_plastic_strain_weakening_intervals = Utilities::MapParsing::parse_map_to_double_array(prm.get("Start plasticity strain weakening intervals"),
-                                                   options);
+                                                                                                    options);
 
         options.property_name = "End plasticity strain weakening intervals";
         end_plastic_strain_weakening_intervals = Utilities::MapParsing::parse_map_to_double_array(prm.get("End plasticity strain weakening intervals"),
-                                                 options);
+                                                                                                  options);
 
         options.property_name = "Start prefactor strain weakening intervals";
         start_viscous_strain_weakening_intervals = Utilities::MapParsing::parse_map_to_double_array(prm.get("Start prefactor strain weakening intervals"),
-                                                   options);
+                                                                                                    options);
 
         options.property_name = "End prefactor strain weakening intervals";
         end_viscous_strain_weakening_intervals = Utilities::MapParsing::parse_map_to_double_array(prm.get("End prefactor strain weakening intervals"),
-                                                 options);
+                                                                                                  options);
 
         options.property_name = "Prefactor strain weakening factors";
         viscous_strain_weakening_factors = Utilities::MapParsing::parse_map_to_double_array(prm.get("Prefactor strain weakening factors"),
-                                           options);
+                                                                                            options);
 
         options.property_name = "Lower temperature for onset of strain weakening";
         viscous_strain_weakening_T0 = Utilities::MapParsing::parse_map_to_double_array(prm.get("Lower temperature for onset of strain weakening"),
@@ -397,11 +397,11 @@ namespace aspect
 
         options.property_name = "Cohesion strain weakening factors";
         cohesion_strain_weakening_factors = Utilities::MapParsing::parse_map_to_double_array(prm.get("Cohesion strain weakening factors"),
-                                            options);
+                                                                                             options);
 
         options.property_name = "Friction strain weakening factors";
         friction_strain_weakening_factors = Utilities::MapParsing::parse_map_to_double_array(prm.get("Friction strain weakening factors"),
-                                            options);
+                                                                                             options);
 
         if (prm.get ("Strain healing mechanism") == "no healing")
           healing_mechanism = no_healing;
@@ -707,9 +707,9 @@ namespace aspect
                 if (!composition_evaluators[strain_index])
                   composition_evaluators[strain_index]
                     = std::make_unique<FEPointEvaluation<1, dim>>(this->get_mapping(),
-                                                                   this->get_fe(),
-                                                                   update_values,
-                                                                   component_indices[strain_index]);
+                                                                  this->get_fe(),
+                                                                  update_values,
+                                                                  component_indices[strain_index]);
 
                 composition_evaluators[strain_index]->reinit(in.current_cell, quadrature_positions);
                 composition_evaluators[strain_index]->evaluate({old_solution_values.data(),old_solution_values.size()},
@@ -724,9 +724,9 @@ namespace aspect
                 if (!composition_evaluators[strain_index])
                   composition_evaluators[strain_index]
                     = std::make_unique<FEPointEvaluation<1, dim>>(this->get_mapping(),
-                                                                   this->get_fe(),
-                                                                   update_values,
-                                                                   component_indices[strain_index]);
+                                                                  this->get_fe(),
+                                                                  update_values,
+                                                                  component_indices[strain_index]);
 
                 composition_evaluators[strain_index]->reinit(in.current_cell, quadrature_positions);
                 composition_evaluators[strain_index]->evaluate({old_solution_values.data(),old_solution_values.size()},
@@ -741,9 +741,9 @@ namespace aspect
                 if (!composition_evaluators[strain_index])
                   composition_evaluators[strain_index]
                     = std::make_unique<FEPointEvaluation<1, dim>>(this->get_mapping(),
-                                                                   this->get_fe(),
-                                                                   update_values,
-                                                                   component_indices[strain_index]);
+                                                                  this->get_fe(),
+                                                                  update_values,
+                                                                  component_indices[strain_index]);
                 composition_evaluators[strain_index]->reinit(in.current_cell, quadrature_positions);
                 composition_evaluators[strain_index]->evaluate({old_solution_values.data(),old_solution_values.size()},
                                                                EvaluationFlags::values);
@@ -757,9 +757,9 @@ namespace aspect
                 if (!composition_evaluators[plastic_strain_index])
                   composition_evaluators[plastic_strain_index]
                     = std::make_unique<FEPointEvaluation<1, dim>>(this->get_mapping(),
-                                                                   this->get_fe(),
-                                                                   update_values,
-                                                                   component_indices[plastic_strain_index]);
+                                                                  this->get_fe(),
+                                                                  update_values,
+                                                                  component_indices[plastic_strain_index]);
                 composition_evaluators[plastic_strain_index]->reinit(in.current_cell, quadrature_positions);
                 composition_evaluators[plastic_strain_index]->evaluate({old_solution_values.data(),old_solution_values.size()},
                                                                        EvaluationFlags::values);
@@ -771,9 +771,9 @@ namespace aspect
                 if (!composition_evaluators[viscous_strain_index])
                   composition_evaluators[viscous_strain_index]
                     = std::make_unique<FEPointEvaluation<1, dim>>(this->get_mapping(),
-                                                                   this->get_fe(),
-                                                                   update_values,
-                                                                   component_indices[viscous_strain_index]);
+                                                                  this->get_fe(),
+                                                                  update_values,
+                                                                  component_indices[viscous_strain_index]);
                 composition_evaluators[viscous_strain_index]->reinit(in.current_cell, quadrature_positions);
                 composition_evaluators[viscous_strain_index]->evaluate({old_solution_values.data(),old_solution_values.size()},
                                                                        EvaluationFlags::values);
@@ -787,9 +787,9 @@ namespace aspect
                 if (!composition_evaluators[strain_index])
                   composition_evaluators[strain_index]
                     = std::make_unique<FEPointEvaluation<1, dim>>(this->get_mapping(),
-                                                                   this->get_fe(),
-                                                                   update_values,
-                                                                   component_indices[strain_index]);
+                                                                  this->get_fe(),
+                                                                  update_values,
+                                                                  component_indices[strain_index]);
 
                 composition_evaluators[strain_index]->reinit(in.current_cell, quadrature_positions);
                 composition_evaluators[strain_index]->evaluate({old_solution_values.data(),old_solution_values.size()},
@@ -825,9 +825,9 @@ namespace aspect
             // Only create the evaluator the first time we get here
             if (!evaluator)
               evaluator = std::make_unique<FEPointEvaluation<dim, dim>>(this->get_mapping(),
-                                                                         this->get_fe(),
-                                                                         update_gradients,
-                                                                         this->introspection().component_indices.velocities[0]);
+                                                                        this->get_fe(),
+                                                                        update_gradients,
+                                                                        this->introspection().component_indices.velocities[0]);
 
             // Initialize the evaluator for the old velocity gradients
             evaluator->reinit(in.current_cell, quadrature_positions);

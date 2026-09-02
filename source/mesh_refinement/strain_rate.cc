@@ -52,7 +52,7 @@ namespace aspect
             fe_values.reinit(cell);
 
             fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
-                strain_rates);
+                                                                                                     strain_rates);
 
             indicators(idx) = strain_rates[0].norm();
           }

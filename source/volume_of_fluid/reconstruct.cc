@@ -372,7 +372,7 @@ namespace aspect
                         for (unsigned int di = 0; di < dim; ++di)
                           dot += normals[nind][di] * stencil_unit_cell_centers[i][di];
                         const double n_volume_of_fluid = VolumeOfFluid::Utilities::compute_fluid_volume<dim> (max_degree, normals[nind], d_vals[nind]-dot,
-                                                         quadrature.get_points(), weights)/cell_vol;
+                                                                                                              quadrature.get_points(), weights)/cell_vol;
                         const double cell_err = local_volume_of_fluids (i) - n_volume_of_fluid;
                         errs[nind] += cell_err * cell_err;
                       }

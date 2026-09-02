@@ -309,9 +309,9 @@ namespace aspect
             Plugins::get_plugin_as_type<const MaterialModel::TimeDependentAnnulus<dim>>(this->get_material_model());
 
           ref_func = std::make_unique<AnalyticSolutions::FunctionStreamline<dim>>(material_model.get_pressure(),
-                                                                                   material_model.get_velocity(),
-                                                                                   material_model.get_density(),
-                                                                                   1 + dim + 1 + this->n_compositional_fields());
+                                                                                  material_model.get_velocity(),
+                                                                                  material_model.get_density(),
+                                                                                  1 + dim + 1 + this->n_compositional_fields());
         }
 
         std::pair<std::string,std::string>

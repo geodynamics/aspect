@@ -123,7 +123,7 @@ namespace aspect
         // to their pre-advection locations, so they are in their old locations corresponding to the old
         // solution.
         std::unique_ptr<SolutionEvaluator<dim>> evaluators = construct_solution_evaluator(*this,
-                                                              mapping_flags);
+                                                                                          mapping_flags);
 
         // FEPointEvaluation uses different evaluation flags than the common UpdateFlags.
         // Translate between the two.

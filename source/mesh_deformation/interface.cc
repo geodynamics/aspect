@@ -311,10 +311,10 @@ namespace aspect
       // (because we want to use the solution instead of the current_linearization_point
       // to compute the material properties).
       assemblers.stokes_system_assembler_on_boundary_face_properties.needed_update_flags |= (update_values  |
-          update_gradients |
-          update_quadrature_points |
-          update_normal_vectors |
-          update_JxW_values);
+                                                                                             update_gradients |
+                                                                                             update_quadrature_points |
+                                                                                             update_normal_vectors |
+                                                                                             update_JxW_values);
     }
 
 
@@ -594,8 +594,8 @@ namespace aspect
             {
               mesh_deformation_objects[boundary_and_object_names.first].push_back(
                 std::unique_ptr<Interface<dim>> (std::get<dim>(registered_plugins)
-                                                  .create_plugin (object_name,
-                                                                  "Mesh deformation::Model names")));
+                                                 .create_plugin (object_name,
+                                                                 "Mesh deformation::Model names")));
 
               if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(mesh_deformation_objects[boundary_and_object_names.first].back().get()))
                 sim->initialize_simulator (this->get_simulator());
@@ -1573,11 +1573,11 @@ namespace aspect
           level_mappings.apply([&](const unsigned int level, std::unique_ptr<Mapping<dim>> &object)
           {
             object = std::make_unique<MappingQEulerian<dim,
-            dealii::LinearAlgebra::distributed::Vector<double>>>(
-              mapping_degree,
-              mesh_deformation_dof_handler,
-              level_displacements[level],
-              level);
+                   dealii::LinearAlgebra::distributed::Vector<double>>>(
+                     mapping_degree,
+                     mesh_deformation_dof_handler,
+                     level_displacements[level],
+                     level);
           });
 
           mg_transfer.build(mesh_deformation_dof_handler);

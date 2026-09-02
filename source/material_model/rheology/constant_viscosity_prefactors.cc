@@ -81,7 +81,7 @@ namespace aspect
         options.list_of_allowed_keys = compositional_field_names;
 
         constant_viscosity_prefactors = Utilities::MapParsing::parse_map_to_double_array (prm.get("Constant viscosity prefactors"),
-                                        options);
+                                                                                          options);
       }
     }
   }

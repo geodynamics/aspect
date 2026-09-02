@@ -74,7 +74,7 @@ namespace aspect
     fdV (double x, const double bulk_modulus, const double bulk_modulus_pressure_derivative, const double pressure ) const
     {
       return std::abs((bulk_modulus*(3./2.)*(std::pow(x,7./3.)-std::pow(x,5./3.))*(1+(((3./4.)*
-                                                                                      (bulk_modulus_pressure_derivative-4))*(std::pow(x,2./3.)-1))))-pressure);
+                                                                                       (bulk_modulus_pressure_derivative-4))*(std::pow(x,2./3.)-1))))-pressure);
     }
 
 // set up initial temperature
@@ -211,15 +211,15 @@ namespace aspect
       else if ((homologous_temperature>=critical_homologous_temperature) && (homologous_temperature<1))
         {
           viscosity_reduction_factor=std::exp((-1*((homologous_temperature-critical_homologous_temperature)/(homologous_temperature-
-                                                   (homologous_temperature*critical_homologous_temperature))))*std::log(reduction_factor));
+                                                                                                             (homologous_temperature*critical_homologous_temperature))))*std::log(reduction_factor));
         }
       else
         {
           viscosity_reduction_factor=(1/reduction_factor)*std::exp(-melt_viscosity_factor);
         }
       viscosity = std::pow(grain_size/reference_grain_size,grain_size_exponent)*viscosity_prefactor*std::exp((activation_energy/gas_constant)
-                  *(1/temperature-1/reference_temperature))*std::exp((activation_volume/gas_constant)*(pressure/temperature-reference_pressure/
-                                                                     reference_temperature))*viscosity_reduction_factor;
+                                                                                                             *(1/temperature-1/reference_temperature))*std::exp((activation_volume/gas_constant)*(pressure/temperature-reference_pressure/
+                                                                                                               reference_temperature))*viscosity_reduction_factor;
       unrelaxed_compliance=1./(1e9*(mu0+(dmudP*pressure*1e-9)+(dmudT*(temperature-273))));
       if (temperature<273)
         {
@@ -296,7 +296,7 @@ namespace aspect
       // determine J1 term (real part of complex compliance)
       storage_compliance=unrelaxed_compliance*(1+((background_amplitude*std::pow(normalized_period,background_slope))
                                                   /background_slope)+((std::sqrt(2*M_PI)/2)*peak_amplitude*peak_width*(1-
-                                                                      std::erf((std::log(peak_period/normalized_period))/(std::sqrt(2)*peak_width)))));
+                                                                                                                       std::erf((std::log(peak_period/normalized_period))/(std::sqrt(2)*peak_width)))));
       // determine J2 term (imaginary part of complex compliance)
       //double loss_compliance=unrelaxed_compliance*(M_PI/2)*(background_amplitude*(std::pow(normalized_period,background_slope))+
       // (peak_amplitude*std::exp(-1*(Utilities::fixed_power<2>(std::log(peak_period/normalized_period))/

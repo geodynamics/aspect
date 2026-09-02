@@ -219,11 +219,11 @@ namespace aspect
                   ExcMessage("At the moment, only the Zero or Prm polygon initial topography model can be used with the Ellipsoidal Chunk geometry model."));
 
       manifold = std::make_unique<internal::EllipsoidalChunkGeometry<dim>>(this->get_initial_topography_model_pointer(),
-                                                                            semi_major_axis_a,
-                                                                            eccentricity,
-                                                                            semi_minor_axis_b,
-                                                                            bottom_depth,
-                                                                            corners);
+                                                                           semi_major_axis_a,
+                                                                           eccentricity,
+                                                                           semi_minor_axis_b,
+                                                                           bottom_depth,
+                                                                           corners);
     }
 
 

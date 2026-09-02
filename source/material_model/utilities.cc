@@ -1145,8 +1145,8 @@ namespace aspect
                 for (unsigned int previous_phase_index=start_phase_index; previous_phase_index<=phase_index; previous_phase_index++)
                   {
                     auto [reaction_progress_active, reaction_progress_value]  = get_reaction_progress_for_phase_transition(reaction_progress_values,
-                                                                                reaction_progress_mapping,
-                                                                                previous_phase_index);
+                                                                                                                           reaction_progress_mapping,
+                                                                                                                           previous_phase_index);
 
                     if (reaction_progress_active)
                       {
@@ -1470,7 +1470,7 @@ namespace aspect
         options.n_values_per_key = std::vector<unsigned int>();
 
         const std::vector<double> transition_indicators_double          = Utilities::MapParsing::parse_map_to_double_array (prm.get("Phase transition indicators"),
-                                                                          options);
+                                                                                                                            options);
 
         transition_indicators.reserve(transition_indicators_double.size());
         for (const double transition_indicator: transition_indicators_double)

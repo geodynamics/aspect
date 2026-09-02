@@ -430,9 +430,9 @@ namespace aspect
 
                   scratch.face_finite_element_values->reinit (cell, face_no);
                   (*scratch.face_finite_element_values)[introspection.extractors.velocities].get_function_values(old_solution,
-                      face_old_velocity_values);
+                                                                                                                 face_old_velocity_values);
                   (*scratch.face_finite_element_values)[introspection.extractors.velocities].get_function_values(old_old_solution,
-                      face_old_old_velocity_values);
+                                                                                                                 face_old_old_velocity_values);
 
                   // ... check if the face is a boundary with normal flow by integrating the normal velocities
                   // (flux through the boundary) as: int u*n ds = Sum_q u(x_q)*n(x_q) JxW(x_q)...
@@ -495,39 +495,39 @@ namespace aspect
 
         // initialize all of the scratch fields for further down
         scratch.finite_element_values[introspection.extractors.temperature].get_function_values (old_solution,
-            scratch.old_temperature_values);
+                                                                                                 scratch.old_temperature_values);
         scratch.finite_element_values[introspection.extractors.temperature].get_function_values (old_old_solution,
-            scratch.old_old_temperature_values);
+                                                                                                 scratch.old_old_temperature_values);
 
         scratch.finite_element_values[introspection.extractors.velocities].get_function_symmetric_gradients (old_solution,
-            scratch.old_strain_rates);
+                                                                                                             scratch.old_strain_rates);
         scratch.finite_element_values[introspection.extractors.velocities].get_function_symmetric_gradients (old_old_solution,
-            scratch.old_old_strain_rates);
+                                                                                                             scratch.old_old_strain_rates);
 
         scratch.finite_element_values[introspection.extractors.pressure].get_function_values (old_solution,
-            scratch.old_pressure);
+                                                                                              scratch.old_pressure);
         scratch.finite_element_values[introspection.extractors.pressure].get_function_values (old_old_solution,
-            scratch.old_old_pressure);
+                                                                                              scratch.old_old_pressure);
 
         for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
           {
             scratch.finite_element_values[introspection.extractors.compositional_fields[c]].get_function_values(old_solution,
-                scratch.old_composition_values[c]);
+                                                                                                                scratch.old_composition_values[c]);
             scratch.finite_element_values[introspection.extractors.compositional_fields[c]].get_function_values(old_old_solution,
-                scratch.old_old_composition_values[c]);
+                                                                                                                scratch.old_old_composition_values[c]);
           }
 
         scratch.finite_element_values[introspection.extractors.velocities].get_function_values (old_solution,
-            scratch.old_velocity_values);
+                                                                                                scratch.old_velocity_values);
         scratch.finite_element_values[introspection.extractors.velocities].get_function_values (old_old_solution,
-            scratch.old_old_velocity_values);
+                                                                                                scratch.old_old_velocity_values);
         scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
-            scratch.current_velocity_values);
+                                                                                               scratch.current_velocity_values);
 
         scratch.finite_element_values[introspection.extractors.pressure].get_function_gradients (old_solution,
-            scratch.old_pressure_gradients);
+                                                                                                 scratch.old_pressure_gradients);
         scratch.finite_element_values[introspection.extractors.pressure].get_function_gradients (old_old_solution,
-            scratch.old_old_pressure_gradients);
+                                                                                                 scratch.old_old_pressure_gradients);
 
 
         scratch.old_field_values = (advection_field.is_temperature()
@@ -557,7 +557,7 @@ namespace aspect
         if (parameters.include_melt_transport && melt_handler->is_porosity(advection_field))
           {
             scratch.finite_element_values[introspection.extractors.velocities].get_function_divergences (current_linearization_point,
-                scratch.current_velocity_divergences);
+                                                                                                         scratch.current_velocity_divergences);
           }
 
         /**

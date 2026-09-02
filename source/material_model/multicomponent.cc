@@ -43,7 +43,7 @@ namespace aspect
           // buoyancy term as Delta rho[i] * C[i], which implies that
           // compositional fields are given as volume fractions.
           const std::vector<double> volume_fractions = MaterialUtilities::compute_only_composition_fractions(in.composition[i],
-                                                       this->introspection().chemical_composition_field_indices());
+                                                                                                             this->introspection().chemical_composition_field_indices());
 
           equation_of_state.evaluate(in, i, eos_outputs);
           out.viscosities[i] = MaterialUtilities::average_value(volume_fractions, viscosities, viscosity_averaging);
@@ -143,7 +143,7 @@ namespace aspect
           reference_T = prm.get_double ("Reference temperature");
 
           viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
-                                prm);
+                                                                                            prm);
 
           // Parse multicomponent properties
           options.property_name = "Viscosities";

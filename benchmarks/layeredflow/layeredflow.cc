@@ -115,7 +115,7 @@ namespace aspect
          * Return the boundary velocity as a function of position.
          */
         Tensor<1,dim>
-        boundary_velocity (const types::boundary_id ,
+        boundary_velocity (const types::boundary_id,
                            const Point<dim> &position) const override;
 
       private:
@@ -282,7 +282,7 @@ namespace aspect
     template <>
     Tensor<1,2>
     LayeredFlowBoundary<2>::
-    boundary_velocity (const types::boundary_id ,
+    boundary_velocity (const types::boundary_id,
                        const Point<2> &p) const
     {
       const LayeredFlowMaterial<2> &
@@ -298,7 +298,7 @@ namespace aspect
     template <>
     Tensor<1,3>
     LayeredFlowBoundary<3>::
-    boundary_velocity (const types::boundary_id ,
+    boundary_velocity (const types::boundary_id,
                        const Point<3> &) const
     {
       Assert (false, ExcNotImplemented());
@@ -334,7 +334,7 @@ namespace aspect
           = Plugins::get_plugin_as_type<const LayeredFlowMaterial<dim>>(this->get_material_model());
 
         ref_func = std::make_unique<AnalyticSolutions::FunctionLayeredFlow<dim>>(material_model.get_beta(),
-                                                                                  material_model.get_epsilon());
+                                                                                 material_model.get_epsilon());
       }
 
       const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities+2);

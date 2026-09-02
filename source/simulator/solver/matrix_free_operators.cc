@@ -221,30 +221,30 @@ namespace aspect
           // When the projection is computed, this will set the viscosity exactly
           // to this averaged value.
           if (dof_handler_projection.get_fe().degree == 0)
-            MaterialModel::MaterialAveraging::average (material_averaging,
-            FEQ_cell,
-            quadrature_formula,
-            mapping,
-            in.requested_properties,
-            out);
+          MaterialModel::MaterialAveraging::average (material_averaging,
+                                                     FEQ_cell,
+                                                     quadrature_formula,
+                                                     mapping,
+                                                     in.requested_properties,
+                                                     out);
 
           if (active_no_averaging)
             {
               // also copy the viscosity to the CellData
 
               const unsigned int index = matrix_free.get_matrix_free_cell_index(cell);
-              const unsigned int lane_size = VectorizedArray<number>::size();
-              const unsigned int cell_index = index / lane_size;
-              const unsigned int lane = index % lane_size;
+                const unsigned int lane_size = VectorizedArray<number>::size();
+                const unsigned int cell_index = index / lane_size;
+                const unsigned int lane = index % lane_size;
 
-              for (unsigned int q=0; q<values.size(); ++q)
-                active_cell_data.viscosity(cell_index, q)[lane] = out.viscosities[q];
-            }
+                for (unsigned int q=0; q<values.size(); ++q)
+                  active_cell_data.viscosity(cell_index, q)[lane] = out.viscosities[q];
+              }
 
           for (unsigned int i=0; i<values.size(); ++i)
-            {
-              // Find the local max/min of the evaluated viscosities.
-              minimum_viscosity_local = std::min(minimum_viscosity_local, out.viscosities[i]);
+          {
+            // Find the local max/min of the evaluated viscosities.
+            minimum_viscosity_local = std::min(minimum_viscosity_local, out.viscosities[i]);
               maximum_viscosity_local = std::max(maximum_viscosity_local, out.viscosities[i]);
 
               values[i] = out.viscosities[i];
@@ -318,7 +318,7 @@ namespace aspect
                     // of the evaluated viscosity on the active level.
                     for (unsigned int q=0; q<n_q_points; ++q)
                       active_cell_data.viscosity(cell, q)[i]
-                        = std::clamp(values_on_quad[q], minimum_viscosity, maximum_viscosity);
+                                      = std::clamp(values_on_quad[q], minimum_viscosity, maximum_viscosity);
                   }
               }
           }
@@ -761,9 +761,9 @@ namespace aspect
     AffineConstraints<number> dummy;
 
     mf_storage->reinit(mapping,
-    std::vector< const DoFHandler< dim > *> {&dof_handler_v, &dof_handler_p},
-    std::vector< const AffineConstraints< number > *> {&constraints_v, &constraints_p} ,
-    QGauss<1>(degree_p+2), data);
+                       std::vector< const DoFHandler< dim > *> {&dof_handler_v, &dof_handler_p},
+                       std::vector< const AffineConstraints< number > *> {&constraints_v, &constraints_p},
+                       QGauss<1>(degree_p+2), data);
 
     this->initialize(mf_storage, std::vector< unsigned int > {1}, std::vector< unsigned int > {1});
   }
@@ -948,9 +948,9 @@ namespace aspect
 
     AffineConstraints<number> dummy;
     mf_storage->reinit(mapping,
-    std::vector< const DoFHandler< dim > *> {&dof_handler_v, &dof_handler_p},
-    std::vector< const AffineConstraints< number > *> {&constraints_v, &constraints_p} ,
-    QGauss<1>(degree_v+1), additional_data);
+                       std::vector< const DoFHandler< dim > *> {&dof_handler_v, &dof_handler_p},
+                       std::vector< const AffineConstraints< number > *> {&constraints_v, &constraints_p},
+                       QGauss<1>(degree_v+1), additional_data);
 
     this->initialize(mf_storage, std::vector< unsigned int > {0}, std::vector< unsigned int > {0});
   }

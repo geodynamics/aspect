@@ -204,28 +204,28 @@ namespace aspect
                       introspection.stokes_dof_info[j].component_index)
                     {
                       data.local_matrix(i, j)
-                      += (
-                           // top left block: approximate J^{uu}
-                           (2.0 * eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                           +
-                           derivative_scaling_factor * alpha *
-                           ( symmetrize ?
-                             (eps_times_grads_phi_u[i] * deta_deps_times_grads_phi_u[j] +
-                              eps_times_grads_phi_u[j] * deta_deps_times_grads_phi_u[i] ) :
-                             2.0 * eps_times_grads_phi_u[i] * deta_deps_times_grads_phi_u[j] )
-                           +
-                           // bottom right block: approximate the
-                           // pressure Schur complement by the
-                           // pressure mass matrix.  strictly
-                           // speaking, we probably ought to also
-                           // consider the derivatives deta/deps
-                           // here, but we leave this as a TODO
-                           (one_over_eta - dilation_newton_factor)
-                           * pressure_scaling
-                           * pressure_scaling
-                           * (scratch.phi_p[i] * scratch.phi_p[j])
-                         )
-                         * JxW;
+                          += (
+                               // top left block: approximate J^{uu}
+                               (2.0 * eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
+                               +
+                               derivative_scaling_factor * alpha *
+                               ( symmetrize ?
+                                 (eps_times_grads_phi_u[i] * deta_deps_times_grads_phi_u[j] +
+                                  eps_times_grads_phi_u[j] * deta_deps_times_grads_phi_u[i] ) :
+                                 2.0 * eps_times_grads_phi_u[i] * deta_deps_times_grads_phi_u[j] )
+                               +
+                               // bottom right block: approximate the
+                               // pressure Schur complement by the
+                               // pressure mass matrix.  strictly
+                               // speaking, we probably ought to also
+                               // consider the derivatives deta/deps
+                               // here, but we leave this as a TODO
+                               (one_over_eta - dilation_newton_factor)
+                               * pressure_scaling
+                               * pressure_scaling
+                               * (scratch.phi_p[i] * scratch.phi_p[j])
+                             )
+                             * JxW;
                     }
             }
         }

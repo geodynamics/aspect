@@ -21,9 +21,9 @@
 #include <aspect/simulator/solver/stokes_direct.h>
 
 #ifndef ASPECT_USE_TPETRA
-#include <deal.II/lac/trilinos_solver.h>
+  #include <deal.II/lac/trilinos_solver.h>
 #else
-#include <deal.II/lac/trilinos_tpetra_solver_direct.h>
+  #include <deal.II/lac/trilinos_tpetra_solver_direct.h>
 #endif
 
 namespace aspect

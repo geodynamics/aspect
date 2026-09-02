@@ -69,15 +69,15 @@ namespace aspect
           {
             // Average among phases
             drucker_prager_parameters.angle_internal_friction = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                                                angles_internal_friction, composition);
+                                                                                                                      angles_internal_friction, composition);
             drucker_prager_parameters.angle_dilation = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                                       angles_dilation, composition);
+                                                                                                             angles_dilation, composition);
             drucker_prager_parameters.cohesion = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                                 cohesions, composition);
+                                                                                                       cohesions, composition);
             drucker_prager_parameters.yield_stress_prefactor = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                                               yield_stress_prefactors, composition);
+                                                                                                                     yield_stress_prefactors, composition);
             drucker_prager_parameters.max_yield_stress = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                                         max_yield_stresses, composition);
+                                                                                                               max_yield_stresses, composition);
           }
         return drucker_prager_parameters;
       }

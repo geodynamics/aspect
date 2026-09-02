@@ -24,7 +24,7 @@
 #include <aspect/geometry_model/interface.h>
 
 #ifdef ASPECT_WITH_WORLD_BUILDER
-#include <world_builder/world.h>
+  #include <world_builder/world.h>
 #endif
 
 

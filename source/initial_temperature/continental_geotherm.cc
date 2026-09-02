@@ -171,8 +171,8 @@ namespace aspect
         {
           // The heating model compositional heating prefixes an entry for the background material
           const std::vector<double> temp_heat_productivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Compositional heating values"))),
-                                                               n_fields+1,
-                                                               "Compositional heating values");
+                                                                                                       n_fields+1,
+                                                                                                       "Compositional heating values");
           // This sets the heat productivity in W/m3 units
           heat_productivities.push_back(temp_heat_productivities[id_upper_crust+1]);
           heat_productivities.push_back(temp_heat_productivities[id_lower_crust+1]);
@@ -188,14 +188,14 @@ namespace aspect
         {
           // The material model viscoplastic prefixes an entry for the background material, hence n_fields+1
           const std::vector<double> temp_densities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Densities"))),
-                                                     n_fields+1,
-                                                     "Densities");
+                                                                                             n_fields+1,
+                                                                                             "Densities");
           const std::vector<double> temp_thermal_diffusivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal diffusivities"))),
-                                                                 n_fields+1,
-                                                                 "Thermal diffusivities");
+                                                                                                         n_fields+1,
+                                                                                                         "Thermal diffusivities");
           const std::vector<double> temp_heat_capacities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Heat capacities"))),
-                                                           n_fields+1,
-                                                           "Heat capacities");
+                                                                                                   n_fields+1,
+                                                                                                   "Heat capacities");
 
           // The material model viscoplastic prefixes an entry for the background material, hence id+1
           densities.push_back(temp_densities[id_upper_crust+1]);

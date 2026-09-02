@@ -429,12 +429,12 @@ namespace aspect
                 // current timestep to the stress stored in the compositional fields, giving
                 // $\tau{t+\Delta t_c}$ with $t+\Delta t_c$ being the current timestep.
                 const SymmetricTensor<2,dim> stress_0_advected (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index],
-                                                                &in.composition[i][stress_start_index]+n_independent_components));
+                                                                                                             &in.composition[i][stress_start_index]+n_independent_components));
 
                 // Get the old stress that is used to interpolate to timestep $t+\Delta t_c$. It is stored on the
                 // second set of n_independent_components fields, e.g. in 2D on field 3, 4 and 5.
                 const SymmetricTensor<2,dim> stress_old (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index+n_independent_components],
-                                                         &in.composition[i][stress_start_index+n_independent_components]+n_independent_components));
+                                                                                                      &in.composition[i][stress_start_index+n_independent_components]+n_independent_components));
 
                 // Average effective creep viscosity
                 // Use the viscosity corresponding to the stresses selected above.
@@ -514,9 +514,9 @@ namespace aspect
             const double eta = out.viscosities[i];
             const SymmetricTensor<2, dim> deviatoric_strain_rate = Utilities::Tensors::consistent_deviator(in.strain_rate[i]);
             const SymmetricTensor<2,dim> stress_0_advected (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index],
-                                                            &in.composition[i][stress_start_index]+n_independent_components));
+                                                                                                         &in.composition[i][stress_start_index]+n_independent_components));
             const SymmetricTensor<2,dim> stress_old (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index+n_independent_components],
-                                                     &in.composition[i][stress_start_index+n_independent_components]+n_independent_components));
+                                                                                                  &in.composition[i][stress_start_index+n_independent_components]+n_independent_components));
 
             const double elastic_viscosity = calculate_elastic_viscosity(average_elastic_shear_moduli[i]);
 
@@ -556,9 +556,9 @@ namespace aspect
             // Only create the evaluator the first time we get here.
             if (!evaluator)
               evaluator = std::make_unique<FEPointEvaluation<dim,dim>>(this->get_mapping(),
-                                                                        this->get_fe(),
-                                                                        update_gradients,
-                                                                        this->introspection().component_indices.velocities[0]);
+                                                                       this->get_fe(),
+                                                                       update_gradients,
+                                                                       this->introspection().component_indices.velocities[0]);
 
             // Initialize the evaluator for the velocity gradients.
             evaluator->reinit(in.current_cell, quadrature_positions);
@@ -692,7 +692,7 @@ namespace aspect
                 // i.e., the reaction term (which prescribes the change in stress due to rotation
                 // over the previous timestep) has already been applied during the previous timestep.
                 const SymmetricTensor<2, dim> stress_0_t (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index],
-                                                          &in.composition[i][stress_start_index]+n_independent_components));
+                                                                                                       &in.composition[i][stress_start_index]+n_independent_components));
 
                 // Get the old stress that is used to interpolate to timestep $t+\Delta t_c$. It is stored on the
                 // second set of n_independent_components fields, e.g. in 2D on field 3, 4 and 5.
@@ -700,7 +700,7 @@ namespace aspect
                 // Below we update it to full stress of the previous timestep, so that it can be
                 // advected into the current timestep.
                 const SymmetricTensor<2, dim>  stress_old (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index+n_independent_components],
-                                                           &in.composition[i][stress_start_index+n_independent_components]+n_independent_components));
+                                                                                                        &in.composition[i][stress_start_index+n_independent_components]+n_independent_components));
 
                 // $\eta^{t}_{effcreep}$. This viscosity has been calculated with the timestep_ratio dtc/dte.
                 const double effective_creep_viscosity = effective_creep_viscosities[i];
@@ -914,9 +914,9 @@ namespace aspect
             // in a consecutive order without interruption by other fields.
             if (!evaluator_composition)
               evaluator_composition.reset(new FEPointEvaluation<n_independent_components, dim>(this->get_mapping(),
-                                          this->get_fe(),
-                                          update_values,
-                                          this->introspection().component_indices.compositional_fields[stress_start_index]));
+                                                                                               this->get_fe(),
+                                                                                               update_values,
+                                                                                               this->introspection().component_indices.compositional_fields[stress_start_index]));
 
             // Initialize the evaluator for the composition values.
             evaluator_composition->reinit(in.current_cell, quadrature_positions);

@@ -213,7 +213,7 @@ namespace aspect
       }
 
     current_linearization_point.block(introspection.block_indices.temperature)
-      = solution.block(introspection.block_indices.temperature);
+                               = solution.block(introspection.block_indices.temperature);
 
     if (initial_residual > 0)
       return current_residual / initial_residual;
@@ -455,7 +455,7 @@ namespace aspect
     for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
       {
         current_linearization_point.block(introspection.block_indices.compositional_fields[c])
-          = solution.block(introspection.block_indices.compositional_fields[c]);
+                                   = solution.block(introspection.block_indices.compositional_fields[c]);
 
         if ((initial_residual.size() > 0) && (initial_residual[c] > 0))
           {
@@ -518,11 +518,11 @@ namespace aspect
     const double current_nonlinear_residual = solve_stokes(solution).first;
 
     current_linearization_point.block(introspection.block_indices.velocities)
-      = solution.block(introspection.block_indices.velocities);
+                               = solution.block(introspection.block_indices.velocities);
 
     if (introspection.block_indices.velocities != introspection.block_indices.pressure)
       current_linearization_point.block(introspection.block_indices.pressure)
-        = solution.block(introspection.block_indices.pressure);
+                                 = solution.block(introspection.block_indices.pressure);
 
     if (parameters.include_melt_transport)
       {
@@ -573,11 +573,11 @@ namespace aspect
     {
       const bool EisenstatWalkerChoiceOne = true;
       parameters.linear_stokes_solver_tolerance = compute_Eisenstat_Walker_linear_tolerance(EisenstatWalkerChoiceOne,
-                                                  newton_handler->parameters.maximum_linear_stokes_solver_tolerance,
-                                                  parameters.linear_stokes_solver_tolerance,
-                                                  dcr.stokes_residuals.second,
-                                                  dcr.residual,
-                                                  dcr.residual_old);
+                                                                                            newton_handler->parameters.maximum_linear_stokes_solver_tolerance,
+                                                                                            parameters.linear_stokes_solver_tolerance,
+                                                                                            dcr.stokes_residuals.second,
+                                                                                            dcr.residual,
+                                                                                            dcr.residual_old);
 
       pcout << "   The linear solver tolerance is set to "
             << parameters.linear_stokes_solver_tolerance
@@ -974,9 +974,9 @@ namespace aspect
       current_constraints.distribute (distributed_stokes_solution);
 
       solution.block(introspection.block_indices.velocities) =
-        distributed_stokes_solution.block(introspection.block_indices.velocities);
+                distributed_stokes_solution.block(introspection.block_indices.velocities);
       solution.block(introspection.block_indices.pressure) =
-        distributed_stokes_solution.block(introspection.block_indices.pressure);
+                distributed_stokes_solution.block(introspection.block_indices.pressure);
 
       if (parameters.include_melt_transport)
         {
@@ -1255,9 +1255,9 @@ namespace aspect
       current_constraints.distribute (distributed_stokes_solution);
 
       solution.block(introspection.block_indices.velocities) =
-        distributed_stokes_solution.block(introspection.block_indices.velocities);
+                distributed_stokes_solution.block(introspection.block_indices.velocities);
       solution.block(introspection.block_indices.pressure) =
-        distributed_stokes_solution.block(introspection.block_indices.pressure);
+                distributed_stokes_solution.block(introspection.block_indices.pressure);
 
       if (parameters.include_melt_transport)
         {

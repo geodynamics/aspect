@@ -2153,8 +2153,8 @@ namespace aspect
                                                                           "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                                                                           "0123456789_") == std::string::npos,
                        ExcMessage("Invalid character in field " + names_of_compositional_fields[i] + ". "
-                                  "Names of compositional fields should consist of a "
-                                  "combination of letters, numbers and underscores."));
+                                                                          "Names of compositional fields should consist of a "
+                                                                          "combination of letters, numbers and underscores."));
           AssertThrow (names_of_compositional_fields[i].size() > 0,
                        ExcMessage("Invalid name of field " + names_of_compositional_fields[i] + ". "
                                   "Names of compositional fields need to be non-empty."));

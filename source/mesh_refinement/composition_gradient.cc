@@ -63,7 +63,7 @@ namespace aspect
                   {
                     const AdvectionField composition = AdvectionField::composition(c);
                     fe_values[composition.scalar_extractor(this->introspection())].get_function_gradients (this->get_solution(),
-                        composition_gradients);
+                                                                                                           composition_gradients);
 
                     // Some up the indicators for this composition on this cell. Note that quadrature points and dofs
                     // are enumerated in the same order.

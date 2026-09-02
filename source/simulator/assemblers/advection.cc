@@ -195,42 +195,42 @@ namespace aspect
           for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
             {
               data.local_rhs(i)
-              += (field_term_for_rhs * scratch.phi_field[i]
-                  + time_step *
-                  scratch.phi_field[i]
-                  * gamma
-                  + scratch.phi_field[i]
-                  * reaction_term)
-                 *
-                 JxW;
+                  += (field_term_for_rhs * scratch.phi_field[i]
+                      + time_step *
+                      scratch.phi_field[i]
+                      * gamma
+                      + scratch.phi_field[i]
+                      * reaction_term)
+                     *
+                     JxW;
 
               if (use_supg)
                 data.local_rhs(i)
-                += tau *
-                   (
-                     (current_u * (density_c_P + latent_heat_LHS)) *
-                     scratch.grad_phi_field[i] *
-                     (
-                       field_term_for_rhs
-                       +
-                       time_step * gamma
-                       +
-                       reaction_term
-                     )
-                   ) * JxW;
+                    += tau *
+                       (
+                         (current_u * (density_c_P + latent_heat_LHS)) *
+                         scratch.grad_phi_field[i] *
+                         (
+                           field_term_for_rhs
+                           +
+                           time_step * gamma
+                           +
+                           reaction_term
+                         )
+                       ) * JxW;
 
 
               for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
                 {
                   data.local_matrix(i,j)
-                  += (
-                       (time_step * diffusion_constant
-                        * (scratch.grad_phi_field[i] * scratch.grad_phi_field[j]))
-                       + ((time_step * (scratch.phi_field[i] * (current_u * scratch.grad_phi_field[j])))
-                          + (bdf2_factor * scratch.phi_field[i] * scratch.phi_field[j])) *
-                       (density_c_P + latent_heat_LHS)
-                     )
-                     * JxW;
+                      += (
+                           (time_step * diffusion_constant
+                            * (scratch.grad_phi_field[i] * scratch.grad_phi_field[j]))
+                           + ((time_step * (scratch.phi_field[i] * (current_u * scratch.grad_phi_field[j])))
+                              + (bdf2_factor * scratch.phi_field[i] * scratch.phi_field[j])) *
+                           (density_c_P + latent_heat_LHS)
+                         )
+                         * JxW;
                 }
 
               if (use_supg)
@@ -240,21 +240,21 @@ namespace aspect
                       // Note that we assume that the conductivity is constant, otherwise we would need to
                       // compute div (kappa grad T), which we don't have access to.
                       data.local_matrix(i,j)
-                      += tau *
-                         (
-                           (current_u * (density_c_P + latent_heat_LHS)) *
-                           scratch.grad_phi_field[i] *
-                           (
-                             -time_step * conductivity * scratch.laplacian_phi_field[j]
-                             +
+                          += tau *
                              (
-                               (time_step * current_u * scratch.grad_phi_field[j])
-                               +
-                               (bdf2_factor * scratch.phi_field[j])
-                             ) *
-                             (density_c_P + latent_heat_LHS)
-                           )
-                         ) * JxW;
+                               (current_u * (density_c_P + latent_heat_LHS)) *
+                               scratch.grad_phi_field[i] *
+                               (
+                                 -time_step * conductivity * scratch.laplacian_phi_field[j]
+                                 +
+                                 (
+                                   (time_step * current_u * scratch.grad_phi_field[j])
+                                   +
+                                   (bdf2_factor * scratch.phi_field[j])
+                                 ) *
+                                 (density_c_P + latent_heat_LHS)
+                               )
+                             ) * JxW;
                     }
                 }
             }
@@ -369,18 +369,18 @@ namespace aspect
           for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
             {
               data.local_rhs(i)
-              += scratch.old_field_values[q] * scratch.phi_field[i]
-                 *
-                 JxW;
+                  += scratch.old_field_values[q] * scratch.phi_field[i]
+                     *
+                     JxW;
 
               for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
                 {
                   data.local_matrix(i,j)
-                  += (parameters.diffusion_length_scale * parameters.diffusion_length_scale *
-                      (scratch.grad_phi_field[i] * scratch.grad_phi_field[j])
-                      + (scratch.phi_field[i] * scratch.phi_field[j])
-                     )
-                     * JxW;
+                      += (parameters.diffusion_length_scale * parameters.diffusion_length_scale *
+                          (scratch.grad_phi_field[i] * scratch.grad_phi_field[j])
+                          + (scratch.phi_field[i] * scratch.phi_field[j])
+                         )
+                         * JxW;
                 }
             }
         }
@@ -496,10 +496,10 @@ namespace aspect
               for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
                 {
                   data.local_rhs(i)
-                  -= time_step * scratch.face_phi_field[i] *
-                     (heat_flux[q] * normal_vector)
-                     *
-                     JxW;
+                      -= time_step * scratch.face_phi_field[i] *
+                         (heat_flux[q] * normal_vector)
+                         *
+                         JxW;
                 }
             }
         }
@@ -598,22 +598,22 @@ namespace aspect
               for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
                 {
                   data.local_rhs(i)
-                  += (
-                       -time_step * scratch.face_phi_field[i] *
-                       heat_flux[q] * normal_vector
-                       +
-                       time_step * scratch.face_phi_field[i] * heat_transfer_coefficients[q] *
-                       boundary_temperature
-                     )
-                     *
-                     JxW;
+                      += (
+                           -time_step * scratch.face_phi_field[i] *
+                           heat_flux[q] * normal_vector
+                           +
+                           time_step * scratch.face_phi_field[i] * heat_transfer_coefficients[q] *
+                           boundary_temperature
+                         )
+                         *
+                         JxW;
 
                   for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
                     {
                       data.local_matrix(i,j)
-                      += (time_step * scratch.face_phi_field[i] *
-                          heat_transfer_coefficients[q] * scratch.face_phi_field[j])
-                         * JxW;
+                          += (time_step * scratch.face_phi_field[i] *
+                              heat_transfer_coefficients[q] * scratch.face_phi_field[j])
+                             * JxW;
                     }
                 }
             }
@@ -729,21 +729,21 @@ namespace aspect
           for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
             {
               data.local_rhs(i)
-              += (field_term_for_rhs * scratch.phi_field[i]
-                  + scratch.phi_field[i]
-                  * reaction_term)
-                 * JxW;
+                  += (field_term_for_rhs * scratch.phi_field[i]
+                      + scratch.phi_field[i]
+                      * reaction_term)
+                     * JxW;
 
               for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
                 {
                   data.local_matrix(i,j)
-                  += (
-                       (time_step * scratch.artificial_viscosity
-                        * (scratch.grad_phi_field[i] * scratch.grad_phi_field[j]))
-                       + ((time_step * (scratch.phi_field[i] * (current_u_f * scratch.grad_phi_field[j])))
-                          + (bdf2_factor * scratch.phi_field[i] * scratch.phi_field[j]))
-                     )
-                     * JxW;
+                      += (
+                           (time_step * scratch.artificial_viscosity
+                            * (scratch.grad_phi_field[i] * scratch.grad_phi_field[j]))
+                           + ((time_step * (scratch.phi_field[i] * (current_u_f * scratch.grad_phi_field[j])))
+                              + (bdf2_factor * scratch.phi_field[i] * scratch.phi_field[j]))
+                         )
+                         * JxW;
                 }
             }
         }
@@ -963,50 +963,16 @@ namespace aspect
               for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
                 {
                   data.local_rhs(i)
-                  += (- time_step *  conductivity
-                      * scratch.face_grad_phi_field[i]
-                      * scratch.face_finite_element_values->normal_vector(q)
-                      * dirichlet_value
-
-                      + time_step
-                      * (density_c_P + latent_heat_LHS)
-                      * penalty
-                      * scratch.face_phi_field[i]
-                      * dirichlet_value
-
-                      + (inflow
-                         ?
-                         - (density_c_P + latent_heat_LHS)
-                         * time_step
-                         * (current_u
-                            * scratch.face_finite_element_values->normal_vector(q))
-                         * dirichlet_value
-                         * scratch.face_phi_field[i]
-                         :
-                         0.)
-                     )
-                     *
-                     scratch.face_finite_element_values->JxW(q);
-
-                  // local_matrix terms
-                  for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
-                    {
-                      data.local_matrix(i,j)
                       += (- time_step *  conductivity
                           * scratch.face_grad_phi_field[i]
                           * scratch.face_finite_element_values->normal_vector(q)
-                          * scratch.face_phi_field[j]
-
-                          - time_step *  conductivity
-                          * scratch.face_grad_phi_field[j]
-                          * scratch.face_finite_element_values->normal_vector(q)
-                          * scratch.face_phi_field[i]
+                          * dirichlet_value
 
                           + time_step
                           * (density_c_P + latent_heat_LHS)
                           * penalty
                           * scratch.face_phi_field[i]
-                          * scratch.face_phi_field[j]
+                          * dirichlet_value
 
                           + (inflow
                              ?
@@ -1014,12 +980,46 @@ namespace aspect
                              * time_step
                              * (current_u
                                 * scratch.face_finite_element_values->normal_vector(q))
+                             * dirichlet_value
                              * scratch.face_phi_field[i]
-                             * scratch.face_phi_field[j]
                              :
                              0.)
                          )
-                         * scratch.face_finite_element_values->JxW(q);
+                         *
+                         scratch.face_finite_element_values->JxW(q);
+
+                  // local_matrix terms
+                  for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
+                    {
+                      data.local_matrix(i,j)
+                          += (- time_step *  conductivity
+                              * scratch.face_grad_phi_field[i]
+                              * scratch.face_finite_element_values->normal_vector(q)
+                              * scratch.face_phi_field[j]
+
+                              - time_step *  conductivity
+                              * scratch.face_grad_phi_field[j]
+                              * scratch.face_finite_element_values->normal_vector(q)
+                              * scratch.face_phi_field[i]
+
+                              + time_step
+                              * (density_c_P + latent_heat_LHS)
+                              * penalty
+                              * scratch.face_phi_field[i]
+                              * scratch.face_phi_field[j]
+
+                              + (inflow
+                                 ?
+                                 - (density_c_P + latent_heat_LHS)
+                                 * time_step
+                                 * (current_u
+                                    * scratch.face_finite_element_values->normal_vector(q))
+                                 * scratch.face_phi_field[i]
+                                 * scratch.face_phi_field[j]
+                                 :
+                                 0.)
+                             )
+                             * scratch.face_finite_element_values->JxW(q);
                     }
                 }
             }
@@ -1114,7 +1114,7 @@ namespace aspect
 
               this->create_additional_material_model_outputs(scratch.neighbor_face_material_model_outputs);
               this->get_heating_model_manager().create_additional_material_model_inputs_and_outputs(scratch.neighbor_face_material_model_inputs,
-                  scratch.neighbor_face_material_model_outputs);
+                                                                                                    scratch.neighbor_face_material_model_outputs);
 
               this->get_material_model().fill_additional_material_model_inputs(scratch.neighbor_face_material_model_inputs,
                                                                                this->get_current_linearization_point(),
@@ -1280,34 +1280,34 @@ namespace aspect
                       for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
                         {
                           data.local_matrix(i,j)
-                          += (- 0.5 * time_step * conductivity
-                              * scratch.face_grad_phi_field[i]
-                              * scratch.face_finite_element_values->normal_vector(q)
-                              * scratch.face_phi_field[j]
+                              += (- 0.5 * time_step * conductivity
+                                  * scratch.face_grad_phi_field[i]
+                                  * scratch.face_finite_element_values->normal_vector(q)
+                                  * scratch.face_phi_field[j]
 
-                              - 0.5 * time_step * conductivity
-                              * scratch.face_grad_phi_field[j]
-                              * scratch.face_finite_element_values->normal_vector(q)
-                              * scratch.face_phi_field[i]
+                                  - 0.5 * time_step * conductivity
+                                  * scratch.face_grad_phi_field[j]
+                                  * scratch.face_finite_element_values->normal_vector(q)
+                                  * scratch.face_phi_field[i]
 
-                              + time_step
-                              * max_density_c_P_and_latent_heat
-                              * max_penalty
-                              * scratch.face_phi_field[i]
-                              * scratch.face_phi_field[j]
+                                  + time_step
+                                  * max_density_c_P_and_latent_heat
+                                  * max_penalty
+                                  * scratch.face_phi_field[i]
+                                  * scratch.face_phi_field[j]
 
-                              - (inflow
-                                 ?
-                                 (density_c_P + latent_heat_LHS)
-                                 * time_step
-                                 * (current_u
-                                    * scratch.face_finite_element_values->normal_vector(q))
-                                 * scratch.face_phi_field[i]
-                                 * scratch.face_phi_field[j]
-                                 :
-                                 0.)
-                             )
-                             * scratch.face_finite_element_values->JxW(q);
+                                  - (inflow
+                                     ?
+                                     (density_c_P + latent_heat_LHS)
+                                     * time_step
+                                     * (current_u
+                                        * scratch.face_finite_element_values->normal_vector(q))
+                                     * scratch.face_phi_field[i]
+                                     * scratch.face_phi_field[j]
+                                     :
+                                     0.)
+                                 )
+                                 * scratch.face_finite_element_values->JxW(q);
 
                           data.local_matrices_int_ext[nth_interface_matrix<dim>(fe.reference_cell(), face_no)](i,j)
                           += (- 0.5 * time_step * neighbor_conductivity
@@ -1441,12 +1441,12 @@ namespace aspect
 
               // Subface to face.
               (*scratch.subface_finite_element_values)[introspection.extractors.velocities].get_function_values(this->get_current_linearization_point(),
-                  scratch.face_current_velocity_values);
+                                                                                                                scratch.face_current_velocity_values);
 
               // Get the mesh velocity, because we need to subtract it from advection systems.
               if (parameters.mesh_deformation_enabled)
                 (*scratch.subface_finite_element_values)[introspection.extractors.velocities].get_function_values(this->get_mesh_velocity(),
-                    scratch.face_mesh_velocity_values);
+                                                                                                                  scratch.face_mesh_velocity_values);
 
               scratch.face_material_model_inputs.reinit  (*scratch.subface_finite_element_values,
                                                           cell,
@@ -1634,34 +1634,34 @@ namespace aspect
                       for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
                         {
                           data.local_matrix(i,j)
-                          += (- 0.5 * time_step * conductivity
-                              * scratch.face_grad_phi_field[i]
-                              * scratch.subface_finite_element_values->normal_vector(q)
-                              * scratch.face_phi_field[j]
+                              += (- 0.5 * time_step * conductivity
+                                  * scratch.face_grad_phi_field[i]
+                                  * scratch.subface_finite_element_values->normal_vector(q)
+                                  * scratch.face_phi_field[j]
 
-                              - 0.5 * time_step * conductivity
-                              * scratch.face_grad_phi_field[j]
-                              * scratch.subface_finite_element_values->normal_vector(q)
-                              * scratch.face_phi_field[i]
+                                  - 0.5 * time_step * conductivity
+                                  * scratch.face_grad_phi_field[j]
+                                  * scratch.subface_finite_element_values->normal_vector(q)
+                                  * scratch.face_phi_field[i]
 
-                              + time_step
-                              * max_density_c_P_and_latent_heat
-                              * max_penalty
-                              * scratch.face_phi_field[i]
-                              * scratch.face_phi_field[j]
+                                  + time_step
+                                  * max_density_c_P_and_latent_heat
+                                  * max_penalty
+                                  * scratch.face_phi_field[i]
+                                  * scratch.face_phi_field[j]
 
-                              - (inflow
-                                 ?
-                                 (density_c_P + latent_heat_LHS)
-                                 * time_step
-                                 * (current_u
-                                    * scratch.subface_finite_element_values->normal_vector(q))
-                                 * scratch.face_phi_field[i]
-                                 * scratch.face_phi_field[j]
-                                 :
-                                 0.)
-                             )
-                             * scratch.subface_finite_element_values->JxW(q);
+                                  - (inflow
+                                     ?
+                                     (density_c_P + latent_heat_LHS)
+                                     * time_step
+                                     * (current_u
+                                        * scratch.subface_finite_element_values->normal_vector(q))
+                                     * scratch.face_phi_field[i]
+                                     * scratch.face_phi_field[j]
+                                     :
+                                     0.)
+                                 )
+                                 * scratch.subface_finite_element_values->JxW(q);
 
                           data.local_matrices_int_ext[nth_interface_matrix<dim>(fe.reference_cell(), face_no, subface_no)](i,j)
                           += (- 0.5 * time_step * neighbor_conductivity
