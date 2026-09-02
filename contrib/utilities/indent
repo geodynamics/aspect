@@ -36,7 +36,7 @@ find_astyle() {
   # Loop over available astyle executables in those $PATH directories
   find "${PATHS[@]}" -iname '*astyle*' -print0 2>/dev/null \
   | while IFS=  read -r -d $'\0' astyle; do
-    if test "$("${astyle}" --version 2>&1)" == "Artistic Style Version 2.04" ; then
+    if test "$("${astyle}" --version 2>&1)" == "Artistic Style Version 3.6.18" ; then
       echo "${astyle}"
       return
     fi
@@ -63,51 +63,15 @@ if test -z "${astyle}"; then
   exit 1
 fi
 
-if test "$("${astyle}" --version 2>&1)" != "Artistic Style Version 2.04" ; then
-  echo "*** Found a version of astyle different than the required version 2.04."
+if test "$("${astyle}" --version 2>&1)" != "Artistic Style Version 3.6.18" ; then
+  echo "*** Found a version of astyle different than the required version 3.6.18."
   exit 1
 fi
 
-echo "--- Found astyle 2.04 at ${astyle}"
+echo "--- Found astyle 3.6.18 at ${astyle}"
 
 
 # Indent a file.
-#
-# We use astyle 2.04 for indentation, which is a tool that predates C++11
-# and that consequently has trouble with things such as
-#   std::vector<Point<dim>>
-# where it interprets the closing `>>` as a right shift operator. It then
-# gets its template closing angle bracket counter all out of whack and
-# produces awkward indentations. To avoid this, we first convert all closing
-# `>>` into `> >`, run astyle, and then change it back. This leads to reasonable
-# results.
-#
-# One might think that a regex substitution such as
-#   s/>>/> >/g;
-# would work (and putting the space on the left hand side for the way back).
-# But this is not true because Perl does not go back to look at the substitution
-# again, even with the /g modifier. As a consequence, the regex above
-# replaces *triple* closing angle brackets as
-#   ">>>"  ->  "> >>"
-# and it does not look at the ">>" on the right hand side because the 'point'
-# within the string where the regex matcher starts looking again with /g
-# is now the last ">", having replaced the initial ">>" by "> >". Clearly,
-# strings such as ">>>>" with four or more closing brackets encounter
-# similar issues.
-#
-# The way to work around this is to replace "a '>' preceded by another
-# '>' by ' >'". This is expressed with positive look-behind, and leads to
-# the regex substitution
-#   s/(?<=>)>/ >/g
-# where "(?<=" starts the positive look-behind expression. Note that the
-# look-behind expression is not part of the match itself (which is only ">"
-# in the expression above) and is only used to restrict which occurrences
-# of ">" are actually matches (and consequently substituted).
-#
-# For unclear reasons, astyle insists on appending a separate empty line
-# at the end of the file. Fix this up using the last two 'sed' commands,
-# using the same logic as in the 'ensure_single_trailing_newline()'
-# function below.
 indent_file() {
   file="${1}"
   tmpfile="$(mktemp "${TMPDIR}/$(basename "$1").tmp.XXXXXXXX")"
@@ -120,11 +84,7 @@ indent_file() {
     rm "${file}.tmp"
   fi
 
-  perl -p -e 's/(?<=>)>/ >/g;' <"${file}" \
-      | "${astyle}" --options=contrib/utilities/astyle.rc \
-      | perl -p -e 's/(?<=>) >/>/g;' \
-      | sed -e :a -e '/^\n*$/{$d;N;};/\n$/ba' \
-      | sed -e '$a\' \
+"${astyle}" --options=contrib/utilities/astyle.rc <"${file}" \
       > "${tmpfile}"
 
   if ! diff -q "${file}" "${tmpfile}" >/dev/null; then

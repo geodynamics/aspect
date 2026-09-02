@@ -43,6 +43,7 @@ namespace aspect
      * their input parameters. These functions must be defined at the top here before
      * they are used.
      */
+    // *INDENT-OFF*
     extern"C"
     {
       /**
@@ -180,6 +181,7 @@ namespace aspect
        */
       void fastscape_destroy_();
     }
+    // *INDENT-ON*
 
 
     template <int dim>

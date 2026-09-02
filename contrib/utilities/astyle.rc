@@ -9,7 +9,7 @@
 
 # use spaces instead of tabs:
 --convert-tabs
---indent-preprocessor
+--indent-preproc-block
 --indent=spaces=2
 --indent-namespaces
 --indent-labels
@@ -29,6 +29,9 @@
 --align-pointer=name
 --align-reference=name
 
---max-instatement-indent=80
+# break the return type of a function from its name
+# --break-return-type
+
+--max-continuation-indent=120
 --suffix=none
 --quiet
