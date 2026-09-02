@@ -1,0 +1,7 @@
+New: Added a new particle property called 'general composition reaction' that
+allows compositional fields to be tracked on particles and update them using
+the 'reaction terms' returned by the material model. While this particle
+property allows different fields to be tracked on different particle managers, it is
+recommended to have all fields on a single manager when dealing with sharp interfaces.
+<br>
+(Arijit Chakraborty and Rene Gassmoeller, 2026/08/03)

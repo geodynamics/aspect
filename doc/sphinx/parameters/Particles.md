@@ -89,7 +89,7 @@ Select one of the following models:
 :name: parameters:Particles/List_20of_20particle_20properties
 **Default value:**
 
-**Pattern:** [MultipleSelection composition|composition reaction|cpo bingham average|cpo elastic tensor|crust and lithosphere formation|crystal preferred orientation|elastic stress|elastic tensor decomposition|function|grain size|initial composition|initial position|integrated strain|integrated strain invariant|melt particle|pT path|position|reference position|strain rate|velocity|velocity gradient|viscoplastic strain invariants ]
+**Pattern:** [MultipleSelection composition|composition reaction|cpo bingham average|cpo elastic tensor|crust and lithosphere formation|crystal preferred orientation|elastic stress|elastic tensor decomposition|function|general composition reaction|grain size|initial composition|initial position|integrated strain|integrated strain invariant|melt particle|pT path|position|reference position|strain rate|velocity|velocity gradient|viscoplastic strain invariants ]
 
 **Documentation:** A comma separated list of particle properties that should be tracked. By default none is selected, which means only position, velocity and id of the particles are output.
 
@@ -112,6 +112,8 @@ The following properties are available:
 &lsquo;elastic tensor decomposition&rsquo;: A plugin which decomposes the elastic tensor into different approximations (Isotropic, Hexagonal, Tetragonal, Orthorhombic, Monoclinic and Triclinic) and provides the eigenvectors of the tensor.
 
 &lsquo;function&rsquo;: Implementation of a model in which the particle property is set by evaluating an explicit function at the initial position of each particle. The function is defined in the parameters in section &ldquo;Particles|Function&rdquo;. The format of these functions follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.
+
+&lsquo;general composition reaction&rsquo;: A particle property that stores compositional fields and updates them using the &rsquo;reaction terms&rsquo; returned by the material model. While this particle property allows fields to be tracked on different particle managers, for now it is recommended to have only one particle manager with this property in your simulation.
 
 &lsquo;grain size&rsquo;: A plugin in which the particle property is defined as the evolving grain size of a particle. See the grain_size material model documentation for more detailed information.
 
@@ -650,6 +652,17 @@ If the function you are describing represents a vector-valued function with mult
 **Pattern:** [Anything]
 
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
+::::
+
+(parameters:Particles/General_20composition_20reaction)=
+## **Subsection:** Particles / General composition reaction
+::::{dropdown} __Parameter:__ {ref}`Selected compositional fields<parameters:Particles/General_20composition_20reaction/Selected_20compositional_20fields>`
+:name: parameters:Particles/General_20composition_20reaction/Selected_20compositional_20fields
+**Default value:** all
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** A list that deterines which Compositional fields are stored for particles of this kind, and on this particle manager. The value &rsquo;all&rsquo; selects every compositional field.
 ::::
 
 (parameters:Particles/Generator)=
