@@ -112,7 +112,8 @@ namespace aspect
     }
 
     template <int dim>
-    double Sphere<dim>::radius () const
+    double
+    Sphere<dim>::radius () const
     {
       return R;
     }

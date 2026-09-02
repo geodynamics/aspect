@@ -57,7 +57,8 @@ namespace aspect
           axis(rotation_axis)
         {}
 
-        Tensor<1,dim> value (const Point<dim> &p) const override
+        Tensor<1,dim>
+        value (const Point<dim> &p) const override
         {
           if ( dim == 2)
             return cross_product_2d(p);
@@ -92,7 +93,8 @@ namespace aspect
           translation(t)
         {}
 
-        Tensor<1,dim> value(const Point<dim> &) const override
+        Tensor<1,dim>
+        value(const Point<dim> &) const override
         {
           return translation;
         }
@@ -102,7 +104,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::setup_nullspace_constraints(AffineConstraints<double> &constraints)
+  void
+  Simulator<dim>::setup_nullspace_constraints(AffineConstraints<double> &constraints)
   {
     if (parameters.nullspace_removal & NullspaceRemoval::any_translation)
       {
@@ -202,8 +205,9 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::remove_nullspace(LinearAlgebra::BlockVector &relevant_dst,
-                                        LinearAlgebra::BlockVector &tmp_distributed_stokes) const
+  void
+  Simulator<dim>::remove_nullspace(LinearAlgebra::BlockVector &relevant_dst,
+                                   LinearAlgebra::BlockVector &tmp_distributed_stokes) const
   {
     if (parameters.nullspace_removal & NullspaceRemoval::angular_momentum)
       {
@@ -240,9 +244,10 @@ namespace aspect
   }
 
   template <int dim>
-  void Simulator<dim>::remove_net_linear_momentum(const bool use_constant_density,
-                                                  LinearAlgebra::BlockVector &relevant_dst,
-                                                  LinearAlgebra::BlockVector &tmp_distributed_stokes) const
+  void
+  Simulator<dim>::remove_net_linear_momentum(const bool use_constant_density,
+                                             LinearAlgebra::BlockVector &relevant_dst,
+                                             LinearAlgebra::BlockVector &tmp_distributed_stokes) const
   {
     Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
            ExcNotImplemented());
@@ -463,10 +468,11 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::remove_net_angular_momentum(const bool use_constant_density,
-                                                   LinearAlgebra::BlockVector &relevant_dst,
-                                                   LinearAlgebra::BlockVector &tmp_distributed_stokes,
-                                                   const bool limit_to_top_faces) const
+  void
+  Simulator<dim>::remove_net_angular_momentum(const bool use_constant_density,
+                                              LinearAlgebra::BlockVector &relevant_dst,
+                                              LinearAlgebra::BlockVector &tmp_distributed_stokes,
+                                              const bool limit_to_top_faces) const
   {
     Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
            ExcNotImplemented());

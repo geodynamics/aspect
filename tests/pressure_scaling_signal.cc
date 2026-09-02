@@ -23,7 +23,8 @@
 #include <aspect/simulator_signals.h>
 
 
-double my_signal(const double pressure_scaling, const double reference_viscosity, const double length_scale)
+double
+my_signal(const double pressure_scaling, const double reference_viscosity, const double length_scale)
 {
   std::cout << "pressure_scaling = " << pressure_scaling
             << " reference_viscosity = " << reference_viscosity
@@ -34,7 +35,8 @@ double my_signal(const double pressure_scaling, const double reference_viscosity
 
 
 template <int dim>
-void signal_connector (aspect::SimulatorSignals<dim> &signals)
+void
+signal_connector (aspect::SimulatorSignals<dim> &signals)
 {
   std::cout << "* Connecting signals" << std::endl;
   signals.modify_pressure_scaling.connect(&my_signal);

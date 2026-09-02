@@ -38,18 +38,21 @@ namespace aspect
   class MeltingRate:
     public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
   {
-      virtual bool is_compressible () const
+      virtual bool
+      is_compressible () const
       {
         return false;
       }
 
-      virtual double reference_darcy_coefficient () const
+      virtual double
+      reference_darcy_coefficient () const
       {
         return 1e-8 * Utilities::fixed_power<3>(0.01) / 10.0;
       }
 
-      virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                            typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
+      virtual void
+      evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
+               typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
       {
         for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
           {

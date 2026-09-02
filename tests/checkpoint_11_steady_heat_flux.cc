@@ -45,7 +45,8 @@ namespace
  * that checkpoint. Without restoring SteadyHeatFlux::time_heat_flux, the
  * resumed calculation needs to rebuild its history and terminates later.
  */
-int f()
+int
+f()
 {
   std::cout << "* running continuous reference:" << std::endl;
 

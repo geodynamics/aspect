@@ -80,8 +80,9 @@ namespace aspect
             geometry_model (geometry_model)
           {}
 
-          void vector_value (const Point<dim>   &pos,
-                             Vector<double>   &values) const override
+          void
+          vector_value (const Point<dim>   &pos,
+                        Vector<double>   &values) const override
           {
             Assert (dim == 2, ExcNotImplemented());
             Assert (values.size() >= 4, ExcInternalError());
@@ -137,8 +138,9 @@ namespace aspect
          * @name Physical parameters used in the basic equations
          * @{
          */
-        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                      MaterialModel::MaterialModelOutputs<dim> &out) const override
+        void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                 MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {

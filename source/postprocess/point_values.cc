@@ -278,7 +278,8 @@ namespace aspect
 
     template <int dim>
     template <class Archive>
-    void PointValues<dim>::serialize (Archive &ar, const unsigned int)
+    void
+    PointValues<dim>::serialize (Archive &ar, const unsigned int)
     {
       ar &evaluation_points_cartesian
       & point_values

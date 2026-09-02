@@ -176,7 +176,8 @@ namespace aspect
        * are all equidistantly spaced within some small tolerance.
        */
       template <int dim>
-      bool data_is_equidistant (const std::array<std::vector<double>,dim> &coordinate_values)
+      bool
+      data_is_equidistant (const std::array<std::vector<double>,dim> &coordinate_values)
       {
         bool coordinate_values_are_equidistant = true;
 
@@ -1133,9 +1134,10 @@ namespace aspect
        * placeholder (%d). Placeholders order is first boundary_name
        * (%s), then filenumber (%d).
        */
-      std::string replace_placeholders(const std::string &filename_and_path,
-                                       const std::string &boundary_name,
-                                       const int filenumber)
+      std::string
+      replace_placeholders(const std::string &filename_and_path,
+                           const std::string &boundary_name,
+                           const int filenumber)
       {
         const int maxsize = filename_and_path.length() + 256;
         char *filename = static_cast<char *>(std::malloc (maxsize * sizeof(char)));

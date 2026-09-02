@@ -60,9 +60,10 @@ namespace aspect
 
 
     template <int dim>
-    void MeltInputs<dim>::fill (const LinearAlgebra::BlockVector &solution,
-                                const FEValuesBase<dim>          &fe_values,
-                                const Introspection<dim>         &introspection)
+    void
+    MeltInputs<dim>::fill (const LinearAlgebra::BlockVector &solution,
+                           const FEValuesBase<dim>          &fe_values,
+                           const Introspection<dim>         &introspection)
     {
       compaction_pressures.resize(fe_values.n_quadrature_points);
       fluid_velocities.resize(fe_values.n_quadrature_points, Tensor<1,dim>());
@@ -90,9 +91,10 @@ namespace aspect
 
 
     template <int dim>
-    void MeltOutputs<dim>::average (const MaterialAveraging::AveragingOperation operation,
-                                    const FullMatrix<double>  &projection_matrix,
-                                    const FullMatrix<double>  &expansion_matrix)
+    void
+    MeltOutputs<dim>::average (const MaterialAveraging::AveragingOperation operation,
+                               const FullMatrix<double>  &projection_matrix,
+                               const FullMatrix<double>  &expansion_matrix)
     {
       average_property (operation, projection_matrix, expansion_matrix,
                         compaction_viscosities);
@@ -1454,7 +1456,8 @@ namespace aspect
     template <int dim>
     struct PcConstraintsCopyData
     {
-      explicit PcConstraintsCopyData (const unsigned int stokes_dofs_per_cell)
+      explicit
+      PcConstraintsCopyData (const unsigned int stokes_dofs_per_cell)
       {
         nonzero_dof_indices.reserve(stokes_dofs_per_cell);
       }

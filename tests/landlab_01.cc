@@ -28,7 +28,8 @@
 #include <aspect/python_helper.h>
 
 // create a function that is run upon loading the plugin
-int f()
+int
+f()
 {
   if (_import_array() < 0)
     {
@@ -53,7 +54,8 @@ int f()
 }
 
 template <int dim>
-void signal_connector (aspect::SimulatorSignals<dim> &/*signals*/)
+void
+signal_connector (aspect::SimulatorSignals<dim> &/*signals*/)
 {
   f();
   std::cout << "exiting..." << std::endl;

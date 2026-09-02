@@ -37,7 +37,8 @@ namespace aspect
 
 
     template <int dim>
-    void VelocityFunction<dim>::update()
+    void
+    VelocityFunction<dim>::update()
     {
       // we get time passed as seconds (always) but may want
       // to reinterpret it in years if the global flag

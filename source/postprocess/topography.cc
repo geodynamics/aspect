@@ -230,7 +230,8 @@ namespace aspect
 
     template <int dim>
     template <class Archive>
-    void Topography<dim>::serialize (Archive &ar, const unsigned int)
+    void
+    Topography<dim>::serialize (Archive &ar, const unsigned int)
     {
       ar &last_output_time;
     }
@@ -238,7 +239,8 @@ namespace aspect
 
 
     template <int dim>
-    void Topography<dim>::save (std::map<std::string, std::string> &status_strings) const
+    void
+    Topography<dim>::save (std::map<std::string, std::string> &status_strings) const
     {
       // Serialize into a stringstream. Put the following into a code
       // block of its own to ensure the destruction of the 'oa'
@@ -256,7 +258,8 @@ namespace aspect
 
 
     template <int dim>
-    void Topography<dim>::load (const std::map<std::string, std::string> &status_strings)
+    void
+    Topography<dim>::load (const std::map<std::string, std::string> &status_strings)
     {
       // see if something was saved
       if (status_strings.find("Topography") != status_strings.end())

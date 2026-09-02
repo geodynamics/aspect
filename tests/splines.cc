@@ -25,7 +25,8 @@
 #include <aspect/utilities.h>
 #include <iostream>
 
-int f()
+int
+f()
 {
   using namespace aspect::Utilities;
   tk::spline linear,spline,monotone_spline;

@@ -377,7 +377,8 @@ namespace aspect
 
 
     template <typename InterfaceType>
-    void ManagerBase<InterfaceType>::update()
+    void
+    ManagerBase<InterfaceType>::update()
     {
       // call the update() functions of all plugins:
       for (const auto &p : plugin_objects)
@@ -436,8 +437,9 @@ namespace aspect
 
     template <typename InterfaceType>
     template <class Archive>
-    void ManagerBase<InterfaceType>::save (Archive &ar,
-                                           const unsigned int) const
+    void
+    ManagerBase<InterfaceType>::save (Archive &ar,
+                                      const unsigned int) const
     {
       // let all the postprocessors save their data in a map and then
       // serialize that
@@ -451,8 +453,9 @@ namespace aspect
 
     template <typename InterfaceType>
     template <class Archive>
-    void ManagerBase<InterfaceType>::load (Archive &ar,
-                                           const unsigned int)
+    void
+    ManagerBase<InterfaceType>::load (Archive &ar,
+                                      const unsigned int)
     {
       // get the map back out of the stream; then let the postprocessors
       // that we currently have get their data from there. note that this
@@ -566,7 +569,8 @@ namespace aspect
          * this class.
          */
         static
-        std::unique_ptr<InterfaceClass> factory ()
+        std::unique_ptr<InterfaceClass>
+        factory ()
         {
           return std::make_unique<ModelClass>();
         }

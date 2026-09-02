@@ -40,7 +40,8 @@ namespace aspect
         virtual void update();
     };
     template <int dim>
-    void Box2<dim>::update()
+    void
+    Box2<dim>::update()
     {
       if (this->get_postprocess_manager().template has_matching_postprocessor<Postprocess::PressureStatistics<dim>>())
         std::cout << "PressureStatistics is found!" << std::endl;

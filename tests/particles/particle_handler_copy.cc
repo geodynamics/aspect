@@ -28,10 +28,11 @@
 using namespace aspect;
 
 template <int dim>
-void duplicate_particle_handler(const SimulatorAccess<dim> &simulator_access,
-                                const bool,
-                                const unsigned int,
-                                const SolverControl &)
+void
+duplicate_particle_handler(const SimulatorAccess<dim> &simulator_access,
+                           const bool,
+                           const unsigned int,
+                           const SolverControl &)
 {
   // On purpose use the old class name here to test that backwards compatibility works.
   const Particle::World<dim> &particle_manager = simulator_access.get_particle_manager(0);
@@ -73,7 +74,8 @@ void duplicate_particle_handler(const SimulatorAccess<dim> &simulator_access,
 
 
 template <int dim>
-void signal_connector (SimulatorSignals<dim> &signals)
+void
+signal_connector (SimulatorSignals<dim> &signals)
 {
   std::cout << "Connecting signals" << std::endl;
   signals.post_advection_solver.connect (&duplicate_particle_handler<dim>);

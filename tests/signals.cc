@@ -28,8 +28,9 @@ using namespace aspect;
 
 // create a function that is run upon loading the plugin
 // when declaring parameters, and that produces some output
-void declare_parameters(const unsigned int dim,
-                        ParameterHandler &prm)
+void
+declare_parameters(const unsigned int dim,
+                   ParameterHandler &prm)
 {
   std::cout << "declaring parameters" << std::endl;
   prm.declare_entry("abc", "42", Patterns::Integer(21,43));
@@ -38,8 +39,9 @@ void declare_parameters(const unsigned int dim,
 
 // same for parsing parameters
 template <int dim>
-void parse_parameters(const Parameters<dim> &parameters,
-                      ParameterHandler &prm)
+void
+parse_parameters(const Parameters<dim> &parameters,
+                 ParameterHandler &prm)
 {
   std::cout << "parsing parameters: abc="
             << prm.get("abc") << std::endl;
@@ -47,7 +49,8 @@ void parse_parameters(const Parameters<dim> &parameters,
 }
 
 
-void parameter_connector ()
+void
+parameter_connector ()
 {
   SimulatorSignals<2>::declare_additional_parameters.connect (&declare_parameters);
   SimulatorSignals<3>::declare_additional_parameters.connect (&declare_parameters);

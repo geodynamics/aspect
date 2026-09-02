@@ -171,7 +171,8 @@ namespace aspect
       {
         public:
 
-          std::vector<std::string> get_names () const override
+          std::vector<std::string>
+          get_names () const override
           {
             std::vector<std::string> solution_names = BaseVariablePostprocessor<dim>::get_names();
 
@@ -292,7 +293,8 @@ namespace aspect
 
     template <int dim>
     template <class Archive>
-    void Visualization<dim>::OutputHistory::serialize (Archive &ar, const unsigned int)
+    void
+    Visualization<dim>::OutputHistory::serialize (Archive &ar, const unsigned int)
     {
       ar
       & last_mesh_file_name
@@ -331,7 +333,8 @@ namespace aspect
 
 
     template <int dim>
-    void Visualization<dim>::mesh_changed_signal()
+    void
+    Visualization<dim>::mesh_changed_signal()
     {
       cell_output_history.mesh_changed = true;
       face_output_history.mesh_changed = true;
@@ -1018,9 +1021,10 @@ namespace aspect
 
 
     template <int dim>
-    void Visualization<dim>::writer (const std::string &filename,
-                                     const std::string &temporary_output_location,
-                                     const std::string &file_contents)
+    void
+    Visualization<dim>::writer (const std::string &filename,
+                                const std::string &temporary_output_location,
+                                const std::string &file_contents)
     {
       std::string tmp_filename = filename;
       if (temporary_output_location != "")
@@ -1440,7 +1444,8 @@ namespace aspect
 
     template <int dim>
     template <class Archive>
-    void Visualization<dim>::serialize (Archive &ar, const unsigned int)
+    void
+    Visualization<dim>::serialize (Archive &ar, const unsigned int)
     {
       ar &last_output_time
       & last_output_timestep

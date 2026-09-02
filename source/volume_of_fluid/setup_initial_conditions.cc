@@ -29,7 +29,8 @@
 namespace aspect
 {
   template <int dim>
-  void VolumeOfFluidHandler<dim>::set_initial_volume_fractions ()
+  void
+  VolumeOfFluidHandler<dim>::set_initial_volume_fractions ()
   {
     for (unsigned int f=0; f<n_volume_of_fluid_fields; ++f)
       {
@@ -64,7 +65,8 @@ namespace aspect
   }
 
   template <int dim>
-  void VolumeOfFluidHandler<dim>::initialize_from_composition_field (
+  void
+  VolumeOfFluidHandler<dim>::initialize_from_composition_field (
     const VolumeOfFluidField<dim> &field)
   {
     LinearAlgebra::BlockVector initial_solution;
@@ -130,7 +132,8 @@ namespace aspect
   }
 
   template <int dim>
-  void VolumeOfFluidHandler<dim>::initialize_from_level_set (
+  void
+  VolumeOfFluidHandler<dim>::initialize_from_level_set (
     const VolumeOfFluidField<dim> &field)
   {
     LinearAlgebra::BlockVector initial_solution;

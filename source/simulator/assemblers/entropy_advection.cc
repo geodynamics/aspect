@@ -258,8 +258,9 @@ namespace aspect
 
 
     template <int dim>
-    void set_assemblers_entropy_advection(const SimulatorAccess<dim> &simulator_access,
-                                          Assemblers::Manager<dim> &assemblers)
+    void
+    set_assemblers_entropy_advection(const SimulatorAccess<dim> &simulator_access,
+                                     Assemblers::Manager<dim> &assemblers)
     {
       AssertThrow (Plugins::plugin_type_matches<MaterialModel::EntropyModel<dim>>
                    (simulator_access.get_material_model()) ||

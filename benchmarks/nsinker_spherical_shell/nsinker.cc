@@ -51,8 +51,9 @@ namespace aspect
          * @name Physical parameters used in the basic equations
          * @{
          */
-        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                      MaterialModel::MaterialModelOutputs<dim> &out) const override
+        void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                 MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
           const double sqrt_dynamic_viscosity_ratio = std::sqrt(dynamic_viscosity_ratio);
 
@@ -88,7 +89,8 @@ namespace aspect
          * (compressible Stokes) or as $\nabla \cdot \mathbf{u}=0$
          * (incompressible Stokes).
          */
-        bool is_compressible () const override
+        bool
+        is_compressible () const override
         {
           return false;
         }

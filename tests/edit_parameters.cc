@@ -32,8 +32,9 @@ namespace aspect
   /**
    * Declare additional parameters.
    */
-  void declare_parameters(const unsigned int,
-                          ParameterHandler &prm)
+  void
+  declare_parameters(const unsigned int,
+                     ParameterHandler &prm)
   {
     prm.declare_entry("Switch step", "0",
                       Patterns::Integer(0),
@@ -41,15 +42,17 @@ namespace aspect
   }
 
   template <int dim>
-  void parse_parameters(const Parameters<dim> &,
-                        ParameterHandler &prm)
+  void
+  parse_parameters(const Parameters<dim> &,
+                   ParameterHandler &prm)
   {
     switch_step = prm.get_integer("Switch step");
     switched = false;
   }
 
   template <int dim>
-  void on_start_timestep (const SimulatorAccess<dim> &simulator_access)
+  void
+  on_start_timestep (const SimulatorAccess<dim> &simulator_access)
   {
     simulator_access.get_pcout() << "Signal start_timestep triggered!" << std::endl;
     if (simulator_access.get_timestep_number() != numbers::invalid_unsigned_int
@@ -67,14 +70,16 @@ namespace aspect
 
 
   template <int dim>
-  void on_edit_parameters (const SimulatorAccess<dim> &simulator_access,
-                           Parameters<dim> &/*parameters*/)
+  void
+  on_edit_parameters (const SimulatorAccess<dim> &simulator_access,
+                      Parameters<dim> &/*parameters*/)
   {
     simulator_access.get_pcout()<<"Signal edit_parameters triggered!"<<std::endl;
   }
 
   // Connect declare_parameters and parse_parameters to appropriate signals.
-  void parameter_connector ()
+  void
+  parameter_connector ()
   {
     SimulatorSignals<2>::declare_additional_parameters.connect (&declare_parameters);
     SimulatorSignals<3>::declare_additional_parameters.connect (&declare_parameters);
@@ -84,7 +89,8 @@ namespace aspect
   }
 
   template <int dim>
-  void signal_connector (SimulatorSignals<dim> &signals)
+  void
+  signal_connector (SimulatorSignals<dim> &signals)
   {
     signals.edit_parameters_pre_setup_dofs.connect (&on_edit_parameters<dim>);
     signals.start_timestep.connect(&on_start_timestep<dim>);

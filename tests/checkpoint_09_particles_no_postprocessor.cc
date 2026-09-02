@@ -46,7 +46,8 @@ namespace
  * is resumed from a checkpoint to make sure particle state is preserved even
  * without particle output.
  */
-int f()
+int
+f()
 {
   std::cout << "* running continuous reference:" << std::endl;
 

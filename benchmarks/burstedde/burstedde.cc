@@ -94,8 +94,9 @@ namespace aspect
             beta_(beta)
           {}
 
-          void vector_value (const Point<dim>   &pos,
-                             Vector<double>   &values) const override
+          void
+          vector_value (const Point<dim>   &pos,
+                        Vector<double>   &values) const override
           {
             Assert (dim == 3, ExcNotImplemented());
             Assert (values.size() >= 4, ExcInternalError());
@@ -180,8 +181,9 @@ namespace aspect
     class BursteddeMaterial : public MaterialModel::Interface<dim>
     {
       public:
-        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                      MaterialModel::MaterialModelOutputs<dim> &out) const override
+        void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                 MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {

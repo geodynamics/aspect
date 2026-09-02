@@ -86,7 +86,8 @@ namespace aspect
      * @return A PyObject* to the numpy array inside a std::unique_ptr.
      */
     inline
-    std::unique_ptr<PyObject, void(*)(PyObject *)> vector_to_numpy_object(const std::vector<double> &vec)
+    std::unique_ptr<PyObject, void(*)(PyObject *)>
+    vector_to_numpy_object(const std::vector<double> &vec)
     {
       const npy_intp size = static_cast<npy_intp>(vec.size());
 
@@ -106,7 +107,8 @@ namespace aspect
      * Access the contents of a numpy array (PyObject*) using an ArrayView<double>.
      * The PyObject must remain valid while the view is in use.
      */
-    inline dealii::ArrayView<double> numpy_to_array_view(PyObject *obj)
+    inline dealii::ArrayView<double>
+    numpy_to_array_view(PyObject *obj)
     {
       AssertThrow(PyArray_Check(obj), dealii::ExcMessage("Expected a numpy array"));
       PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
@@ -119,7 +121,8 @@ namespace aspect
      * Returns the result (caller must Py_DECREF). Throws on error.
      */
     inline
-    PyObject *call_python_function(PyObject *pModule, const char *func_name, PyObject *pArgs = nullptr)
+    PyObject *
+    call_python_function(PyObject *pModule, const char *func_name, PyObject *pArgs = nullptr)
     {
       PyObject *pFunc = PyObject_GetAttrString(pModule, func_name);
       if (!pFunc || !PyCallable_Check(pFunc))

@@ -34,9 +34,10 @@ namespace aspect
   {
     namespace
     {
-      void add_scientific_column(const std::string &name,
-                                 const double value,
-                                 TableHandler &statistics)
+      void
+      add_scientific_column(const std::string &name,
+                            const double value,
+                            TableHandler &statistics)
       {
         statistics.add_value(name,value);
         statistics.set_precision (name, 8);

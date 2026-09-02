@@ -660,7 +660,8 @@ namespace aspect
 
 
       // Overload the + operator to act on two pairs of doubles.
-      std::pair<double,double> operator+(const std::pair<double,double> &x, const std::pair<double,double> &y)
+      std::pair<double,double>
+      operator+(const std::pair<double,double> &x, const std::pair<double,double> &y)
       {
         return std::make_pair(x.first+y.first, x.second+y.second);
       }

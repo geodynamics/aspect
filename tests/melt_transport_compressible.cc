@@ -43,19 +43,22 @@ namespace aspect
     public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
   {
     public:
-      virtual bool is_compressible () const
+      virtual bool
+      is_compressible () const
       {
         return true;
       }
 
-      virtual double reference_darcy_coefficient () const
+      virtual double
+      reference_darcy_coefficient () const
       {
         const double permeability = K_D_0 + 2.0 * B / E - rho_s_0 * B * D / E * (1.0/rho_s_0 - 1.0/rho_f_0) * std::exp(0.5);
         return permeability / 1.0;
       }
 
-      virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                            typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
+      virtual void
+      evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
+               typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
       {
         const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
         for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
@@ -90,7 +93,8 @@ namespace aspect
           }
       }
 
-      virtual void initialize ()
+      virtual void
+      initialize ()
       {
         rho_s_0 = 1.2;
         rho_f_0 = 1.0;
@@ -132,8 +136,9 @@ namespace aspect
   {
     public:
       RefFunction () : Function<dim>(2*dim+5) {}
-      virtual void vector_value (const Point<dim>   &p,
-                                 Vector<double>   &values) const
+      virtual void
+      vector_value (const Point<dim>   &p,
+                    Vector<double>   &values) const
       {
         const double x = p(0);
         const double y = p(1);
@@ -317,7 +322,8 @@ namespace aspect
   {
     public:
       virtual
-      void fluid_pressure_gradient (
+      void
+      fluid_pressure_gradient (
         const types::boundary_id,
         const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
         const MaterialModel::MaterialModelOutputs<dim> &,

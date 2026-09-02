@@ -599,7 +599,8 @@ namespace aspect
 
 
     template <int dim>
-    void Manager<dim>::reset ()
+    void
+    Manager<dim>::reset ()
     {
       stokes_preconditioner.clear();
       stokes_system.clear();

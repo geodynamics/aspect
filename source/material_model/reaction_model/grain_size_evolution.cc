@@ -41,7 +41,8 @@ namespace aspect
       {
         // Compute the nth moment of the log-normal distribution as used in
         // Bercovici and Ricard (2012; F6) using mean = 0 and variance = 0.8.
-        double nth_moment_of_lognormal_distribution (const unsigned int n)
+        double
+        nth_moment_of_lognormal_distribution (const unsigned int n)
         {
           const double sigma = 0.8;
           return std::exp(n * n * sigma * sigma / 2.);
@@ -51,7 +52,8 @@ namespace aspect
 
         // Computes the product of two phase fractions (assuming exactly two phases)
         // as used in Bercovici and Ricard (2012).
-        double phase_distribution_function (const double volume_fraction_phase_one)
+        double
+        phase_distribution_function (const double volume_fraction_phase_one)
         {
           const double volume_fraction_phase_two = 1. - volume_fraction_phase_one;
           return (volume_fraction_phase_one * volume_fraction_phase_two);

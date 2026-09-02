@@ -36,8 +36,9 @@ namespace aspect
     class IteratedReaction : public MaterialModel::CompositionReaction<dim>
     {
       public:
-        virtual void evaluate(const MaterialModelInputs<dim> &in,
-                              MaterialModelOutputs<dim> &out) const
+        virtual void
+        evaluate(const MaterialModelInputs<dim> &in,
+                 MaterialModelOutputs<dim> &out) const
         {
           this->CompositionReaction<dim>::evaluate(in, out);
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)

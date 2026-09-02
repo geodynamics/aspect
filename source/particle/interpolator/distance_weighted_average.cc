@@ -31,7 +31,8 @@ namespace aspect
     {
       namespace internal
       {
-        double weight (const double distance, const double interpolation_range)
+        double
+        weight (const double distance, const double interpolation_range)
         {
           // linear weight function (hat function)
           return std::max(1.0 - (distance/interpolation_range),0.0);

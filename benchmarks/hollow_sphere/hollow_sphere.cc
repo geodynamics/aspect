@@ -175,8 +175,9 @@ namespace aspect
             mmm_(mmm)
           {}
 
-          void vector_value (const Point<dim>   &pos,
-                             Vector<double>   &values) const override
+          void
+          vector_value (const Point<dim>   &pos,
+                        Vector<double>   &values) const override
           {
             Assert (dim == 3, ExcNotImplemented());
             Assert (values.size() >= 4, ExcInternalError());

@@ -758,7 +758,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::assemble_stokes_system ()
+  void
+  Simulator<dim>::assemble_stokes_system ()
   {
     std::string timer_section_name = "Assemble Stokes system";
 
@@ -1227,7 +1228,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::assemble_advection_system (const AdvectionField &advection_field)
+  void
+  Simulator<dim>::assemble_advection_system (const AdvectionField &advection_field)
   {
     computing_timer.enter_subsection(advection_field.is_temperature() ?
                                      "Assemble temperature system" :

@@ -27,7 +27,8 @@ namespace aspect
     namespace
     {
       template <int dim>
-      std::vector<std::string> make_anisotropic_viscosity_additional_outputs_names()
+      std::vector<std::string>
+      make_anisotropic_viscosity_additional_outputs_names()
       {
         std::vector<std::string> names;
 

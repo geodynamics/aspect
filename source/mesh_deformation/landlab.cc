@@ -418,7 +418,8 @@ namespace aspect
 
 
     template <int dim>
-    void Landlab<dim>::declare_parameters(ParameterHandler &prm)
+    void
+    Landlab<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Mesh deformation");
       {
@@ -443,7 +444,8 @@ namespace aspect
 
 
     template <int dim>
-    void Landlab<dim>::parse_parameters(ParameterHandler &prm)
+    void
+    Landlab<dim>::parse_parameters(ParameterHandler &prm)
     {
 #ifdef ASPECT_WITH_LANDLAB
       prm.enter_subsection ("Mesh deformation");

@@ -40,7 +40,8 @@ namespace aspect
         virtual void update();
     };
     template <int dim>
-    void Box2<dim>::update()
+    void
+    Box2<dim>::update()
     {
       if (this->get_boundary_composition_manager().template has_matching_active_plugin<const BoundaryComposition::Box<dim>>())
         std::cout << "Box is found!" << std::endl;

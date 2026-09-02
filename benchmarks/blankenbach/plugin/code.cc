@@ -83,7 +83,8 @@ namespace aspect
 
       struct sorter
       {
-        bool operator() (const entry &i, const entry &j)
+        bool
+        operator() (const entry &i, const entry &j)
         {
           if (std::abs(i.p[1]-j.p[1])<1e-6)
             return i.p[0] < j.p[0];
@@ -98,14 +99,16 @@ namespace aspect
         // find unique number of x and y values by stuffing them into a std::set
         struct sort_double
         {
-          bool operator() (const double &i, const double &j)
+          bool
+          operator() (const double &i, const double &j)
           {
             return i<j;
           }
         } sort_double_instance;
         struct compare_double_eps
         {
-          bool operator() (const double &i, const double &j)
+          bool
+          operator() (const double &i, const double &j)
           {
             return (std::abs(i-j)<1e-6);
           }

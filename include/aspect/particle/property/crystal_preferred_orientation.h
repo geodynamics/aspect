@@ -335,9 +335,10 @@ namespace aspect
            * @param mineral_i The mineral to get the value of the deformation type for.
            */
           inline
-          DeformationType get_deformation_type(const unsigned int cpo_data_position,
-                                               const ArrayView<double> &data,
-                                               const unsigned int mineral_i) const
+          DeformationType
+          get_deformation_type(const unsigned int cpo_data_position,
+                               const ArrayView<double> &data,
+                               const unsigned int mineral_i) const
           {
             return static_cast<DeformationType>(data[cpo_data_position + 0 + mineral_i * (n_grains * 10 + 2)]);
           }
@@ -351,10 +352,11 @@ namespace aspect
            * @param deformation_type The value of the deformation type to set.
            */
           inline
-          void set_deformation_type(const unsigned int cpo_data_position,
-                                    const ArrayView<double> &data,
-                                    const unsigned int mineral_i,
-                                    const DeformationType deformation_type) const
+          void
+          set_deformation_type(const unsigned int cpo_data_position,
+                               const ArrayView<double> &data,
+                               const unsigned int mineral_i,
+                               const DeformationType deformation_type) const
           {
             data[cpo_data_position + 0 + mineral_i * (n_grains * 10 + 2)] = static_cast<double>(deformation_type);
           }
@@ -367,9 +369,10 @@ namespace aspect
            * @param mineral_i The mineral to get the value of the volume fraction of a mineral for.
            */
           inline
-          double get_volume_fraction_mineral(const unsigned int cpo_data_position,
-                                             const ArrayView<double> &data,
-                                             const unsigned int mineral_i) const
+          double
+          get_volume_fraction_mineral(const unsigned int cpo_data_position,
+                                      const ArrayView<double> &data,
+                                      const unsigned int mineral_i) const
           {
             return data[cpo_data_position + 1 + mineral_i *(n_grains * 10 + 2)];
           }
@@ -383,10 +386,11 @@ namespace aspect
            * @param volume_fraction_mineral The value of the volume fraction of a mineral to set.
            */
           inline
-          void set_volume_fraction_mineral(const unsigned int cpo_data_position,
-                                           const ArrayView<double> &data,
-                                           const unsigned int mineral_i,
-                                           const double volume_fraction_mineral) const
+          void
+          set_volume_fraction_mineral(const unsigned int cpo_data_position,
+                                      const ArrayView<double> &data,
+                                      const unsigned int mineral_i,
+                                      const double volume_fraction_mineral) const
           {
             data[cpo_data_position + 1 + mineral_i *(n_grains * 10 + 2)] = volume_fraction_mineral;
           }
@@ -400,10 +404,11 @@ namespace aspect
            * @param grain_i The grain to get the value of the volume fraction of.
            */
           inline
-          double get_volume_fractions_grains(const unsigned int cpo_data_position,
-                                             const ArrayView<const double> &data,
-                                             const unsigned int mineral_i,
-                                             const unsigned int grain_i) const
+          double
+          get_volume_fractions_grains(const unsigned int cpo_data_position,
+                                      const ArrayView<const double> &data,
+                                      const unsigned int mineral_i,
+                                      const unsigned int grain_i) const
           {
             return data[cpo_data_position + 2 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)];
           }
@@ -418,11 +423,12 @@ namespace aspect
            * @param volume_fractions_grains The value of the volume fraction of a grain to set.
            */
           inline
-          void set_volume_fractions_grains(const unsigned int cpo_data_position,
-                                           const ArrayView<double> &data,
-                                           const unsigned int mineral_i,
-                                           const unsigned int grain_i,
-                                           const double volume_fractions_grains) const
+          void
+          set_volume_fractions_grains(const unsigned int cpo_data_position,
+                                      const ArrayView<double> &data,
+                                      const unsigned int mineral_i,
+                                      const unsigned int grain_i,
+                                      const double volume_fractions_grains) const
           {
             data[cpo_data_position + 2 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)] = volume_fractions_grains;
           }
@@ -437,10 +443,11 @@ namespace aspect
            * @return Tensor<2,3> The rotation matrix of a grain in a mineral
            */
           inline
-          Tensor<2,3> get_rotation_matrix_grains(const unsigned int cpo_data_position,
-                                                 const ArrayView<const double> &data,
-                                                 const unsigned int mineral_i,
-                                                 const unsigned int grain_i) const
+          Tensor<2,3>
+          get_rotation_matrix_grains(const unsigned int cpo_data_position,
+                                     const ArrayView<const double> &data,
+                                     const unsigned int mineral_i,
+                                     const unsigned int grain_i) const
           {
             Tensor<2,3> rotation_matrix;
             for (unsigned int i = 0; i < Tensor<2,3>::n_independent_components ; ++i)
@@ -461,11 +468,12 @@ namespace aspect
            * @param rotation_matrix The rotation matrix to set for the grain in the mineral.
            */
           inline
-          void set_rotation_matrix_grains(const unsigned int cpo_data_position,
-                                          const ArrayView<double> &data,
-                                          const unsigned int mineral_i,
-                                          const unsigned int grain_i,
-                                          const Tensor<2,3> &rotation_matrix) const
+          void
+          set_rotation_matrix_grains(const unsigned int cpo_data_position,
+                                     const ArrayView<double> &data,
+                                     const unsigned int mineral_i,
+                                     const unsigned int grain_i,
+                                     const Tensor<2,3> &rotation_matrix) const
           {
             for (unsigned int i = 0; i < Tensor<2,3>::n_independent_components ; ++i)
               {

@@ -30,7 +30,8 @@
  * input file (otherwise the new instance would call this library again, and so
  * on). After finishing the new instance we exit to not continue the old one.
  */
-int f()
+int
+f()
 {
   int ret;
   std::string command;

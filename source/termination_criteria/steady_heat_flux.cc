@@ -38,8 +38,9 @@ namespace aspect
        * Additionally it makes sure to always keep two entries in the list, if the list had
        * two or more entries. Otherwise the function does not change the list.
        */
-      void trim_time_heat_flux_list (const double necessary_time_in_steady_state,
-                                     std::list<std::pair<double, double>> &time_heat_flux_list)
+      void
+      trim_time_heat_flux_list (const double necessary_time_in_steady_state,
+                                std::list<std::pair<double, double>> &time_heat_flux_list)
       {
         // Remove old times until we're at the correct time period
         // but ensure at least two entries remain in the list (one old, one current timestep)

@@ -184,9 +184,10 @@ namespace aspect
 
 
     template <int dim>
-    void Particles<dim>::writer (const std::string &filename,
-                                 const std::string &temporary_output_location,
-                                 const std::string &file_contents)
+    void
+    Particles<dim>::writer (const std::string &filename,
+                            const std::string &temporary_output_location,
+                            const std::string &file_contents)
     {
       std::string tmp_filename = filename;
       if (temporary_output_location != "")
@@ -594,7 +595,8 @@ namespace aspect
 
     template <int dim>
     template <class Archive>
-    void Particles<dim>::serialize (Archive &ar, const unsigned int)
+    void
+    Particles<dim>::serialize (Archive &ar, const unsigned int)
     {
       ar &last_output_time
       & output_file_number

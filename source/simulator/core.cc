@@ -89,9 +89,10 @@ namespace aspect
      * setup based on parameters followed by a signal to allow modifications.
      */
     template <int dim>
-    std::vector<VariableDeclaration<dim>> construct_variables(const Parameters<dim> &parameters,
-                                                              SimulatorSignals<dim> &signals,
-                                                              std::unique_ptr<MeltHandler<dim>> &melt_handler)
+    std::vector<VariableDeclaration<dim>>
+    construct_variables(const Parameters<dim> &parameters,
+                        SimulatorSignals<dim> &signals,
+                        std::unique_ptr<MeltHandler<dim>> &melt_handler)
     {
       std::vector<VariableDeclaration<dim>> variables
         = construct_default_variables (parameters);
@@ -879,7 +880,8 @@ namespace aspect
   namespace
   {
     template <int dim>
-    bool solver_scheme_solves_advection_equations(const Parameters<dim> &parameters)
+    bool
+    solver_scheme_solves_advection_equations(const Parameters<dim> &parameters)
     {
       // Check if we use a solver scheme that solves the advection equations
       switch (parameters.nonlinear_solver)
@@ -909,7 +911,8 @@ namespace aspect
 
 
     template <int dim>
-    bool solver_scheme_solves_stokes_equations(const Parameters<dim> &parameters)
+    bool
+    solver_scheme_solves_stokes_equations(const Parameters<dim> &parameters)
     {
       // Check if we use a solver scheme that solves the Stokes equations
       switch (parameters.nonlinear_solver)
@@ -939,7 +942,8 @@ namespace aspect
 
 
     template <int dim>
-    bool compositional_field_needs_matrix_block(const Introspection<dim> &introspection, const unsigned int composition_index)
+    bool
+    compositional_field_needs_matrix_block(const Introspection<dim> &introspection, const unsigned int composition_index)
     {
       const AdvectionField adv_field (AdvectionField::composition(composition_index));
       switch (adv_field.advection_method(introspection))
@@ -963,7 +967,8 @@ namespace aspect
 
 
     template <int dim>
-    bool compositional_fields_need_matrix_block(const Introspection<dim> &introspection)
+    bool
+    compositional_fields_need_matrix_block(const Introspection<dim> &introspection)
     {
       // Check if any compositional field method actually requires a matrix block
       // (as opposed to all are advected by other means or prescribed fields)

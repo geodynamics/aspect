@@ -56,7 +56,8 @@ namespace aspect
   namespace AnalyticSolutions
   {
     template <int dim>
-    void analytic_solution(
+    void
+    analytic_solution(
       double pos[],
       double vel[],
       double *pressure,
@@ -94,8 +95,9 @@ namespace aspect
           density_function (density)
         {}
 
-        void vector_value (const Point<dim> &p,
-                           Vector<double>   &values) const override
+        void
+        vector_value (const Point<dim> &p,
+                      Vector<double>   &values) const override
         {
           double pos[2]= {p(0),p(1)};
 
@@ -119,8 +121,9 @@ namespace aspect
         std::shared_ptr<Functions::ParsedFunction<dim>> density_function, pressure_function, velocity_function;
 
       public:
-        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                      MaterialModel::MaterialModelOutputs<dim> &out) const override
+        void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                 MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
@@ -137,7 +140,8 @@ namespace aspect
             }
         }
 
-        bool is_compressible () const override
+        bool
+        is_compressible () const override
         {
           return false;
         }
@@ -265,17 +269,20 @@ namespace aspect
          * Returns the analytic solutions of this model. See the
          * corresponding member variable of this class for more information.
          */
-        std::shared_ptr<Functions::ParsedFunction<dim>>  get_pressure() const
+        std::shared_ptr<Functions::ParsedFunction<dim>>
+        get_pressure() const
         {
           return pressure_function;
         }
 
-        std::shared_ptr<Functions::ParsedFunction<dim>>  get_velocity() const
+        std::shared_ptr<Functions::ParsedFunction<dim>>
+        get_velocity() const
         {
           return velocity_function;
         }
 
-        std::shared_ptr<Functions::ParsedFunction<dim>>  get_density() const
+        std::shared_ptr<Functions::ParsedFunction<dim>>
+        get_density() const
         {
           return density_function;
         }

@@ -44,13 +44,15 @@ namespace aspect
     class GrainSizeLatentHeat : public MaterialModel::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-        bool is_compressible () const override
+        bool
+        is_compressible () const override
         {
           return false;
         }
 
-        void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                      typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const override
+        void
+        evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
+                 typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const override
         {
           base_model->evaluate(in, out);
 

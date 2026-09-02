@@ -71,17 +71,20 @@ namespace aspect
       public ::aspect::SimulatorAccess<dim>
     {
       public:
-        bool is_compressible () const override
+        bool
+        is_compressible () const override
         {
           return false;
         }
 
-        double reference_viscosity () const
+        double
+        reference_viscosity () const
         {
           return eta_0;
         }
 
-        double reference_darcy_coefficient () const override
+        double
+        reference_darcy_coefficient () const override
         {
           return reference_permeability * std::pow(0.01, permeability_exponent) / eta_f;
         }
@@ -109,8 +112,9 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm) override;
 
-        void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                      typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const override
+        void
+        evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
+                 typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const override
         {
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
           const double strain_rate_dependence = (1.0 - dislocation_creep_exponent) / dislocation_creep_exponent;

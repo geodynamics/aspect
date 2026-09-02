@@ -657,12 +657,14 @@ namespace aspect
     struct ThousandSep : std::numpunct<char>
     {
       protected:
-        char do_thousands_sep() const override
+        char
+        do_thousands_sep() const override
         {
           return ',';
         }
 
-        std::string do_grouping() const override
+        std::string
+        do_grouping() const override
         {
           return "\003";  // groups of 3 digits (this string is in octal format)
         }
@@ -1274,7 +1276,8 @@ namespace aspect
   namespace Utilities
   {
     template<typename T>
-    T &ScratchSpace<T>::get_object_from_pool() const
+    T &
+    ScratchSpace<T>::get_object_from_pool() const
     {
       for (auto &pair : object_list.get())
         if (pair.second == false)
@@ -1288,7 +1291,8 @@ namespace aspect
     }
 
     template<typename T>
-    void ScratchSpace<T>::return_object_to_pool (T &t) const
+    void
+    ScratchSpace<T>::return_object_to_pool (T &t) const
     {
       for (auto &pair : object_list.get())
         if (&pair.first == &t)

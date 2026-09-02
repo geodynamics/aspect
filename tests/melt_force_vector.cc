@@ -41,7 +41,8 @@ namespace aspect
   {
     public:
 
-      virtual double reference_darcy_coefficient () const
+      virtual double
+      reference_darcy_coefficient () const
       {
         return 1.0;
       }
@@ -82,17 +83,20 @@ namespace aspect
         return false;
       }
 
-      virtual bool is_compressible () const
+      virtual bool
+      is_compressible () const
       {
         return false;
       }
 
-      virtual double reference_density () const
+      virtual double
+      reference_density () const
       {
         return 1.0;
       }
-      virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                            typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
+      virtual void
+      evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
+               typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
       {
         const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
         const std::shared_ptr<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>> force
@@ -151,8 +155,9 @@ namespace aspect
   {
     public:
       RefFunction () : Function<dim>(2*dim+3+2) {}
-      virtual void vector_value (const Point<dim>   &p,
-                                 Vector<double>   &values) const
+      virtual void
+      vector_value (const Point<dim>   &p,
+                    Vector<double>   &values) const
       {
         double x = p(0);
         double z = p(1);
@@ -291,7 +296,8 @@ namespace aspect
   {
     public:
       virtual
-      void fluid_pressure_gradient (
+      void
+      fluid_pressure_gradient (
         const dealii::types::boundary_id,
         const typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
         const typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,

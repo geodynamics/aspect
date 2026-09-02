@@ -25,8 +25,9 @@
 namespace aspect
 {
   template <int dim>
-  void f(const aspect::SimulatorAccess<dim> &simulator_access,
-         aspect::Assemblers::Manager<dim> &)
+  void
+  f(const aspect::SimulatorAccess<dim> &simulator_access,
+    aspect::Assemblers::Manager<dim> &)
   {
     // This function tests whether the composite creep rheology is producing
     // the correct composite viscosity and partial strain rates corresponding to
@@ -193,14 +194,16 @@ namespace aspect
   }
 
   template <>
-  void f(const aspect::SimulatorAccess<2> &,
-         aspect::Assemblers::Manager<2> &)
+  void
+  f(const aspect::SimulatorAccess<2> &,
+    aspect::Assemblers::Manager<2> &)
   {
     AssertThrow(false,dealii::ExcInternalError());
   }
 
   template <int dim>
-  void signal_connector (aspect::SimulatorSignals<dim> &signals)
+  void
+  signal_connector (aspect::SimulatorSignals<dim> &signals)
   {
     std::cout << "* Connecting signals" << std::endl;
     signals.set_assemblers.connect (std::bind(&f<dim>,

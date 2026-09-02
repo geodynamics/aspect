@@ -36,7 +36,8 @@ namespace aspect
     namespace convert
     {
       template <int dim>
-      Tensor<1,dim> to_tensor(const Tensor<1,dim> &in)
+      Tensor<1,dim>
+      to_tensor(const Tensor<1,dim> &in)
       {
         return in;
       }
@@ -44,7 +45,8 @@ namespace aspect
 
 
       template <int dim>
-      Tensor<1,1> to_tensor(const double in)
+      Tensor<1,1>
+      to_tensor(const double in)
       {
         Tensor<1,1> result;
         result[0] = in;
@@ -54,7 +56,8 @@ namespace aspect
 
 
       template <int dim, int n_components>
-      Tensor<1,n_components,Tensor<1,dim>> to_tensor2(const Tensor<1,n_components,Tensor<1,dim>> &in)
+      Tensor<1,n_components,Tensor<1,dim>>
+      to_tensor2(const Tensor<1,n_components,Tensor<1,dim>> &in)
       {
         return in;
       }
@@ -62,7 +65,8 @@ namespace aspect
 
 
       template <int dim, int n_components>
-      Tensor<1,1,Tensor<1,dim>> to_tensor2(const Tensor<1,dim> &in)
+      Tensor<1,1,Tensor<1,dim>>
+      to_tensor2(const Tensor<1,dim> &in)
       {
         Tensor<1,1,Tensor<1,dim>> result;
         result[0] = in;
@@ -87,8 +91,9 @@ namespace aspect
             evaluation(mapping, fe, first_selected_component)
         {}
 
-        void evaluate(const ArrayView<double> &solution_values,
-                      const EvaluationFlags::EvaluationFlags flags) override
+        void
+        evaluate(const ArrayView<double> &solution_values,
+                 const EvaluationFlags::EvaluationFlags flags) override
         {
           evaluation.evaluate(solution_values, flags);
         }
@@ -143,10 +148,11 @@ namespace aspect
 
 
     template <int dim>
-    static std::unique_ptr<DynamicFEPointEvaluation<dim>> make(NonMatching::MappingInfo<dim> &mapping,
-                                                               const FiniteElement<dim> &fe,
-                                                               const unsigned int        first_selected_component,
-                                                               int n_fields)
+    static std::unique_ptr<DynamicFEPointEvaluation<dim>>
+    make(NonMatching::MappingInfo<dim> &mapping,
+         const FiniteElement<dim> &fe,
+         const unsigned int        first_selected_component,
+         int n_fields)
     {
       switch (n_fields)
         {

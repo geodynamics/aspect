@@ -171,7 +171,8 @@ namespace aspect
 
 
     template <int dim>
-    void CompositionTrmsStatistics<dim>::declare_parameters(ParameterHandler &prm)
+    void
+    CompositionTrmsStatistics<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Postprocess");
       {
@@ -190,7 +191,8 @@ namespace aspect
 
 
     template <int dim>
-    void CompositionTrmsStatistics<dim>::parse_parameters(ParameterHandler &prm)
+    void
+    CompositionTrmsStatistics<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Postprocess");
       {

@@ -383,7 +383,8 @@ namespace aspect
         return Kind();
       }
 
-      static std::string get_options_string()
+      static std::string
+      get_options_string()
       {
         return "entropy viscosity|SUPG";
       }
@@ -403,7 +404,8 @@ namespace aspect
         default_solver
       };
 
-      static const std::string pattern()
+      static const std::string
+      pattern()
       {
         return "default solver|block AMG|direct solver|block GMG";
       }
@@ -438,7 +440,8 @@ namespace aspect
         global_coarsening
       };
 
-      static const std::string pattern()
+      static const std::string
+      pattern()
       {
         return "local smoothing|global coarsening";
       }
@@ -469,7 +472,8 @@ namespace aspect
         idr_s
       };
 
-      static const std::string pattern()
+      static const std::string
+      pattern()
       {
         return "GMRES|IDR(s)";
       }
@@ -500,7 +504,8 @@ namespace aspect
         fixed_step
       };
 
-      static const std::string pattern()
+      static const std::string
+      pattern()
       {
         return "ARKode|fixed step";
       }

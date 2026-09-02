@@ -33,7 +33,8 @@ using Catch::Matchers::StartsWith;
 /**
  * Compare the given two std::vector<double> entries with an epsilon (using Catch::Approx)
  */
-inline void compare_vectors_approx(
+inline void
+compare_vectors_approx(
   const std::vector<double> &computed,
   const std::vector<double> &expected)
 {
@@ -48,7 +49,8 @@ inline void compare_vectors_approx(
 /**
  * Compare the given two table entries with an epsilon (using Catch::Approx)
  */
-inline void compare_tables_approx(
+inline void
+compare_tables_approx(
   const dealii::Table<2,double> &computed,
   const dealii::Table<2,double> &expected)
 {

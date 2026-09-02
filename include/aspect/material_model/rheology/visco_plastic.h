@@ -218,14 +218,15 @@ namespace aspect
            * for each compositional field and viscosity will be first computed on
            * each phase and then averaged for each compositional field.
            */
-          void compute_viscosity_derivatives(const unsigned int point_index,
-                                             const std::vector<double> &volume_fractions,
-                                             const IsostrainViscosities &isostrain_values,
-                                             const MaterialModel::MaterialModelInputs<dim> &in,
-                                             MaterialModel::MaterialModelOutputs<dim> &out,
-                                             const std::vector<double> &phase_function_values = {},
-                                             const std::vector<unsigned int> &n_phase_transitions_per_composition =
-                                               std::vector<unsigned int>()) const;
+          void
+          compute_viscosity_derivatives(const unsigned int point_index,
+                                        const std::vector<double> &volume_fractions,
+                                        const IsostrainViscosities &isostrain_values,
+                                        const MaterialModel::MaterialModelInputs<dim> &in,
+                                        MaterialModel::MaterialModelOutputs<dim> &out,
+                                        const std::vector<double> &phase_function_values = {},
+                                        const std::vector<unsigned int> &n_phase_transitions_per_composition =
+                                          std::vector<unsigned int>()) const;
 
           /**
            * A function that returns a ComponentMask that represents all compositional

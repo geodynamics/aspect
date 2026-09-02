@@ -71,7 +71,8 @@ namespace aspect
         delta_depth = (max_depth-min_depth)/(values.size()-1);
       }
 
-      double LateralViscosityLookup::lateral_viscosity(double depth) const
+      double
+      LateralViscosityLookup::lateral_viscosity(double depth) const
       {
         depth=std::max(min_depth, depth);
         depth=std::min(depth, max_depth);
@@ -83,7 +84,8 @@ namespace aspect
         return values[idx];
       }
 
-      int LateralViscosityLookup::get_nslices() const
+      int
+      LateralViscosityLookup::get_nslices() const
       {
         return values.size();
       }
@@ -116,7 +118,8 @@ namespace aspect
         delta_depth = (max_depth-min_depth)/(values.size()-1);
       }
 
-      double RadialViscosityLookup::radial_viscosity(double depth) const
+      double
+      RadialViscosityLookup::radial_viscosity(double depth) const
       {
         depth=std::max(min_depth, depth);
         depth=std::min(depth, max_depth);

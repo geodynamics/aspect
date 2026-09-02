@@ -96,7 +96,8 @@ namespace aspect
           FunctorDepthAverageUnscaledViscosity()
           {}
 
-          bool need_material_properties() const override
+          bool
+          need_material_properties() const override
           {
             return true;
           }
@@ -112,11 +113,12 @@ namespace aspect
               }
           }
 
-          void operator()(const MaterialModel::MaterialModelInputs<dim> &,
-                          const MaterialModel::MaterialModelOutputs<dim> &out,
-                          const FEValues<dim> &,
-                          const LinearAlgebra::BlockVector &,
-                          std::vector<double> &output) override
+          void
+          operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                     const MaterialModel::MaterialModelOutputs<dim> &out,
+                     const FEValues<dim> &,
+                     const LinearAlgebra::BlockVector &,
+                     std::vector<double> &output) override
           {
             const std::shared_ptr<const MaterialModel::UnscaledViscosityAdditionalOutputs<dim>> unscaled_viscosity_outputs
               = out.template get_additional_output_object<const MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>();

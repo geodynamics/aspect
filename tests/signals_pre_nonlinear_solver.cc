@@ -27,14 +27,16 @@ using namespace aspect;
 
 
 template <int dim>
-void pre_nonlinear_solver (const SimulatorAccess<dim> &simulator_access)
+void
+pre_nonlinear_solver (const SimulatorAccess<dim> &simulator_access)
 {
   simulator_access.get_pcout() << "Signal was triggered" << std::endl;
 }
 
 
 template <int dim>
-void signal_connector (SimulatorSignals<dim> &signals)
+void
+signal_connector (SimulatorSignals<dim> &signals)
 {
   signals.pre_nonlinear_solver.connect (&pre_nonlinear_solver<dim>);
 }

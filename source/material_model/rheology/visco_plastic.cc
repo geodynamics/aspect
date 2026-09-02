@@ -35,7 +35,8 @@ namespace aspect
   {
     namespace
     {
-      std::vector<std::string> make_plastic_additional_outputs_names()
+      std::vector<std::string>
+      make_plastic_additional_outputs_names()
       {
         std::vector<std::string> names;
         names.emplace_back("current_cohesions");

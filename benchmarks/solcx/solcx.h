@@ -43,7 +43,8 @@ namespace aspect
       // release 1.7.0. As mentioned in the Underworld Manual, this code has been
       // released under the GNU General Public License (GPL).
 
-      void _Velic_solCx(
+      void
+      _Velic_solCx(
         double pos[],
         double _eta_A, double _eta_B,   /* Input parameters: density, viscosity A, viscosity B */
         double _x_c, int _n,      /* Input parameters: viscosity jump location, wavenumber in x */
@@ -2906,8 +2907,9 @@ namespace aspect
             n_compositional_fields(n_compositional_fields) {}
 
 
-          void vector_value(const Point<dim> &p,
-                            Vector<double> &values) const override
+          void
+          vector_value(const Point<dim> &p,
+                       Vector<double> &values) const override
           {
             AssertDimension(values.size(), 4 + n_compositional_fields);
 
@@ -2959,8 +2961,9 @@ namespace aspect
          * @{
          */
 
-        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                      MaterialModel::MaterialModelOutputs<dim> &out) const override
+        void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                 MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
@@ -2995,7 +2998,8 @@ namespace aspect
          * (compressible Stokes) or as $\nabla \cdot \mathbf{u}=0$
          * (incompressible Stokes).
          */
-        bool is_compressible () const override
+        bool
+        is_compressible () const override
         {
           return false;
         }
@@ -3061,7 +3065,8 @@ namespace aspect
          * Returns the viscosity value on the right half of the domain,
          * typically 1 or 1e6
          */
-        double get_eta_B() const
+        double
+        get_eta_B() const
         {
           return  eta_B;
         }
@@ -3070,7 +3075,8 @@ namespace aspect
          * Returns the background density of this model. See the
          * corresponding member variable of this class for more information.
          */
-        double get_background_density() const
+        double
+        get_background_density() const
         {
           return background_density;
         }

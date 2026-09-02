@@ -550,7 +550,8 @@ namespace aspect
 
     template <int dim>
     template <class Archive>
-    void SeaLevel<dim>::serialize (Archive &ar, const unsigned int)
+    void
+    SeaLevel<dim>::serialize (Archive &ar, const unsigned int)
     {
       ar &last_output_time
       & sea_level_offset;

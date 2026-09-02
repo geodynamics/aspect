@@ -299,8 +299,9 @@ namespace aspect
 
 
     template <int dim>
-    void MeshDeformationHandler<dim>::set_assemblers(const SimulatorAccess<dim> &,
-                                                     aspect::Assemblers::Manager<dim> &assemblers) const
+    void
+    MeshDeformationHandler<dim>::set_assemblers(const SimulatorAccess<dim> &,
+                                                aspect::Assemblers::Manager<dim> &assemblers) const
     {
       assemblers.stokes_system.push_back(
         std::make_unique<aspect::Assemblers::ApplyStabilization<dim>> (surface_theta));
@@ -350,7 +351,8 @@ namespace aspect
 
 
     template <int dim>
-    void MeshDeformationHandler<dim>::declare_parameters(ParameterHandler &prm)
+    void
+    MeshDeformationHandler<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection ("Mesh deformation");
       {
@@ -425,7 +427,8 @@ namespace aspect
 
 
     template <int dim>
-    void MeshDeformationHandler<dim>::parse_parameters(ParameterHandler &prm)
+    void
+    MeshDeformationHandler<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection ("Mesh deformation");
       {
@@ -617,7 +620,8 @@ namespace aspect
 
 
     template <int dim>
-    void MeshDeformationHandler<dim>::execute()
+    void
+    MeshDeformationHandler<dim>::execute()
     {
       AssertThrow(sim.parameters.mesh_deformation_enabled, ExcInternalError());
 
@@ -678,7 +682,8 @@ namespace aspect
     }
 
     template <int dim>
-    void MeshDeformationHandler<dim>::make_constraints()
+    void
+    MeshDeformationHandler<dim>::make_constraints()
     {
       AssertThrow(sim.parameters.mesh_deformation_enabled, ExcInternalError());
 
@@ -788,7 +793,8 @@ namespace aspect
 
 
     template <int dim>
-    void MeshDeformationHandler<dim>::make_initial_constraints()
+    void
+    MeshDeformationHandler<dim>::make_initial_constraints()
     {
       AssertThrow(this->get_parameters().mesh_deformation_enabled, ExcInternalError());
 
@@ -902,7 +908,8 @@ namespace aspect
 
 
     template <int dim>
-    void MeshDeformationHandler<dim>::compute_mesh_displacements()
+    void
+    MeshDeformationHandler<dim>::compute_mesh_displacements()
     {
       // This functions updates the mesh displacement of the whole
       // domain (stored in the vector mesh_displacements) based on
@@ -1066,7 +1073,8 @@ namespace aspect
 
 
     template <int dim>
-    void MeshDeformationHandler<dim>::compute_mesh_displacements_gmg()
+    void
+    MeshDeformationHandler<dim>::compute_mesh_displacements_gmg()
     {
       // We use the same polynomial degree for the mesh deformation as for the
       // Stokes velocity. This ensures that we have consistent accuracy between
@@ -1091,7 +1099,8 @@ namespace aspect
 
     template <int dim>
     template <unsigned int mesh_deformation_fe_degree>
-    void MeshDeformationHandler<dim>::compute_mesh_displacements_gmg_for_degree()
+    void
+    MeshDeformationHandler<dim>::compute_mesh_displacements_gmg_for_degree()
     {
 
       // Same as compute_mesh_displacements, but using matrix-free GMG
@@ -1382,7 +1391,8 @@ namespace aspect
 
 
     template <int dim>
-    void MeshDeformationHandler<dim>::set_initial_topography()
+    void
+    MeshDeformationHandler<dim>::set_initial_topography()
     {
       LinearAlgebra::Vector distributed_initial_topography;
       distributed_initial_topography.reinit(mesh_locally_owned, sim.mpi_communicator);
@@ -1441,7 +1451,8 @@ namespace aspect
 
 
     template <int dim>
-    void MeshDeformationHandler<dim>::interpolate_mesh_velocity()
+    void
+    MeshDeformationHandler<dim>::interpolate_mesh_velocity()
     {
       // Interpolate the mesh vertex velocity onto the Stokes velocity system for use in ALE corrections
       LinearAlgebra::BlockVector distributed_mesh_velocity;
@@ -1491,7 +1502,8 @@ namespace aspect
 
 
     template <int dim>
-    void MeshDeformationHandler<dim>::setup_dofs()
+    void
+    MeshDeformationHandler<dim>::setup_dofs()
     {
       AssertThrow(sim.parameters.mesh_deformation_enabled, ExcInternalError());
 
@@ -1667,7 +1679,8 @@ namespace aspect
 
 
     template <int dim>
-    void MeshDeformationHandler<dim>::update_multilevel_deformation ()
+    void
+    MeshDeformationHandler<dim>::update_multilevel_deformation ()
     {
       Assert(this->is_stokes_matrix_free(), ExcInternalError());
 
@@ -1768,7 +1781,8 @@ namespace aspect
 
 
     template <int dim>
-    double MeshDeformationHandler<dim>::get_free_surface_theta()const
+    double
+    MeshDeformationHandler<dim>::get_free_surface_theta()const
     {
       return surface_theta;
     }

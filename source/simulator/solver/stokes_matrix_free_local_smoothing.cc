@@ -68,7 +68,8 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerLocalSmoothingImplementation<dim,velocity_degree>::parse_parameters(ParameterHandler &prm)
+  void
+  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim,velocity_degree>::parse_parameters(ParameterHandler &prm)
   {
     prm.enter_subsection ("Solver parameters");
     prm.enter_subsection ("Matrix Free");
@@ -149,7 +150,8 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::assemble ()
+  void
+  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::assemble ()
   {
     if (this->get_parameters().mesh_deformation_enabled)
       {
@@ -167,7 +169,8 @@ namespace aspect
   }
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::evaluate_material_model ()
+  void
+  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::evaluate_material_model ()
   {
     dealii::LinearAlgebra::distributed::Vector<double> active_viscosity_vector(dof_handler_projection.locally_owned_dofs(),
                                                                                this->get_mpi_communicator());
@@ -611,7 +614,8 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::correct_stokes_rhs()
+  void
+  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::correct_stokes_rhs()
   {
     // We never include Newton terms in step 0 and after that we solve with zero boundary conditions.
     // Therefore, we don't need to include Newton terms here.
@@ -1436,7 +1440,8 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::setup_dofs()
+  void
+  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::setup_dofs()
   {
     // Periodic boundary conditions with hanging nodes on the boundary currently
     // cause the GMG not to converge. We catch this case early to provide the
@@ -1822,7 +1827,8 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::build_preconditioner()
+  void
+  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::build_preconditioner()
   {
     this->get_computing_timer().enter_subsection("Build Stokes preconditioner");
 

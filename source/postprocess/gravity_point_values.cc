@@ -758,7 +758,8 @@ namespace aspect
 
     template <int dim>
     template <class Archive>
-    void GravityPointValues<dim>::serialize (Archive &ar, const unsigned int)
+    void
+    GravityPointValues<dim>::serialize (Archive &ar, const unsigned int)
     {
       // This deals with having the correct behavior during checkpoint/restart cycles:
       ar &last_output_time

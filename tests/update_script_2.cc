@@ -34,7 +34,8 @@
  * file, and ensures that only the first time changes happen. Every subsequent
  * application should not change the file any more.
  */
-int f()
+int
+f()
 {
   int ret;
   std::string command;

@@ -126,14 +126,16 @@ namespace aspect
   namespace PrescribedStokesSolution
   {
     template <int dim>
-    void AdvectionInAnnulus<dim>::stokes_solution (const Point<dim> &, Vector<double> &) const
+    void
+    AdvectionInAnnulus<dim>::stokes_solution (const Point<dim> &, Vector<double> &) const
     {
       return;
     }
 
 
     template <>
-    void AdvectionInAnnulus<2>::stokes_solution (const Point<2> &p, Vector<double> &value) const
+    void
+    AdvectionInAnnulus<2>::stokes_solution (const Point<2> &p, Vector<double> &value) const
     {
       Tensor<1,2> velocity = aspect::AdvectionInAnnulus::AnalyticSolutions::Annulus_velocity (p, 4);
       value(0) = velocity[0];

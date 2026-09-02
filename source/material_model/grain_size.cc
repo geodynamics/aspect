@@ -35,7 +35,8 @@ namespace aspect
   {
     namespace
     {
-      std::vector<std::string> make_dislocation_viscosity_outputs_names()
+      std::vector<std::string>
+      make_dislocation_viscosity_outputs_names()
       {
         std::vector<std::string> names;
         names.emplace_back("dislocation_viscosity");

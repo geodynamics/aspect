@@ -179,9 +179,10 @@ namespace
 #ifdef ASPECT_HAVE_LINK_H
 // collect the names of the shared libraries linked to by this program. this
 // function is a callback for the dl_iterate_phdr() function we call below
-  int get_names_of_shared_libs (struct dl_phdr_info *info,
-                                size_t,
-                                void *data)
+  int
+  get_names_of_shared_libs (struct dl_phdr_info *info,
+                            size_t,
+                            void *data)
   {
     reinterpret_cast<std::set<std::string>*>(data)->insert (info->dlpi_name);
     return 0;
@@ -191,7 +192,8 @@ namespace
 
 // make sure the list of shared libraries we currently link with
 // has deal.II only once
-  void validate_shared_lib_list (const bool before_loading_shared_libs)
+  void
+  validate_shared_lib_list (const bool before_loading_shared_libs)
   {
 #ifdef ASPECT_HAVE_LINK_H
     // get the list of all shared libs we currently link against
@@ -251,7 +253,8 @@ namespace
 
 // retrieve a list of shared libraries from the parameter file and
 // dlopen them so that we can load plugins declared in them
-  void possibly_load_shared_libs (const std::string &parameters)
+  void
+  possibly_load_shared_libs (const std::string &parameters)
   {
     using namespace dealii;
 
@@ -534,7 +537,8 @@ namespace
   /**
    * Print help text
    */
-  void print_help()
+  void
+  print_help()
   {
     std::cout << "Usage: ./aspect [args] <parameter_file.prm>   (to read from an input file)\n"
               << "    or ./aspect [args] --                     (to read parameters from stdin)\n"
@@ -554,7 +558,8 @@ namespace
 
 
 // hook into SIGABRT/SIGFPE and kill off the program
-  void signal_handler(int signal)
+  void
+  signal_handler(int signal)
   {
     if (signal == SIGABRT)
       {
@@ -749,7 +754,8 @@ namespace
 
 
 
-int main (int argc, char *argv[])
+int
+main (int argc, char *argv[])
 {
   using namespace dealii;
 

@@ -98,9 +98,10 @@ namespace aspect
        * This function will throw an assertion when the string contains `max+` or `min-` since
        * that is always incorrect.
        */
-      unsigned int min_max_string_to_int(const std::string &string_value,
-                                         const unsigned int minimum_refinement_level,
-                                         const unsigned int maximum_refinement_level)
+      unsigned int
+      min_max_string_to_int(const std::string &string_value,
+                            const unsigned int minimum_refinement_level,
+                            const unsigned int maximum_refinement_level)
       {
         // start with removing the spaces so that a ' min + 1 ' would become 'min+1'.
         std::string string = string_value;

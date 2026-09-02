@@ -31,7 +31,8 @@ namespace aspect
   namespace AdiabaticConditions
   {
     template <int dim>
-    void Interface<dim>::get_adiabatic_temperature_profile(std::vector<double> &values) const
+    void
+    Interface<dim>::get_adiabatic_temperature_profile(std::vector<double> &values) const
     {
       const unsigned int num_slices = values.size();
       const double max_depth = this->get_geometry_model().maximal_depth();
@@ -47,7 +48,8 @@ namespace aspect
 
 
     template <int dim>
-    void Interface<dim>::get_adiabatic_pressure_profile(std::vector<double> &values) const
+    void
+    Interface<dim>::get_adiabatic_pressure_profile(std::vector<double> &values) const
     {
       const unsigned int num_slices = values.size();
       const double max_depth = this->get_geometry_model().maximal_depth();
@@ -62,7 +64,8 @@ namespace aspect
     }
 
     template <int dim>
-    void Interface<dim>::get_adiabatic_density_profile(std::vector<double> &values) const
+    void
+    Interface<dim>::get_adiabatic_density_profile(std::vector<double> &values) const
     {
       const unsigned int num_slices = values.size();
       const double max_depth = this->get_geometry_model().maximal_depth();
@@ -77,7 +80,8 @@ namespace aspect
     }
 
     template <int dim>
-    void Interface<dim>::get_adiabatic_density_derivative_profile(std::vector<double> &values) const
+    void
+    Interface<dim>::get_adiabatic_density_derivative_profile(std::vector<double> &values) const
     {
       const unsigned int num_slices = values.size();
       const double max_depth = this->get_geometry_model().maximal_depth();

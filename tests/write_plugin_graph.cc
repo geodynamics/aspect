@@ -29,8 +29,9 @@ using namespace aspect;
 
 
 template <int dim>
-void post_constraints_creation (const SimulatorAccess<dim> &sim,
-                                AffineConstraints<double> &)
+void
+post_constraints_creation (const SimulatorAccess<dim> &sim,
+                           AffineConstraints<double> &)
 {
   static bool first = true;
   if (first)
@@ -64,7 +65,8 @@ void post_constraints_creation (const SimulatorAccess<dim> &sim,
 
 
 template <int dim>
-void signal_connector (SimulatorSignals<dim> &signals)
+void
+signal_connector (SimulatorSignals<dim> &signals)
 {
   signals.post_constraints_creation.connect (&post_constraints_creation<dim>);
 }
@@ -81,11 +83,13 @@ namespace aspect
   class TestMaterial : public MaterialModel::Interface<dim>
   {
     public:
-      virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                            MaterialModel::MaterialModelOutputs<dim> &out) const
+      virtual void
+      evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+               MaterialModel::MaterialModelOutputs<dim> &out) const
       {}
 
-      virtual bool is_compressible () const
+      virtual bool
+      is_compressible () const
       {
         return false;
       }

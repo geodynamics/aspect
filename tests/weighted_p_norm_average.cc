@@ -26,7 +26,8 @@
 
 //#include <iostream>
 //
-int f()
+int
+f()
 {
   using namespace aspect;
 

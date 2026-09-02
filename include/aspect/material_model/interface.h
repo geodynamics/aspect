@@ -96,14 +96,16 @@ namespace aspect
       /**
        * Provide an operator that or's two Dependence variables.
        */
-      inline Dependence operator | (const Dependence d1,
-                                    const Dependence d2)
+      inline Dependence
+      operator | (const Dependence d1,
+                  const Dependence d2)
       {
         return Dependence(static_cast<int>(d1) | static_cast<int>(d2));
       }
 
-      inline Dependence operator |= (Dependence &d1,
-                                     const Dependence d2)
+      inline Dependence
+      operator |= (Dependence &d1,
+                   const Dependence d2)
       {
         d1 = (d1 | d2);
         return d1;
@@ -215,14 +217,16 @@ namespace aspect
        * Provide an operator that or's two Property variables. This allows to
        * combine more than one property in a single variable.
        */
-      inline Property operator | (const Property d1,
-                                  const Property d2)
+      inline Property
+      operator | (const Property d1,
+                  const Property d2)
       {
         return Property(static_cast<int>(d1) | static_cast<int>(d2));
       }
 
-      inline Property operator |= (Property &d1,
-                                   const Property d2)
+      inline Property
+      operator |= (Property &d1,
+                   const Property d2)
       {
         return (d1 | d2);
       }
@@ -956,9 +960,10 @@ namespace aspect
          */
         virtual ~AdditionalMaterialOutputs() = default;
 
-        virtual void average (const MaterialAveraging::AveragingOperation /*operation*/,
-                              const FullMatrix<double>  &/*projection_matrix*/,
-                              const FullMatrix<double>  &/*expansion_matrix*/)
+        virtual void
+        average (const MaterialAveraging::AveragingOperation /*operation*/,
+                 const FullMatrix<double>  &/*projection_matrix*/,
+                 const FullMatrix<double>  &/*expansion_matrix*/)
         {}
     };
 
@@ -1031,9 +1036,10 @@ namespace aspect
          */
         virtual std::vector<double> get_nth_output(const unsigned int idx) const;
 
-        void average (const MaterialAveraging::AveragingOperation /*operation*/,
-                      const FullMatrix<double>  &/*projection_matrix*/,
-                      const FullMatrix<double>  &/*expansion_matrix*/) override
+        void
+        average (const MaterialAveraging::AveragingOperation /*operation*/,
+                 const FullMatrix<double>  &/*projection_matrix*/,
+                 const FullMatrix<double>  &/*expansion_matrix*/) override
         {}
 
 
@@ -1217,9 +1223,10 @@ namespace aspect
         ~AdditionalMaterialOutputsStokesRHS() override
           = default;
 
-        void average (const MaterialAveraging::AveragingOperation /*operation*/,
-                      const FullMatrix<double>  &/*projection_matrix*/,
-                      const FullMatrix<double>  &/*expansion_matrix*/) override
+        void
+        average (const MaterialAveraging::AveragingOperation /*operation*/,
+                 const FullMatrix<double>  &/*projection_matrix*/,
+                 const FullMatrix<double>  &/*expansion_matrix*/) override
         {
           // TODO: not implemented
         }
@@ -1320,9 +1327,10 @@ namespace aspect
         ~ElasticOutputs() override
           = default;
 
-        void average (const MaterialAveraging::AveragingOperation operation,
-                      const FullMatrix<double>  &/*projection_matrix*/,
-                      const FullMatrix<double>  &/*expansion_matrix*/) override
+        void
+        average (const MaterialAveraging::AveragingOperation operation,
+                 const FullMatrix<double>  &/*projection_matrix*/,
+                 const FullMatrix<double>  &/*expansion_matrix*/) override
         {
           AssertThrow(operation == MaterialAveraging::AveragingOperation::none,ExcNotImplemented());
           return;
@@ -1365,9 +1373,10 @@ namespace aspect
         virtual ~EnthalpyOutputs()
           = default;
 
-        void average (const MaterialAveraging::AveragingOperation operation,
-                      const FullMatrix<double>  &/*projection_matrix*/,
-                      const FullMatrix<double>  &/*expansion_matrix*/) override
+        void
+        average (const MaterialAveraging::AveragingOperation operation,
+                 const FullMatrix<double>  &/*projection_matrix*/,
+                 const FullMatrix<double>  &/*expansion_matrix*/) override
         {
           AssertThrow(operation == MaterialAveraging::AveragingOperation::none,ExcNotImplemented());
           return;
@@ -1706,7 +1715,8 @@ namespace aspect
 
 
     template <int dim>
-    void MaterialModelOutputs<dim>::move_additional_outputs_from(MaterialModelOutputs<dim> &other)
+    void
+    MaterialModelOutputs<dim>::move_additional_outputs_from(MaterialModelOutputs<dim> &other)
     {
       Assert(this->additional_outputs.empty(), ExcMessage("Destination of move needs to be empty!"));
       this->additional_outputs = std::move(other.additional_outputs);

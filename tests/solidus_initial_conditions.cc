@@ -163,8 +163,9 @@ namespace aspect
         MeltingCurve solidus_curve;
     };
 
-    void MeltingCurve::read(const std::string &filename,
-                            const MPI_Comm comm)
+    void
+    MeltingCurve::read(const std::string &filename,
+                       const MPI_Comm comm)
     {
       data_filename=filename;
       // Read data from disk and distribute among processes
@@ -218,7 +219,8 @@ namespace aspect
 
 
 
-    double MeltingCurve::T(const double p, const double radius) const
+    double
+    MeltingCurve::T(const double p, const double radius) const
     {
       double T_value,P_or_R_value=is_radius?radius:p;
       if (T_array.size()==0)return (0);

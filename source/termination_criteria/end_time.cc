@@ -34,7 +34,8 @@ namespace aspect
     }
 
     template <int dim>
-    double EndTime<dim>::check_for_last_time_step (const double time_step) const
+    double
+    EndTime<dim>::check_for_last_time_step (const double time_step) const
     {
       if ((this->get_time()<end_time)
           &&

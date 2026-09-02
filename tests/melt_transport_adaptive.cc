@@ -198,20 +198,23 @@ namespace aspect
     public MaterialModel::MeltInterface<dim>, public SimulatorAccess<dim>
   {
     public:
-      virtual bool is_compressible () const
+      virtual bool
+      is_compressible () const
       {
         return false;
       }
 
-      virtual double reference_darcy_coefficient () const
+      virtual double
+      reference_darcy_coefficient () const
       {
         const double porosity = 0.01;
         const double permeability = porosity;
         return permeability / 1.0;
       }
 
-      virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                            typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
+      virtual void
+      evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
+               typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
       {
         const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
         for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
@@ -265,7 +268,8 @@ namespace aspect
   class Gravity : public aspect::GravityModel::Interface<dim>
   {
     public:
-      virtual Tensor<1,dim> gravity_vector (const Point<dim> &pos) const
+      virtual Tensor<1,dim>
+      gravity_vector (const Point<dim> &pos) const
       {
         const double x=pos[0];
         const double z=pos[1];
@@ -286,8 +290,9 @@ namespace aspect
   {
     public:
       RefFunction () : Function<dim>(2*dim+3+2) {}
-      virtual void vector_value (const Point<dim>   &p,
-                                 Vector<double>   &values) const
+      virtual void
+      vector_value (const Point<dim>   &p,
+                    Vector<double>   &values) const
       {
         double x = p(0);
         double z = p(1);
@@ -463,7 +468,8 @@ namespace aspect
   {
     public:
       virtual
-      void fluid_pressure_gradient (
+      void
+      fluid_pressure_gradient (
         const types::boundary_id boundary_indicator,
         const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
         const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,

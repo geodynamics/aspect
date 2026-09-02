@@ -39,7 +39,8 @@ namespace aspect
     namespace
     {
       template <int dim>
-      bool solver_scheme_is_supported(const Parameters<dim> &parameters)
+      bool
+      solver_scheme_is_supported(const Parameters<dim> &parameters)
       {
         // If we solve advection equations, we need to iterate them, because this material
         // models splits temperature diffusion from entropy advection.

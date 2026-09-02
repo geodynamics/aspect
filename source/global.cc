@@ -38,7 +38,8 @@
 namespace aspect
 {
   template <class Stream>
-  void print_aspect_header(Stream &stream)
+  void
+  print_aspect_header(Stream &stream)
   {
     const int n_tasks = dealii::Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
 

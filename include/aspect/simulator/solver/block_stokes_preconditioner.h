@@ -98,8 +98,9 @@ namespace aspect
     * performing a solve with A or using a preconditioner sweep.
     */
     template <class PreconditionerA, class VectorType, class ABlockType>
-    void InverseVelocityBlock<PreconditionerA,VectorType,ABlockType>::vmult(VectorType &dst,
-                                                                            const VectorType &src) const
+    void
+    InverseVelocityBlock<PreconditionerA,VectorType,ABlockType>::vmult(VectorType &dst,
+                                                                       const VectorType &src) const
     {
 
       // Either solve with the top left block
@@ -155,7 +156,8 @@ namespace aspect
 
 
     template <class PreconditionerA, class VectorType, class ABlockType>
-    unsigned int InverseVelocityBlock<PreconditionerA, VectorType, ABlockType>::n_iterations() const
+    unsigned int
+    InverseVelocityBlock<PreconditionerA, VectorType, ABlockType>::n_iterations() const
     {
       return n_iterations_;
     }
@@ -306,8 +308,9 @@ namespace aspect
 
 
     template<class OperatorType, class StokesMatrixType, class SchurComplementMatrixType, class VectorType>
-    void SchurApproximation<OperatorType, StokesMatrixType, SchurComplementMatrixType, VectorType>::vmult(VectorType &dst,
-                                                                                                          const VectorType &src) const
+    void
+    SchurApproximation<OperatorType, StokesMatrixType, SchurComplementMatrixType, VectorType>::vmult(VectorType &dst,
+                                                                                                     const VectorType &src) const
     {
       if (do_solve_Schur_complement)
         {
@@ -351,7 +354,8 @@ namespace aspect
         }
     }
     template<class OperatorType, class StokesMatrixType, class SchurComplementMatrixType, class VectorType>
-    unsigned int SchurApproximation<OperatorType, StokesMatrixType, SchurComplementMatrixType, VectorType>::n_iterations() const
+    unsigned int
+    SchurApproximation<OperatorType, StokesMatrixType, SchurComplementMatrixType, VectorType>::n_iterations() const
     {
       return n_iterations_Schur_complement_;
     }

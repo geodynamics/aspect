@@ -1165,11 +1165,12 @@ namespace aspect
 
 
 
-      double phase_average_value (const std::vector<double> &phase_function_values,
-                                  const std::vector<unsigned int> &n_phase_transitions_per_composition,
-                                  const std::vector<double> &parameter_values,
-                                  const unsigned int composition_index,
-                                  const PhaseUtilities::PhaseAveragingOperation operation)
+      double
+      phase_average_value (const std::vector<double> &phase_function_values,
+                           const std::vector<unsigned int> &n_phase_transitions_per_composition,
+                           const std::vector<double> &parameter_values,
+                           const unsigned int composition_index,
+                           const PhaseUtilities::PhaseAveragingOperation operation)
       {
         // Calculate base index and assign base value
         unsigned int start_phase_index = 0;

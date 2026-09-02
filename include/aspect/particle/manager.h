@@ -572,7 +572,8 @@ namespace aspect
 
     template <int dim>
     template <class Archive>
-    void Manager<dim>::serialize (Archive &ar, const unsigned int)
+    void
+    Manager<dim>::serialize (Archive &ar, const unsigned int)
     {
       ar &particle_manager_index;
 

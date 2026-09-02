@@ -461,7 +461,8 @@ namespace aspect
 
     namespace
     {
-      std::vector<std::string> make_additional_output_names()
+      std::vector<std::string>
+      make_additional_output_names()
       {
         std::vector<std::string> names;
         names.emplace_back("driving_force");

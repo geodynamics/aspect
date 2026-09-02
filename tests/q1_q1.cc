@@ -72,8 +72,9 @@ namespace aspect
             beta_(beta)
           {}
 
-          virtual void vector_value (const Point<dim>   &pos,
-                                     Vector<double>   &values) const
+          virtual void
+          vector_value (const Point<dim>   &pos,
+                        Vector<double>   &values) const
           {
             Assert (dim == 2, ExcNotImplemented());
             Assert (values.size() >= 4, ExcInternalError());
@@ -130,8 +131,9 @@ namespace aspect
          * @name Physical parameters used in the basic equations
          * @{
          */
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const
+        virtual void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                 MaterialModel::MaterialModelOutputs<dim> &out) const
         {
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {

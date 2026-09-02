@@ -42,9 +42,10 @@ namespace aspect
         {
           additional_material_output1.resize(n_points);
         }
-        virtual void average (const MaterialAveraging::AveragingOperation operation,
-                              const FullMatrix<double>  &projection_matrix,
-                              const FullMatrix<double>  &expansion_matrix)
+        virtual void
+        average (const MaterialAveraging::AveragingOperation operation,
+                 const FullMatrix<double>  &projection_matrix,
+                 const FullMatrix<double>  &expansion_matrix)
         {
           std::cout << "averaging!" << std::endl;
           average_property (operation, projection_matrix, expansion_matrix,
@@ -62,8 +63,9 @@ namespace aspect
     {
       public:
 
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const override
+        virtual void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                 MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
           MaterialModel::Simple<dim>::evaluate(in, out);
 
@@ -103,7 +105,8 @@ namespace aspect
   {
     public:
 
-      virtual void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const override
+      virtual void
+      create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const override
       {
         std::cout << "* create_additional_material_model_outputs() called" << std::endl;
 
@@ -115,8 +118,9 @@ namespace aspect
 
       }
 
-      virtual void execute(internal::Assembly::Scratch::ScratchBase<dim>        &scratch_base,
-                           internal::Assembly::CopyData::CopyDataBase<dim>       &/*data_base*/) const
+      virtual void
+      execute(internal::Assembly::Scratch::ScratchBase<dim>        &scratch_base,
+              internal::Assembly::CopyData::CopyDataBase<dim>       &/*data_base*/) const
       {
         internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>&> (scratch_base);
 
@@ -136,8 +140,9 @@ namespace aspect
 
 
   template <int dim>
-  void set_assemblers1(const SimulatorAccess<dim> &,
-                       Assemblers::Manager<dim> &assemblers)
+  void
+  set_assemblers1(const SimulatorAccess<dim> &,
+                  Assemblers::Manager<dim> &assemblers)
   {
     std::cout << "* set_assemblers()" << std::endl;
     std::cout << "called without: " << counter_without << " with: " << counter_with << std::endl;
@@ -152,7 +157,8 @@ namespace aspect
 
 
 template <int dim>
-void signal_connector (aspect::SimulatorSignals<dim> &signals)
+void
+signal_connector (aspect::SimulatorSignals<dim> &signals)
 {
   std::cout << "* Connecting signals" << std::endl;
   signals.set_assemblers.connect (&aspect::set_assemblers1<dim>);

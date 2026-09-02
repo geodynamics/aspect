@@ -90,8 +90,9 @@ namespace aspect
             : Function<dim>(n_components),
               transient(transient) {}
 
-          void vector_value(const Point<dim> &p,
-                            Vector<double> &values) const override
+          void
+          vector_value(const Point<dim> &p,
+                       Vector<double> &values) const override
           {
             const double pi = numbers::PI;
             const double t = this->get_time();
@@ -123,8 +124,9 @@ namespace aspect
     class RigidShearMaterial : public MaterialModel::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                      MaterialModel::MaterialModelOutputs<dim> &out) const override
+        void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                 MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
           const double t = (this->simulator_is_past_initialization()) ? this->get_time() : this->get_parameters().start_time;
 
@@ -148,14 +150,16 @@ namespace aspect
 
 
 
-        bool is_compressible() const override
+        bool
+        is_compressible() const override
         {
           return false;
         }
 
 
 
-        bool use_transient_solution() const
+        bool
+        use_transient_solution() const
         {
           return use_transient_flow_solution;
         }
@@ -217,7 +221,8 @@ namespace aspect
     class RigidShearGravity : public aspect::GravityModel::Interface<dim>, public aspect::SimulatorAccess<dim>
     {
       public:
-        Tensor<1,dim> gravity_vector (const Point<dim> &pos) const override
+        Tensor<1,dim>
+        gravity_vector (const Point<dim> &pos) const override
         {
           const double pi = numbers::PI;
           const double t = (this->simulator_is_past_initialization()) ? this->get_time() : this->get_parameters().start_time;

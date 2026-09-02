@@ -96,8 +96,9 @@ namespace aspect
             beta_(beta)
           {}
 
-          virtual void vector_value (const Point<dim>   &pos,
-                                     Vector<double>   &values) const
+          virtual void
+          vector_value (const Point<dim>   &pos,
+                        Vector<double>   &values) const
           {
             Assert (dim == 3, ExcNotImplemented());
             Assert (values.size() >= 4, ExcInternalError());
@@ -183,8 +184,9 @@ namespace aspect
     class BursteddeMaterial : public MaterialModel::Interface<dim>
     {
       public:
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const
+        virtual void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                 MaterialModel::MaterialModelOutputs<dim> &out) const
         {
           const std::shared_ptr<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>> force
             = out.template get_additional_output_object<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>();

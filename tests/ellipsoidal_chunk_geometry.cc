@@ -24,8 +24,9 @@
 #include <iostream>
 
 using namespace aspect;
-bool test_point(const GeometryModel::internal::EllipsoidalChunkGeometry<3> ellipsoidal_manifold,
-                const Point<3> &test_point)
+bool
+test_point(const GeometryModel::internal::EllipsoidalChunkGeometry<3> ellipsoidal_manifold,
+           const Point<3> &test_point)
 {
   const Point<3> converted_point = ellipsoidal_manifold.pull_back(test_point);
   const Point<3> twice_converted_point = ellipsoidal_manifold.push_forward(converted_point);
@@ -44,7 +45,8 @@ bool test_point(const GeometryModel::internal::EllipsoidalChunkGeometry<3> ellip
 /*
  * Launch the following function when this plugin is created.
  */
-int f()
+int
+f()
 {
 
   const unsigned int dim=3;

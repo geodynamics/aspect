@@ -801,13 +801,14 @@ namespace aspect
 
 
     template <int dim>
-    void FastScape<dim>::fill_fastscape_arrays(std::vector<double> &elevation,
-                                               std::vector<double> &bedrock_transport_coefficient_array,
-                                               std::vector<double> &bedrock_river_incision_rate_array,
-                                               std::vector<double> &velocity_x,
-                                               std::vector<double> &velocity_y,
-                                               std::vector<double> &velocity_z,
-                                               std::vector<std::vector<double>> &local_aspect_values) const
+    void
+    FastScape<dim>::fill_fastscape_arrays(std::vector<double> &elevation,
+                                          std::vector<double> &bedrock_transport_coefficient_array,
+                                          std::vector<double> &bedrock_river_incision_rate_array,
+                                          std::vector<double> &velocity_x,
+                                          std::vector<double> &velocity_y,
+                                          std::vector<double> &velocity_z,
+                                          std::vector<std::vector<double>> &local_aspect_values) const
     {
       for (unsigned int i=0; i<local_aspect_values[1].size(); ++i)
         {
@@ -916,10 +917,11 @@ namespace aspect
 
 
     template <int dim>
-    void FastScape<dim>::initialize_fastscape(std::vector<double> &elevation,
-                                              std::vector<double> &basement,
-                                              std::vector<double> &silt_fraction,
-                                              bool restart) const
+    void
+    FastScape<dim>::initialize_fastscape(std::vector<double> &elevation,
+                                         std::vector<double> &basement,
+                                         std::vector<double> &silt_fraction,
+                                         bool restart) const
     {
       Assert (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0, ExcInternalError());
 
@@ -948,14 +950,15 @@ namespace aspect
 
 
     template <int dim>
-    void FastScape<dim>::execute_fastscape(std::vector<double> &elevation,
-                                           std::vector<double> &extra_vtk_field,
-                                           std::vector<double> &velocity_x,
-                                           std::vector<double> &velocity_y,
-                                           std::vector<double> &velocity_z,
-                                           std::vector<double> &bedrock_transport_coefficient_array,
-                                           const double &fastscape_timestep_in_years,
-                                           const unsigned int &fastscape_iterations) const
+    void
+    FastScape<dim>::execute_fastscape(std::vector<double> &elevation,
+                                      std::vector<double> &extra_vtk_field,
+                                      std::vector<double> &velocity_x,
+                                      std::vector<double> &velocity_y,
+                                      std::vector<double> &velocity_z,
+                                      std::vector<double> &bedrock_transport_coefficient_array,
+                                      const double &fastscape_timestep_in_years,
+                                      const unsigned int &fastscape_iterations) const
     {
       // This function can only be called on the root process where we run
       // Fastscape:
@@ -1088,9 +1091,10 @@ namespace aspect
 
 
     template <int dim>
-    void FastScape<dim>::apply_orographic_controls(const std::vector<double> &elevation,
-                                                   std::vector<double> &bedrock_transport_coefficient_array,
-                                                   std::vector<double> &bedrock_river_incision_rate_array) const
+    void
+    FastScape<dim>::apply_orographic_controls(const std::vector<double> &elevation,
+                                              std::vector<double> &bedrock_transport_coefficient_array,
+                                              std::vector<double> &bedrock_river_incision_rate_array) const
     {
       // First for the wind barrier, we find the maximum height and index
       // along each line in the x and y direction.
@@ -1221,13 +1225,14 @@ namespace aspect
 
 
     template <int dim>
-    void FastScape<dim>::set_ghost_nodes(std::vector<double> &elevation,
-                                         std::vector<double> &velocity_x,
-                                         std::vector<double> &velocity_y,
-                                         std::vector<double> &velocity_z,
-                                         std::vector<double> &bedrock_transport_coefficient_array,
-                                         const double &fastscape_timestep_in_years,
-                                         const bool init) const
+    void
+    FastScape<dim>::set_ghost_nodes(std::vector<double> &elevation,
+                                    std::vector<double> &velocity_x,
+                                    std::vector<double> &velocity_y,
+                                    std::vector<double> &velocity_z,
+                                    std::vector<double> &bedrock_transport_coefficient_array,
+                                    const double &fastscape_timestep_in_years,
+                                    const bool init) const
     {
       // Copy the slopes at each point, this will be used to set an H
       // at the ghost nodes if a boundary mass flux is given.
@@ -1514,8 +1519,9 @@ namespace aspect
     }
 
     template <int dim>
-    bool FastScape<dim>::is_ghost_node(const unsigned int &index,
-                                       const bool &exclude_boundaries) const
+    bool
+    FastScape<dim>::is_ghost_node(const unsigned int &index,
+                                  const bool &exclude_boundaries) const
     {
       if (use_ghost_nodes == false && exclude_boundaries == false)
         return false;
@@ -1645,7 +1651,8 @@ namespace aspect
 
     template <int dim>
     template <class Archive>
-    void FastScape<dim>::serialize (Archive &ar, const unsigned int)
+    void
+    FastScape<dim>::serialize (Archive &ar, const unsigned int)
     {
       ar &last_output_time;
     }
@@ -1791,7 +1798,8 @@ namespace aspect
 
 
     template <int dim>
-    void FastScape<dim>::declare_parameters(ParameterHandler &prm)
+    void
+    FastScape<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection ("Mesh deformation");
       {
@@ -2054,7 +2062,8 @@ namespace aspect
 
 
     template <int dim>
-    void FastScape<dim>::parse_parameters(ParameterHandler &prm)
+    void
+    FastScape<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection ("Mesh deformation");
       {

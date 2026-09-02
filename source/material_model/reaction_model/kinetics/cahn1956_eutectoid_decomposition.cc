@@ -61,7 +61,8 @@ namespace aspect
       }
 
       template <int dim>
-      void EutectoidDecomposition<dim>::declare_parameters(ParameterHandler &prm)
+      void
+      EutectoidDecomposition<dim>::declare_parameters(ParameterHandler &prm)
       {
         prm.enter_subsection("Eutectoid decomposition");
         {
@@ -78,7 +79,8 @@ namespace aspect
       }
 
       template <int dim>
-      void EutectoidDecomposition<dim>::parse_parameters(ParameterHandler &prm, const unsigned int n_reactions)
+      void
+      EutectoidDecomposition<dim>::parse_parameters(ParameterHandler &prm, const unsigned int n_reactions)
       {
         prm.enter_subsection("Eutectoid decomposition");
         {

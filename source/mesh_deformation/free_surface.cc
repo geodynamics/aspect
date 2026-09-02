@@ -71,10 +71,11 @@ namespace aspect
 
 
     template <int dim>
-    void FreeSurface<dim>::project_velocity_onto_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                                          const IndexSet &mesh_locally_owned,
-                                                          const IndexSet &mesh_locally_relevant,
-                                                          LinearAlgebra::Vector &output) const
+    void
+    FreeSurface<dim>::project_velocity_onto_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
+                                                     const IndexSet &mesh_locally_owned,
+                                                     const IndexSet &mesh_locally_relevant,
+                                                     LinearAlgebra::Vector &output) const
     {
       // TODO: should we use the extrapolated solution?
 
@@ -295,7 +296,8 @@ namespace aspect
 
 
     template <int dim>
-    void FreeSurface<dim>::declare_parameters(ParameterHandler &prm)
+    void
+    FreeSurface<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection ("Mesh deformation");
       {
@@ -323,7 +325,8 @@ namespace aspect
 
 
     template <int dim>
-    void FreeSurface<dim>::parse_parameters(ParameterHandler &prm)
+    void
+    FreeSurface<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection ("Mesh deformation");
       {

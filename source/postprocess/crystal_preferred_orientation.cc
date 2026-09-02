@@ -607,7 +607,8 @@ namespace aspect
 
     template <int dim>
     template <class Archive>
-    void CrystalPreferredOrientation<dim>::serialize (Archive &ar, const unsigned int)
+    void
+    CrystalPreferredOrientation<dim>::serialize (Archive &ar, const unsigned int)
     {
       ar &last_output_time
       & output_file_number

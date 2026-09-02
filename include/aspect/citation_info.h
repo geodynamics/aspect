@@ -52,7 +52,8 @@ namespace aspect
      * stream.
      */
     template <class Stream>
-    void print_info_block (Stream &stream)
+    void
+    print_info_block (Stream &stream)
     {
       stream << "-----------------------------------------------------------------------------\n"
              << "-- For information on how to cite ASPECT, see:\n"

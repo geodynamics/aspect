@@ -2515,7 +2515,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::declare_parameters (ParameterHandler &prm, const unsigned int mpi_rank)
+  void
+  Simulator<dim>::declare_parameters (ParameterHandler &prm, const unsigned int mpi_rank)
   {
     Parameters<dim>::declare_parameters (prm, mpi_rank);
     VolumeOfFluidHandler<dim>::declare_parameters(prm);

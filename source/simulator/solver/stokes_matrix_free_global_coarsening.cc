@@ -69,7 +69,8 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim,velocity_degree>::parse_parameters(ParameterHandler &prm)
+  void
+  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim,velocity_degree>::parse_parameters(ParameterHandler &prm)
   {
     prm.enter_subsection ("Solver parameters");
     prm.enter_subsection ("Matrix Free");
@@ -141,7 +142,8 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::assemble ()
+  void
+  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::assemble ()
   {
     if (this->get_parameters().mesh_deformation_enabled)
       {
@@ -161,7 +163,8 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::evaluate_material_model ()
+  void
+  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::evaluate_material_model ()
   {
     const auto &dof_handler_projection = dofhandlers_projection.back();
 
@@ -635,7 +638,8 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::correct_stokes_rhs()
+  void
+  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::correct_stokes_rhs()
   {
     // We never include Newton terms in step 0 and after that we solve with zero boundary conditions.
     // Therefore, we don't need to include Newton terms here.
@@ -1439,7 +1443,8 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::setup_dofs()
+  void
+  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::setup_dofs()
   {
     // Mapping used on the level triangulations of the multigrid hierarchy;
     // see get_level_triangulation_mapping() for why this can differ from
@@ -1710,7 +1715,8 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::build_preconditioner()
+  void
+  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::build_preconditioner()
   {
     this->get_computing_timer().enter_subsection("Build Stokes preconditioner");
 

@@ -29,7 +29,8 @@
 /**
  * Compare the given two std::array<double,3> entries with an epsilon (using Catch::Approx)
  */
-inline void check_3d_arrays_approx_equal(
+inline void
+check_3d_arrays_approx_equal(
   const std::array<double,3> &computed,
   const std::array<double,3> &expected)
 {
@@ -45,7 +46,8 @@ inline void check_3d_arrays_approx_equal(
 /**
  * Compare the given two std::array<double,3> entries with an epsilon (using Catch::Approx)
  */
-inline void check_3d_arrays_approx_equal(
+inline void
+check_3d_arrays_approx_equal(
   const std::vector<double> &computed,
   const std::vector<double> &expected)
 {
@@ -61,7 +63,8 @@ inline void check_3d_arrays_approx_equal(
 /**
  * Compare two rotation matrices
  */
-inline void check_rotation_matrices_approx_equal(
+inline void
+check_rotation_matrices_approx_equal(
   const std::array<std::array<double,3>,3> &computed,
   const std::array<std::array<double,3>,3> &expected)
 {
@@ -86,7 +89,8 @@ inline void check_rotation_matrices_approx_equal(
 /**
  * Compare two rotation matrices
  */
-inline void check_rotation_matrices_approx_equal(
+inline void
+check_rotation_matrices_approx_equal(
   const dealii::Tensor<2,3> &computed,
   const dealii::Tensor<2,3> &expected)
 {

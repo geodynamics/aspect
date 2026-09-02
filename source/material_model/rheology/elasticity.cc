@@ -38,7 +38,8 @@ namespace aspect
   {
     namespace
     {
-      std::vector<std::string> make_elastic_additional_outputs_names()
+      std::vector<std::string>
+      make_elastic_additional_outputs_names()
       {
         std::vector<std::string> names;
         // We do not output all the additional output to

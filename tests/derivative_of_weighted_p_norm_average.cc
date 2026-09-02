@@ -20,7 +20,8 @@
 
 #include <aspect/utilities.h>
 
-int f()
+int
+f()
 {
   using namespace aspect;
 

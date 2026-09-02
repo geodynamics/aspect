@@ -13,8 +13,9 @@ namespace aspect
     class SolCxCompositionalMaterial : public SolCxMaterial<dim>
     {
       public:
-        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                      MaterialModel::MaterialModelOutputs<dim> &out) const override
+        void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                 MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {

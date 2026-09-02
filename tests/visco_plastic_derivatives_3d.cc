@@ -36,9 +36,10 @@
 namespace aspect
 {
   template <int dim>
-  void f(const aspect::SimulatorAccess<dim> &simulator_access,
-         aspect::Assemblers::Manager<dim> &,
-         const std::string &averaging_parameter)
+  void
+  f(const aspect::SimulatorAccess<dim> &simulator_access,
+    aspect::Assemblers::Manager<dim> &,
+    const std::string &averaging_parameter)
   {
 
     std::cout << std::endl << "Testing ViscoPlastic derivatives against analytical derivatives for averaging parameter " << averaging_parameter << std::endl;
@@ -250,15 +251,17 @@ namespace aspect
   }
 
   template <>
-  void f(const aspect::SimulatorAccess<2> &,
-         aspect::Assemblers::Manager<2> &,
-         const std::string &)
+  void
+  f(const aspect::SimulatorAccess<2> &,
+    aspect::Assemblers::Manager<2> &,
+    const std::string &)
   {
     AssertThrow(false,dealii::ExcInternalError());
   }
 
   template <int dim>
-  void signal_connector (aspect::SimulatorSignals<dim> &signals)
+  void
+  signal_connector (aspect::SimulatorSignals<dim> &signals)
   {
     std::cout << "* Connecting signals" << std::endl;
     signals.set_assemblers.connect (std::bind(&f<dim>,
