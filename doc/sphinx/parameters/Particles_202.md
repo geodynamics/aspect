@@ -89,7 +89,7 @@ Select one of the following models:
 :name: parameters:Particles_202/List_20of_20particle_20properties
 **Default value:**
 
-**Pattern:** [MultipleSelection composition|composition reaction|cpo bingham average|cpo elastic tensor|crust and lithosphere formation|crystal preferred orientation|elastic stress|elastic tensor decomposition|function|grain size|initial composition|initial position|integrated strain|integrated strain invariant|melt particle|pT path|position|reference position|strain rate|velocity|velocity gradient|viscoplastic strain invariants ]
+**Pattern:** [MultipleSelection composition|composition reaction|cpo bingham average|cpo elastic tensor|crust and lithosphere formation|crystal preferred orientation|elastic stress|elastic tensor decomposition|function|grain size|initial composition|initial position|integrated strain|integrated strain invariant|melt particle|pT path|particle generation time|position|reference position|strain rate|velocity|velocity gradient|viscoplastic strain invariants ]
 
 **Documentation:** A comma separated list of particle properties that should be tracked. By default none is selected, which means only position, velocity and id of the particles are output.
 
@@ -126,6 +126,8 @@ The following properties are available:
 &lsquo;melt particle&rsquo;: Implementation of a plugin in which the particle property is defined as presence of melt above a threshold, which can be set as an input parameter. This property is set to 0 if melt is not present and set to 1 if melt is present.
 
 &lsquo;pT path&rsquo;: Implementation of a plugin in which the particle property is defined as the current pressure and temperature at this position. This can be used to generate pressure-temperature paths of material points over time.
+
+&lsquo;particle generation time&rsquo;: A plugin that stores the model time at which the particle was generated in the model domain.
 
 &lsquo;position&rsquo;: Implementation of a plugin in which the particle property is defined as the current position.
 

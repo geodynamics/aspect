@@ -1,0 +1,3 @@
+Added: a new particle property ``particle generation time`` that stores the model time at which each particle is generated.
+<br>
+(Ranpeng Li 2026/07/27)
