@@ -76,6 +76,18 @@ namespace aspect
                                                    AffineConstraints<double> &constraints) const override;
 
         /**
+         * Save the Landlab state so it can later be restored during restart.
+         */
+        void
+        save (std::map<std::string, std::string> &status_strings) const override;
+
+        /**
+         * Restore the Landlab state from a previous checkpoint.
+         */
+        void
+        load (const std::map<std::string, std::string> &status_strings) override;
+
+        /**
          * Declare parameters.
          */
         static
@@ -86,7 +98,7 @@ namespace aspect
          */
         void parse_parameters (ParameterHandler &prm) override;
 
-#if defined(ASPECT_WITH_LANDLAB)
+#ifdef ASPECT_WITH_LANDLAB
       private:
         /**
          * The number of MPI ranks are participating in the Landlab simulation.
