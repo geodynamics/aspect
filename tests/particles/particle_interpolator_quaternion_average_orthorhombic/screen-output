@@ -1,0 +1,104 @@
+-----------------------------------------------------------------------------
+--                             This is ASPECT                              --
+-- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
+-----------------------------------------------------------------------------
+--     . version 3.1.0-pre (add_quaternion_interpolator, 8d7354464)
+--     . using deal.II 9.7.0
+--     .       with 32 bit indices
+--     .       with vectorization level 3 (AVX512, 8 doubles, 512 bits)
+--     . using Trilinos 16.1.0
+--     . using p4est 2.3.6
+--     . using Geodynamic World Builder 1.1.1
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&CPO=1&dg=1&mf=1&particles=1&sha=8d7354464&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 429 (162+25+81+16+16+16+16+81+16)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 7+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:    output-particle_interpolator_quaternion_average_orthorhombic/solution/solution-00000
+     Writing particle output:     output-particle_interpolator_quaternion_average_orthorhombic/particles/particles-00000
+     Writing particle cpo output: output-particle_interpolator_quaternion_average_orthorhombic/particles_cpo/CPO-00000
+     Compositions min/max/mass:   0.02006/0.7949/0.4872 // -0.7631/0.9576/0.2046 // -0.9977/0.7223/-0.03312 // -0.3746/0.5319/-0.04293 // 0.4586/0.7659/0.5887 // 0/0/0
+
+*** Timestep 1:  t=0.0492821 seconds, dt=0.0492821 seconds
+   Solving temperature system... 9 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 6+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 103
+     Compositions min/max/mass:    0.04824/0.9756/0.5302 // -0.8911/0.9659/0.09132 // -0.9363/0.7863/-0.2274 // -0.5472/0.7369/-0.01723 // 0.407/0.7365/0.5812 // 0/0/0
+
+*** Timestep 2:  t=0.0565961 seconds, dt=0.007314 seconds
+   Solving temperature system... 7 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 6+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 106
+     Compositions min/max/mass:    0.03603/0.9822/0.5146 // -0.8549/0.9715/0.1057 // -0.9233/0.6276/-0.1495 // -0.7233/0.7582/0.07021 // 0.441/0.7523/0.5828 // 0/0/0
+
+*** Timestep 3:  t=0.0596436 seconds, dt=0.0030475 seconds
+   Solving temperature system... 6 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 6+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 105
+     Compositions min/max/mass:    0.02201/0.8109/0.4349 // -0.6644/0.9453/0.3041 // -0.7399/0.7826/-0.09065 // -0.8377/0.6971/-0.1313 // 0.4668/0.9016/0.5908 // 0/0/0
+
+*** Timestep 4:  t=0.06 seconds, dt=0.000356364 seconds
+   Solving temperature system... 4 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 5+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 105
+     Writing particle cpo output:  output-particle_interpolator_quaternion_average_orthorhombic/particles_cpo/CPO-00001
+     Compositions min/max/mass:    0.002741/0.9009/0.3454 // -0.7735/0.8836/0.09372 // -0.9116/0.9461/-0.1457 // -0.653/0.7163/0.05031 // 0.4188/0.7737/0.6074 // 0/0/0
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      1.22s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system rhs       |         5 |    0.0845s |       6.9% |
+| Assemble temperature system      |         5 |    0.0792s |       6.5% |
+| Build Stokes preconditioner      |         5 |   0.00579s |      0.47% |
+| Build temperature preconditioner |         5 |   0.00148s |      0.12% |
+| Initialization                   |         1 |     0.388s |        32% |
+| Particles: Advect                |        10 |   0.00887s |      0.73% |
+| Particles: Copy                  |         5 |   0.00138s |      0.11% |
+| Particles: Generate              |         1 |  0.000534s |         0% |
+| Particles: Initialization        |         1 |  0.000519s |         0% |
+| Particles: Initialize properties |         1 |   0.00387s |      0.32% |
+| Particles: Interpolate           |         5 |     0.102s |       8.4% |
+| Particles: Sort                  |        10 |   0.00308s |      0.25% |
+| Particles: Update properties     |         5 |    0.0974s |         8% |
+| Postprocessing                   |         5 |    0.0168s |       1.4% |
+| Setup dof systems                |         1 |    0.0357s |       2.9% |
+| Setup initial conditions         |         1 |     0.028s |       2.3% |
+| Setup matrices                   |         1 |    0.0511s |       4.2% |
+| Solve Stokes system              |         5 |    0.0965s |       7.9% |
+| Solve temperature system         |         5 |   0.00303s |      0.25% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 1s
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&CPO=1&dg=1&mf=1&particles=1&sha=8d7354464&src=code
+-----------------------------------------------------------------------------

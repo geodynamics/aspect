@@ -1,0 +1,42 @@
+include $ASPECT_SOURCE_DIR/benchmarks/rotation_average/convection_box_orthorhombic.prm
+
+set Output directory = output-particle_interpolator_quaternion_average_orthorhombic
+set End time         = 0.06
+
+subsection Mesh refinement
+  set Initial global refinement = 2
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, particles, crystal preferred orientation, composition statistics
+
+  subsection Visualization
+    set Time between graphical output = 1
+    set List of output variables      = 
+    set Output format                 = gnuplot
+  end
+
+  subsection Crystal Preferred Orientation
+    set Time between data output    = 1
+    set Write in background thread  = true
+    set Compress cpo data files     = true
+    set Write out raw cpo data      =  
+    set Write out draw volume weighted cpo data = 
+  end
+
+  subsection Particles
+    set Time between data output  = 1
+    set Data output format        = gnuplot
+    set Exclude output properties = volume fraction, rotation_matrix
+  end
+end
+
+# # # Particles # # # 
+
+subsection Particles
+    set List of particle properties = crystal preferred orientation, cpo bingham average
+    # set a minimum ammount of particles
+    subsection Crystal Preferred Orientation
+        set Number of grains per particle = 10
+    end
+end
