@@ -1,0 +1,6 @@
+ Changed: The output directory of the gravity point values
+ postprocessor has been renamed from 'output_gravity' to
+ 'gravity_point_values' to avoid name conflicts with
+ other postprocessors and output directories.
+ <br>
+ (Rene Gassmoeller, 2026/09/01)

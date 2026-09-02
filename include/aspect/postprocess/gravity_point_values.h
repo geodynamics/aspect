@@ -68,7 +68,7 @@ namespace aspect
         void initialize() override;
 
         /**
-         * Specify the creation of output_gravity.txt.
+         * Specify the creation of gravity_point_values.txt.
          */
         std::pair<std::string,std::string> execute (TableHandler &) override;
 

@@ -212,7 +212,7 @@ namespace aspect
 
       const std::string file_prefix = "gravity-" + Utilities::int_to_string (output_file_number, 5);
       const std::string filename = (this->get_output_directory()
-                                    + "output_gravity/"
+                                    + "gravity_point_values/"
                                     + file_prefix);
 
       // Get quadrature formula and increase the degree of quadrature over the velocity
@@ -697,7 +697,7 @@ namespace aspect
     void
     GravityPointValues<dim>::parse_parameters (ParameterHandler &prm)
     {
-      const std::string gravity_subdirectory = this->get_output_directory() + "output_gravity/";
+      const std::string gravity_subdirectory = this->get_output_directory() + "gravity_point_values/";
       Utilities::create_directory (gravity_subdirectory,
                                    this->get_mpi_communicator(),
                                    true);

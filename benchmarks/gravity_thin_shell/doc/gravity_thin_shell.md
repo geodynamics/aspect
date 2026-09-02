@@ -83,7 +83,7 @@ acceleration depend solely on the distance $r$ from the origin, see {cite:t}`tur
 by $U(r) = - GM/r$ and $|{\mathbf g}(r)|= g_r(r)=GM/r^2$. Minimum, maximum,
 and average values of both the potential and the acceleration are printed in
 the statistics file while measurements at all the desired points are written
-in the `output_gravity` folder inside the output folder. We ran the input file
+in the `gravity_point_values` folder inside the output folder. We ran the input file
 for $I\in \{-1,0,1,2\}$ for $D=0,100,500,1500,3000~\text{ km}$ and the results
 are presented in Table&nbsp;[1] alongside the analytical values.
 
