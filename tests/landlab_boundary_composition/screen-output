@@ -1,0 +1,350 @@
+
+importing 'landlab_boundary_composition' ...
+Number of active cells: 50 (on 1 levels)
+Number of degrees of freedom: 2,607 (462+66+231+231+231+231+231+231+231+231+231)
+
+Number of mesh deformation degrees of freedom: 462
+* Creating RasterModelGrid ...
+* The number of Landlab grid nodes is:  3321
+* The node coordinates (in meters) are: [     0.   2500.   5000. ... 195000. 197500. 200000.] [-50000. -50000. -50000. ...  50000.  50000.  50000.]
+* Creating topographic elevation ...
+* Creating LinearDiffuser ... with D = 0.01
+* Done initializing Landlab mesh.
+   Solving mesh displacement system... 2 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+Landlab running update_until: end_time = 0.0
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Skipping noninitial_plastic_strain composition solve because RHS is zero.
+   Solving plastic_strain system ... 0 iterations.
+   Solving crust_upper system ... 0 iterations.
+   Solving crust_lower system ... 0 iterations.
+   Solving mantle_lithosphere system ... 0 iterations.
+   Solving sediment system ... 12 iterations.
+   Skipping sediment_age composition solve because RHS is zero.
+   Skipping deposition_depth composition solve because RHS is zero.
+   Initial Newton Stokes residual = 1.59076e+15, v = 1.41236e+15, p = 7.31965e+14
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+20 iterations.
+      Newton system information: Norm of the rhs: 1.59076e+15
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+21 iterations.
+      Newton system information: Norm of the rhs: 9.1671e+12, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.00576271
+
+   The linear solver tolerance is set to 0.01. 
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+8 iterations.
+      Newton system information: Norm of the rhs: 3.23531e+12, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.00203381
+
+   The linear solver tolerance is set to 0.01. 
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+9 iterations.
+      Newton system information: Norm of the rhs: 2.45523e+12, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.00154343
+
+   The linear solver tolerance is set to 0.01. 
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+10 iterations.
+      Newton system information: Norm of the rhs: 1.78368e+12, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.00112128
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
+Number of active cells: 140 (on 2 levels)
+Number of degrees of freedom: 7,066 (1,254+169+627+627+627+627+627+627+627+627+627)
+
+Number of mesh deformation degrees of freedom: 1,254
+   Solving mesh displacement system... 1 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+Landlab running update_until: end_time = 0.0
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Skipping noninitial_plastic_strain composition solve because RHS is zero.
+   Solving plastic_strain system ... 0 iterations.
+   Solving crust_upper system ... 0 iterations.
+   Solving crust_lower system ... 0 iterations.
+   Solving mantle_lithosphere system ... 0 iterations.
+   Solving sediment system ... 12 iterations.
+   Skipping sediment_age composition solve because RHS is zero.
+   Skipping deposition_depth composition solve because RHS is zero.
+   Initial Newton Stokes residual = 3.22275e+15, v = 3.17984e+15, p = 5.24131e+14
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+22 iterations.
+      Newton system information: Norm of the rhs: 3.22275e+15
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+19 iterations.
+      Newton system information: Norm of the rhs: 1.83067e+13, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.00568045
+
+   The linear solver tolerance is set to 0.01. 
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+8 iterations.
+      Newton system information: Norm of the rhs: 5.12445e+12, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.00159009
+
+   The linear solver tolerance is set to 0.01. 
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+9 iterations.
+      Newton system information: Norm of the rhs: 2.61116e+12, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.000810229
+
+   The linear solver tolerance is set to 0.01. 
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+10 iterations.
+      Newton system information: Norm of the rhs: 1.77436e+12, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.000550573
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
+Number of active cells: 200 (on 3 levels)
+Number of degrees of freedom: 10,469 (1,858+250+929+929+929+929+929+929+929+929+929)
+
+Number of mesh deformation degrees of freedom: 1,858
+   Solving mesh displacement system... 1 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+Landlab running update_until: end_time = 0.0
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Skipping noninitial_plastic_strain composition solve because RHS is zero.
+   Solving plastic_strain system ... 0 iterations.
+   Solving crust_upper system ... 0 iterations.
+   Solving crust_lower system ... 0 iterations.
+   Solving mantle_lithosphere system ... 0 iterations.
+   Solving sediment system ... 12 iterations.
+   Skipping sediment_age composition solve because RHS is zero.
+   Skipping deposition_depth composition solve because RHS is zero.
+   Initial Newton Stokes residual = 3.31499e+15, v = 3.2741e+15, p = 5.19054e+14
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+22 iterations.
+      Newton system information: Norm of the rhs: 3.31499e+15
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+19 iterations.
+      Newton system information: Norm of the rhs: 1.85446e+13, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.00559416
+
+   The linear solver tolerance is set to 0.01. 
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+6 iterations.
+      Newton system information: Norm of the rhs: 5.47568e+12, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.0016518
+
+   The linear solver tolerance is set to 0.01. 
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+8 iterations.
+      Newton system information: Norm of the rhs: 2.87773e+12, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.000868097
+
+   The linear solver tolerance is set to 0.01. 
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+7 iterations.
+      Newton system information: Norm of the rhs: 2.09372e+12, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.000631592
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
+   Postprocessing:
+     Topography min/max:        -0.1524 m, 4.961 m
+     Compositions min/max/mass: 0/0/0 // 0/1.5/4.95e+09 // 0/1/4.167e+09 // 0/1/4e+09 // 0/1/1.167e+10 // -9.029e-17/1/1.667e+08 // 0/0/0 // 0/0/0
+     Writing graphical output:  output-landlab_boundary_composition/solution/solution-00000
+
+*** Timestep 1:  t=20000 years, dt=20000 years
+Landlab running update_until: end_time = 631139040000.0
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 7 iterations.
+   Solving noninitial_plastic_strain system ... 11 iterations.
+   Solving plastic_strain system ... 10 iterations.
+   Solving crust_upper system ... 10 iterations.
+   Solving crust_lower system ... 10 iterations.
+   Solving mantle_lithosphere system ... 9 iterations.
+   Solving sediment system ... 11 iterations.
+   Solving sediment_age system ... 11 iterations.
+   Skipping deposition_depth composition solve because RHS is zero.
+   Initial Newton Stokes residual = 4.41662e+17, v = 4.41662e+17, p = 3.39083e+13
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+20 iterations.
+      Newton system information: Norm of the rhs: 2.65542e+12
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.01233e-06
+
+
+   Postprocessing:
+     Topography min/max:        -240.1 m, 0 m
+     Compositions min/max/mass: -0.001896/0.01538/1.142e+07 // -0.01213/1.486/4.984e+09 // -0.02007/1.036/4.154e+09 // -0.01795/1.021/3.991e+09 // -0.003385/1.018/1.164e+10 // -0.03594/1/1.714e+08 // -4258/2e+04/1.207e+12 // 0/0/0
+     Writing graphical output:  output-landlab_boundary_composition/solution/solution-00001
+
+*** Timestep 2:  t=40000 years, dt=20000 years
+Landlab running update_until: end_time = 1262278080000.0
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 6 iterations.
+   Solving noninitial_plastic_strain system ... 10 iterations.
+   Solving plastic_strain system ... 9 iterations.
+   Solving crust_upper system ... 9 iterations.
+   Solving crust_lower system ... 9 iterations.
+   Solving mantle_lithosphere system ... 8 iterations.
+   Solving sediment system ... 11 iterations.
+   Solving sediment_age system ... 12 iterations.
+   Skipping deposition_depth composition solve because RHS is zero.
+   Initial Newton Stokes residual = 4.3507e+17, v = 4.3507e+17, p = 3.39431e+13
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+16 iterations.
+      Newton system information: Norm of the rhs: 2.22632e+12
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.11716e-06
+
+
+   Postprocessing:
+     Topography min/max:        -482.6 m, 0 m
+     Compositions min/max/mass: -0.003596/0.03363/2.336e+07 // -0.01986/1.483/5.018e+09 // -0.03848/1.064/4.138e+09 // -0.03473/1.04/3.983e+09 // -0.007734/1.035/1.162e+10 // -0.06336/1/1.805e+08 // -6194/4e+04/3.58e+12 // 0/0/0
+     Writing graphical output:  output-landlab_boundary_composition/solution/solution-00002
+
+*** Timestep 3:  t=60000 years, dt=20000 years
+Landlab running update_until: end_time = 1893417120000.0
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 7 iterations.
+   Solving noninitial_plastic_strain system ... 10 iterations.
+   Solving plastic_strain system ... 9 iterations.
+   Solving crust_upper system ... 9 iterations.
+   Solving crust_lower system ... 9 iterations.
+   Solving mantle_lithosphere system ... 8 iterations.
+   Solving sediment system ... 11 iterations.
+   Solving sediment_age system ... 12 iterations.
+   Skipping deposition_depth composition solve because RHS is zero.
+   Initial Newton Stokes residual = 4.3033e+17, v = 4.3033e+17, p = 3.58414e+13
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+17 iterations.
+      Newton system information: Norm of the rhs: 3.16049e+12
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.34433e-06
+
+
+   Postprocessing:
+     Topography min/max:        -722.8 m, 0 m
+     Compositions min/max/mass: -0.005255/0.05595/3.6e+07 // -0.02398/1.48/5.05e+09 // -0.05463/1.081/4.123e+09 // -0.04987/1.057/3.974e+09 // -0.0128/1.05/1.16e+10 // -0.08028/1/1.88e+08 // -9129/6e+04/5.789e+12 // 0/0/0
+     Writing graphical output:  output-landlab_boundary_composition/solution/solution-00003
+
+*** Timestep 4:  t=80000 years, dt=20000 years
+Landlab running update_until: end_time = 2524556160000.0
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 6 iterations.
+   Solving noninitial_plastic_strain system ... 10 iterations.
+   Solving plastic_strain system ... 9 iterations.
+   Solving crust_upper system ... 9 iterations.
+   Solving crust_lower system ... 9 iterations.
+   Solving mantle_lithosphere system ... 8 iterations.
+   Solving sediment system ... 10 iterations.
+   Solving sediment_age system ... 11 iterations.
+   Skipping deposition_depth composition solve because RHS is zero.
+   Initial Newton Stokes residual = 4.27473e+17, v = 4.27473e+17, p = 3.83178e+13
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+17 iterations.
+      Newton system information: Norm of the rhs: 5.92254e+12
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.38548e-05
+
+
+   Postprocessing:
+     Topography min/max:        -958.5 m, 0 m
+     Compositions min/max/mass: -0.007071/0.08176/4.913e+07 // -0.02669/1.478/5.075e+09 // -0.06791/1.088/4.109e+09 // -0.06285/1.071/3.966e+09 // -0.01765/1.063/1.158e+10 // -0.0874/1/1.944e+08 // -1.242e+04/8e+04/7.863e+12 // 0/0/0
+     Writing graphical output:  output-landlab_boundary_composition/solution/solution-00004
+
+*** Timestep 5:  t=100000 years, dt=20000 years
+Landlab running update_until: end_time = 3155695200000.0
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 6 iterations.
+   Solving noninitial_plastic_strain system ... 10 iterations.
+   Solving plastic_strain system ... 9 iterations.
+   Solving crust_upper system ... 9 iterations.
+   Solving crust_lower system ... 9 iterations.
+   Solving mantle_lithosphere system ... 8 iterations.
+   Solving sediment system ... 11 iterations.
+   Solving sediment_age system ... 11 iterations.
+   Skipping deposition_depth composition solve because RHS is zero.
+   Initial Newton Stokes residual = 4.26406e+17, v = 4.26406e+17, p = 3.95595e+13
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+17 iterations.
+      Newton system information: Norm of the rhs: 8.41653e+12
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.97383e-05
+
+
+   Postprocessing:
+     Topography min/max:        -1188 m, 0 m
+     Compositions min/max/mass: -0.00873/0.1096/6.239e+07 // -0.02943/1.477/5.093e+09 // -0.0779/1.087/4.094e+09 // -0.07322/1.082/3.957e+09 // -0.02162/1.073/1.155e+10 // -0.08645/1/2.017e+08 // -1.662e+04/1e+05/1.038e+13 // 0/0/0
+     Writing graphical output:  output-landlab_boundary_composition/solution/solution-00005
+
+*** Timestep 6:  t=120000 years, dt=20000 years
+Landlab running update_until: end_time = 3786834240000.0
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 6 iterations.
+   Solving noninitial_plastic_strain system ... 10 iterations.
+   Solving plastic_strain system ... 9 iterations.
+   Solving crust_upper system ... 9 iterations.
+   Solving crust_lower system ... 9 iterations.
+   Solving mantle_lithosphere system ... 8 iterations.
+   Solving sediment system ... 11 iterations.
+   Solving sediment_age system ... 11 iterations.
+   Skipping deposition_depth composition solve because RHS is zero.
+   Initial Newton Stokes residual = 4.26894e+17, v = 4.26894e+17, p = 4.04078e+13
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+17 iterations.
+      Newton system information: Norm of the rhs: 9.75085e+12
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.28414e-05
+
+
+   Postprocessing:
+     Topography min/max:        -1411 m, 0 m
+     Compositions min/max/mass: -0.01005/0.1352/7.563e+07 // -0.03185/1.475/5.106e+09 // -0.08473/1.076/4.079e+09 // -0.08075/1.089/3.949e+09 // -0.02438/1.081/1.153e+10 // -0.07833/1/2.093e+08 // -1.952e+04/1.2e+05/1.318e+13 // 0/0/0
+     Writing graphical output:  output-landlab_boundary_composition/solution/solution-00006
+
+*** Timestep 7:  t=140000 years, dt=20000 years
+Landlab running update_until: end_time = 4417973280000.0
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 6 iterations.
+   Solving noninitial_plastic_strain system ... 10 iterations.
+   Solving plastic_strain system ... 9 iterations.
+   Solving crust_upper system ... 9 iterations.
+   Solving crust_lower system ... 9 iterations.
+   Solving mantle_lithosphere system ... 8 iterations.
+   Solving sediment system ... 11 iterations.
+   Solving sediment_age system ... 11 iterations.
+   Skipping deposition_depth composition solve because RHS is zero.
+   Initial Newton Stokes residual = 4.27801e+17, v = 4.27801e+17, p = 3.99404e+13
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+18 iterations.
+      Newton system information: Norm of the rhs: 6.2497e+12
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.46089e-05
+
+
+   Postprocessing:
+     Topography min/max:        -1628 m, 0 m
+     Compositions min/max/mass: -0.01128/0.159/8.892e+07 // -0.03293/1.474/5.118e+09 // -0.08918/1.076/4.066e+09 // -0.08598/1.093/3.941e+09 // -0.02609/1.086/1.151e+10 // -0.0789/1/2.153e+08 // -2.242e+04/1.4e+05/1.562e+13 // 0/0/0
+     Writing graphical output:  output-landlab_boundary_composition/solution/solution-00007
+
+Termination requested by criterion: end time
+
+
+
+
+WARNING: During this computation 3 nonlinear solver failures occurred!
