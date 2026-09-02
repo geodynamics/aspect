@@ -42,7 +42,7 @@ namespace aspect
      * $T_\ast = \frac{1}{6} (1-3 \cos(\theta)^2)$ for static flattening of the satellite and
      * $T_0=\frac{1}{2}\sin(\theta)^2 \cos(2\lambda + 2bt)$ for the quasi-static stretching in the direction of the planet varying in nonsynchronous rotation,
      * where $G$ is the gravitational constant, $M_p$ is the mass of the perturbing body, $a_s$ is the semimajor axis of the orbit, $b$ is the angular rate of non-synchronous rotation, and
-     * $b = 2  \frac{\pi}{P} where $P$ is the period of NSR.
+     * $b = 2  \frac{\pi}{P}$ where $P$ is the period of NSR.
      * $r$, $\theta$ and $\lambda$ are radial distance, polar angle, and azimuthal angle, respectively.
      *
      * @ingroup GravityModels
