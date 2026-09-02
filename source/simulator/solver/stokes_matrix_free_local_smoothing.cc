@@ -1352,6 +1352,7 @@ namespace aspect
           {
             ++sim.linear_solver_failures;
 
+            // *this is converted to a pointer to SimulatorAccess for the signal
             this->get_signals().post_stokes_solver(*this,
                                                    schur_approximation_cheap.n_iterations() + schur_approximation_expensive.n_iterations(),
                                                    inverse_velocity_block_cheap.n_iterations() + inverse_velocity_block_expensive.n_iterations(),
@@ -1389,6 +1390,7 @@ namespace aspect
       }
 
     // signal successful solver
+    // *this is converted to a pointer to SimulatorAccess for the signal
     this->get_signals().post_stokes_solver(*this,
                                            schur_approximation_cheap.n_iterations() + schur_approximation_expensive.n_iterations(),
                                            inverse_velocity_block_cheap.n_iterations() + inverse_velocity_block_expensive.n_iterations(),

@@ -691,6 +691,7 @@ namespace aspect
             {
               ++sim.linear_solver_failures;
 
+              // *this is converted to a pointer to SimulatorAccess for the signal
               this->get_signals().post_stokes_solver(*this,
                                                      schur->n_iterations(),
                                                      inverse_velocity_block_cheap.n_iterations()+inverse_velocity_block_expensive.n_iterations(),
@@ -740,6 +741,7 @@ namespace aspect
       solution_vector.block(pressure_block_index) = distributed_stokes_solution.block(pressure_block_index);
 
       // signal successful solver
+      // *this is converted to a pointer to SimulatorAccess for the signal
       this->get_signals().post_stokes_solver(*this,
                                              schur->n_iterations(),
                                              inverse_velocity_block_cheap.n_iterations()+inverse_velocity_block_expensive.n_iterations(),
