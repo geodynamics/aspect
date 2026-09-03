@@ -1545,7 +1545,7 @@ namespace aspect
     {
       /**
        * converts a rotation matrix to quaternions multiplied by their scalar component
-       * these quaternions are supposedly to be usefull in advection problems
+       * these quaternions are supposedly to be useful in advection problems
        * (Dealing with the Quaternion Antipodal Problem for Advecting Fields - Richard Becker 2017)
        */
       std::array<double,4> rotation_matrix_to_quaternion(const Tensor<2,3> &rotation_matrix, const long double tolerance);

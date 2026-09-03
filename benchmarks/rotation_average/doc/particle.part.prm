@@ -79,7 +79,7 @@ subsection Particles
   end
 
   # Output the bingham average rotation as quaternions.
-  # A seed is added for reproducability.
+  # A seed is added for reproducibility.
   subsection CPO Bingham Average
     set Random number seed = 200
     set output rotation as = quaternion

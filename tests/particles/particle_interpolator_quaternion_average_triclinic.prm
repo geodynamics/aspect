@@ -48,7 +48,7 @@ subsection Particles
         set Symmetry group            = triclinic
       end
     end
-    # set a minimum ammount of particles
+    # set a minimum amount of particles
     subsection Crystal Preferred Orientation
         set Number of grains per particle = 10
     end

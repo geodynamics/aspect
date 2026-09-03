@@ -35,7 +35,7 @@ end
 
 subsection Particles
     set List of particle properties = crystal preferred orientation, cpo bingham average
-    # set a minimum ammount of particles
+    # set a minimum amount of particles
     subsection Crystal Preferred Orientation
         set Number of grains per particle = 10
     end

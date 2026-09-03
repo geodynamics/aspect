@@ -40,9 +40,9 @@ An average in the space of rotations is defined as the rotation, which minimizes
 :label: eqn:rotation_average
 \bar{\mathbf{R}} =  \underset{\mathbf{R}\in SO(3)}{\rm argmin}\sum_n d^2(\mathbf{R}_i,\mathbf{R}) \text{ .}
 ```
-The two definitions of the metric distance we consider are the euclidian distance (e.g. straight line through the ambient space),
+The two definitions of the metric distance we consider are the euclidean distance (e.g. straight line through the ambient space),
 ```{math}
-:label: eqn:rotation_euclidian_norm
+:label: eqn:rotation_euclidean_norm
 d_{\rm{eucl.}}(\mathbf{R}_1,\mathbf{R}_2) = ||\mathbf{R}_1- \mathbf{R}_2||_F
 ```
 and the geodesic or Riemannian distance (e.g. arc following the curvature of the space),
@@ -81,7 +81,7 @@ F(\bar{\mathbf{q}}, \{\mathbf{g}_i\}) = \frac{1}{\sum_j w_j}\sum_i w_i[\ 2\arcco
 ```
 where $\cdot$ is the dot product for vectors in $\mathbb{R}^4$. This is a slight generalization, as $w_i$ are weights associated with each rotation (quaternion). In the future, a distance weighting could be implemented based on these.
 
-Quaternions are also convenient as there exists a well defined average. {cite}`markley:etal:2007` show that the minimization defined in Equ. {math:numref}`eqn:rotation_average` for the euclidian norm Equ. {math:numref}`eqn:rotation_euclidian_norm` can be reformulated into,
+Quaternions are also convenient as there exists a well defined average. {cite}`markley:etal:2007` show that the minimization defined in Equ. {math:numref}`eqn:rotation_average` for the euclidean norm Equ. {math:numref}`eqn:rotation_euclidean_norm` can be reformulated into,
 ```{math}
     :label: eqn:markley_average_maximization
     \bar{\mathbf{q}} = \underset{\mathbf{q}\in \mathbb{H}}{\rm argmax} \ \mathbf{q}^T\mathbf{K}\mathbf{q}

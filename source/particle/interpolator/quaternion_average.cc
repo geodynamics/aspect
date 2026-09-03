@@ -57,7 +57,7 @@ namespace aspect
         // can be adapted to distance weighting in the future
         const std::vector<double> unit_weights(n_particles, 1.0);
 
-        // average mineral agregates separately
+        // average mineral aggregates separately
         for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
           {
             // makes sure to not average minerals that are not to be interpolated
