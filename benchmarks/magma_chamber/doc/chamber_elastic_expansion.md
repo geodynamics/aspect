@@ -12,7 +12,7 @@ feature:community-benchmark
 
 *This section was contributed by Annie Thompson and Cedric Thieulot.*
 
-This is a 2D model of a pressurized magma chamber using a compressible equation of state and viscoelastic rheology. We create a pressurized chamber by including a non-zero thermal expansivity and adding heat to the chamber, causing the chamber to dilate. This benchmark tests the implementation of effectively elastic material in ASPECT. The elastic material in ASPECT matches the stress fields from an elastic finite element model. 
+This is a 2D model of a pressurized magma chamber using a compressible equation of state and viscoelastic rheology. We create a pressurized chamber by including a non-zero thermal expansivity and adding heat to the chamber, causing the chamber to dilate. This benchmark tests the implementation of effectively elastic material in ASPECT. The elastic material in ASPECT matches the stress fields from an elastic finite element model.
 
 This is based on a commonly used 3D benchmark in the volcanology community for a pressurized magma chamber in elastic half-space, shown in {numref}`fig:chamber`. Examples can be found [here](http://www.driversofvolcanodeformation.org/) and in {cite:t}`crozier:etal:2023` under exercise 1.3.
 
